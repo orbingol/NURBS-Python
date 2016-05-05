@@ -1,0 +1,3 @@
+.idea/*
+nurbs/__pycache__/*
+*.out
