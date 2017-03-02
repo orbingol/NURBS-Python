@@ -4,6 +4,17 @@
     Developed by Onur Rauf Bingol (c) 2016-2017
 """
 
+import decimal
+
+
+# Implementation of http://stackoverflow.com/a/7267280
+def frange(x, y, step):
+    step_str = str(step)
+    while x <= y:
+        yield float(x)
+        x += decimal.Decimal(step_str)
+
+
 def normalize_knotvector(knotvector=()):
     if len(knotvector) == 0:
         return knotvector

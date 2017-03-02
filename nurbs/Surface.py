@@ -6,7 +6,6 @@
 
 import sys
 import itertools
-import numpy
 import nurbs.utilities as utils
 
 
@@ -189,11 +188,11 @@ class Surface(object):
             sys.exit(1)
 
     def calculate(self):
-        for v in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+        for v in utils.frange(0, 1, self._mDelta):
             span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             surfpts_u = []
-            for u in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+            for u in utils.frange(0, 1, self._mDelta):
                 span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
@@ -232,11 +231,11 @@ class Surface(object):
             c_v += 1
 
         # Continue with Algorithm A4.3
-        for v in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+        for v in utils.frange(0, 1, self._mDelta):
             span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             surfpts_u = []
-            for u in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+            for u in utils.frange(0, 1, self._mDelta):
                 span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
