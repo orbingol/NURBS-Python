@@ -190,11 +190,11 @@ class Surface(object):
 
     def calculate(self):
         for v in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             surfpts_u = []
             for u in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfpt = [0.0, 0.0, 0.0]
@@ -233,11 +233,11 @@ class Surface(object):
 
         # Continue with Algorithm A4.3
         for v in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             surfpts_u = []
             for u in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfptw = [0.0, 0.0, 0.0, 0.0]

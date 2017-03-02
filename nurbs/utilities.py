@@ -19,12 +19,17 @@ def normalize_knotvector(knotvector=()):
 
 
 # Algorithm A2.1
-def find_span(degree=0, knotvector=(), num_ctrlpts=0, knot=0):
-    if knotvector[num_ctrlpts] == knot:
-        return num_ctrlpts - 1
+def find_span(degree=0, knotvector=(), knot=0):
+    # Number of knots; m + 1
+    # Number of basis functions, n +1
+    # n = m - p - 1; where p = degree
+    m = len(knotvector) - 1
+    n = m - degree - 1
+    if knotvector[n + 1] == knot:
+        return n
 
     low = degree
-    high = num_ctrlpts
+    high = n + 1
     mid = (low + high) / 2
 
     while (knot < knotvector[mid]) or (knot >= knotvector[mid + 1]):
