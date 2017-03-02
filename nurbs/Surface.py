@@ -183,6 +183,7 @@ class Surface(object):
                         ctrlpts_u.append(pt)
                     self._mCtrlPts_sizeU += 1
                     self._mCtrlPts2D.append(ctrlpts_u)
+            self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
         except IOError:
             print('Cannot open file ' + filename)
             sys.exit(1)
