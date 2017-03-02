@@ -27,7 +27,7 @@ Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in c
 
 ### File: ex01_surface1.py
 
-![3D scatter plot using Matplotlib](doc\ex01_surface1_output.png)
+![3D scatter plot using Matplotlib](doc/ex01_surface1_output.png)
 
 
 ## Author
