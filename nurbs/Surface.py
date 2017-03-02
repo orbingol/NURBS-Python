@@ -33,6 +33,9 @@ class Surface(object):
     def degree_u(self, value):
         if value < 0:
             raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set degree u
         self._mDegreeU = value
 
     @property
@@ -43,6 +46,9 @@ class Surface(object):
     def degree_v(self, value):
         if value < 0:
             raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set degree v
         self._mDegreeV = value
 
     @property
@@ -54,7 +60,10 @@ class Surface(object):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        # Control points array is a list of list of lists
+        # Clean up the surface and control points lists, if necessary
+        self._reset_surface()
+        self._reset_ctrlpts()
+
         # First check v-direction
         if len(value) > self._mDegreeV + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1")
@@ -94,6 +103,9 @@ class Surface(object):
     def weights(self, value):
         if len(value) != self._mCtrlPts_sizeU * self._mCtrlPts_sizeV:
             raise ValueError("Size of the weight vector should be equal to size of control points")
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set weights vector
         value_float = [float(w) for w in value]
         self._mWeights = value_float
 
@@ -103,6 +115,9 @@ class Surface(object):
 
     @knotvector_u.setter
     def knotvector_u(self, value):
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set knot vector u
         value_float = [float(kv) for kv in value]
         self._mKnotVectorU = utils.normalize_knotvector(value_float)
 
@@ -112,6 +127,9 @@ class Surface(object):
 
     @knotvector_v.setter
     def knotvector_v(self, value):
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set knot vector u
         value_float = [float(kv) for kv in value]
         self._mKnotVectorV = utils.normalize_knotvector(value_float)
 
@@ -124,6 +142,9 @@ class Surface(object):
         # Delta value for surface calculations should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface calculation delta should be between 0.0 and 1.0")
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+        # Set a new delta value
         self._mDelta = float(value)
 
     @property
@@ -161,7 +182,28 @@ class Surface(object):
     def surfpts2d(self):
         return self._mSurfPts2D
 
+    def _reset_ctrlpts(self):
+        if self._mCtrlPts:
+            # Delete control points
+            del self._mCtrlPts[:]
+            del self._mCtrlPts2D[:]
+            # Delete weight vector
+            del self._mWeights[:]
+            # Set the control point sizes to zero
+            self._mCtrlPts_sizeU = 0
+            self._mCtrlPts_sizeV = 0
+
+    def _reset_surface(self):
+        if self._mSurfPts:
+            # Delete the calculated surface points
+            del self._mSurfPts[:]
+            del self._mSurfPts2D[:]
+
     def read_ctrlpts(self, filename=''):
+        # Clean up the control points lists, if necessary
+        self._reset_ctrlpts()
+
+        # Try reading the file
         try:
             # Open the file
             with open(filename, 'r') as fp:
@@ -188,6 +230,10 @@ class Surface(object):
             sys.exit(1)
 
     def calculate(self):
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+
+        # Algorithm A3.5
         for v in utils.frange(0, 1, self._mDelta):
             span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
@@ -212,6 +258,9 @@ class Surface(object):
             self._mSurfPts2D.append(surfpts_u)
 
     def calculatew(self):
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+
         # Prepare a 2D weighted control points array
         ctrlptsw = []
         cnt = 0
