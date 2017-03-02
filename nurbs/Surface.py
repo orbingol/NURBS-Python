@@ -211,3 +211,50 @@ class Surface(object):
                 self._mSurfPts.append(surfpt)
                 surfpts_u.append(surfpt)
             self._mSurfPts2D.append(surfpts_u)
+
+    def calculatew(self):
+        # Prepare a 2D weighted control points array
+        ctrlptsw = []
+        cnt = 0
+        c_v = 0
+        while c_v < self._mCtrlPts_sizeV:
+            ctrlptsw_u = []
+            c_u = 0
+            while c_u < self._mCtrlPts_sizeU:
+                temp = [self._mCtrlPts[cnt][0] * self._mWeights[cnt],
+                        self._mCtrlPts[cnt][1] * self._mWeights[cnt],
+                        self._mCtrlPts[cnt][2] * self._mWeights[cnt],
+                        self._mWeights[cnt]]
+                ctrlptsw_u.append(temp)
+                c_u += 1
+                cnt += 1
+            ctrlptsw.append(ctrlptsw_u)
+            c_v += 1
+
+        # Continue with Algorithm A4.3
+        for v in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+            basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
+            surfpts_u = []
+            for u in numpy.arange(0.0, 1.0+self._mDelta, self._mDelta):
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+                basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
+                idx_u = span_u - self._mDegreeU
+                surfptw = [0.0, 0.0, 0.0, 0.0]
+                for l in xrange(0, self._mDegreeV+1):
+                    temp = [0.0, 0.0, 0.0, 0.0]
+                    idx_v = span_v - self._mDegreeV + l
+                    for k in xrange(0, self._mDegreeU+1):
+                        temp[0] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][0])
+                        temp[1] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][1])
+                        temp[2] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][2])
+                        temp[3] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][3])
+                    surfptw[0] += (basis_v[l] * temp[0])
+                    surfptw[1] += (basis_v[l] * temp[1])
+                    surfptw[2] += (basis_v[l] * temp[2])
+                    surfptw[3] += (basis_v[l] * temp[3])
+                # Divide by weight to obtain 3D surface points
+                surfpt = [surfptw[0] / surfptw[3], surfptw[1] / surfptw[3], surfptw[2] / surfptw[3]]
+                self._mSurfPts.append(surfpt)
+                surfpts_u.append(surfpt)
+            self._mSurfPts2D.append(surfpts_u)

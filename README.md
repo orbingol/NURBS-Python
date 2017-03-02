@@ -7,6 +7,7 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A2.1: FindSpan
 * Algorithm A2.2: BasisFuns
 * Algorithm A3.5: SurfacePoint
+* Algorithm A4.3: SurfacePoint (from weighted control points)
 
 ### What is NURBS, by the way?
 
