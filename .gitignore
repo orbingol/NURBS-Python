@@ -1,4 +1,5 @@
 .idea/*
 nurbs/__pycache__/*
+nurbs/*.pyc
 *.out
 build/
