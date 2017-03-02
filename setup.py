@@ -6,9 +6,9 @@ def read(fname):
 
 setup(
 	name='NURBS-Python',
-	version='1.0',
+	version='2.0-dev',
 	description='NURBS curve and surface calculation algorithms in native Python',
-	author='Rauf Bingol',
+	author='Onur Rauf Bingol',
 	license='MIT',
 	url='https://github.com/orbingol/NURBS-Python',
 	packages=['nurbs'],
