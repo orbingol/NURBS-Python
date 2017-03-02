@@ -131,7 +131,7 @@ class Surface(object):
     def ctrlptsw(self):
         ret_list = []
         for c, w in itertools.product(self._mCtrlPts, self._mWeights):
-            temp = (float(c[0]/w), float(c[1]/w), float(c[2]/w), w)
+            temp = (float(c[0]*w), float(c[1]*w), float(c[2]*w), w)
             ret_list.append(temp)
         return tuple(ret_list)
 
@@ -145,7 +145,7 @@ class Surface(object):
             ctrlpts_u = []
             weights_u = []
             for i, c in enumerate(udir):
-                temp_list = [float(c[0]*c[3]), float(c[1]*c[3]), float(c[2]*c[3])]
+                temp_list = [float(c[0]/c[3]), float(c[1]/c[3]), float(c[2]/c[3])]
                 ctrlpts_u.append(temp_list)
                 weights_u.append(float(c[3]))
             ctrlpts_uv.append(ctrlpts_u)
