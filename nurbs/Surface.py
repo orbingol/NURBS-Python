@@ -23,7 +23,6 @@ class Surface(object):
         self._mWeights = []
         self._mDelta = 0.01
         self._mSurfPts = []
-        self._mSurfPts2D = []  # for now, in [v][u] format
 
     @property
     def degree_u(self):
@@ -243,7 +242,6 @@ class Surface(object):
         for v in utils.frange(0, 1, self._mDelta):
             span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
-            surfpts_u = []
             for u in utils.frange(0, 1, self._mDelta):
                 span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
@@ -260,8 +258,6 @@ class Surface(object):
                     surfpt[1] += (basis_v[l] * temp[1])
                     surfpt[2] += (basis_v[l] * temp[2])
                 self._mSurfPts.append(surfpt)
-                surfpts_u.append(surfpt)
-            self._mSurfPts2D.append(surfpts_u)
 
     def calculatew(self):
         # Clean up the surface points lists, if necessary
