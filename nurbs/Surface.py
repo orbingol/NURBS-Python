@@ -31,7 +31,7 @@ class Surface(object):
     @degree_u.setter
     def degree_u(self, value):
         if value < 0:
-            raise ValueError("Degree cannot be less than zero")
+            raise ValueError("Degree cannot be less than zero.")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set degree u
@@ -44,7 +44,7 @@ class Surface(object):
     @degree_v.setter
     def degree_v(self, value):
         if value < 0:
-            raise ValueError("Degree cannot be less than zero")
+            raise ValueError("Degree cannot be less than zero.")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set degree v
@@ -65,12 +65,12 @@ class Surface(object):
 
         # First check v-direction
         if len(value) > self._mDegreeV + 1:
-            raise ValueError("Number of control points in v-direction should be at least degree + 1")
+            raise ValueError("Number of control points in v-direction should be at least degree + 1.")
         # Then, check u direction
         u_cnt = 0
         for u_coords in value:
             if len(u_coords) < self._mDegreeU + 1:
-                raise ValueError("Number of control points in u-direction should be at least degree + 1")
+                raise ValueError("Number of control points in u-direction should be at least degree + 1.")
             u_cnt += 1
             for coord in u_coords:
                 # Save the control points as a list of 3D coordinates
@@ -102,7 +102,7 @@ class Surface(object):
     @weights.setter
     def weights(self, value):
         if len(value) != self._mCtrlPts_sizeU * self._mCtrlPts_sizeV:
-            raise ValueError("Size of the weight vector should be equal to size of control points")
+            raise ValueError("Size of the weight vector should be equal to size of control points.")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set weights vector
@@ -141,7 +141,7 @@ class Surface(object):
     def delta(self, value):
         # Delta value for surface calculations should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface calculation delta should be between 0.0 and 1.0")
+            raise ValueError("Surface calculation delta should be between 0.0 and 1.0.")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set a new delta value
@@ -177,10 +177,6 @@ class Surface(object):
     @property
     def surfpts(self):
         return self._mSurfPts
-
-    @property
-    def surfpts2d(self):
-        return self._mSurfPts2D
 
     def _reset_ctrlpts(self):
         if self._mCtrlPts:
