@@ -118,7 +118,80 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
     return bfuncs_out
 
 
+def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
+    # Initialize variables for easy access
+    left = [None for x in range(degree+1)]
+    right = [None for x in range(degree+1)]
+    ndu = [[None for x in range(degree+1)] for y in range(degree+1)]
 
+    # N[0][0] = 1.0 by definition
+    ndu[0][0] = 1.0
+
+    for j in range(1, degree+1):
+        left[j] = knot - knotvector[span+1-j]
+        right[j] = knotvector[span+j] - knot
+        saved = 0.0
+        r = 0
+        for r in range(r, j):
+            # Lower triangle
+            ndu[j][r] = right[r+1] + left[j-r]
+            temp = ndu[r][j-1] / ndu[j][r]
+            # Upper triangle
+            ndu[r][j] = saved + (right[r+1] * temp)
+            saved = left[j-r] * temp
+        ndu[j][j] = saved
+
+    # Load the basis functions
+    ders = [[None for x in range(degree+1)] for y in range((min(degree, order)+1))]
+    for j in range(0, degree+1):
+        ders[0][j] = ndu[j][degree]
+
+    # Start calculating derivatives
+    a = [[None for x in range(degree+1)] for y in range(2)]
+    # Loop over function index
+    for r in range(0, degree+1):
+        # Alternate rows in array a
+        s1 = 0
+        s2 = 1
+        a[0][0] = 1.0
+        # Loop to compute k-th derivative
+        for k in range(1, order+1):
+            d = 0.0
+            rk = r - k
+            pk = degree - k
+            if r >= k:
+                a[s2][0] = a[s1][0] / ndu[pk+1][rk]
+                d = a[s2][0] * ndu[rk][pk]
+            if rk >= -1:
+                j1 = 1
+            else:
+                j1 = -1 * rk
+            if (r - 1) <= pk:
+                j2 = k - 1
+            else:
+                j2 = degree - r
+            for j in range(j1, j2+1):
+                a[s2][j] = (a[s1][j] - a[s1][j-1]) / ndu[pk+1][rk+j]
+                d += (a[s2][j] * ndu[rk+j][pk])
+            if r <= pk:
+                a[s2][k] = -1.0 * a[s1][k-1] / ndu[pk+1][r]
+                d += (a[s2][k] * ndu[r][pk])
+            ders[k][r] = d
+
+            # Switch rows
+            j = s1
+            s1 = s2
+            s2 = j
+
+    # Multiply through by the the correct factors
+    r = float(degree)
+    for k in range(1, order+1):
+        for j in range(0, degree+1):
+            ders[k][j] *= r
+        r *= (degree - k)
+
+    # Return the basis function derivatives list
+    return ders
 
 
 def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
