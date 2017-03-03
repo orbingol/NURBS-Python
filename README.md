@@ -6,7 +6,9 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 
 * Algorithm A2.1: FindSpan
 * Algorithm A2.2: BasisFuns
+* Algorithm A3.1: CurvePoint
 * Algorithm A3.5: SurfacePoint
+* Algorithm A4.1: CurvePoint (from weighted control points)
 * Algorithm A4.3: SurfacePoint (from weighted control points)
 
 ### What is NURBS, by the way?
@@ -29,6 +31,9 @@ Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in c
 
 ![3D scatter plot using Matplotlib](doc/ex01_surface1_output.png)
 
+### File: ex02_curve1.py
+
+![2D line plots using Matplotlib](doc/ex02_curve1_output.png)
 
 ## Author
 
