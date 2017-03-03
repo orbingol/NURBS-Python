@@ -17,7 +17,7 @@ class Surface(object):
         self._mKnotVectorU = []
         self._mKnotVectorV = []
         self._mCtrlPts = []
-        self._mCtrlPts2D = []  # for now, in [v][u] format
+        self._mCtrlPts2D = []  # in [u][v] format
         self._mCtrlPts_sizeU = 0  # columns
         self._mCtrlPts_sizeV = 0  # rows
         self._mWeights = []
@@ -73,7 +73,6 @@ class Surface(object):
             if len(u_coords) < self._mDegreeU + 1:
                 raise ValueError("Number of control points in u-direction should be at least degree + 1")
             u_cnt += 1
-            ctrlpts_u = []
             for coord in u_coords:
                 # Save the control points as a list of 3D coordinates
                 if len(coord) < 0 or len(coord) > 3:
@@ -81,13 +80,15 @@ class Surface(object):
                 # Convert to list of floats
                 coord_float = [float(c) for c in coord]
                 self._mCtrlPts.append(coord_float)
-                # For storing 2D control points
-                ctrlpts_u.append(coord_float)
-            self._mCtrlPts2D.append([ctrlpts_u])
-
         # Set u and v sizes
         self._mCtrlPts_sizeU = u_cnt
         self._mCtrlPts_sizeV = len(value)
+        # Generate a 2D list of control points
+        for i in range(0, self._mCtrlPts_sizeU):
+            ctrlpts_v = []
+            for j in range(0, self._mCtrlPts_sizeV):
+                ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+            self._mCtrlPts2D.append(ctrlpts_v)
         # Automatically generate a weights vector of 1.0s in the size of ctrlpts array
         self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
 
@@ -214,7 +215,6 @@ class Surface(object):
                     # Convert the string containing the coordinates into a list
                     control_point_row = line.split(';')
                     self._mCtrlPts_sizeV = 0
-                    ctrlpts_u = []
                     for cpr in control_point_row:
                         control_point = cpr.split(',')
                         # Create a temporary dictionary for appending coordinates into ctrlpts list
@@ -222,9 +222,14 @@ class Surface(object):
                         # Add control points to the global control point list
                         self._mCtrlPts.append(pt)
                         self._mCtrlPts_sizeV += 1
-                        ctrlpts_u.append(pt)
                     self._mCtrlPts_sizeU += 1
-                    self._mCtrlPts2D.append(ctrlpts_u)
+            # Generate a 2D list of control points
+            for i in range(0, self._mCtrlPts_sizeU):
+                ctrlpts_v = []
+                for j in range(0, self._mCtrlPts_sizeV):
+                    ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+                self._mCtrlPts2D.append(ctrlpts_v)
+            # Generate a 1D list of weights
             self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
         except IOError:
             print('Cannot open file ' + filename)
@@ -248,9 +253,9 @@ class Surface(object):
                     temp = [0.0, 0.0, 0.0]
                     idx_v = span_v - self._mDegreeV + l
                     for k in range(0, self._mDegreeU+1):
-                        temp[0] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][0])
-                        temp[1] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][1])
-                        temp[2] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][2])
+                        temp[0] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][0])
+                        temp[1] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][1])
+                        temp[2] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][2])
                     surfpt[0] += (basis_v[l] * temp[0])
                     surfpt[1] += (basis_v[l] * temp[1])
                     surfpt[2] += (basis_v[l] * temp[2])
