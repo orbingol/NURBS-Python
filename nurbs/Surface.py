@@ -200,8 +200,9 @@ class Surface(object):
             del self._mSurfPts2D[:]
 
     def read_ctrlpts(self, filename=''):
-        # Clean up the control points lists, if necessary
+        # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
+        self._reset_surface()
 
         # Try reading the file
         try:
