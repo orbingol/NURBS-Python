@@ -281,11 +281,10 @@ class Surface(object):
             ctrlptsw.append(ctrlptsw_u)
             c_v += 1
 
-        # Continue with Algorithm A4.3
+        # Algorithm A4.3
         for v in utils.frange(0, 1, self._mDelta):
             span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
-            surfpts_u = []
             for u in utils.frange(0, 1, self._mDelta):
                 span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
@@ -306,5 +305,3 @@ class Surface(object):
                 # Divide by weight to obtain 3D surface points
                 surfpt = [surfptw[0] / surfptw[3], surfptw[1] / surfptw[3], surfptw[2] / surfptw[3]]
                 self._mSurfPts.append(surfpt)
-                surfpts_u.append(surfpt)
-            self._mSurfPts2D.append(surfpts_u)
