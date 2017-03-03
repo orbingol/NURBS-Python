@@ -14,8 +14,8 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in computer graphics and CAD systems for generating and representing curves and surfaces. For details, you can check [the related Wikipedia article](https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline) or [The NURBS Book](http://www.springer.com/gp/book/9783642973857) by Les Piegl and Wayne Tiller.
 
 ## Tested with
-* Python 2.7.12
-* Matplotlib v1.5.3
+* Python v2.7.12 & Python v3.5.3
+* Matplotlib v2.0.0
 
 ## Contents of the repository
 
