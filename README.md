@@ -25,6 +25,8 @@ Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in c
 * `data\` directory includes sample control points for curves and surfaces
 * `ex*.py` files are testing scripts for curve and surface calculations
 
+Check the examples for using `Surface` and `Curve` classes and automatic knot vector generation functions.
+
 ## Example Outputs
 
 ### File: ex01_surface1.py
