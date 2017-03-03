@@ -305,3 +305,37 @@ class Surface(object):
                 # Divide by weight to obtain 3D surface points
                 surfpt = [surfptw[0] / surfptw[3], surfptw[1] / surfptw[3], surfptw[2] / surfptw[3]]
                 self._mSurfPts.append(surfpt)
+
+    def calculate_derivatives(self, u=-1, v=-1, order=0):
+        # Check u and v parameters are correct
+        utils.check_uv(u, v)
+
+        # Algorithm A3.6
+        du = min(self._mDegreeU, order)
+        dv = min(self._mDegreeV, order)
+
+        SKL = [[[0.0 for x in range(3)] for y in range(dv+1)] for z in range(du+1)]
+
+        span_u = utils.find_span(self._mDegreeU, self._mKnotVectorU, u)
+        bfunsders_u = utils.basis_functions_ders(self._mDegreeU, self._mKnotVectorU, span_u, u, du)
+        span_v = utils.find_span(self._mDegreeV, self._mKnotVectorV, v)
+        bfunsders_v = utils.basis_functions_ders(self._mDegreeV, self._mKnotVectorV, span_v, v, dv)
+
+        for k in range(0, du+1):
+            temp = [[] for y in range(self._mDegreeV+1)]
+            for s in range(0, self._mDegreeV+1):
+                temp[s] = [0.0 for x in range(3)]
+                for r in range(0, self._mDegreeU+1):
+                    cv = span_v - self._mDegreeV + s
+                    cu = span_u - self._mDegreeU + r
+                    temp[s][0] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][0])
+                    temp[s][1] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][1])
+                    temp[s][2] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][2])
+            dd = min(order - k, dv)
+            for l in range(0, dd+1):
+                for s in range(0, self._mDegreeV+1):
+                    SKL[k][l][0] += (bfunsders_v[l][s] * temp[s][0])
+                    SKL[k][l][1] += (bfunsders_v[l][s] * temp[s][1])
+                    SKL[k][l][2] += (bfunsders_v[l][s] * temp[s][2])
+
+        return SKL

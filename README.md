@@ -9,6 +9,7 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A2.3: DersBasisFuns
 * Algorithm A3.1: CurvePoint
 * Algorithm A3.5: SurfacePoint
+* Algorithm A3.6: SurfaceDerivsAlg1
 * Algorithm A4.1: CurvePoint (from weighted control points)
 * Algorithm A4.3: SurfacePoint (from weighted control points)
 
