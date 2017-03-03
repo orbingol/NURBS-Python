@@ -244,10 +244,10 @@ class Surface(object):
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfpt = [0.0, 0.0, 0.0]
-                for l in xrange(0, self._mDegreeV+1):
+                for l in range(0, self._mDegreeV+1):
                     temp = [0.0, 0.0, 0.0]
                     idx_v = span_v - self._mDegreeV + l
-                    for k in xrange(0, self._mDegreeU+1):
+                    for k in range(0, self._mDegreeU+1):
                         temp[0] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][0])
                         temp[1] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][1])
                         temp[2] += (basis_u[k] * self._mCtrlPts2D[idx_v][idx_u + k][2])
@@ -290,10 +290,10 @@ class Surface(object):
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfptw = [0.0, 0.0, 0.0, 0.0]
-                for l in xrange(0, self._mDegreeV+1):
+                for l in range(0, self._mDegreeV+1):
                     temp = [0.0, 0.0, 0.0, 0.0]
                     idx_v = span_v - self._mDegreeV + l
-                    for k in xrange(0, self._mDegreeU+1):
+                    for k in range(0, self._mDegreeU+1):
                         temp[0] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][0])
                         temp[1] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][1])
                         temp[2] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][2])

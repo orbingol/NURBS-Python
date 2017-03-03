@@ -88,7 +88,7 @@ def find_span(degree=0, knotvector=(), knot=0):
             high = mid
         else:
             low = mid
-        mid = (low + high) / 2
+        mid = int((low + high) / 2)
 
     return mid
 
