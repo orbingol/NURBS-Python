@@ -141,6 +141,18 @@ class Curve(object):
             # Delete the calculated curve points
             del self._mCurvePts[:]
 
+    def _check_variables(self):
+        works = True
+        # Check degree values
+        if self._mDegree == 0:
+            works = False
+        if not self._mCtrlPts:
+            works = False
+        if not self._mKnotVector:
+            works = False
+        if not works:
+            raise ValueError("Some required parameters for calculations are not set.")
+
     def read_ctrlpts(self, filename=''):
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
@@ -164,6 +176,8 @@ class Curve(object):
             sys.exit(1)
 
     def calculate(self):
+        # Check all parameters are set before calculations
+        self._check_variables()
         # Clean up the curve points, if necessary
         self._reset_curve()
 
@@ -178,6 +192,8 @@ class Curve(object):
             self._mCurvePts.append(curvept)
 
     def calculatew(self):
+        # Check all parameters are set before calculations
+        self._check_variables()
         # Clean up the curve points, if necessary
         self._reset_curve()
 
