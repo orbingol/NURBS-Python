@@ -166,7 +166,7 @@ def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
             if rk >= -1:
                 j1 = 1
             else:
-                j1 = -1 * rk
+                j1 = -rk
             if (r - 1) <= pk:
                 j2 = k - 1
             else:
@@ -175,7 +175,7 @@ def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
                 a[s2][j] = (a[s1][j] - a[s1][j-1]) / ndu[pk+1][rk+j]
                 d += (a[s2][j] * ndu[rk+j][pk])
             if r <= pk:
-                a[s2][k] = -1.0 * a[s1][k-1] / ndu[pk+1][r]
+                a[s2][k] = -a[s1][k-1] / ndu[pk+1][r]
                 d += (a[s2][k] * ndu[r][pk])
             ders[k][r] = d
 
