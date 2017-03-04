@@ -356,3 +356,47 @@ class Surface(object):
                     SKL[k][l][2] += (bfunsders_v[l][s] * temp[s][2])
 
         return SKL
+
+    def tangent(self, u=-1, v=-1):
+        # Check all parameters are set before calculations
+        self._check_variables()
+        # Check u and v parameters are correct
+        utils.check_uv(u, v)
+
+        # Tangent is the 1st derivative of the surface
+        skl = self.derivatives(u, v, 1)
+
+        # Doing this just for readability
+        tan_u = skl[1][0]
+        tan_v = skl[0][1]
+
+        # Return the list of tangents w.r.t. u and v
+        return tan_u, tan_v
+
+    def normal(self, u=-1, v=-1, normalized=True):
+        # Check all parameters are set before calculations
+        self._check_variables()
+        # Check u and v parameters are correct
+        utils.check_uv(u, v, test_normal=True, delta=self._mDelta)
+
+        # Take the 1st derivative of the surface
+        skl = self.derivatives(u, v, 1)
+
+        point = skl[0][0]
+        der_u = skl[1][0]
+        der_v = skl[0][1]
+
+        vect1 = (der_u[0] - point[0],
+                 der_u[1] - point[1],
+                 der_u[2] - point[2])
+        vect2 = (der_v[0] - point[0],
+                 der_v[1] - point[1],
+                 der_v[2] - point[2])
+
+        normal = utils.cross_vector(vect1, vect2)
+
+        if normalized:
+            normal = utils.normalize_vector(tuple(normal))
+
+        # Return the surface normal at the input u,v location
+        return normal

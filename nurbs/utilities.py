@@ -5,6 +5,7 @@
 """
 
 import decimal
+import math
 
 
 # Implementation of http://stackoverflow.com/a/7267280
@@ -206,3 +207,33 @@ def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
         # Check if we are on any edge of the surface
         if u + delta > 1.0 or u + delta < 0.0 or v + delta > 1.0 or v + delta < 0.0:
             raise ValueError("Cannot calculate normal on an edge")
+
+
+def cross_vector(vect1=(), vect2=()):
+    if not vect1 or not vect2:
+        raise ValueError("Input arguments are empty.")
+
+    retval = [(vect1[1] * vect2[2]) - (vect1[2] * vect2[1]),
+              (vect1[2] * vect2[0]) - (vect1[0] * vect2[2]),
+              (vect1[0] * vect2[1]) - (vect1[1] * vect2[0])]
+
+    # Return the cross product of input vectors
+    return retval
+
+
+def normalize_vector(vect=()):
+    if not vect:
+        raise ValueError("Input argument is empty.")
+
+    # Calculate magnitude of the vector
+    magnitude = math.sqrt(math.pow(vect[0], 2) + math.pow(vect[1], 2) + math.pow(vect[2], 2))
+
+    if magnitude != 0:
+        # Normalize the vector
+        retval = [vect[0] / magnitude,
+                  vect[1] / magnitude,
+                  vect[2] / magnitude]
+        # Return the normalized vector
+        return retval
+    else:
+        raise ValueError("The magnitude of the vector is zero.")
