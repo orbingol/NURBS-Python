@@ -94,6 +94,17 @@ def find_span(degree=0, knotvector=(), knot=0):
     return mid
 
 
+def find_multiplicity(knot=-1, knotvector=(), tol=0.001):
+    # Find and return the multiplicity of the input knot in the given knot vector
+    mult = 0  # initial multiplicity
+    # Loop through the knot vector
+    for kv in knotvector:
+        # Float equality should be checked w.r.t a tolerance value
+        if abs(knot - kv) <= tol:
+            mult += 1
+    return mult
+
+
 # Algorithm A2.2
 def basis_functions(degree=0, knotvector=(), span=0, knot=0):
     left = [0.0] * (degree+1)
