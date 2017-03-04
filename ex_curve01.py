@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from nurbs import Curve as ns
 from nurbs import utilities as utils
 from matplotlib import pyplot as plt
@@ -32,7 +34,7 @@ for pt in curve.curvepts:
 plt.figure()
 cppolygon, = plt.plot(ctrlpts_x, ctrlpts_y, "k-.")
 curveplt, = plt.plot(curvepts_x, curvepts_y, "r-")
-plt.legend([cppolygon, curveplt], ["Control Points", "Calculated Curve"])
+plt.legend([cppolygon, curveplt], ["Control Points Polygon", "Calculated Curve"])
 plt.show()
 
 print("End of NURBS-Python Example")
