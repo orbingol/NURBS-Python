@@ -195,6 +195,21 @@ class Surface(object):
             del self._mSurfPts[:]
             del self._mSurfPts2D[:]
 
+    def _check_variables(self):
+        works = True
+        # Check degree values
+        if self._mDegreeU == 0 or self._mDegreeV == 0:
+            works = False
+
+        if not self._mCtrlPts:
+            works = False
+
+        if not self._mKnotVectorU or not self._mKnotVectorV:
+            works = False
+
+        if not works:
+            raise ValueError("Some required parameters for calculations are not set.")
+
     def read_ctrlpts(self, filename=''):
         # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
@@ -231,6 +246,8 @@ class Surface(object):
             sys.exit(1)
 
     def calculate(self):
+        # Check all parameters are set before calculations
+        self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
@@ -256,6 +273,8 @@ class Surface(object):
                 self._mSurfPts.append(surfpt)
 
     def calculatew(self):
+        # Check all parameters are set before calculations
+        self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
@@ -303,6 +322,8 @@ class Surface(object):
                 self._mSurfPts.append(surfpt)
 
     def calculate_derivatives(self, u=-1, v=-1, order=0):
+        # Check all parameters are set before calculations
+        self._check_variables()
         # Check u and v parameters are correct
         utils.check_uv(u, v)
 
