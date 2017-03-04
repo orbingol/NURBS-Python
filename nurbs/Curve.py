@@ -209,3 +209,33 @@ class Curve(object):
             # Divide by weight
             curvept = [float(curveptw[0] / curveptw[2]), float(curveptw[1] / curveptw[2])]
             self._mCurvePts.append(curvept)
+
+    def derivatives(self, u=-1, order=0):
+        # Check all parameters are set before calculations
+        self._check_variables()
+        # Check u parameters are correct
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
+
+        # Algorithm A3.2
+        du = min(self._mDegree, order)
+
+        CK = [[0.0 for x in range(2)] for y in range(du + 1)]
+
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), u)
+        bfunsders = utils.basis_functions_ders(self._mDegree, tuple(self._mKnotVector), span, u, du)
+        
+        for k in range(0, du+1):
+            CK[k] = [0.0, 0.0]
+            for j in range(0, self._mDegree+1):
+                CK[k][0] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][0])
+                CK[k][1] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][1])
+
+        # Return calculated derivatives
+        return CK
+
+    def tangent(self, u=-1):
+        # Tangent is the 1st derivative of the curve
+        ck = self.derivatives(u, 1)
+        # Return the 1st derivative
+        return ck[1]

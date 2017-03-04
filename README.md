@@ -8,12 +8,13 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A2.2: BasisFuns
 * Algorithm A2.3: DersBasisFuns
 * Algorithm A3.1: CurvePoint
+* Algorithm A3.2: CurveDerivsAlg1
 * Algorithm A3.5: SurfacePoint
 * Algorithm A3.6: SurfaceDerivsAlg1
 * Algorithm A4.1: CurvePoint (from weighted control points)
 * Algorithm A4.3: SurfacePoint (from weighted control points)
 
-### What is NURBS, by the way?
+### What is NURBS by the way?
 
 Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in computer graphics and CAD systems for generating and representing curves and surfaces. For details, you can check [the related Wikipedia article](https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline) or [The NURBS Book](http://www.springer.com/gp/book/9783642973857) by Les Piegl and Wayne Tiller.
 
