@@ -242,7 +242,7 @@ class Surface(object):
             # Generate a 1D list of weights
             self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
         except IOError:
-            print('Cannot open file ' + filename)
+            print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
     def calculate(self):
@@ -321,7 +321,7 @@ class Surface(object):
                 surfpt = [surfptw[0] / surfptw[3], surfptw[1] / surfptw[3], surfptw[2] / surfptw[3]]
                 self._mSurfPts.append(surfpt)
 
-    def calculate_derivatives(self, u=-1, v=-1, order=0):
+    def derivatives(self, u=-1, v=-1, order=0):
         # Check all parameters are set before calculations
         self._check_variables()
         # Check u and v parameters are correct
@@ -343,8 +343,8 @@ class Surface(object):
             for s in range(0, self._mDegreeV+1):
                 temp[s] = [0.0 for x in range(3)]
                 for r in range(0, self._mDegreeU+1):
-                    cv = span_v - self._mDegreeV + s
                     cu = span_u - self._mDegreeU + r
+                    cv = span_v - self._mDegreeV + s
                     temp[s][0] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][0])
                     temp[s][1] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][1])
                     temp[s][2] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][2])
