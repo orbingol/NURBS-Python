@@ -31,7 +31,7 @@ for pt in curve.curvepts:
     curvepts_y.append(pt[1])
 
 # Plot using Matplotlib
-plt.figure()
+plt.figure(figsize=(10.67, 8), dpi=96)
 cppolygon, = plt.plot(ctrlpts_x, ctrlpts_y, "k-.")
 curveplt, = plt.plot(curvepts_x, curvepts_y, "r-")
 plt.legend([cppolygon, curveplt], ["Control Points Polygon", "Calculated Curve"])

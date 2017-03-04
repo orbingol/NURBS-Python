@@ -39,7 +39,7 @@ for spt in surf.surfpts:
     surfpts_z.append(spt[2])
 
 # Plot using Matplotlib
-fig = plt.figure()
+fig = plt.figure(figsize=(10.67, 8), dpi=96)
 ax = fig.gca(projection='3d')
 surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="green", s=10, depthshade=True)
 ax.set_xlim(-25, 25)
