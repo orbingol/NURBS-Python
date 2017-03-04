@@ -32,7 +32,7 @@ def normalize_knotvector(knotvector=()):
 
 def autogen_knotvector(degree=0, num_ctrlpts=0):
     if degree == 0 or num_ctrlpts == 0:
-        raise ValueError("Inputs should be different than zero")
+        raise ValueError("Input values should be different than zero.")
 
     # Min and max knot vector values
     knot_min = 0.0
@@ -198,15 +198,15 @@ def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
 def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
     # Check u value
     if u < 0.0 or u > 1.0:
-        raise ValueError('"u" value should be between 0 and 1')
+        raise ValueError('"u" value should be between 0 and 1.')
     # Check v value
     if v < 0.0 or v > 1.0:
-        raise ValueError('"v" value should be between 0 and 1')
+        raise ValueError('"v" value should be between 0 and 1.')
 
     if test_normal:
         # Check if we are on any edge of the surface
         if u + delta > 1.0 or u + delta < 0.0 or v + delta > 1.0 or v + delta < 0.0:
-            raise ValueError("Cannot calculate normal on an edge")
+            raise ValueError("Cannot calculate normal on an edge.")
 
 
 def cross_vector(vect1=(), vect2=()):

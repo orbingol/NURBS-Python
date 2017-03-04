@@ -358,11 +358,6 @@ class Surface(object):
         return SKL
 
     def tangent(self, u=-1, v=-1):
-        # Check all parameters are set before calculations
-        self._check_variables()
-        # Check u and v parameters are correct
-        utils.check_uv(u, v)
-
         # Tangent is the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
 
@@ -374,9 +369,7 @@ class Surface(object):
         return tan_u, tan_v
 
     def normal(self, u=-1, v=-1, normalized=True):
-        # Check all parameters are set before calculations
-        self._check_variables()
-        # Check u and v parameters are correct
+        # Check u and v parameters are correct for normal calculations
         utils.check_uv(u, v, test_normal=True, delta=self._mDelta)
 
         # Take the 1st derivative of the surface
