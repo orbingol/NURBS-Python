@@ -14,13 +14,11 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A4.1: CurvePoint (from weighted control points)
 * Algorithm A4.3: SurfacePoint (from weighted control points)
 
-### What is NURBS by the way?
+## Minimum Requirements
 
-Non-Uniform Rational B-Spline (NURBS) is a mathematical model used commonly in computer graphics and CAD systems for generating and representing curves and surfaces. For details, you can check [the related Wikipedia article](https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline) or [The NURBS Book](http://www.springer.com/gp/book/9783642973857) by Les Piegl and Wayne Tiller.
+One of the major goals of this project is implementing all these algorithms with minimum dependencies. Currently, the NURBS package can run with plain Python and therefore, it has no extra dependencies, like NumPy or similar. The code was tested with Python versions 2.7.12 and 3.5.3.
 
-## Tested with
-* Python v2.7.12 & Python v3.5.3
-* Matplotlib v2.0.0
+On the other hand, the plotting part of the examples requires Matplotlib installed in your Python distribution. If you don't need any plotting, you basically won't need Matplotlib at all.
 
 ## Contents of the repository
 
@@ -43,6 +41,10 @@ Please check the examples for details of `Surface` and `Curve` classes and autom
 ### File: ex_surface02.py
 
 ![3D scatter plot using Matplotlib](doc/surface_ex02.png)
+
+## Issues and Reporting
+
+If you have any questions related to the NURBS package, please don't hesitate to email the author(s) below.
 
 ## Author
 
