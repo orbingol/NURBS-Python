@@ -29,7 +29,8 @@ for spt in surf.surfpts:
 # Plot using Matplotlib
 fig = plt.figure(figsize=(10.67, 8), dpi=96)
 ax = fig.gca(projection='3d')
-surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="red", s=10, depthshade=True)
+#surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="red", s=10, depthshade=True)  # 3D Scatter plot
+surfplt = ax.plot_trisurf(surfpts_x, surfpts_y, surfpts_z, cmap=plt.cm.viridis)  # 3D Tri-Surface plot
 ax.set_xlim(-25, 25)
 ax.set_ylim(-25, 25)
 ax.set_zlim(-15, 15)

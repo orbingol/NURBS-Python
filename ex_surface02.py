@@ -19,10 +19,10 @@ surf.knotvector_v = utils.autogen_knotvector(surf.degree_v, 6)
 surf.calculate()
 
 # Calculate 1st order surface derivative at the given u and v
-u = 0.3
+u = 0.2
 v = 0.9
 skl = surf.derivatives(u, v, 1)
-print("* Surface point at u = %.2f and v = %.f is (%.2f, %.2f, %.2f)" % (u, v, skl[0][0][0], skl[0][0][1], skl[0][0][2]))
+print("* Surface point at u = %.2f and v = %.2f is (%.2f, %.2f, %.2f)" % (u, v, skl[0][0][0], skl[0][0][1], skl[0][0][2]))
 print("* First derivative w.r.t. u is (%.2f, %.2f, %.2f)" % (skl[1][0][0], skl[1][0][1], skl[1][0][2]))
 print("* First derivative w.r.t. v is (%.2f, %.2f, %.2f)\n" % (skl[0][1][0], skl[0][1][1], skl[0][1][2]))
 # Calculate normal at the given u and v
@@ -41,7 +41,8 @@ for spt in surf.surfpts:
 # Plot using Matplotlib
 fig = plt.figure(figsize=(10.67, 8), dpi=96)
 ax = fig.gca(projection='3d')
-surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="green", s=10, depthshade=True)
+#surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="green", s=10, depthshade=True) # 3D Scatter plot
+surfplt = ax.plot_trisurf(surfpts_x, surfpts_y, surfpts_z, cmap=plt.cm.winter)  # 3D Tri-Surface plot
 ax.set_xlim(-25, 25)
 ax.set_ylim(-25, 25)
 ax.set_zlim(-15, 15)
