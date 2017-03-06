@@ -8,7 +8,7 @@ import decimal
 import math
 
 
-# Implementation of http://stackoverflow.com/a/7267280
+# A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
     step_str = str(step)
     while x <= y:
@@ -16,6 +16,7 @@ def frange(x, y, step):
         x += decimal.Decimal(step_str)
 
 
+# Normalizes knot vector (internal functionality)
 def normalize_knotvector(knotvector=()):
     if len(knotvector) == 0:
         return knotvector
@@ -30,6 +31,7 @@ def normalize_knotvector(knotvector=()):
     return knotvector_out
 
 
+# Autogenerates a uniform knot vector using the given degree and the number of control points
 def autogen_knotvector(degree=0, num_ctrlpts=0):
     if degree == 0 or num_ctrlpts == 0:
         raise ValueError("Input values should be different than zero.")
@@ -70,7 +72,7 @@ def autogen_knotvector(degree=0, num_ctrlpts=0):
     return knotvector
 
 
-# Algorithm A2.1
+# Algorithm A2.1 (internal functionality)
 def find_span(degree=0, knotvector=(), knot=0):
     # Number of knots; m + 1
     # Number of basis functions, n +1
@@ -94,6 +96,7 @@ def find_span(degree=0, knotvector=(), knot=0):
     return mid
 
 
+# Finds knot multiplicity (internal functionality)
 def find_multiplicity(knot=-1, knotvector=(), tol=0.001):
     # Find and return the multiplicity of the input knot in the given knot vector
     mult = 0  # initial multiplicity
@@ -105,7 +108,7 @@ def find_multiplicity(knot=-1, knotvector=(), tol=0.001):
     return mult
 
 
-# Algorithm A2.2
+# Algorithm A2.2 (internal functionality)
 def basis_functions(degree=0, knotvector=(), span=0, knot=0):
     left = [0.0] * (degree+1)
     right = [0.0] * (degree+1)
@@ -130,6 +133,7 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
     return bfuncs_out
 
 
+# Algorithm A2.3 (internal functionality)
 def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
     # Initialize variables for easy access
     left = [None for x in range(degree+1)]
@@ -206,6 +210,7 @@ def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
     return ders
 
 
+# Checks if the input (u, v) values are valid (internal functionality)
 def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
     # Check u value
     if u < 0.0 or u > 1.0:
@@ -220,6 +225,7 @@ def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
             raise ValueError("Cannot calculate normal on an edge.")
 
 
+# Calculates vector cross-product (internal functionality)
 def cross_vector(vect1=(), vect2=()):
     if not vect1 or not vect2:
         raise ValueError("Input arguments are empty.")
@@ -232,6 +238,7 @@ def cross_vector(vect1=(), vect2=()):
     return retval
 
 
+# Normalizes the input vector (internal functionality)
 def normalize_vector(vect=()):
     if not vect:
         raise ValueError("Input argument is empty.")
