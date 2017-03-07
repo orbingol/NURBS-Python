@@ -45,8 +45,8 @@ class Curve(object):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        if len(value) > self._mDegree + 1:
-            raise ValueError("ERROR: Number of control points in v-direction should be at least degree + 1")
+        if len(value) < self._mDegree + 1:
+            raise ValueError("ERROR: Number of control points in u-direction should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()

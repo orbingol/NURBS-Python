@@ -82,7 +82,7 @@ class Surface(object):
         self._reset_ctrlpts()
 
         # First check v-direction
-        if len(value) > self._mDegreeV + 1:
+        if len(value) < self._mDegreeV + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
         # Then, check u direction
         u_cnt = 0
