@@ -15,7 +15,7 @@ surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
 surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
 
 # Calculate surface points
-surf.calculate()
+surf.evaluate()
 
 # Arrange calculated surface data for plotting
 surfpts_x = []

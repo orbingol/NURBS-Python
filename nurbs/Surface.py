@@ -305,7 +305,7 @@ class Surface(object):
             sys.exit(1)
 
     # Calculates the surface points using the delta value
-    def calculate(self):
+    def evaluate(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the surface points lists, if necessary
@@ -333,7 +333,7 @@ class Surface(object):
                 self._mSurfPts.append(surfpt)
 
     # Calculates the surface points from weighted control points
-    def calculatew(self):
+    def evaluatew(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the surface points lists, if necessary

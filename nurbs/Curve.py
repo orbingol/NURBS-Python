@@ -175,7 +175,7 @@ class Curve(object):
             print('Cannot open file ' + filename)
             sys.exit(1)
 
-    def calculate(self):
+    def evaluate(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the curve points, if necessary
@@ -191,7 +191,7 @@ class Curve(object):
                 curvept[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
             self._mCurvePts.append(curvept)
 
-    def calculatew(self):
+    def evaluatew(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the curve points, if necessary

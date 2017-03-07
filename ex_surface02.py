@@ -16,7 +16,7 @@ surf.knotvector_u = utils.autogen_knotvector(surf.degree_u, 6)
 surf.knotvector_v = utils.autogen_knotvector(surf.degree_v, 6)
 
 # Calculate surface points
-surf.calculate()
+surf.evaluate()
 
 # Calculate 1st order surface derivative at the given u and v
 u = 0.2
