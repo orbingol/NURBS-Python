@@ -133,6 +133,16 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
     return bfuncs_out
 
 
+# Algorithm A2.2 - modified (internal functionality)
+def all_basis_functions(degree=0, knotvector=(), span=0, knot=0):
+    N = [[None for x in range(degree+1)] for y in range(degree+1)]
+    for i in range(0, degree+1):
+        bfuns = basis_functions(degree, knotvector, span, knot)
+        for j in range(0, degree+1):
+            N[j][i] = bfuns[j]
+    return N
+
+
 # Algorithm A2.3 (internal functionality)
 def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
     # Initialize variables for easy access
