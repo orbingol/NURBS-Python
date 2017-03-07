@@ -183,7 +183,7 @@ class Curve(object):
 
         # Algorithm A3.1
         for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), u)
+            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
             curvept = [0.0, 0.0]
             for i in range(0, self._mDegree+1):
@@ -220,9 +220,11 @@ class Curve(object):
         # Algorithm A3.2
         du = min(self._mDegree, order)
 
-        CK = [[0.0 for x in range(2)] for y in range(du + 1)]
+        CK = [[None for x in range(2)] for y in range(order + 1)]
+        for k in range(self._mDegree+1, order+1):
+            CK[k] = [0.0, 0.0]
 
-        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), u)
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
         bfunsders = utils.basis_functions_ders(self._mDegree, tuple(self._mKnotVector), span, u, du)
         
         for k in range(0, du+1):

@@ -313,10 +313,10 @@ class Surface(object):
 
         # Algorithm A3.5
         for v in utils.frange(0, 1, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             for u in utils.frange(0, 1, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfpt = [0.0, 0.0, 0.0]
@@ -359,10 +359,10 @@ class Surface(object):
 
         # Algorithm A4.3
         for v in utils.frange(0, 1, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), v)
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
             basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
             for u in utils.frange(0, 1, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), u)
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
                 surfptw = [0.0, 0.0, 0.0, 0.0]
@@ -395,9 +395,9 @@ class Surface(object):
 
         SKL = [[[0.0 for x in range(3)] for y in range(dv+1)] for z in range(du+1)]
 
-        span_u = utils.find_span(self._mDegreeU, self._mKnotVectorU, u)
+        span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
         bfunsders_u = utils.basis_functions_ders(self._mDegreeU, self._mKnotVectorU, span_u, u, du)
-        span_v = utils.find_span(self._mDegreeV, self._mKnotVectorV, v)
+        span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
         bfunsders_v = utils.basis_functions_ders(self._mDegreeV, self._mKnotVectorV, span_v, v, dv)
 
         for k in range(0, du+1):
