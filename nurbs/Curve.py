@@ -10,7 +10,6 @@ import nurbs.utilities as utils
 
 
 class Curve(object):
-
     def __init__(self):
         self._mDegree = 0
         self._mKnotVector = []
@@ -106,8 +105,8 @@ class Curve(object):
     @property
     def ctrlptsw(self):
         ret_list = []
-        for c,w in itertools.product(self._mCtrlPts, self._mWeights):
-            temp_list = (float(c[0]*w), float(c[1]*w), float(w))
+        for c, w in itertools.product(self._mCtrlPts, self._mWeights):
+            temp_list = (float(c[0] * w), float(c[1] * w), float(w))
             ret_list.append(temp_list)
         return tuple(ret_list)
 
@@ -118,7 +117,7 @@ class Curve(object):
         weights = []
         # Split the weights vector from the input list
         for i, c in enumerate(value):
-            temp_list = [float(c[0]/c[2]), float(c[1]/c[2])]
+            temp_list = [float(c[0] / c[2]), float(c[1] / c[2])]
             ctrlpts.append(temp_list)
             weights.append(float(c[2]))
         # Assign unzipped values to the class fields
@@ -186,12 +185,12 @@ class Curve(object):
             span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
             curvept = [0.0, 0.0]
-            for i in range(0, self._mDegree+1):
+            for i in range(0, self._mDegree + 1):
                 curvept[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
                 curvept[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
             self._mCurvePts.append(curvept)
 
-    def evaluatew(self):
+    def evaluate_rational(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the curve points, if necessary
@@ -199,10 +198,10 @@ class Curve(object):
 
         # Algorithm A4.1
         for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), u)
+            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
             curveptw = [0.0, 0.0, 0.0]
-            for i in range(0, self._mDegree+1):
+            for i in range(0, self._mDegree + 1):
                 curveptw[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
                 curveptw[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
                 curveptw[2] += (basis[i] * self._mWeights[span - self._mDegree + i])
@@ -210,7 +209,8 @@ class Curve(object):
             curvept = [float(curveptw[0] / curveptw[2]), float(curveptw[1] / curveptw[2])]
             self._mCurvePts.append(curvept)
 
-    def derivatives(self, u=-1, order=0):
+    # Algorithm A3.2: CurveDerivsAlg1
+    def derivatives2(self, u=-1, order=0):
         # Check all parameters are set before calculations
         self._check_variables()
         # Check u parameters are correct
@@ -222,13 +222,13 @@ class Curve(object):
 
         CK = [[None for x in range(2)] for y in range(order + 1)]
         for k in range(self._mDegree+1, order+1):
-            CK[k] = [0.0, 0.0]
+            CK[k] = [0.0 for x in range(2)]
 
         span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
         bfunsders = utils.basis_functions_ders(self._mDegree, tuple(self._mKnotVector), span, u, du)
-        
+
         for k in range(0, du+1):
-            CK[k] = [0.0, 0.0]
+            CK[k] = [0.0 for x in range(2)]
             for j in range(0, self._mDegree+1):
                 CK[k][0] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][0])
                 CK[k][1] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][1])
