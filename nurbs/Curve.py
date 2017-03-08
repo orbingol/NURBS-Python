@@ -236,8 +236,60 @@ class Curve(object):
         # Return calculated derivatives
         return CK
 
-    def tangent(self, u=-1):
-        # Tangent is the 1st derivative of the curve
-        ck = self.derivatives(u, 1)
-        # Return the 1st derivative
-        return ck[1]
+    # Algorithm A3.3: CurveDerivCpts
+    def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
+        r = r2 - r1
+        PK = [[[None for x in range(0, 2)] for y in range(r + 1)] for z in range(order + 1)]
+        for i in range(0, r + 1):
+            PK[0][i][0] = self._mCtrlPts[r1 + i][0]
+            PK[0][i][1] = self._mCtrlPts[r1 + i][1]
+
+        for k in range(1, order + 1):
+            tmp = self._mDegree - k + 1
+            for i in range(0, r - k + 1):
+                PK[k][i][0] = tmp * (PK[k - 1][i + 1][0] - PK[k - 1][i][0]) /(self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                PK[k][i][1] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][1]) /(self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+
+        return PK
+
+    # Algorithm A3.4: CurveDerivsAlg2
+    def derivatives(self, u=-1, order=0):
+        # Check all parameters are set before calculations
+        self._check_variables()
+        # Check u parameters are correct
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
+
+        # Algorithm A3.4
+        du = min(self._mDegree, order)
+
+        CK = [[None for x in range(2)] for y in range(order + 1)]
+        for k in range(self._mDegree + 1, order + 1):
+            CK[k] = [0.0 for x in range(2)]
+
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
+        bfuns = utils.all_basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
+        PK = self.derivatives_ctrlpts(du, span - self._mDegree, span)
+
+        for k in range(0, du + 1):
+            CK[k] = [0.0 for x in range(2)]
+            for j in range(0, self._mDegree - k + 1):
+                CK[k][0] += (bfuns[j][self._mDegree - k] * PK[k][j][0])
+                CK[k][1] += (bfuns[j][self._mDegree - k] * PK[k][j][1])
+
+        # Return calculated derivatives
+        return CK
+
+    # Get the tangent vector at the given u parameter
+    def tangent(self, u=-1, increment=1.0):
+        # 1st derivative of the curve gives the tangent
+        ders = self.derivatives(u, 1)
+
+        # Extract slope
+        slope = ders[1][1] / ders[1][0]
+        # We know the first point, ders[0], and we need the second point to draw the tangent line
+        new_x = ders[0][0] + increment  # increment is used to determine the line size
+        new_y = (slope * (new_x - ders[0][0])) + ders[0][1]
+
+        # Return the tangent vector
+        return [[ders[0][0], ders[0][1]], [new_x, new_y]]
