@@ -104,7 +104,7 @@ class Surface(object):
         for i in range(0, self._mCtrlPts_sizeU):
             ctrlpts_v = []
             for j in range(0, self._mCtrlPts_sizeV):
-                ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+                ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
             self._mCtrlPts2D.append(ctrlpts_v)
         # Automatically generate a weights vector of 1.0s in the size of ctrlpts array
         self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
@@ -296,10 +296,45 @@ class Surface(object):
             for i in range(0, self._mCtrlPts_sizeU):
                 ctrlpts_v = []
                 for j in range(0, self._mCtrlPts_sizeV):
-                    ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+                    ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
                 self._mCtrlPts2D.append(ctrlpts_v)
             # Generate a 1D list of weights
             self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
+        except IOError:
+            print('ERROR: Cannot open file ' + filename)
+            sys.exit(1)
+
+        # Reads control points and weights from a text file
+    def read_ctrlptsw(self, filename=''):
+        # Clean up the surface and control points lists, if necessary
+        self._reset_ctrlpts()
+        self._reset_surface()
+
+        # Try reading the file
+        try:
+            # Open the file
+            with open(filename, 'r') as fp:
+                for line in fp:
+                    # Remove whitespace
+                    line = line.strip()
+                    # Convert the string containing the coordinates into a list
+                    control_point_row = line.split(';')
+                    self._mCtrlPts_sizeV = 0
+                    for cpr in control_point_row:
+                        cpt = cpr.split(',')
+                        # Create a temporary dictionary for appending coordinates into ctrlpts list
+                        pt = [float(cpt[0])/float(cpt[3]), float(cpt[1])/float(cpt[3]), float(cpt[2])/float(cpt[3])]
+                        self._mWeights.append(float(cpt[3]))
+                        # Add control points to the global control point list
+                        self._mCtrlPts.append(pt)
+                        self._mCtrlPts_sizeV += 1
+                    self._mCtrlPts_sizeU += 1
+            # Generate a 2D list of control points
+            for i in range(0, self._mCtrlPts_sizeU):
+                ctrlpts_v = []
+                for j in range(0, self._mCtrlPts_sizeV):
+                    ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
+                self._mCtrlPts2D.append(ctrlpts_v)
         except IOError:
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
@@ -342,20 +377,20 @@ class Surface(object):
         # Prepare a 2D weighted control points array
         ctrlptsw = []
         cnt = 0
-        c_v = 0
-        while c_v < self._mCtrlPts_sizeV:
-            ctrlptsw_u = []
-            c_u = 0
-            while c_u < self._mCtrlPts_sizeU:
+        c_u = 0
+        while c_u < self._mCtrlPts_sizeU:
+            ctrlptsw_v = []
+            c_v = 0
+            while c_v < self._mCtrlPts_sizeV:
                 temp = [self._mCtrlPts[cnt][0] * self._mWeights[cnt],
                         self._mCtrlPts[cnt][1] * self._mWeights[cnt],
                         self._mCtrlPts[cnt][2] * self._mWeights[cnt],
                         self._mWeights[cnt]]
-                ctrlptsw_u.append(temp)
-                c_u += 1
+                ctrlptsw_v.append(temp)
+                c_v += 1
                 cnt += 1
-            ctrlptsw.append(ctrlptsw_u)
-            c_v += 1
+            ctrlptsw.append(ctrlptsw_v)
+            c_u += 1
 
         # Algorithm A4.3
         for v in utils.frange(0, 1, self._mDelta):
@@ -370,10 +405,10 @@ class Surface(object):
                     temp = [0.0, 0.0, 0.0, 0.0]
                     idx_v = span_v - self._mDegreeV + l
                     for k in range(0, self._mDegreeU+1):
-                        temp[0] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][0])
-                        temp[1] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][1])
-                        temp[2] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][2])
-                        temp[3] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][3])
+                        temp[0] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][0])
+                        temp[1] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][1])
+                        temp[2] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][2])
+                        temp[3] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][3])
                     surfptw[0] += (basis_v[l] * temp[0])
                     surfptw[1] += (basis_v[l] * temp[1])
                     surfptw[2] += (basis_v[l] * temp[2])
