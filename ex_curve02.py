@@ -8,20 +8,13 @@ from matplotlib import pyplot as plt
 curve = ns.Curve()
 
 # Set up the NURBS curve
-curve.read_ctrlpts("data\CP_Curve1.txt")
-curve.degree = 4
+curve.read_ctrlpts("data\CP_Curve2.txt")
+curve.degree = 3
 # Auto-generate the knot vector
 curve.knotvector = utils.autogen_knotvector(curve.degree, len(curve.ctrlpts))
 
-# Calculate curve points
-curve.evaluate_rational()
-
-# Arrange control points for plotting
-ctrlpts_x = []
-ctrlpts_y = []
-for pt in curve.ctrlpts:
-    ctrlpts_x.append(pt[0])
-    ctrlpts_y.append(pt[1])
+# Evaulate curve
+curve.evaluate()
 
 # Arrange curve points for plotting
 curvepts_x = []
@@ -30,11 +23,18 @@ for pt in curve.curvepts:
     curvepts_x.append(pt[0])
     curvepts_y.append(pt[1])
 
+# Find tangent vector at u = 0.8
+tanvec = curve.tangent(0.05, 5.0)
+
+# Arrange tangent vector for plotting
+tanlinepts_x = [tanvec[0][0], tanvec[1][0]]
+tanlinepts_y = [tanvec[0][1], tanvec[1][1]]
+
 # Plot using Matplotlib
 plt.figure(figsize=(10.67, 8), dpi=96)
-cppolygon, = plt.plot(ctrlpts_x, ctrlpts_y, "k-.")
 curveplt, = plt.plot(curvepts_x, curvepts_y, "r-")
-plt.legend([cppolygon, curveplt], ["Control Points Polygon", "Calculated Curve"])
+tanline, = plt.plot(tanlinepts_x, tanlinepts_y, "b-")
+plt.legend([curveplt, tanline], [" Calculated Curve", "Tangent Line"])
 plt.show()
 
 print("End of NURBS-Python Example")
