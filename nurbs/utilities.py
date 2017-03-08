@@ -138,8 +138,8 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
 def all_basis_functions(degree=0, knotvector=(), span=0, knot=0):
     N = [[None for x in range(degree+1)] for y in range(degree+1)]
     for i in range(0, degree+1):
-        bfuns = basis_functions(degree, knotvector, span, knot)
-        for j in range(0, degree+1):
+        bfuns = basis_functions(i, knotvector, span, knot)
+        for j in range(0, i+1):
             N[j][i] = bfuns[j]
     return N
 
