@@ -104,7 +104,7 @@ class Surface(object):
         for i in range(0, self._mCtrlPts_sizeU):
             ctrlpts_v = []
             for j in range(0, self._mCtrlPts_sizeV):
-                ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+                ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
             self._mCtrlPts2D.append(ctrlpts_v)
         # Automatically generate a weights vector of 1.0s in the size of ctrlpts array
         self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
@@ -296,7 +296,7 @@ class Surface(object):
             for i in range(0, self._mCtrlPts_sizeU):
                 ctrlpts_v = []
                 for j in range(0, self._mCtrlPts_sizeV):
-                    ctrlpts_v.append(self._mCtrlPts[i + (j * self._mCtrlPts_sizeV)])
+                    ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
                 self._mCtrlPts2D.append(ctrlpts_v)
             # Generate a 1D list of weights
             self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
