@@ -9,6 +9,8 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A2.3: DersBasisFuns
 * Algorithm A3.1: CurvePoint
 * Algorithm A3.2: CurveDerivsAlg1
+* Algorithm A3.3: CurveDerivCpts
+* Algorithm A3.4: CurveDerivsAlg2
 * Algorithm A3.5: SurfacePoint
 * Algorithm A3.6: SurfaceDerivsAlg1
 * Algorithm A4.1: CurvePoint (from weighted control points)
@@ -32,7 +34,16 @@ Please check the examples for details of `Surface` and `Curve` classes and autom
 
 ### File: ex_curve01.py
 
+Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector.
+
 ![2D line plots using Matplotlib](doc/curve_ex01.png)
+
+
+### File: ex_curve02.py
+
+Displays the evaluated curve using an auto-generated uniform knot vector and the tangent vector at u = 0.6.
+
+![2D line plots using Matplotlib](doc/curve_ex02.png)
 
 ### File: ex_surface01.py
 

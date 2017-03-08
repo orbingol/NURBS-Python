@@ -34,7 +34,7 @@ for pt in curve.curvepts:
 plt.figure(figsize=(10.67, 8), dpi=96)
 cppolygon, = plt.plot(ctrlpts_x, ctrlpts_y, "k-.")
 curveplt, = plt.plot(curvepts_x, curvepts_y, "r-")
-plt.legend([cppolygon, curveplt], ["Control Points Polygon", "Calculated Curve"])
+plt.legend([cppolygon, curveplt], ["Control Points Polygon", "Evaluated Curve"])
 plt.show()
 
 print("End of NURBS-Python Example")

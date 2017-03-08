@@ -23,8 +23,8 @@ for pt in curve.curvepts:
     curvepts_x.append(pt[0])
     curvepts_y.append(pt[1])
 
-# Find tangent vector at u = 0.8
-tanvec = curve.tangent(0.05, 5.0)
+# Find tangent vector at u = 0.6
+tanvec = curve.tangent(0.6, 5.0)
 
 # Arrange tangent vector for plotting
 tanlinepts_x = [tanvec[0][0], tanvec[1][0]]
@@ -34,7 +34,7 @@ tanlinepts_y = [tanvec[0][1], tanvec[1][1]]
 plt.figure(figsize=(10.67, 8), dpi=96)
 curveplt, = plt.plot(curvepts_x, curvepts_y, "r-")
 tanline, = plt.plot(tanlinepts_x, tanlinepts_y, "b-")
-plt.legend([curveplt, tanline], [" Calculated Curve", "Tangent Line"])
+plt.legend([curveplt, tanline], ["Evaluated Curve", "Tangent Line (u=0.6)"])
 plt.show()
 
 print("End of NURBS-Python Example")
