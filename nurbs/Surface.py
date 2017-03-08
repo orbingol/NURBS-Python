@@ -321,10 +321,10 @@ class Surface(object):
                     control_point_row = line.split(';')
                     self._mCtrlPts_sizeV = 0
                     for cpr in control_point_row:
-                        control_point = cpr.split(',')
+                        cpt = cpr.split(',')
                         # Create a temporary dictionary for appending coordinates into ctrlpts list
-                        pt = [float(control_point[0]), float(control_point[1]), float(control_point[2])]
-                        self._mWeights.append(float(control_point[3]))
+                        pt = [float(cpt[0])/float(cpt[3]), float(cpt[1])/float(cpt[3]), float(cpt[2])/float(cpt[3])]
+                        self._mWeights.append(float(cpt[3]))
                         # Add control points to the global control point list
                         self._mCtrlPts.append(pt)
                         self._mCtrlPts_sizeV += 1
