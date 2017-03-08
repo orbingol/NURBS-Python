@@ -280,16 +280,14 @@ class Curve(object):
         # Return calculated derivatives
         return CK
 
-    # Get the tangent vector at the given u parameter
+    # Get the curve tangent at the given u parameter
     def tangent(self, u=-1, increment=1.0):
         # 1st derivative of the curve gives the tangent
         ders = self.derivatives(u, 1)
 
-        # Extract slope
-        slope = ders[1][1] / ders[1][0]
-        # We know the first point, ders[0], and we need the second point to draw the tangent line
-        new_x = ders[0][0] + increment  # increment is used to determine the line size
-        new_y = (slope * (new_x - ders[0][0])) + ders[0][1]
+        # For readability
+        point = ders[0]
+        der_u = ders[1]
 
-        # Return the tangent vector
-        return [[ders[0][0], ders[0][1]], [new_x, new_y]]
+        # Return the list
+        return point, der_u

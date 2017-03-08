@@ -23,12 +23,21 @@ for pt in curve.curvepts:
     curvepts_x.append(pt[0])
     curvepts_y.append(pt[1])
 
-# Find tangent vector at u = 0.6
-tanvec = curve.tangent(0.6, 5.0)
+# Calculate curve tangent at u = 0.6
+curvetan = curve.tangent(0.6)
+
+# Extract slope
+slope = curvetan[1][1] / curvetan[1][0]
+# Increment is used to determine the line size
+increment = 5.0
+# We know the first point, ders[0], and we need the second point to draw the tangent line
+new_x = curvetan[0][0] + increment
+# Find y-point corresponding to the x-point "new_x"
+new_y = (slope * (new_x - curvetan[0][0])) + curvetan[0][1]
 
 # Arrange tangent vector for plotting
-tanlinepts_x = [tanvec[0][0], tanvec[1][0]]
-tanlinepts_y = [tanvec[0][1], tanvec[1][1]]
+tanlinepts_x = [curvetan[0][0], new_x]
+tanlinepts_y = [curvetan[0][1], new_y]
 
 # Plot using Matplotlib
 plt.figure(figsize=(10.67, 8), dpi=96)
