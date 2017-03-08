@@ -377,20 +377,20 @@ class Surface(object):
         # Prepare a 2D weighted control points array
         ctrlptsw = []
         cnt = 0
-        c_v = 0
-        while c_v < self._mCtrlPts_sizeV:
-            ctrlptsw_u = []
-            c_u = 0
-            while c_u < self._mCtrlPts_sizeU:
+        c_u = 0
+        while c_u < self._mCtrlPts_sizeU:
+            ctrlptsw_v = []
+            c_v = 0
+            while c_v < self._mCtrlPts_sizeV:
                 temp = [self._mCtrlPts[cnt][0] * self._mWeights[cnt],
                         self._mCtrlPts[cnt][1] * self._mWeights[cnt],
                         self._mCtrlPts[cnt][2] * self._mWeights[cnt],
                         self._mWeights[cnt]]
-                ctrlptsw_u.append(temp)
-                c_u += 1
+                ctrlptsw_v.append(temp)
+                c_v += 1
                 cnt += 1
-            ctrlptsw.append(ctrlptsw_u)
-            c_v += 1
+            ctrlptsw.append(ctrlptsw_v)
+            c_u += 1
 
         # Algorithm A4.3
         for v in utils.frange(0, 1, self._mDelta):
@@ -405,10 +405,10 @@ class Surface(object):
                     temp = [0.0, 0.0, 0.0, 0.0]
                     idx_v = span_v - self._mDegreeV + l
                     for k in range(0, self._mDegreeU+1):
-                        temp[0] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][0])
-                        temp[1] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][1])
-                        temp[2] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][2])
-                        temp[3] += (basis_u[k] * ctrlptsw[idx_v][idx_u + k][3])
+                        temp[0] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][0])
+                        temp[1] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][1])
+                        temp[2] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][2])
+                        temp[3] += (basis_u[k] * ctrlptsw[idx_u + k][idx_v][3])
                     surfptw[0] += (basis_v[l] * temp[0])
                     surfptw[1] += (basis_v[l] * temp[1])
                     surfptw[2] += (basis_v[l] * temp[2])
