@@ -304,7 +304,7 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
-    # Calculates the surface points using the delta value
+    # Evaluates the B-Spline surface
     def evaluate(self):
         # Check all parameters are set before calculations
         self._check_variables()
@@ -332,8 +332,8 @@ class Surface(object):
                     surfpt[2] += (basis_v[l] * temp[2])
                 self._mSurfPts.append(surfpt)
 
-    # Calculates the surface points from weighted control points
-    def evaluatew(self):
+    # Evaluates the NURBS surface
+    def evaluate_rational(self):
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the surface points lists, if necessary
@@ -425,11 +425,12 @@ class Surface(object):
         skl = self.derivatives(u, v, 1)
 
         # Doing this just for readability
-        tan_u = skl[1][0]
-        tan_v = skl[0][1]
+        point = skl[0][0]
+        der_u = skl[1][0]
+        der_v = skl[0][1]
 
         # Return the list of tangents w.r.t. u and v
-        return tan_u, tan_v
+        return tuple(point), tuple(der_u), tuple(der_v)
 
     # Calculates surface normal at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalized=True):
@@ -456,4 +457,4 @@ class Surface(object):
             normal = utils.normalize_vector(tuple(normal))
 
         # Return the surface normal at the input u,v location
-        return normal
+        return tuple(normal)
