@@ -53,10 +53,20 @@ Displays the evaluated curve using an auto-generated uniform knot vector and the
 
 ![3D scatter plot using Matplotlib](doc/surface_ex02.png)
 
+### File: ex_surface03.py
+
+![3D scatter plot using Matplotlib](doc/surface_ex03.png)
+
+Thanks to @jedufour for `ex_surface03.py` example.
+
 ## Issues and Reporting
 
-If you have any questions related to the NURBS package, please don't hesitate to email the author(s) below.
+If you have any questions related to the NURBS-Python package, please don't hesitate to contact the author.
 
 ## Author
 
-* Onur Rauf Bingol
+* Onur Rauf Bingol (@orbingol)
+
+## Contributors
+
+* John-Eric Dufour (@jedufour)
