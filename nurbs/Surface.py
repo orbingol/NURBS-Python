@@ -161,7 +161,7 @@ class Surface(object):
         """ Getter method for knot vector V.
         :return: A tuple containing the knot vector V
         """
-        return tuple(self._mKnotVectorU)
+        return tuple(self._mKnotVectorV)
 
     @knotvector_v.setter
     def knotvector_v(self, value):
