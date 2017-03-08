@@ -304,6 +304,41 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
+        # Reads control points and weights from a text file
+    def read_ctrlptsw(self, filename=''):
+        # Clean up the surface and control points lists, if necessary
+        self._reset_ctrlpts()
+        self._reset_surface()
+
+        # Try reading the file
+        try:
+            # Open the file
+            with open(filename, 'r') as fp:
+                for line in fp:
+                    # Remove whitespace
+                    line = line.strip()
+                    # Convert the string containing the coordinates into a list
+                    control_point_row = line.split(';')
+                    self._mCtrlPts_sizeV = 0
+                    for cpr in control_point_row:
+                        control_point = cpr.split(',')
+                        # Create a temporary dictionary for appending coordinates into ctrlpts list
+                        pt = [float(control_point[0]), float(control_point[1]), float(control_point[2])]
+                        self._mWeights.append(float(control_point[3]))
+                        # Add control points to the global control point list
+                        self._mCtrlPts.append(pt)
+                        self._mCtrlPts_sizeV += 1
+                    self._mCtrlPts_sizeU += 1
+            # Generate a 2D list of control points
+            for i in range(0, self._mCtrlPts_sizeU):
+                ctrlpts_v = []
+                for j in range(0, self._mCtrlPts_sizeV):
+                    ctrlpts_v.append(self._mCtrlPts[j + (i * self._mCtrlPts_sizeV)])
+                self._mCtrlPts2D.append(ctrlpts_v)
+        except IOError:
+            print('ERROR: Cannot open file ' + filename)
+            sys.exit(1)
+
     # Evaluates the B-Spline surface
     def evaluate(self):
         # Check all parameters are set before calculations
