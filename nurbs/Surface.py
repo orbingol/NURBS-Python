@@ -382,10 +382,10 @@ class Surface(object):
             ctrlptsw_v = []
             c_v = 0
             while c_v < self._mCtrlPts_sizeV:
-                temp = [self._mCtrlPts2D[c_u][c_v][0] * self._mWeights[c_v + (c_u * self._mCtrlPts_sizeU)],
-                        self._mCtrlPts2D[c_u][c_v][1] * self._mWeights[c_v + (c_u * self._mCtrlPts_sizeU)],
-                        self._mCtrlPts2D[c_u][c_v][2] * self._mWeights[c_v + (c_u * self._mCtrlPts_sizeU)],
-                        self._mWeights[c_v + (c_u * self._mCtrlPts_sizeU)]]
+                temp = [self._mCtrlPts2D[c_u][c_v][0] * self._mWeights[c_u + (c_v * self._mCtrlPts_sizeU)],
+                        self._mCtrlPts2D[c_u][c_v][1] * self._mWeights[c_u + (c_v * self._mCtrlPts_sizeU)],
+                        self._mCtrlPts2D[c_u][c_v][2] * self._mWeights[c_u + (c_v * self._mCtrlPts_sizeU)],
+                        self._mWeights[c_u + (c_v * self._mCtrlPts_sizeU)]]
                 ctrlptsw_v.append(temp)
                 c_v += 1
             ctrlptsw.append(ctrlptsw_v)
