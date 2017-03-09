@@ -28,7 +28,7 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 * `data\` directory includes sample control points for curves and surfaces
 * `ex*.py` files are testing scripts for curve and surface calculations
 
-Please check the examples for details of `Surface` and `Curve` classes and automatic knot vector generation functions.
+Please check the examples for details of `Surface` and `Curve` classes and automatic knot vector generation functions. Details of the control points file formats are discussed in [Formats](doc/Formats.md).
 
 ## Example Outputs
 
