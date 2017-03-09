@@ -28,7 +28,9 @@ Therefore, the format of the control points file is;
 | 35 | 60 |
 | 20 | 40 |
 
-The function to read control points from a file structured like the above is `read_ctrlpts(file_name)`.
+The method to read control points from a file structured like the above is
+
+* `read_ctrlpts(file_name)`
 
 ## Surface
 
@@ -49,3 +51,8 @@ Therefore, the format of the control points is;
 | **v8** | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ | _(x, y, z)_ |
 
 This structure corresponds to a right-handed coordinate system.
+
+The methods to read control points from a file structured like the above are
+
+* `read_ctrlpts(file_name)` for files containing _(x, y, z)_ style control points.
+* `read_ctrlptsw(file_name)` for files containing _(x\*w, y\*w, z\*w, w)_ style weighted control points.
