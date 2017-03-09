@@ -34,9 +34,9 @@ The method to read control points from a file structured like the above is
 
 ## Surface
 
-The text file should include _(x, y, z)_ coordinates. The structure of the text file includes two directions **u** and **v**.
+The text file should include _(x, y, z)_ coordinates. The structure of the text file includes two directions, namely **u** and **v**.
 
-Therefore, the format of the control points is;
+Therefore, the format of the control points file is;
 
 | | u0 | u1 | u2 | u3 | u4 | u5 | u6 | u7 | u8 |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
