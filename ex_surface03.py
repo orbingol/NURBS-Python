@@ -10,11 +10,11 @@ surf = ns.Surface()
 
 # Set up the NURBS surface
 surf.read_ctrlptsw("data/CPw_Surface3.txt")
-surf.degree_u = 2
-surf.degree_v = 1
+surf.degree_u = 1
+surf.degree_v = 2
 
-surf.knotvector_u = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
-surf.knotvector_v = [0, 0, 1, 1]
+surf.knotvector_u = [0, 0, 1, 1]
+surf.knotvector_v = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
 
 # Evaluate surface
 surf.evaluate_rational()
