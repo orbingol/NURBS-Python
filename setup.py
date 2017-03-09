@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name='NURBS-Python',
-    version='2.1.3',
+    version='2.2',
     description='NURBS curve and surface library in native Python',
     author='Onur Rauf Bingol',
     license='MIT',
