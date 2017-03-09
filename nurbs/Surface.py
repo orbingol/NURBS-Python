@@ -340,6 +340,43 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
+    def transpose(self):
+        # Transpose existing data
+        degree_u_new = self._mDegreeV
+        degree_v_new = self._mDegreeU
+        kv_u_new = self._mKnotVectorV
+        kv_v_new = self._mKnotVectorU
+        ctrlpts2D_new = []
+        for v in range(0, self._mCtrlPts_sizeV):
+            ctrlpts_u = []
+            for u in range(0, self._mCtrlPts_sizeU):
+                temp = self._mCtrlPts2D[u][v]
+                ctrlpts_u.append(temp)
+            ctrlpts2D_new.append(ctrlpts_u)
+        ctrlpts_new_sizeU = self._mCtrlPts_sizeV
+        ctrlpts_new_sizeV = self._mCtrlPts_sizeU
+
+        ctrlpts_new = []
+        weights_new = []
+        for v in range(0, ctrlpts_new_sizeV):
+            for u in range(0, ctrlpts_new_sizeU):
+                ctrlpts_new.append(ctrlpts2D_new[u][v])
+                weights_new.append(self._mWeights[v + (u * ctrlpts_new_sizeV)])
+
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+
+        # Save transposed data
+        self._mDegreeU = degree_u_new
+        self._mDegreeV = degree_v_new
+        self._mKnotVectorU = kv_u_new
+        self._mKnotVectorV = kv_v_new
+        self._mCtrlPts = ctrlpts_new
+        self._mCtrlPts_sizeU = ctrlpts_new_sizeU
+        self._mCtrlPts_sizeV = ctrlpts_new_sizeV
+        self._mCtrlPts2D = ctrlpts2D_new
+        self._mWeights = weights_new
+
     # Evaluates the B-Spline surface
     def evaluate(self):
         # Check all parameters are set before calculations
