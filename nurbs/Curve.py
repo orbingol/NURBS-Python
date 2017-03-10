@@ -261,15 +261,20 @@ class Curve(object):
             curvept = [float(curveptw[0] / curveptw[2]), float(curveptw[1] / curveptw[2])]
             self._mCurvePts.append(curvept)
 
-    # Algorithm A3.2: CurveDerivsAlg1
+    # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
+        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2
+        :param u: knot value
+        :param order: derivative order
+        :return: A list containing up to {order}-th derivative of the curve
+        """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
 
-        # Algorithm A3.2
+        # Algorithm A3.2: CurveDerivsAlg1
         du = min(self._mDegree, order)
 
         CK = [[None for x in range(2)] for y in range(order + 1)]
@@ -288,8 +293,15 @@ class Curve(object):
         # Return the derivatives
         return CK
 
-    # Algorithm A3.3: CurveDerivCpts
+    # Computes the control points of all derivative curves up to and including the d-th derivative
     def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
+        """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
+        Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
+        :param order: derivative order
+        :param r1: minimum span
+        :param r2: maximum span
+        :return:
+        """
         r = r2 - r1
         PK = [[[None for x in range(0, 2)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
@@ -304,15 +316,20 @@ class Curve(object):
 
         return PK
 
-    # Algorithm A3.4: CurveDerivsAlg2
+    # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives(self, u=-1, order=0):
+        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.4.
+        :param u: knot value
+        :param order: derivative order
+        :return: A list containing up to {order}-th derivative of the curve
+        """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
 
-        # Algorithm A3.4
+        # Algorithm A3.4: CurveDerivsAlg2
         du = min(self._mDegree, order)
 
         CK = [[None for x in range(2)] for y in range(order + 1)]
