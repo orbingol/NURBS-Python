@@ -251,14 +251,22 @@ def normalize_vector(vect=()):
     if not vect:
         raise ValueError("Input argument is empty.")
 
+    sq_sum = math.pow(vect[0], 2) + math.pow(vect[1], 2)
+    if len(vect) == 3:
+        sq_sum += math.pow(vect[2], 2)
+
     # Calculate magnitude of the vector
-    magnitude = math.sqrt(math.pow(vect[0], 2) + math.pow(vect[1], 2) + math.pow(vect[2], 2))
+    magnitude = math.sqrt(sq_sum)
 
     if magnitude != 0:
         # Normalize the vector
-        retval = [vect[0] / magnitude,
-                  vect[1] / magnitude,
-                  vect[2] / magnitude]
+        if len(vect) == 3:
+            retval = [vect[0] / magnitude,
+                      vect[1] / magnitude,
+                      vect[2] / magnitude]
+        else:
+            retval = [vect[0] / magnitude,
+                      vect[1] / magnitude]
         # Return the normalized vector
         return retval
     else:
