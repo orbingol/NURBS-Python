@@ -38,12 +38,17 @@ Displays the control points polygon and the evaluated curve using the an auto-ge
 
 ![2D line plots using Matplotlib](doc/curve_ex01.png)
 
-
 ### File: ex_curve02.py
 
 Displays the evaluated curve using an auto-generated uniform knot vector and the tangent vector at u = 0.6.
 
 ![2D line plots using Matplotlib](doc/curve_ex02.png)
+
+### File: ex_curve03.py
+
+Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector. Tangent vectors are shown in quiver plots.
+
+![2D line plots using Matplotlib](doc/curve_ex03.png)
 
 ### File: ex_surface01.py
 
