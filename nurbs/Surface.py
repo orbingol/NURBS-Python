@@ -83,7 +83,7 @@ class Surface(object):
         # First check v-direction
         if len(value) < self._mDegreeV + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
-        # Then, check u direction
+        # Then, check U direction
         u_cnt = 0
         for u_coords in value:
             if len(u_coords) < self._mDegreeU + 1:
@@ -269,6 +269,10 @@ class Surface(object):
 
     # Reads control points from a text file
     def read_ctrlpts(self, filename=''):
+        """ Reads control points from a text file.
+        The format of the text files are described in FORMATS.md
+        :param filename: input file name
+        """
         # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
         self._reset_surface()
@@ -303,9 +307,12 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
-            # Reads control points and weights from a text file
-
+    # Reads control points and weights from a text file
     def read_ctrlptsw(self, filename=''):
+        """ Reads control points and weights from a text file.
+        The format of the text files are described in FORMATS.md
+        :param filename: input file name
+        """
         # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
         self._reset_surface()
@@ -340,7 +347,9 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
+    # Transposes the surface by swapping U and V directions
     def transpose(self):
+        """ Transposes the surface by swapping U and V directions."""
         # Transpose existing data
         degree_u_new = self._mDegreeV
         degree_v_new = self._mDegreeU
@@ -379,6 +388,7 @@ class Surface(object):
 
     # Evaluates the B-Spline surface
     def evaluate(self):
+        """ Evaluates the B-Spline surface."""
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the surface points lists, if necessary
@@ -407,6 +417,7 @@ class Surface(object):
 
     # Evaluates the NURBS surface
     def evaluate_rational(self):
+        """ Evaluates the NURBS surface."""
         # Check all parameters are set before calculations
         self._check_variables()
         # Clean up the surface points lists, if necessary
@@ -453,8 +464,17 @@ class Surface(object):
                 surfpt = [surfptw[0] / surfptw[3], surfptw[1] / surfptw[3], surfptw[2] / surfptw[3]]
                 self._mSurfPts.append(surfpt)
 
-    # Calculates n-th order surface derivatives at the given (u,v) parameter
+    # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
+        """ Evaluates n-th order surface derivatives at the given (u,v) parameter.
+        * SKL[0][0] will be the surface point itself
+        * SKL[0][1] will be the 1st derivative w.r.t. v
+        * SKL[2][1] will be the 2nd derivative w.r.t. u and 1st derivative w.r.t. v
+        :param u: parameter in the U direction
+        :param v: parameter in the V direction
+        :param order: derivative order
+        :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
+        """
         # Check all parameters are set before calculations
         self._check_variables()
         # Check u and v parameters are correct
@@ -490,8 +510,13 @@ class Surface(object):
 
         return SKL
 
-    # Calculates surface tangent at the given (u, v) parameter
+    # Evaluates the surface tangent at the given (u, v) parameter
     def tangent(self, u=-1, v=-1):
+        """ Evaluates the surface tangent at the given (u, v) parameter.
+        :param u: parameter in the U direction
+        :param v: parameter in the V direction
+        :return: A list in the order of "surface point", "derivative w.r.t. u" and "derivative w.r.t. v"
+        """
         # Tangent is the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
 
@@ -503,8 +528,14 @@ class Surface(object):
         # Return the list of tangents w.r.t. u and v
         return tuple(point), tuple(der_u), tuple(der_v)
 
-    # Calculates surface normal at the given (u, v) parameter
+    # Evaluates the surface normal at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalized=True):
+        """ Evaluates the surface normal at the given (u, v) parameter.
+        :param u: parameter in the U direction
+        :param v: parameter in the V direction
+        :param normalized: if True, the returned normal vector is an unit vector
+        :return: normal vector
+        """
         # Check u and v parameters are correct for normal calculations
         utils.check_uv(u, v, test_normal=True, delta=self._mDelta)
 
