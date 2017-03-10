@@ -175,19 +175,19 @@ class Surface(object):
 
     @property
     def delta(self):
-        """ Getter method for surface point calculation delta.
+        """ Getter method for surface point evaluation delta.
         :return: the delta value used to generate surface points
         """
         return self._mDelta
 
     @delta.setter
     def delta(self, value):
-        """ Setter method for surface point calculation delta.
+        """ Setter method for surface point evaluation delta.
         :param value: input delta
         """
-        # Delta value for surface calculations should be between 0 and 1
+        # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface calculation delta should be between 0.0 and 1.0.")
+            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0.")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set a new delta value
@@ -228,8 +228,8 @@ class Surface(object):
 
     @property
     def surfpts(self):
-        """ Getter method for calculated surface points.
-        :return: 1D array of calculated surface points
+        """ Getter method for the evaluated surface points.
+        :return: 1D array containing (x, y, z) coordinates of the evaluated surface points
         """
         return self._mSurfPts
 
@@ -245,13 +245,13 @@ class Surface(object):
             self._mCtrlPts_sizeU = 0
             self._mCtrlPts_sizeV = 0
 
-    # Cleans the calculated surface points (private)
+    # Cleans the evaluated surface points (private)
     def _reset_surface(self):
         if self._mSurfPts:
-            # Delete the calculated surface points
+            # Delete the surface points
             del self._mSurfPts[:]
 
-    # Checks if the calculation operations are possible (private)
+    # Checks whether the surface evaluation is possible or not (private)
     def _check_variables(self):
         works = True
         # Check degree values
@@ -265,7 +265,7 @@ class Surface(object):
             works = False
 
         if not works:
-            raise ValueError("Some required parameters for calculations are not set.")
+            raise ValueError("Some required parameters for surface evaluation are not set.")
 
     # Reads control points from a text file
     def read_ctrlpts(self, filename=''):
@@ -389,7 +389,7 @@ class Surface(object):
     # Evaluates the B-Spline surface
     def evaluate(self):
         """ Evaluates the B-Spline surface."""
-        # Check all parameters are set before calculations
+        # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
@@ -418,7 +418,7 @@ class Surface(object):
     # Evaluates the NURBS surface
     def evaluate_rational(self):
         """ Evaluates the NURBS surface."""
-        # Check all parameters are set before calculations
+        # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
@@ -475,7 +475,7 @@ class Surface(object):
         :param order: derivative order
         :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
         """
-        # Check all parameters are set before calculations
+        # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
         utils.check_uv(u, v)
@@ -508,6 +508,7 @@ class Surface(object):
                     SKL[k][l][1] += (bfunsders_v[l][s] * temp[s][1])
                     SKL[k][l][2] += (bfunsders_v[l][s] * temp[s][2])
 
+        # Return the derivatives
         return SKL
 
     # Evaluates the surface tangent at the given (u, v) parameter
@@ -536,7 +537,7 @@ class Surface(object):
         :param normalized: if True, the returned normal vector is an unit vector
         :return: normal vector
         """
-        # Check u and v parameters are correct for normal calculations
+        # Check u and v parameters are correct for the normal evaluation
         utils.check_uv(u, v, test_normal=True, delta=self._mDelta)
 
         # Take the 1st derivative of the surface
