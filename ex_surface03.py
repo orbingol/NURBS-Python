@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""
+    Examples for the NURBS-Python Package
+    Released under MIT License
+    Developed by Onur Rauf Bingol (c) 2016-2017
+
+    This example is contributed by John-Eric Dufour (@jedufour)
+"""
+
 from nurbs import Surface as ns
 from nurbs import utilities as utils
 from matplotlib import pyplot as plt

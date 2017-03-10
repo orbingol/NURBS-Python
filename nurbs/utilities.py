@@ -1,6 +1,6 @@
 """
-    NURBS Python Package
-    Licensed under MIT License
+    NURBS-Python Package
+    Released under MIT License
     Developed by Onur Rauf Bingol (c) 2016-2017
 """
 
