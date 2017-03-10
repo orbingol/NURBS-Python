@@ -28,7 +28,7 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 * `data\` directory includes sample control points for curves and surfaces
 * `ex*.py` files are testing scripts for curve and surface calculations
 
-Please check the examples for details of `Surface` and `Curve` classes and automatic knot vector generation functions. Details of the control points file formats are discussed in [Formats](doc/Formats.md).
+Please check the examples for details of `Surface` and `Curve` classes and automatic knot vector generation functions. Details of the control points file formats are discussed in [FORMATS](FORMATS.md) file.
 
 ## Example Outputs
 
@@ -36,31 +36,31 @@ Please check the examples for details of `Surface` and `Curve` classes and autom
 
 Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector.
 
-![2D line plots using Matplotlib](doc/curve_ex01.png)
+![2D line plots using Matplotlib](ex_curve01.png)
 
 ### File: ex_curve02.py
 
 Displays the evaluated curve using an auto-generated uniform knot vector and the tangent vector at u = 0.6.
 
-![2D line plots using Matplotlib](doc/curve_ex02.png)
+![2D line plots using Matplotlib](ex_curve02.png)
 
 ### File: ex_curve03.py
 
 Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector. Tangent vectors are shown in quiver plots.
 
-![2D line plots using Matplotlib](doc/curve_ex03.png)
+![2D line plots using Matplotlib](ex_curve03.png)
 
 ### File: ex_surface01.py
 
-![3D scatter plot using Matplotlib](doc/surface_ex01.png)
+![3D scatter plot using Matplotlib](ex_surface01.png)
 
 ### File: ex_surface02.py
 
-![3D scatter plot using Matplotlib](doc/surface_ex02.png)
+![3D scatter plot using Matplotlib](ex_surface02.png)
 
 ### File: ex_surface03.py
 
-![3D scatter plot using Matplotlib](doc/surface_ex03.png)
+![3D scatter plot using Matplotlib](ex_surface03.png)
 
 Thanks to @jedufour for `ex_surface03.py` example.
 
