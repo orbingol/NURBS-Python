@@ -543,20 +543,15 @@ class Surface(object):
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
 
-        point = skl[0][0]
+        # For readability
         der_u = skl[1][0]
         der_v = skl[0][1]
 
-        vect1 = (der_u[0] - point[0],
-                 der_u[1] - point[1],
-                 der_u[2] - point[2])
-        vect2 = (der_v[0] - point[0],
-                 der_v[1] - point[1],
-                 der_v[2] - point[2])
-
-        normal = utils.cross_vector(vect1, vect2)
+        # Compute normal
+        normal = utils.cross_vector(der_u, der_v)
 
         if normalized:
+            # Convert normal vector to a unit vector
             normal = utils.normalize_vector(tuple(normal))
 
         # Return the surface normal at the input u,v location
