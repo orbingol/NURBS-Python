@@ -26,18 +26,18 @@ NURBS-Python currently implements the following algorithms from **The NURBS Book
 
 The data structure in `Curve` and `Surface` classes is implemented using [Python properties](https://docs.python.org/2/library/functions.html#property). The following table shows the properties defined in these classes:
 
-| Curve | Surface | | 
+| Curve Properties | Surface Properties | Notes | 
 | :---: | :---: | :---: |
-| degree | degree_u | |
+| degree | degree_u | Degree of the curve/surface|
 | | degree_v | |
-| knotvector | knotvector_u | |
+| knotvector | knotvector_u | Knot vectors|
 | | knotvector_v | |
-| ctrlpts | ctrlpts | control points (1D) |
-| | ctrlpts2D | control points (2D) |
-| ctrlptsw | ctrlptsw | control points (1D, weighted) |
-| weights | weights | |
-| delta | delta | evaluation delta |
-| curvepts | surfpts | evaluated points |
+| ctrlpts | ctrlpts | 1D array of control points, _(x, y, z)_ |
+| | ctrlpts2D | 2D array of control points in _\[u\]\[v\]_ format |
+| ctrlptsw | ctrlptsw | 1D array of weighted control points, _(x\*w, y\*w, z\*w, w)_ |
+| weights | weights | Weights vector |
+| delta | delta | Evaluation delta for knots |
+| curvepts | surfpts | Evaluated points |
 
 ### Evaluation Methods
 
@@ -58,7 +58,7 @@ Both classes have `read_ctrlpts()` and `read_ctrlptsw()` methods for reading con
 * `cross_vector()` computes the cross production of the input vectors
 * `normalize_vector()` generates a unit vector from the input vector
 
-Other functions are mostly used for computing necessary common components for evaluation in both `Curve` and `Surface` classes.
+Other functions in the `utilities` module are used as helper functions in evaluation methods of `Curve` and `Surface` classes.
 
 ## Minimum Requirements
 
@@ -72,37 +72,53 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 * `ex*.py` files are testing scripts for demonstrating curve and surface evaluations
 * `data\` directory contains sample control points for the testing scripts
 
-## Example Outputs
+## How to use NURBS-Python Package
 
-The following are the graphical outputs of the example scripts present in this repository. All plots are generated using [Matplotlib](http://matplotlib.org/).
+### Coding Examples
 
-### File: ex_curve01.py
+**Curves:**
+
+* [ex_curve01.py](ex_curve01.py)
+* [ex_curve02.py](ex_curve02.py)
+* [ex_curve03.py](ex_curve03.py)
+
+**Surfaces:**
+
+* [ex_surface01.py](ex_surface01.py)
+* [ex_surface02.py](ex_surface02.py)
+* [ex_surface03.py](ex_surface03.py)
+
+### Plots
+
+The following plots are generated using [Matplotlib](http://matplotlib.org/).
+
+#### File: ex_curve01.py
 
 Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector.
 
 ![2D line plots using Matplotlib](ex_curve01.png)
 
-### File: ex_curve02.py
+#### File: ex_curve02.py
 
 Displays the evaluated curve using an auto-generated uniform knot vector and the tangent vector at u = 0.6.
 
 ![2D line plots using Matplotlib](ex_curve02.png)
 
-### File: ex_curve03.py
+#### File: ex_curve03.py
 
 Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector. Tangent vectors are shown in quiver plots.
 
 ![2D line plots using Matplotlib](ex_curve03.png)
 
-### File: ex_surface01.py
+#### File: ex_surface01.py
 
 ![3D scatter plot using Matplotlib](ex_surface01.png)
 
-### File: ex_surface02.py
+#### File: ex_surface02.py
 
 ![3D scatter plot using Matplotlib](ex_surface02.png)
 
-### File: ex_surface03.py
+#### File: ex_surface03.py
 
 ![3D scatter plot using Matplotlib](ex_surface03.png)
 
