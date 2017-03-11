@@ -2,7 +2,13 @@
 
 ## Introduction
 
-This project aims to implement the NURBS curve and surface calculation algorithms in native Python. It currently implements the following algorithms from **The NURBS Book** by Piegl & Tiller:
+This project aims to implement the NURBS curve and surface computation algorithms in native Python. Currently, the `Curve` and `Surface` classes can be used for data storage and evaluation of B-Spline and NURBS curves and surfaces, respectively.
+
+## Description of the Package
+
+### Algorithms
+
+NURBS-Python currently implements the following algorithms from **The NURBS Book** by Piegl & Tiller:
 
 * Algorithm A2.1: FindSpan
 * Algorithm A2.2: BasisFuns
@@ -16,6 +22,44 @@ This project aims to implement the NURBS curve and surface calculation algorithm
 * Algorithm A4.1: CurvePoint (from weighted control points)
 * Algorithm A4.3: SurfacePoint (from weighted control points)
 
+### Data Structure
+
+The data structure in `Curve` and `Surface` classes is implemented using [Python properties](https://docs.python.org/2/library/functions.html#property). The following table shows the properties defined in these classes:
+
+| Curve | Surface | | 
+| :---: | :---: | :---: |
+| degree | degree_u | |
+| | degree_v | |
+| knotvector | knotvector_u | |
+| | knotvector_v | |
+| ctrlpts | ctrlpts | control points (1D) |
+| | ctrlpts2D | control points (2D) |
+| ctrlptsw | ctrlptsw | control points (1D, weighted) |
+| weights | weights | |
+| delta | delta | evaluation delta |
+| curvepts | surfpts | evaluated points |
+
+### Evaluation Methods
+
+After setting the required parameters, the curve or the surface can be evaluated using `evaluate()` or `evaluate_rational()` methods. Then, the evaluated curve points can be obtained from `curvepts` property and the evaluated surface points can be obtained from `surfpts` property. The curve and surface derivatives can be evaluated using `derivatives()` method. An easy way to get 1st derivatives using `tangent()` method is available in both classes.
+
+`Surface` class has methods for transposing the surface by swapping U and V directions, `tranpose()`, and finding surface normals, `normal()`.
+
+### Reading Control Points
+
+Both classes have `read_ctrlpts()` and `read_ctrlptsw()` methods for reading control points and weighted control points, respectively, from a text file. The details on the file format are explained in [FORMATS.md](FORMATS.md) file.
+ 
+### Additional Features
+
+`utilities` module has some extra features for several mathematical operations:
+
+* `autogen_knotvector()` generates a uniform knot vector according to the input degree and number of control points
+* `normalize_knotvector()` normalizes the knot vector between 0 and 1
+* `cross_vector()` computes the cross production of the input vectors
+* `normalize_vector()` generates a unit vector from the input vector
+
+Other functions are mostly used for computing necessary common components for evaluation in both `Curve` and `Surface` classes.
+
 ## Minimum Requirements
 
 One of the major goals of this project is implementing all these algorithms with minimum dependencies. Currently, the NURBS package can run with plain Python and therefore, it has no extra dependencies, like NumPy or similar. The code was tested with Python versions 2.7.12 and 3.5.3.
@@ -24,13 +68,13 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 
 ## Contents of the repository
 
-* `nurbs\` directory includes the NURBS libraries
-* `data\` directory includes sample control points for curves and surfaces
-* `ex*.py` files are testing scripts for curve and surface calculations
-
-Please check the examples for details of `Surface` and `Curve` classes and automatic knot vector generation functions. Details of the control points file formats are discussed in [FORMATS](FORMATS.md) file.
+* `nurbs\` directory includes the `Curve` and `Surface` classes along with the `utilities` module
+* `ex*.py` files are testing scripts for demonstrating curve and surface evaluations
+* `data\` directory contains sample control points for the testing scripts
 
 ## Example Outputs
+
+The following are the graphical outputs of the example scripts present in this repository. All plots are generated using [Matplotlib](http://matplotlib.org/).
 
 ### File: ex_curve01.py
 
