@@ -1,7 +1,10 @@
 """
-    NURBS-Python Package
-    Released under MIT License
-    Developed by Onur Rauf Bingol (c) 2016-2017
+.. module:: Curve
+    :platform: Unix, Windows
+    :synopsis: A data storage and evaluation class for B-spline and NURBS curves
+
+.. moduleauthor:: Onur Rauf Bingol
+
 """
 
 import sys
@@ -20,16 +23,16 @@ class Curve(object):
 
     @property
     def degree(self):
-        """ Getter method for the curve degree.
-        :return: curve degree
+        """ The curve degree
+
+        :getter: Gets the curve degree
+        :setter: Sets the curve degree
+        :type: int
         """
         return self._mDegree
 
     @degree.setter
     def degree(self, value):
-        """ Setter method for the curve degree.
-        :param value: input degree
-        """
         # degree = 0, dots
         # degree = 1, polylines
         # degree = 2, quadratic curves
@@ -43,8 +46,13 @@ class Curve(object):
 
     @property
     def ctrlpts(self):
-        """ Getter method for the control points.
-        :return: A tuple containing (x, y) values of the control points
+        """ Control points
+
+        Control points of a :class:`.Curve` is stored as a list of (x, y) coordinates
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        :type: list
         """
         ret_list = []
         for pt in self._mCtrlPts:
@@ -53,9 +61,6 @@ class Curve(object):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        """ Setter method for the control points.
-        :param value: input control points
-        """
         if len(value) < self._mDegree + 1:
             raise ValueError("ERROR: Number of control points in u-direction should be at least degree + 1")
 
@@ -75,17 +80,18 @@ class Curve(object):
 
     @property
     def weights(self):
-        """ Getter method for the weights.
-         :return: A tuple containing the weights vector
-         """
+        """ Weights vector
+
+        ctrlpts() and read_ctrlpts() automatically generate a weights vector of 1.0s in the size of control points array
+
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
+        :type: list
+        """
         return tuple(self._mWeights)
 
     @weights.setter
     def weights(self, value):
-        """ Setter method for the weights.
-        ctrlpts() and read_ctrlpts() automatically generate a weights vector of 1.0s in the size of control points array
-        :param value: input weights vector
-        """
         if len(value) != len(self._mCtrlPts):
             raise ValueError("ERROR: Size of the weight vector should be equal to size of control points")
         # Clean up the curve points list, if necessary
@@ -96,16 +102,16 @@ class Curve(object):
 
     @property
     def knotvector(self):
-        """ Getter method for the knot vector.
-        :return: A tuple containing the knot vector
+        """ Knot vector
+
+        :getter: Gets the knot vector
+        :setter: Sets the knot vector
+        :type: list
         """
         return tuple(self._mKnotVector)
 
     @knotvector.setter
     def knotvector(self, value):
-        """ Setter method for the knot vector.
-        :param value: input knot vector
-        """
         # Clean up the surface points lists, if necessary
         self._reset_curve()
         # Set knot vector u
@@ -115,16 +121,18 @@ class Curve(object):
 
     @property
     def delta(self):
-        """ Getter method for curve point evaluation delta.
-        :return: the delta value used to generate curve points
+        """ Curve evaluation delta
+
+        The delta value is 0.01 by default.
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        :type: float
         """
         return self._mDelta
 
     @delta.setter
     def delta(self, value):
-        """ Setter method for curve point evaluation delta.
-        :param value: input delta
-        """
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("ERROR: Curve evaluation delta should be between 0.0 and 1.0")
@@ -135,8 +143,14 @@ class Curve(object):
 
     @property
     def ctrlptsw(self):
-        """ Getter method for the weighted control points.
-        :return: A tuple containing (x*w, y*w, w) values of the control points
+        """ Weighted control points
+
+        Returns and accepts a tuple containing (x*w, y*w, w) values. The setter method automatically separates
+        the weights vector and compute the unweighted control points.
+
+        :getter: Gets the weighted control points
+        :setter: Sets the weights vector and the control points
+        :type: list
         """
         ret_list = []
         for c, w in itertools.product(self._mCtrlPts, self._mWeights):
@@ -146,9 +160,6 @@ class Curve(object):
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
-        """ Setter method for the weighted control points.
-        :param value: input weighted control points
-        """
         # Start with clean lists
         ctrlpts = []
         weights = []
@@ -163,8 +174,12 @@ class Curve(object):
 
     @property
     def curvepts(self):
-        """ Getter method for the evaluated surface points.
-        :return: List of (x, y) coordinates of the evaluated surface points
+        """ Evaluated curve points
+
+        :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
+
+        :getter: List of (x, y) coordinates of the evaluated surface points
+        :type: list
         """
         return self._mCurvePts
 
@@ -198,8 +213,11 @@ class Curve(object):
     # Reads control points from a text file
     def read_ctrlpts(self, filename=''):
         """ Reads control points from a text file.
+
         The format of the text files are described in FORMATS.md
+
         :param filename: input file name
+        :return: None
         """
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
@@ -224,7 +242,12 @@ class Curve(object):
 
     # Evaluates the B-Spline curve
     def evaluate(self):
-        """ Evaluates the B-Spline curve."""
+        """ Evaluates the B-Spline curve.
+
+        The evaluated surface points are stored in :py:attr:`~curvepts`.
+
+        :return: None
+        """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Clean up the curve points, if necessary
@@ -242,7 +265,12 @@ class Curve(object):
 
     # Evaluates the NURBS curve
     def evaluate_rational(self):
-        """ Evaluates the NURBS curve."""
+        """ Evaluates the NURBS curve.
+
+        The evaluated surface points are stored in :py:attr:`~curvepts`.
+
+        :return: None
+        """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Clean up the curve points, if necessary
@@ -264,6 +292,7 @@ class Curve(object):
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2
+
         :param u: knot value
         :param order: derivative order
         :return: A list containing up to {order}-th derivative of the curve
@@ -296,11 +325,13 @@ class Curve(object):
     # Computes the control points of all derivative curves up to and including the d-th derivative
     def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
+
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
+
         :param order: derivative order
         :param r1: minimum span
         :param r2: maximum span
-        :return:
+        :return: PK, a 2D list of control points
         """
         r = r2 - r1
         PK = [[[None for x in range(0, 2)] for y in range(r + 1)] for z in range(order + 1)]
@@ -319,6 +350,7 @@ class Curve(object):
     # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.4.
+
         :param u: knot value
         :param order: derivative order
         :return: A list containing up to {order}-th derivative of the curve
@@ -352,6 +384,7 @@ class Curve(object):
     # Evaluates the curve tangent at the given u parameter
     def tangent(self, u=-1, increment=1.0):
         """ Evaluates the surface tangent at the given (u, v) parameter.
+
         :param u: parameter in the U direction
         :return: A list in the order of "surface point" and "derivative"
         """

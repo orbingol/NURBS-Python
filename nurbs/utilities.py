@@ -1,7 +1,10 @@
 """
-    NURBS-Python Package
-    Released under MIT License
-    Developed by Onur Rauf Bingol (c) 2016-2017
+.. module:: utilities
+    :platform: Unix, Windows
+    :synopsis: A helper module for Curve and Surface classes
+
+.. moduleauthor:: Onur Rauf Bingol
+
 """
 
 import decimal
