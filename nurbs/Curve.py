@@ -23,7 +23,7 @@ class Curve(object):
 
     @property
     def degree(self):
-        """ The curve degree
+        """ Curve degree
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
@@ -82,7 +82,8 @@ class Curve(object):
     def weights(self):
         """ Weights vector
 
-        ctrlpts() and read_ctrlpts() automatically generate a weights vector of 1.0s in the size of control points array
+        Please note that :func:`.ctrlpts()` and :func:`.read_ctrlpts()` automatically generate a weights vector of 1.0s
+         in the size of control points array.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
@@ -178,7 +179,7 @@ class Curve(object):
 
         :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
 
-        :getter: List of (x, y) coordinates of the evaluated surface points
+        :getter: (x, y) coordinates of the evaluated surface points
         :type: list
         """
         return self._mCurvePts
