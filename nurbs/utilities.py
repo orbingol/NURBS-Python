@@ -13,6 +13,15 @@ import math
 
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
+    """ An implementation of a "range()" function which works with decimals.
+
+    Reference to this implementation: http://stackoverflow.com/a/7267280
+
+    :param x: start value
+    :param y: end value
+    :param step: increment
+    :return: generator
+    """
     step_str = str(step)
     while x <= y:
         yield float(x)
@@ -21,6 +30,12 @@ def frange(x, y, step):
 
 # Normalizes knot vector (internal functionality)
 def normalize_knotvector(knotvector=()):
+    """ Normalizes the input knot vector between 0 and 1.
+
+    :param knotvector: input knot vector
+    :return: normalized knot vector
+    :type: list
+    """
     if len(knotvector) == 0:
         return knotvector
 
@@ -36,6 +51,13 @@ def normalize_knotvector(knotvector=()):
 
 # Autogenerates a uniform knot vector using the given degree and the number of control points
 def autogen_knotvector(degree=0, num_ctrlpts=0):
+    """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
+
+    :param degree: degree of the knot vector direction
+    :param num_ctrlpts: number of control points on that direction
+    :return: knot vector
+    :type: list
+    """
     if degree == 0 or num_ctrlpts == 0:
         raise ValueError("Input values should be different than zero.")
 
@@ -77,6 +99,7 @@ def autogen_knotvector(degree=0, num_ctrlpts=0):
 
 # Algorithm A2.1 (internal functionality)
 def find_span(degree=0, knotvector=(), num_ctrlpts=0, knot=0, tol=0.001):
+    """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller."""
     # Number of knots; m + 1
     # Number of control points; n + 1
     # n = m - p - 1; where p = degree
@@ -102,6 +125,7 @@ def find_span(degree=0, knotvector=(), num_ctrlpts=0, knot=0, tol=0.001):
 
 # Finds knot multiplicity (internal functionality)
 def find_multiplicity(knot=-1, knotvector=(), tol=0.001):
+    """ Finds knot multiplicity."""
     # Find and return the multiplicity of the input knot in the given knot vector
     mult = 0  # initial multiplicity
     # Loop through the knot vector
@@ -114,6 +138,7 @@ def find_multiplicity(knot=-1, knotvector=(), tol=0.001):
 
 # Algorithm A2.2 (internal functionality)
 def basis_functions(degree=0, knotvector=(), span=0, knot=0):
+    """ Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
     left = [None for x in range(degree+1)]
     right = [None for x in range(degree+1)]
     N = [None for x in range(degree + 1)]
@@ -136,6 +161,7 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
 
 # Algorithm A2.2 - modified (internal functionality)
 def all_basis_functions(degree=0, knotvector=(), span=0, knot=0):
+    """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
     N = [[None for x in range(degree+1)] for y in range(degree+1)]
     for i in range(0, degree+1):
         bfuns = basis_functions(i, knotvector, span, knot)
@@ -146,6 +172,7 @@ def all_basis_functions(degree=0, knotvector=(), span=0, knot=0):
 
 # Algorithm A2.3 (internal functionality)
 def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
+    """ Algorithm A2.3 of The NURBS Book by Piegl & Tiller."""
     # Initialize variables for easy access
     left = [None for x in range(degree+1)]
     right = [None for x in range(degree+1)]
@@ -223,6 +250,7 @@ def basis_functions_ders(degree=0, knotvector=(), span=0, knot=0, order=0):
 
 # Checks if the input (u, v) values are valid (internal functionality)
 def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
+    """ Checks if the input (u, v) values are valid."""
     # Check u value
     if u < 0.0 or u > 1.0:
         raise ValueError('"u" value should be between 0 and 1.')
@@ -238,6 +266,12 @@ def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
 
 # Calculates vector cross-product (internal functionality)
 def cross_vector(vect1=(), vect2=()):
+    """ Computes the cross-product of the input vectors.
+
+    :param vect1: input vector 1
+    :param vect2: input vector 2
+    :return: result of the cross-product
+    """
     if not vect1 or not vect2:
         raise ValueError("Input arguments are empty.")
 
@@ -251,6 +285,11 @@ def cross_vector(vect1=(), vect2=()):
 
 # Normalizes the input vector (internal functionality)
 def normalize_vector(vect=()):
+    """ Generates a unit vector from the input.
+
+    :param vect: input vector
+    :return: unit vector
+    """
     if not vect:
         raise ValueError("Input argument is empty.")
 
