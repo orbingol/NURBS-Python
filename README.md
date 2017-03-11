@@ -75,3 +75,7 @@ If you have any questions related to the NURBS-Python package, please don't hesi
 ## Contributors
 
 * John-Eric Dufour (@jedufour)
+
+## License
+
+[MIT](LICENSE)
