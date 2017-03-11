@@ -32,9 +32,9 @@ The data structure in `Curve` and `Surface` classes is implemented using [Python
 | | degree_v | |
 | knotvector | knotvector_u | Knot vectors|
 | | knotvector_v | |
-| ctrlpts | ctrlpts | 1D array of control points, _(x, y, z)_ |
+| ctrlpts | ctrlpts | 1D array of control points |
 | | ctrlpts2D | 2D array of control points in _\[u\]\[v\]_ format |
-| ctrlptsw | ctrlptsw | 1D array of weighted control points, _(x\*w, y\*w, z\*w, w)_ |
+| ctrlptsw | ctrlptsw | 1D array of weighted control points |
 | weights | weights | Weights vector |
 | delta | delta | Evaluation delta for knots |
 | curvepts | surfpts | Evaluated points |
