@@ -13,7 +13,7 @@ Considering this situation, I started coding native Python implementation of a N
 
 The first version of the library was very complicated to use, so I started developing an alternative, easy-to-use NURBS library with simple data storage functionality, and now, here we are :-)
 
-**Can I do a feature request?**
+**Can I request a new feature?**
 
 Of course you can :-) Please feel free to contact me about the NURBS-Python package anytime you want.
 
