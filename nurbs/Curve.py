@@ -13,6 +13,40 @@ import nurbs.utilities as utils
 
 
 class Curve(object):
+    """ A class for storing and evaluating B-Spline and NURBS curves.
+
+    **Data Storage**
+
+    :class:`.Curve` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
+
+    * degree
+    * knotvector
+    * delta
+    * ctrlpts
+    * ctrlptsw
+    * weights
+    * curvepts
+
+    The functions :func:`.read_ctrlpts()` and :func:`.read_ctrlptsw()` provide an easy way to read control points from a text file.
+    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    **Evaluation**
+
+    The evaluation methods in the :class:`.Curve` class are:
+
+    * :func:`.evaluate()`
+    * :func:`.evaluate_rational()`
+    * :func:`.derivatives()`
+    * :func:`.tangent()`
+
+    **Examples**
+
+    Please see the examples in the repository named as ``ex_curveXX.py``, where ``XX`` is the example number, for details on using the :class:`.Curve` class
+
+    .. note::
+
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
+    """
     def __init__(self):
         self._mDegree = 0
         self._mKnotVector = []
@@ -218,6 +252,7 @@ class Curve(object):
         The format of the text files are described in FORMATS.md
 
         :param filename: input file name
+        :type filename: string
         :return: None
         """
         # Clean up the curve and control points lists, if necessary
@@ -295,8 +330,11 @@ class Curve(object):
         """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2
 
         :param u: knot value
+        :type u: float
         :param order: derivative order
+        :type order: int
         :return: A list containing up to {order}-th derivative of the curve
+        :rtype: list
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
@@ -330,9 +368,13 @@ class Curve(object):
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
 
         :param order: derivative order
+        :type order: int
         :param r1: minimum span
+        :type r1: int
         :param r2: maximum span
+        :type r2: int
         :return: PK, a 2D list of control points
+        :rtype: list
         """
         r = r2 - r1
         PK = [[[None for x in range(0, 2)] for y in range(r + 1)] for z in range(order + 1)]
@@ -353,8 +395,11 @@ class Curve(object):
         """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.4.
 
         :param u: knot value
+        :type u: float
         :param order: derivative order
+        :type order: int
         :return: A list containing up to {order}-th derivative of the curve
+        :rtype: list
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
@@ -386,8 +431,10 @@ class Curve(object):
     def tangent(self, u=-1, increment=1.0):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
-        :param u: parameter in the U direction
+        :param u: knot value
+        :type u: float
         :return: A list in the order of "surface point" and "derivative"
+        :rtype: list
         """
         # 1st derivative of the curve gives the tangent
         ders = self.derivatives(u, 1)

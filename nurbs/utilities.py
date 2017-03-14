@@ -13,14 +13,18 @@ import math
 
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
-    """ An implementation of a "range()" function which works with decimals.
+    """ An implementation of a ``range()`` function which works with decimals.
 
     Reference to this implementation: http://stackoverflow.com/a/7267280
 
     :param x: start value
+    :type x: int or float
     :param y: end value
+    :type y: int or float
     :param step: increment
-    :return: generator
+    :type step: int or float
+    :return: float
+    :rtype: generator
     """
     step_str = str(step)
     while x <= y:
@@ -33,8 +37,9 @@ def normalize_knotvector(knotvector=()):
     """ Normalizes the input knot vector between 0 and 1.
 
     :param knotvector: input knot vector
+    :type knotvector: tuple
     :return: normalized knot vector
-    :type: list
+    :rtype: list
     """
     if len(knotvector) == 0:
         return knotvector
@@ -54,9 +59,11 @@ def autogen_knotvector(degree=0, num_ctrlpts=0):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
     :param degree: degree of the knot vector direction
+    :type degree: int
     :param num_ctrlpts: number of control points on that direction
+    :type num_ctrlpts: int
     :return: knot vector
-    :type: list
+    :rtype: list
     """
     if degree == 0 or num_ctrlpts == 0:
         raise ValueError("Input values should be different than zero.")
@@ -269,8 +276,11 @@ def cross_vector(vect1=(), vect2=()):
     """ Computes the cross-product of the input vectors.
 
     :param vect1: input vector 1
+    :type vect1: tuple
     :param vect2: input vector 2
+    :type vect2: tuple
     :return: result of the cross-product
+    :rtype: list
     """
     if not vect1 or not vect2:
         raise ValueError("Input arguments are empty.")
@@ -288,7 +298,9 @@ def normalize_vector(vect=()):
     """ Generates a unit vector from the input.
 
     :param vect: input vector
+    :type vect: tuple
     :return: unit vector
+    :rtype: list
     """
     if not vect:
         raise ValueError("Input argument is empty.")

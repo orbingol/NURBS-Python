@@ -13,6 +13,44 @@ import nurbs.utilities as utils
 
 
 class Surface(object):
+    """ A class for storing and evaluating B-Spline and NURBS surfaces.
+
+    **Data Storage**
+
+    :class:`.Surface` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
+
+    * degree_u
+    * degree_v
+    * knotvector_u
+    * knotvector_v
+    * delta
+    * ctrlpts
+    * ctrlptsw
+    * ctrlpts2D
+    * weights
+    * surfpts
+
+    The functions :func:`.read_ctrlpts()` and :func:`.read_ctrlptsw()` provide an easy way to read control points from a text file.
+    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    **Evaluation**
+
+    The evaluation methods in the :class:`.Surface` class are:
+
+    * :func:`.evaluate()`
+    * :func:`.evaluate_rational()`
+    * :func:`.derivatives()`
+    * :func:`.tangent()`
+    * :func:`.normal()`
+
+    **Examples**
+
+    Please see the examples in the repository named as ``ex_surfaceXX.py``, where ``XX`` is the example number, for details on using the :class:`.Surface` class
+
+    .. note::
+
+        If you update any of the data storage elements after the surface evaluation, the surface points stored in :py:attr:`~surfpts` property will be deleted automatically.
+    """
     def __init__(self):
         self._mDegreeU = 0
         self._mDegreeV = 0
@@ -128,8 +166,7 @@ class Surface(object):
     def weights(self):
         """ Weights vector
 
-        Please note that :func:`.ctrlpts()` and :func:`.read_ctrlpts()` automatically generate a weights vector of 1.0s
-        in the size of control points array.
+        Please note that :func:`.ctrlpts()` and :func:`.read_ctrlpts()` automatically generate a weights vector of 1.0s in the size of control points array.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
@@ -209,8 +246,8 @@ class Surface(object):
     def ctrlptsw(self):
         """ Weighted control points
 
-        Returns and accepts a tuple containing (x*w, y*w, z*w, w) values. The setter method automatically separates
-        the weights vector and compute the unweighted control points.
+        This property is a tuple containing (x*w, y*w, z*w, w) values.
+        The setter method automatically separates the weights vector from the input and computes the unweighted control points.
 
         :getter: Gets the weighted control points
         :setter: Sets the weights vector and the control points
@@ -293,6 +330,7 @@ class Surface(object):
         The format of the text files are described in FORMATS.md
 
         :param filename: input file name
+        :type filename: string
         :return: None
         """
         # Clean up the surface and control points lists, if necessary
@@ -336,6 +374,7 @@ class Surface(object):
         The format of the text files are described in FORMATS.md
 
         :param filename: input file name
+        :type filename: string
         :return: None
         """
         # Clean up the surface and control points lists, if necessary
@@ -511,9 +550,13 @@ class Surface(object):
         * SKL[2][1] will be the 2nd derivative w.r.t. u and 1st derivative w.r.t. v
 
         :param u: parameter in the U direction
+        :type u: float
         :param v: parameter in the V direction
+        :type v: float
         :param order: derivative order
+        :type order: int
         :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
+        :rtype: list
         """
         # Check all parameters are set before the surface evaluation
         self._check_variables()
@@ -556,8 +599,11 @@ class Surface(object):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
         :param u: parameter in the U direction
+        :type u: float
         :param v: parameter in the V direction
+        :type v: float
         :return: A list in the order of "surface point", "derivative w.r.t. u" and "derivative w.r.t. v"
+        :rtype: list
         """
         # Tangent is the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
@@ -575,9 +621,13 @@ class Surface(object):
         """ Evaluates the surface normal at the given (u, v) parameter.
 
         :param u: parameter in the U direction
+        :type u: float
         :param v: parameter in the V direction
+        :type v: float
         :param normalized: if True, the returned normal vector is an unit vector
+        :type normalized: bool
         :return: normal vector
+        :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
         utils.check_uv(u, v, test_normal=True, delta=self._mDelta)

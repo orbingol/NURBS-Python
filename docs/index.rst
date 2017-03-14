@@ -12,12 +12,12 @@ Module contents
 .. automodule:: nurbs
     :members:
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 Submodules
 ----------
 
-The :code:`nurbs` module contains :code:`Curve` and :code:`Surface` classes along with the :code:`utilities` module for functions common in both :code:`Curve` and :code:`Surface` classes.
+The :code:`nurbs` package contains :code:`Curve` and :code:`Surface` classes along with the :code:`utilities` module for functions common in both :code:`Curve` and :code:`Surface` classes.
 
 nurbs.Curve module
 ------------------
@@ -25,7 +25,7 @@ nurbs.Curve module
 .. automodule:: nurbs.Curve
     :members:
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 nurbs.Surface module
 --------------------
@@ -33,22 +33,23 @@ nurbs.Surface module
 .. automodule:: nurbs.Surface
     :members:
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 nurbs.utilities module
 ----------------------
 
 .. automodule:: nurbs.utilities
     :members:
+    :exclude-members: basis_functions, all_basis_functions, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 .. toctree::
    :maxdepth: 2
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
