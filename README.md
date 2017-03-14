@@ -1,5 +1,7 @@
 # Non-Uniform Rational Basis Spline (NURBS) Python Package
 
+[![Documentation Status](https://readthedocs.org/projects/nurbs-python/badge/?version=latest)](http://nurbs-python.readthedocs.io/en/latest/?badge=latest)
+
 ## Introduction
 
 This project aims to implement the NURBS curve and surface computation algorithms in native Python. Currently, the `Curve` and `Surface` classes can be used for data storage and evaluation of B-Spline and NURBS curves and surfaces, respectively.
