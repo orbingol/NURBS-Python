@@ -166,7 +166,7 @@ class Surface(object):
     def weights(self):
         """ Weights vector
 
-        Please note that :func:`.ctrlpts()` and :func:`.read_ctrlpts()` automatically generate a weights vector of 1.0s in the size of control points array.
+        .. note:: :py:attr:`~ctrlpts` property and :func:`.read_ctrlpts()` will automatically generate a weights vector of 1.0s in the size of control points array.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
