@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 NURBS-Python Documentation
-========================================
+==========================
 
 Module contents
 ---------------
@@ -13,6 +13,41 @@ Module contents
     :members:
     :undoc-members:
 ..    :show-inheritance:
+
+Graphical Outputs
+-----------------
+
+The following 2D and 3D plots are generated using `Matplotlib <http://matplotlib.org/>`_. You can find the scripts generating these graphical outputs in the `NURBS-Python Repository <https://github.com/orbingol/NURBS-Python>`_.
+
+Curves
+^^^^^^
+
+.. image:: ../ex_curve01.png
+    :width: 30%
+    :alt: Curve example 1
+
+.. image:: ../ex_curve02.png
+    :width: 30%
+    :alt: Curve example 2
+
+.. image:: ../ex_curve03.png
+    :width: 30%
+    :alt: Curve example 3
+
+Surfaces
+^^^^^^^^
+
+.. image:: ../ex_surface01.png
+    :width: 30%
+    :alt: Surface example 1
+
+.. image:: ../ex_surface02.png
+    :width: 30%
+    :alt: Surface example 2
+
+.. image:: ../ex_surface03.png
+    :width: 30%
+    :alt: Surface example 3
 
 Submodules
 ----------
