@@ -17,7 +17,7 @@ curve = ns.Curve()
 curve.read_ctrlpts("data\CP_Curve3.txt")
 curve.degree = 3
 # Auto-generate the knot vector
-curve.knotvector = utils.autogen_knotvector(curve.degree, len(curve.ctrlpts))
+curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
 
 # Evaulate curve
 curve.evaluate()
@@ -37,7 +37,7 @@ V = []
 
 # Evaluate curve tangent at u = 0.0
 curvetan = curve.tangent(0.0)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])
@@ -47,7 +47,7 @@ V.append(nvec[1])
 
 # Evaluate curve tangent at u = 0.2
 curvetan = curve.tangent(0.2)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])
@@ -57,7 +57,7 @@ V.append(nvec[1])
 
 # Evaluate curve tangent at u = 0.5
 curvetan = curve.tangent(0.5)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])
@@ -67,7 +67,7 @@ V.append(nvec[1])
 
 # Evaluate curve tangent at u = 0.6
 curvetan = curve.tangent(0.6)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])
@@ -77,7 +77,7 @@ V.append(nvec[1])
 
 # Evaluate curve tangent at u = 0.8
 curvetan = curve.tangent(0.8)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])
@@ -87,7 +87,7 @@ V.append(nvec[1])
 
 # Evaluate curve tangent at u = 1.0
 curvetan = curve.tangent(1.0)
-nvec = utils.normalize_vector((curvetan[1][0], curvetan[1][1]))
+nvec = utils.vector_normalize((curvetan[1][0], curvetan[1][1]))
 
 # Arrange tangent vector for plotting
 X.append(curvetan[0][0])

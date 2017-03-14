@@ -18,8 +18,8 @@ surf = ns.Surface()
 surf.read_ctrlpts("data\CP_Surface2.txt")
 surf.degree_u = 3
 surf.degree_v = 3
-surf.knotvector_u = utils.autogen_knotvector(surf.degree_u, 6)
-surf.knotvector_v = utils.autogen_knotvector(surf.degree_v, 6)
+surf.knotvector_u = utils.knotvector_autogen(surf.degree_u, 6)
+surf.knotvector_v = utils.knotvector_autogen(surf.degree_v, 6)
 
 # Evaluate surface
 surf.evaluate_rational()

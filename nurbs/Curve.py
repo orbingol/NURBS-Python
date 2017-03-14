@@ -152,7 +152,7 @@ class Curve(object):
         # Set knot vector u
         value_float = [float(kv) for kv in value]
         # Normalize and set the knot vector
-        self._mKnotVector = utils.normalize_knotvector(value_float)
+        self._mKnotVector = utils.knotvector_normalize(tuple(value_float))
 
     @property
     def delta(self):
@@ -415,7 +415,7 @@ class Curve(object):
             CK[k] = [0.0 for x in range(2)]
 
         span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
-        bfuns = utils.all_basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
+        bfuns = utils.basis_functions_all(self._mDegree, tuple(self._mKnotVector), span, u)
         PK = self.derivatives_ctrlpts(du, span - self._mDegree, span)
 
         for k in range(0, du + 1):
@@ -428,7 +428,7 @@ class Curve(object):
         return CK
 
     # Evaluates the curve tangent at the given u parameter
-    def tangent(self, u=-1, increment=1.0):
+    def tangent(self, u=-1):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
         :param u: knot value

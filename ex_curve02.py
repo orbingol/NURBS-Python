@@ -17,7 +17,7 @@ curve = ns.Curve()
 curve.read_ctrlpts("data\CP_Curve2.txt")
 curve.degree = 3
 # Auto-generate the knot vector
-curve.knotvector = utils.autogen_knotvector(curve.degree, len(curve.ctrlpts))
+curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
 
 # Evaulate curve
 curve.evaluate()

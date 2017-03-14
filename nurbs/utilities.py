@@ -33,7 +33,7 @@ def frange(x, y, step):
 
 
 # Normalizes knot vector (internal functionality)
-def normalize_knotvector(knotvector=()):
+def knotvector_normalize(knotvector=()):
     """ Normalizes the input knot vector between 0 and 1.
 
     :param knotvector: input knot vector
@@ -55,7 +55,7 @@ def normalize_knotvector(knotvector=()):
 
 
 # Autogenerates a uniform knot vector using the given degree and the number of control points
-def autogen_knotvector(degree=0, num_ctrlpts=0):
+def knotvector_autogen(degree=0, num_ctrlpts=0):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
     :param degree: degree of the knot vector direction
@@ -167,7 +167,7 @@ def basis_functions(degree=0, knotvector=(), span=0, knot=0):
 
 
 # Algorithm A2.2 - modified (internal functionality)
-def all_basis_functions(degree=0, knotvector=(), span=0, knot=0):
+def basis_functions_all(degree=0, knotvector=(), span=0, knot=0):
     """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
     N = [[None for x in range(degree+1)] for y in range(degree+1)]
     for i in range(0, degree+1):
@@ -271,8 +271,8 @@ def check_uv(u=-1, v=-1, test_normal=False, delta=0.1):
             raise ValueError("Cannot calculate normal on an edge.")
 
 
-# Calculates vector cross-product (internal functionality)
-def cross_vector(vect1=(), vect2=()):
+# Computes vector cross-product
+def vector_cross(vect1=(), vect2=()):
     """ Computes the cross-product of the input vectors.
 
     :param vect1: input vector 1
@@ -285,16 +285,43 @@ def cross_vector(vect1=(), vect2=()):
     if not vect1 or not vect2:
         raise ValueError("Input arguments are empty.")
 
+    if len(vect1) != 3 or len(vect2) != 3:
+        raise ValueError("Input tuples should contain 3 elements representing (x,y,z).")
+
+    # Compute cross-product
     retval = [(vect1[1] * vect2[2]) - (vect1[2] * vect2[1]),
               (vect1[2] * vect2[0]) - (vect1[0] * vect2[2]),
               (vect1[0] * vect2[1]) - (vect1[1] * vect2[0])]
 
-    # Return the cross product of input vectors
+    # Return the cross product of the input vectors
     return retval
 
 
-# Normalizes the input vector (internal functionality)
-def normalize_vector(vect=()):
+# Computes vector dot-product
+def vector_dot(vect1=(), vect2=()):
+    """ Computes the dot-product of the input vectors.
+
+    :param vect1: input vector 1
+    :type vect1: tuple
+    :param vect2: input vector 2
+    :type vect2: tuple
+    :return: result of the cross-product
+    :rtype: list
+    """
+    if not vect1 or not vect2:
+        raise ValueError("Input arguments are empty.")
+
+    # Compute dot-product
+    retval = (vect1[0] * vect2[0]) + (vect1[1] * vect2[1])
+    if len(vect1) == 3 and len(vect2) == 3:
+        retval += (vect1[2] * vect2[2])
+
+    # Return the dot product of the input vectors
+    return retval
+
+
+# Normalizes the input vector
+def vector_normalize(vect=()):
     """ Generates a unit vector from the input.
 
     :param vect: input vector

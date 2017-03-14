@@ -75,7 +75,7 @@ nurbs.utilities module
 
 .. automodule:: nurbs.utilities
     :members:
-    :exclude-members: basis_functions, all_basis_functions, basis_functions_ders, check_uv, find_span, find_multiplicity
+    :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 ..    :show-inheritance:
 

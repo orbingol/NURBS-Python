@@ -200,7 +200,7 @@ class Surface(object):
         self._reset_surface()
         # Set knot vector u
         value_float = [float(kv) for kv in value]
-        self._mKnotVectorU = utils.normalize_knotvector(value_float)
+        self._mKnotVectorU = utils.knotvector_normalize(tuple(value_float))
 
     @property
     def knotvector_v(self):
@@ -218,7 +218,7 @@ class Surface(object):
         self._reset_surface()
         # Set knot vector u
         value_float = [float(kv) for kv in value]
-        self._mKnotVectorV = utils.normalize_knotvector(value_float)
+        self._mKnotVectorV = utils.knotvector_normalize(tuple(value_float))
 
     @property
     def delta(self):
@@ -640,11 +640,11 @@ class Surface(object):
         der_v = skl[0][1]
 
         # Compute normal
-        normal = utils.cross_vector(der_u, der_v)
+        normal = utils.vector_cross(der_u, der_v)
 
         if normalized:
             # Convert normal vector to a unit vector
-            normal = utils.normalize_vector(tuple(normal))
+            normal = utils.vector_normalize(tuple(normal))
 
         # Return the surface normal at the input u,v location
         return tuple(normal)
