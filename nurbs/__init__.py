@@ -7,11 +7,11 @@ Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non
 
 **What is the purpose of this package/library?**
 
-As you might have noticed, you have a huge list of alternative NURBS implementations in various programming languages. Some of them are free, some of them are not and some of them have a huge set of functions, but nearly none of them are developed in native Python.
+Very simple: Implementing the well-known NURBS algorithms in native Python, i.e. without using any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_. This approach comes with some advantages in debugging and implementing new algorithms.
 
-Considering this situation, I started coding native Python implementation of a NURBS library for M E 625 Surface Modeling class project, offered in Spring 2015 semester by Dr. James Oliver at Iowa State University. My purpose was developing the package without using any wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_. I also have SWIG- and Boost.Python-wrapped versions of a custom C++ NURBS library, but I find them hard to debug, compile and explain how they work.
+Current version of the library doesn't require any additional packages, such as NumPy, so that you can run **NURBS-Python** on a plain Python installation.
 
-The first version of the library was very complicated to use, so I started developing an alternative, easy-to-use NURBS library with simple data storage functionality, and now, here we are :-)
+The first version of the library was very complicated to use (I developed that version as a class project), so I started developing an alternative, easy-to-use NURBS library with simple data storage functionality, and now, here we are :-)
 
 **Can I request a new feature?**
 
