@@ -157,7 +157,7 @@ class Curve(object):
     def delta(self):
         """ Curve evaluation delta
 
-        The delta value is 0.01 by default.
+        .. note:: The delta value is 0.01 by default.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
@@ -210,7 +210,7 @@ class Curve(object):
     def curvepts(self):
         """ Evaluated curve points
 
-        :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
+        .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
 
         :getter: (x, y) coordinates of the evaluated surface points
         :type: list
@@ -248,7 +248,7 @@ class Curve(object):
     def read_ctrlpts(self, filename=''):
         """ Reads control points from a text file.
 
-        The format of the text files are described in FORMATS.md
+        .. note:: The format of the text files are described in FORMATS.md
 
         :param filename: input file name
         :type filename: string
@@ -279,7 +279,7 @@ class Curve(object):
     def evaluate(self):
         """ Evaluates the B-Spline curve.
 
-        The evaluated surface points are stored in :py:attr:`~curvepts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
         :return: None
         """
@@ -302,7 +302,7 @@ class Curve(object):
     def evaluate_rational(self):
         """ Evaluates the NURBS curve.
 
-        The evaluated surface points are stored in :py:attr:`~curvepts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
         :return: None
         """

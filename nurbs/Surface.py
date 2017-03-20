@@ -66,7 +66,7 @@ class Surface(object):
 
     @property
     def degree_u(self):
-        """ Surface degree U for U direction
+        """ Surface degree for U direction
 
         :getter: Gets the surface degree for U direction
         :setter: Sets the surface degree for U direction
@@ -224,7 +224,7 @@ class Surface(object):
     def delta(self):
         """ Surface evaluation delta
 
-        The delta value is 0.01 by default.
+        .. note:: The delta value is 0.01 by default.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
@@ -282,7 +282,7 @@ class Surface(object):
     def surfpts(self):
         """ Evaluated surface points
 
-        :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
+        .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
 
         :getter: (x, y, z) coordinates of the evaluated surface points
         :type: list
@@ -327,7 +327,7 @@ class Surface(object):
     def read_ctrlpts(self, filename=''):
         """ Reads control points from a text file.
 
-        The format of the text files are described in FORMATS.md
+        .. note:: The format of the text files are described in FORMATS.md
 
         :param filename: input file name
         :type filename: string
@@ -371,7 +371,7 @@ class Surface(object):
     def read_ctrlptsw(self, filename=''):
         """ Reads weighted control points from a text file.
 
-        The format of the text files are described in FORMATS.md
+        .. note:: The format of the text files are described in FORMATS.md
 
         :param filename: input file name
         :type filename: string
@@ -457,7 +457,7 @@ class Surface(object):
     def evaluate(self):
         """ Evaluates the B-Spline surface.
 
-        The evaluated surface points are stored in :py:attr:`~surfpts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
         :return: None
         """
@@ -491,7 +491,7 @@ class Surface(object):
     def evaluate_rational(self):
         """ Evaluates the NURBS surface.
 
-        The evaluated surface points are stored in :py:attr:`~surfpts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
         :return: None
         """
