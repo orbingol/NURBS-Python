@@ -327,7 +327,7 @@ class Surface(object):
     def read_ctrlpts(self, filename=''):
         """ Reads control points from a text file.
 
-        .. note:: The format of the text files are described in FORMATS.md
+        .. note:: The format of the text files are described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
         :param filename: input file name
         :type filename: string
@@ -371,7 +371,7 @@ class Surface(object):
     def read_ctrlptsw(self, filename=''):
         """ Reads weighted control points from a text file.
 
-        .. note:: The format of the text files are described in FORMATS.md
+        .. note:: The format of the text files are described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
         :param filename: input file name
         :type filename: string
