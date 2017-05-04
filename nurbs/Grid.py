@@ -78,3 +78,18 @@ class Grid:
 
         # Update the origin (bottom left corner)
         self._origin = self._gridpts[0][0]
+
+    def save(self, file_name="grid.txt"):
+        target = open(file_name, 'w')
+        target.truncate()
+        for cols in self._gridpts:
+            line = ""
+            col_size = len(cols)
+            counter = 0
+            for rows in cols:
+                line = line + str(rows[0]) + "," + str(rows[1]) + "," + str(rows[2])
+                counter = counter + 1
+                if counter != col_size:
+                    line = line + ";"
+            target.write(line)
+            target.write("\n")
