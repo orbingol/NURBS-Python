@@ -141,3 +141,7 @@ If you have any questions related to the NURBS-Python package, please don't hesi
 ## License
 
 [MIT](LICENSE)
+
+## Acknowledgments
+
+I would like to thank my PhD adviser, [Dr. Adarsh Krishnamurthy](https://www.me.iastate.edu/faculty/?user_page=adarsh), for his guidance and supervision throughout the course of this project. If you are interested in this Python package, please have a look at [our research group's web page](http://web.me.iastate.edu/idealab/) for more projects and contact information.
