@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Examples for the NURBS-Python Package - Grid Generator
+    Examples for the NURBS-Python Package - 2D Grid Generator
     Released under MIT License
     Developed by Onur Rauf Bingol (c) 2017
 """

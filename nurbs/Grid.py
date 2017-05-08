@@ -1,7 +1,7 @@
 """
 .. module:: Grid
     :platform: Unix, Windows
-    :synopsis: A simple control points grid generator to use with Surface module
+    :synopsis: A simple control points grid generator to use with the nurbs.Surface module
 
 .. moduleauthor:: Onur Rauf Bingol
 
@@ -11,13 +11,29 @@ import math
 
 
 class Grid:
+    """ Simple 2D grid generator to generate control points grid input for nurbs.Surface module.
+    
+    This class is designed to be a **very simple** grid generator for generating input files for the :class:`.Surface` class.
+    Currently, it is not a fully-featured grid generator which can fit any purpose, but as always, contributions are welcome! :-)
+    """
     def __init__(self, size_x, size_y):
+        """ Default constructor.
+        
+        :param size_x: width of the 2D grid
+        :param size_y: heigth of the 2D grid
+        """
         self._origin = [0.0, 0.0, 0.0]
         self._size_x = size_x
         self._size_y = size_y
         self._gridpts = []
 
     def grid(self):
+        """ Returns the generated grid.
+        
+        .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+        
+        :return: 2D list of points ([x,y,z]) in [u][v] format
+        """
         return self._gridpts
 
     def generate(self, num_u, num_v):
@@ -45,6 +61,11 @@ class Grid:
             current_x = current_x + spacing_x
 
     def rotate_z(self, angle=0):
+        """ Rotates the grid about the z-axis.
+        
+        :param angle: angle of rotation about the z-axis 
+        :return: None
+        """
         # Get current origin / starting point (we need a copy of the self._origin)
         current_origin = list(self._origin)
 
@@ -64,6 +85,12 @@ class Grid:
         self.translate(current_origin)
 
     def translate(self, pt=(0.0, 0.0, 0.0)):
+        """ Translates the grid origin to the input point.
+        
+        Grid origin is (0, 0, 0) at instantiation and always represents the bottom left corner of the 2D grid.
+        :param pt: new origin point
+        :return: None
+        """
         # Find the difference between starting and the input point
         diff_x = pt[0] - self._origin[0]
         diff_y = pt[1] - self._origin[1]
@@ -80,8 +107,18 @@ class Grid:
         self._origin = self._gridpts[0][0]
 
     def save(self, file_name="grid.txt"):
+        """ Saves the generated grid to a text file.
+        
+        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+        
+        :param file_name: File name to be saved
+        :return: None
+        """
+        # Open the file for writing
         target = open(file_name, 'w')
+        # Clear file contents
         target.truncate()
+        # Start saving the generated grid to the file
         for cols in self._gridpts:
             line = ""
             col_size = len(cols)
@@ -89,6 +126,7 @@ class Grid:
             for rows in cols:
                 line = line + str(rows[0]) + "," + str(rows[1]) + "," + str(rows[2])
                 counter = counter + 1
+                # Not the best way, but it works
                 if counter != col_size:
                     line = line + ";"
             target.write(line)
