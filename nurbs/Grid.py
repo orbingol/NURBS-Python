@@ -41,7 +41,7 @@ class Grid:
             
         :param num_u: number of divisions in x-direction
         :param num_v: number of divisions in y-direction
-        :return None
+        :return: None
         """
         # Some error checking and fixing
         if num_u < 1:
@@ -109,6 +109,7 @@ class Grid:
         """ Translates the grid origin to the input point.
         
         Grid origin is (0, 0, 0) at instantiation and always represents the bottom left corner of the 2D grid.
+        
         :param pt: new origin point
         :return: None
         """
@@ -166,6 +167,6 @@ class Grid:
         .. note:: Still work in progress
         
         :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
-        :return None
+        :return: None
         """
         pass

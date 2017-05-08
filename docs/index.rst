@@ -12,7 +12,6 @@ Module contents
 .. automodule:: nurbs
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 Graphical Outputs
 -----------------
@@ -84,7 +83,7 @@ nurbs.Grid module
 .. automodule:: nurbs.Grid
     :members:
     :undoc-members:
-    .. automethod:: __init__
+    :special-members: __init__
 
 
 .. toctree::
