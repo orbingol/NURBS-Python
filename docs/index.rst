@@ -62,7 +62,6 @@ nurbs.Curve module
 .. automodule:: nurbs.Curve
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 nurbs.Surface module
 --------------------
@@ -70,7 +69,6 @@ nurbs.Surface module
 .. automodule:: nurbs.Surface
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 nurbs.utilities module
 ----------------------
@@ -79,7 +77,6 @@ nurbs.utilities module
     :members:
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
-..    :show-inheritance:
 
 nurbs.Grid module
 --------------------
@@ -87,7 +84,7 @@ nurbs.Grid module
 .. automodule:: nurbs.Grid
     :members:
     :undoc-members:
-..    :show-inheritance:
+    .. automethod:: __init__
 
 
 .. toctree::
