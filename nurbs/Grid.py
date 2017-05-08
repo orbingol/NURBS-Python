@@ -159,3 +159,13 @@ class Grid:
                     line = line + ";"
             target.write(line)
             target.write("\n")
+
+    def bumps(self, num_bumps):
+        """ Generates random bumps (i.e. hills) on the 2D grid.
+        
+        .. note:: Still work in progress
+        
+        :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
+        :return None
+        """
+        pass
