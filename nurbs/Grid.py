@@ -23,8 +23,8 @@ class Grid:
         :param size_y: heigth of the 2D grid
         """
         self._origin = [0.0, 0.0, 0.0]
-        self._size_x = size_x
-        self._size_y = size_y
+        self._size_x = float(size_x)
+        self._size_y = float(size_y)
         self._gridpts = []
 
     def grid(self):
@@ -37,6 +37,27 @@ class Grid:
         return self._gridpts
 
     def generate(self, num_u, num_v):
+        """ Generates the 2D grid.
+            
+        :param num_u: number of divisions in x-direction
+        :param num_v: number of divisions in y-direction
+        :return None
+        """
+        # Some error checking and fixing
+        if num_u < 1:
+            raise ValueError("Divisions in the x-direction (num_u) cannot be less than 1!")
+
+        if num_v < 1:
+            raise ValueError("Divisions in the y-direction (num_v) cannot be less than 1!")
+
+        if not isinstance(num_u, int):
+            num_u = int(num_u)
+            print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_u." % num_u)
+
+        if not isinstance(num_v, int):
+            num_v = int(num_v)
+            print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_v." % num_v)
+
         # Set the number of divisions for each direction
         spacing_x = self._size_x / num_u
         spacing_y = self._size_y / num_v
@@ -114,6 +135,13 @@ class Grid:
         :param file_name: File name to be saved
         :return: None
         """
+        # Some error checking
+        if not self._gridpts:
+            raise ValueError("Grid must be generated before saving it to a file!")
+
+        if not isinstance(file_name, basestring):
+            raise ValueError("File name must be a string!")
+
         # Open the file for writing
         target = open(file_name, 'w')
         # Clear file contents

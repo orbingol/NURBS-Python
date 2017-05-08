@@ -9,7 +9,7 @@
 from nurbs import Grid as gridgen
 
 # Generate a 50x100 rectangle
-mygrid = gridgen.Grid(50.0, 100.0)
+mygrid = gridgen.Grid(50, 100)
 
 # Split the width into 5 equal pieces and the height into 10 equal pieces
 mygrid.generate(5, 10)
