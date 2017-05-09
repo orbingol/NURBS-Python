@@ -29,6 +29,7 @@ class Grid:
         self._size_y = float(size_y)
         self._gridpts = []
 
+    # Returns the generated grid
     def grid(self):
         """ Returns the generated grid.
         
@@ -38,8 +39,9 @@ class Grid:
         """
         return self._gridpts
 
+    # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
-        """ Generates the 2D grid.
+        """ Generates the 2D grid using the input division parameters.
             
         :param num_u: number of divisions in x-direction
         :param num_v: number of divisions in y-direction
@@ -83,6 +85,7 @@ class Grid:
             # Set x the value for the next column
             current_x = current_x + spacing_x
 
+    # Rotates the grid about the z-axis
     def rotate_z(self, angle=0):
         """ Rotates the grid about the z-axis.
         
@@ -107,8 +110,9 @@ class Grid:
         # Finally, translate back to the starting location
         self.translate(current_origin)
 
+    # Translates the grid origin to the input position
     def translate(self, pt=(0.0, 0.0, 0.0)):
-        """ Translates the grid origin to the input point.
+        """ Translates the grid origin to the input position.
         
         Grid origin is (0, 0, 0) at instantiation and always represents the bottom left corner of the 2D grid.
         
@@ -130,6 +134,7 @@ class Grid:
         # Update the origin (bottom left corner)
         self._origin = self._gridpts[0][0]
 
+    # Saves the generated grid to a text file
     def save(self, file_name="grid.txt"):
         """ Saves the generated grid to a text file.
         
@@ -163,6 +168,7 @@ class Grid:
             target.write(line)
             target.write("\n")
 
+    # Generates hills (a.k.a. bumps) on the 2D grid
     def bumps(self, num_bumps=0, all_positive=False, bump_height=3):
         """ Generates random bumps (i.e. hills) on the 2D grid.
         
