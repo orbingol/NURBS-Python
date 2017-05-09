@@ -12,7 +12,6 @@ Module contents
 .. automodule:: nurbs
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 Graphical Outputs
 -----------------
@@ -54,13 +53,14 @@ Submodules
 
 The :code:`nurbs` package contains :code:`Curve` and :code:`Surface` classes along with the :code:`utilities` module for functions common in both :code:`Curve` and :code:`Surface` classes.
 
+This package also includes a very simple grid generator class, :code:`Grid`, to generate rectangular control points grid for use with the :code:`Surface` class.
+
 nurbs.Curve module
 ------------------
 
 .. automodule:: nurbs.Curve
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 nurbs.Surface module
 --------------------
@@ -68,7 +68,6 @@ nurbs.Surface module
 .. automodule:: nurbs.Surface
     :members:
     :undoc-members:
-..    :show-inheritance:
 
 nurbs.utilities module
 ----------------------
@@ -77,7 +76,15 @@ nurbs.utilities module
     :members:
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
-..    :show-inheritance:
+
+nurbs.Grid module
+--------------------
+
+.. automodule:: nurbs.Grid
+    :members:
+    :undoc-members:
+    :special-members: __init__
+
 
 .. toctree::
    :maxdepth: 2

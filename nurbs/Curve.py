@@ -13,7 +13,7 @@ import nurbs.utilities as utils
 
 
 class Curve(object):
-    """ A class for storing and evaluating B-Spline and NURBS curves.
+    """ A data storage and evaluation class for B-Spline and NURBS curves.
 
     **Data Storage**
 
@@ -248,7 +248,7 @@ class Curve(object):
     def read_ctrlpts(self, filename=''):
         """ Reads control points from a text file.
 
-        .. note:: The format of the text files are described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
         :param filename: input file name
         :type filename: string
