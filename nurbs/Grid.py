@@ -7,7 +7,9 @@
 
 """
 
+import sys
 import math
+import random
 
 
 class Grid:
@@ -161,12 +163,111 @@ class Grid:
             target.write(line)
             target.write("\n")
 
-    def bumps(self, num_bumps):
+    def bumps(self, num_bumps=0, all_positive=False, bump_height=3):
         """ Generates random bumps (i.e. hills) on the 2D grid.
         
-        .. note:: Still work in progress
+        This method generates hills on the grid defined by the **num_bumps** parameter. The direction of the generated hills
+        are chosen randomly by default, but this behavior can be controlled by **all_positive** parameter. It is also 
+        possible to control the z-value using **bump_height** parameter.
+         
+        Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
+        uses a trial-and-error method to determine whether the bumps can be generatable or not. For instance;
         
+          >> testgrid = Grid(5,10) # generates a 5x10 rectangle
+          >> testgrid.generate(2, 2) # splits the rectangle into 4 pieces
+          >> testgrid.bumps(100) # impossible, it will return an error message
+          >> testgrid.bumps(1) # possible, you will get a bump in the middle of the generated grid
+                
         :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
+        :param all_positive: Generate all bumps on the positive z direction
+        :param bump_height: z-value of the generated bumps on the grid
         :return: None
         """
-        pass
+        # Some error checking
+        if num_bumps < 0:
+            print("No bumps are generated!")
+            return
+
+        if bump_height < 0:
+            raise ValueError("Height must be a positive number")
+
+        if not isinstance(all_positive, bool):
+            raise ValueError("all_positive must be a boolean value!")
+
+        # Initialize a list to store bumps
+        bump_list = []
+
+        # Find size of the grid
+        len_u = len(self._gridpts)
+        len_v = len(self._gridpts[0])
+
+        # Choose u and v positions inside the grid (i.e. not on the edges)
+        for nb in range(1, num_bumps):
+            trials = 0
+            while trials < 10:
+                u = random.randint(1, len_u-2)
+                v = random.randint(1, len_v-2)
+                temp = [u, v]
+                if not bump_list:
+                    bump_list.append(temp)
+                else:
+                    if self._check_bump(bump_list, temp):
+                        bump_list.append(temp)
+                        trials = 100  # set number of trials to a big value
+                        break
+                    else:
+                        trials = trials + 1
+            if trials == 10:
+                print("Cannot generate %d bumps on this grid." % num_bumps)
+                print("You might need to generate a grid with more divisions.")
+                sys.exit(0)
+
+        # Update the grid with the bumps
+        for u, v in bump_list:
+            # Toss a coin to find the bump direction
+            if all_positive:
+                roll = 1
+            else:
+                roll = random.randint(0, 1)
+            if roll:
+                z_val = float(bump_height)
+            else:
+                z_val = float(-1 * bump_height)
+
+            # Update the grid points
+            self._gridpts[u - 1][v - 1][2] = z_val / 2.0
+            self._gridpts[u - 1][v][2] = z_val / 2.0
+            self._gridpts[u - 1][v + 1][2] = z_val / 2.0
+            self._gridpts[u][v - 1][2] = z_val / 2.0
+            self._gridpts[u][v][2] = z_val
+            self._gridpts[u][v + 1][2] = z_val / 2.0
+            self._gridpts[u + 1][v - 1][2] = z_val / 2.0
+            self._gridpts[u + 1][v][2] = z_val / 2.0
+            self._gridpts[u + 1][v + 1][2] = z_val / 2.0
+
+    def _check_bump(self, uv_list=(), to_be_checked_uv=(0, 0)):
+        # If input list is empty, return true
+        if not uv_list:
+            return True
+
+        # Check the input point or its surroundings are close to the existing ones
+        for uv in uv_list:
+            u = to_be_checked_uv[0]
+            v = to_be_checked_uv[1]
+            check_list = [
+                [u - 1, v - 1],
+                [u - 1, v],
+                [u - 1, v + 1],
+                [u, v - 1],
+                [u, v],
+                [u, v + 1],
+                [u + 1, v - 1],
+                [u + 1, v],
+                [u + 1, v + 1],
+            ]
+            for check in check_list:
+                if uv == check:
+                    return False
+
+        # Otherwise, return true
+        return True
