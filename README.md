@@ -64,7 +64,7 @@ Both classes have `read_ctrlpts()` and `read_ctrlptsw()` methods for reading con
 
 Other functions in the `utilities` module are used as helper functions in evaluation methods of `Curve` and `Surface` classes.
 
-## 2D Grid Generation
+### 2D Grid Generation
 
 `Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
 
@@ -138,11 +138,11 @@ If you have any questions related to the NURBS-Python package, please don't hesi
 
 ## Author
 
-* Onur Rauf Bingol (@orbingol)
+* Onur Rauf Bingol ([@orbingol](https://github.com/orbingol))
 
 ## Contributors
 
-* John-Eric Dufour (@jedufour)
+* John-Eric Dufour ([@jedufour](https://github.com/jedufour))
 
 ## License
 
