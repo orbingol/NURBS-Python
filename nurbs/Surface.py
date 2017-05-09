@@ -323,9 +323,9 @@ class Surface(object):
         if not works:
             raise ValueError("Some required parameters for surface evaluation are not set.")
 
-    # Reads control points from a text file
+    # Reads control points from a text file and generates a weight vector composed of 1.0s
     def read_ctrlpts(self, filename=''):
-        """ Reads control points from a text file.
+        """ Reads control points from a text file and generates a weight vector composed of 1.0s.
 
         .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
@@ -367,7 +367,7 @@ class Surface(object):
             print('ERROR: Cannot open file ' + filename)
             sys.exit(1)
 
-    # Reads control points and weights from a text file
+    # Reads weighted control points from a text file
     def read_ctrlptsw(self, filename=''):
         """ Reads weighted control points from a text file.
 

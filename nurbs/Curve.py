@@ -244,9 +244,9 @@ class Curve(object):
         if not works:
             raise ValueError("Some required parameters for curve evaluation are not set.")
 
-    # Reads control points from a text file
+    # Reads control points from a text file and generates a weights vector composed of 1.0s
     def read_ctrlpts(self, filename=''):
-        """ Reads control points from a text file.
+        """ Reads control points from a text file and generates a weight vector composed of 1.0s.
 
         .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
