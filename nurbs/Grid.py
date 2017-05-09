@@ -184,9 +184,13 @@ class Grid:
         :return: None
         """
         # Some error checking
-        if num_bumps < 0:
+        if num_bumps <= 0:
             print("No bumps are generated!")
             return
+
+        if not isinstance(num_bumps, int):
+            num_bumps = int(num_bumps)
+            print("Number of bumps must be an integer value. Automatically rounding to %d." % num_bumps)
 
         if bump_height < 0:
             raise ValueError("Height must be a positive number")
