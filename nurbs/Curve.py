@@ -275,6 +275,40 @@ class Curve(object):
             print('Cannot open file ' + filename)
             sys.exit(1)
 
+    # Reads weighted control points from a text file
+    def read_ctrlptsw(self, filename=''):
+        """ Reads weighted control points from a text file.
+
+        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+        :param filename: input file name
+        :type filename: string
+        :return: None
+        """
+        # Clean up the curve and control points lists, if necessary
+        self._reset_curve()
+        self._reset_ctrlpts()
+
+        # Try reading the file
+        try:
+            # Open the file
+            with open(filename, 'r') as fp:
+                for line in fp:
+                    # Remove whitespace
+                    line = line.strip()
+                    # Convert the string containing the coordinates into a list
+                    coords = line.split(',')
+                    # Remove extra whitespace and convert to float
+                    pt = [float(coords[0].strip()) / float(coords[2].strip()),
+                          float(coords[1].strip()) / float(coords[2].strip())]
+                    # Add the control point to the global control point list
+                    self._mCtrlPts.append(pt)
+                    # Add the weight to the global weights list
+                    self._mWeights.append(float(coords[2].strip()))
+        except IOError:
+            print('Cannot open file ' + filename)
+            sys.exit(1)
+
     # Evaluates the B-Spline curve
     def evaluate(self):
         """ Evaluates the B-Spline curve.
