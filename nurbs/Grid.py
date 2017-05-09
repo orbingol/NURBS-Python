@@ -173,7 +173,7 @@ class Grid:
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
         uses a trial-and-error method to determine whether the bumps can be generatable or not. For instance::
         
-            testgrid = Grid(5,10) # generates a 5x10 rectangle
+            testgrid = Grid(5, 10) # generates a 5x10 rectangle
             testgrid.generate(2, 2) # splits the rectangle into 4 pieces
             testgrid.bumps(100) # impossible, it will return an error message
             testgrid.bumps(1) # You will get a bump at the center of the generated grid
