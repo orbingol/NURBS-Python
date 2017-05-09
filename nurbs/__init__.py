@@ -24,4 +24,4 @@ Of course you can :-) Please feel free to contact me about the NURBS-Python pack
 
 """
 
-__version__ = "2.2.3"
+__version__ = "2.3"
