@@ -4,7 +4,9 @@
 
 ## Introduction
 
-This project aims to implement the NURBS curve and surface computation algorithms in native Python. Currently, the `Curve` and `Surface` classes can be used for data storage and evaluation of B-Spline and NURBS curves and surfaces, respectively.
+This project aims to implement the NURBS curve and surface computation algorithms in native Python. Currently, the `Curve` and `Surface` classes can be used for data storage and evaluation of B-Spline and NURBS curves and surfaces.
+
+Additionally, `Grid` class can be used to generate simple 2D control point grids for use with the `Surface` class.
 
 ## Description of the Package
 
@@ -61,6 +63,10 @@ Both classes have `read_ctrlpts()` and `read_ctrlptsw()` methods for reading con
 * `normalize_vector()` generates a unit vector from the input vector
 
 Other functions in the `utilities` module are used as helper functions in evaluation methods of `Curve` and `Surface` classes.
+
+## 2D Grid Generation
+
+`Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
 
 ## Minimum Requirements
 
