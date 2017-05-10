@@ -27,6 +27,8 @@ class Grid:
         self._size_y = float(size_y)
         # Initialize a list to store generated grid points
         self._gridpts = []
+        # Set a default tolerance
+        self._mDelta = 10e-8
 
     # Returns the generated grid
     def grid(self):
@@ -270,10 +272,14 @@ class Grid:
         len_u = len(self._gridpts)
         len_v = len(self._gridpts[0])
 
-        # Choose u and v positions inside the grid (i.e. not on the edges)
+        # Set a max number of trials for the point finding algorithm
+        max_trials = 25
+
+        # Try to generate bumps
         for nb in range(1, num_bumps):
             trials = 0
-            while trials < 10:
+            while trials < max_trials:
+                # Choose u and v positions inside the grid (i.e. not on the edges)
                 u = random.randint(1, len_u-2)
                 v = random.randint(1, len_v-2)
                 temp = [u, v]
@@ -282,11 +288,11 @@ class Grid:
                 else:
                     if self._check_bump(bump_list, temp):
                         bump_list.append(temp)
-                        trials = 100  # set number of trials to a big value
+                        trials = max_trials + 1  # set number of trials to a big value
                         break
                     else:
                         trials = trials + 1
-            if trials == 10:
+            if trials == max_trials:
                 print("Cannot generate %d bumps on this grid." % num_bumps)
                 print("You might need to generate a grid with more divisions.")
                 sys.exit(0)
@@ -336,7 +342,7 @@ class Grid:
                 [u + 1, v + 1],
             ]
             for check in check_list:
-                if uv == check:
+                if abs(uv[0] - check[0]) < self._mDelta and abs(uv[1] - check[1]) < self._mDelta:
                     return False
 
         # Otherwise, return true
