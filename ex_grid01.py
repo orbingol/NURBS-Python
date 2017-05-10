@@ -42,3 +42,5 @@ ax = fig.gca(projection='3d')
 # 3D Scatter plot
 gridplt = ax.scatter(x, y, z, s=10, depthshade=False)
 plt.show()
+
+print("End of NURBS-Python Grid Generator Example")
