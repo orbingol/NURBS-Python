@@ -102,7 +102,7 @@ class Grid:
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
-        # Then, rotate about the z-axis
+        # Then, rotate about the axis
         rot = math.radians(angle)
         for r in self._gridpts:
             for c in r:
@@ -128,7 +128,7 @@ class Grid:
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
-        # Then, rotate about the z-axis
+        # Then, rotate about the axis
         rot = math.radians(angle)
         for r in self._gridpts:
             for c in r:
@@ -154,7 +154,7 @@ class Grid:
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
-        # Then, rotate about the z-axis
+        # Then, rotate about the axis
         rot = math.radians(angle)
         for r in self._gridpts:
             for c in r:
