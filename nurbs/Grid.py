@@ -15,18 +15,17 @@ import random
 class Grid:
     """ Simple 2D grid generator to generate control points grid input for nurbs.Surface module.
     
-    This class is designed to be a **very simple** grid generator for generating input files for the :class:`.Surface` class.
-    Currently, it is not a fully-featured grid generator which can fit any purpose, but as always, contributions are welcome! :-)
+    :param size_x: width of the 2D grid
+    :type size_x: integer or float
+    :param size_y: heigth of the 2D grid
+    :type size_y: integer or float
     """
     def __init__(self, size_x, size_y):
-        """ Default constructor.
-        
-        :param size_x: width of the 2D grid
-        :param size_y: heigth of the 2D grid
-        """
+        # Grid origin is always set to the bottom left corner of the grid
         self._origin = [0.0, 0.0, 0.0]
         self._size_x = float(size_x)
         self._size_y = float(size_y)
+        # Initialize a list to store generated grid points
         self._gridpts = []
 
     # Returns the generated grid
@@ -44,7 +43,9 @@ class Grid:
         """ Generates the 2D grid using the input division parameters.
             
         :param num_u: number of divisions in x-direction
+        :type num_u: integer
         :param num_v: number of divisions in y-direction
+        :type num_v: integer
         :return: None
         """
         # Some error checking and fixing
@@ -89,7 +90,8 @@ class Grid:
     def rotate_z(self, angle=0):
         """ Rotates the grid about the z-axis.
         
-        :param angle: angle of rotation about the z-axis 
+        :param angle: angle of rotation about the z-axis
+        :type angle: integer or float
         :return: None
         """
         # Get current origin / starting point (we need a copy of the self._origin)
@@ -117,6 +119,7 @@ class Grid:
         Grid origin is (0, 0, 0) at instantiation and always represents the bottom left corner of the 2D grid.
         
         :param pt: new origin point
+        :type pt: list
         :return: None
         """
         # Find the difference between starting and the input point
@@ -141,6 +144,7 @@ class Grid:
         .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
         
         :param file_name: File name to be saved
+        :type file_name: string
         :return: None
         """
         # Some error checking
@@ -185,8 +189,11 @@ class Grid:
             testgrid.bumps(1) # You will get a bump at the center of the generated grid
                 
         :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
+        :type num_bumps: integer
         :param all_positive: Generate all bumps on the positive z direction
+        :type all_positive: boolean
         :param bump_height: z-value of the generated bumps on the grid
+        :type bump_height: integer or float
         :return: None
         """
         # Some error checking
@@ -255,6 +262,7 @@ class Grid:
             self._gridpts[u + 1][v][2] = z_val / 2.0
             self._gridpts[u + 1][v + 1][2] = z_val / 2.0
 
+    # Checks the possibility of placing the bump at the specified location
     def _check_bump(self, uv_list=(), to_be_checked_uv=(0, 0)):
         # If input list is empty, return true
         if not uv_list:

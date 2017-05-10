@@ -18,11 +18,11 @@ def frange(x, y, step):
     Reference to this implementation: http://stackoverflow.com/a/7267280
 
     :param x: start value
-    :type x: int or float
+    :type x: integer or float
     :param y: end value
-    :type y: int or float
+    :type y: integer or float
     :param step: increment
-    :type step: int or float
+    :type step: integer or float
     :return: float
     :rtype: generator
     """
@@ -59,9 +59,9 @@ def knotvector_autogen(degree=0, num_ctrlpts=0):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
     :param degree: degree of the knot vector direction
-    :type degree: int
+    :type degree: integer
     :param num_ctrlpts: number of control points on that direction
-    :type num_ctrlpts: int
+    :type num_ctrlpts: integer
     :return: knot vector
     :rtype: list
     """
@@ -324,9 +324,9 @@ def vector_dot(vect1=(), vect2=()):
 def vector_normalize(vect=()):
     """ Generates a unit vector from the input.
 
-    :param vect: input vector
+    :param vect: vector to be normalized
     :type vect: tuple
-    :return: unit vector
+    :return: the normalized vector (i.e. the unit vector)
     :rtype: list
     """
     if not vect:

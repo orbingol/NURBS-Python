@@ -70,7 +70,7 @@ class Surface(object):
 
         :getter: Gets the surface degree for U direction
         :setter: Sets the surface degree for U direction
-        :type: int
+        :type: integer
         """
         return self._mDegreeU
 
@@ -89,7 +89,7 @@ class Surface(object):
 
         :getter: Gets the surface degree V for V direction
         :setter: Sets the surface degree V for V direction
-        :type: int
+        :type: integer
         """
         return self._mDegreeV
 
@@ -554,7 +554,7 @@ class Surface(object):
         :param v: parameter in the V direction
         :type v: float
         :param order: derivative order
-        :type order: int
+        :type order: integer
         :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
         :rtype: list
         """
@@ -625,7 +625,7 @@ class Surface(object):
         :param v: parameter in the V direction
         :type v: float
         :param normalized: if True, the returned normal vector is an unit vector
-        :type normalized: bool
+        :type normalized: boolean
         :return: normal vector
         :rtype: list
         """

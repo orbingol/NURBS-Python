@@ -61,7 +61,7 @@ class Curve(object):
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
-        :type: int
+        :type: integer
         """
         return self._mDegree
 
@@ -365,7 +365,7 @@ class Curve(object):
         :param u: knot value
         :type u: float
         :param order: derivative order
-        :type order: int
+        :type order: integer
         :return: A list containing up to {order}-th derivative of the curve
         :rtype: list
         """
@@ -401,11 +401,11 @@ class Curve(object):
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
 
         :param order: derivative order
-        :type order: int
+        :type order: integer
         :param r1: minimum span
-        :type r1: int
+        :type r1: integer
         :param r2: maximum span
-        :type r2: int
+        :type r2: integer
         :return: PK, a 2D list of control points
         :rtype: list
         """
@@ -430,7 +430,7 @@ class Curve(object):
         :param u: knot value
         :type u: float
         :param order: derivative order
-        :type order: int
+        :type order: integer
         :return: A list containing up to {order}-th derivative of the curve
         :rtype: list
         """
