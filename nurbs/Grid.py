@@ -112,6 +112,58 @@ class Grid:
         # Finally, translate back to the starting location
         self.translate(current_origin)
 
+    # Rotates the grid about the y-axis
+    def rotate_y(self, angle=0):
+        """ Rotates the grid about the y-axis.
+
+        :param angle: angle of rotation about the y-axis
+        :type angle: integer or float
+        :return: None
+        """
+        # Get current origin / starting point (we need a copy of the self._origin)
+        current_origin = list(self._origin)
+
+        # Translate to the origin
+        self.translate([0.0, 0.0, 0.0])
+
+        # Then, rotate about the z-axis
+        rot = math.radians(angle)
+        for r in self._gridpts:
+            for c in r:
+                new_x = (c[0] * math.cos(rot)) - (c[2] * math.sin(rot))
+                new_z = (c[2] * math.cos(rot)) + (c[0] * math.sin(rot))
+                c[0] = new_x
+                c[2] = new_z
+
+        # Finally, translate back to the starting location
+        self.translate(current_origin)
+
+    # Rotates the grid about the x-axis
+    def rotate_x(self, angle=0):
+        """ Rotates the grid about the x-axis.
+
+        :param angle: angle of rotation about the x-axis
+        :type angle: integer or float
+        :return: None
+        """
+        # Get current origin / starting point (we need a copy of the self._origin)
+        current_origin = list(self._origin)
+
+        # Translate to the origin
+        self.translate([0.0, 0.0, 0.0])
+
+        # Then, rotate about the z-axis
+        rot = math.radians(angle)
+        for r in self._gridpts:
+            for c in r:
+                new_y = (c[1] * math.cos(rot)) - (c[2] * math.sin(rot))
+                new_z = (c[2] * math.cos(rot)) + (c[1] * math.sin(rot))
+                c[1] = new_y
+                c[2] = new_z
+
+        # Finally, translate back to the starting location
+        self.translate(current_origin)
+
     # Translates the grid origin to the input position
     def translate(self, pt=(0.0, 0.0, 0.0)):
         """ Translates the grid origin to the input position.
