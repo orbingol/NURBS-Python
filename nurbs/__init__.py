@@ -15,4 +15,4 @@ The NURBS-Python package follows an object-oriented design as much as possible. 
 
 """
 
-__version__ = "2.3.2"
+__version__ = "2.3.3"
