@@ -118,6 +118,12 @@ Displays the control points polygon and the evaluated curve using the an auto-ge
 
 ![2D line plots using Matplotlib](ex_curve03.png)
 
+#### File: ex_curve04.py
+
+A full circle using NURBS
+
+![2D line plots using Matplotlib](ex_curve04.png)
+
 #### File: ex_surface01.py
 
 ![3D scatter plot using Matplotlib](ex_surface01.png)
