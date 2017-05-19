@@ -188,7 +188,7 @@ class Curve(object):
         """
         ret_list = []
         for c, w in itertools.product(self._mCtrlPts, self._mWeights):
-            temp_list = (float(c[0] * w), float(c[1] * w), float(w))
+            temp_list = (float(c[0] * float(w)), float(c[1] * float(w)), float(w))
             ret_list.append(temp_list)
         return tuple(ret_list)
 
@@ -199,7 +199,7 @@ class Curve(object):
         weights = []
         # Split the weights vector from the input list
         for i, c in enumerate(value):
-            temp_list = [float(c[0] / c[2]), float(c[1] / c[2])]
+            temp_list = [float(c[0]) / float(c[2]), float(c[1]) / float(c[2])]
             ctrlpts.append(temp_list)
             weights.append(float(c[2]))
         # Assign unzipped values to the class fields
