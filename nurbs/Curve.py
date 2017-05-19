@@ -351,8 +351,8 @@ class Curve(object):
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
             curveptw = [0.0, 0.0, 0.0]
             for i in range(0, self._mDegree + 1):
-                curveptw[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
-                curveptw[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
+                curveptw[0] += (basis[i] * (self._mCtrlPts[span - self._mDegree + i][0] * self._mWeights[span - self._mDegree + i]))
+                curveptw[1] += (basis[i] * (self._mCtrlPts[span - self._mDegree + i][1] * self._mWeights[span - self._mDegree + i]))
                 curveptw[2] += (basis[i] * self._mWeights[span - self._mDegree + i])
             # Divide by weight
             curvept = [float(curveptw[0] / curveptw[2]), float(curveptw[1] / curveptw[2])]
