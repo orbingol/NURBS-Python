@@ -81,17 +81,12 @@ Therefore, the format of the control points file is;
 
 The format of the weighted control points file is;
 
-| | u0 | u1 | u2 | u3 | u4 | u5 | u6 | u7 | u8 |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **v0** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v1** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v2** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v3** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v4** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v5** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v6** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v7** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
-| **v8** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
+| | u0 | u1 | u2 | u3 |
+| :---: | :---: | :---: | :---: | :---: |
+| **v0** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | 
+| **v1** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | 
+| **v2** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | 
+| **v3** | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ | _(x\*w, y\*w, z\*w, w)_ |
 
 The methods to read control points from the files structured like the above are
 
