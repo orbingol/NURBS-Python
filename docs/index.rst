@@ -45,30 +45,30 @@ Curves
 ^^^^^^
 
 .. image:: ../ex_curve01.png
-    :width: 30%
-    :alt: Curve example 1
-
-.. image:: ../ex_curve02.png
-    :width: 30%
-    :alt: Curve example 2
+    :width: 49%
+    :alt: Curve example
 
 .. image:: ../ex_curve03.png
-    :width: 30%
-    :alt: Curve example 3
+    :width: 49%
+    :alt: Curve example with tangents as quiver plits
+
+.. image:: ../ex_curve04.png
+    :width: 49%
+    :alt: A full circle using NURBS
 
 Surfaces
 ^^^^^^^^
 
 .. image:: ../ex_surface01.png
-    :width: 30%
+    :width: 49%
     :alt: Surface example 1
 
 .. image:: ../ex_surface02.png
-    :width: 30%
+    :width: 49%
     :alt: Surface example 2
 
 .. image:: ../ex_surface03.png
-    :width: 30%
+    :width: 49%
     :alt: Surface example 3
 
 Submodules

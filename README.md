@@ -120,7 +120,7 @@ Displays the control points polygon and the evaluated curve using the an auto-ge
 
 #### File: ex_curve04.py
 
-A full circle using NURBS
+Displays the control points polygon and the evaluated NURBS curve for a full circle.
 
 ![2D line plots using Matplotlib](ex_curve04.png)
 
@@ -136,7 +136,7 @@ A full circle using NURBS
 
 ![3D scatter plot using Matplotlib](ex_surface03.png)
 
-Thanks to @jedufour for `ex_surface03.py` example.
+Thanks to [@jedufour](https://github.com/jedufour) for `ex_surface03.py` example.
 
 ## Issues and Reporting
 
