@@ -28,7 +28,7 @@ Therefore, the format of the control points file is;
 | 35 | 60 |
 | 20 | 40 |
 
-In order to generate the weighted control points file structure, you should multiply x and y values by the weight, _"w"_. An example, `CPw_Curve4.txt` is shown below.
+In order to generate the weighted control points file structure, you should multiply x and y values by the weight, _"w"_. An example file, `CPw_Curve4.txt`, is shown below:
 
 | x\*w | y\*w | w |
 | :---: | :---: | :---: |
@@ -42,7 +42,7 @@ In order to generate the weighted control points file structure, you should mult
 | 0.707 | -0.707 | 0.707 |
 | 0 | -1 | 1| 
 
-Therefore ,the unweighted version of `CPw_Curve4.txt` is;
+The unweighted version of `CPw_Curve4.txt` file is;
 
 | x  | y  |
 | :---: | :---: |
@@ -56,7 +56,7 @@ Therefore ,the unweighted version of `CPw_Curve4.txt` is;
 | 1 | -1 |
 | 0 | -1 |
 
-The method to read control points from the files structured like the above are
+The method to read control points from the files structured like the above are;
 
 * `read_ctrlpts(file_name)` for files containing _(x, y)_ style control points.
 * `read_ctrlptsw(file_name)` for files containing _(x\*w, y\*w, w)_ style weighted control points.
