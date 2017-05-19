@@ -89,12 +89,17 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 * [ex_curve01.py](ex_curve01.py)
 * [ex_curve02.py](ex_curve02.py)
 * [ex_curve03.py](ex_curve03.py)
+* [ex_curve04.py](ex_curve04.py) _(A full circle)_
 
 **Surfaces:**
 
 * [ex_surface01.py](ex_surface01.py)
 * [ex_surface02.py](ex_surface02.py)
 * [ex_surface03.py](ex_surface03.py)
+
+**Grid Generator**
+
+* [ex_grid01.py](ex_grid01.py)
 
 ### Plots
 
