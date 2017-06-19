@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 surf = ns.Surface()
 
 # Set up the NURBS surface
-surf.read_ctrlpts("data\CP_Surface1.txt")
+surf.read_ctrlpts("data/CP_Surface1.txt")
 surf.degree_u = 3
 surf.degree_v = 3
 surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
