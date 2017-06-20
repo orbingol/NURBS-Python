@@ -153,7 +153,8 @@ If you have any questions related to the NURBS-Python package, please don't hesi
 
 ## Contributors
 
-* John-Eric Dufour ([@jedufour](https://github.com/jedufour))
+* John-Eric Dufour ([@jedufour](https://github.com/jedufour)), bug fixing and contribution of surface example 3
+* Jan Heczko ([@heczis](https://github.com/heczis)), bug fixing
 
 ## License
 
