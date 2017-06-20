@@ -14,7 +14,8 @@ from matplotlib import pyplot as plt
 curve = ns.Curve()
 
 # The full circle with NURBS
-curve.read_ctrlptsw("data\CPw_Curve4.txt")
+#curve.read_ctrlptsw("data\CPw_Curve4.txt")
+#curve.read_json("data\CPw_Curve4.json")
 curve.degree = 2
 # Use a specialized knot vector
 curve.knotvector = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]

@@ -14,7 +14,8 @@ from matplotlib import pyplot as plt
 curve = ns.Curve()
 
 # Set up the NURBS curve
-curve.read_ctrlpts("data\CP_Curve1.txt")
+#curve.read_ctrlpts("data\CP_Curve1.txt")
+curve.read_json("data\CP_Curve1.json")
 curve.degree = 4
 # Auto-generate the knot vector
 curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
@@ -23,18 +24,14 @@ curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
 curve.evaluate_rational()
 
 # Arrange control points for plotting
-ctrlpts_x = []
-ctrlpts_y = []
-for pt in curve.ctrlpts:
-    ctrlpts_x.append(pt[0])
-    ctrlpts_y.append(pt[1])
+ctrlpts_x = [pt[0] for pt in curve.ctrlpts]
+ctrlpts_y = [pt[1] for pt in curve.ctrlpts]
+
 
 # Arrange curve points for plotting
-curvepts_x = []
-curvepts_y = []
-for pt in curve.curvepts:
-    curvepts_x.append(pt[0])
-    curvepts_y.append(pt[1])
+curvepts_x = [pt[0] for pt in curve.curvepts]
+curvepts_y = [pt[1] for pt in curve.curvepts]
+
 
 # Plot using Matplotlib
 plt.figure(figsize=(10.67, 8), dpi=96)

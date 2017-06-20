@@ -7,7 +7,7 @@
 
 """
 
-import sys
+import sys, json
 import itertools
 import nurbs.utilities as utils
 
@@ -305,6 +305,59 @@ class Curve(object):
                     self._mCtrlPts.append(pt)
                     # Add the weight to the global weights list
                     self._mWeights.append(float(coords[2].strip()))
+        except IOError:
+            print('Cannot open file ' + filename)
+            sys.exit(1)
+
+
+    # Parses control points and weigths(optional) from json
+    def parse_json(self, jsonrepr):
+        """ Deserializes control points from json representation - weigths are used if present.
+
+        :param jsonrepr: json representation
+        :type jsonrepr: string
+        :return: None
+        """
+        # Clean up the curve and control points lists, if necessary
+        self._reset_curve()
+        self._reset_ctrlpts()
+
+        # Control points are required
+        try:
+            ctrlptsxy = jsonrepr['controlpoints']
+            ptsx = ctrlptsxy['x']
+            ptsy = ctrlptsxy['y']
+        except KeyError:
+            print('Unable to parse control points from JSON')
+            sys.exit(1)
+
+        # Weigths are optional
+        ptsw = [1.0] * len(ptsx)
+        try:
+            ptsw = jsonrepr['weights']            
+        except KeyError:
+            pass
+
+        self._mCtrlPts = [[float(ptx), float(pty)] for ptx, pty in zip(ptsx, ptsy)]
+        self._mWeights = [float(ptw) for ptw in ptsw]
+        
+
+    # Reads control points and weigths(optional) from a json file
+    def read_json(self, filename=''):
+        """ Reads control points from a json file - weigths are used if present.
+
+        .. note:: The format of the json file is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+        :param filename: input file name
+        :type filename: string
+        :return: None
+        """
+        # Try reading the file
+        try:
+            # Open the file
+            with open(filename, 'r') as fp:
+                data = json.load(fp)
+                self.parse_json(data)
         except IOError:
             print('Cannot open file ' + filename)
             sys.exit(1)
