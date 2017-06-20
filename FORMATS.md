@@ -61,6 +61,20 @@ The method to read control points from the files structured like the above are;
 * `read_ctrlpts(file_name)` for files containing _(x, y)_ style control points.
 * `read_ctrlptsw(file_name)` for files containing _(x\*w, y\*w, w)_ style weighted control points.
 
+## JSON format
+
+Alternatively, control points and weights can be parsed from a JSON file. In this case, the control points are required (non-weighted), and the weights can be provided optionally. If no weights vector is provided they default to 1.
+
+```json
+{
+    "controlpoints":{
+        "x" : [ 0, -1, -1, -1, 0, 1, 1, 1, 0],
+        "y" : [ -1, -1, 0, 1, 1, 1, 0, -1, -1]
+    },
+    "weights": [1, 0.707, 1, 0.707, 1, 0.707, 1, 0.707, 1]
+}
+```
+
 ## Surfaces
 
 The text file should include _(x, y, z)_ coordinates. The structure of the text file includes two directions, namely **u** and **v**.
