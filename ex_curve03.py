@@ -14,8 +14,7 @@ from matplotlib import pyplot as plt
 curve = ns.Curve()
 
 # Set up the NURBS curve
-curve.read_ctrlpts("data\CP_Curve3.txt")
-#curve.read_json("data\CP_Curve3.json")
+curve.read_ctrlpts("data/CP_Curve3.txt")
 curve.degree = 3
 # Auto-generate the knot vector
 curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
