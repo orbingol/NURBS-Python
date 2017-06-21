@@ -21,6 +21,7 @@ def from_file(filename):
     :param filename: input file name
     :type filename: string
     :return: Curve
+    :raises: IOError if file is unavailable/invalid json and ValueError values not adhering to schema.
     """ 
     # Read file
     try:
@@ -45,24 +46,26 @@ def from_file(filename):
         ctrlptsy = ctrlpts['y']
     except KeyError:
         raise ValueError('Unable to parse control points')
-        sys.exit(1)
 
     try:
-        curve.ctrlpts = [[float(ctrlptx), float(ctrlpty)] for ctrlptx, ctrlpty in zip(ctrlptsx, ctrlptsy)]
+        ctrlpts = [[float(ctrlptx), float(ctrlpty)] for ctrlptx, ctrlpty in zip(ctrlptsx, ctrlptsy)]
     except:
         raise ValueError('Invalid input format for control points')
+
+    curve.ctrlpts = ctrlpts
 
     # Weigths are optional
     ctrlptsw = [1.0] * len(ctrlptsx)
     try:
-        ctrlptsw = jsonrepr['weights']            
+        ctrlptsw = jsonrepr['weights'] 
+        try:
+            ctrlptsw = [float(ctrlptw) for ctrlptw in ctrlptsw]            
+        except:
+            raise ValueError('Invalid input format for weights')           
     except KeyError:
         pass
 
-    try:
-        curve.weights = [float(ctrlptw) for ctrlptw in ctrlptsw]            
-    except:
-        raise ValueError('Invalid input format for weights')
+    curve.weights = ctrlptsw          
 
     # Knots are optional
     knots = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
