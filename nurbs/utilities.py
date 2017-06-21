@@ -352,33 +352,3 @@ def vector_normalize(vect=()):
         return retval
     else:
         raise ValueError("The magnitude of the vector is zero.")
-
-# Returnd control points and weigths(optional) from json dict representation
-def parse_json(jsonrepr):
-    """ Deserializes control points from json representation - weigths are used if present, else
-    a unity vector is used.
-
-    :param jsonrepr: json representation
-    :type jsonrepr: dict
-    :return: tuple of control points and weights
-    """
-    # Control points are required
-    try:
-        ctrlpts = jsonrepr['controlpoints']
-        ctrlptsx = ctrlpts['x']
-        ctrlptsy = ctrlpts['y']
-    except KeyError:
-        print('Unable to parse control points')
-        sys.exit(1)
-
-    # Weigths are optional
-    ctrlptsw = [1.0] * len(ctrlptsx)
-    try:
-        ctrlptsw = jsonrepr['weights']            
-    except KeyError:
-        pass
-
-    ctrlpts = [[float(ctrlptx), float(ctrlpty)] for ctrlptx, ctrlpty in zip(ctrlptsx, ctrlptsy)]
-    weights = [float(ctrlptw) for ctrlptw in ctrlptsw]
-
-    return ctrlpts, weights

@@ -7,7 +7,7 @@
 
 """
 
-import sys, json
+import sys
 import itertools
 import nurbs.utilities as utils
 
@@ -308,30 +308,6 @@ class Curve(object):
         except IOError:
             print('Cannot open file ' + filename)
             sys.exit(1)        
-
-    # Reads control points and weigths(optional) from a json file
-    def read_ctrlpts_json(self, filename=''):
-        """ Reads control points from a json file - weigths are used if present.
-
-        .. note:: The format of the json file is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
-
-        :param filename: input file name
-        :type filename: string
-        :return: None
-        """
-        # Clean up the curve and control points lists, if necessary
-        self._reset_curve()
-        self._reset_ctrlpts()
-
-        # Try reading the file
-        try:
-            # Open the file
-            with open(filename, 'r') as fp:
-                data = json.load(fp)
-                self._mCtrlPts, self._mWeights = utils.parse_json(data)
-        except IOError:
-            print('Cannot open file ' + filename)
-            sys.exit(1)
 
     # Evaluates the B-Spline curve
     def evaluate(self):
