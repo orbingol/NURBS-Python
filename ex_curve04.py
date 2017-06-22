@@ -8,11 +8,16 @@
 
 from nurbs import Curve as ns
 from nurbs import utilities as utils
-from nurbs import factories as fact
 from matplotlib import pyplot as plt
 
 # Create a NURBS curve instance
-curve = fact.from_file("data/CPw_Curve4.json")
+curve = ns.Curve()
+
+# The full circle with NURBS
+curve.read_ctrlptsw("data/CPw_Curve4.txt")
+curve.degree = 2
+# Use a specialized knot vector
+curve.knotvector = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
 
 # Calculate NURBS curve points
 curve.evaluate_rational()

@@ -70,13 +70,15 @@ def from_file(filename):
     # Knots are optional
     knots = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
     try:
-        knots = jsonrepr['knots']            
+        knots = jsonrepr['knots']  
+        try:
+            knots = [float(knot) for knot in knots]            
+        except:
+            raise ValueError('Invalid input format for knots')
+          
     except KeyError:
         pass
-
-    try:
-        curve.knotvector = [float(knot) for knot in knots]            
-    except:
-        raise ValueError('Invalid input format for knots')
+    
+    curve.knotvector = knots
 
     return curve

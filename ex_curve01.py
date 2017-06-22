@@ -8,11 +8,16 @@
 
 from nurbs import Curve as ns
 from nurbs import utilities as utils
-from nurbs import factories as fact
 from matplotlib import pyplot as plt
 
 # Create a NURBS curve instance
-curve = fact.from_file("data/CP_Curve1.json")
+curve = ns.Curve()
+
+# Set up the NURBS curve
+curve.read_ctrlpts("data/CP_Curve1.txt")
+curve.degree = 4
+# Auto-generate the knot vector
+curve.knotvector = utils.knotvector_autogen(curve.degree, len(curve.ctrlpts))
 
 # Calculate curve points
 curve.evaluate_rational()
