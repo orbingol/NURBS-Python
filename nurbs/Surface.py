@@ -127,11 +127,10 @@ class Surface(object):
         if len(value) < self._mDegreeV + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
         # Then, check U direction
-        u_cnt = 0
         for u_coords in value:
-            if len(u_coords) < self._mDegreeU + 1:
+            u_cnt = len(u_coords)
+            if u_cnt < self._mDegreeU + 1:
                 raise ValueError("Number of control points in u-direction should be at least degree + 1.")
-            u_cnt += 1
             for coord in u_coords:
                 # Save the control points as a list of 3D coordinates
                 if len(coord) < 0 or len(coord) > 3:
@@ -150,6 +149,7 @@ class Surface(object):
             self._mCtrlPts2D.append(ctrlpts_v)
         # Automatically generate a weights vector of 1.0s in the size of ctrlpts array
         self._mWeights = [1.0] * self._mCtrlPts_sizeU * self._mCtrlPts_sizeV
+
 
     @property
     def ctrlpts2d(self):
@@ -314,7 +314,7 @@ class Surface(object):
         if self._mDegreeU == 0 or self._mDegreeV == 0:
             works = False
 
-        if not self._mCtrlPts:
+        if not self._mCtrlPts:          
             works = False
 
         if not self._mKnotVectorU or not self._mKnotVectorV:

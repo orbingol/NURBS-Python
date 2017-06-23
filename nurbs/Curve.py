@@ -307,7 +307,7 @@ class Curve(object):
                     self._mWeights.append(float(coords[2].strip()))
         except IOError:
             print('Cannot open file ' + filename)
-            sys.exit(1)
+            sys.exit(1)        
 
     # Evaluates the B-Spline curve
     def evaluate(self):
