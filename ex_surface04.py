@@ -4,23 +4,19 @@
     Examples for the NURBS-Python Package
     Released under MIT License
     Developed by Onur Rauf Bingol (c) 2016-2017
+
+    This example is contributed by John-Eric Dufour (@jedufour)
 """
 
 from nurbs import Surface as ns
+from nurbs import utilities as utils
+from nurbs import factories as fact
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # Create a NURBS surface instance
-surf = ns.Surface()
-
-# Set up the NURBS surface
-surf.read_ctrlpts("data/CP_Surface1.txt")
-surf.degree_u = 3
-surf.degree_v = 3
-surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
-surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
-
-# Calculate surface points
+#surf = fact.from_file("data/CP_Surface1.json")
+surf = fact.from_file("data/CP_Surface2.json")
 surf.evaluate()
 
 # Arrange calculated surface data for plotting
