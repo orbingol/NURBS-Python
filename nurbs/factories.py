@@ -33,7 +33,8 @@ def load_floats_or(data, key, fallback):
     except KeyError:
         return fallback
 
-def from_dict(nurbdsdict):
+
+def from_dict(data):
     """ Creates a nurbs instance from the data provided in the dictionary.
 
     :param nurbdsdict: input data
@@ -41,40 +42,53 @@ def from_dict(nurbdsdict):
     :return: Curve
     :raises: ValueError if content not adhering to schema.
     """ 
-    #Create a NURBS curve instance
-    curve = ns.Curve()
-
     # Degree is optional
     try:
-        curve.degree = int(nurbdsdict['degree']) 
+        degree = int(data['degree']) 
     except:
-        curve.degree = DEGREE_FALLBACK
+        degree = DEGREE_FALLBACK
 
     # Control points are required
     try:
-        ctrlpts = nurbdsdict['controlpoints']
+        ctrlpts = data['controlpoints']
         ctrlptsx = ctrlpts['x']
         ctrlptsy = ctrlpts['y']
+        # If z values are provided, this is a surface
+        try:
+            ctrlptsz = ctrlpts['z']
+        except KeyError:
+            ctrlptsz = None
     except KeyError:
         raise ValueError('No control points provided')
 
+    # Make the coordinate vector, 2D points for a curve and 3D for a surface
     try:
-        ctrlpts = [[float(ctrlptx), float(ctrlpty)] for ctrlptx, ctrlpty in zip(ctrlptsx, ctrlptsy)]
+        if not ctrlptsz:            
+            ctrlpts = [[float(ctrlptx), float(ctrlpty)] for ctrlptx, ctrlpty in zip(ctrlptsx, ctrlptsy)]
+        else:
+            ctrlpts = [[float(ctrlptx), float(ctrlpty), float(ctrlptz)] for \
+              ctrlptx, ctrlpty, ctrlptz in zip(ctrlptsx, ctrlptsy, ctrlptsz)]            
     except:
         raise ValueError('Invalid input format for control points')
 
-    curve.ctrlpts = ctrlpts
-
     # Weigths and knots are optional
-    curve.weights = load_floats_or(nurbdsdict, 'weights', [1.0] * len(ctrlptsx))
-    curve.knotvector = load_floats_or(nurbdsdict, 'knots', \
-      utils.knotvector_autogen(curve.degree, len(curve.ctrlpts)))
+    weights = load_floats_or(data, 'weights', [1.0] * len(ctrlpts))
+    knotvector = load_floats_or(data, 'knots', utils.knotvector_autogen(degree, len(ctrlpts)))
+
+    #Create a NURBS curve instance
+    curve = ns.Curve()
+    curve.degree = degree
+    curve.ctrlpts = ctrlpts
+    curve.weights = weights
+    curve.knotvector = knotvector
 
     return curve
+
 
 def from_file(filename):
     """ Reads nurbs data from a json formatted file and returns instantiated object.
 
+    .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
     :param filename: input file name
     :type filename: string
@@ -83,12 +97,13 @@ def from_file(filename):
     """ 
     try:
         with open(filename, 'r') as fp:
-            jsonrepr = json.load(fp)
+            data = json.load(fp)
     except:
         # raise this for both an invalid file and json parsing error
         raise IOError('Invalid json file ' + filename)
     
-    return from_dict(jsonrepr)
+    return from_dict(data)
+
 
 class TestJSONFactory(unittest.TestCase):
 
