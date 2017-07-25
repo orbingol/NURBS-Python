@@ -205,7 +205,7 @@ class Grid:
         if not self._gridpts:
             raise ValueError("Grid must be generated before saving it to a file!")
 
-        if not isinstance(file_name, basestring):
+        if not isinstance(file_name, str):
             raise ValueError("File name must be a string!")
 
         # Open the file for writing
