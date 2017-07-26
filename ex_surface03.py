@@ -43,6 +43,6 @@ surfplt = ax.scatter(surfpts_x, surfpts_y, surfpts_z, c="green", s=10, depthshad
 ax.set_xlim(-2, 2)
 ax.set_ylim(-2, 2)
 ax.set_zlim(-1, 1)
-fig.show()
+plt.show()
 
 print("End of NURBS-Python Example")

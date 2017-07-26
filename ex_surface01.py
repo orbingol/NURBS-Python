@@ -40,6 +40,6 @@ surfplt = ax.plot_trisurf(surfpts_x, surfpts_y, surfpts_z, cmap=plt.cm.viridis) 
 ax.set_xlim(-25, 25)
 ax.set_ylim(-25, 25)
 ax.set_zlim(-15, 15)
-fig.show()
+plt.show()
 
 print("End of NURBS-Python Example")
