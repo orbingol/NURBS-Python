@@ -13,6 +13,10 @@ Currently, the `Curve` and `Surface` classes can be used for data storage and ev
 
 I would be glad if you cite this repository using the DOI provided as a badge at the top.
 
+## Example Scripts
+
+Please see [NURBS-Python Examples](https://github.com/orbingol/NURBS-Python_Examples) repository for example scripts and figures.
+
 ## Description of the Package
 
 ### Algorithms
@@ -72,10 +76,6 @@ Other functions in the `utilities` module are used as helper functions in evalua
 ### 2D Grid Generation
 
 `Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](https://github.com/orbingol/NURBS-Python_Examples/blob/master/ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
-
-## Examples
-
-* They are moved to a different repository: [NURBS-Python Examples](https://github.com/orbingol/NURBS-Python_Examples)
 
 ## Minimum Requirements
 
