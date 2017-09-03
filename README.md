@@ -71,7 +71,7 @@ Other functions in the `utilities` module are used as helper functions in evalua
 
 ### 2D Grid Generation
 
-`Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
+`Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](https://github.com/orbingol/NURBS-Python_Examples/blob/master/ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
 
 ## Examples
 
