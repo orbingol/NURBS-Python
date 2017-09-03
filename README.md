@@ -69,80 +69,15 @@ Other functions in the `utilities` module are used as helper functions in evalua
 
 `Grid` module is capable of generating simple 2D control point grids for use with the `Surface` class. Please check [ex_grid01.py](ex_grid01.py) file and the documentation for details on how to use the `Grid` class and its features.
 
+## Examples
+
+* They are moved to a different repository: [NURBS-Python Examples](https://github.com/orbingol/NURBS-Python_Examples)
+
 ## Minimum Requirements
 
 One of the major goals of this project is implementing all these algorithms with minimum dependencies. Currently, the NURBS package can run with plain Python and therefore, it has no extra dependencies, like NumPy or similar. The code was tested with Python versions 2.7.12 and 3.5.3.
 
 On the other hand, the plotting part of the examples requires Matplotlib installed in your Python distribution. If you don't need any plotting, you basically won't need Matplotlib at all.
-
-## Contents of the repository
-
-* `nurbs\` directory includes the `Curve` and `Surface` classes along with the `utilities` module
-* `ex*.py` files are testing scripts for demonstrating curve and surface evaluations
-* `data\` directory contains sample control points for the testing scripts
-
-## How to use NURBS-Python Package
-
-### Coding Examples
-
-**Curves:**
-
-* [ex_curve01.py](ex_curve01.py)
-* [ex_curve02.py](ex_curve02.py)
-* [ex_curve03.py](ex_curve03.py)
-* [ex_curve04.py](ex_curve04.py) _(A full circle)_
-
-**Surfaces:**
-
-* [ex_surface01.py](ex_surface01.py)
-* [ex_surface02.py](ex_surface02.py)
-* [ex_surface03.py](ex_surface03.py)
-
-**Grid Generator**
-
-* [ex_grid01.py](ex_grid01.py)
-
-### Plots
-
-The following plots are generated using [Matplotlib](http://matplotlib.org/).
-
-#### File: ex_curve01.py
-
-Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector.
-
-![2D line plots using Matplotlib](ex_curve01.png)
-
-#### File: ex_curve02.py
-
-Displays the evaluated curve using an auto-generated uniform knot vector and the tangent vector at u = 0.6.
-
-![2D line plots using Matplotlib](ex_curve02.png)
-
-#### File: ex_curve03.py
-
-Displays the control points polygon and the evaluated curve using the an auto-generated uniform knot vector. Tangent vectors are shown in quiver plots.
-
-![2D line plots using Matplotlib](ex_curve03.png)
-
-#### File: ex_curve04.py
-
-Displays the control points polygon and the evaluated NURBS curve for a full circle.
-
-![2D line plots using Matplotlib](ex_curve04.png)
-
-#### File: ex_surface01.py
-
-![3D scatter plot using Matplotlib](ex_surface01.png)
-
-#### File: ex_surface02.py
-
-![3D scatter plot using Matplotlib](ex_surface02.png)
-
-#### File: ex_surface03.py
-
-![3D scatter plot using Matplotlib](ex_surface03.png)
-
-Thanks to [@jedufour](https://github.com/jedufour) for `ex_surface03.py` example.
 
 ## Issues and Reporting
 
