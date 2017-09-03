@@ -9,6 +9,10 @@ This project aims to implement the NURBS curve and surface computation algorithm
 
 Currently, the `Curve` and `Surface` classes can be used for data storage and evaluation of B-Spline and NURBS curves and surfaces. Additionally, `Grid` class can be used to generate simple 2D control point grids for use with the `Surface` class.
 
+## For Researchers
+
+I would be glad if you cite this repository using the DOI provided as a badge at the top.
+
 ## Description of the Package
 
 ### Algorithms
@@ -81,7 +85,7 @@ On the other hand, the plotting part of the examples requires Matplotlib install
 
 ## Issues and Reporting
 
-If you have any questions related to the NURBS-Python package, please don't hesitate to contact the author.
+If you have any questions related to the NURBS-Python package, please don't hesitate to contact the author by email or creating a new issue.
 
 ## Author
 
