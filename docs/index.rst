@@ -44,25 +44,25 @@ The following 2D and 3D plots are generated using `Matplotlib <http://matplotlib
 Curves
 ^^^^^^
 
-.. image:: ../ex_curve01.png
+.. image:: images/ex_curve01.png
     :alt: Curve example
 
-.. image:: ../ex_curve03.png
+.. image:: images/ex_curve03.png
     :alt: Curve example with tangents as quiver plits
 
-.. image:: ../ex_curve04.png
+.. image:: images/ex_curve04.png
     :alt: A full circle using NURBS
 
 Surfaces
 ^^^^^^^^
 
-.. image:: ../ex_surface01.png
+.. image:: images/ex_surface01.png
     :alt: Surface example 1
 
-.. image:: ../ex_surface02.png
+.. image:: images/ex_surface02.png
     :alt: Surface example 2
 
-.. image:: ../ex_surface03.png
+.. image:: images/ex_surface03.png
     :alt: Surface example 3
 
 Submodules
