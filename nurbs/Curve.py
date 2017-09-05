@@ -56,6 +56,22 @@ class Curve(object):
         self._mCurvePts = []
 
     @property
+    def order(self):
+        """ Curve order
+
+        Follows the following equality: order = degree + 1
+
+        :getter: Gets the curve order
+        :setter: Sets the curve order
+        :type: integer
+        """
+        return self._mDegree + 1
+
+    @order.setter
+    def order(self, value):
+        self.degree = value - 1
+
+    @property
     def degree(self):
         """ Curve degree
 

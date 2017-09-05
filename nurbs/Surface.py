@@ -65,6 +65,38 @@ class Surface(object):
         self._mSurfPts = []
 
     @property
+    def order_u(self):
+        """ Surface order for U direction
+
+        Follows the following equality: order = degree + 1
+
+        :getter: Gets the surface order for U direction
+        :setter: Sets the surface order for U direction
+        :type: integer
+        """
+        return self._mDegreeU + 1
+
+    @order_u.setter
+    def order_u(self, value):
+        self.degree_u = value - 1
+
+    @property
+    def order_v(self):
+        """ Surface order for V direction
+
+        Follows the following equality: order = degree + 1
+
+        :getter: Gets the surface order for V direction
+        :setter: Sets the surface order for V direction
+        :type: integer
+        """
+        return self._mDegreeV + 1
+
+    @order_v.setter
+    def order_v(self, value):
+        self.degree_v = value - 1
+
+    @property
     def degree_u(self):
         """ Surface degree for U direction
 
