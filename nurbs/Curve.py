@@ -19,6 +19,7 @@ class Curve(object):
 
     :class:`.Curve` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
 
+    * order
     * degree
     * knotvector
     * delta

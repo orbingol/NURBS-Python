@@ -19,6 +19,8 @@ class Surface(object):
 
     :class:`.Surface` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
 
+    * order_u
+    * order_v
     * degree_u
     * degree_v
     * knotvector_u
