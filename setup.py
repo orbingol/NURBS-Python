@@ -22,7 +22,7 @@ setup(
     author_email='contact@onurbingol.net',
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
-    packages=['nurbs'],
+    packages=['geomdl'],
     long_description=read('README.md'),
     classifiers=[
         'License :: OSI Approved :: MIT License',
