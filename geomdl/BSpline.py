@@ -12,7 +12,7 @@ import geomdl.utilities as utils
 
 
 class Curve(object):
-    """ A data storage and evaluation class for B-Spline curves.
+    """ A data storage and evaluation class for 3D B-Spline curves.
 
     **Data Storage**
 
@@ -49,12 +49,13 @@ class Curve(object):
         self._mCtrlPts = []
         self._mDelta = 0.1
         self._mCurvePts = []
+        self._mDimension = 3  # 3D points
 
     @property
     def order(self):
         """ Curve order
 
-        Follows the following equality: order = degree + 1
+        Defined as order = degree + 1
 
         :getter: Gets the curve order
         :setter: Sets the curve order
@@ -93,7 +94,7 @@ class Curve(object):
     def ctrlpts(self):
         """ Control points
 
-        Control points of a :class:`.Curve` is stored as a list of (x, y) coordinates
+        Control points of a :class:`.Curve` is stored as a list of (x, y, z) coordinates
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -114,8 +115,8 @@ class Curve(object):
         self._reset_ctrlpts()
 
         for coord in value:
-            if len(coord) < 0 or len(coord) > 2:
-                raise ValueError("ERROR: Please input 2D coordinates")
+            if len(coord) < 0 or len(coord) > 3:
+                raise ValueError("ERROR: Please input 3D coordinates")
             # Convert to list of floats
             coord_float = [float(c) for c in coord]
             self._mCtrlPts.append(coord_float)
@@ -143,7 +144,7 @@ class Curve(object):
     def delta(self):
         """ Curve evaluation delta
 
-        .. note:: The delta value is 0.01 by default.
+        .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
@@ -221,7 +222,7 @@ class Curve(object):
                     # Convert the string containing the coordinates into a list
                     coords = line.split(',')
                     # Remove extra whitespace and convert to float
-                    pt = [float(coords[0].strip()), float(coords[1].strip())]
+                    pt = [float(coords[0].strip()), float(coords[1].strip()), float(coords[2].strip())]
                     self._mCtrlPts.append(pt)
         except IOError:
             print('Cannot open file ' + filename)
@@ -242,13 +243,14 @@ class Curve(object):
 
         # Algorithm A3.1
         for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
+            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self.ctrlpts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
-            curvept = [0.0, 0.0]
+            cpt = [0.0, 0.0, 0.0]
             for i in range(0, self._mDegree + 1):
-                curvept[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
-                curvept[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
-            self._mCurvePts.append(curvept)
+                cpt[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
+                cpt[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
+                cpt[2] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][2])
+            self._mCurvePts.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
@@ -270,18 +272,19 @@ class Curve(object):
         # Algorithm A3.2: CurveDerivsAlg1
         du = min(self._mDegree, order)
 
-        CK = [[None for x in range(2)] for y in range(order + 1)]
-        for k in range(self._mDegree+1, order+1):
-            CK[k] = [0.0 for x in range(2)]
+        CK = [[None for x in range(self._mDimension)] for y in range(order + 1)]
+        for k in range(self._mDegree + 1, order + 1):
+            CK[k] = [0.0 for x in range(self._mDimension)]
 
-        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self.ctrlpts), u)
         bfunsders = utils.basis_functions_ders(self._mDegree, tuple(self._mKnotVector), span, u, du)
 
-        for k in range(0, du+1):
-            CK[k] = [0.0 for x in range(2)]
+        for k in range(0, du + 1):
+            CK[k] = [0.0 for x in range(self._mDimension)]
             for j in range(0, self._mDegree+1):
                 CK[k][0] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][0])
                 CK[k][1] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][1])
+                CK[k][2] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][2])
 
         # Return the derivatives
         return CK
@@ -302,16 +305,18 @@ class Curve(object):
         :rtype: list
         """
         r = r2 - r1
-        PK = [[[None for x in range(0, 2)] for y in range(r + 1)] for z in range(order + 1)]
+        PK = [[[None for x in range(self._mDimension)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
             PK[0][i][0] = self._mCtrlPts[r1 + i][0]
             PK[0][i][1] = self._mCtrlPts[r1 + i][1]
+            PK[0][i][2] = self._mCtrlPts[r1 + i][2]
 
         for k in range(1, order + 1):
             tmp = self._mDegree - k + 1
             for i in range(0, r - k + 1):
-                PK[k][i][0] = tmp * (PK[k - 1][i + 1][0] - PK[k - 1][i][0]) /(self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
-                PK[k][i][1] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][1]) /(self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                PK[k][i][0] = tmp * (PK[k - 1][i + 1][0] - PK[k - 1][i][0]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                PK[k][i][1] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][1]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                PK[k][i][2] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][2]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
 
         return PK
 
@@ -335,19 +340,20 @@ class Curve(object):
         # Algorithm A3.4: CurveDerivsAlg2
         du = min(self._mDegree, order)
 
-        CK = [[None for x in range(2)] for y in range(order + 1)]
+        CK = [[None for x in range(self._mDimension)] for y in range(order + 1)]
         for k in range(self._mDegree + 1, order + 1):
-            CK[k] = [0.0 for x in range(2)]
+            CK[k] = [0.0 for x in range(self._mDimension)]
 
         span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
         bfuns = utils.basis_functions_all(self._mDegree, tuple(self._mKnotVector), span, u)
         PK = self.derivatives_ctrlpts(du, span - self._mDegree, span)
 
         for k in range(0, du + 1):
-            CK[k] = [0.0 for x in range(2)]
+            CK[k] = [0.0 for x in range(self._mDimension)]
             for j in range(0, self._mDegree - k + 1):
                 CK[k][0] += (bfuns[j][self._mDegree - k] * PK[k][j][0])
                 CK[k][1] += (bfuns[j][self._mDegree - k] * PK[k][j][1])
+                CK[k][2] += (bfuns[j][self._mDegree - k] * PK[k][j][2])
 
         # Return the derivatives
         return CK
