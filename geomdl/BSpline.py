@@ -800,7 +800,7 @@ class Surface(object):
         basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
 
         idx_u = span_u - self._mDegreeU
-        surfpt = [0.0 for x in range(self._mDimension)]
+        spt = [0.0 for x in range(self._mDimension)]
 
         for l in range(0, self._mDegreeV + 1):
             temp = [0.0 for x in range(self._mDimension)]
@@ -812,10 +812,10 @@ class Surface(object):
                     idx += 1
             idx = 0
             while idx < self._mDimension:
-                surfpt[idx] += (basis_v[l] * temp[idx])
+                spt[idx] += (basis_v[l] * temp[idx])
                 idx += 1
 
-        return surfpt
+        return spt
 
     # Evaluates the B-Spline surface
     def evaluate(self):
