@@ -53,7 +53,7 @@ class Curve(BSpline.Curve):
     def ctrlpts(self):
         """ Control points
 
-        Control points of a :class:`.Curve` is stored as a list of (x*w, y*w, w) coordinates
+        Control points of a :class:`.Curve` is stored as a list of (x*w, y*w, z*w, w) coordinates
 
         :getter: Gets the control points in (x, y, z) format. Use :py:attr:`~weights` to get weights vector.
         :setter: Sets the control points in (x*w, y*w, z*w, w) format
@@ -122,3 +122,77 @@ class Curve2D(Curve):
         super(Curve2D, self).__init__()
         # Override dimension variable
         self._mDimension = 3  # 2D coordinates + weights
+
+
+class Surface(BSpline.Surface):
+    """ A data storage and evaluation class for NURBS surfaces.
+
+    **Data Storage**
+
+    :class:`.Surface` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
+
+    * order_u
+    * order_v
+    * degree_u
+    * degree_v
+    * knotvector_u
+    * knotvector_v
+    * delta
+    * ctrlpts
+    * ctrlptsw
+    * ctrlpts2D
+    * weights
+    * surfpts
+
+    The functions :func:`.read_ctrlpts()` and :func:`.read_ctrlptsw()` provide an easy way to read control points from a text file.
+    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    **Evaluation**
+
+    The evaluation methods in the :class:`.Surface` class are:
+
+    * :func:`.evaluate()`
+    * :func:`.derivatives()`
+    * :func:`.tangent()`
+    * :func:`.normal()`
+
+    .. note::
+
+        If you update any of the data storage elements after the surface evaluation, the surface points stored in :py:attr:`~surfpts` property will be deleted automatically.
+    """
+    def __init__(self):
+        super(Surface, self).__init__()
+        # Override dimension variable
+        self._mDimension = 4  # 3D coordinates + weights
+
+    @property
+    def ctrlpts(self):
+        """ Control points
+
+        Control points of a :class:`.Surface` is stored as a list of (x*w, y*w, z*w, w) coordinates
+
+        :getter: Gets the control points in (x, y, z) format. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets the control points in (x*w, y*w, z*w, w) format
+        :type: list
+        """
+        ret_list = []
+        for pt in self._mCtrlPts:
+            temp = []
+            idx = 0
+            while idx < self._mDimension - 1:
+                temp.append(float(pt[idx] / pt[-1]))
+                idx += 1
+            ret_list.append(tuple(temp))
+        return tuple(ret_list)
+
+    @property
+    def weights(self):
+        """ Weights vector
+
+        :getter: Extracts the weights vector from weighted control points array
+        :type: list
+        """
+        weights = []
+        for pt in self._mCtrlPts:
+            weights.append(pt[-1])
+        return tuple(weights)
