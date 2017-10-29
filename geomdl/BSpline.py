@@ -115,7 +115,7 @@ class Curve(object):
         self._reset_ctrlpts()
 
         for coord in value:
-            if len(coord) < 0 or len(coord) > 3:
+            if len(coord) < 0 or len(coord) > self._mDimension:
                 raise ValueError("ERROR: Please input 3D coordinates")
             # Convert to list of floats
             coord_float = [float(c) for c in coord]
@@ -222,7 +222,11 @@ class Curve(object):
                     # Convert the string containing the coordinates into a list
                     coords = line.split(',')
                     # Remove extra whitespace and convert to float
-                    pt = [float(coords[0].strip()), float(coords[1].strip()), float(coords[2].strip())]
+                    pt = []
+                    idx = 0
+                    while idx < self._mDimension:
+                        pt.append(float(coords[idx].strip()))
+                        idx += 1
                     self._mCtrlPts.append(pt)
         except IOError:
             print('Cannot open file ' + filename)
@@ -245,11 +249,12 @@ class Curve(object):
         for u in utils.frange(0, 1, self._mDelta):
             span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self.ctrlpts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
-            cpt = [0.0, 0.0, 0.0]
+            cpt = [0.0 for x in range(self._mDimension)]
             for i in range(0, self._mDegree + 1):
-                cpt[0] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][0])
-                cpt[1] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][1])
-                cpt[2] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][2])
+                idx = 0
+                while idx < self._mDimension:
+                    cpt[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
+                    idx += 1
             self._mCurvePts.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
@@ -282,9 +287,10 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self._mDimension)]
             for j in range(0, self._mDegree+1):
-                CK[k][0] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][0])
-                CK[k][1] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][1])
-                CK[k][2] += (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][2])
+                idx = 0
+                while idx < self._mDimension:
+                    CK[k][idx] = (bfunsders[k][j] * self._mCtrlPts[span - self._mDegree + j][idx])
+                    idx += 1
 
         # Return the derivatives
         return CK
@@ -307,16 +313,18 @@ class Curve(object):
         r = r2 - r1
         PK = [[[None for x in range(self._mDimension)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
-            PK[0][i][0] = self._mCtrlPts[r1 + i][0]
-            PK[0][i][1] = self._mCtrlPts[r1 + i][1]
-            PK[0][i][2] = self._mCtrlPts[r1 + i][2]
+            idx = 0
+            while idx < self._mDimension:
+                PK[0][i][idx] = self._mCtrlPts[r1 + i][idx]
+                idx += 1
 
         for k in range(1, order + 1):
             tmp = self._mDegree - k + 1
             for i in range(0, r - k + 1):
-                PK[k][i][0] = tmp * (PK[k - 1][i + 1][0] - PK[k - 1][i][0]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
-                PK[k][i][1] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][1]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
-                PK[k][i][2] = tmp * (PK[k - 1][i + 1][1] - PK[k - 1][i][2]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                idx = 0
+                while idx < self._mDimension:
+                    PK[k][i][idx] = tmp * (PK[k - 1][i + 1][idx] - PK[k - 1][i][idx]) / (self._mKnotVector[r1 + i + self._mDegree + 1] - self._mKnotVector[r1 + i + k])
+                    idx += 1
 
         return PK
 
@@ -351,9 +359,10 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self._mDimension)]
             for j in range(0, self._mDegree - k + 1):
-                CK[k][0] += (bfuns[j][self._mDegree - k] * PK[k][j][0])
-                CK[k][1] += (bfuns[j][self._mDegree - k] * PK[k][j][1])
-                CK[k][2] += (bfuns[j][self._mDegree - k] * PK[k][j][2])
+                idx = 0
+                while idx < self._mDimension:
+                    CK[k][idx] += (bfuns[j][self._mDegree - k] * PK[k][j][idx])
+                    idx += 1
 
         # Return the derivatives
         return CK
