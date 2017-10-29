@@ -96,7 +96,7 @@ class Curve(BSpline.Curve):
 
         # Algorithm A4.1
         for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self.ctrlpts), u)
+            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
             basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
             cptw = [0.0 for x in range(self._mDimension)]
             for i in range(0, self._mDegree + 1):
