@@ -32,8 +32,10 @@ NURBS-Python currently implements the following algorithms from **The NURBS Book
 * Algorithm A3.4: CurveDerivsAlg2
 * Algorithm A3.5: SurfacePoint
 * Algorithm A3.6: SurfaceDerivsAlg1
-* Algorithm A4.1: CurvePoint (from weighted control points)
-* Algorithm A4.3: SurfacePoint (from weighted control points)
+* Algorithm A4.1: CurvePoint
+* Algorithm A4.2: RatCurveDerivs
+* Algorithm A4.3: SurfacePoint
+* Algorithm A4.4: RatSurfaceDerivs
 
 ### Data Structure
 

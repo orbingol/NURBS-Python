@@ -112,6 +112,43 @@ class Curve(BSpline.Curve):
                 idx += 1
             self._mCurvePts.append(curvept)
 
+    # Evaluates the rational curve derivative
+    def derivatives(self, u=-1, order=0):
+        """ Evaluates n-th order curve derivatives at the given u from the rational curve.
+
+        :param u: knot value
+        :type u: float
+        :param order: derivative order
+        :type order: integer
+        :return: A list containing up to {order}-th derivative of the curve
+        :rtype: list
+        """
+        # Call the parent function to evaluate A(u) and w(u) derivatives
+        CKw = super(Curve, self).derivatives(u, order)
+
+        # Algorithm A4.2
+        CK = [[None for x in range(self._mDimension-1)] for y in range(order + 1)]
+        for k in range(0, order + 1):
+            v = []
+            idx = 0
+            while idx < self._mDimension - 1:
+                v.append(CKw[idx])
+                idx += 1
+
+            for i in range(1, order + 1):
+                idx = 0
+                while idx < self._mDimension - 1:
+                    v[idx] -= (utils.binomial_coeff(k, i) * CKw[i][-1] * CK[k-i][idx])
+                    idx += 1
+
+            idx = 0
+            while idx < self._mDimension - 1:
+                CK[k][idx] = v[idx] / CKw[0][-1]
+                idx += 1
+
+        # Return C(u) derivatives
+        return CK
+
 
 class Curve2D(Curve):
     """ A data storage and evaluation class for 2D NURBS curves.
@@ -238,3 +275,67 @@ class Surface(BSpline.Surface):
                     surfpt.append(float(sptw[idx] / sptw[-1]))
                     idx += 1
                 self._mSurfPts.append(surfpt)
+
+    # Evaluates n-th order rational surface derivatives at the given (u,v) parameter
+    def derivatives(self, u=-1, v=-1, order=0):
+        """ Evaluates n-th order surface derivatives at the given (u,v) parameter from the rational surface.
+
+        * SKL[0][0] will be the surface point itself
+        * SKL[0][1] will be the 1st derivative w.r.t. v
+        * SKL[2][1] will be the 2nd derivative w.r.t. u and 1st derivative w.r.t. v
+
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :param order: derivative order
+        :type order: integer
+        :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
+        :rtype: list
+        """
+        # Call the parent function to evaluate A(u) and w(u) derivatives
+        SKLw = super(Surface, self).derivatives(u, v, order)
+
+        # Algorithm A4.4
+        du = min(self._mDegreeU, order)
+        dv = min(self._mDegreeV, order)
+
+        # Generate an empty list of derivatives
+        SKL = [[[None for x in range(self._mDimension)] for y in range(dv + 1)] for z in range(du + 1)]
+
+        for k in range(0, order + 1):
+            for l in range(0, order - k + 1):
+                v = []
+                idx = 0
+                while idx < self._mDimension - 1:
+                    v.append(SKLw[idx])
+                    idx += 1
+
+                for j in range(1, l + 1):
+                    idx = 0
+                    while idx < self._mDimension - 1:
+                        v[idx] -= (utils.binomial_coeff(l, j) * SKLw[0][j][-1] * SKL[k][l - j][idx])
+                        idx += 1
+                for i in range(1, k + 1):
+                    idx = 0
+                    while idx < self._mDimension - 1:
+                        v[idx] -= (utils.binomial_coeff(k, i) * SKLw[i][0][-1] * SKL[k - i][l][idx])
+                        idx += 1
+                    v2 = [0.0 for x in range(self._mDimension - 1)]
+                    for j in range(1, l + 1):
+                        idx = 0
+                        while idx < self._mDimension - 1:
+                            v2[idx] += (utils.binomial_coeff(l, j) * SKLw[i][j][-1] * SKL[k - i][l - j][idx])
+                            idx += 1
+                    idx = 0
+                    while idx < self._mDimension - 1:
+                        v[idx] -= (utils.binomial_coeff(k, i) * v2[idx])
+                        idx += 1
+
+                idx = 0
+                while idx < self._mDimension - 1:
+                    SKL[k][l][idx] = v[idx] / SKLw[0][0][-1]
+                    idx += 1
+
+        # Return S(u,v) derivatives
+        return SKL

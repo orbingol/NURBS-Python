@@ -352,3 +352,19 @@ def vector_normalize(vect=()):
         return retval
     else:
         raise ValueError("The magnitude of the vector is zero.")
+
+
+# Computes the binomial coefficient
+def binomial_coeff(k, i):
+    """ Computes the binomial coefficient (k choose i)
+
+    :param k: a set of k elements
+    :type k: int
+    :param i: subset of elements with the size i
+    :type i: int
+    :return:
+    """
+    k_fact = math.factorial(k)
+    i_fact = math.factorial(i)
+    k_i_fact = math.factorial(k-i)
+    return k_fact / (k_i_fact * i_fact)
