@@ -49,7 +49,7 @@ class Curve(object):
         self._mCtrlPts = []
         self._mDelta = 0.1
         self._mCurvePts = []
-        self._mDimension = 3  # 3D points
+        self._mDimension = 3  # 3D coordinates
 
     @property
     def order(self):
@@ -385,6 +385,17 @@ class Curve(object):
 
         # Return the list
         return point, der_u
+
+
+class Curve2D(Curve):
+    """ A data storage and evaluation class for 2D B-Spline curves.
+
+    This class is a subclass of :class:`.Curve` with only the dimensional change.
+    """
+    def __init__(self):
+        super(Curve2D, self).__init__()
+        # Override dimension variable
+        self._mDimension = 2  # 2D coordinates
 
 
 class Surface(object):

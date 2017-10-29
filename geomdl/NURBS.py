@@ -111,3 +111,14 @@ class Curve(BSpline.Curve):
                 curvept.append(float(cptw[idx] / cptw[-1]))
                 idx += 1
             self._mCurvePts.append(curvept)
+
+
+class Curve2D(Curve):
+    """ A data storage and evaluation class for 2D NURBS curves.
+
+    This class is a subclass of :class:`.Curve` with only the dimensional change.
+    """
+    def __init__(self):
+        super(Curve2D, self).__init__()
+        # Override dimension variable
+        self._mDimension = 3  # 2D coordinates + weights
