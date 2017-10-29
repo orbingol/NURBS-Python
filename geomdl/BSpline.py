@@ -443,6 +443,7 @@ class Surface(object):
         self._mCtrlPts_sizeV = 0  # rows
         self._mDelta = 0.1
         self._mSurfPts = []
+        self._mDimension = 3  # 3D coordinates
 
     @property
     def order_u(self):
@@ -546,7 +547,7 @@ class Surface(object):
             u_cnt += 1
             for coord in u_coords:
                 # Save the control points as a list of 3D coordinates
-                if len(coord) < 0 or len(coord) > 3:
+                if len(coord) < 0 or len(coord) > self._mDimension:
                     raise ValueError("Please input 3D coordinates")
                 # Convert to list of floats
                 coord_float = [float(c) for c in coord]
@@ -696,7 +697,11 @@ class Surface(object):
                     for cpr in control_point_row:
                         cpt = cpr.split(',')
                         # Create a temporary dictionary for appending coordinates into ctrlpts list
-                        pt = [float(cpt[0]), float(cpt[1]), float(cpt[2])]
+                        pt = []
+                        idx = 0
+                        while idx < self._mDimension:
+                            pt.append(float(cpt[idx].strip()))
+                            idx += 1
                         # Add control points to the global control point list
                         self._mCtrlPts.append(pt)
                         self._mCtrlPts_sizeU += 1
@@ -771,17 +776,20 @@ class Surface(object):
                 span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
                 basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
                 idx_u = span_u - self._mDegreeU
-                surfpt = [0.0, 0.0, 0.0]
+                surfpt = [0.0 for x in range(self._mDimension)]
                 for l in range(0, self._mDegreeV + 1):
-                    temp = [0.0, 0.0, 0.0]
+                    temp = [0.0 for x in range(self._mDimension)]
                     idx_v = span_v - self._mDegreeV + l
                     for k in range(0, self._mDegreeU + 1):
-                        temp[0] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][0])
-                        temp[1] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][1])
-                        temp[2] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][2])
-                    surfpt[0] += (basis_v[l] * temp[0])
-                    surfpt[1] += (basis_v[l] * temp[1])
-                    surfpt[2] += (basis_v[l] * temp[2])
+                        idx = 0
+                        while idx < self._mDimension:
+                            temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
+                            idx += 1
+                    idx = 0
+                    while idx < self._mDimension:
+                        surfpt[idx] += (basis_v[l] * temp[idx])
+                        idx += 1
+
                 self._mSurfPts.append(surfpt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
@@ -824,15 +832,18 @@ class Surface(object):
                 for r in range(0, self._mDegreeU + 1):
                     cu = span_u - self._mDegreeU + r
                     cv = span_v - self._mDegreeV + s
-                    temp[s][0] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][0])
-                    temp[s][1] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][1])
-                    temp[s][2] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][2])
+                    idx = 0
+                    while idx < self._mDimension:
+                        temp[s][idx] += (bfunsders_u[k][r] * self._mCtrlPts2D[cu][cv][idx])
+                        idx += 1
+
             dd = min(order - k, dv)
             for l in range(0, dd + 1):
                 for s in range(0, self._mDegreeV + 1):
-                    SKL[k][l][0] += (bfunsders_v[l][s] * temp[s][0])
-                    SKL[k][l][1] += (bfunsders_v[l][s] * temp[s][1])
-                    SKL[k][l][2] += (bfunsders_v[l][s] * temp[s][2])
+                    idx = 0
+                    while idx < self._mDimension:
+                        SKL[k][l][idx] += (bfunsders_v[l][s] * temp[s][idx])
+                        idx += 1
 
         # Return the derivatives
         return SKL
