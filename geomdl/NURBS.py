@@ -81,36 +81,41 @@ class Curve(BSpline.Curve):
             weights.append(pt[-1])
         return tuple(weights)
 
-    # Evaluates the NURBS curve
-    def evaluate(self):
-        """ Evaluates the NURBS curve.
+    # Evaluates the rational curve at the given parameter
+    def curvept(self, u=-1, check_vars=True):
+        """ Evaluates the NURBS curve at the given u parameter
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
-
-        :return: None
+        :param u: parameter
+        :type u: float
+        :param check_vars: flag to disable variable checking (only for internal eval functions)
+        :type check_vars: bool
+        :return: evaluated curve point at the given knot value
         """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-        # Clean up the curve points, if necessary
-        self._reset_curve()
+        if check_vars:
+            # Check all parameters are set before the curve evaluation
+            self._check_variables()
+            # Check u parameters are correct
+            if u < 0.0 or u > 1.0:
+                raise ValueError('"u" value should be between 0 and 1.')
 
         # Algorithm A4.1
-        for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
-            basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
-            cptw = [0.0 for x in range(self._mDimension)]
-            for i in range(0, self._mDegree + 1):
-                idx = 0
-                while idx < self._mDimension:
-                    cptw[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
-                    idx += 1
-            # Divide by weight
-            curvept = []
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
+        basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
+        cptw = [0.0 for x in range(self._mDimension)]
+        for i in range(0, self._mDegree + 1):
             idx = 0
-            while idx < self._mDimension - 1:
-                curvept.append(float(cptw[idx] / cptw[-1]))
+            while idx < self._mDimension:
+                cptw[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
                 idx += 1
-            self._mCurvePts.append(curvept)
+
+        # Divide by weight
+        cpt = []
+        idx = 0
+        while idx < self._mDimension - 1:
+            cpt.append(float(cptw[idx] / cptw[-1]))
+            idx += 1
+
+        return cpt
 
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
@@ -234,47 +239,53 @@ class Surface(BSpline.Surface):
             weights.append(pt[-1])
         return tuple(weights)
 
-    # Evaluates the NURBS surface
-    def evaluate(self):
-        """ Evaluates the NURBS surface.
+    # Evaluates rational surface at the given (u,v) parameters
+    def surfpt(self, u=-1, v=-1, check_vars=True):
+        """ Evaluates the NURBS surface at the given (u,v) parameters
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
-
-        :return: None
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :param check_vars: flag to disable variable checking (only for internal eval functions)
+        :type check_vars: bool
+        :return: evaluated surface point at the given knot values
         """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
-        # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        if check_vars:
+            # Check all parameters are set before the surface evaluation
+            self._check_variables()
+            # Check u and v parameters are correct
+            utils.check_uv(u, v)
 
         # Algorithm A4.3
-        for v in utils.frange(0, 1, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
-            basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
-            for u in utils.frange(0, 1, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
-                basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
-                idx_u = span_u - self._mDegreeU
-                sptw = [0.0 for x in range(self._mDimension)]
-                for l in range(0, self._mDegreeV + 1):
-                    temp = [0.0 for x in range(self._mDimension)]
-                    idx_v = span_v - self._mDegreeV + l
-                    for k in range(0, self._mDegreeU + 1):
-                        idx = 0
-                        while idx < self._mDimension:
-                            temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
-                            idx += 1
-                    idx = 0
-                    while idx < self._mDimension:
-                        sptw[idx] += (basis_v[l] * temp[idx])
-                        idx += 1
-                # Divide by weight to obtain 3D surface points
-                surfpt = []
+        span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+        basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
+        span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+        basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
+        idx_u = span_u - self._mDegreeU
+        sptw = [0.0 for x in range(self._mDimension)]
+
+        for l in range(0, self._mDegreeV + 1):
+            temp = [0.0 for x in range(self._mDimension)]
+            idx_v = span_v - self._mDegreeV + l
+            for k in range(0, self._mDegreeU + 1):
                 idx = 0
-                while idx < self._mDimension - 1:
-                    surfpt.append(float(sptw[idx] / sptw[-1]))
+                while idx < self._mDimension:
+                    temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
                     idx += 1
-                self._mSurfPts.append(surfpt)
+            idx = 0
+            while idx < self._mDimension:
+                sptw[idx] += (basis_v[l] * temp[idx])
+                idx += 1
+
+        # Divide by weight
+        spt = []
+        idx = 0
+        while idx < self._mDimension - 1:
+            spt.append(float(sptw[idx] / sptw[-1]))
+            idx += 1
+
+        return spt
 
     # Evaluates n-th order rational surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
