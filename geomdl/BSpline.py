@@ -232,6 +232,35 @@ class Curve(object):
             print('Cannot open file ' + filename)
             sys.exit(1)
 
+    # Evaluates the B-Spline curve at the given parameter
+    def curvept(self, u=-1, check_vars=True):
+        """ Evaluates the B-Spline curve at the given u parameter
+
+        :param u: parameter
+        :type u: float
+        :param check_vars: flag to disable variable checking (only for internal eval functions)
+        :type check_vars: bool
+        :return: evaluated curve point at the given knot value
+        """
+        if check_vars:
+            # Check all parameters are set before the curve evaluation
+            self._check_variables()
+            # Check u parameters are correct
+            if u < 0.0 or u > 1.0:
+                raise ValueError('"u" value should be between 0 and 1.')
+
+        # Algorithm A3.1
+        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
+        basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
+        cpt = [0.0 for x in range(self._mDimension)]
+        for i in range(0, self._mDegree + 1):
+            idx = 0
+            while idx < self._mDimension:
+                cpt[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
+                idx += 1
+
+        return cpt
+
     # Evaluates the B-Spline curve
     def evaluate(self):
         """ Evaluates the B-Spline curve.
@@ -245,16 +274,8 @@ class Curve(object):
         # Clean up the curve points, if necessary
         self._reset_curve()
 
-        # Algorithm A3.1
         for u in utils.frange(0, 1, self._mDelta):
-            span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
-            basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
-            cpt = [0.0 for x in range(self._mDimension)]
-            for i in range(0, self._mDegree + 1):
-                idx = 0
-                while idx < self._mDimension:
-                    cpt[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
-                    idx += 1
+            cpt = self.curvept(u, False)
             self._mCurvePts.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
@@ -755,6 +776,47 @@ class Surface(object):
         self._mCtrlPts_sizeV = ctrlpts_new_sizeV
         self._mCtrlPts2D = ctrlpts2D_new
 
+    def surfpt(self, u=-1, v=-1, check_vars=True):
+        """ Evaluates the B-Spline surface at the given (u,v) parameters
+
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :param check_vars: flag to disable variable checking (only for internal eval functions)
+        :type check_vars: bool
+        :return: evaluated surface point at the given knot values
+        """
+        if check_vars:
+            # Check all parameters are set before the surface evaluation
+            self._check_variables()
+            # Check u and v parameters are correct
+            utils.check_uv(u, v)
+
+        # Algorithm A3.5
+        span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+        basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
+        span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+        basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
+
+        idx_u = span_u - self._mDegreeU
+        surfpt = [0.0 for x in range(self._mDimension)]
+
+        for l in range(0, self._mDegreeV + 1):
+            temp = [0.0 for x in range(self._mDimension)]
+            idx_v = span_v - self._mDegreeV + l
+            for k in range(0, self._mDegreeU + 1):
+                idx = 0
+                while idx < self._mDimension:
+                    temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
+                    idx += 1
+            idx = 0
+            while idx < self._mDimension:
+                surfpt[idx] += (basis_v[l] * temp[idx])
+                idx += 1
+
+        return surfpt
+
     # Evaluates the B-Spline surface
     def evaluate(self):
         """ Evaluates the surface.
@@ -768,29 +830,10 @@ class Surface(object):
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
-        # Algorithm A3.5
-        for v in utils.frange(0, 1, self._mDelta):
-            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
-            basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
-            for u in utils.frange(0, 1, self._mDelta):
-                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
-                basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
-                idx_u = span_u - self._mDegreeU
-                surfpt = [0.0 for x in range(self._mDimension)]
-                for l in range(0, self._mDegreeV + 1):
-                    temp = [0.0 for x in range(self._mDimension)]
-                    idx_v = span_v - self._mDegreeV + l
-                    for k in range(0, self._mDegreeU + 1):
-                        idx = 0
-                        while idx < self._mDimension:
-                            temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
-                            idx += 1
-                    idx = 0
-                    while idx < self._mDimension:
-                        surfpt[idx] += (basis_v[l] * temp[idx])
-                        idx += 1
-
-                self._mSurfPts.append(surfpt)
+        for u in utils.frange(0, 1, self._mDelta):
+            for v in utils.frange(0, 1, self._mDelta):
+                spt = self.surfpt(u, v, False)
+                self._mSurfPts.append(spt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
