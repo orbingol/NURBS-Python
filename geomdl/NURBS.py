@@ -196,3 +196,45 @@ class Surface(BSpline.Surface):
         for pt in self._mCtrlPts:
             weights.append(pt[-1])
         return tuple(weights)
+
+    # Evaluates the NURBS surface
+    def evaluate(self):
+        """ Evaluates the NURBS surface.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
+
+        :return: None
+        """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+        # Clean up the surface points lists, if necessary
+        self._reset_surface()
+
+        # Algorithm A4.3
+        for v in utils.frange(0, 1, self._mDelta):
+            span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
+            basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
+            for u in utils.frange(0, 1, self._mDelta):
+                span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
+                basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
+                idx_u = span_u - self._mDegreeU
+                sptw = [0.0 for x in range(self._mDimension)]
+                for l in range(0, self._mDegreeV + 1):
+                    temp = [0.0 for x in range(self._mDimension)]
+                    idx_v = span_v - self._mDegreeV + l
+                    for k in range(0, self._mDegreeU + 1):
+                        idx = 0
+                        while idx < self._mDimension:
+                            temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
+                            idx += 1
+                    idx = 0
+                    while idx < self._mDimension:
+                        sptw[idx] += (basis_v[l] * temp[idx])
+                        idx += 1
+                # Divide by weight to obtain 3D surface points
+                surfpt = []
+                idx = 0
+                while idx < self._mDimension - 1:
+                    surfpt.append(float(sptw[idx] / sptw[-1]))
+                    idx += 1
+                self._mSurfPts.append(surfpt)
