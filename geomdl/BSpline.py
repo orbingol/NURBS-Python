@@ -818,7 +818,7 @@ class Surface(object):
         du = min(self._mDegreeU, order)
         dv = min(self._mDegreeV, order)
 
-        SKL = [[[0.0 for x in range(3)] for y in range(dv + 1)] for z in range(du + 1)]
+        SKL = [[[0.0 for x in range(self._mDimension)] for y in range(dv + 1)] for z in range(du + 1)]
 
         span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
         bfunsders_u = utils.basis_functions_ders(self._mDegreeU, self._mKnotVectorU, span_u, u, du)
@@ -828,7 +828,7 @@ class Surface(object):
         for k in range(0, du + 1):
             temp = [[] for y in range(self._mDegreeV + 1)]
             for s in range(0, self._mDegreeV + 1):
-                temp[s] = [0.0 for x in range(3)]
+                temp[s] = [0.0 for x in range(self._mDimension)]
                 for r in range(0, self._mDegreeU + 1):
                     cu = span_u - self._mDegreeU + r
                     cv = span_v - self._mDegreeV + s
