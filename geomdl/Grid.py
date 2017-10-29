@@ -1,7 +1,7 @@
 """
 .. module:: Grid
     :platform: Unix, Windows
-    :synopsis: A simple control points grid generator to use with the nurbs.Surface module
+    :synopsis: A simple control points grid generator to use with the B-Spline Surface module
 
 .. moduleauthor:: Onur Rauf Bingol
 
@@ -13,7 +13,7 @@ import random
 
 
 class Grid:
-    """ Simple 2D grid generator to generate control points grid input for nurbs.Surface module.
+    """ Simple 2D grid generator to generate control points grid input for B-Spline Surface module.
     
     :param size_x: width of the 2D grid
     :type size_x: integer or float
@@ -22,11 +22,11 @@ class Grid:
     """
     def __init__(self, size_x, size_y):
         # Grid origin is always set to the bottom left corner of the grid
-        self._origin = [0.0, 0.0, 0.0]
-        self._size_x = float(size_x)
-        self._size_y = float(size_y)
+        self._mOrigin = [0.0, 0.0, 0.0]
+        self._mSizeX = float(size_x)
+        self._mSizeY = float(size_y)
         # Initialize a list to store generated grid points
-        self._gridpts = []
+        self._mGridPts = []
         # Set a default tolerance
         self._mDelta = 10e-8
 
@@ -38,7 +38,7 @@ class Grid:
         
         :return: 2D list of points ([x,y,z]) in [u][v] format
         """
-        return self._gridpts
+        return self._mGridPts
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
@@ -66,25 +66,25 @@ class Grid:
             print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_v." % num_v)
 
         # Set the number of divisions for each direction
-        spacing_x = self._size_x / num_u
-        spacing_y = self._size_y / num_v
+        spacing_x = self._mSizeX / num_u
+        spacing_y = self._mSizeY / num_v
 
         # Set initial position for x
-        current_x = self._origin[0]
+        current_x = self._mOrigin[0]
 
         # Start looping
         for u in range(0, num_u + 1):
             # Initialize a temporary list for storing the 3nd dimension
             row = []
             # Set initial position for y
-            current_y = self._origin[1]
+            current_y = self._mOrigin[1]
             for v in range(0, num_v + 1):
                 # Add the first point
                 row.append([current_x, current_y, 0.0])
                 # Set the y value for the next row
                 current_y = current_y + spacing_y
             # Update the list to be returned
-            self._gridpts.append(row)
+            self._mGridPts.append(row)
             # Set x the value for the next column
             current_x = current_x + spacing_x
 
@@ -96,15 +96,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
+        # Get current origin / starting point (we need a copy of the self._mOrigin)
+        current_origin = list(self._mOrigin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self._gridpts:
+        for r in self._mGridPts:
             for c in r:
                 new_x = (c[0] * math.cos(rot)) - (c[1] * math.sin(rot))
                 new_y = (c[1] * math.cos(rot)) + (c[0] * math.sin(rot))
@@ -122,15 +122,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
+        # Get current origin / starting point (we need a copy of the self._mOrigin)
+        current_origin = list(self._mOrigin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self._gridpts:
+        for r in self._mGridPts:
             for c in r:
                 new_x = (c[0] * math.cos(rot)) - (c[2] * math.sin(rot))
                 new_z = (c[2] * math.cos(rot)) + (c[0] * math.sin(rot))
@@ -148,15 +148,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
+        # Get current origin / starting point (we need a copy of the self._mOrigin)
+        current_origin = list(self._mOrigin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self._gridpts:
+        for r in self._mGridPts:
             for c in r:
                 new_y = (c[1] * math.cos(rot)) - (c[2] * math.sin(rot))
                 new_z = (c[2] * math.cos(rot)) + (c[1] * math.sin(rot))
@@ -177,19 +177,19 @@ class Grid:
         :return: None
         """
         # Find the difference between starting and the input point
-        diff_x = pt[0] - self._origin[0]
-        diff_y = pt[1] - self._origin[1]
-        diff_z = pt[2] - self._origin[2]
+        diff_x = pt[0] - self._mOrigin[0]
+        diff_y = pt[1] - self._mOrigin[1]
+        diff_z = pt[2] - self._mOrigin[2]
 
         # Translate all points
-        for r in self._gridpts:
+        for r in self._mGridPts:
             for c in r:
                 c[0] = c[0] + diff_x
                 c[1] = c[1] + diff_y
                 c[2] = c[2] + diff_z
 
         # Update the origin (bottom left corner)
-        self._origin = self._gridpts[0][0]
+        self._mOrigin = self._mGridPts[0][0]
 
     # Saves the generated grid to a text file
     def save(self, file_name="grid.txt"):
@@ -202,7 +202,7 @@ class Grid:
         :return: None
         """
         # Some error checking
-        if not self._gridpts:
+        if not self._mGridPts:
             raise ValueError("Grid must be generated before saving it to a file!")
 
         if not isinstance(file_name, str):
@@ -213,7 +213,7 @@ class Grid:
         # Clear file contents
         target.truncate()
         # Start saving the generated grid to the file
-        for cols in self._gridpts:
+        for cols in self._mGridPts:
             line = ""
             col_size = len(cols)
             counter = 0
@@ -269,8 +269,8 @@ class Grid:
         bump_list = []
 
         # Find size of the grid
-        len_u = len(self._gridpts)
-        len_v = len(self._gridpts[0])
+        len_u = len(self._mGridPts)
+        len_v = len(self._mGridPts[0])
 
         # Set a max number of trials for the point finding algorithm
         max_trials = 25
@@ -310,15 +310,15 @@ class Grid:
                 z_val = float(-1 * bump_height)
 
             # Update the grid points
-            self._gridpts[u - 1][v - 1][2] = z_val / 2.0
-            self._gridpts[u - 1][v][2] = z_val / 2.0
-            self._gridpts[u - 1][v + 1][2] = z_val / 2.0
-            self._gridpts[u][v - 1][2] = z_val / 2.0
-            self._gridpts[u][v][2] = z_val
-            self._gridpts[u][v + 1][2] = z_val / 2.0
-            self._gridpts[u + 1][v - 1][2] = z_val / 2.0
-            self._gridpts[u + 1][v][2] = z_val / 2.0
-            self._gridpts[u + 1][v + 1][2] = z_val / 2.0
+            self._mGridPts[u - 1][v - 1][2] = z_val / 2.0
+            self._mGridPts[u - 1][v][2] = z_val / 2.0
+            self._mGridPts[u - 1][v + 1][2] = z_val / 2.0
+            self._mGridPts[u][v - 1][2] = z_val / 2.0
+            self._mGridPts[u][v][2] = z_val
+            self._mGridPts[u][v + 1][2] = z_val / 2.0
+            self._mGridPts[u + 1][v - 1][2] = z_val / 2.0
+            self._mGridPts[u + 1][v][2] = z_val / 2.0
+            self._mGridPts[u + 1][v + 1][2] = z_val / 2.0
 
     # Checks the possibility of placing the bump at the specified location
     def _check_bump(self, uv_list=(), to_be_checked_uv=(0, 0)):
