@@ -47,7 +47,7 @@ class Curve(BSpline.Curve):
     def __init__(self):
         super(Curve, self).__init__()
         # Override dimension variable
-        self._mDimension = 4  # 3D coordinates + weights
+        self.__dimension = 4  # 3D coordinates + weights
 
     @property
     def ctrlpts(self):
@@ -60,10 +60,10 @@ class Curve(BSpline.Curve):
         :type: list
         """
         ret_list = []
-        for pt in self._mCtrlPts:
+        for pt in self.__control_points:
             temp = []
             idx = 0
-            while idx < self._mDimension - 1:
+            while idx < self.__dimension - 1:
                 temp.append(float(pt[idx] / pt[-1]))
                 idx += 1
             ret_list.append(tuple(temp))
@@ -77,7 +77,7 @@ class Curve(BSpline.Curve):
         :type: list
         """
         weights = []
-        for pt in self._mCtrlPts:
+        for pt in self.__control_points:
             weights.append(pt[-1])
         return tuple(weights)
 
@@ -90,6 +90,7 @@ class Curve(BSpline.Curve):
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
         :return: evaluated curve point at the given knot value
+        :rtype: list
         """
         if check_vars:
             # Check all parameters are set before the curve evaluation
@@ -99,19 +100,19 @@ class Curve(BSpline.Curve):
                 raise ValueError('"u" value should be between 0 and 1.')
 
         # Algorithm A4.1
-        span = utils.find_span(self._mDegree, tuple(self._mKnotVector), len(self._mCtrlPts), u)
-        basis = utils.basis_functions(self._mDegree, tuple(self._mKnotVector), span, u)
-        cptw = [0.0 for x in range(self._mDimension)]
-        for i in range(0, self._mDegree + 1):
+        span = utils.find_span(self.__degree, tuple(self.__knot_vector), len(self.__control_points), u)
+        basis = utils.basis_functions(self.__degree, tuple(self.__knot_vector), span, u)
+        cptw = [0.0 for x in range(self.__dimension)]
+        for i in range(0, self.__degree + 1):
             idx = 0
-            while idx < self._mDimension:
-                cptw[idx] += (basis[i] * self._mCtrlPts[span - self._mDegree + i][idx])
+            while idx < self.__dimension:
+                cptw[idx] += (basis[i] * self.__control_points[span - self.__degree + i][idx])
                 idx += 1
 
         # Divide by weight
         cpt = []
         idx = 0
-        while idx < self._mDimension - 1:
+        while idx < self.__dimension - 1:
             cpt.append(float(cptw[idx] / cptw[-1]))
             idx += 1
 
@@ -132,22 +133,22 @@ class Curve(BSpline.Curve):
         CKw = super(Curve, self).derivatives(u, order)
 
         # Algorithm A4.2
-        CK = [[None for x in range(self._mDimension-1)] for y in range(order + 1)]
+        CK = [[None for x in range(self.__dimension - 1)] for y in range(order + 1)]
         for k in range(0, order + 1):
             v = []
             idx = 0
-            while idx < self._mDimension - 1:
+            while idx < self.__dimension - 1:
                 v.append(CKw[idx])
                 idx += 1
 
             for i in range(1, order + 1):
                 idx = 0
-                while idx < self._mDimension - 1:
-                    v[idx] -= (utils.binomial_coeff(k, i) * CKw[i][-1] * CK[k-i][idx])
+                while idx < self.__dimension - 1:
+                    v[idx] -= (utils.binomial_coefficient(k, i) * CKw[i][-1] * CK[k - i][idx])
                     idx += 1
 
             idx = 0
-            while idx < self._mDimension - 1:
+            while idx < self.__dimension - 1:
                 CK[k][idx] = v[idx] / CKw[0][-1]
                 idx += 1
 
@@ -163,7 +164,7 @@ class Curve2D(Curve):
     def __init__(self):
         super(Curve2D, self).__init__()
         # Override dimension variable
-        self._mDimension = 3  # 2D coordinates + weights
+        self.__dimension = 3  # 2D coordinates + weights
 
 
 class Surface(BSpline.Surface):
@@ -205,7 +206,7 @@ class Surface(BSpline.Surface):
     def __init__(self):
         super(Surface, self).__init__()
         # Override dimension variable
-        self._mDimension = 4  # 3D coordinates + weights
+        self.__dimension = 4  # 3D coordinates + weights
 
     @property
     def ctrlpts(self):
@@ -218,10 +219,10 @@ class Surface(BSpline.Surface):
         :type: list
         """
         ret_list = []
-        for pt in self._mCtrlPts:
+        for pt in self.__control_points:
             temp = []
             idx = 0
-            while idx < self._mDimension - 1:
+            while idx < self.__dimension - 1:
                 temp.append(float(pt[idx] / pt[-1]))
                 idx += 1
             ret_list.append(tuple(temp))
@@ -235,7 +236,7 @@ class Surface(BSpline.Surface):
         :type: list
         """
         weights = []
-        for pt in self._mCtrlPts:
+        for pt in self.__control_points:
             weights.append(pt[-1])
         return tuple(weights)
 
@@ -250,6 +251,7 @@ class Surface(BSpline.Surface):
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
         :return: evaluated surface point at the given knot values
+        :rtype: list
         """
         if check_vars:
             # Check all parameters are set before the surface evaluation
@@ -258,30 +260,30 @@ class Surface(BSpline.Surface):
             utils.check_uv(u, v)
 
         # Algorithm A4.3
-        span_v = utils.find_span(self._mDegreeV, tuple(self._mKnotVectorV), self._mCtrlPts_sizeV, v)
-        basis_v = utils.basis_functions(self._mDegreeV, tuple(self._mKnotVectorV), span_v, v)
-        span_u = utils.find_span(self._mDegreeU, tuple(self._mKnotVectorU), self._mCtrlPts_sizeU, u)
-        basis_u = utils.basis_functions(self._mDegreeU, tuple(self._mKnotVectorU), span_u, u)
-        idx_u = span_u - self._mDegreeU
-        sptw = [0.0 for x in range(self._mDimension)]
+        span_v = utils.find_span(self.__degree_v, tuple(self.__knot_vector_v), self.__control_points_size_v, v)
+        basis_v = utils.basis_functions(self.__degree_v, tuple(self.__knot_vector_v), span_v, v)
+        span_u = utils.find_span(self.__degree_u, tuple(self.__knot_vector_u), self.__control_points_size_u, u)
+        basis_u = utils.basis_functions(self.__degree_u, tuple(self.__knot_vector_u), span_u, u)
+        idx_u = span_u - self.__degree_u
+        sptw = [0.0 for x in range(self.__dimension)]
 
-        for l in range(0, self._mDegreeV + 1):
-            temp = [0.0 for x in range(self._mDimension)]
-            idx_v = span_v - self._mDegreeV + l
-            for k in range(0, self._mDegreeU + 1):
+        for l in range(0, self.__degree_v + 1):
+            temp = [0.0 for x in range(self.__dimension)]
+            idx_v = span_v - self.__degree_v + l
+            for k in range(0, self.__degree_u + 1):
                 idx = 0
-                while idx < self._mDimension:
-                    temp[idx] += (basis_u[k] * self._mCtrlPts2D[idx_u + k][idx_v][idx])
+                while idx < self.__dimension:
+                    temp[idx] += (basis_u[k] * self.__control_points2D[idx_u + k][idx_v][idx])
                     idx += 1
             idx = 0
-            while idx < self._mDimension:
+            while idx < self.__dimension:
                 sptw[idx] += (basis_v[l] * temp[idx])
                 idx += 1
 
         # Divide by weight
         spt = []
         idx = 0
-        while idx < self._mDimension - 1:
+        while idx < self.__dimension - 1:
             spt.append(float(sptw[idx] / sptw[-1]))
             idx += 1
 
@@ -308,43 +310,43 @@ class Surface(BSpline.Surface):
         SKLw = super(Surface, self).derivatives(u, v, order)
 
         # Algorithm A4.4
-        du = min(self._mDegreeU, order)
-        dv = min(self._mDegreeV, order)
+        du = min(self.__degree_u, order)
+        dv = min(self.__degree_v, order)
 
         # Generate an empty list of derivatives
-        SKL = [[[None for x in range(self._mDimension)] for y in range(dv + 1)] for z in range(du + 1)]
+        SKL = [[[None for x in range(self.__dimension)] for y in range(dv + 1)] for z in range(du + 1)]
 
         for k in range(0, order + 1):
             for l in range(0, order - k + 1):
                 v = []
                 idx = 0
-                while idx < self._mDimension - 1:
+                while idx < self.__dimension - 1:
                     v.append(SKLw[idx])
                     idx += 1
 
                 for j in range(1, l + 1):
                     idx = 0
-                    while idx < self._mDimension - 1:
-                        v[idx] -= (utils.binomial_coeff(l, j) * SKLw[0][j][-1] * SKL[k][l - j][idx])
+                    while idx < self.__dimension - 1:
+                        v[idx] -= (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * SKL[k][l - j][idx])
                         idx += 1
                 for i in range(1, k + 1):
                     idx = 0
-                    while idx < self._mDimension - 1:
-                        v[idx] -= (utils.binomial_coeff(k, i) * SKLw[i][0][-1] * SKL[k - i][l][idx])
+                    while idx < self.__dimension - 1:
+                        v[idx] -= (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * SKL[k - i][l][idx])
                         idx += 1
-                    v2 = [0.0 for x in range(self._mDimension - 1)]
+                    v2 = [0.0 for x in range(self.__dimension - 1)]
                     for j in range(1, l + 1):
                         idx = 0
-                        while idx < self._mDimension - 1:
-                            v2[idx] += (utils.binomial_coeff(l, j) * SKLw[i][j][-1] * SKL[k - i][l - j][idx])
+                        while idx < self.__dimension - 1:
+                            v2[idx] += (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * SKL[k - i][l - j][idx])
                             idx += 1
                     idx = 0
-                    while idx < self._mDimension - 1:
-                        v[idx] -= (utils.binomial_coeff(k, i) * v2[idx])
+                    while idx < self.__dimension - 1:
+                        v[idx] -= (utils.binomial_coefficient(k, i) * v2[idx])
                         idx += 1
 
                 idx = 0
-                while idx < self._mDimension - 1:
+                while idx < self.__dimension - 1:
                     SKL[k][l][idx] = v[idx] / SKLw[0][0][-1]
                     idx += 1
 
