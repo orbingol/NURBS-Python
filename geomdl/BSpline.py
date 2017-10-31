@@ -87,7 +87,7 @@ class Curve(object):
         if value < 0:
             raise ValueError("ERROR: Degree cannot be less than zero")
         # Clean up the curve points list, if necessary
-        self._reset_curve()
+        self.__reset_curve()
         # Set degree
         self.__degree = value
 
@@ -112,8 +112,8 @@ class Curve(object):
             raise ValueError("ERROR: Number of control points in u-direction should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
-        self._reset_curve()
-        self._reset_ctrlpts()
+        self.__reset_curve()
+        self.__reset_ctrlpts()
 
         for coord in value:
             if len(coord) < 0 or len(coord) > self.__dimension:
@@ -135,7 +135,7 @@ class Curve(object):
     @knotvector.setter
     def knotvector(self, value):
         # Clean up the surface points lists, if necessary
-        self._reset_curve()
+        self.__reset_curve()
         # Set knot vector u
         value_float = [float(kv) for kv in value]
         # Normalize and set the knot vector
@@ -159,7 +159,7 @@ class Curve(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("ERROR: Curve evaluation delta should be between 0.0 and 1.0")
         # Clean up the curve points list, if necessary
-        self._reset_curve()
+        self.__reset_curve()
         # Set a new delta value
         self.__delta = float(value)
 
@@ -175,19 +175,19 @@ class Curve(object):
         return self.__curve_points
 
     # Cleans up the control points
-    def _reset_ctrlpts(self):
+    def __reset_ctrlpts(self):
         if self.__control_points:
             # Delete control points
             del self.__control_points[:]
 
     # Cleans the evaluated curve points (private)
-    def _reset_curve(self):
+    def __reset_curve(self):
         if self.__curve_points:
             # Delete the curve points
             del self.__curve_points[:]
 
     # Checks whether the curve evaluation is possible or not (private)
-    def _check_variables(self):
+    def __check_variables(self):
         works = True
         # Check degree values
         if self.__degree == 0:
@@ -208,8 +208,8 @@ class Curve(object):
         :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the curve and control points lists, if necessary
-        self._reset_curve()
-        self._reset_ctrlpts()
+        self.__reset_curve()
+        self.__reset_ctrlpts()
 
         # Initialize the return value
         ret_check = True
@@ -338,7 +338,7 @@ class Curve(object):
         """
         if check_vars:
             # Check all parameters are set before the curve evaluation
-            self._check_variables()
+            self.__check_variables()
             # Check u parameters are correct
             if u < 0.0 or u > 1.0:
                 raise ValueError('"u" value should be between 0 and 1.')
@@ -364,9 +364,9 @@ class Curve(object):
         :return: None
         """
         # Check all parameters are set before the curve evaluation
-        self._check_variables()
+        self.__check_variables()
         # Clean up the curve points, if necessary
-        self._reset_curve()
+        self.__reset_curve()
 
         for u in utils.frange(0, 1, self.__delta):
             cpt = self.curvept(u, False)
@@ -384,7 +384,7 @@ class Curve(object):
         :rtype: list
         """
         # Check all parameters are set before the curve evaluation
-        self._check_variables()
+        self.__check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
@@ -455,7 +455,7 @@ class Curve(object):
         :rtype: list
         """
         # Check all parameters are set before the curve evaluation
-        self._check_variables()
+        self.__check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
@@ -512,7 +512,7 @@ class Curve(object):
         :return: None
         """
         # Check all parameters are set before the curve evaluation
-        self._check_variables()
+        self.__check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
@@ -682,7 +682,7 @@ class Surface(object):
         if value < 0:
             raise ValueError("Degree cannot be less than zero.")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
         # Set degree u
         self.__degree_u = value
 
@@ -701,7 +701,7 @@ class Surface(object):
         if value < 0:
             raise ValueError("Degree cannot be less than zero.")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
         # Set degree v
         self.__degree_v = value
 
@@ -725,8 +725,8 @@ class Surface(object):
     @ctrlpts.setter
     def ctrlpts(self, value):
         # Clean up the surface and control points lists, if necessary
-        self._reset_surface()
-        self._reset_ctrlpts()
+        self.__reset_surface()
+        self.__reset_ctrlpts()
 
         # First check v-direction
         if len(value) < self.__degree_v + 1:
@@ -778,7 +778,7 @@ class Surface(object):
     @knotvector_u.setter
     def knotvector_u(self, value):
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
         # Set knot vector u
         value_float = [float(kv) for kv in value]
         self.__knot_vector_u = utils.normalize_knot_vector(tuple(value_float))
@@ -796,7 +796,7 @@ class Surface(object):
     @knotvector_v.setter
     def knotvector_v(self, value):
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
         # Set knot vector u
         value_float = [float(kv) for kv in value]
         self.__knot_vector_v = utils.normalize_knot_vector(tuple(value_float))
@@ -819,7 +819,7 @@ class Surface(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0.")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
         # Set a new delta value
         self.__delta = float(value)
 
@@ -835,7 +835,7 @@ class Surface(object):
         return self.__surface_points
 
     # Cleans up the control points
-    def _reset_ctrlpts(self):
+    def __reset_ctrlpts(self):
         if self.__control_points:
             # Delete control points
             del self.__control_points[:]
@@ -845,13 +845,13 @@ class Surface(object):
             self.__control_points_size_v = 0
 
     # Cleans the evaluated surface points (private)
-    def _reset_surface(self):
+    def __reset_surface(self):
         if self.__surface_points:
             # Delete the surface points
             del self.__surface_points[:]
 
     # Checks whether the surface evaluation is possible or not (private)
-    def _check_variables(self):
+    def __check_variables(self):
         works = True
         if self.__degree_u == 0 or self.__degree_v == 0:
             works = False
@@ -873,8 +873,8 @@ class Surface(object):
         :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the surface and control points lists, if necessary
-        self._reset_ctrlpts()
-        self._reset_surface()
+        self.__reset_ctrlpts()
+        self.__reset_surface()
 
         # Initialize the return value
         ret_check = True
@@ -1058,7 +1058,7 @@ class Surface(object):
                 ctrlpts_new.append(ctrlpts2D_new[u][v])
 
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
 
         # Save transposed data
         self.__degree_u = degree_u_new
@@ -1083,7 +1083,7 @@ class Surface(object):
         """
         if check_vars:
             # Check all parameters are set before the surface evaluation
-            self._check_variables()
+            self.__check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
 
@@ -1120,9 +1120,9 @@ class Surface(object):
         :return: None
         """
         # Check all parameters are set before the surface evaluation
-        self._check_variables()
+        self.__check_variables()
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self.__reset_surface()
 
         for u in utils.frange(0, 1, self.__delta):
             for v in utils.frange(0, 1, self.__delta):
@@ -1147,7 +1147,7 @@ class Surface(object):
         :rtype: list
         """
         # Check all parameters are set before the surface evaluation
-        self._check_variables()
+        self.__check_variables()
         # Check u and v parameters are correct
         utils.check_uv(u, v)
 

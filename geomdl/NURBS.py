@@ -94,7 +94,7 @@ class Curve(BSpline.Curve):
         """
         if check_vars:
             # Check all parameters are set before the curve evaluation
-            self._check_variables()
+            self.__check_variables()
             # Check u parameters are correct
             if u < 0.0 or u > 1.0:
                 raise ValueError('"u" value should be between 0 and 1.')
@@ -255,7 +255,7 @@ class Surface(BSpline.Surface):
         """
         if check_vars:
             # Check all parameters are set before the surface evaluation
-            self._check_variables()
+            self.__check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
 
