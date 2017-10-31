@@ -238,15 +238,6 @@ class Curve(object):
 
         return ret_check
 
-    # Prepares control points for saving
-    def __get_ctrlpts_for_saving(self):
-        """ Prepares control points for saving
-
-        :return: list of control points
-        :rtype: list
-        """
-        return self.__control_points
-
     # Saves control points to a text file
     def save_ctrlpts_to_txt(self, filename=""):
         """ Saves control points to a text file.
@@ -263,9 +254,8 @@ class Curve(object):
         try:
             with open(filename, 'w') as fp:
 
-                # Loop through control points
-                ctrlpts = self.__get_ctrlpts_for_saving()
-                for pt in ctrlpts:
+                # Loop through control points)
+                for pt in self.__control_points:
                     line = ""
                     idx = 0
                     while idx < self.__dimension:
@@ -281,6 +271,24 @@ class Curve(object):
             ret_check = False
 
         return ret_check
+
+    # Prepares control points for exporting to external visualization software
+    def __prepare_ctrlpts_for_exporting(self):
+        """ Prepares control points for exporting to external visualization software, such as Paraview.
+
+        :return: list of control points
+        :rtype: list
+        """
+        return self.__control_points
+
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, coord z, scalar\n"
 
     # Saves control points to a text file
     def save_ctrlpts_to_csv(self, filename=""):
@@ -300,15 +308,10 @@ class Curve(object):
         try:
             with open(filename, 'w') as fp:
                 # Construct the header and write it to the file
-                line = ""
-                idx = 0
-                while idx < self.__dimension:
-                    line += coord_names[idx] + " coord,"
-                line += "scalar"
-                fp.write(line)
+                fp.write(self.__get_csv_header())
 
                 # Loop through control points
-                ctrlpts = self.__get_ctrlpts_for_saving()
+                ctrlpts = self.__prepare_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
                     idx = 0
@@ -586,6 +589,15 @@ class Curve2D(Curve):
         super(Curve2D, self).__init__()
         # Override dimension variable
         self.__dimension = 2  # 2D coordinates
+
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, scalar\n"
 
 
 class Surface(object):
@@ -916,24 +928,6 @@ class Surface(object):
 
         return ret_check
 
-    # Prepares control points for saving
-    def __get_ctrlpts_for_saving(self):
-        """ Prepares control points for saving.
-
-        :return: list of control points
-        :rtype: list
-        """
-        return self.__control_points
-
-    # Prepares 2D control points for saving
-    def __get_ctrlpts2D_for_saving(self):
-        """ Prepares 2D control points for saving.
-
-        :return: list of 2D control points
-        :rtype: list
-        """
-        return self.__control_points2D
-
     # Saves control points to a text file
     def save_ctrlpts_to_txt(self, filename="", two_dimensional=True):
         """ Saves control points to a text file.
@@ -953,13 +947,12 @@ class Surface(object):
             with open(filename, 'w') as fp:
 
                 if two_dimensional:
-                    ctrlpts2D = self.__get_ctrlpts2D_for_saving()
                     for i in range(0, self.__control_points_size_u):
                         line = ""
                         for j in range(0, self.__control_points_size_v):
                             idx = 0
                             while idx < self.__dimension:
-                                line += ctrlpts2D[i][j]
+                                line += self.__control_points2D[i][j]
                                 if not idx == self.__dimension - 1:
                                     line += ","
                             idx += 1
@@ -969,8 +962,7 @@ class Surface(object):
                                 line += "\n"
                         fp.write(line)
                 else:
-                    ctrlpts = self.__get_ctrlpts_for_saving()
-                    for pt in ctrlpts:
+                    for pt in self.__control_points:
                         line = ""
                         idx = 0
                         while idx < self.__dimension:
@@ -986,6 +978,24 @@ class Surface(object):
             ret_check = False
 
         return ret_check
+
+    # Prepares control points for exporting to external visualization software
+    def __get_ctrlpts_for_exporting(self):
+        """ Prepares control points for exporting to external visualization software, such as Paraview.
+
+        :return: list of control points
+        :rtype: list
+        """
+        return self.__control_points
+
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, coord z, scalar\n"
 
     # Saves control points to a text file
     def save_ctrlpts_to_csv(self, filename=""):
@@ -1005,15 +1015,10 @@ class Surface(object):
         try:
             with open(filename, 'w') as fp:
                 # Construct the header and write it to the file
-                line = ""
-                idx = 0
-                while idx < self.__dimension:
-                    line += coord_names[idx] + " coord,"
-                line += "scalar"
-                fp.write(line)
+                fp.write(self.__get_csv_header())
 
                 # Loop through control points
-                ctrlpts = self.__get_ctrlpts_for_saving()
+                ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
                     idx = 0

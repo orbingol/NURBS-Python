@@ -81,6 +81,32 @@ class Curve(BSpline.Curve):
             weights.append(pt[-1])
         return tuple(weights)
 
+    # Prepares control points for saving
+    def __get_ctrlpts_for_saving(self):
+        """ Prepares control points for saving.
+
+        :return: list of control points
+        :rtype: list
+        """
+        ctrlpts_noweight = []
+        for pt in self.__control_points:
+            temp = []
+            idx = 0
+            while idx < self.__dimension - 1:
+                temp.append(float(pt[idx] / pt[-1]))
+                idx += 1
+            ctrlpts_noweight.append(temp)
+        return ctrlpts_noweight
+
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, coord z, scalar\n"
+
     # Evaluates the rational curve at the given parameter
     def curvept(self, u=-1, check_vars=True):
         """ Evaluates the NURBS curve at the given u parameter
@@ -166,6 +192,15 @@ class Curve2D(Curve):
         # Override dimension variable
         self.__dimension = 3  # 2D coordinates + weights
 
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, scalar\n"
+
 
 class Surface(BSpline.Surface):
     """ A data storage and evaluation class for NURBS surfaces.
@@ -239,6 +274,34 @@ class Surface(BSpline.Surface):
         for pt in self.__control_points:
             weights.append(pt[-1])
         return tuple(weights)
+
+    # Prepares control points for exporting to external visualization software
+    def __get_ctrlpts_for_exporting(self):
+        """ Prepares control points for exporting to external visualization software, such as Paraview.
+
+        This function removes weight component from control points array (divides coordinate values by weight values).
+
+        :return: list of control points
+        :rtype: list
+        """
+        ctrlpts_noweight = []
+        for pt in self.__control_points:
+            temp = []
+            idx = 0
+            while idx < self.__dimension - 1:
+                temp.append(float(pt[idx] / pt[-1]))
+                idx += 1
+            ctrlpts_noweight.append(temp)
+        return ctrlpts_noweight
+
+    # Prepares and returns the CSV file header
+    def __get_csv_header(self):
+        """ Prepares and returns the CSV file header.
+
+        :return: header of the CSV file
+        :rtype: str
+        """
+        return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates rational surface at the given (u,v) parameters
     def surfpt(self, u=-1, v=-1, check_vars=True):
