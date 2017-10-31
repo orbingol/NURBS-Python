@@ -273,8 +273,8 @@ class Curve(object):
 
         return ret_check
 
-    # Prepares control points for exporting to external visualization software
-    def __prepare_ctrlpts_for_exporting(self):
+    # Prepares control points for exporting as a CSV file
+    def __get_ctrlpts_for_exporting(self):
         """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
@@ -315,7 +315,7 @@ class Curve(object):
                     dim -= 1
 
                 # Loop through control points
-                ctrlpts = self.__prepare_ctrlpts_for_exporting()
+                ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
                     idx = 0
@@ -1029,7 +1029,7 @@ class Surface(object):
 
         return ret_check
 
-    # Prepares control points for exporting to external visualization software
+    # Prepares control points for exporting as a CSV file
     def __get_ctrlpts_for_exporting(self):
         """ Prepares control points for exporting as a CSV file.
 

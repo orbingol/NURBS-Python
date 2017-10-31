@@ -82,9 +82,9 @@ class Curve(BSpline.Curve):
             weights.append(pt[-1])
         return tuple(weights)
 
-    # Prepares control points for saving
-    def __get_ctrlpts_for_saving(self):
-        """ Prepares control points for saving.
+    # Prepares control points for exporting as a CSV file
+    def __get_ctrlpts_for_exporting(self):
+        """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
         :rtype: list
@@ -278,11 +278,9 @@ class Surface(BSpline.Surface):
             weights.append(pt[-1])
         return tuple(weights)
 
-    # Prepares control points for exporting to external visualization software
+    # Prepares control points for exporting as a CSV file
     def __get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting to external visualization software, such as Paraview.
-
-        This function removes weight component from control points array (divides coordinate values by weight values).
+        """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
         :rtype: list
