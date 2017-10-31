@@ -302,8 +302,6 @@ class Curve(object):
         # Initialize the return value
         ret_check = True
 
-        coord_names = ["x", "y", "z"]
-
         # Try opening the file for writing
         try:
             with open(filename, 'w') as fp:
@@ -1008,8 +1006,6 @@ class Surface(object):
 
         # Initialize the return value
         ret_check = True
-
-        coord_names = ["x", "y", "z"]
 
         # Try opening the file for writing
         try:
