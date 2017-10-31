@@ -274,7 +274,7 @@ class Curve(object):
 
     # Prepares control points for exporting to external visualization software
     def __prepare_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting to external visualization software, such as Paraview.
+        """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
         :rtype: list
@@ -290,7 +290,7 @@ class Curve(object):
         """
         return "coord x, coord y, coord z, scalar\n"
 
-    # Saves control points to a text file
+    # Saves control points to a CSV file
     def save_ctrlpts_to_csv(self, filename=""):
         """ Saves control points to a comma separated text file.
 
@@ -979,7 +979,7 @@ class Surface(object):
 
     # Prepares control points for exporting to external visualization software
     def __get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting to external visualization software, such as Paraview.
+        """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
         :rtype: list
@@ -995,7 +995,7 @@ class Surface(object):
         """
         return "coord x, coord y, coord z, scalar\n"
 
-    # Saves control points to a text file
+    # Saves control points to a CSV file
     def save_ctrlpts_to_csv(self, filename=""):
         """ Saves control points to a comma separated text file.
 
