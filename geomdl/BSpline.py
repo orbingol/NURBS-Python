@@ -320,10 +320,11 @@ class Curve(object):
                     line = ""
                     idx = 0
                     while idx < dim:
-                        line += str(pt[idx])
-                        if not idx == dim - 1:
-                            line += ", "
+                        line += str(pt[idx]) + ", "
                         idx += 1
+                    # Fill scalar column
+                    line += "0\n"
+                    # Write line to file
                     fp.write(line + "\n")
 
         except IOError:
@@ -364,10 +365,11 @@ class Curve(object):
                     line = ""
                     idx = 0
                     while idx < dim:
-                        line += str(pt[idx])
-                        if not idx == dim - 1:
-                            line += ", "
+                        line += str(pt[idx]) + ", "
                         idx += 1
+                    # Fill scalar column
+                    line += "0\n"
+                    # Write line to file
                     fp.write(line + "\n")
 
         except IOError:
@@ -1076,11 +1078,12 @@ class Surface(object):
                     line = ""
                     idx = 0
                     while idx < dim:
-                        line += str(pt[idx])
-                        if not idx == dim - 1:
-                            line += ", "
+                        line += str(pt[idx]) + ", "
                         idx += 1
-                    fp.write(line + "\n")
+                    # Fill scalar column
+                    line += "0\n"
+                    # Write line to file
+                    fp.write(line)
 
         except IOError:
             # Show a warning on failure to open file
@@ -1120,10 +1123,11 @@ class Surface(object):
                     line = ""
                     idx = 0
                     while idx < dim:
-                        line += str(pt[idx])
-                        if not idx == dim - 1:
-                            line += ", "
+                        line += str(pt[idx]) + ", "
                         idx += 1
+                    # Fill scalar column
+                    line += "0\n"
+                    # Write line to file
                     fp.write(line + "\n")
 
         except IOError:
