@@ -200,23 +200,24 @@ class Curve(object):
             raise ValueError("Some required parameters for curve evaluation are not set.")
 
     # Reads control points from a text file
-    def read_ctrlpts(self, filename=''):
-        """ Reads control points from a text file.
-
-        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    def read_ctrlpts_from_txt(self, filename=''):
+        """ Loads control points from a text file.
 
         :param filename: input file name
         :type filename: string
-        :return: None
+        :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
         self._reset_ctrlpts()
 
-        # Try reading the file
+        # Initialize the return value
+        ret_check = True
+
+        # Try opening the file for reading
         try:
-            # Open the file
             with open(filename, 'r') as fp:
+
                 for line in fp:
                     # Remove whitespace
                     line = line.strip()
@@ -229,9 +230,101 @@ class Curve(object):
                         pt.append(float(coords[idx].strip()))
                         idx += 1
                     self.__control_points.append(pt)
+
         except IOError:
-            print('Cannot open file ' + filename)
-            sys.exit(1)
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for reading.")
+            ret_check = False
+
+        return ret_check
+
+    # Prepares control points for saving
+    def __get_ctrlpts_for_saving(self):
+        """ Prepares control points for saving
+
+        :return: list of control points
+        :rtype: list
+        """
+        return self.__control_points
+
+    # Saves control points to a text file
+    def save_ctrlpts_to_txt(self, filename=""):
+        """ Saves control points to a text file.
+
+        :param filename: output file name
+        :type filename: string
+        :return: True if control points are saved correctly, False otherwise
+        """
+
+        # Initialize the return value
+        ret_check = True
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+
+                # Loop through control points
+                ctrlpts = self.__get_ctrlpts_for_saving()
+                for pt in ctrlpts:
+                    line = ""
+                    idx = 0
+                    while idx < self.__dimension:
+                        line += str(pt[idx])
+                        if not idx == self.__dimension - 1:
+                            line += ","
+                        idx += 1
+                    fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
+
+    # Saves control points to a text file
+    def save_ctrlpts_to_csv(self, filename=""):
+        """ Saves control points to a comma separated text file.
+
+        :param filename: output file name
+        :type filename: string
+        :return: True if control points are saved correctly, False otherwise
+        """
+
+        # Initialize the return value
+        ret_check = True
+
+        coord_names = ["x", "y", "z"]
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+                # Construct the header and write it to the file
+                line = ""
+                idx = 0
+                while idx < self.__dimension:
+                    line += coord_names[idx] + " coord,"
+                line += "scalar"
+                fp.write(line)
+
+                # Loop through control points
+                ctrlpts = self.__get_ctrlpts_for_saving()
+                for pt in ctrlpts:
+                    line = ""
+                    idx = 0
+                    while idx < self.__dimension:
+                        line += str(pt[idx])
+                        if not idx == self.__dimension - 1:
+                            line += ", "
+                        idx += 1
+                    fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
 
     # Evaluates the B-Spline curve at the given parameter
     def curvept(self, u=-1, check_vars=True):
@@ -616,7 +709,9 @@ class Surface(object):
     def ctrlpts(self):
         """ Control points
 
-        Control points of a :class:`.Surface` is stored as a list of (x, y, z) coordinates
+        Control points are stored as a list of (x, y, z) coordinates. The v index varies first.
+        That is, a row of v control points for the first u value is found first.
+        Then, the row of v control points for the next u value.
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -768,18 +863,21 @@ class Surface(object):
             raise ValueError("Some required parameters for surface evaluation are not set.")
 
     # Reads control points from a text file
-    def read_ctrlpts(self, filename=''):
-        """ Reads control points from a text file.
+    def read_ctrlpts_from_txt(self, filename=''):
+        """ Loads control points from a text file.
 
-        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+        The control points loaded from the file should follow the right-hand rule.
 
         :param filename: input file name
         :type filename: string
-        :return: None
+        :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
         self._reset_surface()
+
+        # Initialize the return value
+        ret_check = True
 
         # Try reading the file
         try:
@@ -790,7 +888,7 @@ class Surface(object):
                     line = line.strip()
                     # Convert the string containing the coordinates into a list
                     control_point_row = line.split(';')
-                    self.__control_points_size_u = 0
+                    self.__control_points_size_v = 0
                     for cpr in control_point_row:
                         cpt = cpr.split(',')
                         # Create a temporary dictionary for appending coordinates into ctrlpts list
@@ -801,17 +899,137 @@ class Surface(object):
                             idx += 1
                         # Add control points to the global control point list
                         self.__control_points.append(pt)
-                        self.__control_points_size_u += 1
-                    self.__control_points_size_v += 1
+                        self.__control_points_size_v += 1
+                    self.__control_points_size_u += 1
+
             # Generate a 2D list of control points
             for i in range(0, self.__control_points_size_u):
                 ctrlpts_v = []
                 for j in range(0, self.__control_points_size_v):
-                    ctrlpts_v.append(self.__control_points[i + (j * self.__control_points_size_u)])
+                    ctrlpts_v.append(self.__control_points[j + (i * self.__control_points_size_v)])
                 self.__control_points2D.append(ctrlpts_v)
+
         except IOError:
-            print('ERROR: Cannot open file ' + filename)
-            sys.exit(1)
+            # Show a warning about not finding the file
+            warnings.warn("File " + str(filename) + " cannot be opened for reading.")
+            ret_check = False
+
+        return ret_check
+
+    # Prepares control points for saving
+    def __get_ctrlpts_for_saving(self):
+        """ Prepares control points for saving.
+
+        :return: list of control points
+        :rtype: list
+        """
+        return self.__control_points
+
+    # Prepares 2D control points for saving
+    def __get_ctrlpts2D_for_saving(self):
+        """ Prepares 2D control points for saving.
+
+        :return: list of 2D control points
+        :rtype: list
+        """
+        return self.__control_points2D
+
+    # Saves control points to a text file
+    def save_ctrlpts_to_txt(self, filename="", two_dimensional=True):
+        """ Saves control points to a text file.
+
+        :param filename: output file name
+        :type filename: string
+        :param two_dimensional: flag to control point list
+        :type two_dimensional: bool
+        :return: True if control points are saved correctly, False otherwise
+        """
+
+        # Initialize the return value
+        ret_check = True
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+
+                if two_dimensional:
+                    ctrlpts2D = self.__get_ctrlpts2D_for_saving()
+                    for i in range(0, self.__control_points_size_u):
+                        line = ""
+                        for j in range(0, self.__control_points_size_v):
+                            idx = 0
+                            while idx < self.__dimension:
+                                line += ctrlpts2D[i][j]
+                                if not idx == self.__dimension - 1:
+                                    line += ","
+                            idx += 1
+                            if j != self.__control_points_size_v - 1:
+                                line += ";"
+                            else:
+                                line += "\n"
+                        fp.write(line)
+                else:
+                    ctrlpts = self.__get_ctrlpts_for_saving()
+                    for pt in ctrlpts:
+                        line = ""
+                        idx = 0
+                        while idx < self.__dimension:
+                            line += str(pt[idx])
+                            if not idx == self.__dimension - 1:
+                                line += ","
+                            idx += 1
+                        fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
+
+    # Saves control points to a text file
+    def save_ctrlpts_to_csv(self, filename=""):
+        """ Saves control points to a comma separated text file.
+
+        :param filename: output file name
+        :type filename: string
+        :return: True if control points are saved correctly, False otherwise
+        """
+
+        # Initialize the return value
+        ret_check = True
+
+        coord_names = ["x", "y", "z"]
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+                # Construct the header and write it to the file
+                line = ""
+                idx = 0
+                while idx < self.__dimension:
+                    line += coord_names[idx] + " coord,"
+                line += "scalar"
+                fp.write(line)
+
+                # Loop through control points
+                ctrlpts = self.__get_ctrlpts_for_saving()
+                for pt in ctrlpts:
+                    line = ""
+                    idx = 0
+                    while idx < self.__dimension:
+                        line += str(pt[idx])
+                        if not idx == self.__dimension - 1:
+                            line += ", "
+                        idx += 1
+                    fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
 
     # Transposes the surface by swapping U and V directions
     def transpose(self):
