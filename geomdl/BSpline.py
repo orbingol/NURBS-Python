@@ -441,10 +441,10 @@ class Curve(object):
 
         # Initialize new knot vector array
         UQ = [None for x in range(mp + r)]
-        # Initialize new control points array
-        Qw = [None for x in range(nq)]
+        # Initialize new control points array (control points can be weighted or not)
+        Q = [None for x in range(nq)]
         # Initialize a local array of length p + 1
-        Rw = [None for x in range(self.__degree + 1)]
+        R = [None for x in range(self.__degree + 1)]
 
         # Load new knot vector
         for i in range(0, k + 1):
@@ -456,11 +456,11 @@ class Curve(object):
 
         # Save unaltered control points
         for i in range(0, k - self.__degree + 1):
-            Qw[i] = self.__control_points[i]
+            Q[i] = self.__control_points[i]
         for i in range(k - s, np + 1):
-            Qw[i + r] = self.__control_points[i]
+            Q[i + r] = self.__control_points[i]
         for i in range(0, self.__degree - s + 1):
-            Rw[i] = self.__control_points[k - self.__degree + i]
+            R[i] = self.__control_points[k - self.__degree + i]
 
         # Insert the knot r times
         for j in range(1, r + 1):
@@ -469,19 +469,19 @@ class Curve(object):
                 alpha = (u - self.__knot_vector[L + i]) / (self.__knot_vector[i + k + 1] - self.__knot_vector[L + i])
                 idx = 0
                 while idx < self.__dimension:
-                    Rw[i][idx] = alpha * Rw[i + 1][idx] + (1.0 - alpha) * Rw[i][idx]
+                    R[i][idx] = alpha * R[i + 1][idx] + (1.0 - alpha) * R[i][idx]
                     idx += 1
-            Qw[L] = Rw[0]
-            Qw[k + r - j - s] = Rw[p - j - s]
+            Q[L] = R[0]
+            Q[k + r - j - s] = R[self.__degree - j - s]
 
         # Load remaining control points
         L = k - self.__degree + r
         for i in range(L + 1, k - s):
-            Qw[i] = Rw[i - L]
+            Q[i] = R[i - L]
 
-        # Update the class variables
+        # Update class variables
         self.__knot_vector = UQ
-        self.__control_points = Qw
+        self.__control_points = Q
 
 
 class Curve2D(Curve):
