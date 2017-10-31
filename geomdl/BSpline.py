@@ -8,6 +8,7 @@
 """
 
 import sys
+import warnings
 import geomdl.utilities as utils
 
 
@@ -406,6 +407,81 @@ class Curve(object):
 
         # Return the list
         return point, der_u
+
+    # Knot insertion
+    def insert_knot(self, u, r=1):
+        """ Inserts the given knot and updates the control points array and the knot vector.
+
+        :param u: Knot parameter to be inserted
+        :type u: float
+        :param r: number of knot insertions
+        :type r: int
+        :return: None
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+        # Check u parameters are correct
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
+        if not isinstance(r, int) or r < 0:
+            raise ValueError('Number of insertions must be a positive integer value.')
+
+        s = utils.find_multiplicity(u, self.__knot_vector)
+
+        # Check if it is possible add that many number of knots
+        if r > self.__degree - s:
+            warnings.warn("Cannot insert " + str(r) + " number of knots")
+            return
+
+        # Algorithm A5.1
+        k = utils.find_span(self.__degree, self.__knot_vector, len(self.__control_points), u)
+        mp = len(self.__knot_vector)
+        np = len(self.__control_points)
+        nq = np + r
+
+        # Initialize new knot vector array
+        UQ = [None for x in range(mp + r)]
+        # Initialize new control points array
+        Qw = [None for x in range(nq)]
+        # Initialize a local array of length p + 1
+        Rw = [None for x in range(self.__degree + 1)]
+
+        # Load new knot vector
+        for i in range(0, k + 1):
+            UQ[i] = self.__knot_vector[i]
+        for i in range(1, r+1):
+            UQ[k + i] = u
+        for i in range(k + 1, mp + 1):
+            UQ[i + r] = self.__knot_vector[i]
+
+        # Save unaltered control points
+        for i in range(0, k - self.__degree + 1):
+            Qw[i] = self.__control_points[i]
+        for i in range(k - s, np + 1):
+            Qw[i + r] = self.__control_points[i]
+        for i in range(0, self.__degree - s + 1):
+            Rw[i] = self.__control_points[k - self.__degree + i]
+
+        # Insert the knot r times
+        for j in range(1, r + 1):
+            L = k - self.__degree + j
+            for i in range(0, self.__degree - j - s + 1):
+                alpha = (u - self.__knot_vector[L + i]) / (self.__knot_vector[i + k + 1] - self.__knot_vector[L + i])
+                idx = 0
+                while idx < self.__dimension:
+                    Rw[i][idx] = alpha * Rw[i + 1][idx] + (1.0 - alpha) * Rw[i][idx]
+                    idx += 1
+            Qw[L] = Rw[0]
+            Qw[k + r - j - s] = Rw[p - j - s]
+
+        # Load remaining control points
+        L = k - self.__degree + r
+        for i in range(L + 1, k - s):
+            Qw[i] = Rw[i - L]
+
+        # Update the class variables
+        self.__knot_vector = UQ
+        self.__control_points = Qw
 
 
 class Curve2D(Curve):

@@ -36,6 +36,7 @@ NURBS-Python currently implements the following algorithms from **The NURBS Book
 * Algorithm A4.2: RatCurveDerivs
 * Algorithm A4.3: SurfacePoint
 * Algorithm A4.4: RatSurfaceDerivs
+* Algorithm A5.1: CurveKnotIns
 
 ### Data Structure
 
