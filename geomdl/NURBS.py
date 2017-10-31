@@ -48,6 +48,7 @@ class Curve(BSpline.Curve):
         super(Curve, self).__init__()
         # Override dimension variable
         self.__dimension = 4  # 3D coordinates + weights
+        self.__rational = True
 
     @property
     def ctrlpts(self):
@@ -191,6 +192,7 @@ class Curve2D(Curve):
         super(Curve2D, self).__init__()
         # Override dimension variable
         self.__dimension = 3  # 2D coordinates + weights
+        self.__rational = True
 
     # Prepares and returns the CSV file header
     def __get_csv_header(self):
@@ -242,6 +244,7 @@ class Surface(BSpline.Surface):
         super(Surface, self).__init__()
         # Override dimension variable
         self.__dimension = 4  # 3D coordinates + weights
+        self.__rational = True
 
     @property
     def ctrlpts(self):

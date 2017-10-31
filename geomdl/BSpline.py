@@ -51,6 +51,7 @@ class Curve(object):
         self.__delta = 0.1
         self.__curve_points = []
         self.__dimension = 3  # 3D coordinates
+        self.__rational = False
 
     @property
     def order(self):
@@ -308,14 +309,63 @@ class Curve(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
+                # Find correct dimension
+                dim = self.__dimension
+                if self.__rational:
+                    dim -= 1
+
                 # Loop through control points
                 ctrlpts = self.__prepare_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
                     idx = 0
-                    while idx < self.__dimension:
+                    while idx < dim:
                         line += str(pt[idx])
-                        if not idx == self.__dimension - 1:
+                        if not idx == dim - 1:
+                            line += ", "
+                        idx += 1
+                    fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
+
+    # Saves evaluated curve points to a CSV file
+    def save_surfpts_to_csv(self, filename=""):
+        """ Saves evaluated curve points to a comma separated text file.
+
+        :param filename: output file name
+        :type filename: string
+        :return: True if control points are saved correctly, False otherwise
+        """
+        # Find surface points if there is none
+        if not self.__curve_points:
+            self.evaluate()
+
+        # Initialize the return value
+        ret_check = True
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+                # Construct the header and write it to the file
+                fp.write(self.__get_csv_header())
+
+                # Find correct dimension
+                dim = self.__dimension
+                if self.__rational:
+                    dim -= 1
+
+                # Loop through control points
+                for pt in self.__curve_points:
+                    line = ""
+                    idx = 0
+                    while idx < dim:
+                        line += str(pt[idx])
+                        if not idx == dim - 1:
                             line += ", "
                         idx += 1
                     fp.write(line + "\n")
@@ -587,6 +637,7 @@ class Curve2D(Curve):
         super(Curve2D, self).__init__()
         # Override dimension variable
         self.__dimension = 2  # 2D coordinates
+        self.__rational = False
 
     # Prepares and returns the CSV file header
     def __get_csv_header(self):
@@ -644,6 +695,7 @@ class Surface(object):
         self.__delta = 0.1
         self.__surface_points = []
         self.__dimension = 3  # 3D coordinates
+        self.__rational = False
 
     @property
     def order_u(self):
@@ -1013,14 +1065,63 @@ class Surface(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
+                # Find correct dimension
+                dim = self.__dimension
+                if self.__rational:
+                    dim -= 1
+
                 # Loop through control points
                 ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
                     idx = 0
-                    while idx < self.__dimension:
+                    while idx < dim:
                         line += str(pt[idx])
-                        if not idx == self.__dimension - 1:
+                        if not idx == dim - 1:
+                            line += ", "
+                        idx += 1
+                    fp.write(line + "\n")
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
+
+    # Saves evaluated surface points to a CSV file
+    def save_surfpts_to_csv(self, filename=""):
+        """ Saves evaluated surface points to a comma separated text file.
+
+        :param filename: output file name
+        :type filename: string
+        :return: True if control points are saved correctly, False otherwise
+        """
+        # Find surface points if there is none
+        if not self.__surface_points:
+            self.evaluate()
+
+        # Initialize the return value
+        ret_check = True
+
+        # Try opening the file for writing
+        try:
+            with open(filename, 'w') as fp:
+                # Construct the header and write it to the file
+                fp.write(self.__get_csv_header())
+
+                # Find correct dimension
+                dim = self.__dimension
+                if self.__rational:
+                    dim -= 1
+
+                # Loop through control points
+                for pt in self.__surface_points:
+                    line = ""
+                    idx = 0
+                    while idx < dim:
+                        line += str(pt[idx])
+                        if not idx == dim - 1:
                             line += ", "
                         idx += 1
                     fp.write(line + "\n")
