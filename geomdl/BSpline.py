@@ -207,6 +207,7 @@ class Curve(object):
         :param filename: input file name
         :type filename: str
         :return: True if control points are loaded correctly, False otherwise
+        :rtype: bool
         """
         # Clean up the curve and control points lists, if necessary
         self.__reset_curve()
@@ -246,8 +247,8 @@ class Curve(object):
         :param filename: output file name
         :type filename: str
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
-
         # Initialize the return value
         ret_check = True
 
@@ -298,8 +299,8 @@ class Curve(object):
         :param filename: output file name
         :type filename: str
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
-
         # Initialize the return value
         ret_check = True
 
@@ -341,6 +342,7 @@ class Curve(object):
         :param filename: output file name
         :type filename: str
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
         # Find surface points if there is none
         if not self.__curve_points:
@@ -970,6 +972,7 @@ class Surface(object):
         :param filename: input file name
         :type filename: str
         :return: True if control points are loaded correctly, False otherwise
+        :rtype: bool
         """
         # Clean up the surface and control points lists, if necessary
         self.__reset_ctrlpts()
@@ -1024,8 +1027,8 @@ class Surface(object):
         :param two_dimensional: flag to control point list
         :type two_dimensional: bool
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
-
         # Initialize the return value
         ret_check = True
 
@@ -1091,8 +1094,8 @@ class Surface(object):
         :param filename: output file name
         :type filename: str
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
-
         # Initialize the return value
         ret_check = True
 
@@ -1134,6 +1137,7 @@ class Surface(object):
         :param filename: output file name
         :type filename: str
         :return: True if control points are saved correctly, False otherwise
+        :rtype: bool
         """
         # Find surface points if there is none
         if not self.__surface_points:
