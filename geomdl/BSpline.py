@@ -1347,3 +1347,152 @@ class Surface(object):
 
         # Return the surface normal at the input u,v location
         return tuple(normal)
+
+    def insert_knot(self, u=-1, v=-1, r=1):
+        """ Inserts the given knots and updates the control points array and the knot vectors.
+
+        :param u: Knot to be inserted in U-direction
+        :type u: float
+        :param v: Knot to be inserted in V-direction
+        :type v: float
+        :param r: Number of knot insertions
+        :type r: int
+        :return: None
+        """
+
+        # Check all parameters are set before the curve evaluation
+        self.__check_variables()
+
+        # Check if the parameter values are correctly defined
+        if not u == -1 or not v == -1:
+            utils.check_uv(u, v)
+
+        if not isinstance(r, int) or r < 0:
+            raise ValueError('Number of insertions must be a positive integer value.')
+
+        # Algorithm A5.3
+        s_u = utils.find_multiplicity(u, self.__knot_vector_u)
+        s_v = utils.find_multiplicity(v, self.__knot_vector_v)
+
+        # Check if it is possible add that many number of knots
+        if r > self.__degree_u - s_u:
+            warnings.warn("Cannot insert " + str(r) + " number of knots in the U direction")
+            return
+
+        if r > self.__degree_u - s_v:
+            warnings.warn("Cannot insert " + str(r) + " number of knots in the V direction")
+            return
+
+        # Insert knot in U
+        if u != -1:
+            k = utils.find_span(self.__degree_u, self.__knot_vector_u, len(self.__control_points), u)
+            mp = len(self.__knot_vector_u)
+            p = self.__degree_u
+            s = s_u
+
+            # Initialize new knot vector array
+            UQ = [None for x in range(mp + r)]
+            # Initialize new control points array (control points can be weighted or not)
+            Q = [[None for v in range(self.__control_points_size_v)] for u in range(self.__control_points_size_u)]
+            # Initialize a local array of length p + 1
+            R = [None for x in range(p + 1)]
+
+            # Load new knot vector
+            for i in range(0, k + 1):
+                UQ[i] = self.__knot_vector_u[i]
+            for i in range(1, r + 1):
+                UQ[k + i] = u
+            for i in range(k + 1, mp + 1):
+                UQ[i + r] = self.__knot_vector_u[i]
+
+            # Save the alphas
+            alpha = [[None for j in range(r + 1)] for i in range(p - r - s + 1)]
+            for j in range(1, r + 1):
+                L = k - p + j
+                for i in range(0, p - j - s + 1):
+                    alpha[i][j] = (u - self.__knot_vector_u[L + i]) / (self.__knot_vector_u[i + k + 1] - self.__knot_vector_u[L + i])
+
+            # For each row do
+            for row in range(0, mp + 1):
+                for i in range(0, k - p + 1):
+                    Q[i][row] = self.__control_points2D[i][row]
+                for i in range(k - s, self.__control_points_size_u + 1):
+                    Q[i + r][row] = self.__control_points2D[i][row]
+                # Load auxiliary control points
+                for i in range(0, p - s + 1):
+                    R[i] = self.__control_points2D[k - p + i][row]
+                # Insert the knot r times
+                for j in range(1, r + 1):
+                    L = k - p + j
+                    for i in range(0, p - j - s + 1):
+                        idx = 0
+                        while idx < self.__dimension:
+                            R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
+                    Q[L][row] = R[0]
+                    Q[k + r - j - s][row] = R[p - j - s]
+                # Load the remaining control points
+                for i in range(L + 1, k - s):
+                    Q[i][row] = R[i - L]
+
+            # Update class variables for knot insertion in U-direction
+            self.__knot_vector_u = UQ
+            self.__control_points2D = Q
+
+        # Insert knot in V
+        if v != -1:
+            k = utils.find_span(self.__degree_v, self.__knot_vector_v, len(self.__control_points), v)
+            mp = len(self.__knot_vector_v)
+            p = self.__degree_v
+            s = s_u
+
+            # Initialize new knot vector array
+            VQ = [None for x in range(mp + r)]
+            # Initialize new control points array (control points can be weighted or not)
+            Q = [[None for v in range(self.__control_points_size_v)] for u in range(self.__control_points_size_u)]
+            # Initialize a local array of length p + 1
+            R = [None for x in range(p + 1)]
+
+            # Load new knot vector
+            for i in range(0, k + 1):
+                VQ[i] = self.__knot_vector_v[i]
+            for i in range(1, r + 1):
+                VQ[k + i] = v
+            for i in range(k + 1, mp + 1):
+                VQ[i + r] = self.__knot_vector_v[i]
+
+            # Save the alphas
+            alpha = [[None for j in range(r + 1)] for i in range(p - r - s + 1)]
+            for j in range(1, r + 1):
+                L = k - p + j
+                for i in range(0, p - j - s + 1):
+                    alpha[i][j] = (v - self.__knot_vector_v[L + i]) / (self.__knot_vector_v[i + k + 1] - self.__knot_vector_v[L + i])
+
+            # For each row do
+            for row in range(0, mp + 1):
+                for i in range(0, k - p + 1):
+                    Q[row][i] = self.__control_points2D[row][i]
+                for i in range(k - s, self.__control_points_size_u + 1):
+                    Q[row][i + r] = self.__control_points2D[row][i]
+                # Load auxiliary control points
+                for i in range(0, p - s + 1):
+                    R[i] = self.__control_points2D[row][k - p + i]
+                # Insert the knot r times
+                for j in range(1, r + 1):
+                    L = k - p + j
+                    for i in range(0, p - j - s + 1):
+                        idx = 0
+                        while idx < self.__dimension:
+                            R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
+                    Q[row][L] = R[0]
+                    Q[row][k + r - j - s] = R[p - j - s]
+                # Load the remaining control points
+                for i in range(L + 1, k - s):
+                    Q[row][i] = R[i - L]
+
+            # Update class variables for knot insertion in U-direction
+            self.__knot_vector_v = VQ
+            self.__control_points2D = Q
+
+        # Evaluate surface again if it has already been evaluated before knot insertion
+        if self.__surface_points:
+            self.evaluate()
