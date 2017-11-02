@@ -17,7 +17,7 @@ class Curve(BSpline.Curve):
 
     **Data Storage**
 
-    :class:`.Curve` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
+    The following properties are present in this class:
 
     * order
     * degree
@@ -30,13 +30,16 @@ class Curve(BSpline.Curve):
     The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
     Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
+    .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
+
     **Evaluation**
 
-    The evaluation methods in the :class:`.Curve` class are:
+    The evaluation methods class are:
 
     * :func:`.evaluate()`
     * :func:`.derivatives()`
     * :func:`.tangent()`
+    * :func:`.insert_knot()`
 
     Please check the function reference for the details.
 
@@ -54,10 +57,8 @@ class Curve(BSpline.Curve):
     def ctrlpts(self):
         """ Control points
 
-        Control points of a :class:`.Curve` is stored as a list of (x*w, y*w, z*w, w) coordinates
-
-        :getter: Gets the control points in (x, y, z) format. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets the control points in (x*w, y*w, z*w, w) format
+        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets weighted control points
         :type: list
         """
         ret_list = []
@@ -186,7 +187,37 @@ class Curve(BSpline.Curve):
 class Curve2D(Curve):
     """ A data storage and evaluation class for 2D NURBS curves.
 
-    This class is a subclass of :class:`.Curve` with only the dimensional change.
+    **Data Storage**
+
+    The following properties are present in this class:
+
+    * order
+    * degree
+    * knotvector
+    * delta
+    * ctrlpts
+    * weights
+    * curvepts
+
+    The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
+    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    .. note:: Control points are stored as a list of (x*w, y*w, w) coordinates
+
+    **Evaluation**
+
+    The evaluation methods class are:
+
+    * :func:`.evaluate()`
+    * :func:`.derivatives()`
+    * :func:`.tangent()`
+    * :func:`.insert_knot()`
+
+    Please check the function reference for the details.
+
+    .. note::
+
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
     """
     def __init__(self):
         super(Curve2D, self).__init__()
@@ -209,7 +240,7 @@ class Surface(BSpline.Surface):
 
     **Data Storage**
 
-    :class:`.Surface` class implements Python properties using the ``@property`` decorator. The following properties are present in this class:
+    The following properties are present in this class:
 
     * order_u
     * order_v
@@ -219,22 +250,26 @@ class Surface(BSpline.Surface):
     * knotvector_v
     * delta
     * ctrlpts
-    * ctrlptsw
     * ctrlpts2D
     * weights
     * surfpts
 
-    The functions :func:`.read_ctrlpts()` and :func:`.read_ctrlptsw()` provide an easy way to read control points from a text file.
+    The function :func:`.read_ctrlpts()` provides an easy way to read control points from a text file.
     Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
 
     **Evaluation**
 
-    The evaluation methods in the :class:`.Surface` class are:
+    The evaluation methods are:
 
     * :func:`.evaluate()`
     * :func:`.derivatives()`
     * :func:`.tangent()`
     * :func:`.normal()`
+    * :func:`.insert_knot()`
+
+    Please check the function reference for the details.
 
     .. note::
 
@@ -250,10 +285,8 @@ class Surface(BSpline.Surface):
     def ctrlpts(self):
         """ Control points
 
-        Control points of a :class:`.Surface` is stored as a list of (x*w, y*w, z*w, w) coordinates
-
-        :getter: Gets the control points in (x, y, z) format. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets the control points in (x*w, y*w, z*w, w) format
+        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets weighted control points.
         :type: list
         """
         ret_list = []

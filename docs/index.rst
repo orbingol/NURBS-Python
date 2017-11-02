@@ -9,7 +9,7 @@ NURBS-Python Documentation
 Introduction
 ------------
 
-.. automodule:: nurbs
+.. automodule:: geomdl
     :members:
     :undoc-members:
 
@@ -48,7 +48,7 @@ Curves
     :alt: Curve example
 
 .. image:: images/ex_curve03.png
-    :alt: Curve example with tangents as quiver plits
+    :alt: Curve example with tangents as quiver plots
 
 .. image:: images/ex_curve04.png
     :alt: A full circle using NURBS
@@ -68,52 +68,56 @@ Surfaces
 Submodules
 ----------
 
-The :code:`nurbs` package contains :code:`Curve` and :code:`Surface` classes along with the :code:`utilities` module for functions common in both :code:`Curve` and :code:`Surface` classes.
+The :code:`geomdl` package contains :code:`BSpline` and :code:`NURBS` modules along with the :code:`utilities` module for functions common in both :code:`BSpline` and :code:`NURBS`.
 
-This package also includes a very simple grid generator class, :code:`Grid`, to generate rectangular control point grids for use with the :code:`Surface` class.
+This package also includes a simple grid generator class, :code:`Grid`, to generate rectangular control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
 
-nurbs.Curve module
-^^^^^^^^^^^^^^^^^^
+geomdl.BSpline module
+^^^^^^^^^^^^^^^^^^^^^
 
-:code:`Curve` class provides data storage properties and evaluation functions for NURBS and B-spline curves.
+:code:`BSpline` class provides data storage properties and evaluation functions for B-spline (NUBS) curves and surfaces.
 
-.. automodule:: nurbs.Curve
+.. automodule:: geomdl.BSpline
     :members:
     :undoc-members:
+    :inherited-members:
+    :show-inheritance:
 
-nurbs.Surface module
-^^^^^^^^^^^^^^^^^^^^
+geomdl.NURBS module
+^^^^^^^^^^^^^^^^^^^
 
-:code:`Surface` class provides data storage properties and evaluation functions for NURBS and B-spline surfaces.
+:code:`NURBS` class provides data storage properties and evaluation functions for NURBS curves and surfaces.
 
-.. automodule:: nurbs.Surface
+.. automodule:: geomdl.NURBS
     :members:
     :undoc-members:
+    :inherited-members:
+    :show-inheritance:
 
-nurbs.utilities module
-^^^^^^^^^^^^^^^^^^^^^^
+geomdl.utilities module
+^^^^^^^^^^^^^^^^^^^^^^^
 
 :code:`utilities` module contains common helper functions for B-spline and NURBS curve and surface evaluation.
 
-.. automodule:: nurbs.utilities
+.. automodule:: geomdl.utilities
     :members:
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 
-nurbs.Grid module
-^^^^^^^^^^^^^^^^^
+geomdl.Grid module
+^^^^^^^^^^^^^^^^^^
 
-:code:`Grid` class provides an easy way to generate control point grids for use with :code:`Surface` module.
+:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
 
-This class is designed minimally just to enable more testing cases for the :code:`Surface` module. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
+This class is designed minimally just to enable more testing cases for t:code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
 
-.. automodule:: nurbs.Grid
+.. automodule:: geomdl.Grid
     :members:
     :undoc-members:
 
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
 .. Indices and tables
 .. ==================

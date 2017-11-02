@@ -1,7 +1,7 @@
 """
 .. module:: Grid
     :platform: Unix, Windows
-    :synopsis: A simple control points grid generator to use with the B-Spline Surface module
+    :synopsis: A simple control points grid generator to use with the B-Spline and NURBS Surface module
 
 .. moduleauthor:: Onur Rauf Bingol
 
@@ -17,7 +17,7 @@ class Grid:
     
     :param size_x: width of the 2D grid
     :type size_x: integer or float
-    :param size_y: heigth of the 2D grid
+    :param size_y: height of the 2D grid
     :type size_y: integer or float
     """
     def __init__(self, size_x, size_y):
@@ -235,7 +235,7 @@ class Grid:
         possible to control the z-value using **bump_height** parameter.
          
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
-        uses a trial-and-error method to determine whether the bumps can be generatable or not. For instance::
+        uses a trial-and-error method to determine whether the bumps can be generated or not. For instance::
         
             testgrid = Grid(5, 10) # generates a 5x10 rectangle
             testgrid.generate(2, 2) # splits the rectangle into 4 pieces
