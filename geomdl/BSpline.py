@@ -393,8 +393,7 @@ class Curve(object):
             # Check all parameters are set before the curve evaluation
             self.__check_variables()
             # Check u parameters are correct
-            if u < 0.0 or u > 1.0:
-                raise ValueError('"u" value should be between 0 and 1.')
+            utils.check_uv(u)
 
         # Algorithm A3.1
         span = utils.find_span(self.__degree, tuple(self.__knot_vector), len(self.__control_points), u)
@@ -510,8 +509,7 @@ class Curve(object):
         # Check all parameters are set before the curve evaluation
         self.__check_variables()
         # Check u parameters are correct
-        if u < 0.0 or u > 1.0:
-            raise ValueError('"u" value should be between 0 and 1.')
+        utils.check_uv(u)
 
         # Algorithm A3.4: CurveDerivsAlg2
         du = min(self.__degree, order)
@@ -567,8 +565,8 @@ class Curve(object):
         # Check all parameters are set before the curve evaluation
         self.__check_variables()
         # Check u parameters are correct
-        if u < 0.0 or u > 1.0:
-            raise ValueError('"u" value should be between 0 and 1.')
+        utils.check_uv(u)
+        # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of insertions must be a positive integer value.')
 
