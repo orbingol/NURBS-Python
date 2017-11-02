@@ -1,7 +1,7 @@
 """
-.. module:: Grid
+.. module:: CPGen
     :platform: Unix, Windows
-    :synopsis: A simple control points grid generator to use with the B-Spline and NURBS Surface module
+    :synopsis: A simple control points generator to use with the B-Spline and NURBS surfaces
 
 .. moduleauthor:: Onur Rauf Bingol
 
@@ -10,14 +10,19 @@
 import sys
 import math
 import random
+import warnings
 
 
-class Grid:
-    """ Simple 2D grid generator to generate control points grid input for B-Spline Surface module.
-    
-    :param size_x: width of the 2D grid
+class Grid(object):
+    """ Simple grid generator to use with B-Spline surfaces.
+
+    This class stores grid points in [x, y, z] format.
+
+    .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    :param size_x: width of the grid
     :type size_x: integer or float
-    :param size_y: height of the 2D grid
+    :param size_y: height of the grid
     :type size_y: integer or float
     """
     def __init__(self, size_x, size_y):
@@ -29,20 +34,20 @@ class Grid:
         self.__grid_points = []
         # Set a default tolerance
         self.__delta = 10e-8
+        self.__dimension = 3
+        self.__no_change = False
 
     # Returns the generated grid
     def grid(self):
         """ Returns the generated grid.
-        
-        .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
-        
-        :return: 2D list of points ([x,y,z]) in [u][v] format
+
+        :return: 2D list of points in [u][v] format
         """
         return self.__grid_points
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
-        """ Generates the 2D grid using the input division parameters.
+        """ Generates grid using the input division parameters.
             
         :param num_u: number of divisions in x-direction
         :type num_u: integer
@@ -50,6 +55,12 @@ class Grid:
         :type num_v: integer
         :return: None
         """
+
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
         # Some error checking and fixing
         if num_u < 1:
             raise ValueError("Divisions in the x-direction (num_u) cannot be less than 1!")
@@ -96,6 +107,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
+        # Check if the grid points are generated
+        if not self.__grid_points:
+            raise ValueError("Grid must be generated before calling this function!")
+
         # Get current origin / starting point (we need a copy of the self.__origin)
         current_origin = list(self.__origin)
 
@@ -122,6 +142,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
+        # Check if the grid points are generated
+        if not self.__grid_points:
+            raise ValueError("Grid must be generated before calling this function!")
+
         # Get current origin / starting point (we need a copy of the self.__origin)
         current_origin = list(self.__origin)
 
@@ -148,6 +177,15 @@ class Grid:
         :type angle: integer or float
         :return: None
         """
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
+        # Check if the grid points are generated
+        if not self.__grid_points:
+            raise ValueError("Grid must be generated before calling this function!")
+
         # Get current origin / starting point (we need a copy of the self.__origin)
         current_origin = list(self.__origin)
 
@@ -176,6 +214,15 @@ class Grid:
         :type pt: list
         :return: None
         """
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
+        # Check if the grid points are generated
+        if not self.__grid_points:
+            raise ValueError("Grid must be generated before calling this function!")
+
         # Find the difference between starting and the input point
         diff_x = pt[0] - self.__origin[0]
         diff_y = pt[1] - self.__origin[1]
@@ -192,41 +239,58 @@ class Grid:
         self.__origin = self.__grid_points[0][0]
 
     # Saves the generated grid to a text file
-    def save(self, file_name="grid.txt"):
+    def save(self, filename="grid.txt"):
         """ Saves the generated grid to a text file.
         
         .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
         
-        :param file_name: File name to be saved
-        :type file_name: str
-        :return: None
+        :param filename: File name to be saved
+        :type filename: str
+        :return: True if grid is saved correctly, False otherwise
+        :rtype: bool
         """
-        # Some error checking
+        # Check if the grid points are generated
         if not self.__grid_points:
-            raise ValueError("Grid must be generated before saving it to a file!")
+            raise ValueError("Grid must be generated before calling this function!")
 
-        if not isinstance(file_name, str):
+        if not isinstance(filename, str):
             raise ValueError("File name must be a string!")
 
-        # Open the file for writing
-        target = open(file_name, 'w')
-        # Clear file contents
-        target.truncate()
-        # Start saving the generated grid to the file
-        for cols in self.__grid_points:
-            line = ""
-            col_size = len(cols)
-            counter = 0
-            for rows in cols:
-                line = line + str(rows[0]) + "," + str(rows[1]) + "," + str(rows[2])
-                counter = counter + 1
-                # Not the best way, but it works
-                if counter != col_size:
-                    line = line + ";"
-            target.write(line)
-            target.write("\n")
+        # Initialize the return value
+        ret_check = True
 
-    # Generates hills (a.k.a. bumps) on the 2D grid
+        # Open the file for writing
+        try:
+            with open(filename, 'w') as fp:
+                # Clear file contents
+                fp.truncate()
+                # Start saving the generated grid to the file
+                for cols in self.__grid_points:
+                    line = ""
+                    col_size = len(cols)
+                    counter = 0
+                    for rows in cols:
+                        idx = 0
+                        while idx < self.__dimension:
+                            line += str(rows[idx])
+                            if idx != self.__dimension - 1:
+                                line += ","
+                            idx += 1
+                        counter = counter + 1
+                        # Not the best way, but it works
+                        if counter != col_size:
+                            line = line + ";"
+                    line += "\n"
+                    fp.write(line)
+
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            ret_check = False
+
+        return ret_check
+
+    # Generates hills (a.k.a. bumps) on the grid
     def bumps(self, num_bumps=0, all_positive=False, bump_height=3):
         """ Generates random bumps (i.e. hills) on the 2D grid.
         
@@ -250,6 +314,15 @@ class Grid:
         :type bump_height: integer or float
         :return: None
         """
+        # Check if we could update the grid
+        if self.__no_change:
+            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
+            return
+
+        # Check if the grid points are generated
+        if not self.__grid_points:
+            raise ValueError("Grid must be generated before calling this function!")
+
         # Some error checking
         if num_bumps <= 0:
             print("No bumps are generated!")
@@ -347,3 +420,92 @@ class Grid:
 
         # Otherwise, return true
         return True
+
+
+class GridWeighted(Grid):
+    """ Simple grid generator to use with NURBS surfaces.
+
+    This class stores grid points in [x*w, y*w, z*w, w] format.
+
+    .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+
+    :param size_x: width of the grid
+    :type size_x: integer or float
+    :param size_y: height of the grid
+    :type size_y: integer or float
+    """
+    def __init__(self, size_x, size_y):
+        super(GridWeighted, self).__init__(size_x, size_y)
+        # Override dimension variable
+        self.__dimension = 4
+
+    def add_weight(self, w=1):
+        """ Adds a uniform weight to grid points.
+
+        All grid points are divided by the input weight and weight value is added as the last element of the coordinate array.
+        Grid points can be accessed via :func:`.grid()` function and can be saved as a text file via :func:`.save()` function.
+
+        :param w: weight value to be added
+        :return: None
+        """
+        # Check if the input weight is valid
+        if w <= 0:
+            raise ValueError("Weight value must be bigger than 0.")
+
+        # Check if we have already added weights
+        if len(self.__grid_points[0][0]) == self.__dimension:
+            warnings.warn("Weight has already been added. Please use modify_weight() to change weight value.")
+            return
+
+        # Start adding weights
+        weighted_gp = []
+        for cols in self.__grid_points:
+            weighted_gp_row = []
+            for rows in cols:
+                temp = []
+                idx = 0
+                while idx < self.__dimension - 1:
+                    # Divide by the weight value
+                    temp.append(rows[idx] / w)
+                temp.append(w)
+                weighted_gp_row.append(temp)
+            weighted_gp.append(weighted_gp_row)
+
+        # Update class variables
+        self.__no_change = True
+        self.__grid_points = weighted_gp
+
+    def modify_weight(self, w=-1):
+        """ Modifies weight value of the grid points.
+
+        :param w: weight value to be added
+        :return: None
+        """
+        # Check if the input weight is valid
+        if w <= 0:
+            raise ValueError("Weight value must be bigger than 0.")
+
+        # Check if we have already added weights
+        if len(self.__grid_points[0][0]) != self.__dimension:
+            warnings.warn("Need to add weights first.")
+            return
+
+        # Start modifying weights
+        weighted_gp = []
+        for cols in self.__grid_points:
+            weighted_gp_row = []
+            for rows in cols:
+                temp = []
+                idx = 0
+                while idx < self.__dimension - 1:
+                    # Get unweighted points
+                    val = rows[idx] * rows[-1]
+                    # Divide with the new weight
+                    val /= w
+                    temp.append(val)
+                temp.append(w)
+                weighted_gp_row.append(temp)
+            weighted_gp.append(weighted_gp_row)
+
+        # Update grid points
+        self.__grid_points = weighted_gp

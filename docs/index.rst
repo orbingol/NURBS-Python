@@ -104,16 +104,18 @@ geomdl.utilities module
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 
-geomdl.Grid module
-^^^^^^^^^^^^^^^^^^
+geomdl.CPGen module
+^^^^^^^^^^^^^^^^^^^
 
-:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
+:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
 
 This class is designed minimally just to enable more testing cases for t:code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
 
-.. automodule:: geomdl.Grid
+.. automodule:: geomdl.CPGen
     :members:
     :undoc-members:
+    :inherited-members:
+    :show-inheritance:
 
 
 .. toctree::
