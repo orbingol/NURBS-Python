@@ -198,7 +198,7 @@ class Grid:
         .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
         
         :param file_name: File name to be saved
-        :type file_name: string
+        :type file_name: str
         :return: None
         """
         # Some error checking

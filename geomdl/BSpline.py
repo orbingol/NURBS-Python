@@ -205,7 +205,7 @@ class Curve(object):
         """ Loads control points from a text file.
 
         :param filename: input file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the curve and control points lists, if necessary
@@ -244,7 +244,7 @@ class Curve(object):
         """ Saves control points to a text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are saved correctly, False otherwise
         """
 
@@ -296,7 +296,7 @@ class Curve(object):
         """ Saves control points to a comma separated text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are saved correctly, False otherwise
         """
 
@@ -339,7 +339,7 @@ class Curve(object):
         """ Saves evaluated curve points to a comma separated text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are saved correctly, False otherwise
         """
         # Find surface points if there is none
@@ -968,7 +968,7 @@ class Surface(object):
         The control points loaded from the file should follow the right-hand rule.
 
         :param filename: input file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are loaded correctly, False otherwise
         """
         # Clean up the surface and control points lists, if necessary
@@ -1020,7 +1020,7 @@ class Surface(object):
         """ Saves control points to a text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :param two_dimensional: flag to control point list
         :type two_dimensional: bool
         :return: True if control points are saved correctly, False otherwise
@@ -1089,7 +1089,7 @@ class Surface(object):
         """ Saves control points to a comma separated text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are saved correctly, False otherwise
         """
 
@@ -1132,7 +1132,7 @@ class Surface(object):
         """ Saves evaluated surface points to a comma separated text file.
 
         :param filename: output file name
-        :type filename: string
+        :type filename: str
         :return: True if control points are saved correctly, False otherwise
         """
         # Find surface points if there is none
