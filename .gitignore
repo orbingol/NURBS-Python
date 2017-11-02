@@ -1,6 +1,6 @@
 .idea/*
-nurbs/__pycache__/*
-nurbs/*.pyc
+geomdl/__pycache__/*
+geomdl/*.pyc
 *.out
 build/
 docs/_build
