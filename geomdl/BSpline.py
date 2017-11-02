@@ -964,13 +964,23 @@ class Surface(object):
             raise ValueError("Some required parameters for surface evaluation are not set.")
 
     # Reads control points from a text file
-    def read_ctrlpts_from_txt(self, filename=''):
+    def read_ctrlpts_from_txt(self, filename='', two_dimensional=True, size_u=0, size_v=0):
         """ Loads control points from a text file.
 
         The control points loaded from the file should follow the right-hand rule.
+        In case two_dimensional = False, then the following rules apply.
+
+        * The v index varies first. That is, a row of v control points for the first u value is found first.
+        * Then, the row of v control points for the next u value.
 
         :param filename: input file name
         :type filename: str
+        :param two_dimensional: flag to control point list. one dimensional or two dimensional
+        :type two_dimensional: bool
+        :param size_u: length of the control points array in U-direction
+        :type size_u: int
+        :param size_v: length of the control points array in V-direction
+        :type size_v: int
         :return: True if control points are loaded correctly, False otherwise
         :rtype: bool
         """
@@ -981,28 +991,50 @@ class Surface(object):
         # Initialize the return value
         ret_check = True
 
-        # Try reading the file
+        # Try opening the file for reading
         try:
-            # Open the file
             with open(filename, 'r') as fp:
-                for line in fp:
-                    # Remove whitespace
-                    line = line.strip()
-                    # Convert the string containing the coordinates into a list
-                    control_point_row = line.split(';')
-                    self.__control_points_size_v = 0
-                    for cpr in control_point_row:
-                        cpt = cpr.split(',')
-                        # Create a temporary dictionary for appending coordinates into ctrlpts list
+
+                if two_dimensional:
+                    # Start reading file
+                    for line in fp:
+                        # Remove whitespace
+                        line = line.strip()
+                        # Convert the string containing the coordinates into a list
+                        control_point_row = line.split(';')
+                        self.__control_points_size_v = 0
+                        for cpr in control_point_row:
+                            cpt = cpr.split(',')
+                            # Create a temporary dictionary for appending coordinates into ctrlpts list
+                            pt = []
+                            idx = 0
+                            while idx < self.__dimension:
+                                pt.append(float(cpt[idx].strip()))
+                                idx += 1
+                            # Add control points to the global control point list
+                            self.__control_points.append(pt)
+                            self.__control_points_size_v += 1
+                        self.__control_points_size_u += 1
+                else:
+                    # Check inputs
+                    if size_u <= 0 or size_v <= 0:
+                        raise ValueError("size_u and size_v inputs must be positive integers.")
+                    # Start reading file
+                    for line in fp:
+                        # Remove whitespace
+                        line = line.strip()
+                        # Convert the string containing the coordinates into a list
+                        coords = line.split(',')
+                        # Remove extra whitespace and convert to float
                         pt = []
                         idx = 0
                         while idx < self.__dimension:
-                            pt.append(float(cpt[idx].strip()))
+                            pt.append(float(coords[idx].strip()))
                             idx += 1
-                        # Add control points to the global control point list
                         self.__control_points.append(pt)
-                        self.__control_points_size_v += 1
-                    self.__control_points_size_u += 1
+                    # These depends on the user input
+                    self.__control_points_size_u = size_u
+                    self.__control_points_size_v = size_v
 
             # Generate a 2D list of control points
             for i in range(0, self.__control_points_size_u):
