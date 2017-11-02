@@ -556,7 +556,7 @@ class Curve(object):
     def insert_knot(self, u, r=1):
         """ Inserts the given knot and updates the control points array and the knot vector.
 
-        :param u: Knot parameter to be inserted
+        :param u: Knot to be inserted
         :type u: float
         :param r: number of knot insertions
         :type r: int
@@ -626,6 +626,10 @@ class Curve(object):
         # Update class variables
         self.__knot_vector = UQ
         self.__control_points = Q
+
+        # Evaluate curve again if it has already been evaluated before knot insertion
+        if self.__curve_points:
+            self.evaluate()
 
 
 class Curve2D(Curve):
