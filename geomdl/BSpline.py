@@ -1054,6 +1054,12 @@ class Surface(object):
     def save_ctrlpts_to_txt(self, filename="", two_dimensional=True):
         """ Saves control points to a text file.
 
+        The control points saved to the file follow the right-hand rule.
+        In case two_dimensional = False, then the following rules apply.
+
+        * The v index varies first. That is, a row of v control points for the first u value is found first.
+        * Then, the row of v control points for the next u value.
+
         :param filename: output file name
         :type filename: str
         :param two_dimensional: flag to control point list
