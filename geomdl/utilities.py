@@ -54,19 +54,20 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
     # Save new control points
     try:
         with open(file_out, 'w') as fp:
-                for i in range(size_v):
+            fp.truncate()
+            for i in range(size_v):
+                line = ""
+                for j in range(size_u):
                     line = ""
-                    for j in range(size_u):
-                        line = ""
-                        for idx, coord in enumerate(new_ctrlpts[i][j]):
-                            if idx:  # Add comma if we are not on the first element
-                                line += ","
-                            line += str(coord)
-                        if j != size_u - 1:
-                            line += ";"
-                        else:
-                            line += "\n"
-                    fp.write(line)
+                    for idx, coord in enumerate(new_ctrlpts[i][j]):
+                        if idx:  # Add comma if we are not on the first element
+                            line += ","
+                        line += str(coord)
+                    if j != size_u - 1:
+                        line += ";"
+                    else:
+                        line += "\n"
+                fp.write(line)
     except IOError:
         raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
 
