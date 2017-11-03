@@ -82,7 +82,7 @@ class Curve(BSpline.Curve):
         return tuple(weights)
 
     # Prepares control points for exporting as a CSV file
-    def __get_ctrlpts_for_exporting(self):
+    def _get_ctrlpts_for_exporting(self):
         """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
@@ -97,7 +97,7 @@ class Curve(BSpline.Curve):
         return ctrlpts_noweight
 
     # Prepares and returns the CSV file header
-    def __get_csv_header(self):
+    def _get_csv_header(self):
         """ Prepares and returns the CSV file header.
 
         :return: header of the CSV file
@@ -118,7 +118,7 @@ class Curve(BSpline.Curve):
         """
         if check_vars:
             # Check all parameters are set before the curve evaluation
-            self.__check_variables()
+            self._check_variables()
             # Check u parameters are correct
             if u < 0.0 or u > 1.0:
                 raise ValueError('"u" value should be between 0 and 1.')
@@ -208,7 +208,7 @@ class Curve2D(Curve):
         self.__rational = True
 
     # Prepares and returns the CSV file header
-    def __get_csv_header(self):
+    def _get_csv_header(self):
         """ Prepares and returns the CSV file header.
 
         :return: header of the CSV file
@@ -292,7 +292,7 @@ class Surface(BSpline.Surface):
         return tuple(weights)
 
     # Prepares control points for exporting as a CSV file
-    def __get_ctrlpts_for_exporting(self):
+    def _get_ctrlpts_for_exporting(self):
         """ Prepares control points for exporting as a CSV file.
 
         :return: list of control points
@@ -307,7 +307,7 @@ class Surface(BSpline.Surface):
         return ctrlpts_noweight
 
     # Prepares and returns the CSV file header
-    def __get_csv_header(self):
+    def _get_csv_header(self):
         """ Prepares and returns the CSV file header.
 
         :return: header of the CSV file
@@ -330,7 +330,7 @@ class Surface(BSpline.Surface):
         """
         if check_vars:
             # Check all parameters are set before the surface evaluation
-            self.__check_variables()
+            self._check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
 
