@@ -12,6 +12,70 @@ import math
 import warnings
 
 
+# Reads 2D control points file, flips it and saves it
+def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
+    """ Flips u and v directions of a 2D control points file.
+
+    :param file_in: Input file containing the coordinates to be flipped
+    :param file_out: Output file containing the flipped coordinates
+    :return: None
+    """
+    # Initialize some variables
+    current_ctrlpts = []
+    size_u = 0
+    size_v = 0
+    idx_max = 0
+
+    # Read file
+    try:
+        with open(file_in, 'r') as fp:
+            for line in fp:
+                line = line.strip()
+                control_point_row = line.split(';')
+                size_v = 0
+                ctrlpts_v = []
+                for cpr in control_point_row:
+                    cpt = cpr.split(',')
+                    pt = []
+                    idx = 0
+                    idx_max = len(cpt)
+                    while idx < idx_max:
+                        pt.append(float(cpt[idx].strip()))
+                        idx += 1
+                    ctrlpts_v.append(pt)
+                    size_v += 1
+                current_ctrlpts.append(ctrlpts_v)
+                size_u += 1
+    except IOError:
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+
+    # Flip control points array
+    new_ctrlpts = [[None for y in range(size_u)] for x in range(size_v)]
+    for i in range(size_v):
+        for j in range(size_u):
+            new_ctrlpts[i][j] = current_ctrlpts[j][i]
+
+    # Save new control points
+    try:
+        with open(file_out, 'w') as fp:
+                for i in range(size_v):
+                    line = ""
+                    for j in range(size_u):
+                        idx = 0
+                        while idx < idx_max:
+                            line += str(new_ctrlpts[i][j][idx])
+                            if not idx == idx_max - 1:
+                                line += ","
+                            idx += 1
+                        if j != size_u - 1:
+                            line += ";"
+                        else:
+                            line += "\n"
+                    fp.write(line)
+    except IOError:
+        raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
+
+
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
     """ An implementation of a ``range()`` function which works with decimals.
