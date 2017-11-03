@@ -269,7 +269,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
@@ -330,7 +330,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
@@ -376,7 +376,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
@@ -1005,7 +1005,6 @@ class Surface(object):
                         self.__control_points_size_v = 0
                         for cpr in control_point_row:
                             cpt = cpr.split(',')
-                            # Create a temporary dictionary for appending coordinates into ctrlpts list
                             pt = []
                             idx = 0
                             while idx < self.__dimension:
@@ -1102,7 +1101,7 @@ class Surface(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
@@ -1163,7 +1162,7 @@ class Surface(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
@@ -1209,7 +1208,7 @@ class Surface(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
             ret_check = False
 
         return ret_check
