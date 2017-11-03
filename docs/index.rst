@@ -72,30 +72,72 @@ The :code:`geomdl` package contains :code:`BSpline` and :code:`NURBS` modules al
 
 This package also includes a simple grid generator class, :code:`Grid`, to generate rectangular control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
 
-geomdl.BSpline module
-^^^^^^^^^^^^^^^^^^^^^
+BSpline module
+^^^^^^^^^^^^^^
 
 :code:`BSpline` class provides data storage properties and evaluation functions for B-spline (NUBS) curves and surfaces.
 
-.. automodule:: geomdl.BSpline
+3D B-Spline Curve
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.BSpline.Curve
     :members:
     :undoc-members:
     :inherited-members:
     :show-inheritance:
 
-geomdl.NURBS module
-^^^^^^^^^^^^^^^^^^^
+2D B-Spline Curve
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.BSpline.Curve2D
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+B-Spline Surface
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.BSpline.Surface
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+NURBS module
+^^^^^^^^^^^^
 
 :code:`NURBS` class provides data storage properties and evaluation functions for NURBS curves and surfaces.
 
-.. automodule:: geomdl.NURBS
+3D NURBS Curve
+~~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.NURBS.Curve
     :members:
     :undoc-members:
     :inherited-members:
     :show-inheritance:
 
-geomdl.utilities module
-^^^^^^^^^^^^^^^^^^^^^^^
+2D NURBS Curve
+~~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.NURBS.Curve2D
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+NURBS Surface
+~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.NURBS.Surface
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+Utilities module
+^^^^^^^^^^^^^^^^
 
 :code:`utilities` module contains common helper functions for B-spline and NURBS curve and surface evaluation.
 
@@ -104,14 +146,27 @@ geomdl.utilities module
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 
-geomdl.CPGen module
-^^^^^^^^^^^^^^^^^^^
+CPGen module
+^^^^^^^^^^^^
 
 :code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
 
 This class is designed minimally just to enable more testing cases for t:code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
 
-.. automodule:: geomdl.CPGen
+Grid
+~~~~
+
+.. autoclass:: geomdl.CPGen.Grid
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+
+Weighted Grid
+~~~~~~~~~~~~~
+
+.. autoclass:: geomdl.CPGen.GridWeighted
     :members:
     :undoc-members:
     :inherited-members:

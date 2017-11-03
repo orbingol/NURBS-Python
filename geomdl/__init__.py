@@ -6,8 +6,8 @@ Some other advantages of this package are;
 * Python 2.x and 3.x compatibility
 * No external dependencies (such as NumPy)
 * Uses Python properties for the data storage access
-* A :code:`utilities` module for auto-generating and normalizing knot vectors
-* A :code:`Grid` class for generating various types of control points grids
+* A :code:`utilities` module containing several helper functions
+* :code:`Grid` and :code:`GridWeighted` classes for generating various types of control points grids
 
 The NURBS-Python package follows an object-oriented design as much as possible. However, in order to understand the algorithms, you might need to take a look at `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ itself.
 
