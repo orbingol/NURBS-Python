@@ -227,10 +227,8 @@ class Curve(object):
                     coords = line.split(',')
                     # Remove extra whitespace and convert to float
                     pt = []
-                    idx = 0
-                    while idx < self.__dimension:
+                    for idx in range(self.__dimension):
                         pt.append(float(coords[idx].strip()))
-                        idx += 1
                     self.__control_points.append(pt)
 
         except IOError:
@@ -259,12 +257,10 @@ class Curve(object):
                 # Loop through control points)
                 for pt in self.__control_points:
                     line = ""
-                    idx = 0
-                    while idx < self.__dimension:
+                    for idx in range(self.__dimension):
                         line += str(pt[idx])
                         if not idx == self.__dimension - 1:
                             line += ","
-                        idx += 1
                     fp.write(line + "\n")
 
         except IOError:
@@ -319,10 +315,8 @@ class Curve(object):
                 ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
-                    idx = 0
-                    while idx < dim:
+                    for idx in range(dim):
                         line += str(pt[idx]) + ", "
-                        idx += 1
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -365,10 +359,8 @@ class Curve(object):
                 # Loop through control points
                 for pt in self.__curve_points:
                     line = ""
-                    idx = 0
-                    while idx < dim:
+                    for idx in range(dim):
                         line += str(pt[idx]) + ", "
-                        idx += 1
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -402,10 +394,8 @@ class Curve(object):
         basis = utils.basis_functions(self.__degree, tuple(self.__knot_vector), span, u)
         cpt = [0.0 for x in range(self.__dimension)]
         for i in range(0, self.__degree + 1):
-            idx = 0
-            while idx < self.__dimension:
+            for idx in range(self.__dimension):
                 cpt[idx] += (basis[i] * self.__control_points[span - self.__degree + i][idx])
-                idx += 1
 
         return cpt
 
@@ -456,10 +446,8 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self.__dimension)]
             for j in range(0, self.__degree+1):
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     CK[k][idx] = (bfunsders[k][j] * self.__control_points[span - self.__degree + j][idx])
-                    idx += 1
 
         # Return the derivatives
         return CK
@@ -482,18 +470,15 @@ class Curve(object):
         r = r2 - r1
         PK = [[[None for x in range(self.__dimension)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
-            idx = 0
-            while idx < self.__dimension:
+            for idx in range(self.__dimension):
                 PK[0][i][idx] = self.__control_points[r1 + i][idx]
                 idx += 1
 
         for k in range(1, order + 1):
             tmp = self.__degree - k + 1
             for i in range(0, r - k + 1):
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     PK[k][i][idx] = tmp * (PK[k - 1][i + 1][idx] - PK[k - 1][i][idx]) / (self.__knot_vector[r1 + i + self.__degree + 1] - self.__knot_vector[r1 + i + k])
-                    idx += 1
 
         return PK
 
@@ -527,10 +512,8 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self.__dimension)]
             for j in range(0, self.__degree - k + 1):
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     CK[k][idx] += (bfuns[j][self.__degree - k] * PK[k][j][idx])
-                    idx += 1
 
         # Return the derivatives
         return CK
@@ -613,10 +596,8 @@ class Curve(object):
             L = k - self.__degree + j
             for i in range(0, self.__degree - j - s + 1):
                 alpha = (u - self.__knot_vector[L + i]) / (self.__knot_vector[i + k + 1] - self.__knot_vector[L + i])
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     R[i][idx] = alpha * R[i + 1][idx] + (1.0 - alpha) * R[i][idx]
-                    idx += 1
             Q[L] = R[0]
             Q[k + r - j - s] = R[self.__degree - j - s]
 
@@ -1006,10 +987,8 @@ class Surface(object):
                         for cpr in control_point_row:
                             cpt = cpr.split(',')
                             pt = []
-                            idx = 0
-                            while idx < self.__dimension:
+                            for idx in range(self.__dimension):
                                 pt.append(float(cpt[idx].strip()))
-                                idx += 1
                             # Add control points to the global control point list
                             self.__control_points.append(pt)
                             self.__control_points_size_v += 1
@@ -1026,10 +1005,8 @@ class Surface(object):
                         coords = line.split(',')
                         # Remove extra whitespace and convert to float
                         pt = []
-                        idx = 0
-                        while idx < self.__dimension:
+                        for idx in range(self.__dimension):
                             pt.append(float(coords[idx].strip()))
-                            idx += 1
                         self.__control_points.append(pt)
                     # These depends on the user input
                     self.__control_points_size_u = size_u
@@ -1077,12 +1054,10 @@ class Surface(object):
                     for i in range(0, self.__control_points_size_u):
                         line = ""
                         for j in range(0, self.__control_points_size_v):
-                            idx = 0
-                            while idx < self.__dimension:
+                            for idx in range(self.__dimension):
                                 line += str(self.__control_points2D[i][j][idx])
                                 if not idx == self.__dimension - 1:
                                     line += ","
-                                idx += 1
                             if j != self.__control_points_size_v - 1:
                                 line += ";"
                             else:
@@ -1091,12 +1066,10 @@ class Surface(object):
                 else:
                     for pt in self.__control_points:
                         line = ""
-                        idx = 0
-                        while idx < self.__dimension:
+                        for idx in range(self.__dimension):
                             line += str(pt[idx])
                             if not idx == self.__dimension - 1:
                                 line += ","
-                            idx += 1
                         fp.write(line + "\n")
 
         except IOError:
@@ -1151,10 +1124,8 @@ class Surface(object):
                 ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
                     line = ""
-                    idx = 0
-                    while idx < dim:
+                    for idx in range(dim):
                         line += str(pt[idx]) + ", "
-                        idx += 1
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -1197,10 +1168,8 @@ class Surface(object):
                 # Loop through control points
                 for pt in self.__surface_points:
                     line = ""
-                    idx = 0
-                    while idx < dim:
+                    for idx in range(dim):
                         line += str(pt[idx]) + ", "
-                        idx += 1
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -1282,14 +1251,10 @@ class Surface(object):
             temp = [0.0 for x in range(self.__dimension)]
             idx_v = span_v - self.__degree_v + l
             for k in range(0, self.__degree_u + 1):
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     temp[idx] += (basis_u[k] * self.__control_points2D[idx_u + k][idx_v][idx])
-                    idx += 1
-            idx = 0
-            while idx < self.__dimension:
+            for idx in range(self.__dimension):
                 spt[idx] += (basis_v[l] * temp[idx])
-                idx += 1
 
         return spt
 
@@ -1351,18 +1316,14 @@ class Surface(object):
                 for r in range(0, self.__degree_u + 1):
                     cu = span_u - self.__degree_u + r
                     cv = span_v - self.__degree_v + s
-                    idx = 0
-                    while idx < self.__dimension:
+                    for idx in range(self.__dimension):
                         temp[s][idx] += (bfunsders_u[k][r] * self.__control_points2D[cu][cv][idx])
-                        idx += 1
 
             dd = min(order - k, dv)
             for l in range(0, dd + 1):
                 for s in range(0, self.__degree_v + 1):
-                    idx = 0
-                    while idx < self.__dimension:
+                    for idx in range(self.__dimension):
                         SKL[k][l][idx] += (bfunsders_v[l][s] * temp[s][idx])
-                        idx += 1
 
         # Return the derivatives
         return SKL
@@ -1499,8 +1460,7 @@ class Surface(object):
                 for j in range(1, r + 1):
                     L = k - p + j
                     for i in range(0, p - j - s + 1):
-                        idx = 0
-                        while idx < self.__dimension:
+                        for idx in range(self.__dimension):
                             R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
                     Q[L][row] = R[0]
                     Q[k + r - j - s][row] = R[p - j - s]
@@ -1554,8 +1514,7 @@ class Surface(object):
                 for j in range(1, r + 1):
                     L = k - p + j
                     for i in range(0, p - j - s + 1):
-                        idx = 0
-                        while idx < self.__dimension:
+                        for idx in range(self.__dimension):
                             R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
                     Q[row][L] = R[0]
                     Q[row][k + r - j - s] = R[p - j - s]

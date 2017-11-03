@@ -64,10 +64,8 @@ class Curve(BSpline.Curve):
         ret_list = []
         for pt in self.__control_points:
             temp = []
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 temp.append(float(pt[idx] / pt[-1]))
-                idx += 1
             ret_list.append(tuple(temp))
         return tuple(ret_list)
 
@@ -93,10 +91,8 @@ class Curve(BSpline.Curve):
         ctrlpts_noweight = []
         for pt in self.__control_points:
             temp = []
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 temp.append(float(pt[idx] / pt[-1]))
-                idx += 1
             ctrlpts_noweight.append(temp)
         return ctrlpts_noweight
 
@@ -132,17 +128,13 @@ class Curve(BSpline.Curve):
         basis = utils.basis_functions(self.__degree, tuple(self.__knot_vector), span, u)
         cptw = [0.0 for x in range(self.__dimension)]
         for i in range(0, self.__degree + 1):
-            idx = 0
-            while idx < self.__dimension:
+            for idx in range(self.__dimension):
                 cptw[idx] += (basis[i] * self.__control_points[span - self.__degree + i][idx])
-                idx += 1
 
         # Divide by weight
         cpt = []
-        idx = 0
-        while idx < self.__dimension - 1:
+        for idx in range(self.__dimension - 1):
             cpt.append(float(cptw[idx] / cptw[-1]))
-            idx += 1
 
         return cpt
 
@@ -164,21 +156,15 @@ class Curve(BSpline.Curve):
         CK = [[None for x in range(self.__dimension - 1)] for y in range(order + 1)]
         for k in range(0, order + 1):
             v = []
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 v.append(CKw[idx])
-                idx += 1
 
             for i in range(1, order + 1):
-                idx = 0
-                while idx < self.__dimension - 1:
+                for idx in range(self.__dimension - 1):
                     v[idx] -= (utils.binomial_coefficient(k, i) * CKw[i][-1] * CK[k - i][idx])
-                    idx += 1
 
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 CK[k][idx] = v[idx] / CKw[0][-1]
-                idx += 1
 
         # Return C(u) derivatives
         return CK
@@ -292,10 +278,8 @@ class Surface(BSpline.Surface):
         ret_list = []
         for pt in self.__control_points:
             temp = []
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 temp.append(float(pt[idx] / pt[-1]))
-                idx += 1
             ret_list.append(tuple(temp))
         return tuple(ret_list)
 
@@ -321,10 +305,8 @@ class Surface(BSpline.Surface):
         ctrlpts_noweight = []
         for pt in self.__control_points:
             temp = []
-            idx = 0
-            while idx < self.__dimension - 1:
+            for idx in range(self.__dimension - 1):
                 temp.append(float(pt[idx] / pt[-1]))
-                idx += 1
             ctrlpts_noweight.append(temp)
         return ctrlpts_noweight
 
@@ -368,21 +350,15 @@ class Surface(BSpline.Surface):
             temp = [0.0 for x in range(self.__dimension)]
             idx_v = span_v - self.__degree_v + l
             for k in range(0, self.__degree_u + 1):
-                idx = 0
-                while idx < self.__dimension:
+                for idx in range(self.__dimension):
                     temp[idx] += (basis_u[k] * self.__control_points2D[idx_u + k][idx_v][idx])
-                    idx += 1
-            idx = 0
-            while idx < self.__dimension:
+            for idx in range(self.__dimension):
                 sptw[idx] += (basis_v[l] * temp[idx])
-                idx += 1
 
         # Divide by weight
         spt = []
-        idx = 0
-        while idx < self.__dimension - 1:
+        for idx in range(self.__dimension - 1):
             spt.append(float(sptw[idx] / sptw[-1]))
-            idx += 1
 
         return spt
 
@@ -416,36 +392,24 @@ class Surface(BSpline.Surface):
         for k in range(0, order + 1):
             for l in range(0, order - k + 1):
                 v = []
-                idx = 0
-                while idx < self.__dimension - 1:
+                for idx in range(self.__dimension - 1):
                     v.append(SKLw[idx])
-                    idx += 1
 
                 for j in range(1, l + 1):
-                    idx = 0
-                    while idx < self.__dimension - 1:
+                    for idx in range(self.__dimension - 1):
                         v[idx] -= (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * SKL[k][l - j][idx])
-                        idx += 1
                 for i in range(1, k + 1):
-                    idx = 0
-                    while idx < self.__dimension - 1:
+                    for idx in range(self.__dimension - 1):
                         v[idx] -= (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * SKL[k - i][l][idx])
-                        idx += 1
                     v2 = [0.0 for x in range(self.__dimension - 1)]
                     for j in range(1, l + 1):
-                        idx = 0
-                        while idx < self.__dimension - 1:
+                        for idx in range(self.__dimension - 1):
                             v2[idx] += (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * SKL[k - i][l - j][idx])
-                            idx += 1
-                    idx = 0
-                    while idx < self.__dimension - 1:
+                    for idx in range(self.__dimension - 1):
                         v[idx] -= (utils.binomial_coefficient(k, i) * v2[idx])
-                        idx += 1
 
-                idx = 0
-                while idx < self.__dimension - 1:
+                for idx in range(self.__dimension - 1):
                     SKL[k][l][idx] = v[idx] / SKLw[0][0][-1]
-                    idx += 1
 
         # Return S(u,v) derivatives
         return SKL

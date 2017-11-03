@@ -270,12 +270,10 @@ class Grid(object):
                     col_size = len(cols)
                     counter = 0
                     for rows in cols:
-                        idx = 0
-                        while idx < self.__dimension:
+                        for idx in range(self.__dimension):
                             line += str(rows[idx])
                             if idx != self.__dimension - 1:
                                 line += ","
-                            idx += 1
                         counter = counter + 1
                         # Not the best way, but it works
                         if counter != col_size:
@@ -463,8 +461,7 @@ class GridWeighted(Grid):
             weighted_gp_row = []
             for rows in cols:
                 temp = []
-                idx = 0
-                while idx < self.__dimension - 1:
+                for idx in range(self.__dimension - 1):
                     # Divide by the weight value
                     temp.append(rows[idx] / w)
                 temp.append(w)
@@ -496,8 +493,7 @@ class GridWeighted(Grid):
             weighted_gp_row = []
             for rows in cols:
                 temp = []
-                idx = 0
-                while idx < self.__dimension - 1:
+                for idx in range(self.__dimension - 1):
                     # Get unweighted points
                     val = rows[idx] * rows[-1]
                     # Divide with the new weight

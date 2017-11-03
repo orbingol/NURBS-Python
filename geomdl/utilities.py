@@ -37,11 +37,9 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
                 for cpr in control_point_row:
                     cpt = cpr.split(',')
                     pt = []
-                    idx = 0
                     idx_max = len(cpt)
-                    while idx < idx_max:
+                    for idx in range(idx_max):
                         pt.append(float(cpt[idx].strip()))
-                        idx += 1
                     ctrlpts_v.append(pt)
                     size_v += 1
                 current_ctrlpts.append(ctrlpts_v)
@@ -61,12 +59,10 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
                 for i in range(size_v):
                     line = ""
                     for j in range(size_u):
-                        idx = 0
-                        while idx < idx_max:
+                        for idx in range(idx_max):
                             line += str(new_ctrlpts[i][j][idx])
                             if not idx == idx_max - 1:
                                 line += ","
-                            idx += 1
                         if j != size_u - 1:
                             line += ";"
                         else:
