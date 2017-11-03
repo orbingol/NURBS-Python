@@ -1079,10 +1079,10 @@ class Surface(object):
                         for j in range(0, self.__control_points_size_v):
                             idx = 0
                             while idx < self.__dimension:
-                                line += self.__control_points2D[i][j]
+                                line += str(self.__control_points2D[i][j][idx])
                                 if not idx == self.__dimension - 1:
                                     line += ","
-                            idx += 1
+                                idx += 1
                             if j != self.__control_points_size_v - 1:
                                 line += ";"
                             else:

@@ -13,7 +13,7 @@ def get_property(prop, project):
     return result.group(1)
 
 
-project_name = 'nurbs'
+project_name = 'geomdl'
 setup(
     name='NURBS-Python',
     version=get_property('__version__', project_name),
