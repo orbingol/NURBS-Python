@@ -24,7 +24,6 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
     current_ctrlpts = []
     size_u = 0
     size_v = 0
-    idx_max = 0
 
     # Read file
     try:
@@ -36,11 +35,10 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
                 ctrlpts_v = []
                 for cpr in control_point_row:
                     cpt = cpr.split(',')
-                    pt = []
-                    idx_max = len(cpt)
-                    for idx in range(idx_max):
-                        pt.append(float(cpt[idx].strip()))
-                    ctrlpts_v.append(pt)
+                    pt_temp = []
+                    for pt in cpt:
+                        pt_temp.append(float(pt.strip()))
+                    ctrlpts_v.append(pt_temp)
                     size_v += 1
                 current_ctrlpts.append(ctrlpts_v)
                 size_u += 1
@@ -59,10 +57,11 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
                 for i in range(size_v):
                     line = ""
                     for j in range(size_u):
-                        for idx in range(idx_max):
-                            line += str(new_ctrlpts[i][j][idx])
-                            if not idx == idx_max - 1:
+                        line = ""
+                        for idx, coord in enumerate(new_ctrlpts[i][j]):
+                            if idx:  # Add comma if we are not on the first element
                                 line += ","
+                            line += str(coord)
                         if j != size_u - 1:
                             line += ";"
                         else:

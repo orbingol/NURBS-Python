@@ -227,8 +227,8 @@ class Curve(object):
                     coords = line.split(',')
                     # Remove extra whitespace and convert to float
                     pt = []
-                    for idx in range(self.__dimension):
-                        pt.append(float(coords[idx].strip()))
+                    for coord in coords:
+                        pt.append(float(coord.strip()))
                     self.__control_points.append(pt)
 
         except IOError:
@@ -254,13 +254,13 @@ class Curve(object):
         try:
             with open(filename, 'w') as fp:
 
-                # Loop through control points)
+                # Loop through the control points
                 for pt in self.__control_points:
                     line = ""
-                    for idx in range(self.__dimension):
-                        line += str(pt[idx])
-                        if not idx == self.__dimension - 1:
+                    for idx, coord in enumerate(pt):
+                        if idx:  # Add comma if we are not on the first element
                             line += ","
+                        line += str(coord)
                     fp.write(line + "\n")
 
         except IOError:
@@ -306,21 +306,15 @@ class Curve(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
-                # Find correct dimension
-                dim = self.__dimension
-                if self.__rational:
-                    dim -= 1
-
                 # Loop through control points
                 ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
-                    line = ""
-                    for idx in range(dim):
-                        line += str(pt[idx]) + ", "
+                    # Fill coordinates
+                    line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += "0\n"
+                    line += ", 0\n"
                     # Write line to file
-                    fp.write(line + "\n")
+                    fp.write(line)
 
         except IOError:
             # Show a warning on failure to open file
@@ -351,20 +345,14 @@ class Curve(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
-                # Find correct dimension
-                dim = self.__dimension
-                if self.__rational:
-                    dim -= 1
-
                 # Loop through control points
                 for pt in self.__curve_points:
-                    line = ""
-                    for idx in range(dim):
-                        line += str(pt[idx]) + ", "
+                    # Fill coordinates
+                    line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += "0\n"
+                    line += ", 0\n"
                     # Write line to file
-                    fp.write(line + "\n")
+                    fp.write(line)
 
         except IOError:
             # Show a warning on failure to open file
@@ -394,8 +382,7 @@ class Curve(object):
         basis = utils.basis_functions(self.__degree, tuple(self.__knot_vector), span, u)
         cpt = [0.0 for x in range(self.__dimension)]
         for i in range(0, self.__degree + 1):
-            for idx in range(self.__dimension):
-                cpt[idx] += (basis[i] * self.__control_points[span - self.__degree + i][idx])
+            cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in zip(cpt, self.__control_points[span - self.__degree + i])]
 
         return cpt
 
@@ -446,8 +433,7 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self.__dimension)]
             for j in range(0, self.__degree+1):
-                for idx in range(self.__dimension):
-                    CK[k][idx] = (bfunsders[k][j] * self.__control_points[span - self.__degree + j][idx])
+                CK[k][:] = [(bfunsders[k][j] * ctrl_pt) for ctrl_pt in self.__control_points[span - self.__degree + j]]
 
         # Return the derivatives
         return CK
@@ -470,15 +456,13 @@ class Curve(object):
         r = r2 - r1
         PK = [[[None for x in range(self.__dimension)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
-            for idx in range(self.__dimension):
-                PK[0][i][idx] = self.__control_points[r1 + i][idx]
-                idx += 1
+            PK[0][i][:] = [elem for elem in self.__control_points[r1 + i]]
 
         for k in range(1, order + 1):
             tmp = self.__degree - k + 1
             for i in range(0, r - k + 1):
-                for idx in range(self.__dimension):
-                    PK[k][i][idx] = tmp * (PK[k - 1][i + 1][idx] - PK[k - 1][i][idx]) / (self.__knot_vector[r1 + i + self.__degree + 1] - self.__knot_vector[r1 + i + k])
+                PK[k][i][:] = []
+                PK[k][i][:] = [tmp * (elem1 - elem2) / (self.__knot_vector[r1 + i + self.__degree + 1] - self.__knot_vector[r1 + i + k]) for drv, elem1, elem2 in zip(PK[k][i], PK[k - 1][i + 1], PK[k - 1][i])]
 
         return PK
 
@@ -512,8 +496,7 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self.__dimension)]
             for j in range(0, self.__degree - k + 1):
-                for idx in range(self.__dimension):
-                    CK[k][idx] += (bfuns[j][self.__degree - k] * PK[k][j][idx])
+                CK[k][:] = [elem + (bfuns[j][self.__degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in zip(CK[k], PK[k][j])]
 
         # Return the derivatives
         return CK
@@ -596,8 +579,7 @@ class Curve(object):
             L = k - self.__degree + j
             for i in range(0, self.__degree - j - s + 1):
                 alpha = (u - self.__knot_vector[L + i]) / (self.__knot_vector[i + k + 1] - self.__knot_vector[L + i])
-                for idx in range(self.__dimension):
-                    R[i][idx] = alpha * R[i + 1][idx] + (1.0 - alpha) * R[i][idx]
+                R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
             Q[L] = R[0]
             Q[k + r - j - s] = R[self.__degree - j - s]
 
@@ -986,11 +968,11 @@ class Surface(object):
                         self.__control_points_size_v = 0
                         for cpr in control_point_row:
                             cpt = cpr.split(',')
-                            pt = []
-                            for idx in range(self.__dimension):
-                                pt.append(float(cpt[idx].strip()))
+                            pt_temp = []
+                            for pt in cpt:
+                                pt_temp.append(float(pt.strip()))
                             # Add control points to the global control point list
-                            self.__control_points.append(pt)
+                            self.__control_points.append(pt_temp)
                             self.__control_points_size_v += 1
                         self.__control_points_size_u += 1
                 else:
@@ -1005,8 +987,8 @@ class Surface(object):
                         coords = line.split(',')
                         # Remove extra whitespace and convert to float
                         pt = []
-                        for idx in range(self.__dimension):
-                            pt.append(float(coords[idx].strip()))
+                        for coord in coords:
+                            pt.append(float(coord.strip()))
                         self.__control_points.append(pt)
                     # These depends on the user input
                     self.__control_points_size_u = size_u
@@ -1054,10 +1036,11 @@ class Surface(object):
                     for i in range(0, self.__control_points_size_u):
                         line = ""
                         for j in range(0, self.__control_points_size_v):
-                            for idx in range(self.__dimension):
-                                line += str(self.__control_points2D[i][j][idx])
-                                if not idx == self.__dimension - 1:
+                            line = ""
+                            for idx, coord in enumerate(self.__control_points2D[i][j]):
+                                if idx:  # Add comma if we are not on the first element
                                     line += ","
+                                line += str(coord)
                             if j != self.__control_points_size_v - 1:
                                 line += ";"
                             else:
@@ -1065,12 +1048,11 @@ class Surface(object):
                         fp.write(line)
                 else:
                     for pt in self.__control_points:
-                        line = ""
-                        for idx in range(self.__dimension):
-                            line += str(pt[idx])
-                            if not idx == self.__dimension - 1:
-                                line += ","
-                        fp.write(line + "\n")
+                        # Fill coordinates
+                        line = ", ".join(str(c) for c in pt)
+                        # Fill scalar column
+                        line += ", 0\n"
+                        fp.write(line)
 
         except IOError:
             # Show a warning on failure to open file
@@ -1115,17 +1097,11 @@ class Surface(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
-                # Find correct dimension
-                dim = self.__dimension
-                if self.__rational:
-                    dim -= 1
-
                 # Loop through control points
                 ctrlpts = self.__get_ctrlpts_for_exporting()
                 for pt in ctrlpts:
-                    line = ""
-                    for idx in range(dim):
-                        line += str(pt[idx]) + ", "
+                    # Fill coordinates
+                    line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -1160,16 +1136,10 @@ class Surface(object):
                 # Construct the header and write it to the file
                 fp.write(self.__get_csv_header())
 
-                # Find correct dimension
-                dim = self.__dimension
-                if self.__rational:
-                    dim -= 1
-
                 # Loop through control points
                 for pt in self.__surface_points:
-                    line = ""
-                    for idx in range(dim):
-                        line += str(pt[idx]) + ", "
+                    # Fill coordinates
+                    line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
                     line += "0\n"
                     # Write line to file
@@ -1251,10 +1221,8 @@ class Surface(object):
             temp = [0.0 for x in range(self.__dimension)]
             idx_v = span_v - self.__degree_v + l
             for k in range(0, self.__degree_u + 1):
-                for idx in range(self.__dimension):
-                    temp[idx] += (basis_u[k] * self.__control_points2D[idx_u + k][idx_v][idx])
-            for idx in range(self.__dimension):
-                spt[idx] += (basis_v[l] * temp[idx])
+                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self.__control_points2D[idx_u + k][idx_v])]
+            spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
         return spt
 
@@ -1316,14 +1284,12 @@ class Surface(object):
                 for r in range(0, self.__degree_u + 1):
                     cu = span_u - self.__degree_u + r
                     cv = span_v - self.__degree_v + s
-                    for idx in range(self.__dimension):
-                        temp[s][idx] += (bfunsders_u[k][r] * self.__control_points2D[cu][cv][idx])
+                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in zip(temp[s], self.__control_points2D[cu][cv])]
 
             dd = min(order - k, dv)
             for l in range(0, dd + 1):
                 for s in range(0, self.__degree_v + 1):
-                    for idx in range(self.__dimension):
-                        SKL[k][l][idx] += (bfunsders_v[l][s] * temp[s][idx])
+                    SKL[k][l][:] = [elem + (bfunsders_v[l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
 
         # Return the derivatives
         return SKL
@@ -1460,8 +1426,7 @@ class Surface(object):
                 for j in range(1, r + 1):
                     L = k - p + j
                     for i in range(0, p - j - s + 1):
-                        for idx in range(self.__dimension):
-                            R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
+                        R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
                     Q[L][row] = R[0]
                     Q[k + r - j - s][row] = R[p - j - s]
                 # Load the remaining control points
@@ -1514,8 +1479,7 @@ class Surface(object):
                 for j in range(1, r + 1):
                     L = k - p + j
                     for i in range(0, p - j - s + 1):
-                        for idx in range(self.__dimension):
-                            R[i][idx] = alpha[i][j] * R[i + 1][idx] + (1.0 - alpha[i][j]) * R[i][idx]
+                        R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
                     Q[row][L] = R[0]
                     Q[row][k + r - j - s] = R[p - j - s]
                 # Load the remaining control points

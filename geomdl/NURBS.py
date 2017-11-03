@@ -128,8 +128,7 @@ class Curve(BSpline.Curve):
         basis = utils.basis_functions(self.__degree, tuple(self.__knot_vector), span, u)
         cptw = [0.0 for x in range(self.__dimension)]
         for i in range(0, self.__degree + 1):
-            for idx in range(self.__dimension):
-                cptw[idx] += (basis[i] * self.__control_points[span - self.__degree + i][idx])
+            cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in zip(cptw, self.__control_points[span - self.__degree + i])]
 
         # Divide by weight
         cpt = []
@@ -160,11 +159,8 @@ class Curve(BSpline.Curve):
                 v.append(CKw[idx])
 
             for i in range(1, order + 1):
-                for idx in range(self.__dimension - 1):
-                    v[idx] -= (utils.binomial_coefficient(k, i) * CKw[i][-1] * CK[k - i][idx])
-
-            for idx in range(self.__dimension - 1):
-                CK[k][idx] = v[idx] / CKw[0][-1]
+                v[:] = [tmp - (utils.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
+            CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
 
         # Return C(u) derivatives
         return CK
@@ -350,10 +346,8 @@ class Surface(BSpline.Surface):
             temp = [0.0 for x in range(self.__dimension)]
             idx_v = span_v - self.__degree_v + l
             for k in range(0, self.__degree_u + 1):
-                for idx in range(self.__dimension):
-                    temp[idx] += (basis_u[k] * self.__control_points2D[idx_u + k][idx_v][idx])
-            for idx in range(self.__dimension):
-                sptw[idx] += (basis_v[l] * temp[idx])
+                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self.__control_points2D[idx_u + k][idx_v])]
+            sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
 
         # Divide by weight
         spt = []
@@ -396,20 +390,15 @@ class Surface(BSpline.Surface):
                     v.append(SKLw[idx])
 
                 for j in range(1, l + 1):
-                    for idx in range(self.__dimension - 1):
-                        v[idx] -= (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * SKL[k][l - j][idx])
+                    v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in zip(v, SKL[k][l - j])]
                 for i in range(1, k + 1):
-                    for idx in range(self.__dimension - 1):
-                        v[idx] -= (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * SKL[k - i][l][idx])
+                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in zip(v, SKL[k - i][l])]
                     v2 = [0.0 for x in range(self.__dimension - 1)]
                     for j in range(1, l + 1):
-                        for idx in range(self.__dimension - 1):
-                            v2[idx] += (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * SKL[k - i][l - j][idx])
-                    for idx in range(self.__dimension - 1):
-                        v[idx] -= (utils.binomial_coefficient(k, i) * v2[idx])
+                        v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in zip(v2, SKL[k - i][l - j])]
+                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
-                for idx in range(self.__dimension - 1):
-                    SKL[k][l][idx] = v[idx] / SKLw[0][0][-1]
+                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v]
 
         # Return S(u,v) derivatives
         return SKL

@@ -270,10 +270,11 @@ class Grid(object):
                     col_size = len(cols)
                     counter = 0
                     for rows in cols:
-                        for idx in range(self.__dimension):
-                            line += str(rows[idx])
-                            if idx != self.__dimension - 1:
+                        line = ""
+                        for idx, coord in enumerate(rows):
+                            if idx:  # Add comma if we are not on the first element
                                 line += ","
+                            line += str(coord)
                         counter = counter + 1
                         # Not the best way, but it works
                         if counter != col_size:
