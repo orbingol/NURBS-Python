@@ -461,8 +461,7 @@ class Curve(object):
         for k in range(1, order + 1):
             tmp = self.__degree - k + 1
             for i in range(0, r - k + 1):
-                PK[k][i][:] = []
-                PK[k][i][:] = [tmp * (elem1 - elem2) / (self.__knot_vector[r1 + i + self.__degree + 1] - self.__knot_vector[r1 + i + k]) for drv, elem1, elem2 in zip(PK[k][i], PK[k - 1][i + 1], PK[k - 1][i])]
+                PK[k][i][:] = [tmp * (elem1 - elem2) / (self.__knot_vector[r1 + i + self.__degree + 1] - self.__knot_vector[r1 + i + k]) for elem1, elem2 in zip(PK[k - 1][i + 1], PK[k - 1][i])]
 
         return PK
 
