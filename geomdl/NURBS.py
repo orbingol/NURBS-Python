@@ -165,6 +165,19 @@ class Curve(BSpline.Curve):
         # Return C(u) derivatives
         return CK
 
+    # Evaluates the rational curve derivative
+    def derivatives2(self, u=-1, order=0):
+        """ Evaluates n-th order curve derivatives at the given u from the rational curve.
+
+        :param u: knot value
+        :type u: float
+        :param order: derivative order
+        :type order: integer
+        :return: A list containing up to {order}-th derivative of the curve
+        :rtype: list
+        """
+        return self.derivatives(u, order)
+
 
 class Curve2D(Curve):
     """ A data storage and evaluation class for 2D NURBS curves.
