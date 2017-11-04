@@ -270,15 +270,14 @@ class Grid(object):
                     col_size = len(cols)
                     counter = 0
                     for rows in cols:
-                        line = ""
                         for idx, coord in enumerate(rows):
                             if idx:  # Add comma if we are not on the first element
                                 line += ","
                             line += str(coord)
-                        counter = counter + 1
+                        counter += 1
                         # Not the best way, but it works
                         if counter != col_size:
-                            line = line + ";"
+                            line += ";"
                     line += "\n"
                     fp.write(line)
 
