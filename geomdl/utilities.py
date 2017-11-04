@@ -1,7 +1,7 @@
 """
 .. module:: utilities
     :platform: Unix, Windows
-    :synopsis: A helper module for Curve and Surface classes
+    :synopsis: Contains common utility functions and some helper functions for data conversion, integration, etc.
 
 .. moduleauthor:: Onur Rauf Bingol
 
@@ -14,10 +14,12 @@ import warnings
 
 # Reads 2D control points file, flips it and saves it
 def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
-    """ Flips u and v directions of a 2D control points file.
+    """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
 
-    :param file_in: Input file containing the coordinates to be flipped
-    :param file_out: Output file containing the flipped coordinates
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
     :return: None
     """
     # Initialize some variables
