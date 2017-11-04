@@ -432,8 +432,8 @@ class Curve(object):
 
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self._dimension)]
-            for j in range(0, self._degree+1):
-                CK[k][:] = [(bfunsders[k][j] * ctrl_pt) for ctrl_pt in self._control_points[span - self._degree + j]]
+            for j in range(0, self._degree + 1):
+                CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in zip(CK[k], self._control_points[span - self._degree + j])]
 
         # Return the derivatives
         return CK
