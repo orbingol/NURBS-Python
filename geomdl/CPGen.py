@@ -27,15 +27,15 @@ class Grid(object):
     """
     def __init__(self, size_x, size_y):
         # Grid origin is always set to the bottom left corner of the grid
-        self.__origin = [0.0, 0.0, 0.0]
-        self.__size_x = float(size_x)
-        self.__size_y = float(size_y)
+        self._origin = [0.0, 0.0, 0.0]
+        self._size_x = float(size_x)
+        self._size_y = float(size_y)
         # Initialize a list to store generated grid points
-        self.__grid_points = []
+        self._grid_points = []
         # Set a default tolerance
-        self.__delta = 10e-8
-        self.__dimension = 3
-        self.__no_change = False
+        self._delta = 10e-8
+        self._dimension = 3
+        self._no_change = False
 
     # Returns the generated grid
     def grid(self):
@@ -43,7 +43,7 @@ class Grid(object):
 
         :return: 2D list of points in [u][v] format
         """
-        return self.__grid_points
+        return self._grid_points
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
@@ -57,7 +57,7 @@ class Grid(object):
         """
 
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
@@ -77,25 +77,25 @@ class Grid(object):
             print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_v." % num_v)
 
         # Set the number of divisions for each direction
-        spacing_x = self.__size_x / num_u
-        spacing_y = self.__size_y / num_v
+        spacing_x = self._size_x / num_u
+        spacing_y = self._size_y / num_v
 
         # Set initial position for x
-        current_x = self.__origin[0]
+        current_x = self._origin[0]
 
         # Start looping
         for u in range(0, num_u + 1):
             # Initialize a temporary list for storing the 3nd dimension
             row = []
             # Set initial position for y
-            current_y = self.__origin[1]
+            current_y = self._origin[1]
             for v in range(0, num_v + 1):
                 # Add the first point
                 row.append([current_x, current_y, 0.0])
                 # Set the y value for the next row
                 current_y = current_y + spacing_y
             # Update the list to be returned
-            self.__grid_points.append(row)
+            self._grid_points.append(row)
             # Set x the value for the next column
             current_x = current_x + spacing_x
 
@@ -108,23 +108,23 @@ class Grid(object):
         :return: None
         """
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
-        # Get current origin / starting point (we need a copy of the self.__origin)
-        current_origin = list(self.__origin)
+        # Get current origin / starting point (we need a copy of the self._origin)
+        current_origin = list(self._origin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self.__grid_points:
+        for r in self._grid_points:
             for c in r:
                 new_x = (c[0] * math.cos(rot)) - (c[1] * math.sin(rot))
                 new_y = (c[1] * math.cos(rot)) + (c[0] * math.sin(rot))
@@ -143,23 +143,23 @@ class Grid(object):
         :return: None
         """
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
-        # Get current origin / starting point (we need a copy of the self.__origin)
-        current_origin = list(self.__origin)
+        # Get current origin / starting point (we need a copy of the self._origin)
+        current_origin = list(self._origin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self.__grid_points:
+        for r in self._grid_points:
             for c in r:
                 new_x = (c[0] * math.cos(rot)) - (c[2] * math.sin(rot))
                 new_z = (c[2] * math.cos(rot)) + (c[0] * math.sin(rot))
@@ -178,23 +178,23 @@ class Grid(object):
         :return: None
         """
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
-        # Get current origin / starting point (we need a copy of the self.__origin)
-        current_origin = list(self.__origin)
+        # Get current origin / starting point (we need a copy of the self._origin)
+        current_origin = list(self._origin)
 
         # Translate to the origin
         self.translate([0.0, 0.0, 0.0])
 
         # Then, rotate about the axis
         rot = math.radians(angle)
-        for r in self.__grid_points:
+        for r in self._grid_points:
             for c in r:
                 new_y = (c[1] * math.cos(rot)) - (c[2] * math.sin(rot))
                 new_z = (c[2] * math.cos(rot)) + (c[1] * math.sin(rot))
@@ -215,28 +215,28 @@ class Grid(object):
         :return: None
         """
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
         # Find the difference between starting and the input point
-        diff_x = pt[0] - self.__origin[0]
-        diff_y = pt[1] - self.__origin[1]
-        diff_z = pt[2] - self.__origin[2]
+        diff_x = pt[0] - self._origin[0]
+        diff_y = pt[1] - self._origin[1]
+        diff_z = pt[2] - self._origin[2]
 
         # Translate all points
-        for r in self.__grid_points:
+        for r in self._grid_points:
             for c in r:
                 c[0] = c[0] + diff_x
                 c[1] = c[1] + diff_y
                 c[2] = c[2] + diff_z
 
         # Update the origin (bottom left corner)
-        self.__origin = self.__grid_points[0][0]
+        self._origin = self._grid_points[0][0]
 
     # Saves the generated grid to a text file
     def save(self, filename="grid.txt"):
@@ -250,7 +250,7 @@ class Grid(object):
         :rtype: bool
         """
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
         if not isinstance(filename, str):
@@ -265,7 +265,7 @@ class Grid(object):
                 # Clear file contents
                 fp.truncate()
                 # Start saving the generated grid to the file
-                for cols in self.__grid_points:
+                for cols in self._grid_points:
                     line = ""
                     col_size = len(cols)
                     counter = 0
@@ -314,12 +314,12 @@ class Grid(object):
         :return: None
         """
         # Check if we could update the grid
-        if self.__no_change:
+        if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights).")
             return
 
         # Check if the grid points are generated
-        if not self.__grid_points:
+        if not self._grid_points:
             raise ValueError("Grid must be generated before calling this function!")
 
         # Some error checking
@@ -341,8 +341,8 @@ class Grid(object):
         bump_list = []
 
         # Find size of the grid
-        len_u = len(self.__grid_points)
-        len_v = len(self.__grid_points[0])
+        len_u = len(self._grid_points)
+        len_v = len(self._grid_points[0])
 
         # Set a max number of trials for the point finding algorithm
         max_trials = 25
@@ -382,15 +382,15 @@ class Grid(object):
                 z_val = float(-1 * bump_height)
 
             # Update the grid points
-            self.__grid_points[u - 1][v - 1][2] = z_val / 2.0
-            self.__grid_points[u - 1][v][2] = z_val / 2.0
-            self.__grid_points[u - 1][v + 1][2] = z_val / 2.0
-            self.__grid_points[u][v - 1][2] = z_val / 2.0
-            self.__grid_points[u][v][2] = z_val
-            self.__grid_points[u][v + 1][2] = z_val / 2.0
-            self.__grid_points[u + 1][v - 1][2] = z_val / 2.0
-            self.__grid_points[u + 1][v][2] = z_val / 2.0
-            self.__grid_points[u + 1][v + 1][2] = z_val / 2.0
+            self._grid_points[u - 1][v - 1][2] = z_val / 2.0
+            self._grid_points[u - 1][v][2] = z_val / 2.0
+            self._grid_points[u - 1][v + 1][2] = z_val / 2.0
+            self._grid_points[u][v - 1][2] = z_val / 2.0
+            self._grid_points[u][v][2] = z_val
+            self._grid_points[u][v + 1][2] = z_val / 2.0
+            self._grid_points[u + 1][v - 1][2] = z_val / 2.0
+            self._grid_points[u + 1][v][2] = z_val / 2.0
+            self._grid_points[u + 1][v + 1][2] = z_val / 2.0
 
     # Checks the possibility of placing the bump at the specified location
     def _check_bump(self, uv_list=(), to_be_checked_uv=(0, 0)):
@@ -414,7 +414,7 @@ class Grid(object):
                 [u + 1, v + 1],
             ]
             for check in check_list:
-                if abs(uv[0] - check[0]) < self.__delta and abs(uv[1] - check[1]) < self.__delta:
+                if abs(uv[0] - check[0]) < self._delta and abs(uv[1] - check[1]) < self._delta:
                     return False
 
         # Otherwise, return true
