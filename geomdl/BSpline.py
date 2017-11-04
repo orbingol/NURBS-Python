@@ -57,7 +57,7 @@ class Curve(object):
 
     @property
     def order(self):
-        """ Curve order
+        """ Curve order.
 
         Defined as order = degree + 1
 
@@ -73,7 +73,7 @@ class Curve(object):
 
     @property
     def degree(self):
-        """ Curve degree
+        """ Curve degree.
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
@@ -96,7 +96,7 @@ class Curve(object):
 
     @property
     def ctrlpts(self):
-        """ Control points
+        """ Control points.
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -125,7 +125,7 @@ class Curve(object):
 
     @property
     def knotvector(self):
-        """ Knot vector
+        """ Knot vector.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -144,7 +144,7 @@ class Curve(object):
 
     @property
     def delta(self):
-        """ Curve evaluation delta
+        """ Curve evaluation delta.
 
         .. note:: The delta value is 0.1 by default.
 
@@ -166,7 +166,7 @@ class Curve(object):
 
     @property
     def curvepts(self):
-        """ Evaluated curve points
+        """ Evaluated curve points.
 
         .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
 
@@ -363,7 +363,7 @@ class Curve(object):
 
     # Evaluates the B-Spline curve at the given parameter
     def curvept(self, u=-1, check_vars=True):
-        """ Evaluates the B-Spline curve at the given u parameter
+        """ Evaluates the B-Spline curve at the given u parameter.
 
         :param u: parameter
         :type u: float
@@ -405,7 +405,7 @@ class Curve(object):
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2
+        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2.
 
         :param u: knot value
         :type u: float
@@ -420,7 +420,7 @@ class Curve(object):
         if u < 0.0 or u > 1.0:
             raise ValueError('"u" value should be between 0 and 1.')
 
-        # Algorithm A3.2: CurveDerivsAlg1
+        # Algorithm A3.2
         du = min(self._degree, order)
 
         CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
@@ -442,6 +442,7 @@ class Curve(object):
     def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
 
+        Implements Algorithm A3.3.
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
 
         :param order: derivative order
@@ -453,6 +454,7 @@ class Curve(object):
         :return: PK, a 2D list of control points
         :rtype: list
         """
+        # Algorithm A3.3
         r = r2 - r1
         PK = [[[None for x in range(self._dimension)] for y in range(r + 1)] for z in range(order + 1)]
         for i in range(0, r + 1):
@@ -481,7 +483,7 @@ class Curve(object):
         # Check u parameters are correct
         utils.check_uv(u)
 
-        # Algorithm A3.4: CurveDerivsAlg2
+        # Algorithm A3.4
         du = min(self._degree, order)
 
         CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
@@ -701,7 +703,7 @@ class Surface(object):
 
     @property
     def order_u(self):
-        """ Surface order for U direction
+        """ Surface order for U direction.
 
         Follows the following equality: order = degree + 1
 
@@ -717,7 +719,7 @@ class Surface(object):
 
     @property
     def order_v(self):
-        """ Surface order for V direction
+        """ Surface order for V direction.
 
         Follows the following equality: order = degree + 1
 
@@ -733,7 +735,7 @@ class Surface(object):
 
     @property
     def degree_u(self):
-        """ Surface degree for U direction
+        """ Surface degree for U direction.
 
         :getter: Gets the surface degree for U direction
         :setter: Sets the surface degree for U direction
@@ -752,7 +754,7 @@ class Surface(object):
 
     @property
     def degree_v(self):
-        """ Surface degree for V direction
+        """ Surface degree for V direction.
 
         :getter: Gets the surface degree V for V direction
         :setter: Sets the surface degree V for V direction
@@ -771,7 +773,7 @@ class Surface(object):
 
     @property
     def ctrlpts(self):
-        """ Control points
+        """ Control points.
 
         The v index varies first. That is, a row of v control points for the first u value is found first.
         Then, the row of v control points for the next u value.
@@ -819,7 +821,7 @@ class Surface(object):
 
     @property
     def ctrlpts2d(self):
-        """ Control points
+        """ Control points.
 
         2D control points in [u][v] format.
 
@@ -830,7 +832,7 @@ class Surface(object):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for U direction
+        """ Knot vector for U direction.
 
         :getter: Gets the knot vector for U direction
         :setter: Sets the knot vector for U direction
@@ -848,7 +850,7 @@ class Surface(object):
 
     @property
     def knotvector_v(self):
-        """ Knot vector for V direction
+        """ Knot vector for V direction.
 
         :getter: Gets the knot vector for V direction
         :setter: Sets the knot vector for V direction
@@ -866,7 +868,7 @@ class Surface(object):
 
     @property
     def delta(self):
-        """ Surface evaluation delta
+        """ Surface evaluation delta.
 
         .. note:: The delta value is 0.01 by default.
 
@@ -888,7 +890,7 @@ class Surface(object):
 
     @property
     def surfpts(self):
-        """ Evaluated surface points
+        """ Evaluated surface points.
 
         .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
 
@@ -1191,7 +1193,7 @@ class Surface(object):
         self._control_points2D = ctrlpts2D_new
 
     def surfpt(self, u=-1, v=-1, check_vars=True):
-        """ Evaluates the B-Spline surface at the given (u,v) parameters
+        """ Evaluates the B-Spline surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
         :type u: float

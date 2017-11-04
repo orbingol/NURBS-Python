@@ -55,7 +55,7 @@ class Curve(BSpline.Curve):
 
     @property
     def ctrlpts(self):
-        """ Control points
+        """ Control points.
 
         :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
         :setter: Sets weighted control points
@@ -71,7 +71,7 @@ class Curve(BSpline.Curve):
 
     @property
     def weights(self):
-        """ Weights vector
+        """ Weights vector.
 
         :getter: Extracts the weights vector from weighted control points array
         :type: list
@@ -107,7 +107,7 @@ class Curve(BSpline.Curve):
 
     # Evaluates the rational curve at the given parameter
     def curvept(self, u=-1, check_vars=True):
-        """ Evaluates the NURBS curve at the given u parameter
+        """ Evaluates the NURBS curve at the given u parameter.
 
         :param u: parameter
         :type u: float
@@ -265,7 +265,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ Control points
+        """ Control points.
 
         :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
         :setter: Sets weighted control points.
@@ -281,7 +281,7 @@ class Surface(BSpline.Surface):
 
     @property
     def weights(self):
-        """ Weights vector
+        """ Weights vector.
 
         :getter: Extracts the weights vector from weighted control points array
         :type: list
@@ -317,7 +317,7 @@ class Surface(BSpline.Surface):
 
     # Evaluates rational surface at the given (u,v) parameters
     def surfpt(self, u=-1, v=-1, check_vars=True):
-        """ Evaluates the NURBS surface at the given (u,v) parameters
+        """ Evaluates the NURBS surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
         :type u: float

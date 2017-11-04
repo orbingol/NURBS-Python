@@ -568,7 +568,7 @@ def vector_normalize(vector_in=()):
 
 # Computes the binomial coefficient
 def binomial_coefficient(k, i):
-    """ Computes the binomial coefficient (k choose i)
+    """ Computes the binomial coefficient (k choose i).
 
     :param k: a set of k elements
     :type k: int
