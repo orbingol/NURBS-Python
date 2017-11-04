@@ -74,6 +74,149 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
         raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
 
 
+# Generates weighted control points from unweighted ones
+def generate_ctrlptsw(file_in='', file_out='ctrlptsw.txt'):
+    """ Generates weighted control points from unweighted ones.
+
+    This function takes in a 2D control points file whose coordinates are organized like (x, y, z, w),
+    converts into (x*w, y*w, z*w, w), and saves it to a file.
+    Therefore, it could be a direct input of the NURBS.Surface class.
+
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
+    :return: None
+    """
+    # Initialize some variables
+    ctrlpts = []
+    size_u = 0
+    size_v = 0
+
+    # Read file
+    try:
+        with open(file_in, 'r') as fp:
+            for line in fp:
+                line = line.strip()
+                control_point_row = line.split(';')
+                size_v = 0
+                ctrlpts_v = []
+                for cpr in control_point_row:
+                    cpt = cpr.split(',')
+                    pt_temp = []
+                    for pt in cpt:
+                        pt_temp.append(float(pt.strip()))
+                    ctrlpts_v.append(pt_temp)
+                    size_v += 1
+                ctrlpts.append(ctrlpts_v)
+                size_u += 1
+    except IOError:
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+
+    # Multiply control points by weight
+    new_ctrlpts = []
+    for row in ctrlpts:
+        ctrlptsw_v = []
+        for col in row:
+            temp = [float(col[0] * col[3]),
+                    float(col[1] * col[3]),
+                    float(col[2] * col[3]),
+                    col[3]]
+            ctrlptsw_v.append(temp)
+        new_ctrlpts.append(ctrlptsw_v)
+
+    # Save new control points
+    try:
+        with open(file_out, 'w') as fp:
+            fp.truncate()
+            for i in range(size_u):
+                line = ""
+                for j in range(size_v):
+                    line = ""
+                    for idx, coord in enumerate(new_ctrlpts[i][j]):
+                        if idx:  # Add comma if we are not on the first element
+                            line += ","
+                        line += str(coord)
+                    if j != size_u - 1:
+                        line += ";"
+                    else:
+                        line += "\n"
+                fp.write(line)
+    except IOError:
+        raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
+
+
+# Generates unweighted control points from weighted ones
+def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
+    """ Generates unweighted control points from weighted ones.
+
+    This function takes in a 2D control points file whose coordinates are organized like (x*w, y*w, z*w, w),
+    converts into (x, y, z, w), and saves it to a file.
+
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
+    :return: None
+    """
+    # Initialize some variables
+    ctrlpts = []
+    size_u = 0
+    size_v = 0
+
+    # Read file
+    try:
+        with open(file_in, 'r') as fp:
+            for line in fp:
+                line = line.strip()
+                control_point_row = line.split(';')
+                size_v = 0
+                ctrlpts_v = []
+                for cpr in control_point_row:
+                    cpt = cpr.split(',')
+                    pt_temp = []
+                    for pt in cpt:
+                        pt_temp.append(float(pt.strip()))
+                    ctrlpts_v.append(pt_temp)
+                    size_v += 1
+                ctrlpts.append(ctrlpts_v)
+                size_u += 1
+    except IOError:
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+
+    # Multiply control points by weight
+    new_ctrlpts = []
+    for row in ctrlpts:
+        ctrlptsw_v = []
+        for col in row:
+            temp = [float(col[0] / col[3]),
+                    float(col[1] / col[3]),
+                    float(col[2] / col[3]),
+                    col[3]]
+            ctrlptsw_v.append(temp)
+        new_ctrlpts.append(ctrlptsw_v)
+
+    # Save new control points
+    try:
+        with open(file_out, 'w') as fp:
+            fp.truncate()
+            for i in range(size_u):
+                line = ""
+                for j in range(size_v):
+                    line = ""
+                    for idx, coord in enumerate(new_ctrlpts[i][j]):
+                        if idx:  # Add comma if we are not on the first element
+                            line += ","
+                        line += str(coord)
+                    if j != size_u - 1:
+                        line += ";"
+                    else:
+                        line += "\n"
+                fp.write(line)
+    except IOError:
+        raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
+
+
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
     """ An implementation of a ``range()`` function which works with decimals.
