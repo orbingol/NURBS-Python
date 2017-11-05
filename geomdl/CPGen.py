@@ -100,11 +100,11 @@ class Grid(object):
             current_x = current_x + spacing_x
 
     # Rotates the grid about the z-axis
-    def rotate_z(self, angle=0):
+    def rotate_z(self, angle=0.0):
         """ Rotates the grid about the z-axis.
         
         :param angle: angle of rotation about the z-axis
-        :type angle: integer or float
+        :type angle: float
         :return: None
         """
         # Check if we could update the grid
@@ -135,11 +135,11 @@ class Grid(object):
         self.translate(current_origin)
 
     # Rotates the grid about the y-axis
-    def rotate_y(self, angle=0):
+    def rotate_y(self, angle=0.0):
         """ Rotates the grid about the y-axis.
 
         :param angle: angle of rotation about the y-axis
-        :type angle: integer or float
+        :type angle: float
         :return: None
         """
         # Check if we could update the grid
@@ -170,11 +170,11 @@ class Grid(object):
         self.translate(current_origin)
 
     # Rotates the grid about the x-axis
-    def rotate_x(self, angle=0):
+    def rotate_x(self, angle=0.0):
         """ Rotates the grid about the x-axis.
 
         :param angle: angle of rotation about the x-axis
-        :type angle: integer or float
+        :type angle: float
         :return: None
         """
         # Check if we could update the grid
@@ -435,9 +435,9 @@ class GridWeighted(Grid):
     def __init__(self, size_x, size_y):
         super(GridWeighted, self).__init__(size_x, size_y)
         # Override dimension variable
-        self.__dimension = 4
+        self._dimension = 4
 
-    def add_weight(self, w=1):
+    def add_weight(self, w=1.0):
         """ Adds a uniform weight to grid points.
 
         All grid points are divided by the input weight and weight value is added as the last element of the coordinate array.
@@ -451,28 +451,26 @@ class GridWeighted(Grid):
             raise ValueError("Weight value must be bigger than 0.")
 
         # Check if we have already added weights
-        if len(self.__grid_points[0][0]) == self.__dimension:
+        if len(self._grid_points[0][0]) == self._dimension:
             warnings.warn("Weight has already been added. Please use modify_weight() to change weight value.")
             return
 
         # Start adding weights
         weighted_gp = []
-        for cols in self.__grid_points:
+        for cols in self._grid_points:
             weighted_gp_row = []
-            for rows in cols:
-                temp = []
-                for idx in range(self.__dimension - 1):
-                    # Divide by the weight value
-                    temp.append(rows[idx] / w)
+            for row in cols:
+                temp = row
+                temp[:] = [tmp / w for tmp in temp]
                 temp.append(w)
                 weighted_gp_row.append(temp)
             weighted_gp.append(weighted_gp_row)
 
         # Update class variables
-        self.__no_change = True
-        self.__grid_points = weighted_gp
+        self._no_change = True
+        self._grid_points = weighted_gp
 
-    def modify_weight(self, w=-1):
+    def modify_weight(self, w=-1.0):
         """ Modifies weight value of the grid points.
 
         :param w: weight value to be added
@@ -483,25 +481,21 @@ class GridWeighted(Grid):
             raise ValueError("Weight value must be bigger than 0.")
 
         # Check if we have already added weights
-        if len(self.__grid_points[0][0]) != self.__dimension:
+        if len(self._grid_points[0][0]) != self._dimension:
             warnings.warn("Need to add weights first.")
             return
 
         # Start modifying weights
         weighted_gp = []
-        for cols in self.__grid_points:
+        for cols in self._grid_points:
             weighted_gp_row = []
-            for rows in cols:
-                temp = []
-                for idx in range(self.__dimension - 1):
-                    # Get unweighted points
-                    val = rows[idx] * rows[-1]
-                    # Divide with the new weight
-                    val /= w
-                    temp.append(val)
+            for row in cols:
+                temp = row[0:3]
+                temp[:] = [tmp * row[-1] for tmp in temp]
+                temp[:] = [tmp / w for tmp in temp]
                 temp.append(w)
                 weighted_gp_row.append(temp)
             weighted_gp.append(weighted_gp_row)
 
         # Update grid points
-        self.__grid_points = weighted_gp
+        self._grid_points = weighted_gp
