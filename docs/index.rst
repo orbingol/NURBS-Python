@@ -146,12 +146,12 @@ Utilities module
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 
-CPGen module
-^^^^^^^^^^^^
+Control Points Generator
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 :code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
 
-This class is designed minimally just to enable more testing cases for t:code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
+This class is designed minimally just to enable more testing cases for :code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
 
 Grid
 ~~~~
