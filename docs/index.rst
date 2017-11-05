@@ -72,7 +72,7 @@ The :code:`geomdl` package contains :code:`BSpline` and :code:`NURBS` modules al
 
 This package also includes a simple grid generator class, :code:`Grid`, to generate rectangular control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
 
-BSpline module
+B-Spline module
 ^^^^^^^^^^^^^^
 
 :code:`BSpline` class provides data storage properties and evaluation functions for B-spline (NUBS) curves and surfaces.
@@ -149,9 +149,14 @@ Utilities module
 Control Points Generator
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
+:code:`CPGen` module allows users to generate control points grids as an input to :code:`BSpline.Surface` and
+:code:`NURBS.Surface` classes. This module is designed to enable more testing cases in a very simple way and it doesn't
+have the capabilities of a fully-featured grid generator, but it should be enough to be used in :code:`BSpline` and
+:code:`NURBS` modules.
 
-This class is designed minimally just to enable more testing cases for :code:`BSpline.Surface` and :code:`NURBS.Surface` classes. It is not a fully-featured grid generator which can fit to any purpose, but as always, contributions are welcome!
+:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class
+and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
+
 
 Grid
 ~~~~
