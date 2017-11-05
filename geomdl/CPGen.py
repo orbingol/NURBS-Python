@@ -490,7 +490,7 @@ class GridWeighted(Grid):
         for cols in self._grid_points:
             weighted_gp_row = []
             for row in cols:
-                temp = row[0:3]
+                temp = row[0:self._dimension-1]
                 temp[:] = [tmp * row[-1] for tmp in temp]
                 temp[:] = [tmp / w for tmp in temp]
                 temp.append(w)
