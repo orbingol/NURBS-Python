@@ -12,17 +12,17 @@ Below introduces some rules on contributing to this package.
 
 ### Contributions to the code
 
-* Please check [README](README.rst) file before working on the code
-* All pull requests should be made to the `devmaster` branch
-* If you are implementing a reading function, please use `read_PURPOSE_METHOD` convention, such as `read_ctrlpts_json`
-* The inline documentation and all related .md files should be updated after adding a new method
+* Please check [README](README.rst) file before working on the code.
+* All pull requests should be made to the `devmaster` branch.
+* If you are implementing a reading function, please use `read_PURPOSE_METHOD` convention, such as `read_ctrlpts_json`.
+* The inline documentation and all related .md files should be updated after adding a new method.
 * If you are getting confused or would like to ask something on how to implement a new feature, please email the author 
-first and we will discuss it
+first and we will discuss it.
 
 ### Contributions to the examples
 
 * First of all, they are in a different repository. Please don't add any example scripts to this repository.
-* Please check [README](README.rst) file for finding the repository for the examples
+* Please check [README](README.rst) file for finding the repository for the examples.
 
 ### Contributions in general
 
