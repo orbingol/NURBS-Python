@@ -21,9 +21,9 @@ class Grid(object):
     .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
     :param size_x: width of the grid
-    :type size_x: integer or float
+    :type size_x: float
     :param size_y: height of the grid
-    :type size_y: integer or float
+    :type size_y: float
     """
     def __init__(self, size_x, size_y):
         # Grid origin is always set to the bottom left corner of the grid
@@ -50,9 +50,9 @@ class Grid(object):
         """ Generates grid using the input division parameters.
             
         :param num_u: number of divisions in x-direction
-        :type num_u: integer
+        :type num_u: int
         :param num_v: number of divisions in y-direction
-        :type num_v: integer
+        :type num_v: int
         :return: None
         """
 
@@ -305,11 +305,11 @@ class Grid(object):
             testgrid.bumps(1) # You will get a bump at the center of the generated grid
                 
         :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
-        :type num_bumps: integer
+        :type num_bumps: int
         :param all_positive: Generate all bumps on the positive z direction
         :type all_positive: boolean
         :param bump_height: z-value of the generated bumps on the grid
-        :type bump_height: integer or float
+        :type bump_height: float
         :return: None
         """
         # Check if we could update the grid
@@ -428,9 +428,9 @@ class GridWeighted(Grid):
     .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
 
     :param size_x: width of the grid
-    :type size_x: integer or float
+    :type size_x: float
     :param size_y: height of the grid
-    :type size_y: integer or float
+    :type size_y: float
     """
     def __init__(self, size_x, size_y):
         super(GridWeighted, self).__init__(size_x, size_y)
@@ -444,6 +444,7 @@ class GridWeighted(Grid):
         Grid points can be accessed via :func:`.grid()` function and can be saved as a text file via :func:`.save()` function.
 
         :param w: weight value to be added
+        :type w: float
         :return: None
         """
         # Check if the input weight is valid
@@ -474,6 +475,7 @@ class GridWeighted(Grid):
         """ Modifies weight value of the grid points.
 
         :param w: weight value to be added
+        :type w: float
         :return: None
         """
         # Check if the input weight is valid
