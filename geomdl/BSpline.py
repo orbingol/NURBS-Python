@@ -289,14 +289,19 @@ class Curve(object):
         return "coord x, coord y, coord z, scalar\n"
 
     # Saves control points to a CSV file
-    def save_ctrlpts_to_csv(self, filename=""):
+    def save_ctrlpts_to_csv(self, filename="", scalar=0):
         """ Saves control points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
+        :param scalar: value of the scalar column in the output, defaults to 0
+        :type scalar: int
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        if not isinstance(scalar, (int, float)):
+            raise ValueError("Value of scalar must be integer or float.")
+
         # Initialize the return value
         ret_check = True
 
@@ -312,7 +317,7 @@ class Curve(object):
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += ", 0\n"
+                    line += ", " + str(scalar) + "\n"
                     # Write line to file
                     fp.write(line)
 
@@ -324,14 +329,19 @@ class Curve(object):
         return ret_check
 
     # Saves evaluated curve points to a CSV file
-    def save_curvepts_to_csv(self, filename=""):
+    def save_curvepts_to_csv(self, filename="", scalar=0):
         """ Saves evaluated curve points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
-        :return: True if control points are saved correctly, False otherwise
+        :param scalar: value of the scalar column in the output, defaults to 0
+        :type scalar: int
+        :return: True if curve points are saved correctly, False otherwise
         :rtype: bool
         """
+        if not isinstance(scalar, (int, float)):
+            raise ValueError("Value of scalar must be integer or float.")
+
         # Find surface points if there is none
         if not self._curve_points:
             self.evaluate()
@@ -350,7 +360,7 @@ class Curve(object):
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += ", 0\n"
+                    line += ", " + str(scalar) + "\n"
                     # Write line to file
                     fp.write(line)
 
@@ -1050,8 +1060,6 @@ class Surface(object):
                     for pt in self._control_points:
                         # Fill coordinates
                         line = ", ".join(str(c) for c in pt)
-                        # Fill scalar column
-                        line += ", 0\n"
                         fp.write(line)
 
         except IOError:
@@ -1080,14 +1088,19 @@ class Surface(object):
         return "coord x, coord y, coord z, scalar\n"
 
     # Saves control points to a CSV file
-    def save_ctrlpts_to_csv(self, filename=""):
+    def save_ctrlpts_to_csv(self, filename="", scalar=0):
         """ Saves control points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
+        :param scalar: value of the scalar column in the output, defaults to 0
+        :type scalar: int
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        if not isinstance(scalar, (int, float)):
+            raise ValueError("Value of scalar must be integer or float.")
+
         # Initialize the return value
         ret_check = True
 
@@ -1103,7 +1116,7 @@ class Surface(object):
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += "0\n"
+                    line += ", " + str(scalar) + "\n"
                     # Write line to file
                     fp.write(line)
 
@@ -1115,14 +1128,19 @@ class Surface(object):
         return ret_check
 
     # Saves evaluated surface points to a CSV file
-    def save_surfpts_to_csv(self, filename=""):
+    def save_surfpts_to_csv(self, filename="", scalar=0):
         """ Saves evaluated surface points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
-        :return: True if control points are saved correctly, False otherwise
+        :param scalar: value of the scalar column in the output, defaults to 0
+        :type scalar: int
+        :return: True if surface points are saved correctly, False otherwise
         :rtype: bool
         """
+        if not isinstance(scalar, (int, float)):
+            raise ValueError("Value of scalar must be integer or float.")
+
         # Find surface points if there is none
         if not self._surface_points:
             self.evaluate()
@@ -1141,9 +1159,9 @@ class Surface(object):
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
-                    line += "0\n"
+                    line += ", " + str(scalar) + "\n"
                     # Write line to file
-                    fp.write(line + "\n")
+                    fp.write(line)
 
         except IOError:
             # Show a warning on failure to open file
