@@ -372,14 +372,17 @@ class Curve(object):
         return ret_check
 
     # Evaluates the B-Spline curve at the given parameter
-    def curvept(self, u=-1, check_vars=True):
+    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
         """ Evaluates the B-Spline curve at the given u parameter.
 
         :param u: parameter
         :type u: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
+        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to the return value
+        :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
+        :rtype: list
         """
         if check_vars:
             # Check all parameters are set before the curve evaluation
@@ -387,13 +390,19 @@ class Curve(object):
             # Check u parameters are correct
             utils.check_uv(u)
 
+        # Initialize an empty list which will contain the list of associated control points
+        ctrlpts = []
+
         # Algorithm A3.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
         cpt = [0.0 for x in range(self._dimension)]
         for i in range(0, self._degree + 1):
             cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in zip(cpt, self._control_points[span - self._degree + i])]
+            ctrlpts.append(self._control_points[span - self._degree + i])
 
+        if get_ctrlpts:
+            return cpt, ctrlpts
         return cpt
 
     # Evaluates the B-Spline curve
@@ -1209,7 +1218,7 @@ class Surface(object):
         self._control_points_size_v = ctrlpts_new_sizeV
         self._control_points2D = ctrlpts2D_new
 
-    def surfpt(self, u=-1, v=-1, check_vars=True):
+    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
         """ Evaluates the B-Spline surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
@@ -1218,13 +1227,19 @@ class Surface(object):
         :type v: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
+        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to the return value
+        :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
+        :rtype: list
         """
         if check_vars:
             # Check all parameters are set before the surface evaluation
             self._check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
+
+        # Initialize an empty list which will contain the list of associated control points
+        ctrlpts = []
 
         # Algorithm A3.5
         span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
@@ -1240,8 +1255,11 @@ class Surface(object):
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
+                ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
+        if get_ctrlpts:
+            return spt, ctrlpts
         return spt
 
     # Evaluates the B-Spline surface

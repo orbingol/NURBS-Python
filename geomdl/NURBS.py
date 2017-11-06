@@ -106,13 +106,15 @@ class Curve(BSpline.Curve):
         return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates the rational curve at the given parameter
-    def curvept(self, u=-1, check_vars=True):
+    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
         """ Evaluates the NURBS curve at the given u parameter.
 
         :param u: parameter
         :type u: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
+        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to the return value
+        :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
         :rtype: list
         """
@@ -123,18 +125,24 @@ class Curve(BSpline.Curve):
             if u < 0.0 or u > 1.0:
                 raise ValueError('"u" value should be between 0 and 1.')
 
+        # Initialize an empty list which will contain the list of associated control points
+        ctrlpts = []
+
         # Algorithm A4.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
         cptw = [0.0 for x in range(self._dimension)]
         for i in range(0, self._degree + 1):
             cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in zip(cptw, self._control_points[span - self._degree + i])]
+            ctrlpts.append(self._control_points[span - self._degree + i])
 
         # Divide by weight
         cpt = []
         for idx in range(self._dimension - 1):
             cpt.append(float(cptw[idx] / cptw[-1]))
 
+        if get_ctrlpts:
+            return cpt, ctrlpts
         return cpt
 
     # Evaluates the rational curve derivative
@@ -329,7 +337,7 @@ class Surface(BSpline.Surface):
         return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates rational surface at the given (u,v) parameters
-    def surfpt(self, u=-1, v=-1, check_vars=True):
+    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
         """ Evaluates the NURBS surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
@@ -338,6 +346,8 @@ class Surface(BSpline.Surface):
         :type v: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
+        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to the return value
+        :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
         :rtype: list
         """
@@ -346,6 +356,9 @@ class Surface(BSpline.Surface):
             self._check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
+
+        # Initialize an empty list which will contain the list of associated control points
+        ctrlpts = []
 
         # Algorithm A4.3
         span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
@@ -360,6 +373,7 @@ class Surface(BSpline.Surface):
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
+                ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
 
         # Divide by weight
@@ -367,6 +381,8 @@ class Surface(BSpline.Surface):
         for idx in range(self._dimension - 1):
             spt.append(float(sptw[idx] / sptw[-1]))
 
+        if get_ctrlpts:
+            return spt, ctrlpts
         return spt
 
     # Evaluates n-th order rational surface derivatives at the given (u,v) parameter
