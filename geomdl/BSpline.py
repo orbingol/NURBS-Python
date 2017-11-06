@@ -1037,7 +1037,6 @@ class Surface(object):
                     for i in range(0, self._control_points_size_u):
                         line = ""
                         for j in range(0, self._control_points_size_v):
-                            line = ""
                             for idx, coord in enumerate(self._control_points2D[i][j]):
                                 if idx:  # Add comma if we are not on the first element
                                     line += ","

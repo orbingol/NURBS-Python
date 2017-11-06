@@ -60,7 +60,6 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
             for i in range(size_v):
                 line = ""
                 for j in range(size_u):
-                    line = ""
                     for idx, coord in enumerate(new_ctrlpts[i][j]):
                         if idx:  # Add comma if we are not on the first element
                             line += ","
@@ -132,7 +131,6 @@ def generate_ctrlptsw(file_in='', file_out='ctrlptsw.txt'):
             for i in range(size_u):
                 line = ""
                 for j in range(size_v):
-                    line = ""
                     for idx, coord in enumerate(new_ctrlpts[i][j]):
                         if idx:  # Add comma if we are not on the first element
                             line += ","
@@ -203,7 +201,6 @@ def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
             for i in range(size_u):
                 line = ""
                 for j in range(size_v):
-                    line = ""
                     for idx, coord in enumerate(new_ctrlpts[i][j]):
                         if idx:  # Add comma if we are not on the first element
                             line += ","
