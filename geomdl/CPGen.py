@@ -307,7 +307,7 @@ class Grid(object):
         :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
         :type num_bumps: int
         :param all_positive: Generate all bumps on the positive z direction
-        :type all_positive: boolean
+        :type all_positive: bool
         :param bump_height: z-value of the generated bumps on the grid
         :type bump_height: float
         :return: None
