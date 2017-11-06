@@ -16,15 +16,3 @@ The NURBS-Python package follows an object-oriented design as much as possible. 
 """
 
 __version__ = "3.0.0"
-
-# Fixes "from geomdl import *" but this is not considered as a good practice
-# @see: https://docs.python.org/3/tutorial/modules.html#importing-from-a-package
-__all__ = ["BSpline.Curve",
-           "BSpline.Curve2D",
-           "BSpline.Surface",
-           "NURBS.Curve",
-           "NURBS.Curve2D",
-           "NURBS.Surface",
-           "CPGen.Grid",
-           "CPGen.GridWeighted",
-           "utilities"]
