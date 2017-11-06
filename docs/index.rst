@@ -13,6 +13,14 @@ Introduction
     :members:
     :undoc-members:
 
+Author
+^^^^^^
+
+Onur Rauf Bingol
+
+* E-mail: contact@onurbingol.net
+* Twitter: https://twitter.com/orbingol
+
 Q&A
 ^^^
 
@@ -23,26 +31,27 @@ Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non
 
 **What is the purpose of this package/library?**
 
-Very simple: Implementing the well-known NURBS algorithms in native Python, i.e. without using any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_. This approach comes with some advantages in debugging and implementing new algorithms.
+Implementing the well-known NURBS algorithms in native Python in an organized way and without using any converters or
+wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
 
-Current version of the library doesn't require any additional packages, such as NumPy, so that you can run **NURBS-Python** on a plain Python installation.
+**What are the minimum requirements?**
 
-The first version of the library was very complicated to use (I developed that version as a class project), so I started developing an alternative, easy-to-use NURBS library with simple data storage functionality, and now, here we are!
+NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. It doesn't require any additional packages, such as NumPy,
+so that you can run it on a plain Python installation.
 
-**Can I request a new feature?**
+**How can I install NURBS-Python?**
 
-Of course you can :-) Please feel free to contact me about the NURBS-Python package anytime you want.
+The easiest method to install NURBS-Python is using the included setup script, i.e. ``python setup.py install``.
 
-* `Github <https://github.com/orbingol>`_ (you can find my email there)
-* Twitter: `@orbingol <https://twitter.com/orbingol>`_
+.. note:: Please use the issue tracker to report bugs. If you have any questions and/or comments, please feel free to email the author.
 
-Graphical Outputs
------------------
+Examples
+--------
 
-The following 2D and 3D plots are generated using `Matplotlib <http://matplotlib.org/>`_. You can find the scripts generating these graphical outputs in the `NURBS-Python Repository <https://github.com/orbingol/NURBS-Python>`_.
+You can find the example scripts in the `Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository.
 
-Curves
-^^^^^^
+2D Curves
+^^^^^^^^^
 
 .. image:: images/ex_curve01.png
     :alt: Curve example
@@ -68,14 +77,14 @@ Surfaces
 Submodules
 ----------
 
-The :code:`geomdl` package contains :code:`BSpline` and :code:`NURBS` modules along with the :code:`utilities` module for functions common in both :code:`BSpline` and :code:`NURBS`.
+The package name is :code:`geomdl` and it contains :code:`BSpline` and :code:`NURBS` modules along with the :code:`utilities`
+module for functions common in both :code:`BSpline` and :code:`NURBS`. It also includes a simple control points generator
+module, :code:`CPGen`, to use as an input to :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
 
-This package also includes a simple grid generator class, :code:`Grid`, to generate rectangular control point grids for use with :code:`BSpline.Surface` and :code:`NURBS.Surface` classes.
+B-Spline Module
+^^^^^^^^^^^^^^^
 
-B-Spline module
-^^^^^^^^^^^^^^
-
-:code:`BSpline` class provides data storage properties and evaluation functions for B-spline (NUBS) curves and surfaces.
+:code:`BSpline` module provides data storage properties and evaluation functions for B-Spline (NUBS) 2D/3D curves and surfaces.
 
 3D B-Spline Curve
 ~~~~~~~~~~~~~~~~~
@@ -104,10 +113,10 @@ B-Spline Surface
     :inherited-members:
     :show-inheritance:
 
-NURBS module
+NURBS Module
 ^^^^^^^^^^^^
 
-:code:`NURBS` class provides data storage properties and evaluation functions for NURBS curves and surfaces.
+:code:`NURBS` module provides data storage properties and evaluation functions for NURBS 2D/3D curves and surfaces.
 
 3D NURBS Curve
 ~~~~~~~~~~~~~~
@@ -146,16 +155,16 @@ Utilities module
     :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_multiplicity
     :undoc-members:
 
-Control Points Generator
-^^^^^^^^^^^^^^^^^^^^^^^^
+Control Points Generator Module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :code:`CPGen` module allows users to generate control points grids as an input to :code:`BSpline.Surface` and
 :code:`NURBS.Surface` classes. This module is designed to enable more testing cases in a very simple way and it doesn't
 have the capabilities of a fully-featured grid generator, but it should be enough to be used side by side with
 :code:`BSpline` and :code:`NURBS` modules.
 
-:code:`Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class
-and :code:`GridWeighted` does the same for :code:`NURBS.Surface` class.
+:code:`CPGen.Grid` class provides an easy way to generate control point grids for use with :code:`BSpline.Surface` class
+and :code:`CPGen.GridWeighted` does the same for :code:`NURBS.Surface` class.
 
 
 Grid
