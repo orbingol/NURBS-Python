@@ -324,7 +324,7 @@ class Curve(object):
         return ret_check
 
     # Saves evaluated curve points to a CSV file
-    def save_surfpts_to_csv(self, filename=""):
+    def save_curvepts_to_csv(self, filename=""):
         """ Saves evaluated curve points to a comma separated text file.
 
         :param filename: output file name
