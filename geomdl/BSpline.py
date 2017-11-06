@@ -33,7 +33,7 @@ class Curve(object):
 
     **Evaluation**
 
-    The evaluation methods class are:
+    The evaluation methods are:
 
     * :func:`.evaluate()`
     * :func:`.derivatives()`
@@ -629,7 +629,7 @@ class Curve2D(Curve):
 
     **Evaluation**
 
-    The evaluation methods class are:
+    The evaluation methods are:
 
     * :func:`.evaluate()`
     * :func:`.derivatives()`

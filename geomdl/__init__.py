@@ -4,7 +4,7 @@ B-Spline (NURBS) 2D/3D curves and surfaces. It also provides a data structure fo
 knot vectors, which are required for evaluation of NURBS curves and surfaces. Please follow the README_ file included
 in the repository_ for details on the algorithms.
 
-Some of the significant features of the NURBS-Python Library are;
+Some of the significant features of the NURBS-Python Library are:
 
 * Python 2.x and 3.x compatibility
 * No external dependencies (such as NumPy)
