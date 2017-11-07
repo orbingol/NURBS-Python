@@ -399,7 +399,8 @@ class Curve(object):
         cpt = [0.0 for x in range(self._dimension)]
         for i in range(0, self._degree + 1):
             cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in zip(cpt, self._control_points[span - self._degree + i])]
-            ctrlpts.append(self._control_points[span - self._degree + i])
+            if get_ctrlpts:
+                ctrlpts.append(self._control_points[span - self._degree + i])
 
         if get_ctrlpts:
             return cpt, ctrlpts
@@ -1255,7 +1256,8 @@ class Surface(object):
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-                ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
+                if get_ctrlpts:
+                    ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
         if get_ctrlpts:
