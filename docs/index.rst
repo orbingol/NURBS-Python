@@ -83,30 +83,6 @@ Please check the `Examples <https://github.com/orbingol/NURBS-Python_Examples>`_
 I only provide some scripts in this repository. If you are an avid user of `Jupyter <http://jupyter.org/>`_, I believe
 that it would be very easy to convert these scripts into Jupyter notebooks.
 
-2D Curves
-^^^^^^^^^
-
-.. image:: images/ex_curve01.png
-    :alt: Curve example
-
-.. image:: images/ex_curve03.png
-    :alt: Curve example with tangents as quiver plots
-
-.. image:: images/ex_curve04.png
-    :alt: A full circle using NURBS
-
-Surfaces
-^^^^^^^^
-
-.. image:: images/ex_surface01.png
-    :alt: Surface example 1
-
-.. image:: images/ex_surface02.png
-    :alt: Surface example 2
-
-.. image:: images/ex_surface03.png
-    :alt: Surface example 3
-
 Submodules
 ----------
 
