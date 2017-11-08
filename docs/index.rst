@@ -27,7 +27,7 @@ This documentation is organized into a couple sections:
 
 .. toctree::
     :maxdepth: 2
-    :caption: NURBS-Python Examples
+    :caption: Examples
 
     examples
 
