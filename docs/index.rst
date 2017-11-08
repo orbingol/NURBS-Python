@@ -53,7 +53,7 @@ The main purpose is implementing the well-known NURBS algorithms in native Pytho
 any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
 
 Although these wrappers are lifesavers by means of converting C++ code to Python when there are too many deadlines, their support
-on the source language might be limited or you might need to learn the wrapper's own language to make the thing done in your way.
+on the source language might be limited or you might need to learn the wrapper's own language to get the things done in your way.
 Personally speaking, I had to learn Python's C API to understand how SWIG's typemap system works. It takes so much time when
 you are not well-acquainted with the low-level programming or not willing to learn a programming language's internals.
 
