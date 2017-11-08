@@ -86,6 +86,10 @@ Author
 Contributors
 ============
 
+I would like to thank all contributors for their help and support in testing, bug fixing and improvement of the NURBS-Python_
+project.
+
+* Luke Frisken (`@kellpossible <https://github.com/kellpossible>`_)
 * John-Eric Dufour (`@jedufour <https://github.com/jedufour>`_)
 * Jan Heczko (`@heczis <https://github.com/heczis>`_)
 
@@ -105,3 +109,5 @@ I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.
 
 .. |RTFD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
 .. _RTFD: http://nurbs-python.readthedocs.io/en/latest/?badge=latest
+
+.. _NURBS-Python: https://github.com/orbingol/NURBS-Python

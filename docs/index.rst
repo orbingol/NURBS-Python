@@ -6,12 +6,19 @@
 NURBS-Python Documentation
 ==========================
 
+|DOI|_
+
 Introduction
 ------------
 
 .. automodule:: geomdl
     :members:
     :undoc-members:
+
+Information for Researchers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
 
 Author
 ^^^^^^
@@ -21,25 +28,49 @@ Onur Rauf Bingol
 * E-mail: contact@onurbingol.net
 * Twitter: https://twitter.com/orbingol
 
-Q&A
-^^^
+Acknowledgments
+^^^^^^^^^^^^^^^
 
-**What is NURBS?**
+I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_
+, for his guidance and supervision throughout the course of this project.
 
-NURBS, namely *Non-Uniform Rational Basis Spline*, is a mathematical model for generation of curves and surfaces in a flexible way. It is a well-accepted industry standard and used as a basis for nearly all of the 3D modeling and CAD/CAM software packages.
-Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_ or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by Dr. Piegl and Dr. Tiller.
+Questions and Answers
+---------------------
 
-**What is the purpose of this package/library?**
+What is NURBS?
+^^^^^^^^^^^^^^
 
-Implementing the well-known NURBS algorithms in native Python in an organized way and without using any converters or
-wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
+NURBS, namely *Non-Uniform Rational Basis Spline*, is a mathematical model for generation of curves and surfaces in a
+flexible way. It is a well-accepted industry standard and used as a basis for nearly all of the 3D modeling and CAD/CAM
+software packages. Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
+or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by
+Les A. Piegl and Wayne Tiller.
 
-**What are the minimum requirements?**
+What is the purpose of this package/library?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The main purpose is implementing the well-known NURBS algorithms in native Python in an organized way and without using
+any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
+
+Although these wrappers are lifesavers by means of converting C++ code to Python when there are too many deadlines, their support
+on the source language might be limited or you might need to learn the wrapper's own language to make the thing done in your way.
+Personally speaking, I had to learn Python's C API to understand how SWIG's typemap system works. It takes so much time when
+you are not well-acquainted with the low-level programming or not willing to learn a programming language's internals.
+
+On the other hand, NURBS-Python is designed to get the things done in a fast way. I used object-oriented approach
+as much as possible and tried to make the code look more Pythonic and optimized. Since all the code is implemented in
+Python natively with no external dependencies, it is possible to use this library in every platform which core Python
+programming language is supported or integrate into embedded systems/distributions. Using native implementation
+approach also allows users to debug and extend this library very easily.
+
+What are the minimum requirements?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. It doesn't require any additional packages, such as NumPy,
 so that you can run it on a plain Python installation.
 
-**How can I install NURBS-Python?**
+How can I install NURBS-Python?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The easiest method to install NURBS-Python is using the included setup script, i.e. ``python setup.py install``.
 
@@ -48,7 +79,9 @@ The easiest method to install NURBS-Python is using the included setup script, i
 Examples
 --------
 
-You can find the example scripts in the `Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository.
+Please check the `Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository on how to use this library.
+I only provide some scripts in this repository. If you are an avid user of `Jupyter <http://jupyter.org/>`_, I believe
+that it would be very easy to convert these scripts into Jupyter notebooks.
 
 2D Curves
 ^^^^^^^^^
@@ -196,3 +229,7 @@ Weighted Grid
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
+
+
+.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
+.. _DOI: https://doi.org/10.5281/zenodo.815010
