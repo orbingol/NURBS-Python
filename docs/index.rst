@@ -11,6 +11,7 @@ NURBS-Python also provides a convenient and easy-to-use data structure for stori
 elements of the provided data structures are documented under :ref:`modules`.
 
 This documentation is organized into a couple sections:
+
 * :ref:`introduction`
 * :ref:`examples`
 * :ref:`modules`
