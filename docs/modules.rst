@@ -12,7 +12,7 @@ Included Modules
 The following modules are included in this library:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     module_bspline
     module_nurbs
