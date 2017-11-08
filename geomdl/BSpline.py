@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: A data storage and evaluation class for B-spline curves and surfaces
 
-.. moduleauthor:: Onur Rauf Bingol
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 

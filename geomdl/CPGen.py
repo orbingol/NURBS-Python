@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: A simple control points generator to use with the B-Spline and NURBS surfaces
 
-.. moduleauthor:: Onur Rauf Bingol
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 

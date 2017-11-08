@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Contains common utility functions and some helper functions for data conversion, integration, etc.
 
-.. moduleauthor:: Onur Rauf Bingol
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 
