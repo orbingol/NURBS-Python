@@ -46,8 +46,8 @@ software packages. Please see the `the related Wikipedia article <https://en.wik
 or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by
 Les A. Piegl and Wayne Tiller.
 
-What is the purpose of this package/library?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Why NURBS-Python?
+^^^^^^^^^^^^^^^^^
 
 The main purpose is implementing the well-known NURBS algorithms in native Python in an organized way and without using
 any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
@@ -63,14 +63,14 @@ Python natively with no external dependencies, it is possible to use this librar
 programming language is supported or integrate into embedded systems/distributions. Using native implementation
 approach also allows users to debug and extend this library very easily.
 
-What are the minimum requirements?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Minimum Requirements
+^^^^^^^^^^^^^^^^^^^^
 
 NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. It doesn't require any additional packages, such as NumPy,
 so that you can run it on a plain Python installation.
 
-How can I install NURBS-Python?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installing NURBS-Python
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The easiest method to install NURBS-Python is using the included setup script, i.e. ``python setup.py install``.
 
