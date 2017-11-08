@@ -41,7 +41,7 @@ This documentation is organized into a couple sections:
 .. _modules:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
     :caption: Modules
 
     modules
