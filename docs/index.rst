@@ -8,7 +8,14 @@ NURBS-Python Documentation
 
 |DOI|_
 
-Welcome to NURBS-Python documentation! This documentation is organized into a couple sections:
+Welcome to NURBS-Python documentation! NURBS-Python is a Python library containing Python implementations of several
+`The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
+Non-Uniform Rational B-Spline (NURBS) 2D/3D curves and surfaces.
+
+NURBS-Python also provides a convenient and easy-to-use data structure for storing curve and surface descriptions. All
+elements of the provided data structures are documented under :ref:`modules`.
+
+This documentation is organized into a couple sections:
 
 * :ref:`introduction`
 * :ref:`examples`
@@ -26,7 +33,7 @@ Welcome to NURBS-Python documentation! This documentation is organized into a co
 .. _examples:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Examples
 
     examples
@@ -34,7 +41,7 @@ Welcome to NURBS-Python documentation! This documentation is organized into a co
 .. _modules:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Modules
 
     modules

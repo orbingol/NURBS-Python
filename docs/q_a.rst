@@ -4,9 +4,11 @@ Questions and Answers
 What is NURBS?
 ==============
 
-NURBS, namely *Non-Uniform Rational Basis Spline*, is a mathematical model for generation of curves and surfaces in a
-flexible way. It is a well-accepted industry standard and used as a basis for nearly all of the 3D modeling and CAD/CAM
-software packages. Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
+NURBS is an acronym for *Non-Uniform Rational Basis Spline* and it represents a mathematical model for generation of
+curves and surfaces in a flexible way. It is a well-accepted industry standard and used as a basis for nearly all of
+the 3D modeling and CAD/CAM software packages as well as modeling and visualization frameworks.
+
+Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
 or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by
 Les A. Piegl and Wayne Tiller.
 
@@ -31,7 +33,7 @@ Minimum Requirements
 ====================
 
 NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. It doesn't require any additional packages, such as NumPy,
-so that you can run it on a plain Python installation.
+so that you can run it even on a plain Python installation as well as on a scientific distribution, such as Anaconda.
 
 Installing NURBS-Python
 =======================
