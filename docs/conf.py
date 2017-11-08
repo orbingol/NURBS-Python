@@ -57,6 +57,7 @@ master_doc = 'index'
 project = u'NURBS-Python'
 copyright = u'2017, Onur Rauf Bingol'
 author = u'Onur Rauf Bingol'
+description = u'B-Spline and NURBS library with grid generator'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -91,7 +92,6 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
 html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -161,7 +161,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'NURBS-Python', u'NURBS-Python Documentation',
-     author, 'NURBS-Python', 'One line description of project.',
+     author, 'NURBS-Python', description,
      'Miscellaneous'),
 ]
 
