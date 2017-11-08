@@ -8,7 +8,7 @@ NURBS-Python Documentation
 
 |DOI|_
 
-This documentation is organized into a couple sections:
+Welcome to NURBS-Python documentation! This documentation is organized into a couple sections:
 
 * :ref:`introduction`
 * :ref:`examples`

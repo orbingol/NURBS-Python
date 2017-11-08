@@ -1,5 +1,5 @@
-Introduction
-^^^^^^^^^^^^
+Motivation
+^^^^^^^^^^
 
 .. automodule:: geomdl
     :members:
