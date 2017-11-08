@@ -1,5 +1,5 @@
 Utilities Module
-================
+^^^^^^^^^^^^^^^^
 
 :code:`utilities` module contains common helper functions for B-spline and NURBS curve and surface evaluation.
 

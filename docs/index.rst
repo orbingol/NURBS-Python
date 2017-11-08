@@ -24,7 +24,7 @@ This documentation is organized into a couple sections:
 .. _introduction:
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Introduction
 
     introduction
@@ -33,7 +33,7 @@ This documentation is organized into a couple sections:
 .. _examples:
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Examples
 
     examples
@@ -41,7 +41,7 @@ This documentation is organized into a couple sections:
 .. _modules:
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Modules
 
     modules
