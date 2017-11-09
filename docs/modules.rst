@@ -25,4 +25,7 @@ following modules are included in this library:
     module_cpgen
 
 NURBS-Python does not implement any visualization functionality. Users are completely free to use any visualization method
-or software. For instance, CSV exporting facility can be used to draw control points, curves and surfaces.
+or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
+curves and surfaces using a software, like Paraview_.
+
+.. _Paraview: https://www.paraview.org/
