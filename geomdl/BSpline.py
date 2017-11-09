@@ -523,11 +523,13 @@ class Curve(object):
         return CK
 
     # Evaluates the curve tangent at the given u parameter
-    def tangent(self, u=-1):
+    def tangent(self, u=-1, normalize=False):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
         :param u: knot value
         :type u: float
+        :param normalize: if True, the returned tangent vector is converted to a unit vector
+        :type normalize: boolea
         :return: A list in the order of "surface point" and "derivative"
         :rtype: list
         """
@@ -538,6 +540,9 @@ class Curve(object):
         point = ders[0]
         der_u = ders[1]
 
+        # Normalize the tangent vector
+        if normalize:
+            der_u = utils.vector_normalize(der_u)
         # Return the list
         return point, der_u
 
@@ -1333,13 +1338,15 @@ class Surface(object):
         return SKL
 
     # Evaluates the surface tangent at the given (u, v) parameter
-    def tangent(self, u=-1, v=-1):
+    def tangent(self, u=-1, v=-1, normalize=False):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
         :type v: float
+        :param normalize: if True, the returned tangent vector is converted to a unit vector
+        :type normalize: boolean
         :return: A list in the order of "surface point", "derivative w.r.t. u" and "derivative w.r.t. v"
         :rtype: list
         """
@@ -1351,19 +1358,24 @@ class Surface(object):
         der_u = skl[1][0]
         der_v = skl[0][1]
 
+        # Normalize the tangent vectors
+        if normalize:
+            der_u = utils.vector_normalize(der_u)
+            der_v = utils.vector_normalize(der_v)
+
         # Return the list of tangents w.r.t. u and v
         return tuple(point), tuple(der_u), tuple(der_v)
 
     # Evaluates the surface normal at the given (u, v) parameter
-    def normal(self, u=-1, v=-1, normalized=True):
+    def normal(self, u=-1, v=-1, normalize=True):
         """ Evaluates the surface normal at the given (u, v) parameter.
 
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
         :type v: float
-        :param normalized: if True, the returned normal vector is an unit vector
-        :type normalized: boolean
+        :param normalize: if True, the returned normal vector is converted to a unit vector
+        :type normalize: boolean
         :return: normal vector
         :rtype: list
         """
@@ -1380,7 +1392,7 @@ class Surface(object):
         # Compute normal
         normal = utils.vector_cross(der_u, der_v)
 
-        if normalized:
+        if normalize:
             # Convert normal vector to a unit vector
             normal = utils.vector_normalize(tuple(normal))
 
