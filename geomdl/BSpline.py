@@ -805,11 +805,12 @@ class Surface(object):
     def ctrlpts(self):
         """ Control points.
 
-        The v index varies first. That is, a row of v control points for the first u value is found first.
-        Then, the row of v control points for the next u value.
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
 
         :getter: Gets the control points
-        :setter: Sets the control points
         :type: list
         """
         ret_list = []
@@ -817,48 +818,81 @@ class Surface(object):
             ret_list.append(tuple(pt))
         return tuple(ret_list)
 
-    @ctrlpts.setter
-    def ctrlpts(self, value):
+    @property
+    def ctrlpts2d(self):
+        """ Control points.
+
+        2D control points in *[u][v]* format.
+
+        :getter: Gets the control points
+        :type: list
+        """
+        return self._control_points2D
+
+    @property
+    def ctrlpts_size_u(self):
+        """ Gets the size of the control points array in U-direction.
+
+        :return: number of control points in U-direction
+        :rtype: int
+        """
+        return self._control_points_size_u
+
+    @property
+    def ctrlpts_size_v(self):
+        """ Gets the size of the control points array in V-direction.
+
+        :return: number of control points in V-direction
+        :rtype: int
+        """
+        return self._control_points_size_v
+
+    def set_ctrlpts(self, ctrlpts, size_u, size_v):
+        """ Sets 1D control points.
+
+        This function expects a list coordinates which is also a list. For instance, if you are working in 3D space, then
+        your coordinates will be a list of 3 elements representing *(x, y, z)* coordinates.
+
+        This function also generates 2D control points in *[u][v]* format which can be accessed via
+        :py:attr:`~ctrlpts2d` property.
+
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        :param size_u: size of the control points grid in U-direction
+        :param size_u: int
+        :param size_v: size of the control points grid in V-direction
+        :param size_v: int
+        :return: None
+        """
         # Clean up the surface and control points lists, if necessary
         self._reset_surface()
         self._reset_ctrlpts()
 
-        # First check v-direction
-        if len(value) < self._degree_v + 1:
+        if self._degree_u == 0 or self._degree_v == 0:
+            raise ValueError("First, set the degrees!")
+        if size_u < self._degree_u + 1:
+            raise ValueError("Number of control points in u-direction should be at least degree + 1.")
+        if size_v < self._degree_v + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
-        # Then, check U direction
-        u_cnt = 0
-        for u_coords in value:
-            if len(u_coords) < self._degree_u + 1:
-                raise ValueError("Number of control points in u-direction should be at least degree + 1.")
-            u_cnt += 1
-            for coord in u_coords:
-                # Save the control points as a list of 3D coordinates
-                if len(coord) < 0 or len(coord) > self._dimension:
-                    raise ValueError("Please input 3D coordinates")
-                # Convert to list of floats
-                coord_float = [float(c) for c in coord]
-                self._control_points.append(coord_float)
+
+        # Set the new control points
+        self._control_points = copy.deepcopy(ctrlpts)
+
         # Set u and v sizes
-        self._control_points_size_u = u_cnt
-        self._control_points_size_v = len(value)
+        self._control_points_size_u = size_u
+        self._control_points_size_v = size_v
+
         # Generate a 2D list of control points
         for i in range(0, self._control_points_size_u):
             ctrlpts_v = []
             for j in range(0, self._control_points_size_v):
                 ctrlpts_v.append(self._control_points[i + (j * self._control_points_size_u)])
             self._control_points2D.append(ctrlpts_v)
-
-    @property
-    def ctrlpts2d(self):
-        """ Control points.
-
-        2D control points in [u][v] format.
-
-        :getter: Gets the control points
-        :type: list
-        """
-        return self._control_points2D
 
     @property
     def knotvector_u(self):
