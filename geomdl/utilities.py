@@ -563,6 +563,28 @@ def vector_normalize(vector_in=()):
         raise ValueError("The magnitude of the vector is zero.")
 
 
+# Translates the input points using the given vector
+def point_translate(point_in=(), vector_in=()):
+    """ Translates the input points using the given vector
+
+    :param point_in: input point (as a list/tuple of 3 elements)
+    :type point_in: tuple
+    :param vector_in: input vector (as a list/tuple of 3 elements)
+    :type vector_in: tuple
+    :return: translated point
+    :rtype: list
+    """
+    if not point_in or not vector_in:
+        raise ValueError("Input arguments are empty.")
+    if len(point_in) != 3 or len(vector_in) != 3:
+        raise ValueError("Input arguments must be a list/tuple of 3 elements.")
+
+    # Translate the point using the input vector
+    point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
+
+    return point_out
+
+
 # Computes the binomial coefficient
 def binomial_coefficient(k, i):
     """ Computes the binomial coefficient (k choose i).
