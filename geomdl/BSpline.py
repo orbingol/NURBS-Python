@@ -1403,7 +1403,7 @@ class Surface(object):
             der_v = utils.vector_normalize(der_v)
 
         # Return the list of tangents w.r.t. u and v
-        return tuple(point), tuple(der_u), tuple(der_v)
+        return tuple(point), der_u, der_v
 
     # Evaluates the surface normal at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalize=True):
@@ -1436,7 +1436,7 @@ class Surface(object):
             normal = utils.vector_normalize(tuple(normal))
 
         # Return the surface normal at the input u,v location
-        return tuple(normal)
+        return normal
 
     def insert_knot(self, u=-1, v=-1, r=1):
         """ Inserts the given knots and updates the control points array and the knot vectors.
