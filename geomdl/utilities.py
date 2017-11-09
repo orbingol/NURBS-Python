@@ -216,16 +216,16 @@ def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
 
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
-    """ An implementation of a ``range()`` function which works with decimals.
+    """ Implementation of Python's ``range()`` function which works with floats.
 
     Reference to this implementation: http://stackoverflow.com/a/7267280
 
     :param x: start value
-    :type x: integer or float
+    :type x: float
     :param y: end value
-    :type y: integer or float
+    :type y: float
     :param step: increment
-    :type step: integer or float
+    :type step: float
     :return: float
     :rtype: generator
     """
@@ -565,7 +565,7 @@ def vector_normalize(vector_in=()):
 
 # Translates the input points using the given vector
 def point_translate(point_in=(), vector_in=()):
-    """ Translates the input points using the given vector
+    """ Translates the input points using the given vector.
 
     :param point_in: input point (as a list/tuple of 3 elements)
     :type point_in: tuple
@@ -587,15 +587,18 @@ def point_translate(point_in=(), vector_in=()):
 
 # Computes the binomial coefficient
 def binomial_coefficient(k, i):
-    """ Computes the binomial coefficient (k choose i).
+    """ Computes the binomial coefficient (denoted by *k choose i*).
 
-    :param k: a set of k elements
+    Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
+
+    :param k: size of the set of distinct elements
     :type k: int
-    :param i: subset of elements with the size i
+    :param i: size of the subsets
     :type i: int
-    :return:
+    :return: combination of *k* and *i*
+    :rtype: float
     """
     k_fact = math.factorial(k)
     i_fact = math.factorial(i)
     k_i_fact = math.factorial(k-i)
-    return k_fact / (k_i_fact * i_fact)
+    return float(k_fact / (k_i_fact * i_fact))
