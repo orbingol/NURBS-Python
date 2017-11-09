@@ -530,7 +530,7 @@ class Curve(object):
         :param u: knot value
         :type u: float
         :param normalize: if True, the returned tangent vector is converted to a unit vector
-        :type normalize: boolea
+        :type normalize: bool
         :return: A list in the order of "surface point" and "derivative"
         :rtype: list
         """
@@ -1351,7 +1351,7 @@ class Surface(object):
         :param v: parameter in the V direction
         :type v: float
         :param normalize: if True, the returned tangent vector is converted to a unit vector
-        :type normalize: boolean
+        :type normalize: bool
         :return: A list in the order of "surface point", "derivative w.r.t. u" and "derivative w.r.t. v"
         :rtype: list
         """
@@ -1380,7 +1380,7 @@ class Surface(object):
         :param v: parameter in the V direction
         :type v: float
         :param normalize: if True, the returned normal vector is converted to a unit vector
-        :type normalize: boolean
+        :type normalize: bool
         :return: normal vector
         :rtype: list
         """
