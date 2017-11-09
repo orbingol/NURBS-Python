@@ -9,6 +9,7 @@
 
 import sys
 import warnings
+import copy
 import geomdl.utilities as utils
 
 
@@ -543,6 +544,7 @@ class Curve(object):
         # Normalize the tangent vector
         if normalize:
             der_u = utils.vector_normalize(der_u)
+
         # Return the list
         return point, der_u
 
@@ -577,6 +579,7 @@ class Curve(object):
         np = len(self._control_points)
         nq = np + r
 
+
         # Initialize new knot vector array
         UQ = [None for x in range(mp + r)]
         # Initialize new control points array (control points can be weighted or not)
@@ -589,16 +592,18 @@ class Curve(object):
             UQ[i] = self._knot_vector[i]
         for i in range(1, r+1):
             UQ[k + i] = u
-        for i in range(k + 1, mp + 1):
+        for i in range(k + 1, mp):
             UQ[i + r] = self._knot_vector[i]
 
         # Save unaltered control points
         for i in range(0, k - self._degree + 1):
             Q[i] = self._control_points[i]
-        for i in range(k - s, np + 1):
+        for i in range(k - s, np):
             Q[i + r] = self._control_points[i]
+
+        # The algorithm uses R array to update control points
         for i in range(0, self._degree - s + 1):
-            R[i] = self._control_points[k - self._degree + i]
+            R[i] = copy.deepcopy(self._control_points[k - self._degree + i])
 
         # Insert the knot r times
         for j in range(1, r + 1):
@@ -1471,7 +1476,7 @@ class Surface(object):
                     Q[i + r][row] = self._control_points2D[i][row]
                 # Load auxiliary control points
                 for i in range(0, p - s + 1):
-                    R[i] = self._control_points2D[k - p + i][row]
+                    R[i] = copy.deepcopy(self._control_points2D[k - p + i][row])
                 # Insert the knot r times
                 for j in range(1, r + 1):
                     L = k - p + j
@@ -1524,7 +1529,7 @@ class Surface(object):
                     Q[row][i + r] = self._control_points2D[row][i]
                 # Load auxiliary control points
                 for i in range(0, p - s + 1):
-                    R[i] = self._control_points2D[row][k - p + i]
+                    R[i] = copy.deepcopy(self._control_points2D[row][k - p + i])
                 # Insert the knot r times
                 for j in range(1, r + 1):
                     L = k - p + j
