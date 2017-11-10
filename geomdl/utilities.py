@@ -214,6 +214,50 @@ def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
         raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
 
 
+# Changes linearly ordered list of points into a zig-zag shape
+def make_zigzag(points, row_size):
+    """ Changes linearly ordered list of points into a zig-zag shape.
+
+    This function is designed to create input for the visualization software. It orders the points to draw a zig-zag
+    shape which enables generating properly connected lines without any scanlines. Please see the below sketch on the
+    functionality of the ``row_size`` parameter.
+
+         row size
+    <-=============->
+    ------->>-------|
+    |------<<-------|
+    |------>>-------|
+    -------<<-------|
+
+    Please note that this function does not execute any order detection algorithms to understand the list has already
+    been converted to generate a zig-zag shape.
+
+    :param points: list of points to be ordered
+    :type points: list
+    :param row_size: number of elements in a row which the zig-zag generated
+    :param row_size: int
+    :return: re-ordered points
+    :rtype: list
+    """
+    new_points = []
+    points_size = len(points)
+    forward = True
+    idx = 0
+    rev_idx = -1
+    while idx < points_size:
+        if forward:
+            new_points.append(points[idx])
+        else:
+            new_points.append(points[rev_idx])
+            rev_idx -= 1
+        idx += 1
+        if idx % row_size == 0:
+            forward = False if forward else True
+            rev_idx = idx + int(row_size) - 1
+
+    return new_points
+
+
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
     """ Implementation of Python's ``range()`` function which works with floats.
