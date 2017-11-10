@@ -260,16 +260,32 @@ def make_zigzag(points, row_size):
 
 
 def make_quad(points, row_size, col_size):
-    new_points = make_zigzag(points, row_size)
-    points_reverse = copy.deepcopy(points)
-    points_reverse.reverse()
+    """ Changes linearly ordered list of points into a mesh composed of quads.
 
+    Please note that this function does not detect the ordering of the input points to detect the input points have
+    already been processed to generate a mesh.
+
+    :param points: list of points to be ordered
+    :type points: list
+    :param row_size: number of elements in a row
+    :param row_size: int
+    :param col_size: number of elements in a column
+    :param col_size: int
+    :return: re-ordered points
+    :rtype: list
+    :return:
+    """
+    # Start with generating a zig-zag shape in row direction and then take its reverse
+    new_points = make_zigzag(points, row_size)
+    new_points.reverse()
+
+    # Start generating a zig-zag shape in col direction
     forward = True
     idx = 0
     counter = 0
     temp = []
     while idx < col_size:
-        temp.append(points_reverse[idx + (counter * row_size)])
+        temp.append(points[idx + (counter * row_size)])
         counter += 1
         if counter % col_size == 0:
             if forward:
