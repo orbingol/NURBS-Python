@@ -259,7 +259,7 @@ def make_zigzag(points, row_size):
     return new_points
 
 
-def make_mesh(points, row_size, col_size):
+def make_quad(points, row_size, col_size):
     new_points = make_zigzag(points, row_size)
     points_reverse = copy.deepcopy(points)
     points_reverse.reverse()

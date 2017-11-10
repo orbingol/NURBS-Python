@@ -1155,7 +1155,7 @@ class Surface(object):
         :rtype: bool
         """
         # Check possible modes
-        mode_list = ['linear', 'zigzag', 'mesh']
+        mode_list = ['linear', 'zigzag', 'quad']
         if mode not in mode_list:
             warnings.warn("Input mode is not valid, defaulting to linear.")
 
@@ -1179,7 +1179,7 @@ class Surface(object):
                 if mode == 'zigzag':
                     ctrlpts = utils.make_zigzag(ctrlpts, self._control_points_size_v)
                 if mode == 'mesh':
-                    ctrlpts = utils.make_mesh(ctrlpts, self._control_points_size_v, self._control_points_size_u)
+                    ctrlpts = utils.make_quad(ctrlpts, self._control_points_size_v, self._control_points_size_u)
 
                 # Loop through control points
                 for pt in ctrlpts:
@@ -1211,7 +1211,7 @@ class Surface(object):
         :rtype: bool
         """
         # Check possible modes
-        mode_list = ['linear', 'zigzag', 'triangle']
+        mode_list = ['linear', 'zigzag', 'quad', 'triangle']
         if mode not in mode_list:
             warnings.warn("Input mode is not valid, defaulting to linear.")
 
