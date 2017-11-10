@@ -1157,7 +1157,7 @@ class Surface(object):
         # Check possible modes
         mode_list = ['linear', 'zigzag', 'quad']
         if mode not in mode_list:
-            warnings.warn("Input mode is not valid, defaulting to linear.")
+            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
 
         # Check input parameters
         if not isinstance(scalar, (int, float)):
@@ -1213,7 +1213,7 @@ class Surface(object):
         # Check possible modes
         mode_list = ['linear', 'zigzag', 'quad', 'triangle']
         if mode not in mode_list:
-            warnings.warn("Input mode is not valid, defaulting to linear.")
+            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
 
         # Check input parameters
         if not isinstance(scalar, (int, float)):
