@@ -14,7 +14,7 @@ The NURBS-Python library is more than a simple NURBS library. It includes 2D/3D 
 a convenient data structure implemented with Python properties and evaluation functionality. Everything is self-contained,
 there is no need for loading external modules.
 
-following modules are included in this library:
+Following modules are included in this library:
 
 .. toctree::
     :maxdepth: 1

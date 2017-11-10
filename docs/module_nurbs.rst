@@ -1,7 +1,7 @@
 NURBS Module
 ^^^^^^^^^^^^
 
-:code:`NURBS` module provides data storage properties and evaluation functions for NURBS 2D/3D curves and surfaces.
+:code:`NURBS` module provides data storage and evaluation functions for NURBS 2D/3D curves and surfaces.
 
 3D NURBS Curve
 ==============
