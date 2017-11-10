@@ -1142,16 +1142,24 @@ class Surface(object):
         return "coord x, coord y, coord z, scalar\n"
 
     # Saves control points to a CSV file
-    def save_ctrlpts_to_csv(self, filename="", scalar=0):
+    def save_ctrlpts_to_csv(self, filename="", scalar=0, mode='linear'):
         """ Saves control points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
         :param scalar: value of the scalar column in the output, defaults to 0
         :type scalar: int
+        :param mode: sets the arrangement of the points, default is linear
+        :type: str
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check possible modes
+        mode_list = ['linear', 'zigzag', 'mesh']
+        if mode not in mode_list:
+            warnings.warn("Input mode is not valid, defaulting to linear.")
+
+        # Check input parameters
         if not isinstance(scalar, (int, float)):
             raise ValueError("Value of scalar must be integer or float.")
 
@@ -1164,8 +1172,16 @@ class Surface(object):
                 # Construct the header and write it to the file
                 fp.write(self._get_csv_header())
 
-                # Loop through control points
+                # Get the control points
                 ctrlpts = self._get_ctrlpts_for_exporting()
+
+                # If the user requested a different point arrangment, apply it here
+                if mode == 'zigzag':
+                    ctrlpts = utils.make_zigzag(ctrlpts, self._control_points_size_v)
+                if mode == 'mesh':
+                    ctrlpts = utils.make_mesh(ctrlpts, self._control_points_size_v, self._control_points_size_u)
+
+                # Loop through control points
                 for pt in ctrlpts:
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
@@ -1182,16 +1198,24 @@ class Surface(object):
         return ret_check
 
     # Saves evaluated surface points to a CSV file
-    def save_surfpts_to_csv(self, filename="", scalar=0):
+    def save_surfpts_to_csv(self, filename="", scalar=0, mode='linear'):
         """ Saves evaluated surface points to a comma separated text file.
 
         :param filename: output file name
         :type filename: str
         :param scalar: value of the scalar column in the output, defaults to 0
         :type scalar: int
+        :param mode: sets the arrangement of the points, default is linear
+        :type: str
         :return: True if surface points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check possible modes
+        mode_list = ['linear', 'zigzag', 'triangle']
+        if mode not in mode_list:
+            warnings.warn("Input mode is not valid, defaulting to linear.")
+
+        # Check input parameters
         if not isinstance(scalar, (int, float)):
             raise ValueError("Value of scalar must be integer or float.")
 
@@ -1208,8 +1232,14 @@ class Surface(object):
                 # Construct the header and write it to the file
                 fp.write(self._get_csv_header())
 
+                # If the user requested a different point arrangment, apply it here
+                if mode == 'zigzag':
+                    points = utils.make_zigzag(self._surface_points, (1.0 / self._delta)+1)
+                else:
+                    points = self._surface_points
+
                 # Loop through control points
-                for pt in self._surface_points:
+                for pt in points:
                     # Fill coordinates
                     line = ", ".join(str(c) for c in pt)
                     # Fill scalar column
