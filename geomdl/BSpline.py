@@ -1178,7 +1178,7 @@ class Surface(object):
                 # If the user requested a different point arrangment, apply it here
                 if mode == 'zigzag':
                     ctrlpts = utils.make_zigzag(ctrlpts, self._control_points_size_v)
-                if mode == 'mesh':
+                if mode == 'quad':
                     ctrlpts = utils.make_quad(ctrlpts, self._control_points_size_v, self._control_points_size_u)
 
                 # Loop through control points
@@ -1234,7 +1234,9 @@ class Surface(object):
 
                 # If the user requested a different point arrangment, apply it here
                 if mode == 'zigzag':
-                    points = utils.make_zigzag(self._surface_points, (1.0 / self._delta)+1)
+                    points = utils.make_zigzag(self._surface_points, int((1.0 / self._delta) + 1))
+                elif mode == 'quad':
+                    points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1))
                 else:
                     points = self._surface_points
 
