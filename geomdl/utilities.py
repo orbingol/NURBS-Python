@@ -10,6 +10,7 @@
 import decimal
 import math
 import warnings
+import copy
 
 
 # Reads 2D control points file, flips it and saves it
@@ -254,6 +255,32 @@ def make_zigzag(points, row_size):
         if idx % row_size == 0:
             forward = False if forward else True
             rev_idx = idx + int(row_size) - 1
+
+    return new_points
+
+
+def make_mesh(points, row_size, col_size):
+    new_points = make_zigzag(points, row_size)
+    points_reverse = copy.deepcopy(points)
+    points_reverse.reverse()
+
+    forward = True
+    idx = 0
+    counter = 0
+    temp = []
+    while idx < col_size:
+        temp.append(points_reverse[idx + (counter * row_size)])
+        counter += 1
+        if counter % col_size == 0:
+            if forward:
+                forward = False
+            else:
+                forward = True
+                temp.reverse()
+            new_points += temp
+            temp = []
+            counter = 0
+            idx += 1
 
     return new_points
 
