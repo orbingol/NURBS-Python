@@ -230,8 +230,8 @@ def make_zigzag(points, row_size):
     |------>>-------|
     -------<<-------|
 
-    Please note that this function does not execute any order detection algorithms to understand the list has already
-    been converted to generate a zig-zag shape.
+    Please note that this function does not detect the ordering of the input points to detect the input points have
+    already been processed to generate a zig-zag shape.
 
     :param points: list of points to be ordered
     :type points: list
@@ -254,7 +254,7 @@ def make_zigzag(points, row_size):
         idx += 1
         if idx % row_size == 0:
             forward = False if forward else True
-            rev_idx = idx + int(row_size) - 1
+            rev_idx = idx + row_size - 1
 
     return new_points
 
