@@ -221,14 +221,14 @@ def make_zigzag(points, row_size):
 
     This function is designed to create input for the visualization software. It orders the points to draw a zig-zag
     shape which enables generating properly connected lines without any scanlines. Please see the below sketch on the
-    functionality of the ``row_size`` parameter.
+    functionality of the ``row_size`` parameter::
 
-         row size
-    <-=============->
-    ------->>-------|
-    |------<<-------|
-    |------>>-------|
-    -------<<-------|
+             row size
+        <-=============->
+        ------->>-------|
+        |------<<-------|
+        |------>>-------|
+        -------<<-------|
 
     Please note that this function does not detect the ordering of the input points to detect the input points have
     already been processed to generate a zig-zag shape.
