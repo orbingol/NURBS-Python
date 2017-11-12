@@ -1145,6 +1145,16 @@ class Surface(object):
     def save_ctrlpts_to_csv(self, filename="", scalar=0, mode='linear'):
         """ Saves control points to a comma separated text file.
 
+        **Available Modes**
+
+        The following modes are available via ``mode=`` parameter:
+
+        * ``linear``: Default mode, saves the stored point array without any change
+        * ``zigzag``: Generates a zig-zag shape
+        * ``wireframe``: Generates a wireframe
+
+        Please note that mode parameter does not modify the stored points in the object instance.
+
         :param filename: output file name
         :type filename: str
         :param scalar: value of the scalar column in the output, defaults to 0
@@ -1155,7 +1165,7 @@ class Surface(object):
         :rtype: bool
         """
         # Check possible modes
-        mode_list = ['linear', 'zigzag', 'quad']
+        mode_list = ['linear', 'zigzag', 'wireframe']
         if mode not in mode_list:
             warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
 
@@ -1178,7 +1188,7 @@ class Surface(object):
                 # If the user requested a different point arrangment, apply it here
                 if mode == 'zigzag':
                     ctrlpts = utils.make_zigzag(ctrlpts, self._control_points_size_v)
-                if mode == 'quad':
+                if mode == 'wireframe':
                     ctrlpts = utils.make_quad(ctrlpts, self._control_points_size_v, self._control_points_size_u)
 
                 # Loop through control points
@@ -1201,6 +1211,18 @@ class Surface(object):
     def save_surfpts_to_csv(self, filename="", scalar=0, mode='linear'):
         """ Saves evaluated surface points to a comma separated text file.
 
+        **Available Modes**
+
+        The following modes are available via ``mode=`` parameter:
+
+        * ``linear``: Default mode, saves the stored point array without any change
+        * ``zigzag``: Generates a zig-zag shape
+        * ``wireframe``: Generates a wireframe
+        * ``triangle``: Triangulates the points
+        * ``mesh``: Generates a quad mesh
+
+        Please note that mode parameter does not modify the stored points in the object instance.
+
         :param filename: output file name
         :type filename: str
         :param scalar: value of the scalar column in the output, defaults to 0
@@ -1211,7 +1233,7 @@ class Surface(object):
         :rtype: bool
         """
         # Check possible modes
-        mode_list = ['linear', 'zigzag', 'quad', 'triangle']
+        mode_list = ['linear', 'zigzag', 'wireframe', 'triangle', 'mesh']
         if mode not in mode_list:
             warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
 
@@ -1235,8 +1257,14 @@ class Surface(object):
                 # If the user requested a different point arrangment, apply it here
                 if mode == 'zigzag':
                     points = utils.make_zigzag(self._surface_points, int((1.0 / self._delta) + 1))
-                elif mode == 'quad':
+                elif mode == 'wireframe':
                     points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1))
+                elif mode == 'triangle':
+                    warnings.warn("Triangle mode has not been implemented yet!")
+                    points = self._surface_points
+                elif mode == 'mesh':
+                    warnings.warn("Mesh mode has not been implemented yet!")
+                    points = self._surface_points
                 else:
                     points = self._surface_points
 
