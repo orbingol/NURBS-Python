@@ -1,9 +1,9 @@
 Visualization Examples
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The following figures are generated using `Matplotlib v2.1.0 <https://matplotlib.org>`_ using the scripts in the
-Examples_ repository. The repository also contains some examples on how to visualize 2D/2D curves and surfaces generated
-using the NURBS-Python library.
+The following figures are generated using `Matplotlib v2.1.0 <https://matplotlib.org>`_ from the outputs of the examples
+shared in the Examples_ repository. The repository also contains examples on how to visualize 2D/2D curves and surfaces
+generated using the NURBS-Python library. Please see the Examples_ repository for details.
 
 Surfaces
 ========
