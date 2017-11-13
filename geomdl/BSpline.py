@@ -248,6 +248,11 @@ class Curve(object):
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check if we have any control points
+        if not self._control_points:
+            warnings.warn("There are no control points to save!")
+            return
+
         # Initialize the return value
         ret_check = True
 
@@ -300,6 +305,11 @@ class Curve(object):
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check if we have any control points
+        if not self._control_points:
+            warnings.warn("There are no control points to save!")
+            return
+
         if not isinstance(scalar, (int, float)):
             raise ValueError("Value of scalar must be integer or float.")
 
@@ -1090,6 +1100,11 @@ class Surface(object):
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check if we have any control points
+        if not self._control_points:
+            warnings.warn("There are no control points to save!")
+            return
+
         # Initialize the return value
         ret_check = True
 
@@ -1164,6 +1179,11 @@ class Surface(object):
         :return: True if control points are saved correctly, False otherwise
         :rtype: bool
         """
+        # Check if we have any control points
+        if not self._control_points:
+            warnings.warn("There are no control points to save!")
+            return
+
         # Check possible modes
         mode_list = ['linear', 'zigzag', 'wireframe']
         if mode not in mode_list:
