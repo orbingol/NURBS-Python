@@ -96,8 +96,8 @@ NURBS-Python is licensed under `The MIT License <LICENSE>`_.
 Acknowledgments
 ===============
 
-I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_
-, for his guidance and supervision throughout the course of this project.
+I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_,
+for his guidance and supervision throughout the course of this project.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
