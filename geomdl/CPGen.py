@@ -18,7 +18,7 @@ class Grid(object):
 
     This class stores grid points in [x, y, z] format.
 
-    .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    .. note:: Additional details on the file formats can be found in the documentation.
 
     :param size_x: width of the grid
     :type size_x: float
@@ -241,9 +241,7 @@ class Grid(object):
     # Saves the generated grid to a text file
     def save(self, filename="grid.txt"):
         """ Saves the generated grid to a text file.
-        
-        .. note:: The format of the text files is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
-        
+
         :param filename: File name to be saved
         :type filename: str
         :return: True if grid is saved correctly, False otherwise
@@ -425,7 +423,7 @@ class GridWeighted(Grid):
 
     This class stores grid points in [x*w, y*w, z*w, w] format.
 
-    .. note:: The format of the control points grid is described in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    .. note:: Additional details for the file formats can be found in the documentation.
 
     :param size_x: width of the grid
     :type size_x: float

@@ -28,7 +28,7 @@ class Curve(BSpline.Curve):
     * curvepts
 
     The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
-    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
 
@@ -204,7 +204,7 @@ class Curve2D(Curve):
     * curvepts
 
     The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
-    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x*w, y*w, w) coordinates
 
@@ -259,7 +259,7 @@ class Surface(BSpline.Surface):
     * surfpts
 
     The function :func:`.read_ctrlpts()` provides an easy way to read control points from a text file.
-    Additional details for the text format can be found in `FORMATS.md <https://github.com/orbingol/NURBS-Python/blob/master/FORMATS.md>`_ file.
+    Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
 
