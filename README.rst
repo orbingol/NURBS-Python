@@ -6,11 +6,14 @@ B-Spline and NURBS Evaluation Library
 Introduction
 ============
 
-This project implements Non-Uniform Rational B-Spline (NURBS) curve and surface computation algorithms in native Python
-with minimum possible dependencies. The package contains 3 modules:
+This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and surface computation algorithms in native
+Python with minimum possible dependencies. The library is fully object-oriented and does *not* depend on any external
+C/C++ libraries.
 
-* :code:`BSpline` contains Non-Uniform B-Spline (NUBS) algorithms
-* :code:`NURBS` contains Non-Uniform Rational B-Spline (NURBS) algorithms
+The package contains 3 modules:
+
+* :code:`BSpline` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
+* :code:`NURBS` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
 * :code:`CPGen` contains simple control points grid generation algorithms
 
 :code:`BSpline` and :code:`NURBS` modules contain 3 classes for geometric evaluation:
@@ -32,37 +35,24 @@ I would be glad if you cite this repository using the DOI_ provided as a badge a
 Installation
 ============
 
-Included *setup.py* script will take care of the installation and automatically copy the required files to *site-packages*
-directory. Please run the following from the command line: ``python setup.py install``
+Included *setup.py* script will take care of the installation and automatically copy the required files to
+*site-packages* directory. Please run the following from the command line: ``python setup.py install``
 
 If you don't want to put the files into your Python distribution's *site-packages* directory for some reason,
-you can run ``python setup.py develop`` from the command line to generate a link to the package directory inside *site-packages*.
+you can run ``python setup.py develop`` from the command line to generate a link to the package directory inside
+*site-packages*.
 
 Example Scripts
 ===============
 
 Please see `NURBS-Python Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository for examples.
 
-Algorithms Implemented
-======================
+Implementation
+==============
 
-NURBS-Python currently implements the following algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller:
-
-* **Algorithm A2.1:** FindSpan *(page 68)*
-* **Algorithm A2.2:** BasisFuns *(page 70)*
-* **Algorithm A2.3:** DersBasisFuns *(pages 72,73)*
-* **Algorithm A3.1:** CurvePoint *(page 82)*
-* **Algorithm A3.2:** CurveDerivsAlg1 *(page 93)*
-* **Algorithm A3.3:** CurveDerivCpts *(page 98)*
-* **Algorithm A3.4:** CurveDerivsAlg2 *(pages 99,100)*
-* **Algorithm A3.5:** SurfacePoint *(page 103)*
-* **Algorithm A3.6:** SurfaceDerivsAlg1 *(pages 111,112)*
-* **Algorithm A4.1:** CurvePoint *(page 124)*
-* **Algorithm A4.2:** RatCurveDerivs *(page 127)*
-* **Algorithm A4.3:** SurfacePoint *(page 134)*
-* **Algorithm A4.4:** RatSurfaceDerivs *(pages 137,138)*
-* **Algorithm A5.1:** CurveKnotIns *(page 151)*
-* **Algorithm A5.3:** SurfaceKnotIns *(pages 155-157)*
+NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
+the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
+features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
 
 Issues and Reporting
 ====================
@@ -86,8 +76,8 @@ Author
 Contributors
 ============
 
-I would like to thank all contributors for their help and support in testing, bug fixing and improvement of the NURBS-Python_
-project.
+I would like to thank all contributors for their help and support in testing, bug fixing and improvement of the
+NURBS-Python_ project.
 
 * Luke Frisken (`@kellpossible <https://github.com/kellpossible>`_)
 * John-Eric Dufour (`@jedufour <https://github.com/jedufour>`_)
@@ -103,6 +93,7 @@ Acknowledgments
 
 I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_
 , for his guidance and supervision throughout the course of this project.
+
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
