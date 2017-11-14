@@ -1,8 +1,24 @@
 File Formats
 ^^^^^^^^^^^^
 
+Text Files for Control Points
+=============================
+
+NURBS-Python library provides 2 functions in each class included for reading and saving the control points list. These are
+
+* ``read_ctrlpts_from_txt``: Reads control points list from a text file
+* ``save_ctrlpts_to_txt``: Saves control points list to a text file
+
+The format of the text file depends on the type of the geometric element, i.e. curve or surface, that you are trying to
+export. The following explains the file formats for `.txt` files which contain control points.
+
 2D/3D B-Spline Curves
-=====================
+---------------------
+
+To generate a 2D B-Spline Curve, you need a list of *(x, y)* coordinates representing the control points polygon, where
+
+* `x`: value representing the x-coordinate
+* `y`: value representing the y-coordinate
 
 The format of the control points file for generating 2D B-Spline curves is as follows:
 
@@ -15,6 +31,12 @@ The format of the control points file for generating 2D B-Spline curves is as fo
 +-------------+-------------+
 | x\ :sub:`3` | y\ :sub:`3` |
 +-------------+-------------+
+
+To generate a 3D B-Spline Curve, you need a list of *(x, y, z)* coordinates representing the control points polygon, where
+
+* `x`: value representing the x-coordinate
+* `y`: value representing the y-coordinate
+* `z`: value representing the z-coordinate
 
 The format of the control points file for generating 3D B-Spline curves is as follows:
 
@@ -30,12 +52,19 @@ The format of the control points file for generating 3D B-Spline curves is as fo
 
 
 2D/3D NURBS Curves
-==================
+------------------
+
+To generate a 2D NURBS Curve, you need a list of *(x\*w, y\*w, w)* coordinates representing the weighted control points
+(P\ :sub:`w`) where,
+
+* `x`: value representing the x-coordinate
+* `y`: value representing the y-coordinate
+* `w`: value representing the weight
 
 The format of the control points file for generating 2D NURBS curves is as follows:
 
 +---------------------------+---------------------------+-------------+
-|             xw            |             yw            |      w      |
+|           x\*w            |           y\*w            |      w      |
 +===========================+===========================+=============+
 | x\ :sub:`1`\*w\ :sub:`1`  | y\ :sub:`1`\*w\ :sub:`1`  | w\ :sub:`1` |
 +---------------------------+---------------------------+-------------+
@@ -44,10 +73,18 @@ The format of the control points file for generating 2D NURBS curves is as follo
 | x\ :sub:`3`\*w\ :sub:`3`  | y\ :sub:`3`\*w\ :sub:`3`  | w\ :sub:`3` |
 +---------------------------+---------------------------+-------------+
 
+To generate a 2D NURBS Curve, you need a list of *(x\*w, y\*w, z\*w, w)* coordinates representing the weighted control points
+(P\ :sub:`w`) where,
+
+* `x`: value representing the x-coordinate
+* `y`: value representing the y-coordinate
+* `z`: value representing the z-coordinate
+* `w`: value representing the weight
+
 The format of the control points file for generating 3D NURBS curves is as follows:
 
 +---------------------------+---------------------------+---------------------------+-------------+
-|              xw           |            yw             |            zw             |      w      |
+|            x\*w           |            y\*w           |            z\*w           |      w      |
 +===========================+===========================+===========================+=============+
 | x\ :sub:`1`\*w\ :sub:`1`  | y\ :sub:`1`\*w\ :sub:`1`  | z\ :sub:`1`\*w\ :sub:`1`  | w\ :sub:`1` |
 +---------------------------+---------------------------+---------------------------+-------------+
@@ -57,7 +94,7 @@ The format of the control points file for generating 3D NURBS curves is as follo
 +---------------------------+---------------------------+---------------------------+-------------+
 
 B-Spline Surfaces
-=================
+-----------------
 
 The format of the control points file for generating B-Spline surfaces is as follows:
 
@@ -72,7 +109,7 @@ The format of the control points file for generating B-Spline surfaces is as fol
 +--------+-----------+-----------+-----------+-----------+-----------+
 
 NURBS Surfaces
-==============
+--------------
 
 The format of the control points file for generating NURBS surfaces is as follows:
 
