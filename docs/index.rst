@@ -12,9 +12,8 @@ elements of the provided data structures are documented under :ref:`modules`.
 
 .. note::
 
-    If you are using this library in your research, I would be glad if you cite this repository using the DOI_
-    provided as a badge at the top. The link will open up a new page where you can find all the bibliographic
-    information.
+    I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
+    The link will open up a new page where you can find all the bibliographic information.
 
 This documentation is organized into a couple sections:
 
