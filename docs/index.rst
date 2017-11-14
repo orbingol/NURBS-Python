@@ -32,6 +32,7 @@ This documentation is organized into a couple sections:
     :caption: Examples
 
     examples
+    formats
     figures
 
 .. _modules:
