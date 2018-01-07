@@ -18,21 +18,21 @@ Algorithms Implemented
 
 NURBS-Python currently implements the following algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller:
 
-* **Algorithm A2.1:** FindSpan *(page 68)*
-* **Algorithm A2.2:** BasisFuns *(page 70)*
-* **Algorithm A2.3:** DersBasisFuns *(pages 72,73)*
-* **Algorithm A3.1:** CurvePoint *(page 82)*
-* **Algorithm A3.2:** CurveDerivsAlg1 *(page 93)*
-* **Algorithm A3.3:** CurveDerivCpts *(page 98)*
-* **Algorithm A3.4:** CurveDerivsAlg2 *(pages 99,100)*
-* **Algorithm A3.5:** SurfacePoint *(page 103)*
-* **Algorithm A3.6:** SurfaceDerivsAlg1 *(pages 111,112)*
-* **Algorithm A4.1:** CurvePoint *(page 124)*
-* **Algorithm A4.2:** RatCurveDerivs *(page 127)*
-* **Algorithm A4.3:** SurfacePoint *(page 134)*
-* **Algorithm A4.4:** RatSurfaceDerivs *(pages 137,138)*
-* **Algorithm A5.1:** CurveKnotIns *(page 151)*
-* **Algorithm A5.3:** SurfaceKnotIns *(pages 155-157)*
+* A2.1 FindSpan *(page 68)*
+* A2.2 BasisFuns *(page 70)*
+* A2.3 DersBasisFuns *(pages 72,73)*
+* A3.1 CurvePoint *(page 82)*
+* A3.2 CurveDerivsAlg1 *(page 93)*
+* A3.3 CurveDerivCpts *(page 98)*
+* A3.4 CurveDerivsAlg2 *(pages 99,100)*
+* A3.5 SurfacePoint *(page 103)*
+* A3.6 SurfaceDerivsAlg1 *(pages 111,112)*
+* A4.1 CurvePoint *(page 124)*
+* A4.2 RatCurveDerivs *(page 127)*
+* A4.3 SurfacePoint *(page 134)*
+* A4.4 RatSurfaceDerivs *(pages 137,138)*
+* A5.1 CurveKnotIns *(page 151)*
+* A5.3 SurfaceKnotIns *(pages 155-157)*
 
 Citing NURBS-Python
 ===================
