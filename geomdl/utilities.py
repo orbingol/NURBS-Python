@@ -546,11 +546,12 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
 
 
 # Checks if the input (u, v) values are valid (internal functionality)
-def check_uv(u=-1, v=None, test_normal=False, delta=0.1):
+def check_uv(u=None, v=None, test_normal=False, delta=0.1):
     """ Checks if the input knot values (i.e. parameters) are defined between 0 and 1."""
     # Check u value
-    if u < 0.0 or u > 1.0:
-        raise ValueError('"u" value should be between 0 and 1.')
+    if u is not None:
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
     # Check v value, if necessary
     if v is not None:
         if v < 0.0 or v > 1.0:
