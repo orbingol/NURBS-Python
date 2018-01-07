@@ -1,5 +1,5 @@
-B-Spline and NURBS Evaluation Library
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NURBS-Python
+^^^^^^^^^^^^
 
 |DOI|_ |RTFD|_
 

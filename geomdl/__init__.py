@@ -1,4 +1,4 @@
-""" NURBS-Python Library
+""" NURBS-Python Main Component
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
