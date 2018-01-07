@@ -32,6 +32,15 @@ Information for Researchers
 
 I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
 
+Library Versions
+----------------
+
+* ``master`` branch contains the latest version of NURBS-Python (currently v3.x series).
+* ``2.x`` branch contains the old code for _NURBS-Python v2.x_ series.
+
+There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
+versions won't be receiving any new features and updates.
+
 Installation
 ============
 
