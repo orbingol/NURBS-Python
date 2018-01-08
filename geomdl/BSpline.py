@@ -56,6 +56,7 @@ class Curve(object):
         self._curve_points = []
         self._dimension = 3  # 3D coordinates
         self._rational = False
+        self._vis_component = None
 
     @property
     def order(self):
@@ -176,6 +177,53 @@ class Curve(object):
         :type: list
         """
         return self._curve_points
+
+    @property
+    def vis(self):
+        """ Visualization component.
+
+        .. note:: The visualization component is completely optional to use.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        :type: float
+        """
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, VisBase.VisAbstract):
+            warnings.warn("Visualization component is NOT an instance of VisABC")
+            return
+        self._vis_component = value
+
+    # Runs visualization component to render the surface
+    def render(self, cpcolor="blue", curvecolor="black"):
+        """ Renders the curve using the loaded visualization component
+
+        The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        :param cpcolor: Color of the control points polygon
+        :type cpcolor: str
+        :param curvecolor: Color of the curve
+        :type curvecolor: str
+        :return: None
+        """
+        if not self._vis_component:
+            warnings.warn("No visualization component has set")
+            return
+
+        # Check all parameters are set
+        self._check_variables()
+
+        # Check if the surface has been evaluated
+        if not self._curve_points:
+            self.evaluate()
+
+        # Run the visualization component
+        self._vis_component.add(self.ctrlpts, "Control Points", cpcolor)
+        self._vis_component.add(self.curvepts, "Curve", curvecolor)
+        self._vis_component.render()
 
     # Cleans up the control points
     def _reset_ctrlpts(self):
