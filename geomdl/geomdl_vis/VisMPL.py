@@ -15,6 +15,55 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 
+class VisCurve2D(VisAbstract):
+
+    def __init__(self):
+        super(VisCurve2D, self).__init__()
+
+    def render(self):
+        if not self._points:
+            return False
+
+        cpts = np.array(self._points[0])
+        crvpts = np.array(self._points[1])
+
+        # Draw control points polygon and the curve
+        plt.figure(figsize=(10.67, 8), dpi=96)
+        cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], self._colors[0])
+        curveplt, = plt.plot(crvpts[:, 0], crvpts[:, 1], self._colors[1])
+        plt.legend([cppolygon, curveplt], [self._names[0], self._names[1]])
+        plt.show()
+
+
+class VisCurve3D(VisAbstract):
+
+    def __init__(self):
+        super(VisCurve3D, self).__init__()
+
+    def render(self):
+        if not self._points:
+            return False
+
+        cpts = np.array(self._points[0])
+        crvpts = np.array(self._points[1])
+
+        # Draw control points polygon and the 3D curve
+        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        ax = fig.gca(projection='3d')
+
+        # Plot 3D lines
+        ax.plot(cpts[:, 0], cpts[:, 1], cpts[:, 2], self._colors[0])
+        ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], self._colors[1])
+
+        # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
+        scatter1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[0], marker='o')
+        scatter2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
+        ax.legend([scatter1_proxy, scatter2_proxy], [self._names[0], self._names[1]], numpoints=1)
+
+        # Display the 3D plot
+        plt.show()
+
+
 class VisSurfWireframe(VisAbstract):
 
     def __init__(self):
@@ -24,7 +73,6 @@ class VisSurfWireframe(VisAbstract):
         if not self._points:
             return False
 
-        # Read surface and control points, @ref: https://stackoverflow.com/a/13550615
         cpgrid = np.array(self._points[0])
         surf = np.array(self._points[1])
 
