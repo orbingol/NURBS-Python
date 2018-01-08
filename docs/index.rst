@@ -1,7 +1,7 @@
 NURBS-Python Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-|DOI|_
+|DOI|_ |WAFFLEIO|_
 
 Welcome to the NURBS-Python Library documentation! NURBS-Python Library contains native Python implementations of several
 `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
@@ -63,3 +63,6 @@ under `The MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LIC
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
+
+.. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=To%20Do,In%20Progress,Done
+.. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python

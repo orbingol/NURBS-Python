@@ -1,7 +1,7 @@
 NURBS-Python
 ^^^^^^^^^^^^
 
-|DOI|_ |RTFD|_
+|DOI|_ |RTFD|_ |WAFFLEIO|_
 
 Introduction
 ============
@@ -114,5 +114,8 @@ for his guidance and supervision throughout the course of this project.
 
 .. |RTFD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
 .. _RTFD: http://nurbs-python.readthedocs.io/en/latest/?badge=latest
+
+.. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
+.. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
