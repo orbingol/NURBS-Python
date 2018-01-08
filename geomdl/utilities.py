@@ -266,7 +266,7 @@ def make_quad(points, row_size, col_size):
     already been processed to generate a mesh.
 
     :param points: list of points to be ordered
-    :type points: list
+    :type points: list, tuple
     :param row_size: number of elements in a row
     :param row_size: int
     :param col_size: number of elements in a column

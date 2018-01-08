@@ -11,6 +11,7 @@ import sys
 import warnings
 import copy
 import geomdl.utilities as utils
+from geomdl.geomdl_vis import VisBase
 
 
 class Curve(object):
@@ -739,6 +740,7 @@ class Surface(object):
         self._surface_points = []
         self._dimension = 3  # 3D coordinates
         self._rational = False
+        self._vis_component = None
 
     @property
     def order_u(self):
@@ -971,6 +973,56 @@ class Surface(object):
         :type: list
         """
         return self._surface_points
+
+    @property
+    def vis(self):
+        """ Visualization component.
+
+        .. note:: The visualization component is completely optional to use.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        :type: float
+        """
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, VisBase.VisAbstract):
+            warnings.warn("Visualization component is NOT an instance of VisABC")
+            return
+        self._vis_component = value
+
+    # Runs visualization component to render the surface
+    def render(self, cpcolor="blue", surfcolor="green"):
+        """ Renders the surface using the loaded visualization component
+
+        The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        :param cpcolor: Color of the control points grid
+        :type cpcolor: str
+        :param surfcolor: Color of the surface
+        :type surfcolor: str
+        :return: None
+        """
+        if not self._vis_component:
+            warnings.warn("No visualization component has set")
+            return
+
+        # Check all parameters are set
+        self._check_variables()
+
+        # Check if the surface has been evaluated
+        if not self._surface_points:
+            self.evaluate()
+
+        # Prepare control point grid
+        ctrlpts = utils.make_quad(self.ctrlpts, self._control_points_size_v, self._control_points_size_u)
+
+        # Run the visualization component
+        self._vis_component.add(ctrlpts, "Control Points", cpcolor)
+        self._vis_component.add(self.surfpts, "Surface", surfcolor)
+        self._vis_component.render()
 
     # Cleans up the control points
     def _reset_ctrlpts(self):
