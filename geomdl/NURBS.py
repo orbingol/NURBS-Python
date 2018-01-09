@@ -7,7 +7,6 @@
 
 """
 
-import sys
 import geomdl.BSpline as BSpline
 import geomdl.utilities as utils
 

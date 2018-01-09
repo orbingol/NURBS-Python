@@ -7,11 +7,10 @@
 
 """
 
-import sys
 import warnings
 import copy
 import geomdl.utilities as utils
-from geomdl.geomdl_vis import VisBase
+from geomdl.visualization import VisBase
 
 
 class Curve(object):
