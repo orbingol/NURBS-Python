@@ -220,6 +220,7 @@ class Curve(object):
             self.evaluate()
 
         # Run the visualization component
+        self._vis_component.clear()
         self._vis_component.add(self.ctrlpts, "Control Points", cpcolor)
         self._vis_component.add(self.curvepts, "Curve", curvecolor)
         self._vis_component.render()
@@ -1067,6 +1068,7 @@ class Surface(object):
         ctrlpts = utils.make_quad(self.ctrlpts, self._control_points_size_v, self._control_points_size_u)
 
         # Run the visualization component
+        self._vis_component.clear()
         self._vis_component.add(ctrlpts, "Control Points", cpcolor)
         self._vis_component.add(self.surfpts, "Surface", surfcolor)
         self._vis_component.render()

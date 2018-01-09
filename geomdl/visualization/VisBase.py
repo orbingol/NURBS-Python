@@ -18,6 +18,12 @@ class VisAbstract(object):
         self._colors = []
         self._names = []
 
+    def clear(self):
+        if self._points:
+            self._points[:] = []
+            self._colors[:] = []
+            self._names[:] = []
+
     def add(self, ptsarr=(), name=None, color=None):
         if not ptsarr or not color or not name:
             return
