@@ -27,6 +27,7 @@ setup(
     url='https://github.com/orbingol/NURBS-Python',
     packages=['geomdl', 'geomdl.visualization'],
     long_description=read('README-PyPI.rst'),
+    keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
