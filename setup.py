@@ -1,4 +1,8 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
 import os
 import re
 
@@ -17,15 +21,19 @@ project_name = 'nurbs'
 setup(
     name='NURBS-Python',
     version=get_property('__version__', project_name),
-    description='NURBS curve and surface library in native Python',
+    description='NURBS curve and surface evaluation library in native Python',
     author='Onur Rauf Bingol',
     author_email='contact@onurbingol.net',
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['nurbs'],
     long_description=read('README.md'),
+    keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
-        'Topic :: Scientific/Engineering :: Mathematics'
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'Topic :: Scientific/Engineering :: Visualization'
     ]
 )
