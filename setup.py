@@ -20,13 +20,13 @@ project_name = 'geomdl'
 setup(
     name='NURBS-Python',
     version=get_property('__version__', project_name),
-    description='B-Spline and NURBS library with grid generator',
+    description='NURBS 2D/3D curve and surface evaluation library in native Python',
     author='Onur Rauf Bingol',
     author_email='contact@onurbingol.net',
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['geomdl', 'geomdl.visualization'],
-    long_description=read('README.rst'),
+    long_description=read('README-PyPI.rst'),
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Mathematics'
