@@ -47,7 +47,7 @@ Installation
 Using Pip
 ---------
 
-You can find the NURBS-Python library on [Python Package Index](https://pypi.python.org/pypi/NURBS-Python) and install it
+You can find the NURBS-Python library on `Python Package Index <https://pypi.python.org/pypi/NURBS-Python>`_ and install
 using the following command:
 
 ``pip install NURBS-Python``
