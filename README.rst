@@ -44,6 +44,17 @@ versions won't be receiving any new features and updates.
 Installation
 ============
 
+Using Pip
+---------
+
+You can find the NURBS-Python library on [Python Package Index](https://pypi.python.org/pypi/NURBS-Python) and install it
+using the following command:
+
+``pip install NURBS-Python``
+
+Manual Method
+-------------
+
 Included *setup.py* script will take care of the installation and automatically copy the required files to
 *site-packages* directory. Please run the following from the command line:
 
