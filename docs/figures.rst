@@ -8,6 +8,8 @@ NURBS-Python v3.x series included an optional visualization module for plotting 
 repository contains some examples on how to use the visualization component with surfaces and 2D/3D curves which are
 
 * ``curve2d/ex_curve01.py``
+* ``curve2d/ex_curve02.py``
+* ``curve2d/ex_curve03.py``
 * ``curve3d/ex_curve3d01.py``
 * ``surface/ex_surface01.py``
 
@@ -66,7 +68,37 @@ ex_surface03.py
 Curves
 ------
 
-Coming soon!
+The following examples use the visualization component which comes with the NURBS-Python package.
+
+ex_curve01.py
+~~~~~~~~~~~~~
+
+.. image:: images/ex_curve01_vis.png
+    :alt: 2D curve example 1
+
+ex_curve02.py
+~~~~~~~~~~~~~
+
+.. image:: images/ex_curve02_vis.png
+    :alt: 2D curve example 2
+
+ex_curve03.py
+~~~~~~~~~~~~~
+
+.. image:: images/ex_curve03_vis.png
+    :alt: 2D curve example 3
+
+ex_curve04.py
+~~~~~~~~~~~~~
+
+.. image:: images/ex_curve04_vis.png
+    :alt: 2D curve example 4
+
+ex_curve3d01.py
+~~~~~~~~~~~~~~~
+
+.. image:: images/ex_curve3d01_vis.png
+    :alt: 3D curve example 1
 
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
