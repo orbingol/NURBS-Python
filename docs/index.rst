@@ -36,6 +36,7 @@ This documentation is organized into a couple sections:
     :maxdepth: 2
     :caption: Examples
 
+    install
     using
     file_formats
     visualization
