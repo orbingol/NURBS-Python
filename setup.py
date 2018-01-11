@@ -27,7 +27,7 @@ setup(
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['nurbs'],
-    long_description=read('README.md'),
+    long_description=read('README-PyPI.rst'),
     keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
