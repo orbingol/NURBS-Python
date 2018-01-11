@@ -1,9 +1,10 @@
 .idea/*
-nurbs/__pycache__/*
-nurbs/*.pyc
-*.out
 build/
+dist/
 docs/_build
 docs/_static
 docs/_templates
-grid.txt
+*.pyc
+*.out
+*.txt
+*.csv
