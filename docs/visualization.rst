@@ -29,8 +29,8 @@ Surfaces
 --------
 
 The following figures are generated using `Matplotlib v2.1.0 <https://matplotlib.org>`_ from the outputs of the examples
-shared in the Examples_ repository. Please see :ref:`formats` section on details of CSV exporting capabilities.
-Visualization scripts can be found in the Examples_ repository under ``visualization`` directory.
+shared in the Examples_ repository. Please see :doc:`File Formats <file_formats>` section on details of CSV exporting
+capabilities. Visualization scripts can be found in the Examples_ repository under ``visualization`` directory.
 
 ex_surface01.py
 ~~~~~~~~~~~~~~~

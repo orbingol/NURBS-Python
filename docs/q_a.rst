@@ -38,6 +38,6 @@ so that you can run it even on a plain Python installation as well as on a scien
 Installing NURBS-Python
 =======================
 
-The easiest method to install NURBS-Python is using the included setup script, i.e. ``python setup.py install``.
+Please see :doc:`Installation <install>` section for details.
 
 .. note:: Please use the issue tracker on GitHub to report bugs. If you have any questions and/or comments, please feel free to email the author.
