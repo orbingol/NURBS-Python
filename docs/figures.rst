@@ -100,5 +100,15 @@ ex_curve3d01.py
 .. image:: images/ex_curve3d01_vis.png
     :alt: 3D curve example 1
 
+mpl_curve_tangents.py
+~~~~~~~~~~~~~~~~~~~~~
+
+This example illustrates a more advanced visualization option for plotting the curve tangents alongside with the control
+points grid and the evaluated curve. The example script can be found in Examples_ repository under ``visualization``
+directory.
+
+.. image:: images/ex_curve02_mpl.png
+    :alt: 2D curve example 2 with tangent vector quiver plots
+
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
