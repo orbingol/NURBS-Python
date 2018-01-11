@@ -15,7 +15,7 @@ Features
 * Surface and 2D/3D curve classes for B-Spline (NUBS) and NURBS which include well-defined data structures and evaluation algorithms from The NURBS Book (2nd Edition) by Piegl & Tiller
 * An automated uniform knot vector generator
 * Control points grid generator for ``Surface`` classes
-* Easy-to-extend visualization component which comes with a sample implementation which uses Matplotlib
+* Easy-to-extend visualization component, plus a sample Matplotlib implementation
 
 Further Reading
 ===============
