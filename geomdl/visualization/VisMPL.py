@@ -52,8 +52,8 @@ class VisCurve3D(VisAbstract):
         ax = fig.gca(projection='3d')
 
         # Plot 3D lines
-        ax.plot(cpts[:, 0], cpts[:, 1], cpts[:, 2], self._colors[0])
-        ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], self._colors[1])
+        ax.plot(cpts[:, 0], cpts[:, 1], cpts[:, 2], color=self._colors[0], linestyle='-.')
+        ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], color=self._colors[1], linestyle='-')
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         scatter1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[0], marker='o')
