@@ -1,5 +1,5 @@
 Visualization
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 Visualization Component
 =======================

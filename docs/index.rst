@@ -36,9 +36,9 @@ This documentation is organized into a couple sections:
     :maxdepth: 2
     :caption: Examples
 
-    examples
-    formats
-    figures
+    using
+    file_formats
+    visualization
 
 .. _modules:
 
