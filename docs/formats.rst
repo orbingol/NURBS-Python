@@ -1,11 +1,11 @@
 File Formats
 ^^^^^^^^^^^^
 
-Text Files for Control Points
-=============================
+TXT Files
+=========
 
-NURBS-Python library provides 2 functions in each class included for reading and saving the control points list. These
-are:
+NURBS-Python library provides 2 functions in each class included for **reading** and **saving** the control points list.
+These are:
 
 * ``read_ctrlpts_from_txt``: Reads control points list from a text file
 * ``save_ctrlpts_to_txt``: Saves control points list to a text file
@@ -145,3 +145,47 @@ The format of the control points file for generating NURBS surfaces is as follow
 +--------+-----------------------+-----------------------+-----------------------+-----------------------+
 
 .. note:: The control points correspond to a right-handed coordinate system.
+
+CSV Files
+=========
+
+NURBS-Python library provides 2 functions in each class for exporting *control points* and *evaluted points* as CSV files.
+These functions are:
+
+For all classes:
+
+* ``export_ctrlpts_to_csv``: Saves control points list as a CSV file
+
+For ``Curve`` and ``Curve2D`` classes:
+
+* ``export_curvepts_to_csv``: Saves evaluated curve points as a CSV file
+
+For ``Surface`` class:
+
+* ``export_surfpts_to_csv``: Saves evaluted surface points as a CSV file
+
+Customization Options
+---------------------
+
+The control points and the evaluated curve points list are always linear and there are no customization options. On the
+other hand, CSV exports from surface classes have some customization options.
+
+Surface Control Points
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following modes are available via ``mode=`` parameter of the ``export_ctrlpts_to_csv`` method:
+
+* ``linear``: Default mode, saves the stored point array without any change
+* ``zigzag``: Generates a zig-zag shape
+* ``wireframe``: Generates a wireframe
+
+Evaluated Surface Points
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following modes are available via ``mode=`` parameter of the ``export_surfpts_to_csv`` method:
+
+* ``linear``: Default mode, saves the stored point array without any change
+* ``zigzag``: Generates a zig-zag shape
+* ``wireframe``: Generates a wireframe
+* ``triangle``: Triangulates the points
+* ``mesh``: Generates a quad mesh
