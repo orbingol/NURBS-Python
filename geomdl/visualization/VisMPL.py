@@ -29,8 +29,8 @@ class VisCurve2D(VisAbstract):
 
         # Draw control points polygon and the curve
         plt.figure(figsize=(10.67, 8), dpi=96)
-        cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], self._colors[0])
-        curveplt, = plt.plot(crvpts[:, 0], crvpts[:, 1], self._colors[1])
+        cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], color=self._colors[0], linestyle='-.')
+        curveplt, = plt.plot(crvpts[:, 0], crvpts[:, 1], color=self._colors[1], linestyle='-')
         plt.legend([cppolygon, curveplt], [self._names[0], self._names[1]])
         plt.show()
 
