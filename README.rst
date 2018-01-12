@@ -3,7 +3,9 @@ NURBS-Python
 
 |DOI|_
 
-|PYPI|_ |RTFD|_ |WAFFLEIO|_
+|PYPI|_ |RTD|_ |TRAVIS-CI|_
+
+|WAFFLEIO|_
 
 Introduction
 ============
@@ -125,13 +127,16 @@ for his guidance and supervision throughout the course of this project.
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
 
-.. |RTFD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
-.. _RTFD: http://nurbs-python.readthedocs.io/en/latest/?badge=latest
+.. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
+.. _RTD: http://nurbs-python.readthedocs.io/en/latest/?badge=latest
 
 .. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
 .. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
 
 .. |PYPI| image:: https://img.shields.io/pypi/v/NURBS-Python.svg
 .. _PYPI: https://pypi.python.org/pypi/NURBS-Python
+
+.. |TRAVIS-CI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
+.. _TRAVIS-CI https://travis-ci.org/orbingol/NURBS-Python
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
