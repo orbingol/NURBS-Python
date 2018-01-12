@@ -8,9 +8,10 @@ curve and surface descriptions as Python properties.
 Some significant features of the NURBS-Python package are:
 
 * Python 2.x and 3.x compatibility
-* No external dependencies (such as NumPy)
+* No external C/C++ library dependencies
+* No compilation steps necessary, everything is implemented with Python
 * Implements Python properties (using *property* decorator)
-* ``utilities`` module containing several helper functions
+* ``utilities`` module with several helper functions, such as automatic uniform knot vector generator and more
 * ``Grid`` and ``GridWeighted`` classes for generating various types of control points grids
 * Visualization component
 * Easy to install via ``pip install NURBS-Python``
