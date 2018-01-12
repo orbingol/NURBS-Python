@@ -34,10 +34,11 @@ NURBS-Python provides an optional reference visualization module with a sample i
 .. toctree::
     :maxdepth: 1
 
-    module_visualization
+    module_vis_base
+    module_vis_mpl
 
-Although there exists a visualzation components, the users are completely free to use any visualization method
+Although there exists a visualization component, the users are completely free to use any visualization method
 or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
-curves and surfaces using a software, like Paraview_.
+curves and surfaces using a software, such as Paraview_.
 
 .. _Paraview: https://www.paraview.org/
