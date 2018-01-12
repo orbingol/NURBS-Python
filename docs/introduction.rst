@@ -5,13 +5,15 @@ NURBS-Python is an object-oriented Python library containing implementations of 
 surface generation and evaluation algorithms. It also provides a convenient and easy-to-use data structure for storing
 curve and surface descriptions as Python properties.
 
-Some of the significant features of the NURBS-Python Library are:
+Some significant features of the NURBS-Python package are:
 
 * Python 2.x and 3.x compatibility
 * No external dependencies (such as NumPy)
 * Implements Python properties (using *property* decorator)
-* A :code:`utilities` module containing several helper functions
-* :code:`Grid` and :code:`GridWeighted` classes for generating various types of control points grids
+* ``utilities`` module containing several helper functions
+* ``Grid`` and ``GridWeighted`` classes for generating various types of control points grids
+* Visualization component
+* Easy to install via ``pip install NURBS-Python``
 
 Algorithms Implemented
 ======================

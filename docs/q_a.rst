@@ -8,7 +8,7 @@ NURBS is an acronym for *Non-Uniform Rational Basis Spline* and it represents a 
 curves and surfaces in a flexible way. It is a well-accepted industry standard and used as a basis for nearly all of
 the 3D modeling and CAD/CAM software packages as well as modeling and visualization frameworks.
 
-Please see the `the related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
+Please see the `related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
 or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by
 Les A. Piegl and Wayne Tiller.
 
