@@ -10,7 +10,6 @@
 import decimal
 import math
 import warnings
-import copy
 
 
 # Reads 2D control points file, flips it and saves it
