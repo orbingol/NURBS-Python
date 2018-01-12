@@ -557,11 +557,11 @@ def check_uv(u=None, v=None, test_normal=False, delta=0.1):
         if v < 0.0 or v > 1.0:
             raise ValueError('"v" value should be between 0 and 1.')
 
-        # # Only test normal if v is defined
-        # if test_normal:
-        #     # Check if we are on any edge of the surface
-        #     if u + delta > 1.0 or u + delta < 0.0 or v + delta > 1.0 or v + delta < 0.0:
-        #         raise ValueError("Cannot evaluate normal on an edge.")
+        # Only test normal if v is defined
+        if test_normal:
+            # Check if we are on any edge of the surface
+            if u + delta > 1.0 or u + delta < 0.0 or v + delta > 1.0 or v + delta < 0.0:
+                raise ValueError("Cannot evaluate normal on an edge.")
 
     # Show a warning message if v = None and test_normal = True
     if v is None and test_normal:
