@@ -3,9 +3,7 @@ NURBS-Python
 
 |DOI|_
 
-|PYPI|_ |RTD|_ |TRAVISCI|_
-
-|WAFFLEIO|_
+|PYPI|_ |RTD|_ |TRAVISCI|_ |WAFFLEIO|_
 
 Introduction
 ============
