@@ -24,7 +24,19 @@ Following modules are included in this library:
     module_utilities
     module_cpgen
 
-NURBS-Python does not implement any visualization functionality. Users are completely free to use any visualization method
+
+Visualization Options
+=====================
+
+NURBS-Python provides an optional reference visualization module with a sample implementation that uses
+`Matplotlib <https://matplotlib.org/>`_. Please see the documentation of the following modules for details:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_visualization
+
+Although there exists a visualzation components, the users are completely free to use any visualization method
 or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
 curves and surfaces using a software, like Paraview_.
 

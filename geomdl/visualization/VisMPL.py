@@ -16,11 +16,12 @@ import matplotlib.pyplot as plt
 
 
 class VisCurve2D(VisAbstract):
-
+    """ Visualization module for 2D Curves """
     def __init__(self):
         super(VisCurve2D, self).__init__()
 
     def render(self):
+        """ Plots the 2D curve and the control points polygon """
         if not self._points:
             return False
 
@@ -36,11 +37,12 @@ class VisCurve2D(VisAbstract):
 
 
 class VisCurve3D(VisAbstract):
-
+    """ Visualization module for 3D Curves """
     def __init__(self):
         super(VisCurve3D, self).__init__()
 
     def render(self):
+        """ Plots the 3D curve and the control points polygon """
         if not self._points:
             return False
 
@@ -65,11 +67,15 @@ class VisCurve3D(VisAbstract):
 
 
 class VisSurfWireframe(VisAbstract):
+    """ Visualization module for Surfaces
 
+    Scatter plot for the control points and wireframe for the surface points
+    """
     def __init__(self):
         super(VisSurfWireframe, self).__init__()
 
     def render(self):
+        """ Plots the surface and the control points grid """
         if not self._points:
             return False
 
@@ -102,11 +108,15 @@ class VisSurfWireframe(VisAbstract):
 
 
 class VisTriSurf(VisAbstract):
+    """ Visualization module for Surfaces
 
+    Wireframe plot for the control points and triangulated plot for the surface points
+    """
     def __init__(self):
         super(VisTriSurf, self).__init__()
 
     def render(self):
+        """ Plots the surface and the control points grid """
         if not self._points:
             return False
 
