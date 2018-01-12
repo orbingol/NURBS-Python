@@ -1662,7 +1662,7 @@ class Surface(object):
                 # Initialize new knot vector array
                 UQ = [None for x in range(len(self._knot_vector_u) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v in range(self._control_points_size_v)] for u in range(self._control_points_size_u + r)]
+                Q = [[None for v_var in range(self._control_points_size_v)] for u_var in range(self._control_points_size_u + r)]
                 # Initialize a local array of length p + 1
                 R = [None for x in range(p + 1)]
 
@@ -1729,7 +1729,7 @@ class Surface(object):
                 # Initialize new knot vector array
                 VQ = [None for x in range(len(self._knot_vector_v) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v in range(self._control_points_size_v + r)] for u in range(self._control_points_size_u)]
+                Q = [[None for v_var in range(self._control_points_size_v + r)] for u_var in range(self._control_points_size_u)]
                 # Initialize a local array of length p + 1
                 R = [None for x in range(q + 1)]
 
@@ -1737,7 +1737,7 @@ class Surface(object):
                 for i in range(0, k_v + 1):
                     VQ[i] = self._knot_vector_v[i]
                 for i in range(1, r + 1):
-                    VQ[k_v + i] = u
+                    VQ[k_v + i] = v
                 for i in range(k_v + 1, len(self._knot_vector_v)):
                     VQ[i + r] = self._knot_vector_v[i]
 
