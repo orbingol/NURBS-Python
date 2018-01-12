@@ -3,7 +3,7 @@ NURBS-Python
 
 |DOI|_
 
-|PYPI|_ |RTD|_ |TRAVIS-CI|_
+|PYPI|_ |RTD|_ |TRAVISCI|_
 
 |WAFFLEIO|_
 
@@ -136,7 +136,7 @@ for his guidance and supervision throughout the course of this project.
 .. |PYPI| image:: https://img.shields.io/pypi/v/NURBS-Python.svg
 .. _PYPI: https://pypi.python.org/pypi/NURBS-Python
 
-.. |TRAVIS-CI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
-.. _TRAVIS-CI https://travis-ci.org/orbingol/NURBS-Python
+.. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
+.. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
