@@ -25,10 +25,10 @@ Following modules are included in this library:
     module_cpgen
 
 
-Visualization Options
-=====================
+Visualization
+=============
 
-NURBS-Python provides an optional reference visualization module with a sample implementation that uses
+NURBS-Python provides an optional-to-use visualization module with a sample implementation that uses
 `Matplotlib <https://matplotlib.org/>`_. Please see the documentation of the following modules for details:
 
 .. toctree::
