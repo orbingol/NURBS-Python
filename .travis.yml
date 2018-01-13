@@ -7,7 +7,12 @@ python:
   - "3.6"
   - "pypy"
 
+# install required packages
 install:
   - pip install pytest
 
+# install package and run tests
 script: "python setup.py develop && pytest"
+
+# require the branch name to be master
+if: branch = master
