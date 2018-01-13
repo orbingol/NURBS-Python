@@ -3,17 +3,19 @@ Motivation
 
 NURBS-Python is an object-oriented Python library containing implementations of :doc:`NURBS <q_a>` 2D/3D curve and
 surface generation and evaluation algorithms. It also provides a convenient and easy-to-use data structure for storing
-curve and surface descriptions as Python properties.
+curve and surface descriptions.
 
-Some significant features of the NURBS-Python package are:
+Some significant features of NURBS-Python are:
 
+* Fully object-oriented API
+* Data structures for storing surface and 2D/3D curve descriptions
+* Helper functions, such as automatic uniform knot vector generator and many more
+* Control points grid generator for surfaces
+* Visualization component, plus a Matplotlib implementation
+* CSV export functionality with customizable meshing options
 * Python 2.x and 3.x compatibility
 * No external C/C++ library dependencies
 * No compilation steps necessary, everything is implemented with Python
-* Implements Python properties (using *property* decorator)
-* ``utilities`` module with several helper functions, such as automatic uniform knot vector generator and more
-* ``Grid`` and ``GridWeighted`` classes for generating various types of control points grids
-* Visualization component
 * Easy to install via ``pip install NURBS-Python``
 
 Algorithms Implemented
