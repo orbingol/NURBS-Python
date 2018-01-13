@@ -3,8 +3,23 @@
 # Partly inspired from
 #   http://tjelvarolsson.com/blog/how-to-continuously-test-your-python-code-on-windows-using-appveyor/
 #   https://github.com/ogrisel/python-appveyor-demo
+#   https://www.appveyor.com/docs/appveyor-yml/
 
 build: false
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+  # blacklist
+  except:
+    - gh-pages
+    - devmaster
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: true
 
 environment:
   matrix:
