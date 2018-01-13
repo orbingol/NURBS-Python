@@ -8,20 +8,21 @@ build: false
 
 environment:
   matrix:
+    - PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7.14"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.3"
+      PYTHON_ARCH: "32"
+
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5.3"
       PYTHON_ARCH: "64"
 
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6.3"
       PYTHON_ARCH: "64"
-
-init:
-  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -69,7 +70,6 @@ after_test:
   - "%CMD_IN_ENV% python setup.py bdist_wheel"
   - "%CMD_IN_ENV% python setup.py bdist_wininst"
   - "%CMD_IN_ENV% python setup.py bdist_msi"
-  - ps: "ls dist"
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
