@@ -3,7 +3,7 @@ NURBS-Python
 
 |DOI|_
 
-|PYPI|_ |RTD|_ |TRAVISCI|_ |WAFFLEIO|_
+|PYPI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
 
 Introduction
 ============
@@ -136,5 +136,9 @@ for his guidance and supervision throughout the course of this project.
 
 .. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
 .. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
+
+.. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
+.. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
