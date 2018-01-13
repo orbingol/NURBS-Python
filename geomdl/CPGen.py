@@ -25,6 +25,7 @@ class Grid(object):
     :param size_y: height of the grid
     :type size_y: float
     """
+
     def __init__(self, size_x, size_y):
         # Grid origin is always set to the bottom left corner of the grid
         self._origin = [0.0, 0.0, 0.0]
@@ -70,11 +71,13 @@ class Grid(object):
 
         if not isinstance(num_u, int):
             num_u = int(num_u)
-            print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_u." % num_u)
+            print(
+                "WARNING: Number of divisions must be an integer value. %d will be used as the value of num_u." % num_u)
 
         if not isinstance(num_v, int):
             num_v = int(num_v)
-            print("WARNING: Number of divisions must be an integer value. %d will be used as the value of num_v." % num_v)
+            print(
+                "WARNING: Number of divisions must be an integer value. %d will be used as the value of num_v." % num_v)
 
         # Set the number of divisions for each direction
         spacing_x = self._size_x / num_u
@@ -290,9 +293,9 @@ class Grid(object):
     def bumps(self, num_bumps=0, all_positive=False, bump_height=3):
         """ Generates random bumps (i.e. hills) on the 2D grid.
         
-        This method generates hills on the grid defined by the **num_bumps** parameter. The direction of the generated hills
-        are chosen randomly by default, but this behavior can be controlled by **all_positive** parameter. It is also 
-        possible to control the z-value using **bump_height** parameter.
+        This method generates hills on the grid defined by the **num_bumps** parameter. The direction of the generated
+        hills are chosen randomly by default, but this behavior can be controlled by **all_positive** parameter.
+        It is also possible to control the z-value using **bump_height** parameter.
          
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
         uses a trial-and-error method to determine whether the bumps can be generated or not. For instance::
@@ -349,8 +352,8 @@ class Grid(object):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(1, len_u-2)
-                v = random.randint(1, len_v-2)
+                u = random.randint(1, len_u - 2)
+                v = random.randint(1, len_v - 2)
                 temp = [u, v]
                 if not bump_list:
                     bump_list.append(temp)
@@ -430,6 +433,7 @@ class GridWeighted(Grid):
     :param size_y: height of the grid
     :type size_y: float
     """
+
     def __init__(self, size_x, size_y):
         super(GridWeighted, self).__init__(size_x, size_y)
         # Override dimension variable
@@ -438,8 +442,9 @@ class GridWeighted(Grid):
     def add_weight(self, w=1.0):
         """ Adds a uniform weight to grid points.
 
-        All grid points are divided by the input weight and weight value is added as the last element of the coordinate array.
-        Grid points can be accessed via :func:`.grid()` function and can be saved as a text file via :func:`.save()` function.
+        All grid points are divided by the input weight and weight value is added as the last element of the coordinate
+        array. Grid points can be accessed via :func:`.grid()` function and can be saved as a text file via
+        :func:`.save()` function.
 
         :param w: weight value to be added
         :type w: float
@@ -490,7 +495,7 @@ class GridWeighted(Grid):
         for cols in self._grid_points:
             weighted_gp_row = []
             for row in cols:
-                temp = row[0:self._dimension-1]
+                temp = row[0:self._dimension - 1]
                 temp[:] = [tmp * row[-1] for tmp in temp]
                 temp[:] = [tmp / w for tmp in temp]
                 temp.append(w)

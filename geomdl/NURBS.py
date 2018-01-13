@@ -44,8 +44,10 @@ class Curve(BSpline.Curve):
 
     .. note::
 
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in
+        :py:attr:`~curvepts` property will be deleted automatically.
     """
+
     def __init__(self):
         super(Curve, self).__init__()
         # Override dimension variable
@@ -112,7 +114,7 @@ class Curve(BSpline.Curve):
         :type u: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to the return value
+        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
         :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
         :rtype: list
@@ -132,7 +134,8 @@ class Curve(BSpline.Curve):
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
         cptw = [0.0 for x in range(self._dimension)]
         for i in range(0, self._degree + 1):
-            cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in zip(cptw, self._control_points[span - self._degree + i])]
+            cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in
+                       zip(cptw, self._control_points[span - self._degree + i])]
             if get_ctrlpts:
                 ctrlpts.append(self._control_points[span - self._degree + i])
 
@@ -220,8 +223,10 @@ class Curve2D(Curve):
 
     .. note::
 
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in
+        :py:attr:`~curvepts` property will be deleted automatically.
     """
+
     def __init__(self):
         super(Curve2D, self).__init__()
         # Override dimension variable
@@ -276,8 +281,10 @@ class Surface(BSpline.Surface):
 
     .. note::
 
-        If you update any of the data storage elements after the surface evaluation, the surface points stored in :py:attr:`~surfpts` property will be deleted automatically.
+        If you update any of the data storage elements after the surface evaluation, the surface points stored in
+        :py:attr:`~surfpts` property will be deleted automatically.
     """
+
     def __init__(self):
         super(Surface, self).__init__()
         # Override dimension variable
@@ -346,7 +353,7 @@ class Surface(BSpline.Surface):
         :type v: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to the return value
+        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
         :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
         :rtype: list
@@ -420,12 +427,15 @@ class Surface(BSpline.Surface):
                     v.append(SKLw[idx])
 
                 for j in range(1, l + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in zip(v, SKL[k][l - j])]
+                    v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
+                            zip(v, SKL[k][l - j])]
                 for i in range(1, k + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in zip(v, SKL[k - i][l])]
+                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
+                            zip(v, SKL[k - i][l])]
                     v2 = [0.0 for x in range(self._dimension - 1)]
                     for j in range(1, l + 1):
-                        v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in zip(v2, SKL[k - i][l - j])]
+                        v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
+                                 zip(v2, SKL[k - i][l - j])]
                     v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
                 SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v]

@@ -45,8 +45,10 @@ class Curve(object):
 
     .. note::
 
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in
+        :py:attr:`~curvepts` property will be deleted automatically.
     """
+
     def __init__(self):
         self._degree = 0
         self._knot_vector = []
@@ -439,7 +441,7 @@ class Curve(object):
         :type u: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to the return value
+        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
         :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
         :rtype: list
@@ -458,7 +460,8 @@ class Curve(object):
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
         cpt = [0.0 for x in range(self._dimension)]
         for i in range(0, self._degree + 1):
-            cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in zip(cpt, self._control_points[span - self._degree + i])]
+            cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in
+                      zip(cpt, self._control_points[span - self._degree + i])]
             if get_ctrlpts:
                 ctrlpts.append(self._control_points[span - self._degree + i])
 
@@ -513,7 +516,8 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self._dimension)]
             for j in range(0, self._degree + 1):
-                CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in zip(CK[k], self._control_points[span - self._degree + j])]
+                CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in
+                            zip(CK[k], self._control_points[span - self._degree + j])]
 
         # Return the derivatives
         return CK
@@ -543,7 +547,9 @@ class Curve(object):
         for k in range(1, order + 1):
             tmp = self._degree - k + 1
             for i in range(0, r - k + 1):
-                PK[k][i][:] = [tmp * (elem1 - elem2) / (self._knot_vector[r1 + i + self._degree + 1] - self._knot_vector[r1 + i + k]) for elem1, elem2 in zip(PK[k - 1][i + 1], PK[k - 1][i])]
+                PK[k][i][:] = [tmp * (elem1 - elem2) / (
+                        self._knot_vector[r1 + i + self._degree + 1] - self._knot_vector[r1 + i + k]) for elem1, elem2
+                               in zip(PK[k - 1][i + 1], PK[k - 1][i])]
 
         return PK
 
@@ -577,7 +583,8 @@ class Curve(object):
         for k in range(0, du + 1):
             CK[k] = [0.0 for x in range(self._dimension)]
             for j in range(0, self._degree - k + 1):
-                CK[k][:] = [elem + (bfuns[j][self._degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in zip(CK[k], PK[k][j])]
+                CK[k][:] = [elem + (bfuns[j][self._degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in
+                            zip(CK[k], PK[k][j])]
 
         # Return the derivatives
         return CK
@@ -648,7 +655,7 @@ class Curve(object):
         # Load new knot vector
         for i in range(0, k + 1):
             UQ[i] = self._knot_vector[i]
-        for i in range(1, r+1):
+        for i in range(1, r + 1):
             UQ[k + i] = u
         for i in range(k + 1, mp):
             UQ[i + r] = self._knot_vector[i]
@@ -718,8 +725,10 @@ class Curve2D(Curve):
 
     .. note::
 
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in :py:attr:`~curvepts` property will be deleted automatically.
+        If you update any of the data storage elements after the curve evaluation, the surface points stored in
+        :py:attr:`~curvepts` property will be deleted automatically.
     """
+
     def __init__(self):
         super(Curve2D, self).__init__()
         # Override dimension variable
@@ -773,8 +782,10 @@ class Surface(object):
 
     .. note::
 
-        If you update any of the data storage elements after the surface evaluation, the surface points stored in :py:attr:`~surfpts` property will be deleted automatically.
+        If you update any of the data storage elements after the surface evaluation, the surface points stored in
+        :py:attr:`~surfpts` property will be deleted automatically.
     """
+
     def __init__(self):
         self._degree_u = 0
         self._degree_v = 0
@@ -909,8 +920,8 @@ class Surface(object):
     def set_ctrlpts(self, ctrlpts, size_u, size_v):
         """ Sets 1D control points.
 
-        This function expects a list coordinates which is also a list. For instance, if you are working in 3D space, then
-        your coordinates will be a list of 3 elements representing *(x, y, z)* coordinates.
+        This function expects a list coordinates which is also a list. For instance, if you are working in 3D space,
+        then your coordinates will be a list of 3 elements representing *(x, y, z)* coordinates.
 
         This function also generates 2D control points in *[u][v]* format which can be accessed via
         :py:attr:`~ctrlpts2d` property.
@@ -1378,7 +1389,8 @@ class Surface(object):
                 if mode == 'zigzag':
                     points = utils.make_zigzag(self._surface_points, int((1.0 / self._delta) + 1))
                 elif mode == 'wireframe':
-                    points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1))
+                    points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1),
+                                             int((1.0 / self._delta) + 1))
                 elif mode == 'triangle':
                     warnings.warn("Triangle mode has not been implemented yet!")
                     points = self._surface_points
@@ -1452,7 +1464,7 @@ class Surface(object):
         :type v: float
         :param check_vars: flag to disable variable checking (only for internal eval functions)
         :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to the return value
+        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
         :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
         :rtype: list
@@ -1546,7 +1558,8 @@ class Surface(object):
                 for r in range(0, self._degree_u + 1):
                     cu = span_u - self._degree_u + r
                     cv = span_v - self._degree_v + s
-                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in zip(temp[s], self._control_points2D[cu][cv])]
+                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
+                                  zip(temp[s], self._control_points2D[cu][cv])]
 
             dd = min(order - k, dv)
             for l in range(0, dd + 1):
@@ -1662,7 +1675,8 @@ class Surface(object):
                 # Initialize new knot vector array
                 UQ = [None for x in range(len(self._knot_vector_u) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v_var in range(self._control_points_size_v)] for u_var in range(self._control_points_size_u + r)]
+                Q = [[None for v_var in range(self._control_points_size_v)] for u_var in
+                     range(self._control_points_size_u + r)]
                 # Initialize a local array of length p + 1
                 R = [None for x in range(p + 1)]
 
@@ -1679,7 +1693,8 @@ class Surface(object):
                 for j in range(1, r + 1):
                     L = k_u - p + j
                     for i in range(0, p - j - s_u + 1):
-                        alpha[i][j] = (u - self._knot_vector_u[L + i]) / (self._knot_vector_u[i + k_u + 1] - self._knot_vector_u[L + i])
+                        alpha[i][j] = (u - self._knot_vector_u[L + i]) / (
+                                self._knot_vector_u[i + k_u + 1] - self._knot_vector_u[L + i])
 
                 # For each row do
                 for row in range(0, mp):
@@ -1694,7 +1709,8 @@ class Surface(object):
                     for j in range(1, r + 1):
                         L = k_u - p + j
                         for i in range(0, p - j - s_u + 1):
-                            R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
+                            R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in
+                                       zip(R[i], R[i + 1])]
                         Q[L][row] = R[0]
                         Q[k_u + r - j - s_u][row] = R[p - j - s_u]
                     # Load the remaining control points
@@ -1729,7 +1745,8 @@ class Surface(object):
                 # Initialize new knot vector array
                 VQ = [None for x in range(len(self._knot_vector_v) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v_var in range(self._control_points_size_v + r)] for u_var in range(self._control_points_size_u)]
+                Q = [[None for v_var in range(self._control_points_size_v + r)] for u_var in
+                     range(self._control_points_size_u)]
                 # Initialize a local array of length p + 1
                 R = [None for x in range(q + 1)]
 

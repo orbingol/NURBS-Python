@@ -370,16 +370,16 @@ def generate_knot_vector(degree=0, control_points_size=0):
     i = 0
 
     # First degree+1 knots are "knot_min"
-    while i < degree+1:
+    while i < degree + 1:
         knot_vector.append(knot_min)
         i += 1
 
     # Calculate a uniform interval for middle knots
-    num_segments = (m - (degree+1)*2)+1  # number of segments in the middle
+    num_segments = (m - (degree + 1) * 2) + 1  # number of segments in the middle
     spacing = (knot_max - knot_min) / num_segments  # spacing between the knots (uniform)
     mid_knot = knot_min + spacing  # first middle knot
     # Middle knots
-    while i < m-(degree+1):
+    while i < m - (degree + 1):
         knot_vector.append(mid_knot)
         mid_knot += spacing
         i += 1
@@ -435,21 +435,21 @@ def find_multiplicity(knot=-1, knot_vector=(), tol=0.001):
 # Algorithm A2.2 (internal functionality)
 def basis_functions(degree=0, knot_vector=(), span=0, knot=0):
     """ Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
-    left = [None for x in range(degree+1)]
-    right = [None for x in range(degree+1)]
+    left = [None for x in range(degree + 1)]
+    right = [None for x in range(degree + 1)]
     N = [None for x in range(degree + 1)]
 
     # N[0] = 1.0 by definition
     N[0] = 1.0
 
-    for j in range(1, degree+1):
+    for j in range(1, degree + 1):
         left[j] = knot - knot_vector[span + 1 - j]
         right[j] = knot_vector[span + j] - knot
         saved = 0.0
         for r in range(0, j):
-            temp = N[r] / (right[r+1] + left[j-r])
-            N[r] = saved + right[r+1] * temp
-            saved = left[j-r] * temp
+            temp = N[r] / (right[r + 1] + left[j - r])
+            N[r] = saved + right[r + 1] * temp
+            saved = left[j - r] * temp
         N[j] = saved
 
     return N
@@ -458,10 +458,10 @@ def basis_functions(degree=0, knot_vector=(), span=0, knot=0):
 # Algorithm A2.2 - modified (internal functionality)
 def basis_functions_all(degree=0, knot_vector=(), span=0, knot=0):
     """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
-    N = [[None for x in range(degree+1)] for y in range(degree+1)]
-    for i in range(0, degree+1):
+    N = [[None for x in range(degree + 1)] for y in range(degree + 1)]
+    for i in range(0, degree + 1):
         bfuns = basis_functions(i, knot_vector, span, knot)
-        for j in range(0, i+1):
+        for j in range(0, i + 1):
             N[j][i] = bfuns[j]
     return N
 
@@ -470,47 +470,47 @@ def basis_functions_all(degree=0, knot_vector=(), span=0, knot=0):
 def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
     """ Algorithm A2.3 of The NURBS Book by Piegl & Tiller."""
     # Initialize variables for easy access
-    left = [None for x in range(degree+1)]
-    right = [None for x in range(degree+1)]
-    ndu = [[None for x in range(degree+1)] for y in range(degree+1)]
+    left = [None for x in range(degree + 1)]
+    right = [None for x in range(degree + 1)]
+    ndu = [[None for x in range(degree + 1)] for y in range(degree + 1)]
 
     # N[0][0] = 1.0 by definition
     ndu[0][0] = 1.0
 
-    for j in range(1, degree+1):
+    for j in range(1, degree + 1):
         left[j] = knot - knot_vector[span + 1 - j]
         right[j] = knot_vector[span + j] - knot
         saved = 0.0
         r = 0
         for r in range(r, j):
             # Lower triangle
-            ndu[j][r] = right[r+1] + left[j-r]
-            temp = ndu[r][j-1] / ndu[j][r]
+            ndu[j][r] = right[r + 1] + left[j - r]
+            temp = ndu[r][j - 1] / ndu[j][r]
             # Upper triangle
-            ndu[r][j] = saved + (right[r+1] * temp)
-            saved = left[j-r] * temp
+            ndu[r][j] = saved + (right[r + 1] * temp)
+            saved = left[j - r] * temp
         ndu[j][j] = saved
 
     # Load the basis functions
-    ders = [[None for x in range(degree+1)] for y in range((min(degree, order)+1))]
-    for j in range(0, degree+1):
+    ders = [[None for x in range(degree + 1)] for y in range((min(degree, order) + 1))]
+    for j in range(0, degree + 1):
         ders[0][j] = ndu[j][degree]
 
     # Start calculating derivatives
-    a = [[None for x in range(degree+1)] for y in range(2)]
+    a = [[None for x in range(degree + 1)] for y in range(2)]
     # Loop over function index
-    for r in range(0, degree+1):
+    for r in range(0, degree + 1):
         # Alternate rows in array a
         s1 = 0
         s2 = 1
         a[0][0] = 1.0
         # Loop to compute k-th derivative
-        for k in range(1, order+1):
+        for k in range(1, order + 1):
             d = 0.0
             rk = r - k
             pk = degree - k
             if r >= k:
-                a[s2][0] = a[s1][0] / ndu[pk+1][rk]
+                a[s2][0] = a[s1][0] / ndu[pk + 1][rk]
                 d = a[s2][0] * ndu[rk][pk]
             if rk >= -1:
                 j1 = 1
@@ -520,11 +520,11 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
                 j2 = k - 1
             else:
                 j2 = degree - r
-            for j in range(j1, j2+1):
-                a[s2][j] = (a[s1][j] - a[s1][j-1]) / ndu[pk+1][rk+j]
-                d += (a[s2][j] * ndu[rk+j][pk])
+            for j in range(j1, j2 + 1):
+                a[s2][j] = (a[s1][j] - a[s1][j - 1]) / ndu[pk + 1][rk + j]
+                d += (a[s2][j] * ndu[rk + j][pk])
             if r <= pk:
-                a[s2][k] = -a[s1][k-1] / ndu[pk+1][r]
+                a[s2][k] = -a[s1][k - 1] / ndu[pk + 1][r]
                 d += (a[s2][k] * ndu[r][pk])
             ders[k][r] = d
 
@@ -535,8 +535,8 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
 
     # Multiply through by the the correct factors
     r = float(degree)
-    for k in range(1, order+1):
-        for j in range(0, degree+1):
+    for k in range(1, order + 1):
+        for j in range(0, degree + 1):
             ders[k][j] *= r
         r *= (degree - k)
 
@@ -687,5 +687,5 @@ def binomial_coefficient(k, i):
     """
     k_fact = math.factorial(k)
     i_fact = math.factorial(i)
-    k_i_fact = math.factorial(k-i)
+    k_i_fact = math.factorial(k - i)
     return float(k_fact / (k_i_fact * i_fact))
