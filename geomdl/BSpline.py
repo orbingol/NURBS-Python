@@ -548,7 +548,7 @@ class Curve(object):
             tmp = self._degree - k + 1
             for i in range(0, r - k + 1):
                 PK[k][i][:] = [tmp * (elem1 - elem2) / (
-                        self._knot_vector[r1 + i + self._degree + 1] - self._knot_vector[r1 + i + k]) for elem1, elem2
+                    self._knot_vector[r1 + i + self._degree + 1] - self._knot_vector[r1 + i + k]) for elem1, elem2
                                in zip(PK[k - 1][i + 1], PK[k - 1][i])]
 
         return PK
@@ -1694,7 +1694,7 @@ class Surface(object):
                     L = k_u - p + j
                     for i in range(0, p - j - s_u + 1):
                         alpha[i][j] = (u - self._knot_vector_u[L + i]) / (
-                                self._knot_vector_u[i + k_u + 1] - self._knot_vector_u[L + i])
+                            self._knot_vector_u[i + k_u + 1] - self._knot_vector_u[L + i])
 
                 # For each row do
                 for row in range(0, mp):
@@ -1764,7 +1764,7 @@ class Surface(object):
                     L = k_v - q + j
                     for i in range(0, q - j - s_v + 1):
                         alpha[i][j] = (v - self._knot_vector_v[L + i]) / (
-                                self._knot_vector_v[i + k_v + 1] - self._knot_vector_v[L + i])
+                            self._knot_vector_v[i + k_v + 1] - self._knot_vector_v[L + i])
 
                 # For each row do
                 for col in range(0, np):
