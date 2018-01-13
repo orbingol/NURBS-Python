@@ -100,6 +100,12 @@ ex_curve3d01.py
 .. image:: images/ex_curve3d01_vis.png
     :alt: 3D curve example 1
 
+ex_curve3d02.py
+~~~~~~~~~~~~~~~
+
+.. image:: images/ex_curve3d02_vis.png
+    :alt: 3D curve example 2
+
 mpl_curve_tangents.py
 ~~~~~~~~~~~~~~~~~~~~~
 
