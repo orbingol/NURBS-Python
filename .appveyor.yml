@@ -8,14 +8,6 @@ build: false
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7.14"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python36"
-      PYTHON_VERSION: "3.6.3"
-      PYTHON_ARCH: "32"
-
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
@@ -68,8 +60,10 @@ test_script:
 after_test:
   # If tests are successful, create binary packages for the project.
   - "%CMD_IN_ENV% python setup.py bdist_wheel --universal"
-  - "%CMD_IN_ENV% python setup.py bdist_wininst"
-  - "%CMD_IN_ENV% python setup.py bdist_msi"
+  - "%CMD_IN_ENV% python setup.py bdist_wininst -p win32"
+  - "%CMD_IN_ENV% python setup.py bdist_wininst -p win-amd64"
+  - "%CMD_IN_ENV% python setup.py bdist_msi -p win32"
+  - "%CMD_IN_ENV% python setup.py bdist_msi -p win-amd64"
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
