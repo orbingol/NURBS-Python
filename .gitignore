@@ -2,6 +2,7 @@
 .cache/*
 build/
 dist/
+NURBS_Python.egg-info/*
 docs/_build
 docs/_static
 docs/_templates
