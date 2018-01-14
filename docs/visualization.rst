@@ -113,7 +113,7 @@ This example illustrates a more advanced visualization option for plotting the c
 points grid and the evaluated curve. The example script can be found in Examples_ repository under ``visualization``
 directory.
 
-.. image:: images/ex_curve02_mpl.png
+.. image:: images/ex_curve03_mpl.png
     :alt: 2D curve example 2 with tangent vector quiver plots
 
 
