@@ -16,10 +16,6 @@ branches:
   # blacklist
   except:
     - gh-pages
-    - devmaster
-
-# Start builds on tags only (GitHub and BitBucket)
-skip_non_tags: true
 
 environment:
   matrix:
