@@ -1,12 +1,12 @@
 from geomdl import BSpline
 
 GEOMDL_DELTA = 0.001
+objinstance = BSpline.Curve2D
 
 
-def test_curve2d_eval1():
-
-    # Create a BSpline (NUBS) curve instance
-    curve = BSpline.Curve2D()
+def test_bspline_curve2d_eval1():
+    # Create a curve instance
+    curve = objinstance()
 
     # Set curve degree
     curve.degree = 3
@@ -27,10 +27,9 @@ def test_curve2d_eval1():
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
-def test_curve2d_eval2():
-
-    # Create a BSpline (NUBS) curve instance
-    curve = BSpline.Curve2D()
+def test_bspline_curve2d_eval2():
+    # Create a curve instance
+    curve = objinstance()
 
     # Set curve degree
     curve.degree = 3
@@ -51,9 +50,9 @@ def test_curve2d_eval2():
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
-def test_curve2d_eval3():
-    # Create a BSpline (NUBS) curve instance
-    curve = BSpline.Curve2D()
+def test_bspline_curve2d_eval3():
+    # Create a curve instance
+    curve = objinstance()
 
     # Set curve degree
     curve.degree = 3
@@ -74,9 +73,9 @@ def test_curve2d_eval3():
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
-def test_curve2d_eval4():
-    # Create a BSpline (NUBS) curve instance
-    curve = BSpline.Curve2D()
+def test_bspline_curve2d_eval4():
+    # Create a curve instance
+    curve = objinstance()
 
     # Set curve degree
     curve.degree = 3
@@ -97,9 +96,9 @@ def test_curve2d_eval4():
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
-def test_curve2d_eval5():
-    # Create a BSpline (NUBS) curve instance
-    curve = BSpline.Curve2D()
+def test_bspline_curve2d_eval5():
+    # Create a curve instance
+    curve = objinstance()
 
     # Set curve degree
     curve.degree = 3
