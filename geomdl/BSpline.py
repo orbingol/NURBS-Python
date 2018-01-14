@@ -961,7 +961,7 @@ class Surface(object):
         for i in range(0, self._control_points_size_u):
             ctrlpts_v = []
             for j in range(0, self._control_points_size_v):
-                ctrlpts_v.append(self._control_points[i + (j * self._control_points_size_u)])
+                ctrlpts_v.append(self._control_points[j + (i * self._control_points_size_v)])
             self._control_points2D.append(ctrlpts_v)
 
     @property
