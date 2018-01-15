@@ -72,7 +72,8 @@ from the command line to generate a link to the package directory inside *site-p
 Example Scripts
 ===============
 
-Please see `NURBS-Python Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository for examples.
+Please see `NURBS-Python Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository for example scripts
+describing how to use NURBS-Python and advanced visualization examples. Please check the documentation for more details.
 
 Implementation
 ==============
