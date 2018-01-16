@@ -941,9 +941,9 @@ class Surface(object):
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
         :param size_u: size of the control points grid in U-direction
-        :param size_u: int
+        :type size_u: int
         :param size_v: size of the control points grid in V-direction
-        :param size_v: int
+        :type size_v: int
         :return: None
         """
         # Clean up the surface and control points lists, if necessary
