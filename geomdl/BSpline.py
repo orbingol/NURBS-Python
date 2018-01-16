@@ -27,7 +27,7 @@ class Curve(object):
     * ctrlpts
     * curvepts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x, y, z) coordinates
@@ -707,7 +707,7 @@ class Curve2D(Curve):
     * ctrlpts
     * curvepts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x, y) coordinates
@@ -763,10 +763,17 @@ class Surface(object):
     * ctrlpts2D
     * surfpts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read control points from a text file.
-    Additional details on the file formats can be found in the documentation.
+    **Details on Control Points**
 
-    .. note:: Control points are stored as a list of (x, y, z) coordinates
+    Control points are stored as a list of (x, y, z) coordinates. The function :func:`.read_ctrlpts_from_txt()`
+    provides an easy way to read control points from a text file. Additional details on the file formats can be found
+    on the documentation.
+
+    .. note::
+
+        Since the control points array for surfaces must be a 2D array corresponding to the *u* and *v* directions,
+        `ctrlpts` and `ctrlpts2D` properties of `Surface` classes do not provide a setter , which means they are read
+        only. To set the control points for the `Surface` class, please use :func:`.set_ctrlpts()`.
 
     **Evaluation**
 
@@ -949,6 +956,7 @@ class Surface(object):
             raise ValueError("Number of control points in u-direction should be at least degree + 1.")
         if size_v < self._degree_v + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
+
 
         # Set the new control points
         self._control_points = copy.deepcopy(ctrlpts)

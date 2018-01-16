@@ -26,7 +26,7 @@ class Curve(BSpline.Curve):
     * weights
     * curvepts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
@@ -205,7 +205,7 @@ class Curve2D(Curve):
     * weights
     * curvepts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read weighted control points from a text file.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
     .. note:: Control points are stored as a list of (x*w, y*w, w) coordinates
@@ -262,10 +262,17 @@ class Surface(BSpline.Surface):
     * weights
     * surfpts
 
-    The function :func:`.read_ctrlpts()` provides an easy way to read control points from a text file.
-    Additional details on the file formats can be found in the documentation.
+    **Details on Control Points**
 
-    .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
+    Control points are stored as a list of (x*w, y*w, z*w, w) coordinates, where *w* corresponds to the weight.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
+    Additional details on the file formats can be found on the documentation.
+
+    .. note::
+
+        Since the control points array for surfaces must be a 2D array corresponding to the *u* and *v* directions,
+        `ctrlpts` and `ctrlpts2D` properties of `Surface` classes do not provide a setter , which means they are read
+        only. To set the control points for the `Surface` class, please use :func:`.set_ctrlpts()`.
 
     **Evaluation**
 
