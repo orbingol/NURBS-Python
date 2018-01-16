@@ -950,13 +950,21 @@ class Surface(object):
         self._reset_surface()
         self._reset_ctrlpts()
 
+        # Degree must be set before setting the control points
         if self._degree_u == 0 or self._degree_v == 0:
             raise ValueError("First, set the degrees!")
+
+        # Check array size validity
         if size_u < self._degree_u + 1:
             raise ValueError("Number of control points in u-direction should be at least degree + 1.")
         if size_v < self._degree_v + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1.")
 
+        # Check the dimensions of the input control points array
+        for cpt in ctrlpts:
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional numbers.\n" + str(cpt) +
+                                 " is not a valid control point!")
 
         # Set the new control points
         self._control_points = copy.deepcopy(ctrlpts)
