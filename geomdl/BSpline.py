@@ -591,13 +591,15 @@ class Curve(object):
 
     # Evaluates the curve tangent at the given u parameter
     def tangent(self, u=-1, normalize=False):
-        """ Evaluates the surface tangent at the given (u, v) parameter.
+        """ Evaluates the curve tangent at the given u parameter.
+
+        The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
         :param u: knot value
         :type u: float
-        :param normalize: if True, the returned tangent vector is converted to a unit vector
+        :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
-        :return: A list in the order of "surface point" and "derivative"
+        :return: a list in the order of "curve point" and "tangent"
         :rtype: list
         """
         # 1st derivative of the curve gives the tangent
@@ -1585,7 +1587,7 @@ class Surface(object):
         # Return the derivatives
         return SKL
 
-    # Evaluates the surface tangent at the given (u, v) parameter
+    # Evaluates the surface tangent vectors at the given (u, v) parameter
     def tangent(self, u=-1, v=-1, normalize=False):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
