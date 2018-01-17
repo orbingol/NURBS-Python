@@ -616,6 +616,61 @@ class Curve(object):
         # Return the list
         return point, der_u
 
+    # Evaluates the curve normal at the given u parameter
+    def normal(self, u=-1, normalize=True):
+        """ Evaluates the curve normal at the given u parameter.
+
+        Curve normal is basically the second derivative of the curve.
+        The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
+
+        :param u: knot value
+        :type u: float
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list in the order of "curve point" and "normal"
+        :rtype: list
+        """
+        # 2nd derivative of the curve gives the normal
+        ders = self.derivatives(u, 2)
+
+        # For readability
+        point = ders[0]
+        der_u = ders[2]
+
+        # Normalize the normal vector
+        if normalize:
+            der_u = utils.vector_normalize(der_u)
+
+        # Return the list
+        return point, der_u
+
+    # Evaluates the curve binormal at the given u parameter
+    def binormal(self, u=-1, normalize=True):
+        """ Evaluates the curve binormal at the given u parameter.
+
+        Curve binormal is the cross product of the normal and the tangent vectors.
+        The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
+
+        :param u: knot value
+        :type u: float
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list in the order of "curve point" and "binormal"
+        :rtype: list
+        """
+        tan_vector = self.tangent(u, normalize=normalize)
+        norm_vector = self.normal(u, normalize=normalize)
+
+        point = tan_vector[0]
+        binorm_vector = utils.vector_cross(tan_vector[1], norm_vector[1])
+
+        # Normalize the binormal vector
+        if normalize:
+            binorm_vector = utils.vector_normalize(binorm_vector)
+
+        # Return the list
+        return point, binorm_vector
+
     # Knot insertion
     def insert_knot(self, u, r=1):
         """ Inserts the given knot and updates the control points array and the knot vector.
