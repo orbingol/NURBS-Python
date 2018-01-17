@@ -1591,6 +1591,8 @@ class Surface(object):
     def tangent(self, u=-1, v=-1, normalize=False):
         """ Evaluates the surface tangent at the given (u, v) parameter.
 
+        The output returns a list containing the starting point (i.e. origin) of the vector and the vectors themselves.
+
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
@@ -1616,9 +1618,11 @@ class Surface(object):
         # Return the list of tangents w.r.t. u and v
         return tuple(point), der_u, der_v
 
-    # Evaluates the surface normal at the given (u, v) parameter
+    # Evaluates the surface normal vector at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalize=True):
-        """ Evaluates the surface normal at the given (u, v) parameter.
+        """ Evaluates the surface normal vector at the given (u, v) parameter.
+
+        The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
         :param u: parameter in the U direction
         :type u: float
@@ -1626,7 +1630,7 @@ class Surface(object):
         :type v: float
         :param normalize: if True, the returned normal vector is converted to a unit vector
         :type normalize: bool
-        :return: normal vector
+        :return: a list in the order of "surface point" and "normal vector"
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
@@ -1647,7 +1651,7 @@ class Surface(object):
             normal = utils.vector_normalize(tuple(normal))
 
         # Return the surface normal at the input u,v location
-        return normal
+        return skl[0][0], normal
 
     def insert_knot(self, u=None, v=None, r=1):
         """ Inserts the given knots and updates the control points array and the knot vectors.
