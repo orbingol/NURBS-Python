@@ -126,12 +126,14 @@ control points grid and the evaluated curve. The example script can be found in 
 .. image:: images/ex_curve3d01_mpl.png
     :alt: 3D curve example 1 with tangent vector quiver plots
 
-mpl_curve3d_vector.py
-~~~~~~~~~~~~~~~~~~~~~~~
+mpl_curve3d_vectors.py
+~~~~~~~~~~~~~~~~~~~~~~
 
 This example illustrates a visualization option for plotting the 3D curve tangent, normal and binnormal vectors
 alongside with the control points grid and the evaluated curve.
 The example script can be found in Examples_ repository under the ``visualization`` directory.
+
+Please note that binormal vector evaluation method for the curves is added on version *3.0.6*.
 
 .. image:: images/ex_curve3d02_mpl.png
     :alt: 3D curve example 2 with tangent, normal and binormal vector quiver plots
