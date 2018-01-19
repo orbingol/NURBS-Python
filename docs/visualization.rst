@@ -43,6 +43,16 @@ ex_surface01.py
 .. image:: images/ex_surface01_mpl.png
     :alt: Surface example 1
 
+-----
+
+* Control points CSV export mode: ``wireframe``
+* Surface points CSV export mode: ``wireframe``
+* Evaluation delta: 0.005
+* Script used: ``mpl_wframe_wframe.py``
+
+.. image:: images/ex_surface01_mpl_wf.png
+    :alt: Surface example 1 - wireframe model
+
 ex_surface02.py
 ~~~~~~~~~~~~~~~
 
