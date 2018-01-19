@@ -393,6 +393,43 @@ def generate_knot_vector(degree=0, control_points_size=0):
     return knot_vector
 
 
+def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001):
+    if not knot_vector:
+        raise ValueError("Input knot vector cannot be empty")
+
+    # Check the formula; m = p + n + 1
+    if len(knot_vector) is not degree + control_points_size + 1:
+        return False
+
+    ret_val = True
+    # A proper NURBS knot vector should have a knot vector
+    # starting with degree + 1 zeros and ending with degree + 1 ones
+    count = 0
+    start_knot = 0.0
+    for knot in knot_vector:
+        if count > degree:
+            break
+        if not abs(start_knot - knot) < tol:
+            ret_val = False
+            break
+        count += 1
+
+    if ret_val:
+        knot_vector.reverse()
+        count = 0
+        end_knot = 1.0
+        for knot in knot_vector:
+            if count > degree:
+                break
+            if not abs(end_knot - knot) < tol:
+                ret_val = False
+                break
+            count += 1
+
+    knot_vector.reverse()
+    return ret_val
+
+
 # Algorithm A2.1 (internal functionality)
 def find_span(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
     """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller."""
