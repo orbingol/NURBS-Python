@@ -401,9 +401,10 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
     if len(knot_vector) is not degree + control_points_size + 1:
         return False
 
+    # Set up a return value
     ret_val = True
-    # A proper NURBS knot vector should have a knot vector
-    # starting with degree + 1 zeros and ending with degree + 1 ones
+
+    # A proper knot vector should have a knot vector starting with degree + 1 zeros
     count = 0
     start_knot = 0.0
     for knot in knot_vector:
@@ -414,6 +415,7 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
             break
         count += 1
 
+    # A proper knot vector should have a knot vector ending with degree + 1 ones
     if ret_val:
         knot_vector.reverse()
         count = 0
@@ -426,7 +428,17 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
                 break
             count += 1
 
-    knot_vector.reverse()
+        knot_vector.reverse()
+
+    # Check ascending order
+    if ret_val:
+        prev_knot = knot_vector[0]
+        for knot in knot_vector:
+            if prev_knot > knot:
+                ret_val = False
+                break
+            prev_knot = knot
+
     return ret_val
 
 
