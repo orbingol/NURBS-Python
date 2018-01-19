@@ -139,12 +139,20 @@ class Curve(object):
 
     @knotvector.setter
     def knotvector(self, value):
+        if self._degree == 0 or len(self._control_points) == 0:
+            raise ValueError("Set degree and control points first")
+
+        # Normalize the input knot vector
+        value_normalized = utils.normalize_knot_vector(value)
+
+        # Check knot vector validity
+        if not utils.check_knot_vector(self._degree, value_normalized, len(self._control_points)):
+            raise ValueError("Input is not a valid knot vector")
+
         # Clean up the surface points lists, if necessary
         self._reset_curve()
         # Set knot vector u
-        value_float = [float(kv) for kv in value]
-        # Normalize and set the knot vector
-        self._knot_vector = utils.normalize_knot_vector(tuple(value_float))
+        self._knot_vector = [float(kv) for kv in value_normalized]
 
     @property
     def delta(self):
@@ -1112,11 +1120,21 @@ class Surface(object):
 
     @knotvector_u.setter
     def knotvector_u(self, value):
+        if self._degree_u == 0 or self._control_points_size_u == 0:
+            raise ValueError("Set degree and control points first (u-direction)")
+
+        # Normalize the input knot vector
+        value_normalized = utils.normalize_knot_vector(value)
+
+        # Check knot vector validity
+        if not utils.check_knot_vector(self._degree_u, value_normalized, self._control_points_size_u):
+            raise ValueError("Input is not a valid knot vector (u-direction)")
+
         # Clean up the surface points lists, if necessary
         self._reset_surface()
+
         # Set knot vector u
-        value_float = [float(kv) for kv in value]
-        self._knot_vector_u = utils.normalize_knot_vector(tuple(value_float))
+        self._knot_vector_u = [float(kv) for kv in value_normalized]
 
     @property
     def knotvector_v(self):
@@ -1130,11 +1148,21 @@ class Surface(object):
 
     @knotvector_v.setter
     def knotvector_v(self, value):
+        if self._degree_v == 0 or self._control_points_size_v == 0:
+            raise ValueError("Set degree and control points first (v-direction)")
+
+        # Normalize the input knot vector
+        value_normalized = utils.normalize_knot_vector(value)
+
+        # Check knot vector validity
+        if not utils.check_knot_vector(self._degree_v, value_normalized, self._control_points_size_v):
+            raise ValueError("Input is not a valid knot vector (v-direction)")
+
         # Clean up the surface points lists, if necessary
         self._reset_surface()
-        # Set knot vector u
-        value_float = [float(kv) for kv in value]
-        self._knot_vector_v = utils.normalize_knot_vector(tuple(value_float))
+
+        # Set knot vector v
+        self._knot_vector_v = [float(kv) for kv in value_normalized]
 
     @property
     def delta(self):
