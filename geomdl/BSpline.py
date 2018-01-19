@@ -616,6 +616,27 @@ class Curve(object):
         # Return the list
         return point, der_u
 
+    # Evaluates the curve tangent at all u values in the input list
+    def tangents(self, u_list=(), normalize=False):
+        """ Evaluates the curve tangent at all u values in the input list.
+
+        :param u_list: knot value
+        :type u_list: tuple, list
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list of starting points and the vectors
+        :rtype: list
+        """
+        if not u_list or not isinstance(u_list, (tuple, list)):
+            raise ValueError("Input u values must be a list/tuple of floats")
+
+        ret_list = []
+        for u in u_list:
+            temp = self.tangent(u=u, normalize=normalize)
+            ret_list.append(temp)
+
+        return ret_list
+
     # Evaluates the curve normal at the given u parameter
     def normal(self, u=-1, normalize=True):
         """ Evaluates the curve normal at the given u parameter.
@@ -644,6 +665,27 @@ class Curve(object):
         # Return the list
         return point, der_u
 
+    # Evaluates the curve normal at all u values in the input list
+    def normals(self, u_list=(), normalize=False):
+        """ Evaluates the curve normal at all u values in the input list.
+
+        :param u_list: knot value
+        :type u_list: tuple, list
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list of starting points and the vectors
+        :rtype: list
+        """
+        if not u_list or not isinstance(u_list, (tuple, list)):
+            raise ValueError("Input u values must be a list/tuple of floats")
+
+        ret_list = []
+        for u in u_list:
+            temp = self.normal(u=u, normalize=normalize)
+            ret_list.append(temp)
+
+        return ret_list
+
     # Evaluates the curve binormal at the given u parameter
     def binormal(self, u=-1, normalize=True):
         """ Evaluates the curve binormal at the given u parameter.
@@ -670,6 +712,27 @@ class Curve(object):
 
         # Return the list
         return point, binorm_vector
+
+    # Evaluates the curve binormal at all u values in the input list
+    def binormals(self, u_list=(), normalize=False):
+        """ Evaluates the curve binormal at all u values in the input list.
+
+        :param u_list: knot value
+        :type u_list: tuple, list
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list of starting points and the vectors
+        :rtype: list
+        """
+        if not u_list or not isinstance(u_list, (tuple, list)):
+            raise ValueError("Input u values must be a list/tuple of floats")
+
+        ret_list = []
+        for u in u_list:
+            temp = self.binormal(u=u, normalize=normalize)
+            ret_list.append(temp)
+
+        return ret_list
 
     # Knot insertion
     def insert_knot(self, u, r=1):
