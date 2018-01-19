@@ -1736,6 +1736,35 @@ class Surface(object):
         # Return the list of tangents w.r.t. u and v
         return tuple(point), der_u, der_v
 
+    # Evaluates the surface tangent at all (u, v) values in the input list
+    def tangents(self, uv_list=(), normalize=False):
+        """ Evaluates the surface tangent at all (u, v) values in the input list.
+
+        The input list should be arranged as [[u1, v1], [u2, v2], ...]
+
+        :param uv_list: knot values
+        :type uv_list: tuple, list
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list of starting points and the vectors
+        :rtype: list
+        """
+        if not uv_list or not isinstance(uv_list, (tuple, list)):
+            raise ValueError("Input u, v values must be a list or a tuple")
+
+        for uv in uv_list:
+            if not isinstance(uv, (tuple, list)):
+                raise ValueError("The list member " + str(uv) + " is not a tuple or a list")
+            if len(uv) is not 2:
+                raise ValueError("The list member " + str(uv) + " does not correspond to a (u, v) value")
+
+        ret_list = []
+        for u, v in uv_list:
+            temp = self.tangent(u=u, v=v, normalize=normalize)
+            ret_list.append(temp)
+
+        return ret_list
+
     # Evaluates the surface normal vector at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalize=True):
         """ Evaluates the surface normal vector at the given (u, v) parameter.
@@ -1771,6 +1800,36 @@ class Surface(object):
         # Return the surface normal at the input u,v location
         return skl[0][0], normal
 
+    # Evaluates the surface normal at all (u, v) values in the input list
+    def normals(self, uv_list=(), normalize=False):
+        """ Evaluates the surface normal at all (u, v) values in the input list.
+
+        The input list should be arranged as [[u1, v1], [u2, v2], ...]
+
+        :param uv_list: knot values
+        :type uv_list: tuple, list
+        :param normalize: if True, the returned vector is converted to a unit vector
+        :type normalize: bool
+        :return: a list of starting points and the vectors
+        :rtype: list
+        """
+        if not uv_list or not isinstance(uv_list, (tuple, list)):
+            raise ValueError("Input u, v values must be a list or a tuple")
+
+        for uv in uv_list:
+            if not isinstance(uv, (tuple, list)):
+                raise ValueError("The list member " + str(uv) + " is not a tuple or a list")
+            if len(uv) is not 2:
+                raise ValueError("The list member " + str(uv) + " does not correspond to a (u, v) value")
+
+        ret_list = []
+        for u, v in uv_list:
+            temp = self.normal(u=u, v=v, normalize=normalize)
+            ret_list.append(temp)
+
+        return ret_list
+
+    # Insert knot 'r' times at the given (u, v) parametric coordinates
     def insert_knot(self, u=None, v=None, r=1):
         """ Inserts the given knots and updates the control points array and the knot vectors.
 
