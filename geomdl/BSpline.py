@@ -92,7 +92,7 @@ class Curve(object):
         # degree = 2, quadratic curves
         # degree = 3, cubic curves
         if value < 0:
-            raise ValueError("ERROR: Degree cannot be less than zero")
+            raise ValueError("Degree cannot be less than zero")
         # Clean up the curve points list, if necessary
         self._reset_curve()
         # Set degree
@@ -114,7 +114,7 @@ class Curve(object):
     @ctrlpts.setter
     def ctrlpts(self, value):
         if len(value) < self._degree + 1:
-            raise ValueError("ERROR: Number of control points in u-direction should be at least degree + 1")
+            raise ValueError("Number of control points in u-direction should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
@@ -170,7 +170,7 @@ class Curve(object):
     def delta(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("ERROR: Curve evaluation delta should be between 0.0 and 1.0")
+            raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
         # Clean up the curve points list, if necessary
         self._reset_curve()
         # Set a new delta value
@@ -180,11 +180,12 @@ class Curve(object):
     def curvepts(self):
         """ Evaluated curve points.
 
-        .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
-
         :getter: (x, y) coordinates of the evaluated surface points
         :type: list
         """
+        if not self._curve_points:
+            self.evaluate()
+
         return self._curve_points
 
     @property
@@ -202,7 +203,7 @@ class Curve(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisBase.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of VisABC")
+            warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
 
@@ -258,7 +259,7 @@ class Curve(object):
         if not self._knot_vector:
             works = False
         if not works:
-            raise ValueError("Some required parameters for curve evaluation are not set.")
+            raise ValueError("Some required parameters for curve evaluation are not set")
 
     # Reads control points from a text file
     def read_ctrlpts_from_txt(self, filename=''):
@@ -293,7 +294,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for reading.")
+            warnings.warn("File " + str(filename) + " cannot be opened for reading")
             ret_check = False
 
         return ret_check
@@ -330,7 +331,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing")
             ret_check = False
 
         return ret_check
@@ -370,7 +371,7 @@ class Curve(object):
             return
 
         if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float.")
+            raise ValueError("Value of scalar must be integer or float")
 
         # Initialize the return value
         ret_check = True
@@ -410,7 +411,7 @@ class Curve(object):
         :rtype: bool
         """
         if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float.")
+            raise ValueError("Value of scalar must be integer or float")
 
         # Find surface points if there is none
         if not self._curve_points:
@@ -436,7 +437,7 @@ class Curve(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing")
             ret_check = False
 
         return ret_check
@@ -509,7 +510,7 @@ class Curve(object):
         self._check_variables()
         # Check u parameters are correct
         if u < 0.0 or u > 1.0:
-            raise ValueError('"u" value should be between 0 and 1.')
+            raise ValueError('"u" value should be between 0 and 1')
 
         # Algorithm A3.2
         du = min(self._degree, order)
@@ -758,7 +759,7 @@ class Curve(object):
         utils.check_uv(u)
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
-            raise ValueError('Number of insertions must be a positive integer value.')
+            raise ValueError('Number of insertions must be a positive integer value')
 
         s = utils.find_multiplicity(u, self._knot_vector)
 
@@ -981,7 +982,7 @@ class Surface(object):
     @degree_u.setter
     def degree_u(self, value):
         if value < 0:
-            raise ValueError("Degree cannot be less than zero.")
+            raise ValueError("Degree cannot be less than zero")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set degree u
@@ -1000,7 +1001,7 @@ class Surface(object):
     @degree_v.setter
     def degree_v(self, value):
         if value < 0:
-            raise ValueError("Degree cannot be less than zero.")
+            raise ValueError("Degree cannot be less than zero")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set degree v
@@ -1084,15 +1085,15 @@ class Surface(object):
 
         # Check array size validity
         if size_u < self._degree_u + 1:
-            raise ValueError("Number of control points in u-direction should be at least degree + 1.")
+            raise ValueError("Number of control points in u-direction should be at least degree + 1")
         if size_v < self._degree_v + 1:
-            raise ValueError("Number of control points in v-direction should be at least degree + 1.")
+            raise ValueError("Number of control points in v-direction should be at least degree + 1")
 
         # Check the dimensions of the input control points array
         for cpt in ctrlpts:
             if len(cpt) is not self._dimension:
                 raise ValueError("The input must be " + str(self._dimension) + " dimensional numbers.\n" + str(cpt) +
-                                 " is not a valid control point!")
+                                 " is not a valid control point")
 
         # Set the new control points
         self._control_points = copy.deepcopy(ctrlpts)
@@ -1180,7 +1181,7 @@ class Surface(object):
     def delta(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0.")
+            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
         # Clean up the surface points lists, if necessary
         self._reset_surface()
         # Set a new delta value
@@ -1190,11 +1191,12 @@ class Surface(object):
     def surfpts(self):
         """ Evaluated surface points.
 
-        .. note:: :func:`.evaluate` or :func:`.evaluate_rational` should be called first.
-
         :getter: (x, y, z) coordinates of the evaluated surface points
         :type: list
         """
+        if not self._surface_points:
+            self.evaluate()
+
         return self._surface_points
 
     @property
@@ -1212,7 +1214,7 @@ class Surface(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisBase.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of VisABC")
+            warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
 
@@ -1328,7 +1330,7 @@ class Surface(object):
                 else:
                     # Check inputs
                     if size_u <= 0 or size_v <= 0:
-                        raise ValueError("size_u and size_v inputs must be positive integers.")
+                        raise ValueError("size_u and size_v inputs must be positive integers")
                     # Start reading file
                     for line in fp:
                         # Remove whitespace
@@ -1408,7 +1410,7 @@ class Surface(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing")
             ret_check = False
 
         return ret_check
@@ -1462,11 +1464,11 @@ class Surface(object):
         # Check possible modes
         mode_list = ['linear', 'zigzag', 'wireframe']
         if mode not in mode_list:
-            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
+            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'")
 
         # Check input parameters
         if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float.")
+            raise ValueError("Value of scalar must be integer or float")
 
         # Initialize the return value
         ret_check = True
@@ -1530,7 +1532,7 @@ class Surface(object):
         # Check possible modes
         mode_list = ['linear', 'zigzag', 'wireframe', 'triangle', 'mesh']
         if mode not in mode_list:
-            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'.")
+            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'")
 
         # Check input parameters
         if not isinstance(scalar, (int, float)):
@@ -1556,10 +1558,10 @@ class Surface(object):
                     points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1),
                                              int((1.0 / self._delta) + 1))
                 elif mode == 'triangle':
-                    warnings.warn("Triangle mode has not been implemented yet!")
+                    warnings.warn("Triangle mode has not been implemented yet")
                     points = self._surface_points
                 elif mode == 'mesh':
-                    warnings.warn("Mesh mode has not been implemented yet!")
+                    warnings.warn("Mesh mode has not been implemented yet")
                     points = self._surface_points
                 else:
                     points = self._surface_points
@@ -1575,7 +1577,7 @@ class Surface(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
+            warnings.warn("File " + str(filename) + " cannot be opened for writing")
             ret_check = False
 
         return ret_check
@@ -1879,7 +1881,7 @@ class Surface(object):
             utils.check_uv(u, v)
 
         if not isinstance(r, int) or r < 0:
-            raise ValueError('Number of insertions must be a positive integer value.')
+            raise ValueError('Number of insertions must be a positive integer value')
 
         # Algorithm A5.3
         p = self._degree_u

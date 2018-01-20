@@ -45,7 +45,7 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
                 current_ctrlpts.append(ctrlpts_v)
                 size_u += 1
     except IOError:
-        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading")
 
     # Flip control points array
     new_ctrlpts = [[None for y in range(size_u)] for x in range(size_v)]
@@ -110,7 +110,7 @@ def generate_ctrlptsw(file_in='', file_out='ctrlptsw.txt'):
                 ctrlpts.append(ctrlpts_v)
                 size_u += 1
     except IOError:
-        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading")
 
     # Multiply control points by weight
     new_ctrlpts = []
@@ -141,7 +141,7 @@ def generate_ctrlptsw(file_in='', file_out='ctrlptsw.txt'):
                         line += "\n"
                 fp.write(line)
     except IOError:
-        raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
+        raise ValueError("File " + str(file_out) + " cannot be opened for writing")
 
 
 # Generates unweighted control points from weighted ones
@@ -180,7 +180,7 @@ def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
                 ctrlpts.append(ctrlpts_v)
                 size_u += 1
     except IOError:
-        raise ValueError("File " + str(file_in) + " cannot be opened for reading.")
+        raise ValueError("File " + str(file_in) + " cannot be opened for reading")
 
     # Multiply control points by weight
     new_ctrlpts = []
@@ -211,7 +211,7 @@ def generate_ctrlpts_weights(file_in='', file_out='ctrlpts_weights.txt'):
                         line += "\n"
                 fp.write(line)
     except IOError:
-        raise ValueError("File " + str(file_out) + " cannot be opened for writing.")
+        raise ValueError("File " + str(file_out) + " cannot be opened for writing")
 
 
 # Changes linearly ordered list of points into a zig-zag shape
@@ -393,7 +393,9 @@ def generate_knot_vector(degree=0, control_points_size=0):
     return knot_vector
 
 
+# Checks if the input knot vector follows the mathematical rules
 def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001):
+    """ Checks if the input knot vector follows the mathematical rules. """
     if not knot_vector:
         raise ValueError("Input knot vector cannot be empty")
 

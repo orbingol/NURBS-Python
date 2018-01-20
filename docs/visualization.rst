@@ -5,13 +5,7 @@ Visualization Component
 =======================
 
 NURBS-Python v3.x series included an optional visualization module for plotting evaluated curves and surfaces. Examples_
-repository contains some examples on how to use the visualization component with surfaces and 2D/3D curves which are
-
-* ``curve2d/ex_curve01.py``
-* ``curve2d/ex_curve02.py``
-* ``curve2d/ex_curve03.py``
-* ``curve3d/ex_curve3d01.py``
-* ``surface/ex_surface01.py``
+repository contains some examples on how to use the visualization component with surfaces and 2D/3D curves.
 
 Advanced Visualization Options
 ==============================

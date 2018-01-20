@@ -4,7 +4,8 @@ Package Name
 The package name is :code:`geomdl` which is the shortened version of *geometric modeling*.
 
 Prior to v3.x series of the NURBS-Python library, the package name was :code:`nurbs`. However, using a generic name like
-that might seem to cause conflicts with other packages, and therefore in v3.x of the library, it is renamed to :code:`geomdl`.
+that might seem to cause conflicts with other packages, and therefore in v3.x of the library, it is renamed to
+:code:`geomdl`.
 
 
 Included Modules

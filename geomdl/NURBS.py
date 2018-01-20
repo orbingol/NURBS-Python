@@ -124,7 +124,7 @@ class Curve(BSpline.Curve):
             self._check_variables()
             # Check u parameters are correct
             if u < 0.0 or u > 1.0:
-                raise ValueError('"u" value should be between 0 and 1.')
+                raise ValueError('"u" value should be between 0 and 1')
 
         # Initialize an empty list which will contain the list of associated control points
         ctrlpts = []
