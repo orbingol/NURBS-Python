@@ -1,7 +1,7 @@
 """
 .. module:: VisMPL
     :platform: Unix, Windows
-    :synopsis: Matplotlib visualization component for NURBS-Python
+    :synopsis: Matplotlib visualization component for NURBS-Python (experimental)
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -58,9 +58,9 @@ class VisCurve3D(VisAbstract):
         ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], color=self._colors[1], linestyle='-')
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        scatter1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[0], marker='o')
-        scatter2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
-        ax.legend([scatter1_proxy, scatter2_proxy], [self._names[0], self._names[1]], numpoints=1)
+        plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        ax.legend([plot1_proxy, plot2_proxy], [self._names[0], self._names[1]], numpoints=1)
 
         # Display the 3D plot
         plt.show()
@@ -84,36 +84,36 @@ class VisSurfWireframe(VisAbstract):
 
         # Reshape surface points array for plotting, @ref: https://stackoverflow.com/a/21352257
         cols = surf[:, 0].shape[0]
-        X = surf[:, 0].reshape(-1, cols)
-        Y = surf[:, 1].reshape(-1, cols)
-        Z = surf[:, 2].reshape(-1, cols)
+        Xs = surf[:, 0].reshape(-1, cols)
+        Ys = surf[:, 1].reshape(-1, cols)
+        Zs = surf[:, 2].reshape(-1, cols)
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
         ax = fig.gca(projection='3d')
 
-        # Control points as a scatter plot (use mode='linear' while saving CSV file)
-        ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], s=50, depthshade=True)
+        # Plot control points
+        ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], s=25, depthshade=True)
 
-        # Surface points as a wireframe plot (use mode='wireframe' while saving CSV file)
-        ax.plot_wireframe(X, Y, Z, color=self._colors[1])
+        # Plot surface wireframe plot
+        ax.plot_wireframe(Xs, Ys, Zs, color=self._colors[1])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        scatter1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[0], marker='o')
-        scatter2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
-        ax.legend([scatter1_proxy, scatter2_proxy], [self._names[0], self._names[1]], numpoints=1)
+        plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        ax.legend([plot1_proxy, plot2_proxy], [self._names[0], self._names[1]], numpoints=1)
 
         # Display the 3D plot
         plt.show()
 
 
-class VisTriSurf(VisAbstract):
+class VisSurfTriangle(VisAbstract):
     """ Visualization module for Surfaces
 
     Wireframe plot for the control points and triangulated plot for the surface points
     """
     def __init__(self):
-        super(VisTriSurf, self).__init__()
+        super(VisSurfTriangle, self).__init__()
 
     def render(self):
         """ Plots the surface and the control points grid """
@@ -123,31 +123,55 @@ class VisTriSurf(VisAbstract):
         cpgrid = np.array(self._points[0])
         surf = np.array(self._points[1])
 
-        # Arrange control points grid for plotting, @ref: https://stackoverflow.com/a/21352257
-        cols = cpgrid[:, 0].shape[0]
-        Xc = cpgrid[:, 0].reshape(-1, cols)
-        Yc = cpgrid[:, 1].reshape(-1, cols)
-        Zc = cpgrid[:, 2].reshape(-1, cols)
+        # Start plotting of the surface and the control points grid
+        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        ax = fig.gca(projection='3d')
 
-        # Arrange surface points array for plotting
-        X = surf[:, 0]
-        Y = surf[:, 1]
-        Z = surf[:, 2]
+        # Draw control points grid
+        ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
+
+        # Draw surface plot
+        ax.plot_trisurf(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
+
+        # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
+        plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        ax.legend([plot1_proxy, plot2_proxy], [self._names[0], self._names[1]], numpoints=1)
+
+        # Display the 3D plot
+        plt.show()
+
+
+class VisSurfScatter(VisAbstract):
+    """ Visualization module for Surfaces
+
+    Wireframe plot for the control points and scatter plot for the surface points
+    """
+    def __init__(self):
+        super(VisSurfScatter, self).__init__()
+
+    def render(self):
+        """ Plots the surface and the control points grid """
+        if not self._points:
+            return False
+
+        cpgrid = np.array(self._points[0])
+        surf = np.array(self._points[1])
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
         ax = fig.gca(projection='3d')
 
-        # Control points as a scatter plot (use mode='wireframe' while saving CSV file)
-        ax.plot_wireframe(Xc, Yc, Zc, color=self._colors[0])
+        # Draw control points grid
+        ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
 
-        # Surface points as a triangulated surface plot (use mode='linear' while saving CSV file)
-        ax.plot_trisurf(X, Y, Z, color=self._colors[1])
+        # Draw surface points scatter plot
+        ax.scatter(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1], s=50, depthshade=True)
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        scatter1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[0], marker='o')
-        scatter2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
-        ax.legend([scatter1_proxy, scatter2_proxy], [self._names[0], self._names[1]], numpoints=1)
+        plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
+        ax.legend([plot1_proxy, plot2_proxy], [self._names[0], self._names[1]], numpoints=1)
 
         # Display the 3D plot
         plt.show()
