@@ -1811,7 +1811,7 @@ class Surface(object):
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
-        utils.check_uv(u, v, test_normal=True, delta=self._delta)
+        utils.check_uv(u, v, delta=self._delta)
 
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
