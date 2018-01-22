@@ -69,6 +69,15 @@ ex_surface03.py
 .. image:: images/ex_surface03_mpl.png
     :alt: Surface example 3
 
+mpl_trisurf_vectors.py
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following figure illustrates tangent and normal vectors on ``ex_surface02.py`` example.
+The example script can be found in Examples_ repository under the ``visualization`` directory.
+
+.. image:: images/ex_surface02_mpl_vectors.png
+    :alt: Surface example 2 with tangent and normal vectors
+
 Curves
 ------
 
