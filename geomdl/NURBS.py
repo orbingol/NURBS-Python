@@ -70,6 +70,10 @@ class Curve(BSpline.Curve):
             ret_list.append(tuple(temp))
         return tuple(ret_list)
 
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        self.set_ctrlpts(value)
+
     @property
     def weights(self):
         """ Weights vector.

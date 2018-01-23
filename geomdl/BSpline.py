@@ -113,14 +113,23 @@ class Curve(object):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        if len(value) < self._degree + 1:
+        self.set_ctrlpts(value)
+
+    def set_ctrlpts(self, ctrlpts):
+        """ Sets control points.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        :return: None
+        """
+        if len(ctrlpts) < self._degree + 1:
             raise ValueError("Number of control points in u-direction should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
         self._reset_ctrlpts()
 
-        for coord in value:
+        for coord in ctrlpts:
             if len(coord) < 0 or len(coord) > self._dimension:
                 raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(coord) +
                                  " is not a valid control point")
