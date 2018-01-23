@@ -122,7 +122,8 @@ class Curve(object):
 
         for coord in value:
             if len(coord) < 0 or len(coord) > self._dimension:
-                raise ValueError("ERROR: Please input 3D coordinates")
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(coord) +
+                                 " is not a valid control point")
             # Convert to list of floats
             coord_float = [float(c) for c in coord]
             self._control_points.append(coord_float)
@@ -1092,7 +1093,7 @@ class Surface(object):
         # Check the dimensions of the input control points array
         for cpt in ctrlpts:
             if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional numbers.\n" + str(cpt) +
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
                                  " is not a valid control point")
 
         # Set the new control points
