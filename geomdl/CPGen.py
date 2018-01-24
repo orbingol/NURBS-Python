@@ -346,7 +346,7 @@ class Grid(object):
         max_trials = 25
 
         # Try to generate bumps
-        for nb in range(1, num_bumps):
+        for _ in range(1, num_bumps):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)

@@ -136,7 +136,7 @@ class Curve(BSpline.Curve):
         # Algorithm A4.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
-        cptw = [0.0 for x in range(self._dimension)]
+        cptw = [0.0 for _ in range(self._dimension)]
         for i in range(0, self._degree + 1):
             cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in
                        zip(cptw, self._control_points[span - self._degree + i])]
@@ -167,7 +167,8 @@ class Curve(BSpline.Curve):
         CKw = super(Curve, self).derivatives(u, order)
 
         # Algorithm A4.2
-        CK = [[None for x in range(self._dimension - 1)] for y in range(order + 1)]
+        # CK = [[None for x in range(self._dimension - 1)] for y in range(order + 1)]
+        CK = [[None for _ in range(self._dimension - 1)] for _ in range(order + 1)]
         for k in range(0, order + 1):
             v = []
             for idx in range(self._dimension - 1):
@@ -429,7 +430,8 @@ class Surface(BSpline.Surface):
         dv = min(self._degree_v, order)
 
         # Generate an empty list of derivatives
-        SKL = [[[None for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
+        # SKL = [[[None for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
+        SKL = [[[None for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
         for k in range(0, order + 1):
             for l in range(0, order - k + 1):

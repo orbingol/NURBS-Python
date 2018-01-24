@@ -477,7 +477,7 @@ class Curve(object):
         # Algorithm A3.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
-        cpt = [0.0 for x in range(self._dimension)]
+        cpt = [0.0 for _ in range(self._dimension)]
         for i in range(0, self._degree + 1):
             cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in
                       zip(cpt, self._control_points[span - self._degree + i])]
@@ -525,7 +525,8 @@ class Curve(object):
         # Algorithm A3.2
         du = min(self._degree, order)
 
-        CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
+        # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
+        CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for x in range(self._dimension)]
 
@@ -559,7 +560,8 @@ class Curve(object):
         """
         # Algorithm A3.3
         r = r2 - r1
-        PK = [[[None for x in range(self._dimension)] for y in range(r + 1)] for z in range(order + 1)]
+        # PK = [[[None for x in range(self._dimension)] for y in range(r + 1)] for z in range(order + 1)]
+        PK = [[[None for _ in range(self._dimension)] for _ in range(r + 1)] for _ in range(order + 1)]
         for i in range(0, r + 1):
             PK[0][i][:] = [elem for elem in self._control_points[r1 + i]]
 
@@ -591,7 +593,8 @@ class Curve(object):
         # Algorithm A3.4
         du = min(self._degree, order)
 
-        CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
+        # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
+        CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for x in range(self._dimension)]
 
@@ -600,7 +603,7 @@ class Curve(object):
         PK = self.derivatives_ctrlpts(du, span - self._degree, span)
 
         for k in range(0, du + 1):
-            CK[k] = [0.0 for x in range(self._dimension)]
+            CK[k] = [0.0 for _ in range(self._dimension)]
             for j in range(0, self._degree - k + 1):
                 CK[k][:] = [elem + (bfuns[j][self._degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in
                             zip(CK[k], PK[k][j])]
@@ -785,11 +788,11 @@ class Curve(object):
         nq = np + r
 
         # Initialize new knot vector array
-        UQ = [None for x in range(mp + r)]
+        UQ = [None for _ in range(mp + r)]
         # Initialize new control points array (control points can be weighted or not)
-        Q = [None for x in range(nq)]
+        Q = [None for _ in range(nq)]
         # Initialize a local array of length p + 1
-        R = [None for x in range(self._degree + 1)]
+        R = [None for _ in range(self._degree + 1)]
 
         # Load new knot vector
         for i in range(0, k + 1):
@@ -1603,20 +1606,20 @@ class Surface(object):
         degree_v_new = self._degree_u
         kv_u_new = self._knot_vector_v
         kv_v_new = self._knot_vector_u
-        ctrlpts2D_new = []
+        ctrlpts2d_new = []
         for v in range(0, self._control_points_size_v):
             ctrlpts_u = []
             for u in range(0, self._control_points_size_u):
                 temp = self._control_points2D[u][v]
                 ctrlpts_u.append(temp)
-            ctrlpts2D_new.append(ctrlpts_u)
-        ctrlpts_new_sizeU = self._control_points_size_v
-        ctrlpts_new_sizeV = self._control_points_size_u
+            ctrlpts2d_new.append(ctrlpts_u)
+        ctrlpts_new_size_u = self._control_points_size_v
+        ctrlpts_new_size_v = self._control_points_size_u
 
         ctrlpts_new = []
-        for v in range(0, ctrlpts_new_sizeV):
-            for u in range(0, ctrlpts_new_sizeU):
-                ctrlpts_new.append(ctrlpts2D_new[u][v])
+        for v in range(0, ctrlpts_new_size_v):
+            for u in range(0, ctrlpts_new_size_u):
+                ctrlpts_new.append(ctrlpts2d_new[u][v])
 
         # Clean up the surface points lists, if necessary
         self._reset_surface()
@@ -1627,9 +1630,9 @@ class Surface(object):
         self._knot_vector_u = kv_u_new
         self._knot_vector_v = kv_v_new
         self._control_points = ctrlpts_new
-        self._control_points_size_u = ctrlpts_new_sizeU
-        self._control_points_size_v = ctrlpts_new_sizeV
-        self._control_points2D = ctrlpts2D_new
+        self._control_points_size_u = ctrlpts_new_size_u
+        self._control_points_size_v = ctrlpts_new_size_v
+        self._control_points2D = ctrlpts2d_new
 
     def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
         """ Evaluates the B-Spline surface at the given (u,v) parameters.
@@ -1720,7 +1723,8 @@ class Surface(object):
         du = min(self._degree_u, order)
         dv = min(self._degree_v, order)
 
-        SKL = [[[0.0 for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
+        # SKL = [[[0.0 for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
+        SKL = [[[0.0 for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
         span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
         bfunsders_u = utils.basis_functions_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
@@ -1912,12 +1916,14 @@ class Surface(object):
                 k_u = utils.find_span(self._degree_u, self._knot_vector_u, self._control_points_size_u, u)
 
                 # Initialize new knot vector array
-                UQ = [None for x in range(len(self._knot_vector_u) + r)]
+                # UQ = [None for x in range(len(self._knot_vector_u) + r)]
+                UQ = [None for _ in range(len(self._knot_vector_u) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v_var in range(self._control_points_size_v)] for u_var in
-                     range(self._control_points_size_u + r)]
+                # Q = [[None for v_r in range(self._control_points_size_v)] for u_r in range(self._control_points_size_u + r)]
+                Q = [[None for _ in range(self._control_points_size_v)] for _ in range(self._control_points_size_u + r)]
                 # Initialize a local array of length p + 1
-                R = [None for x in range(p + 1)]
+                # R = [None for x in range(p + 1)]
+                R = [None for _ in range(p + 1)]
 
                 # Load new knot vector
                 for i in range(0, k_u + 1):
@@ -1928,7 +1934,8 @@ class Surface(object):
                     UQ[i + r] = self._knot_vector_u[i]
 
                 # Save the alphas
-                alpha = [[0.0 for j in range(r + 1)] for i in range(p - s_u)]
+                # alpha = [[0.0 for j in range(r + 1)] for i in range(p - s_u)]
+                alpha = [[0.0 for _ in range(r + 1)] for _ in range(p - s_u)]
                 for j in range(1, r + 1):
                     L = k_u - p + j
                     for i in range(0, p - j - s_u + 1):
@@ -1982,12 +1989,14 @@ class Surface(object):
                 k_v = utils.find_span(self._degree_v, self._knot_vector_v, self._control_points_size_v, v)
 
                 # Initialize new knot vector array
-                VQ = [None for x in range(len(self._knot_vector_v) + r)]
+                # VQ = [None for x in range(len(self._knot_vector_v) + r)]
+                VQ = [None for _ in range(len(self._knot_vector_v) + r)]
                 # Initialize new control points array (control points can be weighted or not)
-                Q = [[None for v_var in range(self._control_points_size_v + r)] for u_var in
-                     range(self._control_points_size_u)]
+                # Q = [[None for v_r in range(self._control_points_size_v + r)] for u_r in range(self._control_points_size_u)]
+                Q = [[None for _ in range(self._control_points_size_v + r)] for _ in range(self._control_points_size_u)]
                 # Initialize a local array of length p + 1
-                R = [None for x in range(q + 1)]
+                # R = [None for x in range(q + 1)]
+                R = [None for _ in range(q + 1)]
 
                 # Load new knot vector
                 for i in range(0, k_v + 1):
@@ -1998,7 +2007,8 @@ class Surface(object):
                     VQ[i + r] = self._knot_vector_v[i]
 
                 # Save the alphas
-                alpha = [[0.0 for j in range(r + 1)] for i in range(q - s_v)]
+                # alpha = [[0.0 for j in range(r + 1)] for i in range(q - s_v)]
+                alpha = [[0.0 for _ in range(r + 1)] for _ in range(q - s_v)]
                 for j in range(1, r + 1):
                     L = k_v - q + j
                     for i in range(0, q - j - s_v + 1):

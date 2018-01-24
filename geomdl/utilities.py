@@ -486,9 +486,9 @@ def find_multiplicity(knot=-1, knot_vector=(), tol=0.001):
 # Algorithm A2.2 (internal functionality)
 def basis_functions(degree=0, knot_vector=(), span=0, knot=0):
     """ Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
-    left = [None for x in range(degree + 1)]
-    right = [None for x in range(degree + 1)]
-    N = [None for x in range(degree + 1)]
+    left = [None for _ in range(degree + 1)]
+    right = [None for _ in range(degree + 1)]
+    N = [None for _ in range(degree + 1)]
 
     # N[0] = 1.0 by definition
     N[0] = 1.0
@@ -509,7 +509,8 @@ def basis_functions(degree=0, knot_vector=(), span=0, knot=0):
 # Algorithm A2.2 - modified (internal functionality)
 def basis_functions_all(degree=0, knot_vector=(), span=0, knot=0):
     """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
-    N = [[None for x in range(degree + 1)] for y in range(degree + 1)]
+    # N = [[None for x in range(degree + 1)] for y in range(degree + 1)]
+    N = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
     for i in range(0, degree + 1):
         bfuns = basis_functions(i, knot_vector, span, knot)
         for j in range(0, i + 1):
@@ -521,9 +522,10 @@ def basis_functions_all(degree=0, knot_vector=(), span=0, knot=0):
 def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
     """ Algorithm A2.3 of The NURBS Book by Piegl & Tiller."""
     # Initialize variables for easy access
-    left = [None for x in range(degree + 1)]
-    right = [None for x in range(degree + 1)]
-    ndu = [[None for x in range(degree + 1)] for y in range(degree + 1)]
+    left = [None for _ in range(degree + 1)]
+    right = [None for _ in range(degree + 1)]
+    # ndu = [[None for x in range(degree + 1)] for y in range(degree + 1)]
+    ndu = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
 
     # N[0][0] = 1.0 by definition
     ndu[0][0] = 1.0
@@ -543,12 +545,14 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
         ndu[j][j] = saved
 
     # Load the basis functions
-    ders = [[None for x in range(degree + 1)] for y in range((min(degree, order) + 1))]
+    # ders = [[None for x in range(degree + 1)] for y in range((min(degree, order) + 1))]
+    ders = [[None for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
     for j in range(0, degree + 1):
         ders[0][j] = ndu[j][degree]
 
     # Start calculating derivatives
-    a = [[None for x in range(degree + 1)] for y in range(2)]
+    # a = [[None for x in range(degree + 1)] for y in range(2)]
+    a = [[None for _ in range(degree + 1)] for _ in range(2)]
     # Loop over function index
     for r in range(0, degree + 1):
         # Alternate rows in array a
