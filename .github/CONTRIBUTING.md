@@ -29,16 +29,16 @@ issue.
 
 **Note:** There will be no bug fixes and updates to `v2.x` branch.
 
-# Feature requests
+## Feature requests
 
 It could be always possible to add new features and I would be very happy if you could directly contribute new features
 by coding it instead of asking me to implement them :)
 
-# Pull requests
+## Pull requests
 
 Please use `devmaster` branch for creating PRs.
 
-# Tests
+## Tests
 
 The project includes tests under `'tests/` directory and all tests are designed to run with `pytest`.
 I would be glad if you could follow this notation if you are planning to contribute to tests.
