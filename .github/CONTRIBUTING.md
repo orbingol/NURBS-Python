@@ -1,32 +1,52 @@
 # Contribution Guidelines
 
-One of the major goals of this project is implementing all these algorithms with minimum dependencies. NURBS-Python 
-package has no extra dependencies, like NumPy or similar, and all code can be executed on a plain Python installation. 
-You might want to ask why this is necessary. Even though these packages are developed to ease up computations and 
-evaluations, I realized that it becomes cumbersome to install or figure out the issues due to faulty installation of 
-these external dependencies for people just trying get things done as soon as possible.
+First of all, I am really glad you are here and I hope you liked NURBS-Python. I appreciate your time and efforts on
+testing and debugging NURBS-Python. Before you post, I would like to recommend some resources for starters:
 
-## How to Contribute
+* [Code of Conduct](CODE_OF_CONDUCT.md)
+* [README file](../README.rst)
+* [Official Documentation](http://nurbs-python.readthedocs.io/en/latest/)
+* [The NURBS Book](http://www.springer.com/gp/book/9783642973857)
 
-Below introduces some rules on contributing to this package.
+## Before you post, please read!
 
-### Contributions to the code
+It would be good to remember these before you post to the issue tracker or email the author:
 
-* Please check [README](README.rst) file before working on the code.
-* All pull requests should be made to the `devmaster` branch.
-* If you are implementing a reading function, please use `read_PURPOSE_METHOD` convention, such as `read_ctrlpts_json`.
-* The inline documentation and all related .md/.rst files should be updated after adding a new method.
-* If you are getting confused or would like to ask something on how to implement a new feature, please email the author 
-first and we will discuss it.
+* Remember that you are talking to humans
+* Adhere to the same standards of behavior that you follow in your real life as you are talking to complete strangers
+* Please be kind and respectful in your posts
+* Please and please don't use stingy words or phrases
+* Double-check your attitude in your posts
+* Be reasonable
 
-### Contributions to the examples
+# What happens when you found a bug
 
-* First of all, they are in a different repository. Please don't add any example scripts to this repository.
-* Please check [README](README.rst) file for finding the repository for the examples.
+* Please make sure that you are using the latest version on the `master` branch.
+* Please try to explain the problem as much as possible. I would be glad if you could write the steps to reproduce the
+issue.
+* If you have used `pip` to install the package, please indicate the version that you are using.
+* Did I say details are very important?
 
-### Contributions in general
+**Note:** There will be no bug fixes and updates to `v2.x` branch.
 
-You don't have to contribute to the code. All new ideas, comments and requests on improving this package are welcome. 
-Please feel free to email the author or create a new issue on the issue tracker.
+# Feature requests
 
-Thanks in advance for your contributions and comments.
+It could be always possible to add new features and I would be very happy if you could directly contribute new features
+by coding it instead of asking me to implement them :)
+
+# Pull requests
+
+Please use `devmaster` branch for creating PRs.
+
+# Tests
+
+The project includes tests under `'tests/` directory and all tests are designed to run with `pytest`.
+I would be glad if you could follow this notation if you are planning to contribute to tests.
+
+-----
+
+NURBS-Python is a free and open-source project. The author and all contributors volunteered their free time to develop
+and improve this project. All contributions, such as constructive comments, ideas, contributions to the code and tests 
+are much appreciated.
+
+Thanks!
