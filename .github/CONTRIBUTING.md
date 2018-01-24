@@ -19,7 +19,7 @@ It would be good to remember these before you post to the issue tracker or email
 * Double-check your attitude in your posts
 * Be reasonable
 
-# What happens when you found a bug
+## What happens when you found a bug
 
 * Please make sure that you are using the latest version on the `master` branch.
 * Please try to explain the problem as much as possible. I would be glad if you could write the steps to reproduce the
