@@ -149,7 +149,7 @@ class Curve(object):
 
     @knotvector.setter
     def knotvector(self, value):
-        if self._degree == 0 or len(self._control_points) == 0:
+        if self._degree == 0 or not self._control_points:
             raise ValueError("Set degree and control points first")
 
         # Normalize the input knot vector

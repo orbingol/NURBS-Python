@@ -9,7 +9,6 @@
 
 import decimal
 import math
-import warnings
 
 
 # Reads 2D control points file, flips it and saves it
@@ -330,7 +329,7 @@ def normalize_knot_vector(knot_vector=()):
     :return: normalized knot vector
     :rtype: list
     """
-    if len(knot_vector) == 0:
+    if not knot_vector:
         return knot_vector
 
     first_knot = float(knot_vector[0])
@@ -600,7 +599,7 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
 
 
 # Checks if the input (u, v) values are valid (internal functionality)
-def check_uv(u=None, v=None, delta=0.1):
+def check_uv(u=None, v=None):
     """ Checks if the input knot values (i.e. parameters) are defined between 0 and 1."""
     # Check u value
     if u is not None:
