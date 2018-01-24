@@ -12,10 +12,26 @@ algorithms in native Python. The library is fully object-oriented and does *not*
 Features
 ========
 
-* Surface and 2D/3D curve classes for B-Spline (NUBS) and NURBS which include well-defined data structures and evaluation algorithms from The NURBS Book (2nd Edition) by Piegl & Tiller
-* An automated uniform knot vector generator
-* Control points grid generator for ``Surface`` classes
-* Easy-to-extend visualization component, plus a sample Matplotlib implementation
+The package contains 4 modules:
+
+* ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
+* ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
+* ``geomdl.CPGen`` contains simple control points grid generation algorithms
+* ``geomdl.utilities`` contains helper functions for generating and manipulating knot vectors and control points
+
+``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
+
+* **Curve** for evaluating 3D curves
+* **Curve2D** for evaluating 2D curves
+* **Surface** for evaluating surfaces
+
+``geomdl.CPGen`` module contains 2 classes for grid generation:
+
+* **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
+* **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
+
+The package also contains an experimental visualization module for plotting generated curves and surfaces. Please see
+the Examples_ repository for more details on how to use NURBS-Python and example scripts.
 
 Further Reading
 ===============
@@ -49,3 +65,4 @@ NURBS-Python is licensed under The MIT License.
 .. _LANDSCAPEIO: https://landscape.io/github/orbingol/NURBS-Python/master
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
+.. _Examples: https://github.com/orbingol/NURBS-Python_Examples

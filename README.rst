@@ -12,11 +12,12 @@ This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and s
 Python with minimum possible dependencies. The library is fully object-oriented and does *not* depend on any external
 C/C++ libraries.
 
-The package contains 3 modules:
+The package contains 4 modules:
 
 * ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
 * ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
 * ``geomdl.CPGen`` contains simple control points grid generation algorithms
+* ``geomdl.utilities`` contains helper functions for generating and manipulating knot vectors and control points
 
 ``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
 
