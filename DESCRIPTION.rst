@@ -14,21 +14,21 @@ Features
 
 The package contains 4 modules:
 
-* ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
-* ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
-* ``geomdl.CPGen`` contains simple control points grid generation algorithms
-* ``geomdl.utilities`` contains helper functions for generating and manipulating knot vectors and control points
+* **geomdl.BSpline** contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
+* **geomdl.NURBS** contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
+* **geomdl.CPGen** contains simple control points grid generation algorithms
+* **geomdl.utilities** contains helper functions for generating and manipulating knot vectors and control points
 
-``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
+**geomdl.BSpline** and **geomdl.NURBS** modules contain 3 classes for geometric evaluation:
 
 * **Curve** for evaluating 3D curves
 * **Curve2D** for evaluating 2D curves
 * **Surface** for evaluating surfaces
 
-``geomdl.CPGen`` module contains 2 classes for grid generation:
+**geomdl.CPGen** module contains 2 classes for grid generation:
 
-* **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
-* **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
+* **Grid** for generating inputs for **geomdl.BSpline.Surface** class
+* **GridWeighted** for generating inputs for **geomdl.NURBS.Surface** class
 
 The package also contains an experimental visualization module for plotting generated curves and surfaces. Please see
 the Examples_ repository for more details on how to use NURBS-Python and example scripts.
