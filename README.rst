@@ -72,13 +72,13 @@ from the command line to generate a link to the package directory inside *site-p
 Testing
 -------
 
-`tests/` directory contains the testing scripts. In order to execute the tests which comes with NURBS-Python,
-you need to install [pytest](https://pytest.readthedocs.io/en/latest/) on your Python distribution.
+``tests/`` directory contains the testing scripts. In order to execute the tests which comes with NURBS-Python,
+you need to install `pytest <https://pytest.readthedocs.io/en/latest>`_ on your Python distribution.
 After installing the required packages, execute the following from your favorite IDE or from the command line:
 
-`pytest`
+``pytest``
 
-pytest will automatically find the tests under `tests/` directory, execute them and show the results.
+pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
 
 Example Scripts
 ===============
