@@ -8,19 +8,20 @@
 from geomdl import BSpline
 
 GEOMDL_DELTA = 0.001
-objinstance = BSpline.Curve
+OBJECT_INSTANCE = BSpline.Curve
+CONTROL_POINTS = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
+                  [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
 
 
 def test_bspline_curve3d_eval1():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -38,14 +39,13 @@ def test_bspline_curve3d_eval1():
 
 def test_bspline_curve3d_eval2():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -63,14 +63,13 @@ def test_bspline_curve3d_eval2():
 
 def test_bspline_curve3d_eval3():
     # Create an object instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -88,14 +87,13 @@ def test_bspline_curve3d_eval3():
 
 def test_bspline_curve3d_eval4():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -113,14 +111,13 @@ def test_bspline_curve3d_eval4():
 
 def test_bspline_curve3d_eval5():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]

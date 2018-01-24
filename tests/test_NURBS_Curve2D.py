@@ -8,19 +8,22 @@
 from geomdl import NURBS
 
 GEOMDL_DELTA = 0.001
-objinstance = NURBS.Curve2D
+OBJECT_INSTANCE = NURBS.Curve2D
+CONTROL_POINTS = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
+                  [50.0, 5.0, 1.0]]
+CONTROL_POINTS2 = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
+                   [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
 
 
 def test_nurbs_curve2d_eval1():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 3
 
-    # Set control points
-    curve.ctrlpts = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0]]
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -37,14 +40,13 @@ def test_nurbs_curve2d_eval1():
 
 def test_nurbs_curve2d_eval2():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 3
 
-    # Set control points
-    curve.ctrlpts = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0]]
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -61,14 +63,13 @@ def test_nurbs_curve2d_eval2():
 
 def test_nurbs_curve2d_eval3():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 3
 
-    # Set control points
-    curve.ctrlpts = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0]]
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -85,14 +86,13 @@ def test_nurbs_curve2d_eval3():
 
 def test_nurbs_curve2d_eval4():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 3
 
-    # Set control points
-    curve.ctrlpts = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0]]
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -109,14 +109,13 @@ def test_nurbs_curve2d_eval4():
 
 def test_nurbs_curve2d_eval5():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 3
 
-    # Set control points
-    curve.ctrlpts = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0]]
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -133,14 +132,13 @@ def test_nurbs_curve2d_eval5():
 
 def test_nurbs_curve2d_eval6():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
+    curve.ctrlpts = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -157,14 +155,13 @@ def test_nurbs_curve2d_eval6():
 
 def test_nurbs_curve2d_eval7():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
+    curve.ctrlpts = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -181,14 +178,13 @@ def test_nurbs_curve2d_eval7():
 
 def test_nurbs_curve2d_eval8():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
+    curve.ctrlpts = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -205,14 +201,13 @@ def test_nurbs_curve2d_eval8():
 
 def test_nurbs_curve2d_eval9():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
+    curve.ctrlpts = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -229,14 +224,13 @@ def test_nurbs_curve2d_eval9():
 
 def test_nurbs_curve2d_eval10():
     # Create a curve instance
-    curve = objinstance()
+    curve = OBJECT_INSTANCE()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
-                     [50.0, 5.0, 1.0], [55.0, 15.0, 0.5]]
+    curve.ctrlpts = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]

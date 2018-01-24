@@ -9,9 +9,18 @@ from geomdl import BSpline
 
 GEOMDL_DELTA = 0.001
 objinstance = BSpline.Surface
-reslist = [[-25.0, -25.0, -10.0], [-25.0, -11.403, -3.385], [-25.0, 25.0, -10.0], [-7.006, -25.0, -5.725],
-           [-7.006, -3.308, -6.265], [-7.006, 25.0, -5.725], [3.533, -25.0, -4.224], [3.533, 3.533, -6.801],
-           [3.533, 25.0, -4.224], [25.0, -25.0, -10.0], [25.0, 11.636, -2.751], [25.0, 25.0, -10.0]]
+RESULT_LIST = [[-25.0, -25.0, -10.0], [-25.0, -11.403, -3.385], [-25.0, 25.0, -10.0], [-7.006, -25.0, -5.725],
+               [-7.006, -3.308, -6.265], [-7.006, 25.0, -5.725], [3.533, -25.0, -4.224], [3.533, 3.533, -6.801],
+               [3.533, 25.0, -4.224], [25.0, -25.0, -10.0], [25.0, 11.636, -2.751], [25.0, 25.0, -10.0]]
+CONTROL_POINTS = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
+                  [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
+                  [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
+                  [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
+                  [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
+                  [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
+                  [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
+                  [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
+                  [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
 
 
 def test_bspline_surface_eval1():
@@ -23,16 +32,7 @@ def test_bspline_surface_eval1():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -41,9 +41,9 @@ def test_bspline_surface_eval1():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.0, v=0.0)
 
-    assert abs(evalpt[0] - reslist[0][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[0][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[0][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[0][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[0][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[0][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval2():
@@ -55,16 +55,7 @@ def test_bspline_surface_eval2():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -73,9 +64,9 @@ def test_bspline_surface_eval2():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.0, v=0.2)
 
-    assert abs(evalpt[0] - reslist[1][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[1][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[1][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[1][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[1][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[1][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval3():
@@ -87,16 +78,7 @@ def test_bspline_surface_eval3():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -105,9 +87,9 @@ def test_bspline_surface_eval3():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.0, v=1.0)
 
-    assert abs(evalpt[0] - reslist[2][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[2][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[2][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[2][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[2][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[2][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval4():
@@ -119,16 +101,7 @@ def test_bspline_surface_eval4():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -137,9 +110,9 @@ def test_bspline_surface_eval4():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.3, v=0.0)
 
-    assert abs(evalpt[0] - reslist[3][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[3][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[3][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[3][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[3][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[3][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval5():
@@ -151,16 +124,7 @@ def test_bspline_surface_eval5():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -169,9 +133,9 @@ def test_bspline_surface_eval5():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.3, v=0.4)
 
-    assert abs(evalpt[0] - reslist[4][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[4][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[4][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval6():
@@ -183,16 +147,7 @@ def test_bspline_surface_eval6():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -201,9 +156,9 @@ def test_bspline_surface_eval6():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.3, v=1.0)
 
-    assert abs(evalpt[0] - reslist[5][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[5][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[5][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[5][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[5][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[5][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval7():
@@ -215,16 +170,7 @@ def test_bspline_surface_eval7():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -233,9 +179,9 @@ def test_bspline_surface_eval7():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.6, v=0.0)
 
-    assert abs(evalpt[0] - reslist[6][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[6][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[6][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[6][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[6][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[6][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval8():
@@ -247,16 +193,7 @@ def test_bspline_surface_eval8():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -265,9 +202,9 @@ def test_bspline_surface_eval8():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.6, v=0.6)
 
-    assert abs(evalpt[0] - reslist[7][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[7][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[7][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[7][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[7][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[7][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval9():
@@ -279,16 +216,7 @@ def test_bspline_surface_eval9():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -297,9 +225,9 @@ def test_bspline_surface_eval9():
     # Evaluate curve
     evalpt = surf.surfpt(u=0.6, v=1.0)
 
-    assert abs(evalpt[0] - reslist[8][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[8][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[8][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[8][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[8][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[8][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval10():
@@ -311,16 +239,7 @@ def test_bspline_surface_eval10():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -329,9 +248,9 @@ def test_bspline_surface_eval10():
     # Evaluate curve
     evalpt = surf.surfpt(u=1.0, v=0.0)
 
-    assert abs(evalpt[0] - reslist[9][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[9][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[9][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[9][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[9][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[9][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval11():
@@ -343,16 +262,7 @@ def test_bspline_surface_eval11():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -361,9 +271,9 @@ def test_bspline_surface_eval11():
     # Evaluate curve
     evalpt = surf.surfpt(u=1.0, v=0.8)
 
-    assert abs(evalpt[0] - reslist[10][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[10][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[10][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[10][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[10][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[10][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval12():
@@ -375,16 +285,7 @@ def test_bspline_surface_eval12():
     surf.degree_v = 3
 
     # Set control points
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
-    surf.set_ctrlpts(ctrlpts, 6, 6)
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
@@ -393,6 +294,6 @@ def test_bspline_surface_eval12():
     # Evaluate curve
     evalpt = surf.surfpt(u=1.0, v=1.0)
 
-    assert abs(evalpt[0] - reslist[11][0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - reslist[11][1]) < GEOMDL_DELTA
-    assert abs(evalpt[2] - reslist[11][2]) < GEOMDL_DELTA
+    assert abs(evalpt[0] - RESULT_LIST[11][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[11][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
