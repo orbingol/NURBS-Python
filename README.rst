@@ -14,20 +14,23 @@ C/C++ libraries.
 
 The package contains 3 modules:
 
-* :code:`BSpline` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
-* :code:`NURBS` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
-* :code:`CPGen` contains simple control points grid generation algorithms
+* ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
+* ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
+* ``geomdl.CPGen`` contains simple control points grid generation algorithms
 
-:code:`BSpline` and :code:`NURBS` modules contain 3 classes for geometric evaluation:
+``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
 
 * **Curve** for evaluating 3D curves
 * **Curve2D** for evaluating 2D curves
 * **Surface** for evaluating surfaces
 
-:code:`CPGen` module contains 2 classes for grid generation:
+``geomdl.CPGen`` module contains 2 classes for grid generation:
 
-* **Grid** for generating inputs for :code:`BSpline.Surface` class
-* **GridWeighted** for generating inputs for :code:`NURBS.Surface` class
+* **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
+* **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
+
+The package also contains an experimental visualization module for plotting generated curves and surfaces. Please see
+the Examples_ repository for more details on how to use NURBS-Python and example scripts.
 
 Information for Researchers
 ---------------------------
@@ -83,8 +86,8 @@ pytest will automatically find the tests under ``tests/`` directory, execute the
 Example Scripts
 ===============
 
-Please see `NURBS-Python Examples <https://github.com/orbingol/NURBS-Python_Examples>`_ repository for example scripts
-describing how to use NURBS-Python and advanced visualization examples. Please check the documentation for more details.
+The Examples_ repository contains example scripts extensively describing how to use NURBS-Python with advanced
+visualization examples. Please check the documentation for more details.
 
 Implementation
 ==============
@@ -157,3 +160,4 @@ for his guidance and supervision throughout the course of this project.
 
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
+.. _Examples: https://github.com/orbingol/NURBS-Python_Examples
