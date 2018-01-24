@@ -123,7 +123,7 @@ class Curve(object):
         :return: None
         """
         if len(ctrlpts) < self._degree + 1:
-            raise ValueError("Number of control points in u-direction should be at least degree + 1")
+            raise ValueError("Number of control points should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
         self._reset_curve()
