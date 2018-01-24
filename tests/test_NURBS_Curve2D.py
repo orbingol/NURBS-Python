@@ -1,3 +1,10 @@
+"""
+    Tests for the NURBS-Python package
+    Released under The MIT License. See LICENSE file for details.
+    Copyright (c) 2018 Onur Rauf Bingol
+
+    Tests geomdl.NURBS.Curve2D module. Requires "pytest" to run.
+"""
 from geomdl import NURBS
 
 GEOMDL_DELTA = 0.001
