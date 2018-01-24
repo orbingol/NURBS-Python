@@ -385,10 +385,10 @@ class Surface(BSpline.Surface):
         span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
         basis_u = utils.basis_functions(self._degree_u, tuple(self._knot_vector_u), span_u, u)
         idx_u = span_u - self._degree_u
-        sptw = [0.0 for x in range(self._dimension)]
+        sptw = [0.0 for _ in range(self._dimension)]
 
         for l in range(0, self._degree_v + 1):
-            temp = [0.0 for x in range(self._dimension)]
+            temp = [0.0 for _ in range(self._dimension)]
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
@@ -445,7 +445,7 @@ class Surface(BSpline.Surface):
                 for i in range(1, k + 1):
                     v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
                             zip(v, SKL[k - i][l])]
-                    v2 = [0.0 for x in range(self._dimension - 1)]
+                    v2 = [0.0 for _ in range(self._dimension - 1)]
                     for j in range(1, l + 1):
                         v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
                                  zip(v2, SKL[k - i][l - j])]

@@ -47,7 +47,8 @@ def flip_ctrlpts(file_in='', file_out='ctrlpts_flip.txt'):
         raise ValueError("File " + str(file_in) + " cannot be opened for reading")
 
     # Flip control points array
-    new_ctrlpts = [[None for y in range(size_u)] for x in range(size_v)]
+    # new_ctrlpts = [[None for y in range(size_u)] for x in range(size_v)]
+    new_ctrlpts = [[None for _ in range(size_u)] for _ in range(size_v)]
     for i in range(size_v):
         for j in range(size_u):
             new_ctrlpts[i][j] = current_ctrlpts[j][i]

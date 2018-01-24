@@ -528,13 +528,13 @@ class Curve(object):
         # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
         CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
-            CK[k] = [0.0 for x in range(self._dimension)]
+            CK[k] = [0.0 for _ in range(self._dimension)]
 
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         bfunsders = utils.basis_functions_ders(self._degree, tuple(self._knot_vector), span, u, du)
 
         for k in range(0, du + 1):
-            CK[k] = [0.0 for x in range(self._dimension)]
+            CK[k] = [0.0 for _ in range(self._dimension)]
             for j in range(0, self._degree + 1):
                 CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in
                             zip(CK[k], self._control_points[span - self._degree + j])]
@@ -596,7 +596,7 @@ class Curve(object):
         # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
         CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
-            CK[k] = [0.0 for x in range(self._dimension)]
+            CK[k] = [0.0 for _ in range(self._dimension)]
 
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         bfuns = utils.basis_functions_all(self._degree, tuple(self._knot_vector), span, u)
@@ -1664,10 +1664,10 @@ class Surface(object):
         basis_u = utils.basis_functions(self._degree_u, tuple(self._knot_vector_u), span_u, u)
 
         idx_u = span_u - self._degree_u
-        spt = [0.0 for x in range(self._dimension)]
+        spt = [0.0 for _ in range(self._dimension)]
 
         for l in range(0, self._degree_v + 1):
-            temp = [0.0 for x in range(self._dimension)]
+            temp = [0.0 for _ in range(self._dimension)]
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
@@ -1732,9 +1732,9 @@ class Surface(object):
         bfunsders_v = utils.basis_functions_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
 
         for k in range(0, du + 1):
-            temp = [[] for y in range(self._degree_v + 1)]
+            temp = [[] for _ in range(self._degree_v + 1)]
             for s in range(0, self._degree_v + 1):
-                temp[s] = [0.0 for x in range(self._dimension)]
+                temp[s] = [0.0 for _ in range(self._dimension)]
                 for r in range(0, self._degree_u + 1):
                     cu = span_u - self._degree_u + r
                     cv = span_v - self._degree_v + s
@@ -1825,7 +1825,7 @@ class Surface(object):
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
-        utils.check_uv(u, v, delta=self._delta)
+        utils.check_uv(u, v)
 
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
