@@ -652,6 +652,29 @@ def check_uv(u=None, v=None):
             raise ValueError('"v" value should be between 0 and 1.')
 
 
+# Generates a vector from 2 input 3D points (as lists with length 3)
+def vector_generate(start_pt=(), end_pt=(), normalize=False):
+    """ Generates a vector from 2 input 3D points
+
+    The input points must be a list with length 3.
+
+    :param start_pt: starting point of the vector
+    :type start_pt: list, tuple
+    :param end_pt: ending point of the vector
+    :type end_pt: list, tuple
+    :param normalize: if True, the generated vector is normalized
+    :type normalize: bool
+    :return: a vector from start_pt to end_pt
+    :rtype: list
+    """
+    if len(start_pt) != 3 and len(end_pt) != 3:
+        raise ValueError("Input points must be in 3 dimensions")
+    ret_vec = [start_pt[0] - end_pt[0], start_pt[1] - end_pt[1], start_pt[2] - end_pt[2]]
+    if normalize:
+        ret_vec = normalize(ret_vec)
+    return ret_vec
+
+
 # Computes vector cross-product
 def vector_cross(vector1=(), vector2=()):
     """ Computes the cross-product of the input vectors.
