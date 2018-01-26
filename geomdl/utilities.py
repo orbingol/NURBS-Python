@@ -317,14 +317,15 @@ def make_triangle(points, row_size, col_size):
         tri_list = []
         while row_idx < row_size - 1:
             if left_half:
-                triangles.append(points2d[col_idx + 1][row_idx])
-                triangles.append(points2d[col_idx][row_idx])
-                triangles.append(points2d[col_idx][row_idx + 1])
+                tri_list.append(points2d[col_idx + 1][row_idx])
+                tri_list.append(points2d[col_idx][row_idx])
+                tri_list.append(points2d[col_idx][row_idx + 1])
+                tri_list.append(points2d[col_idx + 1][row_idx])
                 left_half = False
             else:
-                triangles.append(points2d[col_idx][row_idx + 1])
-                triangles.append(points2d[col_idx + 1][row_idx + 1])
-                triangles.append(points2d[col_idx + 1][row_idx])
+                tri_list.append(points2d[col_idx][row_idx + 1])
+                tri_list.append(points2d[col_idx + 1][row_idx + 1])
+                tri_list.append(points2d[col_idx + 1][row_idx])
                 left_half = True
                 row_idx += 1
         if forward:
@@ -332,6 +333,7 @@ def make_triangle(points, row_size, col_size):
         else:
             forward = True
             tri_list.reverse()
+        triangles += tri_list
 
     return triangles
 
