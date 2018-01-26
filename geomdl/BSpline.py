@@ -1573,8 +1573,8 @@ class Surface(object):
                     points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1),
                                              int((1.0 / self._delta) + 1))
                 elif mode == 'triangle':
-                    warnings.warn("Triangle mode has not been implemented yet")
-                    points = self._surface_points
+                    points = utils.make_triangle(self._surface_points, int((1.0 / self._delta) + 1),
+                                                 int((1.0 / self._delta) + 1))
                 else:
                     points = self._surface_points
 

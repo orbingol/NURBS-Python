@@ -290,6 +290,52 @@ def make_quad(points, row_size, col_size):
     return new_points
 
 
+def make_triangle(points, row_size, col_size):
+    """ Generates a triangular mesh from  linearly ordered list of points.
+
+    :param points: list of points to be ordered
+    :type points: list, tuple
+    :param row_size: number of elements in a row
+    :param row_size: int
+    :param col_size: number of elements in a column
+    :param col_size: int
+    :return: re-ordered points
+    :rtype: list
+    """
+    points2d = []
+    for i in range(0, col_size):
+        row_list = []
+        for j in range(0, row_size):
+            row_list.append(points[j + (i * row_size)])
+        points2d.append(row_list)
+
+    forward = True
+    triangles = []
+    for col_idx in range(0, col_size - 1):
+        row_idx = 0
+        left_half = True
+        tri_list = []
+        while row_idx < row_size - 1:
+            if left_half:
+                triangles.append(points2d[col_idx + 1][row_idx])
+                triangles.append(points2d[col_idx][row_idx])
+                triangles.append(points2d[col_idx][row_idx + 1])
+                left_half = False
+            else:
+                triangles.append(points2d[col_idx][row_idx + 1])
+                triangles.append(points2d[col_idx + 1][row_idx + 1])
+                triangles.append(points2d[col_idx + 1][row_idx])
+                left_half = True
+                row_idx += 1
+        if forward:
+            forward = False
+        else:
+            forward = True
+            tri_list.reverse()
+
+    return triangles
+
+
 # A float range function, implementation of http://stackoverflow.com/a/7267280
 def frange(x, y, step):
     """ Implementation of Python's ``range()`` function which works with floats.
