@@ -161,7 +161,8 @@ class Curve(object):
 
         # Clean up the surface points lists, if necessary
         self._reset_curve()
-        # Set knot vector u
+
+        # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
 
     @property
@@ -181,9 +182,11 @@ class Curve(object):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
+
         # Clean up the curve points list, if necessary
         self._reset_curve()
-        # Set a new delta value
+
+        # Set new delta value
         self._delta = float(value)
 
     @property
