@@ -504,6 +504,7 @@ class Curve(object):
         # Clean up the curve points, if necessary
         self._reset_curve()
 
+        # Evaluate whole knot vector range
         for u in utils.frange(0, 1, self._delta):
             cpt = self.curvept(u, False)
             self._curve_points.append(cpt)
@@ -1692,6 +1693,7 @@ class Surface(object):
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
+        # Evaluate whole knot vector range
         for u in utils.frange(0, 1, self._delta):
             for v in utils.frange(0, 1, self._delta):
                 spt = self.surfpt(u, v, False)
