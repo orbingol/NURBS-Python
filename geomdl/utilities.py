@@ -259,10 +259,7 @@ def make_zigzag(points, row_size):
 
 
 def make_quad(points, row_size, col_size):
-    """ Changes linearly ordered list of points into a mesh composed of quads.
-
-    Please note that this function does not detect the ordering of the input points to detect the input points have
-    already been processed to generate a mesh.
+    """ Generates a quad mesh from linearly ordered list of points.
 
     :param points: list of points to be ordered
     :type points: list, tuple
@@ -272,7 +269,6 @@ def make_quad(points, row_size, col_size):
     :param col_size: int
     :return: re-ordered points
     :rtype: list
-    :return:
     """
     # Start with generating a zig-zag shape in row direction and then take its reverse
     new_points = make_zigzag(points, row_size)

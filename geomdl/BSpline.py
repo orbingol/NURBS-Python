@@ -1530,9 +1530,8 @@ class Surface(object):
 
         * ``linear``: Default mode, saves the stored point array without any change
         * ``zigzag``: Generates a zig-zag shape
-        * ``wireframe``: Generates a wireframe
-        * ``triangle``: Triangulates the points
-        * ``mesh``: Generates a quad mesh
+        * ``wireframe``: Generates a wireframe/quad mesh
+        * ``triangle``: Generates a triangular mesh
 
         Please note that mode parameter does not modify the stored points in the object instance.
 
@@ -1546,7 +1545,7 @@ class Surface(object):
         :rtype: bool
         """
         # Check possible modes
-        mode_list = ['linear', 'zigzag', 'wireframe', 'triangle', 'mesh']
+        mode_list = ['linear', 'zigzag', 'wireframe', 'triangle']
         if mode not in mode_list:
             warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'")
 
@@ -1575,9 +1574,6 @@ class Surface(object):
                                              int((1.0 / self._delta) + 1))
                 elif mode == 'triangle':
                     warnings.warn("Triangle mode has not been implemented yet")
-                    points = self._surface_points
-                elif mode == 'mesh':
-                    warnings.warn("Mesh mode has not been implemented yet")
                     points = self._surface_points
                 else:
                     points = self._surface_points

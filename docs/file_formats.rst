@@ -186,6 +186,5 @@ The following modes are available via ``mode=`` parameter of the ``export_surfpt
 
 * ``linear``: Default mode, saves the stored point array without any change
 * ``zigzag``: Generates a zig-zag shape
-* ``wireframe``: Generates a wireframe
-* ``triangle``: Triangulates the points
-* ``mesh``: Generates a quad mesh
+* ``wireframe``: Generates a wireframe/quad mesh
+* ``triangle``: Generates a triangular mesh
