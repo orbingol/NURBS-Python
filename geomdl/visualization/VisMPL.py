@@ -67,6 +67,41 @@ class VisCurve3D(VisAbstract):
         plt.show()
 
 
+class VisSurface(VisAbstract):
+    """ Visualization module for Surfaces
+
+    Triangular mesh plot for the surface and wireframe plot for the control points grid
+    """
+    def __init__(self):
+        super(VisSurface, self).__init__()
+
+    def render(self):
+        """ Plots the surface and the control points grid """
+        if not self._points:
+            return False
+
+        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
+        surf = np.array(utils.make_triangle(self._points[1], self._sizes[1][1], self._sizes[1][0]))
+
+        # Start plotting of the surface and the control points grid
+        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        ax = Axes3D(fig)
+
+        # Draw control points grid
+        ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
+
+        # Draw surface plot
+        ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
+
+        # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
+        plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        ax.legend([plot1_proxy, plot2_proxy], [self._names[0], self._names[1]], numpoints=1)
+
+        # Display the 3D plot
+        plt.show()
+
+
 class VisSurfWireframe(VisAbstract):
     """ Visualization module for Surfaces
 
