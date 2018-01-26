@@ -7,7 +7,6 @@
 
 """
 
-import decimal
 import math
 
 
@@ -338,25 +337,28 @@ def make_triangle(points, row_size, col_size):
     return triangles
 
 
-# A float range function, implementation of http://stackoverflow.com/a/7267280
-def frange(x, y, step):
+# A float range function, implementation of https://stackoverflow.com/a/47877721
+def frange(start, stop, step=1.0, decimals=7):
     """ Implementation of Python's ``range()`` function which works with floats.
 
-    Reference to this implementation: http://stackoverflow.com/a/7267280
+    Reference to this implementation: https://stackoverflow.com/a/47877721
 
-    :param x: start value
-    :type x: float
-    :param y: end value
-    :type y: float
+    :param start: start value
+    :type start: float
+    :param stop: end value
+    :type stop: float
     :param step: increment
     :type step: float
+    :param decimals: rounding number
+    :type decimals: int
     :return: float
     :rtype: generator
     """
-    step_str = str(step)
-    while x <= y:
-        yield float(x)
-        x += decimal.Decimal(step_str)
+    # Originally range((int(start / step), int(stop / step))) but intentionally added "+ 1" to the end to get
+    # the last element when step is too small. Just to make it clear, frange function is here because we don't want
+    # to use numpy or its alternatives
+    for i in range(int(start / step), int(stop / step) + 1):
+        yield float(("%0." + str(decimals) + "f") % (i * step))
 
 
 # Normalizes knot vector (internal functionality)
