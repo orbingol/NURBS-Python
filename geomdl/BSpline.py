@@ -245,8 +245,8 @@ class Curve(object):
 
         # Run the visualization component
         self._vis_component.clear()
-        self._vis_component.add(self.ctrlpts, "Control Points", cpcolor)
-        self._vis_component.add(self.curvepts, "Curve", curvecolor)
+        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor)
+        self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor)
         self._vis_component.render()
 
     # Cleans up the control points
@@ -1257,13 +1257,14 @@ class Surface(object):
         if not self._surface_points:
             self.evaluate()
 
-        # Prepare control point grid
-        ctrlpts = utils.make_quad(self.ctrlpts, self._control_points_size_v, self._control_points_size_u)
-
         # Run the visualization component
         self._vis_component.clear()
-        self._vis_component.add(ctrlpts, "Control Points", cpcolor)
-        self._vis_component.add(self.surfpts, "Surface", surfcolor)
+        self._vis_component.add(ptsarr=self.ctrlpts,
+                                size=[self._control_points_size_u, self._control_points_size_v],
+                                name="Control Points", color=cpcolor)
+        self._vis_component.add(ptsarr=self._surface_points,
+                                size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
+                                name="Surface", color=surfcolor)
         self._vis_component.render()
 
     # Cleans up the control points

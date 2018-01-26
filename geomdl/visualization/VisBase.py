@@ -16,6 +16,7 @@ class VisAbstract(object):
 
     def __init__(self):
         self._points = []  # control points and evaluated points
+        self._sizes = []  # sizes in all directions
         self._colors = []  # color information for the plots
         self._names = []  # names of the plots on the legend
 
@@ -23,14 +24,17 @@ class VisAbstract(object):
         """ Clears the points, colors and names lists"""
         if self._points:
             self._points[:] = []
+            self._sizes[:] = []
             self._colors[:] = []
             self._names[:] = []
 
-    def add(self, ptsarr=(), name=None, color=None):
+    def add(self, ptsarr=(), size=0, name=None, color=None):
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control, curve or surface points
         :type ptsarr: list, tuple
+        :param size: size in all directions
+        :type size: int, list
         :param name: name of the point on the legend
         :type name: str
         :param color: color of the point on the legend
@@ -39,8 +43,9 @@ class VisAbstract(object):
         """
         if not ptsarr or not color or not name:
             return
-        # Add points, plot color and name on the legend
+        # Add points, size, plot color and name on the legend
         self._points.append(ptsarr)
+        self._sizes.append(size)
         self._colors.append(color)
         self._names.append(name)
 

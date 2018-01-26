@@ -8,6 +8,7 @@
 """
 
 from .VisBase import VisAbstract
+from geomdl import utilities as utils
 
 import numpy as np
 import matplotlib
@@ -51,7 +52,7 @@ class VisCurve3D(VisAbstract):
 
         # Draw control points polygon and the 3D curve
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
-        ax = fig.gca(projection='3d')
+        ax = Axes3D(fig)
 
         # Plot 3D lines
         ax.plot(cpts[:, 0], cpts[:, 1], cpts[:, 2], color=self._colors[0], linestyle='-.', marker='o')
@@ -80,23 +81,17 @@ class VisSurfWireframe(VisAbstract):
             return False
 
         cpgrid = np.array(self._points[0])
-        surf = np.array(self._points[1])
-
-        # Reshape surface points array for plotting, @ref: https://stackoverflow.com/a/21352257
-        cols = surf[:, 0].shape[0]
-        Xs = surf[:, 0].reshape(-1, cols)
-        Ys = surf[:, 1].reshape(-1, cols)
-        Zs = surf[:, 2].reshape(-1, cols)
+        surf = np.array(utils.make_quad(self._points[1], self._sizes[1][1], self._sizes[1][0]))
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
-        ax = fig.gca(projection='3d')
+        ax = Axes3D(fig)
 
         # Plot control points
         ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], s=25, depthshade=True)
 
         # Plot surface wireframe plot
-        ax.plot_wireframe(Xs, Ys, Zs, color=self._colors[1])
+        ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
@@ -120,12 +115,12 @@ class VisSurfTriangle(VisAbstract):
         if not self._points:
             return False
 
-        cpgrid = np.array(self._points[0])
+        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
         surf = np.array(self._points[1])
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
-        ax = fig.gca(projection='3d')
+        ax = Axes3D(fig)
 
         # Draw control points grid
         ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
@@ -155,12 +150,12 @@ class VisSurfScatter(VisAbstract):
         if not self._points:
             return False
 
-        cpgrid = np.array(self._points[0])
+        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
         surf = np.array(self._points[1])
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=(10.67, 8), dpi=96)
-        ax = fig.gca(projection='3d')
+        ax = Axes3D(fig)
 
         # Draw control points grid
         ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
