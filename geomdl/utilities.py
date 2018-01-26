@@ -280,22 +280,16 @@ def make_quad(points, row_size, col_size):
 
     # Start generating a zig-zag shape in col direction
     forward = True
-    idx = 0
-    counter = 0
-    temp = []
-    while idx < col_size:
-        temp.append(points[idx + (counter * row_size)])
-        counter += 1
-        if counter % col_size == 0:
-            if forward:
-                forward = False
-            else:
-                forward = True
-                temp.reverse()
-            new_points += temp
-            temp = []
-            counter = 0
-            idx += 1
+    for row in range(0, row_size):
+        temp = []
+        for col in range(0, col_size):
+            temp.append(points[row + (col * row_size)])
+        if forward:
+            forward = False
+        else:
+            forward = True
+            temp.reverse()
+        new_points += temp
 
     return new_points
 
