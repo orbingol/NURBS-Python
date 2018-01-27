@@ -37,13 +37,16 @@ class VisCurve2D(VisAbstract):
         if self._plot_ctrlpts:
             cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], color=self._colors[0], linestyle='-.', marker='o')
             legend_proxy.append(cppolygon)
-            legend_names.append(self._names[1])
+            legend_names.append(self._names[0])
 
         curveplt, = plt.plot(crvpts[:, 0], crvpts[:, 1], color=self._colors[1], linestyle='-')
-        legend_proxy.append(cppolygon)
+        legend_proxy.append(curveplt)
         legend_names.append(self._names[1])
 
+        # Add legend
         plt.legend(legend_proxy, legend_names)
+
+        # Display 2D plot
         plt.show()
 
 
