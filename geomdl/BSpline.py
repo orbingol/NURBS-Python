@@ -1036,6 +1036,7 @@ class Surface(object):
             Then, the row of v control points for the next u value.
 
         :getter: Gets the control points
+        :setter: Sets the control points
         :type: list
         """
         ret_list = []
@@ -1043,16 +1044,53 @@ class Surface(object):
             ret_list.append(tuple(pt))
         return tuple(ret_list)
 
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
+            raise ValueError("Please set size of the control points in u and v directions")
+
+        # Use set_ctrlpts directly
+        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+
     @property
     def ctrlpts2d(self):
         """ Control points.
 
         2D control points in *[u][v]* format.
 
-        :getter: Gets the control points
+        .. note::
+
+            Please note that the setter doesn't check for inconsistencies and using the setter is not recommended.
+            Instead of the setter property, please use :func:`.set_ctrlpts()` function.
+
+        :getter: Gets the control points in U and V directions
+        :setter: Sets the control points in U and V directions
         :type: list
         """
-        return self._control_points2D
+        ret_list = []
+        for u in range(0, self._control_points_size_u):
+            ret_list_v = []
+            for v in range(0, self._control_points_size_v):
+                ret_list_v.append(tuple(self._control_points2D[u][v]))
+            ret_list.append(tuple(ret_list_v))
+        return tuple(ret_list)
+
+    @ctrlpts2d.setter
+    def ctrlpts2d(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("The input must be a list or tuple")
+
+        # Reset control points and the surface points
+        self._reset_ctrlpts()
+        self._reset_surface()
+
+        # Assume that user inputs everything correctly, there is no easy way to check this setter
+        self._control_points_size_u = len(value)
+        self._control_points_size_v = len(value[0])
+        self._control_points2D = value
+        for u in self._control_points2D:
+            for v in u:
+                self._control_points.append(v)
 
     @property
     def ctrlpts_size_u(self):
@@ -1063,6 +1101,14 @@ class Surface(object):
         """
         return self._control_points_size_u
 
+    @ctrlpts_size_u.setter
+    def ctrlpts_size_u(self, value):
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size_u = value
+
     @property
     def ctrlpts_size_v(self):
         """ Gets the size of the control points array in V-direction.
@@ -1071,6 +1117,14 @@ class Surface(object):
         :rtype: int
         """
         return self._control_points_size_v
+
+    @ctrlpts_size_v.setter
+    def ctrlpts_size_v(self, value):
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size_v = value
 
     def set_ctrlpts(self, ctrlpts, size_u, size_v):
         """ Sets 1D control points.

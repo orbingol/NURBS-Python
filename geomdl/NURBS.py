@@ -319,6 +319,14 @@ class Surface(BSpline.Surface):
             ret_list.append(tuple(temp))
         return tuple(ret_list)
 
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
+            raise ValueError("Please set size of the control points in u and v directions")
+
+        # Use set_ctrlpts directly
+        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+
     @property
     def weights(self):
         """ Weights vector.
