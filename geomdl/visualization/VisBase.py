@@ -47,7 +47,6 @@ class VisAbstract(object):
         :type name: str
         :param color: color of the point on the legend
         :type color: str
-        :return: None
         """
         if not ptsarr or not color or not name:
             return
@@ -86,7 +85,6 @@ class VisAbstractSurf(VisAbstract):
 
         :param offset_value: offset value
         :type offset_value: float
-        :return: None
         """
         self._ctrlpts_offset = float(offset_value)
 
