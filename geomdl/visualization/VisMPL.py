@@ -7,7 +7,7 @@
 
 """
 
-from .VisBase import VisAbstract
+from .VisBase import VisAbstract, VisAbstractSurf
 from geomdl import utilities as utils
 
 import numpy as np
@@ -86,7 +86,7 @@ class VisCurve3D(VisAbstract):
         plt.show()
 
 
-class VisSurface(VisAbstract):
+class VisSurface(VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid
@@ -111,7 +111,8 @@ class VisSurface(VisAbstract):
 
         # Draw control points grid
         if self._plot_ctrlpts:
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
+            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
+            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
             plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
             legend_proxy.append(plot1_proxy)
             legend_names.append(self._names[0])
@@ -129,7 +130,7 @@ class VisSurface(VisAbstract):
         plt.show()
 
 
-class VisSurfWireframe(VisAbstract):
+class VisSurfWireframe(VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Scatter plot for the control points and wireframe for the surface points
@@ -154,7 +155,8 @@ class VisSurfWireframe(VisAbstract):
 
         # Plot control points
         if self._plot_ctrlpts:
-            ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], s=25, depthshade=True)
+            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
+            ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], s=25, depthshade=True)
             plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
             legend_proxy.append(plot1_proxy)
             legend_names.append(self._names[0])
@@ -172,7 +174,7 @@ class VisSurfWireframe(VisAbstract):
         plt.show()
 
 
-class VisSurfTriangle(VisAbstract):
+class VisSurfTriangle(VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Wireframe plot for the control points and triangulated plot for the surface points
@@ -197,7 +199,8 @@ class VisSurfTriangle(VisAbstract):
 
         # Draw control points grid
         if self._plot_ctrlpts:
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
+            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
+            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
             plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
             legend_proxy.append(plot1_proxy)
             legend_names.append(self._names[0])
@@ -215,7 +218,7 @@ class VisSurfTriangle(VisAbstract):
         plt.show()
 
 
-class VisSurfScatter(VisAbstract):
+class VisSurfScatter(VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Wireframe plot for the control points and scatter plot for the surface points
@@ -240,7 +243,8 @@ class VisSurfScatter(VisAbstract):
 
         # Draw control points grid
         if self._plot_ctrlpts:
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cpgrid[:, 2], color=self._colors[0], linestyle='-.', marker='o')
+            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
+            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
             plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
             legend_proxy.append(plot1_proxy)
             legend_names.append(self._names[0])
