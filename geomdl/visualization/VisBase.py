@@ -54,3 +54,26 @@ class VisAbstract(object):
     def render(self):
         """ Abstract method for rendering plots of the point sets """
         pass
+
+
+class VisAbstractSurf(VisAbstract):
+    """ Visualization abstract class for surfaces """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, plot_ctrlpts=True):
+        super(VisAbstractSurf, self).__init__(plot_ctrlpts)
+        self._ctrlpts_offset = 0.0
+
+    def set_ctrlpts_offset(self, offset_value):
+        """ Sets an offset for the control points grid plot.
+
+        :param offset_value: offset value
+        :type offset_value: float
+        :return: None
+        """
+        self._ctrlpts_offset = float(offset_value)
+
+    @abc.abstractmethod
+    def render(self):
+        """ Abstract method for rendering plots of the point sets """
+        pass
