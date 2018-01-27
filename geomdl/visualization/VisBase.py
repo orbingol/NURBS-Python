@@ -14,11 +14,12 @@ class VisAbstract(object):
     """ Visualization abstract class """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, plot_ctrlpts=True):
         self._points = []  # control points and evaluated points
         self._sizes = []  # sizes in all directions
         self._colors = []  # color information for the plots
         self._names = []  # names of the plots on the legend
+        self._plot_ctrlpts = plot_ctrlpts
 
     def clear(self):
         """ Clears the points, colors and names lists"""
