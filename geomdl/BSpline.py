@@ -129,12 +129,14 @@ class Curve(object):
         self._reset_curve()
         self._reset_ctrlpts()
 
-        for coord in ctrlpts:
-            if len(coord) < 0 or len(coord) > self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(coord) +
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
                                  " is not a valid control point")
             # Convert to list of floats
-            coord_float = [float(c) for c in coord]
+            coord_float = [float(coord) for coord in cpt]
             self._control_points.append(coord_float)
 
     @property
@@ -1106,14 +1108,19 @@ class Surface(object):
         if size_v < self._degree_v + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1")
 
-        # Check the dimensions of the input control points array
-        for cpt in ctrlpts:
+        # Check the dimensions of the input control points array and type cast to float
+        ctrlpts_float = []
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
             if len(cpt) is not self._dimension:
                 raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
                                  " is not a valid control point")
+            pt_float = [float(coord) for coord in cpt]
+            ctrlpts_float.append(pt_float)
 
         # Set the new control points
-        self._control_points = copy.deepcopy(ctrlpts)
+        self._control_points = ctrlpts_float
 
         # Set u and v sizes
         self._control_points_size_u = size_u
