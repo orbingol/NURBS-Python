@@ -92,6 +92,6 @@ class VisAbstractSurf(VisAbstract):
     def render(self):
         """ Abstract method for rendering plots of the point sets.
 
-        This method must be implemented in all subclasses of ``VisAbstract`` class.
+        This method must be implemented in all subclasses of ``VisAbstractSurf`` class.
         """
         pass
