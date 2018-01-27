@@ -11,7 +11,14 @@ import abc
 
 
 class VisAbstract(object):
-    """ Visualization abstract class """
+    """ Visualization abstract class
+
+    Uses Python's *Abstract Base Class* implementation to define a base for all common visualization options
+    in NURBS-Python package.
+
+    :param plot_ctrlpts: enables/disables control points plots on the final figure
+    :type plot_ctrlpts: bool
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, plot_ctrlpts=True):
@@ -22,7 +29,7 @@ class VisAbstract(object):
         self._plot_ctrlpts = plot_ctrlpts
 
     def clear(self):
-        """ Clears the points, colors and names lists"""
+        """ Clears the points, colors and names lists. """
         if self._points:
             self._points[:] = []
             self._sizes[:] = []
@@ -52,12 +59,22 @@ class VisAbstract(object):
 
     @abc.abstractmethod
     def render(self):
-        """ Abstract method for rendering plots of the point sets """
+        """ Abstract method for rendering plots of the point sets.
+
+        This method must be implemented in all subclasses of ``VisAbstract`` class.
+        """
         pass
 
 
 class VisAbstractSurf(VisAbstract):
-    """ Visualization abstract class for surfaces """
+    """ Visualization abstract class for surfaces
+
+    Implements ``VisABstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
+    for **surface** visualization options in NURBS-Python package.
+
+    :param plot_ctrlpts: enables/disables control points plots on the final figure
+    :type plot_ctrlpts: bool
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, plot_ctrlpts=True):
@@ -75,5 +92,8 @@ class VisAbstractSurf(VisAbstract):
 
     @abc.abstractmethod
     def render(self):
-        """ Abstract method for rendering plots of the point sets """
+        """ Abstract method for rendering plots of the point sets.
+
+        This method must be implemented in all subclasses of ``VisAbstract`` class.
+        """
         pass
