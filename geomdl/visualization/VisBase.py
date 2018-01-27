@@ -16,7 +16,7 @@ class VisAbstract(object):
     Uses Python's *Abstract Base Class* implementation to define a base for all common visualization options
     in NURBS-Python package.
 
-    :param plot_ctrlpts: enables/disables control points plots on the final figure
+    :param plot_ctrlpts: enables/disables display of control points plot on the final figure
     :type plot_ctrlpts: bool
     """
     __metaclass__ = abc.ABCMeta
@@ -71,7 +71,7 @@ class VisAbstractSurf(VisAbstract):
     Implements ``VisABstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
     for **surface** visualization options in NURBS-Python package.
 
-    :param plot_ctrlpts: enables/disables control points plots on the final figure
+    :param plot_ctrlpts: enables/disables display of control points plot on the final figure
     :type plot_ctrlpts: bool
     """
     __metaclass__ = abc.ABCMeta
