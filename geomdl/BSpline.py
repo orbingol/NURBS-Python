@@ -908,7 +908,7 @@ class Surface(object):
     * knotvector_v
     * delta
     * ctrlpts
-    * ctrlpts2D
+    * ctrlpts2d
     * surfpts
 
     **Details on Control Points**
@@ -916,12 +916,6 @@ class Surface(object):
     Control points are stored as a list of (x, y, z) coordinates. The function :func:`.read_ctrlpts_from_txt()`
     provides an easy way to read control points from a text file. Additional details on the file formats can be found
     on the documentation.
-
-    .. note::
-
-        Since the control points array for surfaces must be a 2D array corresponding to the *u* and *v* directions,
-        `ctrlpts` and `ctrlpts2D` properties of `Surface` classes do not provide a setter , which means they are read
-        only. To set the control points for the `Surface` class, please use :func:`.set_ctrlpts()`.
 
     **Evaluation**
 
