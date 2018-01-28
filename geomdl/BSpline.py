@@ -1056,7 +1056,46 @@ class Surface(object):
     def ctrlpts2d(self):
         """ Control points.
 
-        2D control points in *[u][v]* format.
+        The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
+        The rows of the returned tuple correspond to V-direction and the columns correspond to U-direction.
+
+        The following example can be used to traverse 2D control points:
+
+        .. code-block:: python
+
+            # Create a BSpline surface
+            surf_bs = BSpline.Surface()
+
+            # Do degree, control points and knot vector assignments here
+
+            # Each u includes a row of v values
+            for u in surf_bs.ctrlpts2d:
+                # Each row contains the coordinates of the control points
+                for v in u:
+                    print(str(v))  # will be something like (1.0, 2.0, 3.0)
+
+            # Create a NURBS surface
+            surf_nb = NURBS.Surface()
+
+            # Do degree, weighted control points and knot vector assignments here
+
+            # Each u includes a row of v values
+            for u in surf_nb.ctrlpts2d:
+                # Each row contains the coordinates of the weighted control points
+                for v in u:
+                    print(str(v))  # will be something like (0.5, 1.0, 1.5, 0.5)
+
+
+        When using **NURBS.Surface** class, the output of :py:attr:`~ctrlpts2d` property could be confusing since,
+        :py:attr:`~ctrlpts` always returns the unweighted control points, i.e. :py:attr:`~ctrlpts` property returns 3D
+        control points all divided by the weights and you can use :py:attr:`~weights` property to access the weights
+        vector, but :py:attr:`~ctrlpts2d` returns the weighted ones plus weights as the last element.
+        This difference is intentionally added for compatibility and interoperability purposes.
+
+        To explain this situation in a simple way;
+
+        * If you need the weighted control points directly, use :py:attr:`~ctrlpts2d`
+        * If you need the control points and the weights separately, use :py:attr:`~ctrlpts` and :py:attr:`~weights`
 
         .. note::
 
