@@ -1084,10 +1084,21 @@ class Surface(object):
         self._reset_ctrlpts()
         self._reset_surface()
 
-        # Assume that user inputs everything correctly, there is no easy way to check this setter
+        # Assume that the user has prepared the lists correctly
         self._control_points_size_u = len(value)
         self._control_points_size_v = len(value[0])
-        self._control_points2D = value
+
+        # Make sure that all numbers are float type
+        ctrlpts2d = [[None for _ in range(0, self._control_points_size_v)]
+                     for _ in range(0, self._control_points_size_u)]
+        for u in range(0, self._control_points_size_u):
+            for v in range(0, self._control_points_size_v):
+                ctrlpts2d[u][v] = [float(coord) for coord in value[u][v]]
+
+        # Set 2D control points
+        self._control_points2D = ctrlpts2d
+
+        # Set 1D control points
         for u in self._control_points2D:
             for v in u:
                 self._control_points.append(v)
