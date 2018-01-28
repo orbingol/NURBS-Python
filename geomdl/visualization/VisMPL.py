@@ -78,7 +78,7 @@ class VisCurve3D(VisAbstract):
             legend_names.append(self._names[0])
 
         ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], color=self._colors[1], linestyle='-')
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
         legend_proxy.append(plot2_proxy)
         legend_names.append(self._names[1])
 
@@ -122,7 +122,7 @@ class VisSurface(VisAbstractSurf):
 
         # Draw surface plot
         ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
         legend_proxy.append(plot2_proxy)
         legend_names.append(self._names[1])
 
@@ -166,7 +166,7 @@ class VisSurfWireframe(VisAbstractSurf):
 
         # Plot surface wireframe plot
         ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
+        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
         legend_proxy.append(plot2_proxy)
         legend_names.append(self._names[1])
 
