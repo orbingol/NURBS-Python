@@ -1094,10 +1094,11 @@ class Surface(object):
 
     @property
     def ctrlpts_size_u(self):
-        """ Gets the size of the control points array in U-direction.
+        """ Size of the control points array in U-direction.
 
-        :return: number of control points in U-direction
-        :rtype: int
+        :getter: Gets number of control points in U-direction
+        :setter: Sets number of control points in U-direction
+        :type: int
         """
         return self._control_points_size_u
 
@@ -1111,10 +1112,11 @@ class Surface(object):
 
     @property
     def ctrlpts_size_v(self):
-        """ Gets the size of the control points array in V-direction.
+        """ Size of the control points array in V-direction.
 
-        :return: number of control points in V-direction
-        :rtype: int
+        :getter: Gets number of control points in V-direction
+        :setter: Sets number of control points in V-direction
+        :type: int
         """
         return self._control_points_size_v
 
