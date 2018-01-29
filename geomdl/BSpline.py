@@ -494,20 +494,23 @@ class Curve(object):
         return cpt
 
     # Evaluates the B-Spline curve
-    def evaluate(self):
+    def evaluate(self, start=0, end=1):
         """ Evaluates the B-Spline curve.
 
         .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
         :return: None
         """
+        # Check if the input parameters are in the range
+        utils.check_uv(start)
+        utils.check_uv(end)
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Clean up the curve points, if necessary
         self._reset_curve()
 
         # Evaluate whole knot vector range
-        for u in utils.frange(0, 1, self._delta):
+        for u in utils.frange(start, end, self._delta):
             cpt = self.curvept(u, False)
             self._curve_points.append(cpt)
 
@@ -525,8 +528,7 @@ class Curve(object):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        if u < 0.0 or u > 1.0:
-            raise ValueError('"u" value should be between 0 and 1')
+        utils.check_uv(u)
 
         # Algorithm A3.2
         du = min(self._degree, order)
@@ -778,7 +780,7 @@ class Curve(object):
         utils.check_uv(u)
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
-            raise ValueError('Number of insertions must be a positive integer value')
+            raise ValueError('Number of insertions (r) must be a positive integer value')
 
         s = utils.find_multiplicity(u, self._knot_vector)
 
@@ -1788,21 +1790,24 @@ class Surface(object):
         return spt
 
     # Evaluates the B-Spline surface
-    def evaluate(self):
+    def evaluate(self, start_u=0, end_u=1, start_v=0, end_v=1):
         """ Evaluates the surface.
 
         .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
         :return: None
         """
+        # Check if all the input parameters are in the range
+        utils.check_uv(start_u, end_u)
+        utils.check_uv(start_v, end_v)
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
         # Evaluate whole knot vector range
-        for u in utils.frange(0, 1, self._delta):
-            for v in utils.frange(0, 1, self._delta):
+        for u in utils.frange(start_u, end_u, self._delta):
+            for v in utils.frange(start_v, end_v, self._delta):
                 spt = self.surfpt(u, v, False)
                 self._surface_points.append(spt)
 
