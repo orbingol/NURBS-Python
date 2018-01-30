@@ -12,7 +12,7 @@ import geomdl.utilities as utils
 
 
 class Curve(BSpline.Curve):
-    """ A data storage and evaluation class for 3D NURBS curves.
+    """ Data storage and evaluation class for 3D NURBS curves.
 
     **Data Storage**
 
@@ -195,7 +195,7 @@ class Curve(BSpline.Curve):
 
 
 class Curve2D(Curve):
-    """ A data storage and evaluation class for 2D NURBS curves.
+    """ Data storage and evaluation class for 2D NURBS curves.
 
     **Data Storage**
 
@@ -248,7 +248,7 @@ class Curve2D(Curve):
 
 
 class Surface(BSpline.Surface):
-    """ A data storage and evaluation class for NURBS surfaces.
+    """ Data storage and evaluation class for NURBS surfaces.
 
     **Data Storage**
 

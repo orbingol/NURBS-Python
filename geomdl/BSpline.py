@@ -14,7 +14,7 @@ from geomdl.visualization import VisBase
 
 
 class Curve(object):
-    """ A data storage and evaluation class for 3D B-Spline (NUBS) curves.
+    """ Data storage and evaluation class for 3D B-Spline (NUBS) curves.
 
     **Data Storage**
 
@@ -858,7 +858,7 @@ class Curve(object):
 
 
 class Curve2D(Curve):
-    """ A data storage and evaluation class for 2D B-Spline (NUBS) curves.
+    """ Data storage and evaluation class for 2D B-Spline (NUBS) curves.
 
     **Data Storage**
 
@@ -910,7 +910,7 @@ class Curve2D(Curve):
 
 
 class Surface(object):
-    """ A data storage and evaluation class for B-Spline (NUBS) surfaces.
+    """ Data storage and evaluation class for B-Spline (NUBS) surfaces.
 
     **Data Storage**
 
