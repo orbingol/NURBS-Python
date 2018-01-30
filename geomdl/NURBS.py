@@ -112,7 +112,7 @@ class Curve(BSpline.Curve):
 
     # Evaluates the rational curve at the given parameter
     def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
-        """ Evaluates the NURBS curve at the given u parameter.
+        """ Evaluates the curve at the input parameter value.
 
         :param u: parameter
         :type u: float
@@ -153,7 +153,7 @@ class Curve(BSpline.Curve):
 
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given u from the rational curve.
+        """ Evaluates n-th order curve derivatives at the given parameter value.
 
         :param u: knot value
         :type u: float
@@ -182,7 +182,7 @@ class Curve(BSpline.Curve):
 
     # Evaluates the rational curve derivative
     def derivatives2(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given u from the rational curve.
+        """ Evaluates n-th order curve derivatives at the given parameter value.
 
         :param u: knot value
         :type u: float
@@ -298,7 +298,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ Control points.
+        """ 1D Control points.
 
         :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
         :setter: Sets weighted control points.
@@ -356,9 +356,9 @@ class Surface(BSpline.Surface):
         """
         return "coord x, coord y, coord z, scalar\n"
 
-    # Evaluates rational surface at the given (u,v) parameters
+    # Evaluates rational surface at the given (u, v) parameters
     def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
-        """ Evaluates the NURBS surface at the given (u,v) parameters.
+        """ Evaluates the surface at the given (u, v) parameter pair.
 
         :param u: parameter in the U direction
         :type u: float
@@ -406,9 +406,9 @@ class Surface(BSpline.Surface):
             return spt, ctrlpts
         return spt
 
-    # Evaluates n-th order rational surface derivatives at the given (u,v) parameter
+    # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
-        """ Evaluates n-th order surface derivatives at the given (u,v) parameter from the rational surface.
+        """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair from the rational surface.
 
         * SKL[0][0] will be the surface point itself
         * SKL[0][1] will be the 1st derivative w.r.t. v
