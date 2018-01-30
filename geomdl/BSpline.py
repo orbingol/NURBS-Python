@@ -280,6 +280,8 @@ class Curve(object):
     def read_ctrlpts_from_txt(self, filename=''):
         """ Loads control points from a text file.
 
+        Please see the documentation for the text file format.
+
         :param filename: input file name
         :type filename: str
         :return: True if control points are loaded correctly, False otherwise
@@ -317,6 +319,8 @@ class Curve(object):
     # Saves control points to a text file
     def save_ctrlpts_to_txt(self, filename=""):
         """ Saves control points to a text file.
+
+        Please see the documentation for the text file format.
 
         :param filename: output file name
         :type filename: str
@@ -459,7 +463,7 @@ class Curve(object):
 
     # Evaluates the B-Spline curve at the given parameter
     def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
-        """ Evaluates the B-Spline curve at the given u parameter.
+        """ Evaluates the B-Spline curve at the given parameter value.
 
         :param u: parameter
         :type u: float
@@ -494,35 +498,43 @@ class Curve(object):
         return cpt
 
     # Evaluates the B-Spline curve
-    def evaluate(self, start=0, end=1):
-        """ Evaluates the B-Spline curve.
+    def evaluate(self, start=0.0, stop=1.0):
+        """ Evaluates the curve in the given interval.
+
+        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
+        the curve will also be evaluated at the ``stop`` parameter value.
 
         .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
-        :return: None
+        :param start: start parameter, defaults to zero
+        :type start: float
+        :param stop: stop parameter, defaults to one
+        :type stop: float
         """
         # Check if the input parameters are in the range
         utils.check_uv(start)
-        utils.check_uv(end)
+        utils.check_uv(stop)
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Clean up the curve points, if necessary
         self._reset_curve()
 
-        # Evaluate whole knot vector range
-        for u in utils.frange(start, end, self._delta):
+        # Evaluate the given knot vector range
+        for u in utils.frange(start, stop, self._delta):
             cpt = self.curvept(u, False)
             self._curve_points.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.2.
+        """ Evaluates n-th order curve derivatives at the given parameter value.
+
+        Implements Algorithm A3.2 of *The NURBS Book*.
 
         :param u: knot value
         :type u: float
         :param order: derivative order
         :type order: integer
-        :return: A list containing up to {order}-th derivative of the curve
+        :return: a list containing up to {order}-th derivative of the curve
         :rtype: list
         """
         # Check all parameters are set before the curve evaluation
@@ -554,7 +566,7 @@ class Curve(object):
     def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
 
-        Implements Algorithm A3.3.
+        Implements Algorithm A3.3 of *The NURBS Book*.
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
 
         :param order: derivative order
@@ -584,13 +596,15 @@ class Curve(object):
 
     # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given u using Algorithm A3.4.
+        """ Evaluates n-th order curve derivatives at the given parameter value.
+
+        Implements Algorithm A3.4 of *The NURBS Book*.
 
         :param u: knot value
         :type u: float
         :param order: derivative order
         :type order: integer
-        :return: A list containing up to {order}-th derivative of the curve
+        :return: a list containing up to {order}-th derivative of the curve
         :rtype: list
         """
         # Check all parameters are set before the curve evaluation
@@ -621,7 +635,7 @@ class Curve(object):
 
     # Evaluates the curve tangent at the given u parameter
     def tangent(self, u=-1, normalize=False):
-        """ Evaluates the curve tangent at the given u parameter.
+        """ Evaluates the curve tangent vector at the given parameter value.
 
         The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
@@ -648,9 +662,9 @@ class Curve(object):
 
     # Evaluates the curve tangent at all u values in the input list
     def tangents(self, u_list=(), normalize=False):
-        """ Evaluates the curve tangent at all u values in the input list.
+        """ Evaluates the curve tangent vectors at all parameters values in the list of parameter values.
 
-        :param u_list: knot value
+        :param u_list: list of parameter values
         :type u_list: tuple, list
         :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
@@ -669,7 +683,7 @@ class Curve(object):
 
     # Evaluates the curve normal at the given u parameter
     def normal(self, u=-1, normalize=True):
-        """ Evaluates the curve normal at the given u parameter.
+        """ Evaluates the curve normal vector at the given parameter value.
 
         Curve normal is basically the second derivative of the curve.
         The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
@@ -697,9 +711,9 @@ class Curve(object):
 
     # Evaluates the curve normal at all u values in the input list
     def normals(self, u_list=(), normalize=False):
-        """ Evaluates the curve normal at all u values in the input list.
+        """ Evaluates the curve normal at all parameters values in the list of parameter values.
 
-        :param u_list: knot value
+        :param u_list: list of parameter values
         :type u_list: tuple, list
         :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
@@ -718,7 +732,7 @@ class Curve(object):
 
     # Evaluates the curve binormal at the given u parameter
     def binormal(self, u=-1, normalize=True):
-        """ Evaluates the curve binormal at the given u parameter.
+        """ Evaluates the curve binormal vector at the given u parameter.
 
         Curve binormal is the cross product of the normal and the tangent vectors.
         The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
@@ -745,9 +759,9 @@ class Curve(object):
 
     # Evaluates the curve binormal at all u values in the input list
     def binormals(self, u_list=(), normalize=False):
-        """ Evaluates the curve binormal at all u values in the input list.
+        """ Evaluates the curve binormal vectors at all parameters values in the list of parameter values.
 
-        :param u_list: knot value
+        :param u_list: list of parameter values
         :type u_list: tuple, list
         :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
@@ -1007,8 +1021,8 @@ class Surface(object):
     def degree_v(self):
         """ Surface degree for V direction.
 
-        :getter: Gets the surface degree V for V direction
-        :setter: Sets the surface degree V for V direction
+        :getter: Gets the surface degree for V direction
+        :setter: Sets the surface degree for V direction
         :type: integer
         """
         return self._degree_v
@@ -1024,7 +1038,7 @@ class Surface(object):
 
     @property
     def ctrlpts(self):
-        """ Control points.
+        """ 1D Control points.
 
         .. note::
 
@@ -1050,7 +1064,7 @@ class Surface(object):
 
     @property
     def ctrlpts2d(self):
-        """ Control points.
+        """ 2D Control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
         The rows of the returned tuple correspond to V-direction and the columns correspond to U-direction.
@@ -1346,7 +1360,7 @@ class Surface(object):
 
     # Runs visualization component to render the surface
     def render(self, cpcolor="blue", surfcolor="green"):
-        """ Renders the surface using the loaded visualization component
+        """ Renders the surface using the loaded visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1410,7 +1424,8 @@ class Surface(object):
         """ Loads control points from a text file.
 
         The control points loaded from the file should follow the right-hand rule.
-        In case two_dimensional = False, then the following rules apply.
+        In case two_dimensional = False, then the following rules apply. Please check the documentation for the details
+        of the text file format.
 
         * The v index varies first. That is, a row of v control points for the first u value is found first.
         * Then, the row of v control points for the next u value.
@@ -1492,7 +1507,8 @@ class Surface(object):
         """ Saves control points to a text file.
 
         The control points saved to the file follow the right-hand rule.
-        In case two_dimensional = False, then the following rules apply.
+        In case two_dimensional = False, then the following rules apply. Please check the documentation for the details
+        of the text file format.
 
         * The v index varies first. That is, a row of v control points for the first u value is found first.
         * Then, the row of v control points for the next u value.
@@ -1790,30 +1806,41 @@ class Surface(object):
         return spt
 
     # Evaluates the B-Spline surface
-    def evaluate(self, start_u=0, end_u=1, start_v=0, end_v=1):
-        """ Evaluates the surface.
+    def evaluate(self, start_u=0.0, stop_u=1.0, start_v=0.0, stop_v=1.0):
+        """ Evaluates the surface in the given (u,v) intervals.
+
+        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
+        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
+        and ``stop_v`` parameter values.
 
         .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
-        :return: None
+        :param start_u: u parameter to start evaluation
+        :type start_u: float
+        :param stop_u: u parameter to stop evaluation
+        :type stop_u: float
+        :param start_v: v parameter to start evaluation
+        :type start_v: float
+        :param stop_v: v parameter to stop evaluation
+        :type stop_v: float
         """
         # Check if all the input parameters are in the range
-        utils.check_uv(start_u, end_u)
-        utils.check_uv(start_v, end_v)
+        utils.check_uv(start_u, stop_u)
+        utils.check_uv(start_v, stop_v)
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Clean up the surface points lists, if necessary
         self._reset_surface()
 
-        # Evaluate whole knot vector range
-        for u in utils.frange(start_u, end_u, self._delta):
-            for v in utils.frange(start_v, end_v, self._delta):
+        # Evaluate the given knot vector range
+        for u in utils.frange(start_u, stop_u, self._delta):
+            for v in utils.frange(start_v, stop_v, self._delta):
                 spt = self.surfpt(u, v, False)
                 self._surface_points.append(spt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
-        """ Evaluates n-th order surface derivatives at the given (u,v) parameter.
+        """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
 
         * SKL[0][0] will be the surface point itself
         * SKL[0][1] will be the 1st derivative w.r.t. v
@@ -1865,7 +1892,7 @@ class Surface(object):
 
     # Evaluates the surface tangent vectors at the given (u, v) parameter
     def tangent(self, u=-1, v=-1, normalize=False):
-        """ Evaluates the surface tangent at the given (u, v) parameter.
+        """ Evaluates the surface tangent vector at the given (u, v) parameter pair.
 
         The output returns a list containing the starting point (i.e. origin) of the vector and the vectors themselves.
 
@@ -1896,11 +1923,11 @@ class Surface(object):
 
     # Evaluates the surface tangent at all (u, v) values in the input list
     def tangents(self, uv_list=(), normalize=False):
-        """ Evaluates the surface tangent at all (u, v) values in the input list.
+        """ Evaluates the surface tangent vectors at all (u, v) parameter pairs in the input list.
 
         The input list should be arranged as [[u1, v1], [u2, v2], ...]
 
-        :param uv_list: knot values
+        :param uv_list: list of (u, v) parameter pairs
         :type uv_list: tuple, list
         :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
@@ -1925,7 +1952,7 @@ class Surface(object):
 
     # Evaluates the surface normal vector at the given (u, v) parameter
     def normal(self, u=-1, v=-1, normalize=True):
-        """ Evaluates the surface normal vector at the given (u, v) parameter.
+        """ Evaluates the surface normal vector at the given (u, v) parameter pair.
 
         The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
@@ -1960,11 +1987,11 @@ class Surface(object):
 
     # Evaluates the surface normal at all (u, v) values in the input list
     def normals(self, uv_list=(), normalize=False):
-        """ Evaluates the surface normal at all (u, v) values in the input list.
+        """ Evaluates the surface normal at all (u, v) parameter pairs in the input list.
 
         The input list should be arranged as [[u1, v1], [u2, v2], ...]
 
-        :param uv_list: knot values
+        :param uv_list: list of (u, v) parameter pairs
         :type uv_list: tuple, list
         :param normalize: if True, the returned vector is converted to a unit vector
         :type normalize: bool
