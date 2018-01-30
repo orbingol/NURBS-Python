@@ -38,7 +38,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',
               'sphinx.ext.autosummary']
 
-autodoc_member_order = 'bysource'
+# # Order of functions in the documentation; default is 'alphabetical'
+# autodoc_member_order = 'bysource'
 autosummary_generate = False
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,9 +56,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'NURBS-Python'
-copyright = u'2017, Onur Rauf Bingol'
+copyright = u'2016-2018, Onur Rauf Bingol'
 author = u'Onur Rauf Bingol'
-description = u'B-Spline and NURBS library with grid generator'
+description = u'NURBS 2D/3D curve and surface evaluation library in native Python'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
