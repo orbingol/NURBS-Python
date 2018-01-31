@@ -7,6 +7,7 @@
 
 """
 
+from copy import deepcopy
 import geomdl.BSpline as BSpline
 import geomdl.utilities as utils
 
@@ -451,9 +452,8 @@ class Surface(BSpline.Surface):
 
         for k in range(0, order + 1):
             for l in range(0, order - k + 1):
-                v = []
-                for idx in range(self._dimension - 1):
-                    v.append(SKLw[idx])
+                # Deep copying might seem a little overkill but we also want to avoid same pointer issues too
+                v = deepcopy(SKLw[k][l])
 
                 for j in range(1, l + 1):
                     v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
@@ -467,7 +467,7 @@ class Surface(BSpline.Surface):
                                  zip(v2, SKL[k - i][l - j])]
                     v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
-                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v]
+                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:3]]
 
         # Return S(u,v) derivatives
         return SKL
