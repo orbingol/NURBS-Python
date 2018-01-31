@@ -10,5 +10,5 @@ C/C++ libraries.
 
 __doc__ = "NURBS 2D/3D curve and surface evaluation library in native Python"
 __author__ = "Onur Rauf Bingol"
-__version__ = "3.0.19"
+__version__ = "3.0.20"
 __license__ = "MIT"
