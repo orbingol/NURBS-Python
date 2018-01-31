@@ -59,6 +59,11 @@ class Curve(object):
         self._rational = False
         self._vis_component = None
 
+    def __str__(self):
+        return "3D B-Spline Curve"
+
+    __repr__ = __str__
+
     @property
     def order(self):
         """ Curve order.
@@ -899,6 +904,11 @@ class Curve2D(Curve):
         self._dimension = 2  # 2D coordinates
         self._rational = False
 
+    def __str__(self):
+        return "2D B-Spline Curve"
+
+    __repr__ = __str__
+
     # Prepares and returns the CSV file header
     def _get_csv_header(self):
         """ Prepares and returns the CSV file header.
@@ -965,6 +975,11 @@ class Surface(object):
         self._dimension = 3  # 3D coordinates
         self._rational = False
         self._vis_component = None
+
+    def __str__(self):
+        return "B-Spline Surface"
+
+    __repr__ = __str__
 
     @property
     def order_u(self):

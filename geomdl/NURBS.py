@@ -54,6 +54,11 @@ class Curve(BSpline.Curve):
         self._dimension = 4  # 3D coordinates + weights
         self._rational = True
 
+    def __str__(self):
+        return "3D NURBS Curve"
+
+    __repr__ = __str__
+
     @property
     def ctrlpts(self):
         """ Control points.
@@ -237,6 +242,11 @@ class Curve2D(Curve):
         self._dimension = 3  # 2D coordinates + weights
         self._rational = True
 
+    def __str__(self):
+        return "2D NURBS Curve"
+
+    __repr__ = __str__
+
     # Prepares and returns the CSV file header
     def _get_csv_header(self):
         """ Prepares and returns the CSV file header.
@@ -295,6 +305,11 @@ class Surface(BSpline.Surface):
         # Override dimension variable
         self._dimension = 4  # 3D coordinates + weights
         self._rational = True
+
+    def __str__(self):
+        return "NURBS Surface"
+
+    __repr__ = __str__
 
     @property
     def ctrlpts(self):
