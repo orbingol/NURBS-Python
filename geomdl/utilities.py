@@ -387,6 +387,8 @@ def normalize_knot_vector(knot_vector=()):
 def generate_knot_vector(degree=0, control_points_size=0):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
+    This function can also generate knot vectors for Bezier curves and surfaces.
+
     :param degree: degree of the knot vector direction
     :type degree: integer
     :param control_points_size: number of control points on that direction
