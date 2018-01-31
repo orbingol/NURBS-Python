@@ -33,7 +33,7 @@ class VisCurve2D(VisAbstract):
         legend_names = []
 
         # Draw control points polygon and the curve
-        plt.figure(figsize=(10.67, 8), dpi=96)
+        plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         if self._plot_ctrlpts:
             cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], color=self._colors[0], linestyle='-.', marker='o')
             legend_proxy.append(cppolygon)
@@ -64,7 +64,7 @@ class VisCurve3D(VisAbstract):
         crvpts = np.array(self._points[1])
 
         # Draw control points polygon and the 3D curve
-        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         ax = Axes3D(fig)
 
         legend_proxy = []
@@ -106,7 +106,7 @@ class VisSurface(VisAbstractSurf):
         surf = np.array(utils.make_triangle(self._points[1], self._sizes[1][1], self._sizes[1][0]))
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         ax = Axes3D(fig)
 
         legend_proxy = []
@@ -150,7 +150,7 @@ class VisSurfWireframe(VisAbstractSurf):
         surf = np.array(utils.make_quad(self._points[1], self._sizes[1][1], self._sizes[1][0]))
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         ax = Axes3D(fig)
 
         legend_proxy = []
@@ -194,7 +194,7 @@ class VisSurfTriangle(VisAbstractSurf):
         surf = np.array(self._points[1])
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         ax = Axes3D(fig)
 
         legend_proxy = []
@@ -238,7 +238,7 @@ class VisSurfScatter(VisAbstractSurf):
         surf = np.array(self._points[1])
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=(10.67, 8), dpi=96)
+        fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
         ax = Axes3D(fig)
 
         legend_proxy = []

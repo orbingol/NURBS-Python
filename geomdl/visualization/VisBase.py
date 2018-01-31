@@ -1,7 +1,7 @@
 """
 .. module:: VisBase
     :platform: Unix, Windows
-    :synopsis: Abstract class for NURBS-Python visualization components
+    :synopsis: Abstract classes for NURBS-Python visualization components
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -27,6 +27,8 @@ class VisAbstract(object):
         self._colors = []  # color information for the plots
         self._names = []  # names of the plots on the legend
         self._plot_ctrlpts = plot_ctrlpts
+        self._figure_size = [10.67, 8]
+        self._figure_dpi = 96
 
     def clear(self):
         """ Clears the points, colors and names lists. """
@@ -55,6 +57,28 @@ class VisAbstract(object):
         self._sizes.append(size)
         self._colors.append(color)
         self._names.append(name)
+
+    def figure_size(self, size=None):
+        """ Sets the figure/window size.
+
+        :param size: size of the figure/window as (x, y) values
+        :type size: list, tuple
+        """
+        if not size or not isinstance(size, (tuple, list)):
+            return
+        if not len(size) == 2:
+            return
+        self._figure_size = size
+
+    def figure_dpi(self, dpi=None):
+        """ Sets the resolution of the figure.
+
+        :param dpi: resolution value; 96 by default
+        :type dpi: int
+        """
+        if not dpi or not isinstance(dpi, int):
+            return
+        self._figure_dpi = dpi
 
     @abc.abstractmethod
     def render(self):
