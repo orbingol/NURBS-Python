@@ -1,10 +1,18 @@
-Shapes Component
-^^^^^^^^^^^^^^^^
+Shapes Module
+^^^^^^^^^^^^^
 
 The shapes module provides functionality for automatic generation of the most commonly used geometric shapes.
 
-.. automodule:: geomdl.shapes
+2D Curves
+=========
+
+.. automodule:: geomdl.shapes.curve2d
     :members:
     :undoc-members:
-    :inherited-members:
-    :show-inheritance:
+
+Surfaces
+========
+
+.. automodule:: geomdl.shapes.curve2d
+    :members:
+    :undoc-members:

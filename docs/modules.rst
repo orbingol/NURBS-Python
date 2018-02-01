@@ -42,10 +42,10 @@ Although there exists a visualization component, the users are completely free t
 or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
 curves and surfaces using a software, such as Paraview_.
 
-Shapes
-======
+Common Shapes
+=============
 
-The shapes module provides functionality for automatic generation of the most commonly used curves and surfaces.
+NURBS-Python also provides a custom module for automatic generation of the most commonly used curves and surfaces.
 
 .. toctree::
     :maxdepth: 1
