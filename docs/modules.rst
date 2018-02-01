@@ -42,4 +42,14 @@ Although there exists a visualization component, the users are completely free t
 or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
 curves and surfaces using a software, such as Paraview_.
 
+Shapes
+======
+
+The shapes module provides functionality for automatic generation of the most commonly used curves and surfaces.
+
+.. toctree::
+    :maxdepth: 1
+
+    module_shapes
+
 .. _Paraview: https://www.paraview.org/
