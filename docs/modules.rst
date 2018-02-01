@@ -48,7 +48,7 @@ Common Shapes
 NURBS-Python also provides a custom module for automatic generation of the most commonly used curves and surfaces.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     module_shapes
 
