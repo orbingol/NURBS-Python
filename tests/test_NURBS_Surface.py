@@ -37,6 +37,166 @@ CONTROL_POINTS2 = [[-25.0, -25.0, -10.0, 0.25], [-25.0, -15.0, -5.0, 1.0], [-25.
                    [25.0, 25.0, -10.0, 0.5]]
 
 
+def test_bspline_surface_degree_u():
+    surf = OBJECT_INSTANCE()
+    surf.degree_u = 7
+
+    # Check assignment
+    assert surf.degree_u == 7
+
+
+def test_nurbs_surface_degree_v():
+    surf = OBJECT_INSTANCE()
+    surf.degree_v = 4
+
+    # Check assignment
+    assert surf.degree_v == 4
+
+
+def test_nurbs_surface_ctrlpts1():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 1.0],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 1.0],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0, 1.0)
+
+
+def test_nurbs_surface_ctrlpts2():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 1.0],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 1.0],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.ctrlpts2d[2][1] == (3.0, 2.0, 17.0, 1.0)
+
+
+def test_nurbs_surface_ctrlpts3():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 0.5],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 1.0],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.ctrlpts[4] == (4.0, 4.0, 28.0)
+
+
+def test_nurbs_surface_weights1():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 0.5],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 0.2],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.weights[6] == 0.2
+
+
+def test_nurbs_surface_weights2():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 0.5],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 0.2],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.weights[7] == 1.0
+
+
+def test_nurbs_surface_weights3():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 0.5],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 0.2],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.weights[4] == 0.5
+
+
 def test_nurbs_surface_eval1():
     # Create a surface instance
     surf = OBJECT_INSTANCE()
@@ -357,163 +517,3 @@ def test_nurbs_surface_eval14():
     assert abs(evalpt[0] - RESULT_LIST[13][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[13][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[13][2]) < GEOMDL_DELTA
-
-
-def test_bspline_surface_degree_u():
-    surf = OBJECT_INSTANCE()
-    surf.degree_u = 7
-
-    # Check assignment
-    assert surf.degree_u == 7
-
-
-def test_nurbs_surface_degree_v():
-    surf = OBJECT_INSTANCE()
-    surf.degree_v = 4
-
-    # Check assignment
-    assert surf.degree_v == 4
-
-
-def test_nurbs_surface_ctrlpts1():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 1.0],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 1.0],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0, 1.0)
-
-
-def test_nurbs_surface_ctrlpts2():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 1.0],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 1.0],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.ctrlpts2d[2][1] == (3.0, 2.0, 17.0, 1.0)
-
-
-def test_nurbs_surface_ctrlpts3():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 0.5],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 1.0],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.ctrlpts[4] == (4.0, 4.0, 28.0)
-
-
-def test_nurbs_surface_weights1():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 0.5],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 0.2],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.weights[6] == 0.2
-
-
-def test_nurbs_surface_weights2():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 0.5],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 0.2],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.weights[7] == 1.0
-
-
-def test_nurbs_surface_weights3():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
-               [1.0, 2.0, 11.0, 1.0],
-               [1.0, 3.0, 12.0, 1.0],
-               [2.0, 1.0, 13.0, 1.0],
-               [2.0, 2.0, 14.0, 0.5],
-               [2.0, 3.0, 15.0, 1.0],
-               [3.0, 1.0, 16.0, 0.2],
-               [3.0, 2.0, 17.0, 1.0],
-               [3.0, 3.0, 18.0, 1.0],
-               [4.0, 1.0, 19.0, 1.0],
-               [4.0, 2.0, 20.0, 1.0],
-               [4.0, 3.0, 21.0, 1.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.weights[4] == 0.5

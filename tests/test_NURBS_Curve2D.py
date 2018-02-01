@@ -243,3 +243,32 @@ def test_nurbs_curve2d_eval10():
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+
+
+def test_nurbs_curve2d_knot_insert1():
+    # Create a curve instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = 4
+
+    # Set weighted control points
+    curve.ctrlpts = CONTROL_POINTS2
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    # Set evaluation parameter
+    u = 0.2
+
+    # Insert knot
+    curve.insert_knot(u)
+
+    # Evaluate curve at the given parameter
+    evalpt = curve.curvept(u)
+
+    # Evaluation result
+    res = [33.304, 24.593]
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA

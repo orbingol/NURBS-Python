@@ -23,6 +23,106 @@ CONTROL_POINTS = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0
                   [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
 
 
+def test_bspline_surface_degree_u():
+    surf = OBJECT_INSTANCE()
+    surf.degree_u = 5
+
+    # Check assignment
+    assert surf.degree_u == 5
+
+
+def test_bspline_surface_degree_v():
+    surf = OBJECT_INSTANCE()
+    surf.degree_v = 2
+
+    # Check assignment
+    assert surf.degree_v == 2
+
+
+def test_bspline_surface_ctrlpts1():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0],
+               [1.0, 2.0, 11.0],
+               [1.0, 3.0, 12.0],
+               [2.0, 1.0, 13.0],
+               [2.0, 2.0, 14.0],
+               [2.0, 3.0, 15.0],
+               [3.0, 1.0, 16.0],
+               [3.0, 2.0, 17.0],
+               [3.0, 3.0, 18.0],
+               [4.0, 1.0, 19.0],
+               [4.0, 2.0, 20.0],
+               [4.0, 3.0, 21.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0)
+
+
+def test_bspline_surface_ctrlpts2():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0],
+               [1.0, 2.0, 11.0],
+               [1.0, 3.0, 12.0],
+               [2.0, 1.0, 13.0],
+               [2.0, 2.0, 14.0],
+               [2.0, 3.0, 15.0],
+               [3.0, 1.0, 16.0],
+               [3.0, 2.0, 17.0],
+               [3.0, 3.0, 18.0],
+               [4.0, 1.0, 19.0],
+               [4.0, 2.0, 20.0],
+               [4.0, 3.0, 21.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+
+    # Check assignment
+    assert surf.ctrlpts2d[2][1] == (3.0, 2.0, 17.0)
+
+
+def test_bspline_surface_knot_vector_u():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    assert surf.knotvector_u == (0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0)
+
+
+def test_bspline_surface_knot_vector_v():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    assert surf.knotvector_v == (0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0)
+
+
 def test_bspline_surface_eval1():
     # Create a surface instance
     surf = OBJECT_INSTANCE()
@@ -297,67 +397,3 @@ def test_bspline_surface_eval12():
     assert abs(evalpt[0] - RESULT_LIST[11][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[11][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
-
-
-def test_bspline_surface_degree_u():
-    surf = OBJECT_INSTANCE()
-    surf.degree_u = 5
-
-    # Check assignment
-    assert surf.degree_u == 5
-
-
-def test_bspline_surface_degree_v():
-    surf = OBJECT_INSTANCE()
-    surf.degree_v = 2
-
-    # Check assignment
-    assert surf.degree_v == 2
-
-
-def test_bspline_surface_ctrlpts1():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0],
-               [1.0, 2.0, 11.0],
-               [1.0, 3.0, 12.0],
-               [2.0, 1.0, 13.0],
-               [2.0, 2.0, 14.0],
-               [2.0, 3.0, 15.0],
-               [3.0, 1.0, 16.0],
-               [3.0, 2.0, 17.0],
-               [3.0, 3.0, 18.0],
-               [4.0, 1.0, 19.0],
-               [4.0, 2.0, 20.0],
-               [4.0, 3.0, 21.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0)
-
-
-def test_bspline_surface_ctrlpts2():
-    surf = OBJECT_INSTANCE()
-    ctrlpts = [[1.0, 1.0, 10.0],
-               [1.0, 2.0, 11.0],
-               [1.0, 3.0, 12.0],
-               [2.0, 1.0, 13.0],
-               [2.0, 2.0, 14.0],
-               [2.0, 3.0, 15.0],
-               [3.0, 1.0, 16.0],
-               [3.0, 2.0, 17.0],
-               [3.0, 3.0, 18.0],
-               [4.0, 1.0, 19.0],
-               [4.0, 2.0, 20.0],
-               [4.0, 3.0, 21.0]]
-    surf.ctrlpts_size_v = 3
-    surf.ctrlpts_size_u = 4
-    surf.degree_u = 2
-    surf.degree_v = 2
-    surf.ctrlpts = ctrlpts
-
-    # Check assignment
-    assert surf.ctrlpts2d[2][1] == (3.0, 2.0, 17.0)

@@ -131,3 +131,60 @@ def test_bspline_curve3d_eval5():
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
+
+
+def test_bspline_curve3d_knot_insert1():
+    # Create an object instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = 4
+
+    # Set control points
+    curve.ctrlpts = CONTROL_POINTS
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    # Set evaluation parameter
+    u = 0.5
+
+    # Insert knot
+    curve.insert_knot(u)
+
+    # Evaluate curve at the given parameter
+    evalpt = curve.curvept(u)
+
+    # Evaluation result
+    res = [10.476, 11.071, 22.499]
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
+
+
+def test_bspline_curve3d_knot_insert2():
+    # Create a curve instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = 4
+
+    # Set control points
+    curve.ctrlpts = CONTROL_POINTS
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    # Insert knot at u = 0.5
+    curve.insert_knot(0.5)
+
+    # Evaluate curve at u = 0.8
+    evalpt = curve.curvept(0.8)
+
+    # Evaluation result
+    res = [10.978, -1.349, 31.307]
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
