@@ -15,8 +15,8 @@ def full_circle(radius=1):
 
     :param radius: radius of the circle
     :type radius: int, float
-    :return: a NURBS surface
-    :rtype: NURBS.Surface
+    :return: a NURBS curve
+    :rtype: NURBS.Curve2D
     """
     if radius <= 0:
         raise ValueError("Curve radius cannot be less than and equal to zero")
