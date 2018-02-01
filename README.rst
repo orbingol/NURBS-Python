@@ -30,13 +30,38 @@ The package contains 4 modules:
 * **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
 * **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
 
-The package also contains an experimental visualization module for plotting generated curves and surfaces. Please see
-the Examples_ repository for more details on how to use NURBS-Python and example scripts.
+Examples
+--------
 
-Information for Researchers
----------------------------
+The Examples_ repository contains example scripts describing how to use NURBS-Python with advanced visualization
+examples. Please see the documentation for the example script outputs and more details.
+
+Visualization
+-------------
+
+NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting the generated
+2D/3D curves and surfaces directly.
+
+Shapes
+------
+
+Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the package. The aim of
+this module is providing an easy way to generate the most common curves and surfaces, such as circles and cylinders.
+
+More Details
+============
+
+Citing NURBS-Python
+-------------------
 
 I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
+
+Implementation
+--------------
+
+NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
+the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
+features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
 
 Library Versions
 ----------------
@@ -46,6 +71,12 @@ Library Versions
 
 There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
 versions won't be receiving any new features and updates.
+
+Contributions to NURBS-Python
+-----------------------------
+
+All contributions to NURBS-Python are welcomed. I would recommend you reading `CONTRIBUTING <.github/CONTRIBUTING.md>`_
+file for more details.
 
 Installation
 ============
@@ -83,19 +114,6 @@ After installing the required packages, execute the following from your favorite
 ``pytest``
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
-
-Example Scripts
-===============
-
-The Examples_ repository contains example scripts extensively describing how to use NURBS-Python with advanced
-visualization examples. Please check the documentation for more details.
-
-Implementation
-==============
-
-NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
-the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
-features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
 
 Issues and Reporting
 ====================

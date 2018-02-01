@@ -18,9 +18,29 @@ It would be good to remember these before you post to the issue tracker or email
 * Please and please don't use stingy words or phrases
 * Double-check your attitude in your posts
 * Be reasonable
+* Simply, __be nice__!
+
+The following will **NOT** be tolerated in any way:
+
+* Any sort of offensive comment
+* Contempt and/or disdain in explicit and/or implicit ways
+* Accusation directed to the authors and/or contributors (that's why we have the LICENSE file, check it out)
+* Implication of you having the IQ of [INT_MAX](http://www.cplusplus.com/reference/climits/) and all others can only
+have the ability to breathe
+* Implication of you having the ability to travel to Mars in less than 1 microseconds
+* A strange thought that people who read the issue tracker have ability to read your mind
+* Anything that makes you feel discomfort when it is done 2 times harder to you in person
+* ... and other similar stuff
+
+I really don't like to indicate these details in a public post but all authors and contributors spend their free time
+to put some effort on development of this package. Their free time is as valuable as your free time, the time you spend
+outside of your regular work doing non-work and completely unrelated things.
+Nobody has to tolerate to you in any way, if you don't care about what you write.
+In case of any confusions or problems, please follow [this link](http://lmgtfy.com/?q=netiquette).
 
 ## What happens when you found a bug
 
+* Please read __Before You Post__ rules (right above)
 * Please make sure that you are using the latest version on the `master` branch.
 * Please try to explain the problem as much as possible. I would be glad if you could write the steps to reproduce the
 issue.
@@ -31,8 +51,9 @@ issue.
 
 ## Feature requests
 
-It could be always possible to add new features and I would be very happy if you could directly contribute new features
-by coding it instead of asking me to implement them :)
+It could be always possible to add new features and the same rules are effective as if you have found a bug.
+**I would be very much glad if you could directly develop the new features and make a pull request
+instead of asking me to implement them** :)
 
 ## Pull requests
 
