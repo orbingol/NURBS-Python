@@ -1,7 +1,7 @@
 """
 .. module:: curve2d
     :platform: Unix, Windows
-    :synopsis: Provides commonly used 2D curve examples generated via NURBS-Python
+    :synopsis: Provides commonly used 2D curve shapes generated via NURBS-Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

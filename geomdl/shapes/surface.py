@@ -1,7 +1,7 @@
 """
 .. module:: surface
     :platform: Unix, Windows
-    :synopsis: Provides commonly used surface examples generated via NURBS-Python
+    :synopsis: Provides commonly used surface shapes generated via NURBS-Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
