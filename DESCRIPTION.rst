@@ -30,8 +30,22 @@ The package contains 4 modules:
 * **Grid** for generating inputs for **geomdl.BSpline.Surface** class
 * **GridWeighted** for generating inputs for **geomdl.NURBS.Surface** class
 
-The package also contains an experimental visualization module for plotting generated curves and surfaces. Please see
-the Examples_ repository for more details on how to use NURBS-Python and example scripts.
+Examples
+--------
+
+Please see the Examples_ repository for more details and example scripts on how to use NURBS-Python.
+
+Visualization
+-------------
+
+NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting the generated
+2D/3D curves and surfaces directly.
+
+Shapes
+------
+
+Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the package. The aim of
+this module is providing an easy way to generate the most common curves and surfaces, such as circles and cylinders.
 
 Further Reading
 ===============
