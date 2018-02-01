@@ -25,7 +25,7 @@ setup(
     author_email='contact@onurbingol.net',
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
-    packages=['geomdl', 'geomdl.visualization', 'geomdl.examples'],
+    packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
     long_description=read('DESCRIPTION.rst'),
     keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[

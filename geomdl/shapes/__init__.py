@@ -1,4 +1,4 @@
-""" NURBS-Python Examples Component
+""" NURBS-Python Shapes Component
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
