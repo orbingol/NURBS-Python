@@ -13,6 +13,6 @@ The shapes module provides functionality for automatic generation of the most co
 Surfaces
 ========
 
-.. automodule:: geomdl.shapes.curve2d
+.. automodule:: geomdl.shapes.surface
     :members:
     :undoc-members:
