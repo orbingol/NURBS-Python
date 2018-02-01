@@ -197,6 +197,56 @@ def test_nurbs_surface_weights3():
     assert surf.weights[4] == 0.5
 
 
+def test_nurbs_surface_knot_vector_u():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 1.0],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 1.0],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
+
+    assert surf.knotvector_u == (0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0)
+
+
+def test_nurbs_surface_knot_vector_v():
+    surf = OBJECT_INSTANCE()
+    ctrlpts = [[1.0, 1.0, 10.0, 1.0],
+               [1.0, 2.0, 11.0, 1.0],
+               [1.0, 3.0, 12.0, 1.0],
+               [2.0, 1.0, 13.0, 1.0],
+               [2.0, 2.0, 14.0, 1.0],
+               [2.0, 3.0, 15.0, 1.0],
+               [3.0, 1.0, 16.0, 1.0],
+               [3.0, 2.0, 17.0, 1.0],
+               [3.0, 3.0, 18.0, 1.0],
+               [4.0, 1.0, 19.0, 1.0],
+               [4.0, 2.0, 20.0, 1.0],
+               [4.0, 3.0, 21.0, 1.0]]
+    surf.ctrlpts_size_v = 3
+    surf.ctrlpts_size_u = 4
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts = ctrlpts
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
+
+    assert surf.knotvector_v == (0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+
+
 def test_nurbs_surface_eval1():
     # Create a surface instance
     surf = OBJECT_INSTANCE()
