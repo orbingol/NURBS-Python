@@ -8,8 +8,8 @@
 """
 
 from copy import deepcopy
-import geomdl.BSpline as BSpline
-import geomdl.utilities as utils
+from . import BSpline
+from . import utilities as utils
 
 
 class Curve(BSpline.Curve):

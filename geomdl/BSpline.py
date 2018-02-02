@@ -9,8 +9,8 @@
 
 import warnings
 import copy
-import geomdl.utilities as utils
-from geomdl.visualization import VisBase
+from . import utilities as utils
+from .visualization import VisBase
 
 
 class Curve(object):
