@@ -11,9 +11,9 @@ that might seem to cause conflicts with other packages, and therefore in v3.x of
 Included Modules
 ^^^^^^^^^^^^^^^^
 
-The NURBS-Python library is more than a simple NURBS library. It includes 2D/3D curve and surface classes which contains
-a convenient data structure implemented with Python properties and evaluation functionality. Everything is self-contained,
-there is no need for loading external modules.
+The NURBS-Python library is more than a simple NURBS library. It includes surface and 2D/3D curve classes which
+provide a convenient data structure implemented with Python properties as well as the evaluation, and export/exchange
+functionality.
 
 Following modules are included in this library:
 
@@ -24,7 +24,7 @@ Following modules are included in this library:
     module_nurbs
     module_utilities
     module_cpgen
-
+    module_exchange
 
 Visualization
 =============
@@ -51,5 +51,6 @@ NURBS-Python also provides a custom module for automatic generation of the most 
     :maxdepth: 2
 
     module_shapes
+
 
 .. _Paraview: https://www.paraview.org/
