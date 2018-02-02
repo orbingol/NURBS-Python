@@ -196,7 +196,7 @@ Starting from NURBS-Python v3.1.0, a new experimental module called :code:`excha
 module provides functionality for exporting NURBS surfaces to common CAD exchange formats.
 
 Example 1
-~~~~~~~~~
+---------
 
 The following example demonstrates saving surfaces as .obj files:
 
@@ -231,7 +231,7 @@ The following example demonstrates saving surfaces as .obj files:
     exchange.save_obj(surf, "bezier_surf.obj")
 
 Example 2
-~~~~~~~~~
+---------
 
 The following example combines :code:`shapes` module together with :code:`exchange` module:
 
