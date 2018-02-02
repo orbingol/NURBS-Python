@@ -567,3 +567,107 @@ def test_nurbs_surface_eval14():
     assert abs(evalpt[0] - RESULT_LIST[13][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[13][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[13][2]) < GEOMDL_DELTA
+
+
+def test_nurbs_surface_insert_knot1():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set weighted control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Insert knot
+    surf.insert_knot(0.3, 0.4)
+
+    # Evaluate curve
+    evalpt = surf.surfpt(u=0.3, v=0.4)
+
+    assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
+
+
+def test_nurbs_surface_insert_knot2():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set weighted control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Insert knot
+    surf.insert_knot(u=0.3, v=0.4, ru=2, rv=2)
+
+    # Evaluate curve
+    evalpt = surf.surfpt(u=0.3, v=0.4)
+
+    assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
+
+
+def test_nurbs_surface_insert_knot3():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set weighted control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Insert knot
+    surf.insert_knot(v=0.4, rv=2)
+
+    # Evaluate curve
+    evalpt = surf.surfpt(u=0.3, v=0.4)
+
+    assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
+
+
+def test_nurbs_surface_insert_knot4():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set weighted control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Insert knot
+    surf.insert_knot(u=0.3, ru=2)
+
+    # Evaluate curve
+    evalpt = surf.surfpt(u=0.3, v=0.4)
+
+    assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
