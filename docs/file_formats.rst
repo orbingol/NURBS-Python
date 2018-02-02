@@ -188,3 +188,66 @@ The following modes are available via ``mode=`` parameter of the ``export_surfpt
 * ``zigzag``: Generates a zig-zag shape
 * ``wireframe``: Generates a wireframe/quad mesh
 * ``triangle``: Generates a triangular mesh
+
+OBJ Files
+=========
+
+Starting from NURBS-Python v3.1.0, a new experimental module called :code:`exchange` has been added to the package. This
+module provides functionality for exporting NURBS surfaces to common CAD exchange formats.
+
+Example 1
+~~~~~~~~~
+
+The following example demonstrates saving surfaces as .obj files:
+
+.. code-block:: python
+
+    # ex_bezier_surface.py
+    from geomdl import BSpline
+    from geomdl import utilities
+    from geomdl import exchange
+
+    # Create a BSpline surface instance
+    surf = BSpline.Surface()
+
+    # Set evaluation delta
+    surf.delta = 0.01
+
+    # Set up the surface
+    surf.degree_u = 3
+    surf.degree_v = 2
+    control_points = [[0, 0, 0], [0, 1, 0], [0, 2, -3],
+                      [1, 0, 6], [1, 1, 0], [1, 2, 0],
+                      [2, 0, 0], [2, 1, 0], [2, 2, 3],
+                      [3, 0, 0], [3, 1, -3], [3, 2, 0]]
+    surf.set_ctrlpts(control_points, 4, 3)
+    surf.knotvector_u = utilities.generate_knot_vector(surf.degree_u, 4)
+    surf.knotvector_v = utilities.generate_knot_vector(surf.degree_v, 3)
+
+    # Evaluate surface
+    surf.evaluate()
+
+    # Save surface as a .obj file
+    exchange.save_obj(surf, "bezier_surf.obj")
+
+Example 2
+~~~~~~~~~
+
+The following example combines :code:`shapes` module together with :code:`exchange` module:
+
+.. code-block:: python
+
+    from geomdl.shapes import surface
+    from geomdl import exchange
+
+    # Generate cylindirical surface
+    surf = surface.cylinder(radius=5, height=12.5)
+
+    # Set evaluation delta
+    surf.delta = 0.01
+
+    # Evaluate the surface
+    surf.evaluate()
+
+    # Save surface as a .obj file
+    exchange.save_obj(surf, "cylindirical_surf.obj")
