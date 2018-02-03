@@ -486,9 +486,28 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
     return ret_val
 
 
-# Algorithm A2.1 (internal functionality)
+# FindSpan (Algorithm A2.1) implementation using linear search
 def find_span(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
-    """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller."""
+    """ FindSpan (Algorithm A2.1) implementation using linear search.
+
+    .. note:: This is **NOT** direct implementation of Algorithm A2.1.
+    """
+    span = 0  # Knot span index starts from zero
+    while span < control_points_size and knot_vector[span] <= knot:
+        span += 1
+
+    return span - 1
+
+
+# FindSpan (Algorithm A2.1) implementation using binary search
+def find_span2(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
+    """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller.
+
+    .. note:: This algorithm uses binary search to find the knot span.
+
+    The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
+    if FindSpan returns 1, then the knot is between the internal [0, 1).
+    """
     # Number of knots; m + 1
     # Number of control points; n + 1
     # n = m - p - 1; where p = degree
