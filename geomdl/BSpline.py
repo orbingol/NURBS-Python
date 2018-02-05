@@ -784,14 +784,15 @@ class Curve(object):
         return ret_list
 
     # Knot insertion
-    def insert_knot(self, u, r=1):
+    def insert_knot(self, u, r=1, check_r=True):
         """ Inserts the given knot and updates the control points array and the knot vector.
 
-        :param u: Knot to be inserted
+        :param u: knot to be inserted
         :type u: float
         :param r: number of knot insertions
         :type r: int
-        :return: None
+        :param check_r: enables/disables number of knot insertions check
+        :type check_r: bool
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
@@ -804,7 +805,7 @@ class Curve(object):
         s = utils.find_multiplicity(u, self._knot_vector)
 
         # Check if it is possible add that many number of knots
-        if r > self._degree - s - 1:
+        if check_r and r > self._degree - s:
             warnings.warn("Cannot insert " + str(r) + " number of knots")
             return
 
@@ -858,7 +859,7 @@ class Curve(object):
         self._control_points = Q
 
         # Evaluate curve again if it has already been evaluated before knot insertion
-        if self._curve_points:
+        if check_r and self._curve_points:
             self.evaluate()
 
 
@@ -2030,7 +2031,7 @@ class Surface(object):
         return ret_list
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates
-    def insert_knot(self, u=None, v=None, ru=1, rv=1):
+    def insert_knot(self, u=None, v=None, ru=1, rv=1, check_r=True):
         """ Inserts the given knots and updates the control points array and the knot vectors.
 
         :param u: Knot to be inserted in U-direction
@@ -2041,7 +2042,8 @@ class Surface(object):
         :type ru: int
         :param rv: Number of knot insertions in V-direction
         :type rv: int
-        :return: None
+        :param check_r: enables/disables number of knot insertions check
+        :type check_r: bool
         """
         can_insert_knot = True
 
@@ -2069,7 +2071,7 @@ class Surface(object):
             s_u = utils.find_multiplicity(u, self._knot_vector_u)
 
             # Check if it is possible add that many number of knots
-            if ru > p - s_u - 1:
+            if check_r and ru > p - s_u:
                 warnings.warn("Cannot insert " + str(ru) + " knots in the U direction")
                 can_insert_knot = False
 
@@ -2139,7 +2141,7 @@ class Surface(object):
             s_v = utils.find_multiplicity(v, self._knot_vector_v)
 
             # Check if it is possible add that many number of knots
-            if rv > q - s_v - 1:
+            if check_r and rv > q - s_v:
                 warnings.warn("Cannot insert " + str(rv) + " knots in the V direction")
                 can_insert_knot = False
 
@@ -2203,5 +2205,5 @@ class Surface(object):
                         self._control_points.append(dir_v)
 
         # Evaluate surface again if it has already been evaluated before knot insertion
-        if self._surface_points:
+        if check_r and self._surface_points:
             self.evaluate()
