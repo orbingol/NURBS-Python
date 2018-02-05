@@ -1324,7 +1324,7 @@ class Surface(object):
     def delta(self):
         """ Surface evaluation delta.
 
-        .. note:: The delta value is 0.01 by default.
+        .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
