@@ -252,7 +252,7 @@ class Curve(object):
 
         # Run the visualization component
         self._vis_component.clear()
-        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor)
+        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type=1)
         self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor)
         self._vis_component.render()
 
@@ -1400,7 +1400,7 @@ class Surface(object):
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts,
                                 size=[self._control_points_size_u, self._control_points_size_v],
-                                name="Control Points", color=cpcolor)
+                                name="Control Points", color=cpcolor, plot_type=1)
         self._vis_component.add(ptsarr=self._surface_points,
                                 size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
                                 name="Surface", color=surfcolor)

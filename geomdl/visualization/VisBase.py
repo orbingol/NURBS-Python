@@ -22,41 +22,32 @@ class VisAbstract(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, plot_ctrlpts=True):
-        self._points = []  # control points and evaluated points
-        self._sizes = []  # sizes in all directions
-        self._colors = []  # color information for the plots
-        self._names = []  # names of the plots on the legend
+        self._plots = []
         self._plot_ctrlpts = plot_ctrlpts
         self._figure_size = [10.67, 8]
         self._figure_dpi = 96
 
     def clear(self):
         """ Clears the points, colors and names lists. """
-        if self._points:
-            self._points[:] = []
-            self._sizes[:] = []
-            self._colors[:] = []
-            self._names[:] = []
+        self._plots[:] = []
 
-    def add(self, ptsarr=(), size=0, name=None, color=None):
+    def add(self, ptsarr=(), name=None, color=None, plot_type=0):
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control, curve or surface points
         :type ptsarr: list, tuple
-        :param size: size in all directions
-        :type size: int, list
         :param name: name of the point on the legend
         :type name: str
         :param color: color of the point on the legend
         :type color: str
+        :param plot_type: type of the plot, control points (type = 1) or evaluated points (type = 0)
+        :type plot_type: int
         """
         if not ptsarr or not color or not name:
             return
-        # Add points, size, plot color and name on the legend
-        self._points.append(ptsarr)
-        self._sizes.append(size)
-        self._colors.append(color)
-        self._names.append(name)
+        # Add points, plot color and name on the legend
+        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
+        self._plots.append(elem)
 
     def figure_size(self, size=None):
         """ Sets the figure/window size.
@@ -103,6 +94,26 @@ class VisAbstractSurf(VisAbstract):
     def __init__(self, plot_ctrlpts=True):
         super(VisAbstractSurf, self).__init__(plot_ctrlpts)
         self._ctrlpts_offset = 0.0
+
+    def add(self, ptsarr=(), size=0, name=None, color=None, plot_type=0):
+        """ Adds points sets to the visualization instance for plotting.
+
+        :param ptsarr: control, curve or surface points
+        :type ptsarr: list, tuple
+        :param size: size in all directions, e.g. in U- or V-direction
+        :type size: int, tuple, list
+        :param name: name of the point on the legend
+        :type name: str
+        :param color: color of the point on the legend
+        :type color: str
+        :param plot_type: type of the plot, control points (type = 1) or evaluated points (type = 0)
+        :type plot_type: int
+        """
+        if not ptsarr or not color or not name:
+            return
+        # Add points, size, plot color and name on the legend
+        elem = {'ptsarr': ptsarr, 'size': size, 'name': name, 'color': color, 'type': plot_type}
+        self._plots.append(elem)
 
     def set_ctrlpts_offset(self, offset_value):
         """ Sets an offset for the control points grid plot.

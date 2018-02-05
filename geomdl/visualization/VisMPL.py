@@ -11,7 +11,7 @@ from .VisBase import VisAbstract, VisAbstractSurf
 from geomdl import utilities as utils
 
 import numpy as np
-import matplotlib
+import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
@@ -23,25 +23,27 @@ class VisCurve2D(VisAbstract):
 
     def render(self):
         """ Plots the 2D curve and the control points polygon """
-        if not self._points:
-            return False
-
-        cpts = np.array(self._points[0])
-        crvpts = np.array(self._points[1])
+        if not self._plots:
+            return
 
         legend_proxy = []
         legend_names = []
 
         # Draw control points polygon and the curve
         plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
-        if self._plot_ctrlpts:
-            cppolygon, = plt.plot(cpts[:, 0], cpts[:, 1], color=self._colors[0], linestyle='-.', marker='o')
-            legend_proxy.append(cppolygon)
-            legend_names.append(self._names[0])
 
-        curveplt, = plt.plot(crvpts[:, 0], crvpts[:, 1], color=self._colors[1], linestyle='-')
-        legend_proxy.append(curveplt)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            pts = np.array(plot['ptsarr'])
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    cpplot, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
+                    legend_proxy.append(cpplot)
+                    legend_names.append(plot['name'])
+            else:
+                curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
+                legend_proxy.append(curveplt)
+                legend_names.append(plot['name'])
 
         # Add legend
         plt.legend(legend_proxy, legend_names)
@@ -57,11 +59,8 @@ class VisCurve3D(VisAbstract):
 
     def render(self):
         """ Plots the 3D curve and the control points polygon """
-        if not self._points:
-            return False
-
-        cpts = np.array(self._points[0])
-        crvpts = np.array(self._points[1])
+        if not self._plots:
+            return
 
         # Draw control points polygon and the 3D curve
         fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
@@ -70,17 +69,20 @@ class VisCurve3D(VisAbstract):
         legend_proxy = []
         legend_names = []
 
-        # Plot 3D lines
-        if self._plot_ctrlpts:
-            ax.plot(cpts[:, 0], cpts[:, 1], cpts[:, 2], color=self._colors[0], linestyle='-.', marker='o')
-            plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
-            legend_proxy.append(plot1_proxy)
-            legend_names.append(self._names[0])
-
-        ax.plot(crvpts[:, 0], crvpts[:, 1], crvpts[:, 2], color=self._colors[1], linestyle='-')
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
-        legend_proxy.append(plot2_proxy)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            pts = np.array(plot['ptsarr'])
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
+                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                    legend_proxy.append(plot1_proxy)
+                    legend_names.append(plot['name'])
+            else:
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
+                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -99,11 +101,8 @@ class VisSurface(VisAbstractSurf):
 
     def render(self):
         """ Plots the surface and the control points grid """
-        if not self._points:
-            return False
-
-        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
-        surf = np.array(utils.make_triangle(self._points[1], self._sizes[1][1], self._sizes[1][0]))
+        if not self._plots:
+            return
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
@@ -112,19 +111,22 @@ class VisSurface(VisAbstractSurf):
         legend_proxy = []
         legend_names = []
 
-        # Draw control points grid
-        if self._plot_ctrlpts:
-            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
-            plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
-            legend_proxy.append(plot1_proxy)
-            legend_names.append(self._names[0])
-
-        # Draw surface plot
-        ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
-        legend_proxy.append(plot2_proxy)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                    cp_z = pts[:, 2] + self._ctrlpts_offset
+                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                    legend_proxy.append(plot1_proxy)
+                    legend_names.append(plot['name'])
+            else:
+                pts = np.array(utils.make_triangle(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -143,11 +145,8 @@ class VisSurfWireframe(VisAbstractSurf):
 
     def render(self):
         """ Plots the surface and the control points grid """
-        if not self._points:
-            return False
-
-        cpgrid = np.array(self._points[0])
-        surf = np.array(utils.make_quad(self._points[1], self._sizes[1][1], self._sizes[1][0]))
+        if not self._plots:
+            return
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
@@ -156,19 +155,22 @@ class VisSurfWireframe(VisAbstractSurf):
         legend_proxy = []
         legend_names = []
 
-        # Plot control points
-        if self._plot_ctrlpts:
-            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
-            ax.scatter(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], s=25, depthshade=True)
-            plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
-            legend_proxy.append(plot1_proxy)
-            legend_names.append(self._names[0])
-
-        # Plot surface wireframe plot
-        ax.plot(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-', color=self._colors[1])
-        legend_proxy.append(plot2_proxy)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    pts = np.array(plot['ptsarr'])
+                    cp_z = pts[:, 2] + self._ctrlpts_offset
+                    ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
+                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                    legend_proxy.append(plot1_proxy)
+                    legend_names.append(plot['name'])
+            else:
+                pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -187,11 +189,8 @@ class VisSurfTriangle(VisAbstractSurf):
 
     def render(self):
         """ Plots the surface and the control points grid """
-        if not self._points:
-            return False
-
-        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
-        surf = np.array(self._points[1])
+        if not self._plots:
+            return
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
@@ -200,19 +199,22 @@ class VisSurfTriangle(VisAbstractSurf):
         legend_proxy = []
         legend_names = []
 
-        # Draw control points grid
-        if self._plot_ctrlpts:
-            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
-            plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
-            legend_proxy.append(plot1_proxy)
-            legend_names.append(self._names[0])
-
-        # Draw surface plot
-        ax.plot_trisurf(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1])
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='^')
-        legend_proxy.append(plot2_proxy)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                    cp_z = pts[:, 2] + self._ctrlpts_offset
+                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                    legend_proxy.append(plot1_proxy)
+                    legend_names.append(plot['name'])
+            else:
+                pts = np.array(plot['ptsarr'])
+                ax.plot_trisurf(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
+                legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -231,11 +233,8 @@ class VisSurfScatter(VisAbstractSurf):
 
     def render(self):
         """ Plots the surface and the control points grid """
-        if not self._points:
-            return False
-
-        cpgrid = np.array(utils.make_quad(self._points[0], self._sizes[0][1], self._sizes[0][0]))
-        surf = np.array(self._points[1])
+        if not self._plots:
+            return
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._figure_size, dpi=self._figure_dpi)
@@ -244,19 +243,22 @@ class VisSurfScatter(VisAbstractSurf):
         legend_proxy = []
         legend_names = []
 
-        # Draw control points grid
-        if self._plot_ctrlpts:
-            cp_z = cpgrid[:, 2] + self._ctrlpts_offset
-            ax.plot(cpgrid[:, 0], cpgrid[:, 1], cp_z, color=self._colors[0], linestyle='-.', marker='o')
-            plot1_proxy = matplotlib.lines.Line2D([0], [0], linestyle='-.', color=self._colors[0], marker='o')
-            legend_proxy.append(plot1_proxy)
-            legend_names.append(self._names[0])
-
-        # Draw surface points scatter plot
-        ax.scatter(surf[:, 0], surf[:, 1], surf[:, 2], color=self._colors[1], s=50, depthshade=True)
-        plot2_proxy = matplotlib.lines.Line2D([0], [0], linestyle='none', color=self._colors[1], marker='o')
-        legend_proxy.append(plot2_proxy)
-        legend_names.append(self._names[1])
+        # Start plotting
+        for plot in self._plots:
+            if plot['type'] == 1:
+                if self._plot_ctrlpts:
+                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                    cp_z = pts[:, 2] + self._ctrlpts_offset
+                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                    legend_proxy.append(plot1_proxy)
+                    legend_names.append(plot['name'])
+            else:
+                pts = np.array(plot['ptsarr'])
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
+                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         ax.legend(legend_proxy, legend_names, numpoints=1)
