@@ -14,6 +14,7 @@ Following modules are included in this library:
     module_nurbs
     module_utilities
     module_cpgen
+    module_container
     module_exchange
 
 Visualization
@@ -32,8 +33,8 @@ Although there exists a visualization component, the users are completely free t
 or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
 curves and surfaces using a software, such as Paraview_.
 
-Common Shapes
-=============
+Generating Common Shapes
+========================
 
 NURBS-Python also provides a custom module for automatic generation of the most commonly used curves and surfaces.
 
