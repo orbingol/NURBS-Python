@@ -8,7 +8,7 @@
 """
 
 from . import exchange_helpers as exh
-from . import BSpline
+from . import BSpline, NURBS
 
 
 # Saves B-Spline and/or NURBS surface as a Wavefront OBJ file
@@ -23,7 +23,7 @@ def save_obj(surface=None, file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     # Input validity checking
-    if not isinstance(surface, BSpline.Surface):
+    if not isinstance(surface, (BSpline.Surface, NURBS.Surface)):
         raise ValueError("Input is not a surface")
     if not file_name:
         raise ValueError("File name field is required")
