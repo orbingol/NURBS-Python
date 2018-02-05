@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 
 class VisCurve2D(VisAbstract):
     """ Visualization module for 2D Curves """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisCurve2D, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisCurve2D, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the 2D curve and the control points polygon """
@@ -46,7 +46,8 @@ class VisCurve2D(VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend
-        plt.legend(legend_proxy, legend_names)
+        if self._plot_legend:
+            plt.legend(legend_proxy, legend_names)
 
         # Display 2D plot
         plt.show()
@@ -54,8 +55,8 @@ class VisCurve2D(VisAbstract):
 
 class VisCurve3D(VisAbstract):
     """ Visualization module for 3D Curves """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisCurve3D, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisCurve3D, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the 3D curve and the control points polygon """
@@ -85,7 +86,8 @@ class VisCurve3D(VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        ax.legend(legend_proxy, legend_names, numpoints=1)
+        if self._plot_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Display the 3D plot
         plt.show()
@@ -96,8 +98,8 @@ class VisSurface(VisAbstractSurf):
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid
     """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisSurface, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisSurface, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the surface and the control points grid """
@@ -129,7 +131,8 @@ class VisSurface(VisAbstractSurf):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        ax.legend(legend_proxy, legend_names, numpoints=1)
+        if self._plot_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Display the 3D plot
         plt.show()
@@ -140,8 +143,8 @@ class VisSurfWireframe(VisAbstractSurf):
 
     Scatter plot for the control points and wireframe for the surface points
     """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisSurfWireframe, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisSurfWireframe, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the surface and the control points grid """
@@ -173,7 +176,8 @@ class VisSurfWireframe(VisAbstractSurf):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        ax.legend(legend_proxy, legend_names, numpoints=1)
+        if self._plot_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Display the 3D plot
         plt.show()
@@ -184,8 +188,8 @@ class VisSurfTriangle(VisAbstractSurf):
 
     Wireframe plot for the control points and triangulated plot for the surface points
     """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisSurfTriangle, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisSurfTriangle, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the surface and the control points grid """
@@ -217,7 +221,8 @@ class VisSurfTriangle(VisAbstractSurf):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        ax.legend(legend_proxy, legend_names, numpoints=1)
+        if self._plot_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Display the 3D plot
         plt.show()
@@ -228,8 +233,8 @@ class VisSurfScatter(VisAbstractSurf):
 
     Wireframe plot for the control points and scatter plot for the surface points
     """
-    def __init__(self, plot_ctrlpts=True):
-        super(VisSurfScatter, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisSurfScatter, self).__init__(plot_ctrlpts, display_legend)
 
     def render(self):
         """ Plots the surface and the control points grid """
@@ -261,7 +266,8 @@ class VisSurfScatter(VisAbstractSurf):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        ax.legend(legend_proxy, legend_names, numpoints=1)
+        if self._plot_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Display the 3D plot
         plt.show()

@@ -21,9 +21,10 @@ class VisAbstract(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, plot_ctrlpts=True):
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
         self._plots = []
         self._plot_ctrlpts = plot_ctrlpts
+        self._plot_legend = display_legend
         self._figure_size = [10.67, 8]
         self._figure_dpi = 96
 
@@ -91,8 +92,8 @@ class VisAbstractSurf(VisAbstract):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, plot_ctrlpts=True):
-        super(VisAbstractSurf, self).__init__(plot_ctrlpts)
+    def __init__(self, plot_ctrlpts=True, display_legend=True):
+        super(VisAbstractSurf, self).__init__(plot_ctrlpts, display_legend)
         self._ctrlpts_offset = 0.0
 
     def add(self, ptsarr=(), size=0, name=None, color=None, plot_type=0):
