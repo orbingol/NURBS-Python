@@ -1,7 +1,7 @@
 """
 .. module:: NURBS
     :platform: Unix, Windows
-    :synopsis: A data storage and evaluation class for NURBS curves and surfaces
+    :synopsis: A data storage and evaluation module for NURBS curves and surfaces
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
