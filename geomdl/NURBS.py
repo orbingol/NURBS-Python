@@ -36,12 +36,12 @@ class Curve(BSpline.Curve):
 
     The evaluation methods are:
 
-    * :func:`.evaluate()`
-    * :func:`.derivatives()`
-    * :func:`.tangent()`
-    * :func:`.insert_knot()`
-
-    Please check the function reference for the details.
+    * :py:meth:`.evaluate()`
+    * :py:meth:`.derivatives()`
+    * :py:meth:`.tangent()`
+    * :py:meth:`.normal()`
+    * :py:meth:`.binormal()`
+    * :py:meth:`.insert_knot()`
 
     .. note::
 
@@ -224,12 +224,12 @@ class Curve2D(Curve):
 
     The evaluation methods are:
 
-    * :func:`.evaluate()`
-    * :func:`.derivatives()`
-    * :func:`.tangent()`
-    * :func:`.insert_knot()`
-
-    Please check the function reference for the details.
+    * :py:meth:`.evaluate()`
+    * :py:meth:`.derivatives()`
+    * :py:meth:`.tangent()`
+    * :py:meth:`.normal()`
+    * :py:meth:`.binormal()`
+    * :py:meth:`.insert_knot()`
 
     .. note::
 
@@ -287,13 +287,12 @@ class Surface(BSpline.Surface):
 
     The evaluation methods are:
 
-    * :func:`.evaluate()`
-    * :func:`.derivatives()`
-    * :func:`.tangent()`
-    * :func:`.normal()`
-    * :func:`.insert_knot()`
-
-    Please check the function reference for the details.
+    * :py:meth:`.evaluate()`
+    * :py:meth:`.derivatives()`
+    * :py:meth:`.tangent()`
+    * :py:meth:`.normal()`
+    * :py:meth:`.binormal()`
+    * :py:meth:`.insert_knot()`
 
     .. note::
 
