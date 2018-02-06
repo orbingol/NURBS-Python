@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-NURBS-Python is a free and open-source project released under [MIT License](../LICENSE) and you are always welcome to 
+NURBS-Python is a free and open-source project released under [MIT License](../LICENSE). You are always welcome to 
 contribute to NURBS-Python and it could happen in many ways!
 
 The development started with the intentions of providing an object-oriented NURBS library in pure Python for 
