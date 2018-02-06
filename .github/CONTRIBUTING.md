@@ -1,16 +1,26 @@
 # Contribution Guidelines
 
-First of all, I am really glad you are here and I hope you liked NURBS-Python. I appreciate your time and efforts on
-testing and debugging NURBS-Python. Before you post, I would like to recommend some resources for starters:
+NURBS-Python is a free and open-source project released under [MIT License](../LICENSE) and you are always welcome to 
+contribute to NURBS-Python and it could happen in many ways!
+
+The development started with the intentions of providing an object-oriented NURBS library in pure Python for 
+scientific and research purposes. The author and all the contributors volunteered their free time to develop and 
+improve this project, and I appreciate your time in using, developing and testing NURBS-Python.
+
+Before you post, I would like to recommend some resources for starters:
 
 * [Code of Conduct](CODE_OF_CONDUCT.md)
 * [README file](../README.rst)
 * [Official Documentation](http://nurbs-python.readthedocs.io/en/latest/)
 * [The NURBS Book](http://www.springer.com/gp/book/9783642973857)
 
+
 ## Before you post, please read!
 
-It would be good to remember these before you post to the issue tracker or email the author:
+We have a nice [Code of Conduct](CODE_OF_CONDUCT.md) document and it describes pretty much everything you need to know
+in the most appropriate way. Please see [Code of Conduct](CODE_OF_CONDUCT.md) for details.
+
+In summary, it would be good to remember these before you post to the issue tracker or email the author:
 
 * Remember that you are talking to humans
 * Adhere to the same standards of behavior that you follow in your real life as you are talking to complete strangers
@@ -18,24 +28,23 @@ It would be good to remember these before you post to the issue tracker or email
 * Please and please don't use stingy words or phrases
 * Double-check your attitude in your posts
 * Be reasonable
+* Feel free to explain the problem as long as or as detailed as you would like to
 * Simply, __be nice__!
 
 The following will **NOT** be tolerated in any way:
 
 * Any sort of offensive comment
-* Contempt and/or disdain in explicit and/or implicit ways
-* Accusation directed to the authors and/or contributors (that's why we have the LICENSE file, check it out)
-* Implication of you having the IQ of [INT_MAX](http://www.cplusplus.com/reference/climits/) and all others can only
-have the ability to breathe
-* Implication of you having the ability to travel to Mars in less than 1 microseconds
-* A strange thought that people who read the issue tracker have ability to read your mind
-* Anything that makes you feel discomfort when it is done 2 times harder to you in person
-* ... and other similar stuff
+* Contempt in explicit and/or implicit ways
+* Any sort of accusation directed to the authors and/or contributors (that's why we have the LICENSE file)
+* Complaints about implementation choices (instead, please ask about the reason nicely or fix it and create a PR)
+* "Bad" tone in writing (i.e. please triple-check how you say what you want to say)
+* A strange thought that people who read the issue tracker have ability to read your mind (happens all the time)
 
-I really don't like to indicate these details in a public post but all authors and contributors spend their free time
-to put some effort on development of this package. Their free time is as valuable as your free time, the time you spend
-outside of your regular work doing non-work and completely unrelated things.
-Nobody has to tolerate to you in any way, if you don't care about what you write.
+I would like to remind that all authors and contributors spend their free time to put some effort on development of 
+this package. Their free time is as valuable as your free time, the time you spend outside of your regular work doing 
+non-work and completely unrelated things. Therefore, please show some respect in your messages. Horrible grammar, 
+bad English, long explanations, etc. are all okay, no worries :-)
+
 In case of any confusions or problems, please follow [this link](http://lmgtfy.com/?q=netiquette).
 
 ## What happens when you found a bug
@@ -57,17 +66,27 @@ instead of asking me to implement them** :)
 
 ## Pull requests
 
-Please use `devmaster` branch for creating PRs.
+Please [create pull requests](https://help.github.com/articles/creating-a-pull-request/) against `devmaster` branch.
+CI tools are set to test every pull request, and I would appreciate if you could add tests for your changes and test
+your code with a Python linter utility, e.g. `pylint` and/or `prospector`.
+ 
+All your changes will be reviewed and if they are accepted, they will be merged to the `master` branch in the next 
+subsequent release of NURBS-Python 
+and your name will be added under the *Contributors* section of the [README](../README.rst) file.
+
+Feel free to open an issue on the project issue tracker, if you have any questions.
 
 ## Tests
 
-The project includes tests under `'tests/` directory and all tests are designed to run with `pytest`.
-I would be glad if you could follow this notation if you are planning to contribute to tests.
+The project includes automated tests under `'tests/` directory and all tests are designed to run with `pytest`.
+I would appreciate if you could contribute more tests to increase their code coverage.
+
+Just to present some code coverage metrics, it was around 70% after running all the included tests and 
+the examples in the [Examples Repository](https://github.com/orbingol/NURBS-Python_Examples)
+at the end of January 2018 (metrics acquired with the [coverage](https://pypi.python.org/pypi/coverage) tool).
 
 -----
 
-NURBS-Python is a free and open-source project. The author and all contributors volunteered their free time to develop
-and improve this project. All contributions, such as constructive comments, ideas, contributions to the code and tests 
-are much appreciated.
+As always, all contributions, such as constructive comments, ideas, code improvements and tests are much appreciated.
 
-Thanks!
+Thanks in advance!
