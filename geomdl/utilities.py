@@ -412,18 +412,17 @@ def generate_knot_vector(degree=0, control_points_size=0):
     i = 0
 
     # First degree+1 knots are "knot_min"
-    while i < degree + 1:
+    while i < degree:
         knot_vector.append(knot_min)
         i += 1
 
     # Calculate a uniform interval for middle knots
     num_segments = (m - (degree + 1) * 2) + 1  # number of segments in the middle
     spacing = (knot_max - knot_min) / num_segments  # spacing between the knots (uniform)
-    mid_knot = knot_min + spacing  # first middle knot
+
     # Middle knots
-    while i < m - (degree + 1):
+    for mid_knot in frange(0, 1, spacing, decimals=4):
         knot_vector.append(mid_knot)
-        mid_knot += spacing
         i += 1
 
     # Last degree+1 knots are "knot_max"
