@@ -32,11 +32,13 @@ class VisAbstract(object):
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
-    def add(self, ptsarr=(), name=None, color=None, plot_type=0):
+    def add(self, ptsarr=(), size=0, name=None, color=None, plot_type=0):
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control, curve or surface points
         :type ptsarr: list, tuple
+        :param size: size in all directions, e.g. in U- and V-direction
+        :type size: int, tuple, list
         :param name: name of the point on the legend
         :type name: str
         :param color: color of the point on the legend
@@ -46,8 +48,8 @@ class VisAbstract(object):
         """
         if not ptsarr or not color or not name:
             return
-        # Add points, plot color and name on the legend
-        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
+        # Add points, size, plot color and name on the legend
+        elem = {'ptsarr': ptsarr, 'size': size, 'name': name, 'color': color, 'type': plot_type}
         self._plots.append(elem)
 
     def figure_size(self, size=None):
@@ -95,26 +97,6 @@ class VisAbstractSurf(VisAbstract):
     def __init__(self, plot_ctrlpts=True, display_legend=True):
         super(VisAbstractSurf, self).__init__(plot_ctrlpts, display_legend)
         self._ctrlpts_offset = 0.0
-
-    def add(self, ptsarr=(), size=0, name=None, color=None, plot_type=0):
-        """ Adds points sets to the visualization instance for plotting.
-
-        :param ptsarr: control, curve or surface points
-        :type ptsarr: list, tuple
-        :param size: size in all directions, e.g. in U- or V-direction
-        :type size: int, tuple, list
-        :param name: name of the point on the legend
-        :type name: str
-        :param color: color of the point on the legend
-        :type color: str
-        :param plot_type: type of the plot, control points (type = 1) or evaluated points (type = 0)
-        :type plot_type: int
-        """
-        if not ptsarr or not color or not name:
-            return
-        # Add points, size, plot color and name on the legend
-        elem = {'ptsarr': ptsarr, 'size': size, 'name': name, 'color': color, 'type': plot_type}
-        self._plots.append(elem)
 
     def set_ctrlpts_offset(self, offset_value):
         """ Sets an offset for the control points grid plot.
