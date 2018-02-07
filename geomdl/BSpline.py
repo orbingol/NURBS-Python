@@ -846,13 +846,13 @@ class Curve(object):
             for i in range(0, self._degree - j - s + 1):
                 alpha = (u - self._knot_vector[L + i]) / (self._knot_vector[i + k + 1] - self._knot_vector[L + i])
                 R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
-            Q[L] = R[0]
-            Q[k + r - j - s] = R[self._degree - j - s]
+            Q[L] = copy.deepcopy(R[0])
+            Q[k + r - j - s] = copy.deepcopy(R[self._degree - j - s])
 
         # Load remaining control points
         L = k - self._degree + r
         for i in range(L + 1, k - s):
-            Q[i] = R[i - L]
+            Q[i] = copy.deepcopy(R[i - L])
 
         # Update class variables
         self._knot_vector = UQ
@@ -2116,12 +2116,12 @@ class Surface(object):
                         for i in range(0, p - j - s_u + 1):
                             R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in
                                        zip(R[i], R[i + 1])]
-                        Q[L][row] = R[0]
-                        Q[k_u + ru - j - s_u][row] = R[p - j - s_u]
+                        Q[L][row] = copy.deepcopy(R[0])
+                        Q[k_u + ru - j - s_u][row] = copy.deepcopy(R[p - j - s_u])
                     # Load the remaining control points
                     L = k_u - p + ru
                     for i in range(L + 1, k_u - s_u):
-                        Q[i][row] = R[i - L]
+                        Q[i][row] = copy.deepcopy(R[i - L])
 
                 # Update class variables after knot insertion
                 self._knot_vector_u = UQ
@@ -2186,12 +2186,12 @@ class Surface(object):
                         for i in range(0, q - j - s_v + 1):
                             R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in
                                        zip(R[i], R[i + 1])]
-                        Q[col][L] = R[0]
-                        Q[col][k_v + rv - j - s_v] = R[q - j - s_v]
+                        Q[col][L] = copy.deepcopy(R[0])
+                        Q[col][k_v + rv - j - s_v] = copy.deepcopy(R[q - j - s_v])
                     # Load the remaining control points
                     # L = k_u - p + r + 1
                     for i in range(L + 1, k_v - s_v):
-                        Q[col][i] = R[i - L]
+                        Q[col][i] = copy.deepcopy(R[i - L])
 
                 # Update class variables after knot insertion
                 self._knot_vector_v = VQ
