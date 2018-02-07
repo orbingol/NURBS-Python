@@ -862,6 +862,65 @@ class Curve(object):
         if check_r and self._curve_points:
             self.evaluate()
 
+    def split(self, u=-1):
+        """ Splits the curve at the input parametric coordinate.
+
+        This method splits the curve into two pieces at the given parametric coordinate, generates two different
+        curve objects and returns them. It doesn't change anything on the initial curve.
+
+        :param u: parametric coordinate of the split location
+        :type u: float
+        :return: a list of curves as the split pieces of the initial curve
+        :rtype: list
+        """
+        # Validate input data
+        if u == 0.0 or u == 1.0:
+            raise ValueError("Cannot split on the corner points")
+        utils.check_uv(u)
+
+        # Create backups of the original curve
+        original_kv = copy.deepcopy(self._knot_vector)
+        original_cpts = copy.deepcopy(self._control_points)
+
+        # Find multiplicity of the knot
+        ks = utils.find_span(self._degree, self._knot_vector, len(self._control_points), u) - self._degree + 1
+        s = utils.find_multiplicity(u, self._knot_vector)
+        r = self._degree - s
+
+        # Insert knot
+        self.insert_knot(u, r, check_r=False)
+
+        # Knot vectors
+        knot_span = utils.find_span(self._degree, self._knot_vector, len(self._control_points), u) + 1
+        curve1_kv = self._knot_vector[0:knot_span]
+        curve1_kv.append(u)
+        curve2_kv = self._knot_vector[knot_span:]
+        for _ in range(0, self._degree + 1):
+            curve2_kv.insert(0, u)
+
+        # Control points
+        curve1_ctrlpts = self._control_points[0:ks + r]
+        curve2_ctrlpts = self._control_points[ks + r - 1:]
+
+        # Create a new curve for the first half
+        curve1 = self.__class__()
+        curve1.degree = self.degree
+        curve1.ctrlpts = curve1_ctrlpts
+        curve1.knotvector = curve1_kv
+
+        # Create another curve fot the second half
+        curve2 = self.__class__()
+        curve2.degree = self.degree
+        curve2.ctrlpts = curve2_ctrlpts
+        curve2.knotvector = curve2_kv
+
+        # Restore the original curve
+        self._knot_vector = original_kv
+        self._control_points = original_cpts
+
+        # Return the new curves
+        return curve1, curve2
+
 
 class Curve2D(Curve):
     """ Data storage and evaluation class for 2D B-Spline (NUBS) curves.
