@@ -9,8 +9,11 @@
 
 import warnings
 import copy
+
+from . import Abstract
 from . import utilities as utils
 from .visualization import VisBase
+from . import Multi
 
 
 class Curve(object):
@@ -871,7 +874,7 @@ class Curve(object):
         :param u: parametric coordinate of the split location
         :type u: float
         :return: a list of curves as the split pieces of the initial curve
-        :rtype: list
+        :rtype: Multi.MultiCurve
         """
         # Validate input data
         if u == 0.0 or u == 1.0:
@@ -918,8 +921,13 @@ class Curve(object):
         self._knot_vector = original_kv
         self._control_points = original_cpts
 
-        # Return the new curves
-        return curve1, curve2
+        # Create a MultiCurve
+        ret_val = Multi.MultiCurve()
+        ret_val.add(curve1)
+        ret_val.add(curve2)
+
+        # Return the new curves as a MultiCurve object
+        return ret_val
 
     def decompose(self):
         """ Decomposes the curve into Bezier curve segments of the same degree.
@@ -927,18 +935,18 @@ class Curve(object):
         This operation does not modify the curve, instead it returns the split curve segments.
 
         :return: a list of curve objects arranged in Bezier curve segments
-        :rtype: list
+        :rtype: Multi.MultiCurve
         """
-        curve_list = []
+        curve_list = Multi.MultiCurve()
         curve = copy.deepcopy(self)
         knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
         while knots:
             knot = knots[0]
-            curve_to_add, curve_to_split = curve.split(u=knot)
-            curve_list.append(curve_to_add)
-            curve = curve_to_split
+            curves = curve.split(u=knot)
+            curve_list.add(curves[0])
+            curve = curves[1]
             knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
-        curve_list.append(curve)
+        curve_list.add(curve)
 
         return curve_list
 

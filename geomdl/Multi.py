@@ -11,7 +11,7 @@ import abc
 import random
 import warnings
 
-from geomdl import BSpline, NURBS
+from . import Abstract
 from geomdl.visualization import VisBase
 
 
@@ -39,6 +39,7 @@ class MultiAbstract(object):
         self._delta = 0.1
         self._vis_component = None
         self._iter_index = 0
+        self._instance = None
 
     def __iter__(self):
         self._iter_index = 0
@@ -100,13 +101,29 @@ class MultiAbstract(object):
             return
         self._vis_component = value
 
-    @abc.abstractmethod
     def add(self, element):
         """ Abstract method for adding surface or curve objects to the container.
 
         :param element: the curve or surface object to be added
+        :type element:
         """
+        # if not isinstance(element, (self._instance)):
+        #     warnings.warn("Cannot add, incompatible type.")
+        #     return
         self._elements.append(element)
+
+    def add_list(self, elements):
+        """ Adds curve objects to the container.
+
+        :param elements: curve objects to be added
+        :type elements: list, tuple
+        """
+        if not isinstance(elements, (list, tuple)):
+            warnings.warn("Input must be a list or a tuple")
+            return
+
+        for element in elements:
+            self.add(element)
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
@@ -126,34 +143,7 @@ class MultiCurve(MultiAbstract):
 
     def __init__(self):
         super(MultiCurve, self).__init__()
-
-    def add(self, element):
-        """ Adds curve objects to the container.
-
-        :param element: curve object to be added
-        :type element: BSpline.Curve, BSpline.Curve2D, NURBS.Curve or NURBS.Curve2D
-        """
-        if not isinstance(element, (BSpline.Curve, NURBS.Curve)):
-            warnings.warn("Cannot add. Must be a curve!")
-            return
-
-        # Call parent method
-        super(MultiCurve, self).add(element)
-
-    def add_list(self, elements):
-        """ Adds curve objects to the container.
-
-        :param elements: curve objects to be added
-        :type elements: list, tuple
-        """
-        if not isinstance(elements, (list, tuple)):
-            warnings.warn("Input must be a list or a tuple")
-            return
-
-        for element in elements:
-            if isinstance(element, (BSpline.Curve, NURBS.Curve)):
-                # Call parent method
-                super(MultiCurve, self).add(element)
+        self._instance = Abstract.Curve
 
     def render(self):
         """ Renders the curve the using the visualization component.
@@ -185,34 +175,7 @@ class MultiSurface(MultiAbstract):
 
     def __init__(self):
         super(MultiSurface, self).__init__()
-
-    def add(self, element):
-        """ Adds surface objects to the container.
-
-        :param element: surface object to be added
-        :type element: BSpline.Surface or NURBS.Surface
-        """
-        if not isinstance(element, (BSpline.Surface, NURBS.Surface)):
-            warnings.warn("Cannot add. Must be a surface!")
-            return
-
-        # Call parent method
-        super(MultiSurface, self).add(element)
-
-    def add_list(self, elements):
-        """ Adds surface objects to the container.
-
-        :param elements: surface objects to be added
-        :type elements: list, tuple
-        """
-        if not isinstance(elements, (list, tuple)):
-            warnings.warn("Input must be a list or a tuple")
-            return
-
-        for element in elements:
-            if isinstance(element, (BSpline.Surface, NURBS.Surface)):
-                # Call parent method
-                super(MultiSurface, self).add(element)
+        self._instance = Abstract.Surface
 
     def render(self):
         """ Renders the surface the using the visualization component.
