@@ -1,9 +1,9 @@
 Using the Library
 ^^^^^^^^^^^^^^^^^
 
-Using NURBS-Python is very easy: set degrees, control points and knot vectors, and you are all good. In case you might
-have some toruble in using the library, there exists an Examples_ repository which is meant to give you a head-start on
-using the library and its modules.
+Using NURBS-Python is very easy: set degrees, control points and knot vectors, and you are all good. To give you a
+head-start on working with NURBS-Python, the authors also provide an Examples_ repository describing some basic usage of
+the library and its modules.
 
 The Examples_ repository contains examples on the following:
 
