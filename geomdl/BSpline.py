@@ -922,11 +922,11 @@ class Curve(object):
         return curve1, curve2
 
     def decompose(self):
-        """ Decomposes the curve into Bézier curve segments of the same degree.
+        """ Decomposes the curve into Bezier curve segments of the same degree.
 
         This operation does not modify the curve, instead it returns the split curve segments.
 
-        :return: a list of curve objects arranged in Bézier curve segments
+        :return: a list of curve objects arranged in Bezier curve segments
         :rtype: list
         """
         curve_list = []
