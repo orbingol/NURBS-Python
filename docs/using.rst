@@ -1,10 +1,20 @@
 Using the Library
 ^^^^^^^^^^^^^^^^^
 
-Please check the Examples_ repository to find some example scripts on how to use this library.
+Using NURBS-Python is very easy: set degrees, control points and knot vectors, and you are all good. In case you might
+have some toruble in using the library, there exists an Examples_ repository which is meant to give you a head-start on
+using the library and its modules.
 
-Please note that I only provide some Python scripts in the Examples_ repository, nothing fancy. If you are an avid user
-of Jupyter_, I believe that it would be very easy for you to convert these scripts into Jupyter notebook format.
+The Examples_ repository contains examples on the following:
+
+* Bézier surfaces and 2D/3D curves
+* 2D/3D BSpline & NURBS curve generation
+* Surface generation
+* Control points grid generation for ``Surface`` classes
+* Automatic knot vector generation for curves and surfacee
+* Visualization
+* Automatic NURBS curve and surface generation
+* Curve & surface splitting and Bézier decomposition
+
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
-.. _Jupyter: http://jupyter.org
