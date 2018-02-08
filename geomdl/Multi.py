@@ -140,6 +140,21 @@ class MultiCurve(MultiAbstract):
         # Call parent method
         super(MultiCurve, self).add(element)
 
+    def add_list(self, elements):
+        """ Adds curve objects to the container.
+
+        :param elements: curve objects to be added
+        :type elements: list, tuple
+        """
+        if not isinstance(elements, (list, tuple)):
+            warnings.warn("Input must be a list or a tuple")
+            return
+
+        for element in elements:
+            if isinstance(element, (BSpline.Curve, NURBS.Curve)):
+                # Call parent method
+                super(MultiCurve, self).add(element)
+
     def render(self):
         """ Renders the curve the using the visualization component.
 
@@ -183,6 +198,21 @@ class MultiSurface(MultiAbstract):
 
         # Call parent method
         super(MultiSurface, self).add(element)
+
+    def add_list(self, elements):
+        """ Adds surface objects to the container.
+
+        :param elements: surface objects to be added
+        :type elements: list, tuple
+        """
+        if not isinstance(elements, (list, tuple)):
+            warnings.warn("Input must be a list or a tuple")
+            return
+
+        for element in elements:
+            if isinstance(element, (BSpline.Surface, NURBS.Surface)):
+                # Call parent method
+                super(MultiSurface, self).add(element)
 
     def render(self):
         """ Renders the surface the using the visualization component.
