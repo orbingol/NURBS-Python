@@ -921,6 +921,30 @@ class Curve(object):
         # Return the new curves
         return curve1, curve2
 
+    def translate(self, vec=()):
+        """ Translates the curve using the input vector.
+
+        The input vector list/tuple must have
+
+        * 2 elements for 2D curves
+        * 3 elements for 3D curves
+
+        :param vec: translation vector
+        :type vec: list, tuple
+        """
+        if not vec or not isinstance(vec, (tuple, list)):
+            raise ValueError("The input must be a list or a tuple")
+
+        if len(vec) != self._dimension:
+            raise ValueError("The input must have " + str(self._dimension) + " elements")
+
+        new_ctrlpts = []
+        for point in self._control_points:
+            temp = [v + vec[i] for i, v in enumerate(point)]
+            new_ctrlpts.append(temp)
+
+        self._control_points = new_ctrlpts
+
 
 class Curve2D(Curve):
     """ Data storage and evaluation class for 2D B-Spline (NUBS) curves.
