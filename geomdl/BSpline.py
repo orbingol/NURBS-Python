@@ -921,6 +921,27 @@ class Curve(object):
         # Return the new curves
         return curve1, curve2
 
+    def decompose(self):
+        """ Decomposes the curve into Bézier curve segments of the same degree.
+
+        This operation does not modify the curve, instead it returns the split curve segments.
+
+        :return: a list of curve objects arranged in Bézier curve segments
+        :rtype: list
+        """
+        curve_list = []
+        curve = copy.deepcopy(self)
+        knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+        while knots:
+            knot = knots[0]
+            curve_to_add, curve_to_split = curve.split(u=knot)
+            curve_list.append(curve_to_add)
+            curve = curve_to_split
+            knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+        curve_list.append(curve)
+
+        return curve_list
+
     def translate(self, vec=()):
         """ Translates the curve using the input vector.
 
