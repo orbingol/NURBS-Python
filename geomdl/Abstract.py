@@ -10,7 +10,7 @@
 import abc
 from warnings import warn
 
-from .visualization import VisBase
+from . import VisBase
 
 
 class Curve(object):

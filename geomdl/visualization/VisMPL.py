@@ -7,7 +7,7 @@
 
 """
 
-from .VisBase import VisAbstract, VisAbstractSurf
+from geomdl import VisBase
 from geomdl import utilities as utils
 
 import numpy as np
@@ -16,7 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 
-class VisCurve2D(VisAbstract):
+class VisCurve2D(VisBase.VisAbstract):
     """ Visualization module for 2D Curves """
     def __init__(self, plot_ctrlpts=True, display_legend=True):
         super(VisCurve2D, self).__init__(plot_ctrlpts, display_legend)
@@ -53,7 +53,7 @@ class VisCurve2D(VisAbstract):
         plt.show()
 
 
-class VisCurve3D(VisAbstract):
+class VisCurve3D(VisBase.VisAbstract):
     """ Visualization module for 3D Curves """
     def __init__(self, plot_ctrlpts=True, display_legend=True):
         super(VisCurve3D, self).__init__(plot_ctrlpts, display_legend)
@@ -93,7 +93,7 @@ class VisCurve3D(VisAbstract):
         plt.show()
 
 
-class VisSurface(VisAbstractSurf):
+class VisSurface(VisBase.VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid
@@ -138,7 +138,7 @@ class VisSurface(VisAbstractSurf):
         plt.show()
 
 
-class VisSurfWireframe(VisAbstractSurf):
+class VisSurfWireframe(VisBase.VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Scatter plot for the control points and wireframe for the surface points
@@ -183,7 +183,7 @@ class VisSurfWireframe(VisAbstractSurf):
         plt.show()
 
 
-class VisSurfTriangle(VisAbstractSurf):
+class VisSurfTriangle(VisBase.VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Wireframe plot for the control points and triangulated plot for the surface points
@@ -228,7 +228,7 @@ class VisSurfTriangle(VisAbstractSurf):
         plt.show()
 
 
-class VisSurfScatter(VisAbstractSurf):
+class VisSurfScatter(VisBase.VisAbstractSurf):
     """ Visualization module for Surfaces
 
     Wireframe plot for the control points and scatter plot for the surface points

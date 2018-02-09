@@ -1,10 +1,11 @@
-Visualization Base Class
-^^^^^^^^^^^^^^^^^^^^^^^^
+Visualization Base
+^^^^^^^^^^^^^^^^^^
 
 The visualization component in the NURBS-Python package provides an easy way to visualise the surfaces and the 2D/3D
-curves generated using the library. ``VisAbstract`` class provides the abstract base for all visualization components.
+curves generated using the library. :py:class:`.VisAbstract` and :py:class:`.VisAbstractSurf`classes provide the
+required abstract base classes for all visualization components.
 
-.. automodule:: geomdl.visualization.VisBase
+.. automodule:: geomdl.VisBase
     :members:
     :undoc-members:
     :inherited-members:

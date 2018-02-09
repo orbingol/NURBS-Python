@@ -1,7 +1,7 @@
 """
 .. module:: VisBase
     :platform: Unix, Windows
-    :synopsis: Abstract classes for NURBS-Python visualization components
+    :synopsis: Abstract base classes for NURBS-Python visualization components
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

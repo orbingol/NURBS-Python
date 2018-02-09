@@ -12,7 +12,7 @@ import random
 import warnings
 
 from . import Abstract
-from geomdl.visualization import VisBase
+from . import VisBase
 
 
 # Generate random colors for plotting
