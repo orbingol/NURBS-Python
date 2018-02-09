@@ -25,77 +25,102 @@ class Curve(object):
         self._curve_points = None  # evaluated points
         self._vis_component = None  # visualization component
 
-    @abc.abstractmethod
-    def _get_degree(self):
-        return False
+    @property
+    def order(self):
+        """ Curve order.
 
-    @abc.abstractmethod
-    def _set_degree(self, value):
-        pass
+        Defined as order = degree + 1
 
-    @abc.abstractmethod
-    def _get_knot_vector(self):
-        return False
-
-    @abc.abstractmethod
-    def _set_knot_vector(self, value):
-        pass
-
-    @abc.abstractmethod
-    def _get_control_points(self):
-        return False
-
-    @abc.abstractmethod
-    def _set_control_points(self, value):
-        pass
-
-    @abc.abstractmethod
-    def _get_curve_points(self):
-        return False
-
-    def _del_degree(self):
-        self._degree = 0
-
-    def _del_knot_vector(self):
-        self._knot_vector = None
-
-    def _del_control_points(self):
-        self._control_points = None
-
-    def _del_curve_points(self):
-        self._curve_points = None
-
-    def _get_order(self):
+        :getter: Gets the curve order
+        :setter: Sets the curve order
+        :type: integer
+        """
         return self._degree + 1
 
-    def _del_order(self):
-        self._degree = 0
+    @order.setter
+    def order(self, value):
+        self._degree = value - 1
 
-    def _get_delta(self):
+    @property
+    @abc.abstractmethod
+    def degree(self):
+        return False
+
+    @degree.setter
+    @abc.abstractmethod
+    def degree(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def knotvector(self):
+        return False
+
+    @knotvector.setter
+    @abc.abstractmethod
+    def knotvector(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def ctrlpts(self):
+        return False
+
+    @ctrlpts.setter
+    @abc.abstractmethod
+    def ctrlpts(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def curvepts(self):
+        return False
+
+    @property
+    @abc.abstractmethod
+    def delta(self):
         return self._delta
 
-    def _set_delta(self, value):
+    @delta.setter
+    @abc.abstractmethod
+    def delta(self, value):
         self._delta = value
 
-    def _del_delta(self):
-        self._delta = 0.1
+    @property
+    def vis(self):
+        """ Visualization component.
 
-    def _get_visualization_component(self):
+        .. note:: The visualization component is completely optional to use.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        :type: float
+        """
         return self._vis_component
 
-    def _set_visualization_component(self, value):
+    @vis.setter
+    def vis(self, value):
         if not isinstance(value, VisBase.VisAbstract):
             warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
 
-    delta = property(fget=_get_delta, fset=_set_delta, fdel=_del_delta, doc="Evaluation delta")
-    order = property(fget=_get_order, fdel=_del_order, doc="Order of the curve")
-    degree = property(fget=_get_degree, fset=_set_degree, fdel=_del_degree, doc="Degree of the curve")
-    knotvector = property(fget=_get_knot_vector, fset=_set_knot_vector, fdel=_del_knot_vector, doc="Knot vector")
-    ctrlpts = property(fget=_get_control_points, fset=_set_control_points,
-                       fdel=_del_control_points, doc="Control points")
-    curvepts = property(fget=_get_curve_points, fdel=_del_curve_points, doc="Evaluated curve points")
+    # Checks whether the curve evaluation is possible or not
+    def _check_variables(self):
+        works = True
+        # Check degree values
+        if self._degree == 0:
+            works = False
+        if not self._control_points:
+            works = False
+        if not self._knot_vector:
+            works = False
+        if not works:
+            raise ValueError("Some required parameters for curve evaluation are not set")
+
+    @abc.abstractmethod
+    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
+        pass
 
     @abc.abstractmethod
     def evaluate(self):
@@ -121,3 +146,165 @@ class Surface(object):
         self._control_points2D = None  # control points, 2-D array [u][v]
         self._surface_points = None  # evaluated points
         self._vis_component = None  # visualization component
+
+    @property
+    def order_u(self):
+        """ Surface order for U direction.
+
+        Follows the following equality: order = degree + 1
+
+        :getter: Gets the surface order for U direction
+        :setter: Sets the surface order for U direction
+        :type: integer
+        """
+        return self._degree_u + 1
+
+    @order_u.setter
+    def order_u(self, value):
+        self._degree_u = value - 1
+
+    @property
+    def order_v(self):
+        """ Surface order for V direction.
+
+        Follows the following equality: order = degree + 1
+
+        :getter: Gets the surface order for V direction
+        :setter: Sets the surface order for V direction
+        :type: integer
+        """
+        return self._degree_v + 1
+
+    @order_v.setter
+    def order_v(self, value):
+        self._degree_v = value - 1
+
+    @property
+    @abc.abstractmethod
+    def degree_u(self):
+        return False
+
+    @degree_u.setter
+    @abc.abstractmethod
+    def degree_u(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def degree_v(self):
+        return False
+
+    @degree_v.setter
+    @abc.abstractmethod
+    def degree_v(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def knotvector_u(self):
+        return False
+
+    @knotvector_u.setter
+    @abc.abstractmethod
+    def knotvector_u(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def knotvector_v(self):
+        return False
+
+    @knotvector_v.setter
+    @abc.abstractmethod
+    def knotvector_v(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def ctrlpts(self):
+        return False
+
+    @ctrlpts.setter
+    @abc.abstractmethod
+    def ctrlpts(self, value):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def ctrlpts2d(self):
+        return False
+
+    @ctrlpts2d.setter
+    @abc.abstractmethod
+    def ctrlpts2d(self, value):
+        pass
+
+    @property
+    def ctrlpts_size_u(self):
+        return self._control_points_size_u
+
+    @ctrlpts_size_u.setter
+    def ctrlpts_size_u(self, value):
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size_u = value
+
+    @property
+    def ctrlpts_size_v(self):
+        return self._control_points_size_v
+
+    @ctrlpts_size_v.setter
+    def ctrlpts_size_v(self, value):
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size_v = value
+
+    @property
+    @abc.abstractmethod
+    def surfpts(self):
+        return False
+
+    @property
+    @abc.abstractmethod
+    def delta(self):
+        return self._delta
+
+    @delta.setter
+    @abc.abstractmethod
+    def delta(self, value):
+        self._delta = value
+
+    @property
+    def vis(self):
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, VisBase.VisAbstract):
+            warn("Visualization component is NOT an instance of VisAbstract class")
+            return
+        self._vis_component = value
+
+    # Checks whether the surface evaluation is possible or not
+    def _check_variables(self):
+        works = True
+        if self._degree_u == 0 or self._degree_v == 0:
+            works = False
+        if not self._control_points:
+            works = False
+        if not self._knot_vector_u or not self._knot_vector_v:
+            works = False
+        if not works:
+            raise ValueError("Some required parameters for surface evaluation are not set.")
+
+    @abc.abstractmethod
+    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
+        pass
+
+    @abc.abstractmethod
+    def evaluate(self):
+        pass

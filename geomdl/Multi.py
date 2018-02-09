@@ -107,9 +107,9 @@ class MultiAbstract(object):
         :param element: the curve or surface object to be added
         :type element:
         """
-        # if not isinstance(element, (self._instance)):
-        #     warnings.warn("Cannot add, incompatible type.")
-        #     return
+        if not isinstance(element, self._instance):
+            warnings.warn("Cannot add, incompatible type.")
+            return
         self._elements.append(element)
 
     def add_list(self, elements):

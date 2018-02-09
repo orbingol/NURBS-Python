@@ -11,12 +11,11 @@ import warnings
 import copy
 
 from . import Abstract
-from . import utilities as utils
-from .visualization import VisBase
 from . import Multi
+from . import utilities as utils
 
 
-class Curve(object):
+class Curve(Abstract.Curve):
     """ Data storage and evaluation class for 3D B-Spline (NUBS) curves.
 
     **Data Storage**
@@ -53,35 +52,17 @@ class Curve(object):
     """
 
     def __init__(self):
-        self._degree = 0
+        super(Curve, self).__init__()
         self._knot_vector = []
         self._control_points = []
-        self._delta = 0.1
         self._curve_points = []
         self._dimension = 3  # 3D coordinates
         self._rational = False
-        self._vis_component = None
 
     def __str__(self):
         return "3D B-Spline Curve"
 
     __repr__ = __str__
-
-    @property
-    def order(self):
-        """ Curve order.
-
-        Defined as order = degree + 1
-
-        :getter: Gets the curve order
-        :setter: Sets the curve order
-        :type: integer
-        """
-        return self._degree + 1
-
-    @order.setter
-    def order(self, value):
-        self.degree = value - 1
 
     @property
     def degree(self):
@@ -211,25 +192,6 @@ class Curve(object):
 
         return self._curve_points
 
-    @property
-    def vis(self):
-        """ Visualization component.
-
-        .. note:: The visualization component is completely optional to use.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        :type: float
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, VisBase.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of the abstract class")
-            return
-        self._vis_component = value
-
     # Runs visualization component to render the surface
     def render(self, cpcolor="blue", curvecolor="black"):
         """ Renders the curve using the loaded visualization component
@@ -270,19 +232,6 @@ class Curve(object):
         if self._curve_points:
             # Delete the curve points
             del self._curve_points[:]
-
-    # Checks whether the curve evaluation is possible or not (private)
-    def _check_variables(self):
-        works = True
-        # Check degree values
-        if self._degree == 0:
-            works = False
-        if not self._control_points:
-            works = False
-        if not self._knot_vector:
-            works = False
-        if not works:
-            raise ValueError("Some required parameters for curve evaluation are not set")
 
     # Reads control points from a text file
     def read_ctrlpts_from_txt(self, filename=''):
@@ -1032,7 +981,7 @@ class Curve2D(Curve):
         return "coord x, coord y, scalar\n"
 
 
-class Surface(object):
+class Surface(Abstract.Surface):
     """ Data storage and evaluation class for B-Spline (NUBS) surfaces.
 
     **Data Storage**
@@ -1074,56 +1023,19 @@ class Surface(object):
     """
 
     def __init__(self):
-        self._degree_u = 0
-        self._degree_v = 0
+        super(Surface, self).__init__()
         self._knot_vector_u = []
         self._knot_vector_v = []
         self._control_points = []
         self._control_points2D = []  # in [u][v] format
-        self._control_points_size_u = 0  # columns
-        self._control_points_size_v = 0  # rows
-        self._delta = 0.1
         self._surface_points = []
         self._dimension = 3  # 3D coordinates
         self._rational = False
-        self._vis_component = None
 
     def __str__(self):
         return "B-Spline Surface"
 
     __repr__ = __str__
-
-    @property
-    def order_u(self):
-        """ Surface order for U direction.
-
-        Follows the following equality: order = degree + 1
-
-        :getter: Gets the surface order for U direction
-        :setter: Sets the surface order for U direction
-        :type: integer
-        """
-        return self._degree_u + 1
-
-    @order_u.setter
-    def order_u(self, value):
-        self.degree_u = value - 1
-
-    @property
-    def order_v(self):
-        """ Surface order for V direction.
-
-        Follows the following equality: order = degree + 1
-
-        :getter: Gets the surface order for V direction
-        :setter: Sets the surface order for V direction
-        :type: integer
-        """
-        return self._degree_v + 1
-
-    @order_v.setter
-    def order_v(self, value):
-        self.degree_v = value - 1
 
     @property
     def degree_u(self):
@@ -1279,42 +1191,6 @@ class Surface(object):
             for v in u:
                 self._control_points.append(v)
 
-    @property
-    def ctrlpts_size_u(self):
-        """ Size of the control points array in U-direction.
-
-        :getter: Gets number of control points in U-direction
-        :setter: Sets number of control points in U-direction
-        :type: int
-        """
-        return self._control_points_size_u
-
-    @ctrlpts_size_u.setter
-    def ctrlpts_size_u(self, value):
-        if value <= 0:
-            raise ValueError("Control points size cannot be less than and equal to zero")
-
-        # Assume that user is doing this right
-        self._control_points_size_u = value
-
-    @property
-    def ctrlpts_size_v(self):
-        """ Size of the control points array in V-direction.
-
-        :getter: Gets number of control points in V-direction
-        :setter: Sets number of control points in V-direction
-        :type: int
-        """
-        return self._control_points_size_v
-
-    @ctrlpts_size_v.setter
-    def ctrlpts_size_v(self, value):
-        if value <= 0:
-            raise ValueError("Control points size cannot be less than and equal to zero")
-
-        # Assume that user is doing this right
-        self._control_points_size_v = value
-
     def set_ctrlpts(self, ctrlpts, size_u, size_v):
         """ Sets 1D control points.
 
@@ -1466,25 +1342,6 @@ class Surface(object):
 
         return self._surface_points
 
-    @property
-    def vis(self):
-        """ Visualization component.
-
-        .. note:: The visualization component is completely optional to use.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        :type: float
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, VisBase.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of the abstract class")
-            return
-        self._vis_component = value
-
     # Runs visualization component to render the surface
     def render(self, cpcolor="blue", surfcolor="green"):
         """ Renders the surface using the loaded visualization component.
@@ -1533,18 +1390,6 @@ class Surface(object):
         if self._surface_points:
             # Delete the surface points
             del self._surface_points[:]
-
-    # Checks whether the surface evaluation is possible or not (private)
-    def _check_variables(self):
-        works = True
-        if self._degree_u == 0 or self._degree_v == 0:
-            works = False
-        if not self._control_points:
-            works = False
-        if not self._knot_vector_u or not self._knot_vector_v:
-            works = False
-        if not works:
-            raise ValueError("Some required parameters for surface evaluation are not set.")
 
     # Reads control points from a text file
     def read_ctrlpts_from_txt(self, filename='', two_dimensional=True, size_u=0, size_v=0):

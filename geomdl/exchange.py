@@ -9,7 +9,7 @@
 
 import warnings
 
-from . import BSpline, NURBS
+from . import Abstract
 from . import Multi
 from . import exchange_helpers as exh
 
@@ -44,7 +44,7 @@ def save_obj_single(surface=None, file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     # Input validity checking
-    if not isinstance(surface, (BSpline.Surface, NURBS.Surface)):
+    if not isinstance(surface, Abstract.Surface):
         raise ValueError("Input is not a surface")
     if not file_name:
         raise ValueError("File name field is required")
@@ -116,7 +116,7 @@ def save_obj_multi(surface_list=(), file_name=None, vertex_spacing=2):
 
             # Loop through MultiSurface object
             for surface in surface_list:
-                if not isinstance(surface, (BSpline.Surface, NURBS.Surface)):
+                if not isinstance(surface, Abstract.Surface):
                     warnings.warn("Encountered a non-surface object")
 
                 # Set surface delta
