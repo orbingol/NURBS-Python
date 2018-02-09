@@ -211,22 +211,3 @@ def make_obj_triangles(points, row_size, col_size, vertex_spacing):
         triangles += tri_list
 
     return vertices, triangles
-
-
-# Find parametric positions (u, v) of the face normals (center of mass of the triangle)
-def make_obj_face_normals_uv(delta, vertex_spacing):
-    if vertex_spacing <= 0 or delta <= 0:
-        raise ValueError("Delta and vertex spacing cannot be less than and equal to zero")
-
-    start_pos = 0.0
-    end_pos = 1.0
-
-    uv_list = []
-    for u in utils.frange(start_pos, end_pos, delta * vertex_spacing):
-        normal_u = u / 4
-        for v in utils.frange(start_pos, end_pos, delta * vertex_spacing):
-            normal_v = v / 4
-            uv = [normal_u, normal_v]
-            uv_list.append(uv)
-
-    return uv_list

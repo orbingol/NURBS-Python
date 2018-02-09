@@ -60,9 +60,6 @@ def save_obj_single(surface=None, file_name=None, vertex_spacing=2):
                                                          int((1.0 / surface.delta) + 1),
                                                          vertex_spacing)
 
-            # # Evaluate face normals
-            # uv_list = exh.make_obj_face_normals_uv(surface.delta, vertex_spacing)
-
             # Write vertices
             for vert_row in vertices:
                 for vert in vert_row:
