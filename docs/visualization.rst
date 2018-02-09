@@ -4,17 +4,17 @@ Visualization
 Visualization Component
 =======================
 
-NURBS-Python v3.x series included an optional visualization module for plotting evaluated curves and surfaces. Examples_
+NURBS-Python v3.x series include a visualization module for plotting evaluated curves and surfaces. Examples_
 repository contains some examples on how to use the visualization component with surfaces and 2D/3D curves.
 
 Advanced Visualization Options
 ==============================
 
 ``visualization/`` directory in the Examples_ repository contains customizable scripts for more advanced visualization
-using `Matplotlib <https://matplotlib.org>`_.
+options using `Matplotlib <https://matplotlib.org>`_.
 
-Examples
-========
+Visualization Examples
+======================
 
 The following examples illustrate the visualization component which comes with the NURBS-Python package and
 the advanced visualization options using the scripts in the Examples_ repository.
@@ -78,10 +78,11 @@ The example script can be found in Examples_ repository under the ``visualizatio
 .. image:: images/ex_surface02_mpl_vectors.png
     :alt: Surface example 2 with tangent and normal vectors
 
-Curves
-------
+2D Curves
+---------
 
-The following examples use the visualization component which comes with the NURBS-Python package.
+The following examples illustrate the direct output of the visualization component, ``geomdl.visualization`` for 2D
+curves.
 
 ex_curve01.py
 ~~~~~~~~~~~~~
@@ -107,6 +108,13 @@ ex_curve04.py
 .. image:: images/ex_curve04_vis.png
     :alt: 2D curve example 4
 
+
+3D Curves
+---------
+
+The following examples illustrate the direct output of the visualization component, ``geomdl.visualization`` for 3D
+curves.
+
 ex_curve3d01.py
 ~~~~~~~~~~~~~~~
 
@@ -119,12 +127,17 @@ ex_curve3d02.py
 .. image:: images/ex_curve3d02_vis.png
     :alt: 3D curve example 2
 
+
+Advanced Visualization for 2D/3D Curves
+---------------------------------------
+
+The following example scripts can be found in Examples_ repository under the ``visualization`` directory.
+
 mpl_curve2d_tangents.py
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 This example illustrates a more advanced visualization option for plotting the 2D curve tangents alongside with the
-control points grid and the evaluated curve. The example script can be found in Examples_ repository under the
-``visualization`` directory.
+control points grid and the evaluated curve.
 
 .. image:: images/ex_curve03_mpl.png
     :alt: 2D curve example 2 with tangent vector quiver plots
@@ -133,8 +146,7 @@ mpl_curve3d_tangents.py
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 This example illustrates a more advanced visualization option for plotting the 3D curve tangents alongside with the
-control points grid and the evaluated curve. The example script can be found in Examples_ repository under the
-``visualization`` directory.
+control points grid and the evaluated curve.
 
 .. image:: images/ex_curve3d01_mpl.png
     :alt: 3D curve example 1 with tangent vector quiver plots
@@ -144,7 +156,6 @@ mpl_curve3d_vectors.py
 
 This example illustrates a visualization option for plotting the 3D curve tangent, normal and binnormal vectors
 alongside with the control points grid and the evaluated curve.
-The example script can be found in Examples_ repository under the ``visualization`` directory.
 
 Please note that binormal vector evaluation method for the curves is added on version *3.0.6*.
 
