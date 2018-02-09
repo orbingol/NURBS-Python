@@ -37,9 +37,9 @@ NURBS-Python consists of the following modules and components:
 
 * Core library
 * Multi module
+* Exchange module
 * Visualization component
 * Shapes component
-* Exchange module
 
 Core Library
 ------------
@@ -62,14 +62,14 @@ The core library contains 4 modules:
 * **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
 * **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
 
-Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes in ``geomdl.Abstract``
+Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes with ``geomdl.Abstract``
 module.
 
 Multi Module
 ------------
 
-NURBS-Python provides container-like classes for working with multiple curves and surfaces in ``geomdl.Multi`` module.
-Please see the documentation for details.
+NURBS-Python provides container-like classes for visualization of multiple curves and surfaces with ``geomdl.Multi``
+module. Please see the documentation for details.
 
 Exchange Module
 ---------------
@@ -77,8 +77,8 @@ Exchange Module
 NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
 major functions:
 
-* ``save_obj` for saving surfaces as .obj files
-* ``save_stl` for saving surfaces as .stl files in ascii or binary format (default is binary)
+* ``save_obj`` for saving surfaces as .obj files
+* ``save_stl`` for saving surfaces as .stl files in ascii or binary format (default is binary)
 
 Visualization Component
 -----------------------
