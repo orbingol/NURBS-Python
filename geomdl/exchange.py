@@ -207,6 +207,7 @@ def save_stl_single(surface=None, file_name=None, vertex_spacing=2):
                                                          int((1.0 / surface.delta) + 1),
                                                          int((1.0 / surface.delta) + 1),
                                                          vertex_spacing)
+
             for t in triangles:
                 fp.write("\tfacet normal " + str(t.normal[0]) + " " + str(t.normal[1]) + " " + str(t.normal[2]) + "\n")
                 fp.write("\t\touter loop\n")
@@ -248,6 +249,9 @@ def save_stl_multi(surface_list=(), file_name=None, vertex_spacing=2):
                 if not isinstance(surface, Abstract.Surface):
                     warnings.warn("Encountered a non-surface object")
                     continue
+
+                # Set surface delta
+                surface.delta = surface_list.delta
 
                 vertices, triangles = exh.make_obj_triangles(surface.surfpts,
                                                              int((1.0 / surface.delta) + 1),
