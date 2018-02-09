@@ -7,7 +7,8 @@
 
 """
 
-from copy import deepcopy
+import copy
+
 from . import BSpline
 from . import utilities as utils
 
@@ -476,7 +477,7 @@ class Surface(BSpline.Surface):
         for k in range(0, order + 1):
             for l in range(0, order - k + 1):
                 # Deep copying might seem a little overkill but we also want to avoid same pointer issues too
-                v = deepcopy(SKLw[k][l])
+                v = copy.deepcopy(SKLw[k][l])
 
                 for j in range(1, l + 1):
                     v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
