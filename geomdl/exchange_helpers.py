@@ -103,6 +103,18 @@ class Triangle(object):
 
     __repr__ = __str__
 
+    def __len__(self):
+        return len(self._vertices)
+
+    def __getitem__(self, key):
+        return self._vertices[key]
+
+    def __iter__(self):
+        return iter(self._vertices)
+
+    def __reversed__(self):
+        return reversed(self._vertices)
+
     @property
     def id(self):
         return self._id
