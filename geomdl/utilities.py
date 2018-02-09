@@ -691,7 +691,7 @@ def vector_generate(start_pt=(), end_pt=(), normalize=False):
         raise ValueError("Input points must be in 3 dimensions")
     ret_vec = [start_pt[0] - end_pt[0], start_pt[1] - end_pt[1], start_pt[2] - end_pt[2]]
     if normalize:
-        ret_vec = normalize(ret_vec)
+        ret_vec = vector_normalize(ret_vec)
     return ret_vec
 
 
