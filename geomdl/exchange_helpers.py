@@ -25,6 +25,23 @@ class Vertex(object):
 
     __repr__ = __str__
 
+    def __len__(self):
+        return len(self._value)
+
+    def __getitem__(self, key):
+        return self._value[key]
+
+    def __setitem__(self, key, value):
+        self._value[key] = value
+
+    def __delitem__(self, key):
+        del self._value[key]
+
+    def __iter__(self):
+        return iter(self._value)
+
+    def __reversed__(self):
+        return reversed(self._value)
     @property
     def id(self):
         return self._id
