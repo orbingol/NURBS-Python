@@ -164,3 +164,107 @@ def save_obj_multi(surface_list=(), file_name=None, vertex_spacing=2):
                 fp.write(line)
     except IOError:
         print("Cannot open " + str(file_name) + " for writing")
+
+
+def save_stl(surf_in=None, file_name=None, vertex_spacing=2):
+    """ Saves surfaces as a .stl file.
+
+    This function serves as a router between :py:func:`save_stl_single` and :py:func:`save_stl_multi`.
+
+    :param surf_in: surface or surfaces to be saved
+    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
+    :type vertex_spacing: int
+    """
+    if isinstance(surf_in, Multi.MultiSurface):
+        save_stl_multi(surf_in, file_name, vertex_spacing)
+    else:
+        save_stl_single(surf_in, file_name, vertex_spacing)
+
+
+def save_stl_single(surface=None, file_name=None, vertex_spacing=2):
+    """ Saves a single surface as a .stl file.
+
+    :param surface: surface to be saved
+    :type surface: Abstract.Surface
+    :param file_name: name of the output file
+    :type file_name: str
+    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
+    :type vertex_spacing: int
+    """
+    # Input validity checking
+    if not isinstance(surface, Abstract.Surface):
+        raise ValueError("Input is not a surface")
+    if not file_name:
+        raise ValueError("File name field is required")
+    if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
+        raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
+
+    # Create the file and start saving triangulated surface points
+    try:
+        with open(file_name, 'w') as fp:
+            fp.write("solid Surface\n")
+            vertices, triangles = exh.make_obj_triangles(surface.surfpts,
+                                                         int((1.0 / surface.delta) + 1),
+                                                         int((1.0 / surface.delta) + 1),
+                                                         vertex_spacing)
+            for t in triangles:
+                fp.write("\tfacet normal " + str(t.normal[0]) + " " + str(t.normal[1]) + " " + str(t.normal[2]) + "\n")
+                fp.write("\t\touter loop\n")
+                for v in t.vertices:
+                    fp.write("\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n")
+                fp.write("\t\tendloop\n")
+                fp.write("\tendfacet\n")
+
+            fp.write("endsolid Surface\n")
+    except IOError:
+        print("Cannot open " + str(file_name) + " for writing")
+
+
+def save_stl_multi(surface_list=(), file_name=None, vertex_spacing=2):
+    """ Saves multiple surfaces as a .stl file.
+
+    :param surface_list: list of surfaces to be saved
+    :type surface_list: Multi.MultiAbstract
+    :param file_name: name of the output file
+    :type file_name: str
+    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
+    :type vertex_spacing: int
+    """
+    # Input validity checking
+    if not isinstance(surface_list, Multi.MultiAbstract):
+        raise ValueError("Input must be a list of surfaces")
+    if not file_name:
+        raise ValueError("File name field is required")
+    if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
+        raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
+
+    # Create the file and start saving triangulated surface points
+    try:
+        with open(file_name, 'w') as fp:
+            fp.write("solid Surface\n")
+
+            # Loop through MultiSurface object
+            for surface in surface_list:
+                if not isinstance(surface, Abstract.Surface):
+                    warnings.warn("Encountered a non-surface object")
+                    continue
+
+                vertices, triangles = exh.make_obj_triangles(surface.surfpts,
+                                                             int((1.0 / surface.delta) + 1),
+                                                             int((1.0 / surface.delta) + 1),
+                                                             vertex_spacing)
+                for t in triangles:
+                    fp.write(
+                        "\tfacet normal " + str(t.normal[0]) + " " + str(t.normal[1]) + " " + str(t.normal[2]) + "\n")
+                    fp.write("\t\touter loop\n")
+                    for v in t.vertices:
+                        fp.write("\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n")
+                    fp.write("\t\tendloop\n")
+                    fp.write("\tendfacet\n")
+
+            fp.write("endsolid Surface\n")
+    except IOError:
+        print("Cannot open " + str(file_name) + " for writing")
