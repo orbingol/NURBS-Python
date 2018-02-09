@@ -42,6 +42,7 @@ class Vertex(object):
 
     def __reversed__(self):
         return reversed(self._value)
+
     @property
     def id(self):
         return self._id
@@ -139,6 +140,10 @@ class Triangle(object):
         if not isinstance(vertex, Vertex):
             raise ValueError("Input must be a Vertex object")
         self._vertices.append(vertex)
+
+    @property
+    def vertices(self):
+        return self._vertices
 
     @property
     def vertex_ids(self):
