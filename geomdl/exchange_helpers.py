@@ -131,7 +131,8 @@ class Triangle(object):
         if not self._normal:
             vec1 = utils.vector_generate(self._vertices[0].data, self._vertices[1].data)
             vec2 = utils.vector_generate(self._vertices[1].data, self._vertices[2].data)
-            self._normal = utils.vector_normalize(utils.vector_cross(vec1, vec2))
+            # self._normal = utils.vector_normalize(utils.vector_cross(vec1, vec2))
+            self._normal = utils.vector_cross(vec1, vec2)
         return self._normal
 
     def add_vertex(self, vertex=None):
