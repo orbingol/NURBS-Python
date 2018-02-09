@@ -12,40 +12,65 @@ algorithms in native Python. The library is fully object-oriented and does *not*
 Features
 ========
 
-The package contains 4 modules:
+NURBS-Python consists of the following modules and components:
 
-* **geomdl.BSpline** contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
-* **geomdl.NURBS** contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
-* **geomdl.CPGen** contains simple control points grid generation algorithms
-* **geomdl.utilities** contains helper functions for generating and manipulating knot vectors and control points
+* Core library
+* Multi module
+* Visualization component
+* Shapes component
+* Exchange module
 
-**geomdl.BSpline** and **geomdl.NURBS** modules contain 3 classes for geometric evaluation:
+Core Library
+------------
+
+The core library contains 4 modules:
+
+* ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
+* ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
+* ``geomdl.CPGen`` contains simple control points grid generation algorithms
+* ``geomdl.utilities`` contains helper functions for generating and altering knot vectors and control points
+
+``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
 
 * **Curve** for evaluating 3D curves
 * **Curve2D** for evaluating 2D curves
 * **Surface** for evaluating surfaces
 
-**geomdl.CPGen** module contains 2 classes for grid generation:
+``geomdl.CPGen`` module contains 2 classes for grid generation:
 
-* **Grid** for generating inputs for **geomdl.BSpline.Surface** class
-* **GridWeighted** for generating inputs for **geomdl.NURBS.Surface** class
+* **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
+* **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
 
-Examples
---------
+Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes in ``geomdl.Abstract``
+module.
 
-Please see the Examples_ repository for more details and example scripts on how to use NURBS-Python.
+Multi Module
+------------
 
-Visualization
--------------
+NURBS-Python provides container-like classes for working with multiple curves and surfaces in ``geomdl.Multi`` module.
+Please see the documentation for details.
 
-NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting the generated
+Exchange Module
+---------------
+
+NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
+major functions:
+
+* ``save_obj` for saving surfaces as .obj files
+* ``save_stl` for saving surfaces as .stl files in ascii or binary format (default is binary)
+
+Visualization Component
+-----------------------
+
+NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting generated
 2D/3D curves and surfaces directly.
 
-Shapes
-------
+Shapes Component
+----------------
 
-Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the package. The aim of
-this module is providing an easy way to generate the most common curves and surfaces, such as circles and cylinders.
+Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the NURBS-Python package.
+The aim of this component is providing an easy way to generate the most common curves and surfaces, such as circles and
+cylinders.
 
 Further Reading
 ===============
