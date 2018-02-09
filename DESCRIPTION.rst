@@ -16,9 +16,9 @@ NURBS-Python consists of the following modules and components:
 
 * Core library
 * Multi module
+* Exchange module
 * Visualization component
 * Shapes component
-* Exchange module
 
 Core Library
 ------------
@@ -56,8 +56,8 @@ Exchange Module
 NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
 major functions:
 
-* ``save_obj` for saving surfaces as .obj files
-* ``save_stl` for saving surfaces as .stl files in ascii or binary format (default is binary)
+* ``save_obj`` for saving surfaces as .obj files
+* ``save_stl`` for saving surfaces as .stl files in ascii or binary format (default is binary)
 
 Visualization Component
 -----------------------
