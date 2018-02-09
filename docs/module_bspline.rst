@@ -1,7 +1,7 @@
 B-Spline Module
 ^^^^^^^^^^^^^^^
 
-:code:`BSpline` module provides data storage and evaluation functions for B-Spline (NUBS) 2D/3D curves and surfaces.
+``BSpline`` module provides data storage and evaluation functions for B-Spline (NUBS) 2D/3D curves and surfaces.
 
 3D B-Spline Curve
 =================

@@ -10,6 +10,7 @@ Following modules are included in this library:
 .. toctree::
     :maxdepth: 1
 
+    module_abstract
     module_bspline
     module_nurbs
     module_utilities
