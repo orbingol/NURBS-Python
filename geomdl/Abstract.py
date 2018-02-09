@@ -156,7 +156,7 @@ class Curve(object):
         :type check_vars: bool
         :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
         :param get_ctrlpts: bool
-        :return: evaluated curve point at the given knot value
+        :return: evaluated curve point
         """
         pass
 
@@ -429,6 +429,7 @@ class Surface(object):
         :type check_vars: bool
         :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
         :param get_ctrlpts: bool
+        :return: evaluated surface point
         """
         pass
 
