@@ -12,12 +12,44 @@ This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and s
 Python with minimum possible dependencies. The library is fully object-oriented and does *not* depend on any external
 C/C++ libraries.
 
-The package contains 4 modules:
+Implementation
+--------------
+
+NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
+the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
+features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
+
+Examples
+--------
+
+The Examples_ repository contains example scripts describing how to use NURBS-Python with advanced visualization
+examples. Please see the documentation for more details.
+
+Citing NURBS-Python
+-------------------
+
+I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
+
+Features
+========
+
+NURBS-Python consists of the following modules and components:
+
+* Core library
+* Multi module
+* Visualization component
+* Shapes component
+* Exchange module
+
+Core Library
+------------
+
+The core library contains 4 modules:
 
 * ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
 * ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
 * ``geomdl.CPGen`` contains simple control points grid generation algorithms
-* ``geomdl.utilities`` contains helper functions for generating and manipulating knot vectors and control points
+* ``geomdl.utilities`` contains helper functions for generating and altering knot vectors and control points
 
 ``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
 
@@ -30,53 +62,36 @@ The package contains 4 modules:
 * **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
 * **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
 
-Examples
---------
+Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes in ``geomdl.Abstract``
+module.
 
-The Examples_ repository contains example scripts describing how to use NURBS-Python with advanced visualization
-examples. Please see the documentation for the example script outputs and more details.
+Multi Module
+------------
 
-Visualization
--------------
+NURBS-Python provides container-like classes for working with multiple curves and surfaces in ``geomdl.Multi`` module.
+Please see the documentation for details.
 
-NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting the generated
+Exchange Module
+---------------
+
+NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
+major functions:
+
+* ``save_obj` for saving surfaces as .obj files
+* ``save_stl` for saving surfaces as .stl files in ascii or binary format (default is binary)
+
+Visualization Component
+-----------------------
+
+NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting generated
 2D/3D curves and surfaces directly.
 
-Shapes
-------
-
-Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the package. The aim of
-this module is providing an easy way to generate the most common curves and surfaces, such as circles and cylinders.
-
-More Details
-============
-
-Citing NURBS-Python
--------------------
-
-I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
-
-Implementation
---------------
-
-NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
-the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
-features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
-
-Library Versions
+Shapes Component
 ----------------
 
-* ``master`` branch contains the latest version of NURBS-Python (currently v3.x series).
-* ``2.x`` branch contains the code for *NURBS-Python v2.x* series.
-
-There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
-versions won't be receiving any new features and updates.
-
-Contributions to NURBS-Python
------------------------------
-
-All contributions to NURBS-Python are welcomed. I would recommend you reading `CONTRIBUTING <.github/CONTRIBUTING.md>`_
-file for more details.
+Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the NURBS-Python package.
+The aim of this component is providing an easy way to generate the most common curves and surfaces, such as circles and
+cylinders.
 
 Installation
 ============
@@ -115,8 +130,23 @@ After installing the required packages, execute the following from your favorite
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
 
+Branch Information
+==================
+
+* ``master`` branch contains code for NURBS-Python v3.x series
+* ``2.x`` branch contains code for *NURBS-Python v2.x* series
+
+There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
+versions won't be receiving any new features and updates.
+
 Issues and Reporting
 ====================
+
+Contributions to NURBS-Python
+-----------------------------
+
+All contributions to NURBS-Python are welcomed. I would recommend you reading `CONTRIBUTING <.github/CONTRIBUTING.md>`_
+file for more details.
 
 Bugs and Issues
 ---------------
