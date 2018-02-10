@@ -33,12 +33,16 @@ I would be glad if you cite this repository using the DOI_ provided as a badge a
 Features
 ========
 
-NURBS-Python consists of the following modules and components:
+NURBS-Python consists of the following modules:
 
 * Core library
 * Multi module
 * Exchange module
-* Visualization component
+* Visualization module
+
+In addition, it also contains the following experimental components:
+
+* Matplotlib visualization component
 * Shapes component
 
 Core Library
@@ -77,21 +81,24 @@ Exchange Module
 NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
 major functions:
 
-* ``save_obj`` for saving surfaces as .obj files
-* ``save_stl`` for saving surfaces as .stl files in ascii or binary format (default is binary)
+* ``save_obj()`` for saving surfaces as .obj files
+* ``save_stl()`` for saving surfaces as .stl files in ascii or binary format (default is binary)
 
-Visualization Component
------------------------
+Visualization Module
+--------------------
 
-NURBS-Python comes with an experimental visualization module, ``geomdl.visualization``, for plotting generated
-2D/3D curves and surfaces directly.
+NURBS-Python provides a visualization module, ``geomdl.VisBase`` to serve as a basis for all possible visualization
+components, such as OpenGL, for plotting 2D/3D curves and surfaces directly using ``render()`` method.
+
+NURBS-Python comes with an experimental visualization component, ``geomdl.visualization`` which implements Matplotlib.
+This component provides a variety of visualization options for surfaces and 2D/3D curves.
 
 Shapes Component
 ----------------
 
-Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the NURBS-Python package.
-The aim of this component is providing an easy way to generate the most common curves and surfaces, such as circles and
-cylinders.
+Starting from NURBS-Python v3.1, a new experimental component ``geomdl.shapes`` is shipped with the NURBS-Python
+package. The aim of this component is providing an easy way to generate the most common curves and surfaces,
+such as circles and cylinders.
 
 Installation
 ============
