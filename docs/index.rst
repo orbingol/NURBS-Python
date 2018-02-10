@@ -10,15 +10,10 @@ Non-Uniform Rational B-Spline (NURBS) 2D/3D curves and surfaces.
 NURBS-Python also provides a convenient and easy-to-use data structure for storing curve and surface descriptions. All
 elements of the provided data structures are documented under :ref:`modules`.
 
-.. note::
-
-    I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
-    The link will open up a new page where you can find all the bibliographic information.
-
 This documentation is organized into a couple sections:
 
 * :ref:`introduction`
-* :ref:`examples`
+* :ref:`using`
 * :ref:`modules`
 
 .. _introduction:
@@ -28,16 +23,17 @@ This documentation is organized into a couple sections:
     :caption: Introduction
 
     introduction
+    citing
     q_a
 
-.. _examples:
+.. _using:
 
 .. toctree::
     :maxdepth: 2
     :caption: Examples
 
     install
-    using
+    examples
     file_formats
     visualization
 
