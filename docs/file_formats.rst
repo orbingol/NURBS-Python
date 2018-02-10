@@ -251,3 +251,10 @@ The following example combines :code:`shapes` module together with :code:`exchan
 
     # Save surface as a .obj file
     exchange.save_obj(surf, "cylindirical_surf.obj")
+
+STL Files
+=========
+
+Exporting to STL files works in the same way explained in OBJ Files section. To export a NURBS surface as a .stl file,
+you can use :py:func:`.save_stl()` function. This function saves in binary format by default but there is an option to
+change the save file format to plain text. Please see the documentation for details.
