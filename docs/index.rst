@@ -30,7 +30,7 @@ This documentation is organized into a couple sections:
 
 .. toctree::
     :maxdepth: 2
-    :caption: Examples
+    :caption: Using the Library
 
     install
     examples
