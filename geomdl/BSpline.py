@@ -917,11 +917,11 @@ class Curve(Abstract.Curve):
             raise ValueError("The input must have " + str(self._dimension) + " elements")
 
         new_ctrlpts = []
-        for point in self._control_points:
+        for point in self.ctrlpts:
             temp = [v + vec[i] for i, v in enumerate(point)]
             new_ctrlpts.append(temp)
 
-        self._control_points = new_ctrlpts
+        self.ctrlpts = new_ctrlpts
 
 
 class Curve2D(Curve):

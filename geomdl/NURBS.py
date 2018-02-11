@@ -218,11 +218,12 @@ class Curve(BSpline.Curve):
             raise ValueError("The input must have " + str(self._dimension - 1) + " elements")
 
         new_ctrlpts = []
-        for point in self._control_points:
-            temp = [v + vec[i] for i, v in enumerate(point[0:self._dimension - 1])]
+        for point, w in zip(self.ctrlpts, self.weights):
+            temp = [(v + vec[i]) * w for i, v in enumerate(point[0:self._dimension - 1])]
+            temp.append(w)
             new_ctrlpts.append(temp)
 
-        self._control_points = new_ctrlpts
+        self.ctrlpts = new_ctrlpts
 
 
 class Curve2D(Curve):
