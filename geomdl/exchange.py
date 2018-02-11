@@ -16,9 +16,9 @@ from . import exchange_helpers as exh
 
 
 def save_obj(surf_in=None, file_name=None, vertex_spacing=2):
-    """ Saves surfaces as a .obj file.
+    """ Exports surface(s) as a .obj file.
 
-    This function serves as a router between :py:func:`save_obj_single` and :py:func:`save_obj_multi`.
+    This function works as a router function between possible exporting options.
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -165,9 +165,9 @@ def save_obj_multi(surface_list=(), file_name=None, vertex_spacing=2):
 
 
 def save_stl(surf_in=None, file_name=None, binary=True, vertex_spacing=2):
-    """ Saves surfaces as a .stl file.
+    """ Exports surface(s) as a .stl file in plain text or binary format.
 
-    This function serves as a router between :py:func:`save_stl_single` and :py:func:`save_stl_multi`.
+    This function works as a router function between possible exporting options.
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
