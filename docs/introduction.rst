@@ -7,21 +7,22 @@ curve and surface descriptions.
 
 Some significant features of NURBS-Python are:
 
-* Fully object-oriented API
+* Fully object-oriented API with an abstract interface for extensions
 * Data structures for storing surface and 2D/3D curve descriptions
 * Helper functions, such as automatic uniform knot vector generator and many more
 * Control points grid generator for surfaces
-* Visualization component, plus a Matplotlib implementation
+* Visualization module for direct plotting of curves and surfaces
+* Shapes component for generation common surfaces and 2D/3D curves
 * CSV export functionality with customizable meshing options
-* Python 2.x and 3.x compatibility
+* Python 2.7.x and 3.x compatibility
 * No external C/C++ library dependencies
-* No compilation steps necessary, everything is implemented with Python
+* No compilation steps necessary, everything is implemented in pure python
 * Easy to install via ``pip install NURBS-Python``
 
-Algorithms Implemented
-======================
+References
+==========
 
-NURBS-Python currently implements the following algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller:
+NURBS-Python implements the following algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller:
 
 * A2.1 FindSpan *(page 68)*
 * A2.2 BasisFuns *(page 70)*
@@ -38,12 +39,6 @@ NURBS-Python currently implements the following algorithms from **The NURBS Book
 * A4.4 RatSurfaceDerivs *(pages 137,138)*
 * A5.1 CurveKnotIns *(page 151)*
 * A5.3 SurfaceKnotIns *(pages 155-157)*
-
-Citing NURBS-Python
-===================
-
-I would be glad if you cite this repository using the DOI_ provided. You can also find it as a badge on the
-:doc:`main page <index>` of this documentation.
 
 Author
 ======
