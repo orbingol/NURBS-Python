@@ -489,6 +489,14 @@ class Multi(object):
     def __len__(self):
         return len(self._elements)
 
+    def __add__(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError("Cannot add non-matching types of Multi containers")
+        ret = self.__class__()
+        new_elems = self._elements + other._elements
+        ret.add_list(new_elems)
+        return ret
+
     @property
     def delta(self):
         """ Evaluation delta.
