@@ -37,6 +37,7 @@ This documentation is organized into a couple sections:
     examples
     file_formats
     visualization
+    visualization_splitting
 
 .. _modules:
 
