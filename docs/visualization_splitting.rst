@@ -50,7 +50,7 @@ module.
 .. image:: images/split_decompose_circle1.png
     :alt: 2D curve decomposition 1
 
-The following is a circle-like shape generated with 7 control points as illustrated on page 301 of *The NURBS Book*
+The following is a circular curve generated with 7 control points as illustrated on page 301 of *The NURBS Book*
 (2nd Edition) by Piegl and Tiller. There is also an option to generate this shape via ``geomdl.shapes`` module.
 
 .. image:: images/split_decompose_circle2.png
@@ -63,5 +63,8 @@ The following figures illustrate the possibility of Bézier decomposition in B-S
 
 .. image:: images/split_decompose_surface2.png
     :alt: NURBS surface decomposition
+
+The colors are randomly generated via :py:func:`utilities.color_generator()` function.
+
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
