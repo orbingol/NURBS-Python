@@ -64,7 +64,7 @@ The following figures illustrate the possibility of Bézier decomposition in B-S
 .. image:: images/split_decompose_surface2.png
     :alt: NURBS surface decomposition
 
-The colors are randomly generated via :py:func:`utilities.color_generator()` function.
+The colors are randomly generated via :py:func:`.utilities.color_generator()` function.
 
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
