@@ -2314,3 +2314,40 @@ class Surface(Abstract.Surface):
 
         # Return the new surfaces
         return ret_val
+
+    def decompose(self):
+        """ Decomposes the surface into Bezier surface patches of the same degree.
+
+        This operation does not modify the surface, instead it returns the surface patches.
+
+        :return: a list of surface objects arranged as Bezier surface patches
+        :rtype: Multi.MultiSurface
+        """
+        surf_list = []
+
+        # Work with an identical copy
+        surf = copy.deepcopy(self)
+
+        # U-direction
+        knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
+        while knots_u:
+            knot = knots_u[0]
+            surfs = surf.split_u(t=knot)
+            surf_list.append(surfs[0])
+            surf = surfs[1]
+            knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
+        surf_list.append(surf)
+
+        # Work on the split surfaces
+        multi_surf = Multi.MultiSurface()
+        for surf in surf_list:
+            knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
+            while knots_v:
+                knot = knots_v[0]
+                surfs = surf.split_v(t=knot)
+                multi_surf.add(surfs[0])
+                surf = surfs[1]
+                knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
+            multi_surf.add(surf)
+
+        return multi_surf
