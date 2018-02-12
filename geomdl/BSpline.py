@@ -2167,7 +2167,7 @@ class Surface(Abstract.Surface):
                         Q[col][L] = copy.deepcopy(R[0])
                         Q[col][k_v + rv - j - s_v] = copy.deepcopy(R[q - j - s_v])
                     # Load the remaining control points
-                    # L = k_u - p + r + 1
+                    L = k_v - q + rv
                     for i in range(L + 1, k_v - s_v):
                         Q[col][i] = copy.deepcopy(R[i - L])
 
