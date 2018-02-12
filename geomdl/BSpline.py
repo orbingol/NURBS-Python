@@ -2184,3 +2184,133 @@ class Surface(Abstract.Surface):
         # Evaluate surface again if it has already been evaluated before knot insertion
         if check_r and self._surface_points:
             self.evaluate()
+
+    def split_u(self, t=-1):
+        # Validate input data
+        if t == 0.0 or t == 1.0:
+            raise ValueError("Cannot split on the corner points")
+        utils.check_uv(t)
+
+        # Create backups of the original surface
+        original_kv = copy.deepcopy(self._knot_vector_u)
+        original_cpts = copy.deepcopy(self._control_points)
+        original_cpts_size_u = copy.deepcopy(self.ctrlpts_size_u)
+        original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
+
+        # Find multiplicity of the knot
+        ks = utils.find_span(self._degree_u, self._knot_vector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
+        s = utils.find_multiplicity(t, self._knot_vector_u)
+        r = self._degree_u - s
+
+        # Split the original surface
+        self.insert_knot(u=t, ru=r, check_r=False)
+
+        # Knot vectors
+        knot_span = utils.find_span(self._degree_u, self._knot_vector_u, self.ctrlpts_size_u, t) + 1
+        surf1_kv = self._knot_vector_u[0:knot_span]
+        surf1_kv.append(t)
+        surf2_kv = self._knot_vector_u[knot_span:]
+        for _ in range(0, self._degree_u + 1):
+            surf2_kv.insert(0, t)
+
+        # Control points
+        surf1_ctrlpts = self._control_points2D[0:ks + r]
+        surf2_ctrlpts = self._control_points2D[ks + r - 1:]
+
+        # Create a new surface for the first half
+        surf1 = self.__class__()
+        surf1.degree_u = self.degree_u
+        surf1.degree_v = self.degree_v
+        surf1.ctrlpts2d = surf1_ctrlpts
+        surf1.knotvector_u = surf1_kv
+        surf1.knotvector_v = self.knotvector_v
+
+        # Create another surface fot the second half
+        surf2 = self.__class__()
+        surf2.degree_u = self.degree_u
+        surf2.degree_v = self.degree_v
+        surf2.ctrlpts2d = surf2_ctrlpts
+        surf2.knotvector_u = surf2_kv
+        surf2.knotvector_v = self.knotvector_v
+
+        # Restore the original surface
+        self.ctrlpts_size_u = original_cpts_size_u
+        self.ctrlpts_size_v = original_cpts_size_v
+        self.ctrlpts = original_cpts
+        self.knotvector_u = original_kv
+
+        # Create a MultiSurface
+        ret_val = Multi.MultiSurface()
+        ret_val.add(surf1)
+        ret_val.add(surf2)
+
+        # Return the new surfaces
+        return ret_val
+
+    def split_v(self, t=-1):
+        # Validate input data
+        if t == 0.0 or t == 1.0:
+            raise ValueError("Cannot split on the corner points")
+        utils.check_uv(t)
+
+        # Create backups of the original surface
+        original_kv = copy.deepcopy(self._knot_vector_v)
+        original_cpts = copy.deepcopy(self._control_points)
+        original_cpts_size_u = copy.deepcopy(self.ctrlpts_size_u)
+        original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
+
+        # Find multiplicity of the knot
+        ks = utils.find_span(self._degree_v, self._knot_vector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
+        s = utils.find_multiplicity(t, self._knot_vector_v)
+        r = self._degree_v - s
+
+        # Split the original surface
+        self.insert_knot(v=t, rv=r, check_r=False)
+
+        # Knot vectors
+        knot_span = utils.find_span(self._degree_v, self._knot_vector_v, self.ctrlpts_size_v, t) + 1
+        surf1_kv = self._knot_vector_v[0:knot_span]
+        surf1_kv.append(t)
+        surf2_kv = self._knot_vector_v[knot_span:]
+        for _ in range(0, self._degree_v + 1):
+            surf2_kv.insert(0, t)
+
+        # Control points
+        surf1_ctrlpts = []
+        for v_row in self._control_points2D:
+            temp = v_row[0:ks + r]
+            surf1_ctrlpts.append(temp)
+        surf2_ctrlpts = []
+        for v_row in self._control_points2D:
+            temp = v_row[ks + r - 1:]
+            surf2_ctrlpts.append(temp)
+
+        # Create a new surface for the first half
+        surf1 = self.__class__()
+        surf1.degree_u = self.degree_u
+        surf1.degree_v = self.degree_v
+        surf1.ctrlpts2d = surf1_ctrlpts
+        surf1.knotvector_v = surf1_kv
+        surf1.knotvector_u = self.knotvector_u
+
+        # Create another surface fot the second half
+        surf2 = self.__class__()
+        surf2.degree_u = self.degree_u
+        surf2.degree_v = self.degree_v
+        surf2.ctrlpts2d = surf2_ctrlpts
+        surf2.knotvector_v = surf2_kv
+        surf2.knotvector_u = self.knotvector_u
+
+        # Restore the original surface
+        self.ctrlpts_size_u = original_cpts_size_u
+        self.ctrlpts_size_v = original_cpts_size_v
+        self.ctrlpts = original_cpts
+        self.knotvector_v = original_kv
+
+        # Create a MultiSurface
+        ret_val = Multi.MultiSurface()
+        ret_val.add(surf1)
+        ret_val.add(surf2)
+
+        # Return the new surfaces
+        return ret_val
