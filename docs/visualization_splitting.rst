@@ -24,7 +24,7 @@ Splitting can also be applied to 3D curves (split at ``u = 0.3``) without any tr
 
 Surface splitting is also possible. The following figure compares splitting at ``u = 0.5`` and ``v = 0.5``.
 
-.. image:: images/split_surface_combined.png
+.. image:: images/split_surface_combined.jpg
     :alt: Surface split combined
 
 Surfaces can also be translated too before or after splitting operation. The following figure illustrates translation
