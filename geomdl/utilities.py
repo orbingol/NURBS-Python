@@ -822,7 +822,7 @@ def binomial_coefficient(k, i):
 
 # Generate random colors for plotting
 def color_generator():
-    """ Generate random colors for control and evaluated points plotting.
+    """ Generates colors for control and evaluated curve/surface points plots.
 
     Inspired from https://stackoverflow.com/a/14019260
 
