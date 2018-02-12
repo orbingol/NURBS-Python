@@ -451,3 +451,106 @@ class Surface(object):
         :type stop_v: float
         """
         pass
+
+
+class Multi(object):
+    """ Abstract class for curve and surface containers. """
+
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self):
+        self._elements = []
+        self._delta = 0.1
+        self._vis_component = None
+        self._iter_index = 0
+        self._instance = None
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        try:
+            result = self._elements[self._iter_index]
+        except IndexError:
+            raise StopIteration
+        self._iter_index += 1
+        return result
+
+    def __reversed__(self):
+        return reversed(self._elements)
+
+    def __getitem__(self, index):
+        return self._elements[index]
+
+    def __len__(self):
+        return len(self._elements)
+
+    @property
+    def delta(self):
+        """ Evaluation delta.
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        :type: float
+        """
+        return self._delta
+
+    @delta.setter
+    def delta(self, value):
+        # Delta value for surface evaluation should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+
+        # Set a new delta value
+        self._delta = float(value)
+
+    @property
+    def vis(self):
+        """ Visualization component.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        :type: float
+        """
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, VisBase.VisAbstract):
+            warn("Visualization component is NOT an instance of the abstract class")
+            return
+        self._vis_component = value
+
+    def add(self, element):
+        """ Abstract method for adding surface or curve objects to the container.
+
+        :param element: the curve or surface object to be added
+        :type element:
+        """
+        if not isinstance(element, self._instance):
+            warn("Cannot add, incompatible type.")
+            return
+        self._elements.append(element)
+
+    def add_list(self, elements):
+        """ Adds curve objects to the container.
+
+        :param elements: curve objects to be added
+        :type elements: list, tuple
+        """
+        if not isinstance(elements, (list, tuple)):
+            warn("Input must be a list or a tuple")
+            return
+
+        for element in elements:
+            self.add(element)
+
+    # Runs visualization component to render the surface
+    @abc.abstractmethod
+    def render(self):
+        """ Abstract method for rendering plots using the visualization component. """
+        pass

@@ -8,6 +8,7 @@
 """
 
 import math
+import random
 
 
 # Reads 2D control points file, flips it and saves it
@@ -817,3 +818,17 @@ def binomial_coefficient(k, i):
     i_fact = math.factorial(i)
     k_i_fact = math.factorial(k - i)
     return float(k_fact / (k_i_fact * i_fact))
+
+
+# Generate random colors for plotting
+def color_generator():
+    """ Generate random colors for control and evaluated points plotting.
+
+    Inspired from https://stackoverflow.com/a/14019260
+
+    :return: list of color strings in hex format
+    :rtype: list
+    """
+    r = lambda: random.randint(0, 255)
+    color_string = '#%02X%02X%02X'
+    return [color_string % (r(), r(), r()), color_string % (r(), r(), r())]
