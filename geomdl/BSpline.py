@@ -820,7 +820,7 @@ class Curve(Abstract.Curve):
         This method splits the curve into two pieces at the given parametric coordinate, generates two different
         curve objects and returns them. It doesn't change anything on the initial curve.
 
-        :param u: parametric coordinate of the split location
+        :param u: parametric coordinate
         :type u: float
         :return: a list of curves as the split pieces of the initial curve
         :rtype: Multi.MultiCurve
@@ -2186,6 +2186,16 @@ class Surface(Abstract.Surface):
             self.evaluate()
 
     def split_u(self, t=-1):
+        """ Splits the surface at the input parametric coordinate in U-direction.
+
+        This method splits the surface into two pieces at the given parametric coordinate in U-direction,
+        generates two different surface objects and returns them. It doesn't change anything on the initial surface.
+
+        :param t: parametric coordinate in U-direction
+        :type t: float
+        :return: a list of surface as the split pieces of the initial surface
+        :rtype: Multi.MultiSurface
+        """
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
@@ -2248,6 +2258,16 @@ class Surface(Abstract.Surface):
         return ret_val
 
     def split_v(self, t=-1):
+        """ Splits the surface at the input parametric coordinate in V-direction.
+
+        This method splits the surface into two pieces at the given parametric coordinate in V-direction,
+        generates two different surface objects and returns them. It doesn't change anything on the initial surface.
+
+        :param t: parametric coordinate in U-direction
+        :type t: float
+        :return: a list of surface as the split pieces of the initial surface
+        :rtype: Multi.MultiSurface
+        """
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
@@ -2338,7 +2358,7 @@ class Surface(Abstract.Surface):
             knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
         surf_list.append(surf)
 
-        # Work on the split surfaces
+        # Work on the split surfaces in V-direction
         multi_surf = Multi.MultiSurface()
         for surf in surf_list:
             knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
