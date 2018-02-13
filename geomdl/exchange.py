@@ -282,7 +282,7 @@ def save_stl_ascii_multi(surface_list=(), file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_single(surface, file_name, vertex_spacing=2):
+def save_stl_binary_single(surface=None, file_name=None, vertex_spacing=2):
     """ Saves a single surface as a binary .stl file.
 
     Inspired from https://github.com/apparentlymart/python-stl
