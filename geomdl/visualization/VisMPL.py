@@ -73,6 +73,12 @@ class VisCurve3D(VisBase.VisAbstract):
         # Start plotting
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
+
+            # Try not to fail if the input is 2D
+            if pts.shape[1] == 2:
+                pts = np.c_[pts, np.zeros(pts.shape[0])]
+
+            # Control points or not
             if plot['type'] == 1:
                 if self._plot_ctrlpts:
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
