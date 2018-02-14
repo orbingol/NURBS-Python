@@ -13,7 +13,7 @@ from geomdl import NURBS
 def cylinder(radius=1, height=1):
     """ Generates a NURBS cylindrical surface.
 
-    This example is kindly provided by John-Eric Dufour.
+    The cylindrical surface example is kindly contributed by John-Eric Dufour.
 
     :param radius: radius of the cylinder
     :type radius: int, float
