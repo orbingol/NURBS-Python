@@ -242,7 +242,7 @@ def save_stl_ascii_multi(surface_list=(), file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     # Input validity checking
-    if not isinstance(surface_list, Multi.MultiAbstract):
+    if not isinstance(surface_list, Abstract.Multi):
         raise ValueError("Input must be a list of surfaces")
     if not file_name:
         raise ValueError("File name field is required")
@@ -333,7 +333,7 @@ def save_stl_binary_multi(surface_list=(), file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     # Input validity checking
-    if not isinstance(surface_list, Multi.MultiAbstract):
+    if not isinstance(surface_list, Abstract.Multi):
         raise ValueError("Input must be a list of surfaces")
     if not file_name:
         raise ValueError("File name field is required")
