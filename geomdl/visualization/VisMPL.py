@@ -17,7 +17,20 @@ import matplotlib.pyplot as plt
 
 
 class VisConfig(Abstract.VisConfigAbstract):
-    """ Configuration class for Matplotlib visualizaion mmodule. """
+    """ Configuration class for Matplotlib visualizaion mmodule.
+
+    This class is only required when you prefer to change the default plotting behavior, such as hiding control points
+    plot or legend. By default, the following variables and their default values are used in all ``VisMPL``
+    visualization classes.
+
+    * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot in the figure
+    * ``legend`` (True or False): Enables/Disables legend in the figure
+    * ``axes`` (True or False): Enables/Disables axes and grid in the figure
+    * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
+    * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
+
+    Please refer to the **Examples Repository** for details.
+    """
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
