@@ -18,24 +18,23 @@ Following modules are included in this library:
     module_container
     module_exchange
 
-Visualization
-=============
+Visualization Module
+^^^^^^^^^^^^^^^^^^^^
 
-NURBS-Python provides an optional-to-use visualization module with a sample implementation that uses
-`Matplotlib <https://matplotlib.org/>`_. Please see the documentation of the following modules for details:
+NURBS-Python provides an abstract base for visualization described under :doc:`Abstract <module_abstract>` class
+reference. In addition, NURBS-Python comes with a sample module that uses `Matplotlib <https://matplotlib.org/>`_.
 
 .. toctree::
     :maxdepth: 1
 
-    module_vis_base
     module_vis_mpl
 
-Although there exists a visualization component, the users are completely free to use any visualization method
-or software. For instance, CSV exporting facility of the curve and surface classes can be used to draw control points,
-curves and surfaces using a software, such as Paraview_.
+Although there exists a visualization module, the users are completely free to use any visualization method
+or visualization software. For instance, CSV exporting facility of the curve and surface classes can be used to plot
+control points, curves and surfaces using a software, such as Paraview_.
 
 Generating Common Shapes
-========================
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 NURBS-Python also provides a custom module for automatic generation of the most commonly used curves and surfaces.
 
