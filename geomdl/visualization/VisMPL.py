@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 
 
 class VisConfig(Abstract.VisConfigAbstract):
+    """ Configuration class for Matplotlib visualizaion mmodule. """
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
@@ -28,7 +29,7 @@ class VisConfig(Abstract.VisConfigAbstract):
 
 
 class VisCurve2D(Abstract.VisAbstract):
-    """ Visualization module for 2D Curves """
+    """ Matplotlib visualization module for 2D Curves """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
 
@@ -65,7 +66,7 @@ class VisCurve2D(Abstract.VisAbstract):
 
 
 class VisCurve3D(Abstract.VisAbstract):
-    """ Visualization module for 3D Curves """
+    """ Matplotlib visualization module for 3D Curves """
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
 
@@ -111,7 +112,7 @@ class VisCurve3D(Abstract.VisAbstract):
 
 
 class VisSurface(Abstract.VisAbstractSurf):
-    """ Visualization module for Surfaces
+    """ Matplotlib visualization module for Surfaces
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid
     """
@@ -156,7 +157,7 @@ class VisSurface(Abstract.VisAbstractSurf):
 
 
 class VisSurfWireframe(Abstract.VisAbstractSurf):
-    """ Visualization module for Surfaces
+    """ Matplotlib visualization module for Surfaces
 
     Scatter plot for the control points and wireframe for the surface points
     """
@@ -201,7 +202,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
 
 class VisSurfTriangle(Abstract.VisAbstractSurf):
-    """ Visualization module for Surfaces
+    """ Matplotlib visualization module for Surfaces
 
     Wireframe plot for the control points and triangulated plot for the surface points
     """
@@ -246,7 +247,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
 
 class VisSurfScatter(Abstract.VisAbstractSurf):
-    """ Visualization module for Surfaces
+    """ Matplotlib visualization module for Surfaces
 
     Wireframe plot for the control points and scatter plot for the surface points
     """
