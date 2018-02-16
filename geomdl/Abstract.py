@@ -555,6 +555,15 @@ class Multi(object):
         for element in elements:
             self.add(element)
 
+    def translate(self, vec=()):
+        """ Translates the elements in the container by the input vector.
+
+        :param vec: translation vector
+        :type vec: list, tuple
+        """
+        for elem in self._elements:
+            elem.translate(vec)
+
     # Runs visualization component to render the surface
     @abc.abstractmethod
     def render(self):
