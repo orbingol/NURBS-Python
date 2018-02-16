@@ -74,6 +74,10 @@ class VisCurve2D(Abstract.VisAbstract):
         if self._config.display_legend:
             plt.legend(legend_proxy, legend_names)
 
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
+
         # Display 2D plot
         plt.show()
 
@@ -120,6 +124,10 @@ class VisCurve3D(Abstract.VisAbstract):
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
+
         # Display the 3D plot
         plt.show()
 
@@ -164,6 +172,10 @@ class VisSurface(Abstract.VisAbstractSurf):
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
+
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
 
         # Display the 3D plot
         plt.show()
@@ -210,6 +222,10 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
+
         # Display the 3D plot
         plt.show()
 
@@ -255,6 +271,10 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
+
         # Display the 3D plot
         plt.show()
 
@@ -299,6 +319,10 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
+
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
 
         # Display the 3D plot
         plt.show()
