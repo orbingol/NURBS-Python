@@ -64,6 +64,13 @@ class Curve(Abstract.Curve):
 
     __repr__ = __str__
 
+    def __call__(self, degree, ctrlpts, knotvector):
+        self._reset_ctrlpts()
+        self._reset_curve()
+        self.degree = degree
+        self.ctrlpts = ctrlpts
+        self.knotvector = knotvector
+
     @property
     def degree(self):
         """ Curve degree.
@@ -1057,6 +1064,15 @@ class Surface(Abstract.Surface):
         return "B-Spline Surface"
 
     __repr__ = __str__
+
+    def __call__(self, degree_u, degree_v, ctrlpts_size_u, ctrlpts_size_v, ctrlpts, knotvector_u, knotvector_v):
+        self._reset_ctrlpts()
+        self._reset_surface()
+        self.degree_u = degree_u
+        self.degree_v = degree_v
+        self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
+        self.knotvector_u = knotvector_u
+        self.knotvector_v = knotvector_v
 
     @property
     def degree_u(self):
