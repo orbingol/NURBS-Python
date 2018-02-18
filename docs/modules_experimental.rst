@@ -7,7 +7,7 @@ they are distributed with the package, due to these reasons they are considered 
 mature enough to be used in production environments.
 
 Visualization Module
-^^^^^^^^^^^^^^^^^^^^
+====================
 
 NURBS-Python provides an abstract base for visualization modules described under :doc:`Abstract <module_abstract>`
 class reference. This abstract base is a part of the :doc:`Core Library <modules>` and it is considered as mature now.
@@ -25,7 +25,7 @@ or visualization software. For instance, CSV exporting facility of the curve and
 control points, curves and surfaces using a software, such as Paraview_.
 
 Generating Common Shapes
-^^^^^^^^^^^^^^^^^^^^^^^^
+========================
 
 NURBS-Python provides an experimental module for automatic generation of the most commonly used curves and surfaces.
 
