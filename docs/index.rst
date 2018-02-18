@@ -46,6 +46,7 @@ This documentation is organized into a couple sections:
     :caption: Modules
 
     modules
+    modules_experimental
 
 
 The NURBS-Python Library is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released
