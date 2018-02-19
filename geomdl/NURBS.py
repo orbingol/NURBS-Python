@@ -55,6 +55,9 @@ class Curve(BSpline.Curve):
         # Override dimension variable
         self._dimension = 4  # 3D coordinates + weights
         self._rational = True
+        # Variables for caching
+        self._cache_ctrlpts = []
+        self._cache_weights = []
 
     def __str__(self):
         return "3D NURBS Curve"
@@ -69,13 +72,13 @@ class Curve(BSpline.Curve):
         :setter: Sets weighted control points
         :type: list
         """
-        ret_list = []
-        for pt in self._control_points:
-            temp = []
-            for idx in range(self._dimension - 1):
-                temp.append(float(pt[idx] / pt[-1]))
-            ret_list.append(tuple(temp))
-        return tuple(ret_list)
+        if not self._cache_ctrlpts:
+            for pt in self._control_points:
+                temp = []
+                for idx in range(self._dimension - 1):
+                    temp.append(float(pt[idx] / pt[-1]))
+                self._cache_ctrlpts.append(tuple(temp))
+        return tuple(self._cache_ctrlpts)
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -88,10 +91,18 @@ class Curve(BSpline.Curve):
         :getter: Extracts the weights vector from weighted control points array
         :type: list
         """
-        weights = []
-        for pt in self._control_points:
-            weights.append(pt[-1])
-        return tuple(weights)
+        if not self._cache_weights:
+            for pt in self._control_points:
+                self._cache_weights.append(pt[-1])
+        return tuple(self._cache_weights)
+
+    # Cleans up the control points and the cache
+    def _reset_ctrlpts(self):
+        # Call parent function to process control points
+        super(Curve, self)._reset_ctrlpts()
+        # Delete the caches
+        del self._cache_ctrlpts[:]
+        del self._cache_ctrlpts[:]
 
     # Prepares control points for exporting as a CSV file
     def _get_ctrlpts_for_exporting(self):
@@ -100,13 +111,9 @@ class Curve(BSpline.Curve):
         :return: list of control points
         :rtype: list
         """
-        ctrlpts_noweight = []
-        for pt in self._control_points:
-            temp = []
-            for idx in range(self._dimension - 1):
-                temp.append(float(pt[idx] / pt[-1]))
-            ctrlpts_noweight.append(temp)
-        return ctrlpts_noweight
+        if not self._cache_ctrlpts:
+            return self.ctrlpts
+        return self._cache_ctrlpts
 
     # Prepares and returns the CSV file header
     def _get_csv_header(self):
@@ -173,7 +180,6 @@ class Curve(BSpline.Curve):
         CKw = super(Curve, self).derivatives(u, order)
 
         # Algorithm A4.2
-        # CK = [[None for x in range(self._dimension - 1)] for y in range(order + 1)]
         CK = [[None for _ in range(self._dimension - 1)] for _ in range(order + 1)]
         for k in range(0, order + 1):
             v = []
@@ -352,6 +358,9 @@ class Surface(BSpline.Surface):
         # Override dimension variable
         self._dimension = 4  # 3D coordinates + weights
         self._rational = True
+        # Variables for caching
+        self._cache_ctrlpts = []
+        self._cache_weights = []
 
     def __str__(self):
         return "NURBS Surface"
@@ -366,13 +375,13 @@ class Surface(BSpline.Surface):
         :setter: Sets weighted control points.
         :type: list
         """
-        ret_list = []
-        for pt in self._control_points:
-            temp = []
-            for idx in range(self._dimension - 1):
-                temp.append(float(pt[idx] / pt[-1]))
-            ret_list.append(tuple(temp))
-        return tuple(ret_list)
+        if not self._cache_ctrlpts:
+            for pt in self._control_points:
+                temp = []
+                for idx in range(self._dimension - 1):
+                    temp.append(float(pt[idx] / pt[-1]))
+                self._cache_ctrlpts.append(tuple(temp))
+        return tuple(self._cache_ctrlpts)
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -389,10 +398,18 @@ class Surface(BSpline.Surface):
         :getter: Extracts the weights vector from weighted control points array
         :type: list
         """
-        weights = []
-        for pt in self._control_points:
-            weights.append(pt[-1])
-        return tuple(weights)
+        if not self._cache_weights:
+            for pt in self._control_points:
+                self._cache_weights.append(pt[-1])
+        return tuple(self._cache_weights)
+
+    # Cleans up the control points and the cache
+    def _reset_ctrlpts(self):
+        # Call parent function to process control points
+        super(Surface, self)._reset_ctrlpts()
+        # Delete the caches
+        del self._cache_ctrlpts[:]
+        del self._cache_ctrlpts[:]
 
     # Prepares control points for exporting as a CSV file
     def _get_ctrlpts_for_exporting(self):
@@ -401,13 +418,9 @@ class Surface(BSpline.Surface):
         :return: list of control points
         :rtype: list
         """
-        ctrlpts_noweight = []
-        for pt in self._control_points:
-            temp = []
-            for idx in range(self._dimension - 1):
-                temp.append(float(pt[idx] / pt[-1]))
-            ctrlpts_noweight.append(temp)
-        return ctrlpts_noweight
+        if not self._cache_ctrlpts:
+            return self.ctrlpts
+        return self._cache_ctrlpts
 
     # Prepares and returns the CSV file header
     def _get_csv_header(self):
