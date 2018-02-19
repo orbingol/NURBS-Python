@@ -43,8 +43,8 @@ The following example illustrates the usage of :code:`compatibility` module:
     n_ctrlptsw = compat.change_ctrlpts_row_order(t_ctrlptsw, 4, 3)
 
     # Since we have no information on knot vectors, let's auto-generate them
-    n_knotvector_u = utils.generate_knot_vector(p_degree_u, 4)
-    n_knotvector_v = utils.generate_knot_vector(p_degree_v, 3)
+    n_knotvector_u = utils.generate_knot_vector(p_degree_u, p_size_u)
+    n_knotvector_v = utils.generate_knot_vector(p_degree_v, p_size_v)
 
 
     #
