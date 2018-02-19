@@ -8,7 +8,7 @@
 """
 
 
-def change_ctrlpts_row_order(ctrlpts, size_u, size_v, get2d=False):
+def change_ctrlpts_row_order(ctrlpts, size_u, size_v):
     """ Converts a u-row order 1-D control points list to a v-row order one.
 
     :param ctrlpts: control points in u-row order
@@ -17,28 +17,19 @@ def change_ctrlpts_row_order(ctrlpts, size_u, size_v, get2d=False):
     :type size_u: int
     :param size_v: size in V-direction
     :type size_v: int
-    :param get2d: If True, the return value will be a 2-D array
-    :type get2d: bool
     :return: control points in v-row order
     :rtype: list
     """
-    new_ctrlpts2d = [[None for _ in range(size_v)] for _ in range(size_u)]
+    new_ctrlpts = []
     for i in range(0, size_u):
         for j in range(0, size_v):
-            new_ctrlpts2d[i][j] = [float(c) for c in ctrlpts[i + (j * size_u)]]
-
-    if get2d:
-        return new_ctrlpts2d
-
-    new_ctrlpts = []
-    for i in range(0, size_v):
-        for j in range(0, size_u):
-            new_ctrlpts.append(new_ctrlpts2d[i][j])
+            temp = [float(c) for c in ctrlpts[i + (j * size_u)]]
+            new_ctrlpts.append(temp)
 
     return new_ctrlpts
 
 
-def flip_ctrlpts(ctrlpts, size_u, size_v, get2d=False):
+def flip_ctrlpts(ctrlpts, size_u, size_v):
     """ Flips a list of surface 1-D control points in v-row order.
 
     :param ctrlpts: control points
@@ -47,8 +38,6 @@ def flip_ctrlpts(ctrlpts, size_u, size_v, get2d=False):
     :type size_u: int
     :param size_v: size in V-direction (column length)
     :type size_v: int
-    :param get2d: If True, the return value will be a 2-D array
-    :type get2d: bool
     :return: flipped control points
     :rtype: list
     """
