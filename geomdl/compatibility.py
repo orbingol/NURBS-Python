@@ -214,6 +214,25 @@ def generate_ctrlpts_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
+def combine_ctrlpts_weights(ctrlpts, weights):
+    """ Multiplies control points with the weights to generate (x*w, y*w, z*w, w)
+
+    :param ctrlpts: un-weighted control points
+    :type ctrlpts: list, tuple
+    :param weights: weights vector
+    :type weights: list, tuple
+    :return: weighted control points
+    :rtype; list
+    """
+    ctrlptsw = []
+    for pt, w in zip(ctrlpts, weights):
+        temp = [c * w for c in pt]
+        temp.append(w)
+        ctrlptsw.append(temp)
+
+    return ctrlptsw
+
+
 def _read_ctrltps2d_file(file_in):
     ctrlpts = []
     size_u = 0
