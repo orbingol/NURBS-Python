@@ -40,61 +40,53 @@ class Curve(object):
         self._degree = value - 1
 
     @property
-    @abc.abstractmethod
     def degree(self):
         """ Curve degree.
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
         """
-        return False
+        return self._degree
 
     @degree.setter
-    @abc.abstractmethod
     def degree(self, value):
-        pass
+        self._degree = value
 
     @property
-    @abc.abstractmethod
     def knotvector(self):
         """ Knot vector.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
         """
-        return False
+        return self._knot_vector
 
     @knotvector.setter
-    @abc.abstractmethod
     def knotvector(self, value):
-        pass
+        self._knot_vector = value
 
     @property
-    @abc.abstractmethod
     def ctrlpts(self):
         """ Control points.
 
         :getter: Gets the control points
         :setter: Sets the control points
         """
-        return False
+        return self._control_points
 
     @ctrlpts.setter
-    @abc.abstractmethod
     def ctrlpts(self, value):
-        pass
+        self._control_points = value
 
     @property
-    @abc.abstractmethod
     def curvepts(self):
         """ Curve points.
 
         :getter: Coordinates of the evaluated surface points
         """
-        return False
+        return self._curve_points
 
     @property
-    @abc.abstractmethod
     def delta(self):
         """ Evaluation delta.
 
@@ -106,7 +98,6 @@ class Curve(object):
         return self._delta
 
     @delta.setter
-    @abc.abstractmethod
     def delta(self, value):
         self._delta = value
 
@@ -143,6 +134,14 @@ class Curve(object):
             works = False
         if not works:
             raise ValueError("Some required parameters for curve evaluation are not set")
+
+    # Resets the control points
+    def _reset_ctrlpts(self):
+        self._control_points = None
+
+    # Resets the evaluated points
+    def _reset_evalpts(self):
+        self._curve_points = None
 
     @abc.abstractmethod
     def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
@@ -226,7 +225,6 @@ class Surface(object):
         self._degree_v = value - 1
 
     @property
-    @abc.abstractmethod
     def degree_u(self):
         """ Surface degree for U direction.
 
@@ -234,15 +232,13 @@ class Surface(object):
         :setter: Sets the surface degree for U direction
         :type: integer
         """
-        return False
+        return self._degree_u
 
     @degree_u.setter
-    @abc.abstractmethod
     def degree_u(self, value):
-        pass
+        self._degree_u = value
 
     @property
-    @abc.abstractmethod
     def degree_v(self):
         """ Surface degree for V direction.
 
@@ -250,77 +246,63 @@ class Surface(object):
         :setter: Sets the surface degree for V direction
         :type: integer
         """
-        return False
+        return self._degree_v
 
     @degree_v.setter
-    @abc.abstractmethod
     def degree_v(self, value):
-        pass
+        self._degree_v = value
 
     @property
-    @abc.abstractmethod
     def knotvector_u(self):
         """ Knot vector for U direction.
 
         :getter: Gets the knot vector for U direction
         :setter: Sets the knot vector for U direction
         """
-        return False
+        return self._knot_vector_u
 
     @knotvector_u.setter
-    @abc.abstractmethod
     def knotvector_u(self, value):
-        pass
+        self._knot_vector_u = value
 
     @property
-    @abc.abstractmethod
     def knotvector_v(self):
         """ Knot vector for V direction.
 
         :getter: Gets the knot vector for V direction
         :setter: Sets the knot vector for V direction
         """
-        return False
+        return self._knot_vector_v
 
     @knotvector_v.setter
-    @abc.abstractmethod
     def knotvector_v(self, value):
-        pass
+        self._knot_vector_v = value
 
     @property
-    @abc.abstractmethod
     def ctrlpts(self):
         """ 1-D control points.
-
-        .. note::
-
-            The v index varies first. That is, a row of v control points for the first u value is found first.
-            Then, the row of v control points for the next u value.
 
         :getter: Gets the control points
         :setter: Sets the control points
         """
-        return False
+        return self._control_points
 
     @ctrlpts.setter
-    @abc.abstractmethod
     def ctrlpts(self, value):
-        pass
+        self._control_points = value
 
     @property
-    @abc.abstractmethod
     def ctrlpts2d(self):
         """ 2-D control points.
 
         :getter: Gets the control points in U and V directions
         :setter: Sets the control points in U and V directions
         """
-        return False
+        return self._control_points2D
 
     @ctrlpts2d.setter
-    @abc.abstractmethod
     def ctrlpts2d(self, value):
-        pass
+        self._control_points2D = value
 
     @property
     def ctrlpts_size_u(self):
@@ -357,16 +339,14 @@ class Surface(object):
         self._control_points_size_v = value
 
     @property
-    @abc.abstractmethod
     def surfpts(self):
         """ Surface points.
 
         :getter: Coordinates of evaluated surface points
         """
-        return False
+        return self._surface_points
 
     @property
-    @abc.abstractmethod
     def delta(self):
         """ Evaluation delta.
 
@@ -378,7 +358,6 @@ class Surface(object):
         return self._delta
 
     @delta.setter
-    @abc.abstractmethod
     def delta(self, value):
         self._delta = value
 
@@ -402,6 +381,14 @@ class Surface(object):
             warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
+
+    # Resets the control points
+    def _reset_ctrlpts(self):
+        self._control_points = None
+
+    # Resets the evaluated points
+    def _reset_evalpts(self):
+        self._surface_points = None
 
     # Checks whether the surface evaluation is possible or not
     def _check_variables(self):

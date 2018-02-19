@@ -66,7 +66,7 @@ class Curve(Abstract.Curve):
 
     def __call__(self, degree, ctrlpts, knotvector):
         self._reset_ctrlpts()
-        self._reset_curve()
+        self._reset_evalpts()
         self.degree = degree
         self.ctrlpts = ctrlpts
         self.knotvector = knotvector
@@ -90,7 +90,7 @@ class Curve(Abstract.Curve):
         if value < 0:
             raise ValueError("Degree cannot be less than zero")
         # Clean up the curve points list, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
         # Set degree
         self._degree = value
 
@@ -122,7 +122,7 @@ class Curve(Abstract.Curve):
             raise ValueError("Number of control points should be at least degree + 1")
 
         # Clean up the curve and control points lists, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
         self._reset_ctrlpts()
 
         for idx, cpt in enumerate(ctrlpts):
@@ -158,7 +158,7 @@ class Curve(Abstract.Curve):
             raise ValueError("Input is not a valid knot vector")
 
         # Clean up the surface points lists, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
 
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
@@ -182,7 +182,7 @@ class Curve(Abstract.Curve):
             raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
 
         # Clean up the curve points list, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
 
         # Set new delta value
         self._delta = float(value)
@@ -228,14 +228,14 @@ class Curve(Abstract.Curve):
         self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor)
         self._vis_component.render()
 
-    # Cleans up the control points
+    # Resets the control points
     def _reset_ctrlpts(self):
         if self._control_points:
             # Delete control points
             del self._control_points[:]
 
-    # Cleans the evaluated curve points (private)
-    def _reset_curve(self):
+    # Resets the evaluated curve points
+    def _reset_evalpts(self):
         if self._curve_points:
             # Delete the curve points
             del self._curve_points[:]
@@ -252,7 +252,7 @@ class Curve(Abstract.Curve):
         :rtype: bool
         """
         # Clean up the curve and control points lists, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
         self._reset_ctrlpts()
 
         # Initialize the return value
@@ -481,7 +481,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Clean up the curve points, if necessary
-        self._reset_curve()
+        self._reset_evalpts()
 
         # Evaluate the given knot vector range
         for u in utils.frange(start, stop, self._delta):
@@ -1067,7 +1067,7 @@ class Surface(Abstract.Surface):
 
     def __call__(self, degree_u, degree_v, ctrlpts_size_u, ctrlpts_size_v, ctrlpts, knotvector_u, knotvector_v):
         self._reset_ctrlpts()
-        self._reset_surface()
+        self._reset_evalpts()
         self.degree_u = degree_u
         self.degree_v = degree_v
         self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
@@ -1089,7 +1089,7 @@ class Surface(Abstract.Surface):
         if value < 0:
             raise ValueError("Degree cannot be less than zero")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
         # Set degree u
         self._degree_u = value
 
@@ -1108,7 +1108,7 @@ class Surface(Abstract.Surface):
         if value < 0:
             raise ValueError("Degree cannot be less than zero")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
         # Set degree v
         self._degree_v = value
 
@@ -1207,7 +1207,7 @@ class Surface(Abstract.Surface):
 
         # Reset control points and the surface points
         self._reset_ctrlpts()
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Assume that the user has prepared the lists correctly
         self._control_points_size_u = len(value)
@@ -1251,7 +1251,7 @@ class Surface(Abstract.Surface):
         :return: None
         """
         # Clean up the surface and control points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
         self._reset_ctrlpts()
 
         # Degree must be set before setting the control points
@@ -1312,7 +1312,7 @@ class Surface(Abstract.Surface):
             raise ValueError("Input is not a valid knot vector (u-direction)")
 
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Set knot vector u
         self._knot_vector_u = [float(kv) for kv in value_normalized]
@@ -1340,7 +1340,7 @@ class Surface(Abstract.Surface):
             raise ValueError("Input is not a valid knot vector (v-direction)")
 
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
@@ -1363,7 +1363,7 @@ class Surface(Abstract.Surface):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
         # Set a new delta value
         self._delta = float(value)
 
@@ -1423,7 +1423,7 @@ class Surface(Abstract.Surface):
             self._control_points_size_v = 0
 
     # Cleans the evaluated surface points (private)
-    def _reset_surface(self):
+    def _reset_evalpts(self):
         if self._surface_points:
             # Delete the surface points
             del self._surface_points[:]
@@ -1452,7 +1452,7 @@ class Surface(Abstract.Surface):
         """
         # Clean up the surface and control points lists, if necessary
         self._reset_ctrlpts()
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Initialize the return value
         ret_check = True
@@ -1757,7 +1757,7 @@ class Surface(Abstract.Surface):
                 ctrlpts_new.append(ctrlpts2d_new[u][v])
 
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Save transposed data
         self._degree_u = degree_u_new
@@ -1839,7 +1839,7 @@ class Surface(Abstract.Surface):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Clean up the surface points lists, if necessary
-        self._reset_surface()
+        self._reset_evalpts()
 
         # Evaluate the given knot vector range
         for u in utils.frange(start_u, stop_u, self._delta):
