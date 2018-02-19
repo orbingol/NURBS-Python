@@ -36,6 +36,7 @@ This documentation is organized into a couple sections:
     package_name
     examples
     file_formats
+    compatibility
     visualization
     visualization_splitting
 
