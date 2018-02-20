@@ -144,31 +144,18 @@ class Curve(object):
         self._curve_points = None
 
     @abc.abstractmethod
-    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
+    def curvept(self, u=-1, **kwargs):
         """ Evaluates the curve at the given parameter value.
 
         :param u: parameter
         :type u: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated curve point
         """
         pass
 
     @abc.abstractmethod
-    def evaluate(self, start=0.0, stop=1.0):
-        """ Evaluates the curve in the given interval.
-
-        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
-        the curve will also be evaluated at the ``stop`` parameter value.
-
-        :param start: start parameter, defaults to zero
-        :type start: float
-        :param stop: stop parameter, defaults to one
-        :type stop: float
-        """
+    def evaluate(self, **kwargs):
+        """ Evaluates the curve. """
         pass
 
 
@@ -403,38 +390,20 @@ class Surface(object):
             raise ValueError("Some required parameters for surface evaluation are not set.")
 
     @abc.abstractmethod
-    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
+    def surfpt(self, u=-1, v=-1, **kwargs):
         """ Evaluates the surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
         :type v: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated surface point
         """
         pass
 
     @abc.abstractmethod
-    def evaluate(self, start_u=0.0, stop_u=1.0, start_v=0.0, stop_v=1.0):
-        """ Evaluates the surface in the given (u,v) intervals.
-
-        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
-        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
-        and ``stop_v`` parameter values.
-
-        :param start_u: u parameter to start evaluation
-        :type start_u: float
-        :param stop_u: u parameter to stop evaluation
-        :type stop_u: float
-        :param start_v: v parameter to start evaluation
-        :type start_v: float
-        :param stop_v: v parameter to stop evaluation
-        :type stop_v: float
-        """
+    def evaluate(self, **kwargs):
+        """ Evaluates the surface. """
         pass
 
 
