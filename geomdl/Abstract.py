@@ -144,16 +144,6 @@ class Curve(object):
         self._curve_points = None
 
     @abc.abstractmethod
-    def curvept(self, u=-1, **kwargs):
-        """ Evaluates the curve at the given parameter value.
-
-        :param u: parameter
-        :type u: float
-        :return: evaluated curve point
-        """
-        pass
-
-    @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
         pass
@@ -388,18 +378,6 @@ class Surface(object):
             works = False
         if not works:
             raise ValueError("Some required parameters for surface evaluation are not set.")
-
-    @abc.abstractmethod
-    def surfpt(self, u=-1, v=-1, **kwargs):
-        """ Evaluates the surface at the given (u,v) parameters.
-
-        :param u: parameter in the U direction
-        :type u: float
-        :param v: parameter in the V direction
-        :type v: float
-        :return: evaluated surface point
-        """
-        pass
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
