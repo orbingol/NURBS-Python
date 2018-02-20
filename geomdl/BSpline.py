@@ -426,18 +426,17 @@ class Curve(Abstract.Curve):
         return ret_check
 
     # Evaluates the B-Spline curve at the given parameter
-    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
+    def curvept(self, u=-1, **kwargs):
         """ Evaluates the B-Spline curve at the given parameter value.
 
         :param u: parameter
         :type u: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
         :rtype: list
         """
+        check_vars = kwargs.get('check_vars', True)
+        get_ctrlpts = kwargs.get('get_ctrlpts', False)
+
         if check_vars:
             # Check all parameters are set before the curve evaluation
             self._check_variables()
@@ -457,24 +456,29 @@ class Curve(Abstract.Curve):
             if get_ctrlpts:
                 ctrlpts.append(self._control_points[span - self._degree + i])
 
+        # Return associated control points
         if get_ctrlpts:
             return cpt, ctrlpts
         return cpt
 
     # Evaluates the B-Spline curve
-    def evaluate(self, start=0.0, stop=1.0):
+    def evaluate(self, **kwargs):
         """ Evaluates the curve in the given interval.
+
+        Possible keyword arguments are
+
+        * ``start``: start parameter
+        * ``stop``: stop parameter
 
         The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
         the curve will also be evaluated at the ``stop`` parameter value.
 
         .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
-        :param start: start parameter, defaults to zero
-        :type start: float
-        :param stop: stop parameter, defaults to one
-        :type stop: float
         """
+        start = kwargs.get('start', 0.0)
+        stop = kwargs.get('stop', 1.0)
+
         # Check if the input parameters are in the range
         utils.check_uv(start)
         utils.check_uv(stop)
@@ -485,7 +489,7 @@ class Curve(Abstract.Curve):
 
         # Evaluate the given knot vector range
         for u in utils.frange(start, stop, self._delta):
-            cpt = self.curvept(u, False)
+            cpt = self.curvept(u, check_vars=False)
             self._curve_points.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
@@ -1769,20 +1773,19 @@ class Surface(Abstract.Surface):
         self._control_points_size_v = ctrlpts_new_size_v
         self._control_points2D = ctrlpts2d_new
 
-    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
+    def surfpt(self, u=-1, v=-1, **kwargs):
         """ Evaluates the B-Spline surface at the given (u,v) parameters.
 
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
         :type v: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
         :rtype: list
         """
+        check_vars = kwargs.get('check_vars', True)
+        get_ctrlpts = kwargs.get('get_ctrlpts', False)
+
         if check_vars:
             # Check all parameters are set before the surface evaluation
             self._check_variables()
@@ -1810,13 +1813,21 @@ class Surface(Abstract.Surface):
                     ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
+        # Return associated control points
         if get_ctrlpts:
             return spt, ctrlpts
         return spt
 
     # Evaluates the B-Spline surface
-    def evaluate(self, start_u=0.0, stop_u=1.0, start_v=0.0, stop_v=1.0):
+    def evaluate(self, **kwargs):
         """ Evaluates the surface in the given (u,v) intervals.
+
+        Possible keyword arguments are
+
+        * ``start_u``: start parameter in u-direction
+        * ``stop_u``: stop parameter in u-direction
+        * ``start_v``: start parameter in v-direction
+        * ``stop_v``: stop parameter in v-direction
 
         The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
         in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
@@ -1824,15 +1835,11 @@ class Surface(Abstract.Surface):
 
         .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
-        :param start_u: u parameter to start evaluation
-        :type start_u: float
-        :param stop_u: u parameter to stop evaluation
-        :type stop_u: float
-        :param start_v: v parameter to start evaluation
-        :type start_v: float
-        :param stop_v: v parameter to stop evaluation
-        :type stop_v: float
         """
+        start_u = kwargs.get('start_u', 0.0)
+        stop_u = kwargs.get('stop_u', 1.0)
+        start_v = kwargs.get('start_v', 0.0)
+        stop_v = kwargs.get('stop_v', 1.0)
         # Check if all the input parameters are in the range
         utils.check_uv(start_u, stop_u)
         utils.check_uv(start_v, stop_v)
@@ -1844,7 +1851,7 @@ class Surface(Abstract.Surface):
         # Evaluate the given knot vector range
         for u in utils.frange(start_u, stop_u, self._delta):
             for v in utils.frange(start_v, stop_v, self._delta):
-                spt = self.surfpt(u, v, False)
+                spt = self.surfpt(u, v, check_vars=False)
                 self._surface_points.append(spt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter

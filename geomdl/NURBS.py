@@ -125,18 +125,17 @@ class Curve(BSpline.Curve):
         return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates the rational curve at the given parameter
-    def curvept(self, u=-1, check_vars=True, get_ctrlpts=False):
+    def curvept(self, u=-1, **kwargs):
         """ Evaluates the curve at the input parameter value.
 
         :param u: parameter
         :type u: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the curve evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated curve point at the given knot value
         :rtype: list
         """
+        check_vars = kwargs.get('check_vars', True)
+        get_ctrlpts = kwargs.get('get_ctrlpts', False)
+
         if check_vars:
             # Check all parameters are set before the curve evaluation
             self._check_variables()
@@ -161,6 +160,7 @@ class Curve(BSpline.Curve):
         for idx in range(self._dimension - 1):
             cpt.append(float(cptw[idx] / cptw[-1]))
 
+        # Return associated control points
         if get_ctrlpts:
             return cpt, ctrlpts
         return cpt
@@ -432,20 +432,19 @@ class Surface(BSpline.Surface):
         return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates rational surface at the given (u, v) parameters
-    def surfpt(self, u=-1, v=-1, check_vars=True, get_ctrlpts=False):
+    def surfpt(self, u=-1, v=-1, **kwargs):
         """ Evaluates the surface at the given (u, v) parameter pair.
 
         :param u: parameter in the U direction
         :type u: float
         :param v: parameter in the V direction
         :type v: float
-        :param check_vars: flag to disable variable checking (only for internal eval functions)
-        :type check_vars: bool
-        :param get_ctrlpts: flag to add a list of control points associated with the surface evaluation to return value
-        :param get_ctrlpts: bool
         :return: evaluated surface point at the given knot values
         :rtype: list
         """
+        check_vars = kwargs.get('check_vars', True)
+        get_ctrlpts = kwargs.get('get_ctrlpts', False)
+
         if check_vars:
             # Check all parameters are set before the surface evaluation
             self._check_variables()
@@ -477,6 +476,7 @@ class Surface(BSpline.Surface):
         for idx in range(self._dimension - 1):
             spt.append(float(sptw[idx] / sptw[-1]))
 
+        # Return associated control points
         if get_ctrlpts:
             return spt, ctrlpts
         return spt
