@@ -104,12 +104,36 @@ def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-def generate_ctrlptsw(ctrlpts2d):
-    """ Generates weighted control points from unweighted ones.
+def generate_ctrlptsw(ctrlpts):
+    """ Generates weighted control points from unweighted ones in 1-D.
 
     This function
 
-    #. Takes in a 2D control points file whose coordinates are organized like (x, y, z, w)
+    #. Takes in a 1-D control points list whose coordinates are organized like (x, y, z, w)
+    #. converts into (x*w, y*w, z*w, w) format
+    #. Returns the result
+
+    :param ctrlpts: 1-D control points (P)
+    :type ctrlpts: list
+    :return: 1-D weighted control points (Pw)
+    :rtype: list
+    """
+    # Multiply control points by weight
+    new_ctrlpts = []
+    for cpt in ctrlpts:
+        temp = [float(pt * cpt[-1]) for pt in cpt]
+        temp[-1] = float(cpt[-1])
+        new_ctrlpts.append(temp)
+
+    return new_ctrlpts
+
+
+def generate_ctrlptsw2d(ctrlpts2d):
+    """ Generates weighted control points from unweighted ones in 2-D.
+
+    This function
+
+    #. Takes in a 2D control points list whose coordinates are organized like (x, y, z, w)
     #. converts into (x*w, y*w, z*w, w) format
     #. Returns the result
 
@@ -125,10 +149,8 @@ def generate_ctrlptsw(ctrlpts2d):
     for row in ctrlpts2d:
         ctrlptsw_v = []
         for col in row:
-            temp = [float(col[0] * col[3]),
-                    float(col[1] * col[3]),
-                    float(col[2] * col[3]),
-                    col[3]]
+            temp = [float(c * col[-1]) for c in col]
+            temp[-1] = float(col[-1])
             ctrlptsw_v.append(temp)
         new_ctrlpts2d.append(ctrlptsw_v)
 
@@ -136,12 +158,12 @@ def generate_ctrlptsw(ctrlpts2d):
 
 
 # Generates weighted control points from unweighted ones
-def generate_ctrlptsw_file(file_in='', file_out='ctrlptsw.txt'):
-    """ Generates weighted control points from unweighted ones.
+def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
+    """ Generates weighted control points from unweighted ones in 2-D.
 
     This function
 
-    #. Takes in a 2D control points file whose coordinates are organized like (x, y, z, w)
+    #. Takes in a 2-D control points file whose coordinates are organized like (x, y, z, w)
     #. Converts into (x*w, y*w, z*w, w) format
     #. Saves the result to a file
 
@@ -156,18 +178,42 @@ def generate_ctrlptsw_file(file_in='', file_out='ctrlptsw.txt'):
     ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
 
     # Multiply control points by weight
-    new_ctrlpts2d = generate_ctrlptsw(ctrlpts2d)
+    new_ctrlpts2d = generate_ctrlptsw2d(ctrlpts2d)
 
     # Save new control points
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-def generate_ctrlpts_weights(ctrlpts2d):
-    """ Generates weighted control points from unweighted ones.
+def generate_ctrlpts_weights(ctrlpts):
+    """ Generates unweighted control points from weighted ones in 1-D.
 
     This function
 
-    #. Takes in 2D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
+    #. Takes in 1-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
+    #. Converts the input control points list into (x, y, z, w) format
+    #. Returns the result
+
+    :param ctrlpts: 1-D control points (P)
+    :type ctrlpts: list
+    :return: 1-D weighted control points (Pw)
+    :rtype: list
+    """
+    # Divide control points by weight
+    new_ctrlpts = []
+    for cpt in ctrlpts:
+        temp = [float(pt / cpt[-1]) for pt in cpt]
+        temp[-1] = float(cpt[-1])
+        new_ctrlpts.append(temp)
+
+    return new_ctrlpts
+
+
+def generate_ctrlpts2d_weights(ctrlpts2d):
+    """ Generates unweighted control points from weighted ones in 2-D.
+
+    This function
+
+    #. Takes in 2-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
     #. Converts the input control points list into (x, y, z, w) format
     #. Returns the result
 
@@ -181,10 +227,8 @@ def generate_ctrlpts_weights(ctrlpts2d):
     for row in ctrlpts2d:
         ctrlptsw_v = []
         for col in row:
-            temp = [float(col[0] / col[3]),
-                    float(col[1] / col[3]),
-                    float(col[2] / col[3]),
-                    col[3]]
+            temp = [float(c / col[-1]) for c in col]
+            temp[-1] = float(col[-1])
             ctrlptsw_v.append(temp)
         new_ctrlpts2d.append(ctrlptsw_v)
 
@@ -192,10 +236,10 @@ def generate_ctrlpts_weights(ctrlpts2d):
 
 
 # Generates unweighted control points from weighted ones
-def generate_ctrlpts_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
-    """ Generates unweighted control points from weighted ones.
+def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
+    """ Generates unweighted control points from weighted ones in 2-D.
 
-    #. Takes in 2D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
+    #. Takes in 2-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
     #. Converts the input control points list into (x, y, z, w) format
     #. Saves the result to a file
 
@@ -208,14 +252,14 @@ def generate_ctrlpts_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
     ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
 
     # Divide control points by weight
-    new_ctrlpts2d = generate_ctrlpts_weights(ctrlpts2d)
+    new_ctrlpts2d = generate_ctrlpts2d_weights(ctrlpts2d)
 
     # Save new control points
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
 def combine_ctrlpts_weights(ctrlpts, weights):
-    """ Multiplies control points with the weights to generate (x*w, y*w, z*w, w)
+    """ Multiplies control points with the weights to generate weighted control points in any dimension.
 
     :param ctrlpts: un-weighted control points
     :type ctrlpts: list, tuple
@@ -226,8 +270,8 @@ def combine_ctrlpts_weights(ctrlpts, weights):
     """
     ctrlptsw = []
     for pt, w in zip(ctrlpts, weights):
-        temp = [c * w for c in pt]
-        temp.append(w)
+        temp = [float(c * w) for c in pt]
+        temp.append(float(w))
         ctrlptsw.append(temp)
 
     return ctrlptsw
