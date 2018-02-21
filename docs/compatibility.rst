@@ -74,5 +74,5 @@ The following example illustrates the usage of :code:`compatibility` module:
 Please see :doc:`Compatibility Module Documentation <module_compatibility>` for more details on manipulating and
 exporting control points.
 
-A small reminder that, NURBS-Python has some other options by means of exporting data, such as export as CSV or similar.
-Please see :doc:`File Formats <file_formats>` for more file export and import methods.
+NURBS-Python has some other options for exporting and importing data. Please see :doc:`File Formats <file_formats>`
+page for details.
