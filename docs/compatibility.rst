@@ -1,6 +1,10 @@
 Compatibility
 ^^^^^^^^^^^^^
 
+Most of the time, users experience problems in converting data between different software packages. To aid this problem
+a little bit, NURBS-Python provides a ``compatibility`` module. The purpose of ``compatibility`` module is simple:
+converting control points sets into NURBS-Python compatible ones.
+
 The following example illustrates the usage of :code:`compatibility` module:
 
 .. code-block:: python
@@ -68,4 +72,7 @@ The following example illustrates the usage of :code:`compatibility` module:
     surf.render()
 
 Please see :doc:`Compatibility Module Documentation <module_compatibility>` for more details on manipulating and
-exporting control points
+exporting control points.
+
+A small reminder that, NURBS-Python has some other options by means of exporting data, such as export as CSV or similar.
+Please see :doc:`File Formats <file_formats>` for more file export and import methods.
