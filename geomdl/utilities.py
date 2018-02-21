@@ -245,40 +245,13 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
     # Set up a return value
     ret_val = True
 
-    # A proper knot vector should have a knot vector starting with degree + 1 zeros
-    count = 0
-    start_knot = 0.0
+    # Check ascending order
+    prev_knot = knot_vector[0]
     for knot in knot_vector:
-        if count > degree:
-            break
-        if not abs(start_knot - knot) < tol:
+        if prev_knot > knot:
             ret_val = False
             break
-        count += 1
-
-    # A proper knot vector should have a knot vector ending with degree + 1 ones
-    if ret_val:
-        knot_vector.reverse()
-        count = 0
-        end_knot = 1.0
-        for knot in knot_vector:
-            if count > degree:
-                break
-            if not abs(end_knot - knot) < tol:
-                ret_val = False
-                break
-            count += 1
-
-        knot_vector.reverse()
-
-    # Check ascending order
-    if ret_val:
-        prev_knot = knot_vector[0]
-        for knot in knot_vector:
-            if prev_knot > knot:
-                ret_val = False
-                break
-            prev_knot = knot
+        prev_knot = knot
 
     return ret_val
 

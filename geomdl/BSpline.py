@@ -476,8 +476,8 @@ class Curve(Abstract.Curve):
         .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
         """
-        start = kwargs.get('start', 0.0)
-        stop = kwargs.get('stop', 1.0)
+        start = kwargs.get('start', self._knot_vector[self._degree])
+        stop = kwargs.get('stop', self._knot_vector[-(self._degree+1)])
 
         # Check if the input parameters are in the range
         utils.check_uv(start)
@@ -1836,10 +1836,10 @@ class Surface(Abstract.Surface):
         .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
         """
-        start_u = kwargs.get('start_u', 0.0)
-        stop_u = kwargs.get('stop_u', 1.0)
-        start_v = kwargs.get('start_v', 0.0)
-        stop_v = kwargs.get('stop_v', 1.0)
+        start_u = kwargs.get('start_u', self._knot_vector_u[self._degree_u])
+        stop_u = kwargs.get('stop_u', self._knot_vector_u[-(self._degree_u+1)])
+        start_v = kwargs.get('start_v', self._knot_vector_v[self._degree_v])
+        stop_v = kwargs.get('stop_v', self._knot_vector_v[-(self._degree_v+1)])
         # Check if all the input parameters are in the range
         utils.check_uv(start_u, stop_u)
         utils.check_uv(start_v, stop_v)
