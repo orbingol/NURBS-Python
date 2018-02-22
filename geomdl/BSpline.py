@@ -16,7 +16,7 @@ from . import utilities as utils
 
 
 class Curve(Abstract.Curve):
-    """ Data storage and evaluation class for 3D B-Spline (NUBS) curves.
+    """ Data storage and evaluation class for B-Spline (NUBS) curves.
 
     **Data Storage**
 
@@ -942,41 +942,43 @@ class Curve(Abstract.Curve):
 
         self.ctrlpts = new_ctrlpts
 
+    def add_dimension(self):
+        """ Converts x-D curve to a (x+1)-D curve.
+
+        Useful when converting a 2-D curve to a 3-D curve.
+
+        :return: curve object
+        :rtype: Curve
+        """
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+
+        # Update control points
+        new_ctrlpts = []
+        for point in self._control_points:
+            temp = [float(p) for p in point[0:dim]]
+            temp.append(0.0)
+            if self._rational:
+                temp.append(point[-1])
+            new_ctrlpts.append(temp)
+
+        # Convert to (x+1)-D curve, where x = self.dimension
+        ret_val = Curve()
+        ret_val.degree = self.degree
+        ret_val.ctrlpts = new_ctrlpts
+        ret_val.knotvector = self.knotvector
+        ret_val.delta = self.delta
+
+        return ret_val
+
 
 class Curve2D(Curve):
     """ Data storage and evaluation class for 2D B-Spline (NUBS) curves.
 
-    **Data Storage**
+    .. deprecated:: 3.5
+        Use :py:class:`.Curve` instead
 
-    The following properties are present in this class:
-
-    * order
-    * degree
-    * knotvector
-    * delta
-    * ctrlpts
-    * curvepts
-
-    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
-    Additional details on the file formats can be found in the documentation.
-
-    .. note:: Control points are stored as a list of (x, y) coordinates
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
-
-    .. note::
-
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
     """
 
     def __init__(self):

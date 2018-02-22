@@ -14,7 +14,7 @@ from . import utilities as utils
 
 
 class Curve(BSpline.Curve):
-    """ Data storage and evaluation class for 3D NURBS curves.
+    """ Data storage and evaluation class for NURBS curves.
 
     **Data Storage**
 
@@ -225,38 +225,9 @@ class Curve(BSpline.Curve):
 class Curve2D(Curve):
     """ Data storage and evaluation class for 2D NURBS curves.
 
-    **Data Storage**
+    .. deprecated:: 3.5
+        Use :py:class:`.Curve` instead
 
-    The following properties are present in this class:
-
-    * order
-    * degree
-    * knotvector
-    * delta
-    * ctrlpts
-    * weights
-    * curvepts
-
-    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
-    Additional details on the file formats can be found in the documentation.
-
-    .. note:: Control points are stored as a list of (x*w, y*w, w) coordinates
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
-
-    .. note::
-
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
     """
 
     def __init__(self):
