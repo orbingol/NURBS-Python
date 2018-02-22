@@ -52,8 +52,6 @@ class Curve(BSpline.Curve):
 
     def __init__(self):
         super(Curve, self).__init__()
-        # Override dimension variable
-        self._dimension = 4  # 3D coordinates + weights
         self._rational = True
         # Variables for caching
         self._cache_ctrlpts = []
