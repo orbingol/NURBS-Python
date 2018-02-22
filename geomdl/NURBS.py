@@ -472,9 +472,7 @@ class Surface(BSpline.Surface):
             sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
 
         # Divide by weight
-        spt = []
-        for idx in range(self._dimension - 1):
-            spt.append(float(sptw[idx] / sptw[-1]))
+        spt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
 
         # Return associated control points
         if get_ctrlpts:
@@ -506,7 +504,6 @@ class Surface(BSpline.Surface):
         dv = min(self._degree_v, order)
 
         # Generate an empty list of derivatives
-        # SKL = [[[None for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
         SKL = [[[None for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
         for k in range(0, order + 1):
@@ -526,7 +523,7 @@ class Surface(BSpline.Surface):
                                  zip(v2, SKL[k - i][l - j])]
                     v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
-                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:3]]
+                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(self._dimension - 1)]]
 
         # Return S(u,v) derivatives
         return SKL

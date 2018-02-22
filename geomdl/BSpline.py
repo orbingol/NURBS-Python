@@ -513,7 +513,6 @@ class Curve(Abstract.Curve):
         # Algorithm A3.2
         du = min(self._degree, order)
 
-        # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
         CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
@@ -548,7 +547,6 @@ class Curve(Abstract.Curve):
         """
         # Algorithm A3.3
         r = r2 - r1
-        # PK = [[[None for x in range(self._dimension)] for y in range(r + 1)] for z in range(order + 1)]
         PK = [[[None for _ in range(self._dimension)] for _ in range(r + 1)] for _ in range(order + 1)]
         for i in range(0, r + 1):
             PK[0][i][:] = [elem for elem in self._control_points[r1 + i]]
@@ -583,7 +581,6 @@ class Curve(Abstract.Curve):
         # Algorithm A3.4
         du = min(self._degree, order)
 
-        # CK = [[None for x in range(self._dimension)] for y in range(order + 1)]
         CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
@@ -1880,7 +1877,6 @@ class Surface(Abstract.Surface):
         du = min(self._degree_u, order)
         dv = min(self._degree_v, order)
 
-        # SKL = [[[0.0 for x in range(self._dimension)] for y in range(dv + 1)] for z in range(du + 1)]
         SKL = [[[0.0 for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
         span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
