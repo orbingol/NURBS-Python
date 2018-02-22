@@ -56,7 +56,6 @@ class Curve(Abstract.Curve):
         self._knot_vector = []
         self._control_points = []
         self._curve_points = []
-        self._dimension = 0
         self._rational = False
 
     def __str__(self):

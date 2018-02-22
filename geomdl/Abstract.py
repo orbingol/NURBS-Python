@@ -21,7 +21,18 @@ class Curve(object):
         self._control_points = None  # control points
         self._delta = 0.1  # evaluation delta
         self._curve_points = None  # evaluated points
+        self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
+
+    @property
+    def dimension(self):
+        """ Dimension of the curve.
+
+        Dimension will be automatically estimated from the first element of the control points array.
+
+        :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
+        """
+        return self._dimension
 
     @property
     def order(self):
