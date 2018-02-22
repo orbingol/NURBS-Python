@@ -178,7 +178,18 @@ class Surface(object):
         self._control_points = None  # control points, 1-D array (v-order)
         self._control_points2D = None  # control points, 2-D array [u][v]
         self._surface_points = None  # evaluated points
+        self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
+
+    @property
+    def dimension(self):
+        """ Dimension of the surface.
+
+        Dimension will be automatically estimated from the first element of the control points array.
+
+        :getter: Gets the dimension of the surface
+        """
+        return self._dimension
 
     @property
     def order_u(self):

@@ -22,6 +22,7 @@ class Curve(Abstract.Curve):
 
     The following properties are present in this class:
 
+    * dimension
     * order
     * degree
     * knotvector
@@ -1020,6 +1021,7 @@ class Surface(Abstract.Surface):
 
     The following properties are present in this class:
 
+    * dimension
     * order_u
     * order_v
     * degree_u
@@ -1061,7 +1063,6 @@ class Surface(Abstract.Surface):
         self._control_points = []
         self._control_points2D = []  # in [u][v] format
         self._surface_points = []
-        self._dimension = 3  # 3D coordinates
         self._rational = False
 
     def __str__(self):
@@ -1217,6 +1218,9 @@ class Surface(Abstract.Surface):
         self._control_points_size_u = len(value)
         self._control_points_size_v = len(value[0])
 
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(value[0][0])
+
         # Make sure that all numbers are float type
         ctrlpts2d = [[None for _ in range(0, self._control_points_size_v)]
                      for _ in range(0, self._control_points_size_u)]
@@ -1267,6 +1271,9 @@ class Surface(Abstract.Surface):
             raise ValueError("Number of control points in u-direction should be at least degree + 1")
         if size_v < self._degree_v + 1:
             raise ValueError("Number of control points in v-direction should be at least degree + 1")
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
 
         # Check the dimensions of the input control points array and type cast to float
         ctrlpts_float = []
@@ -1465,23 +1472,24 @@ class Surface(Abstract.Surface):
         try:
             with open(filename, 'r') as fp:
 
+                sz_u = size_u
+                sz_v = size_v
+                ctrlpts = []
+
                 if two_dimensional:
+                    sz_u = 0
+                    sz_v = 0
                     # Start reading file
                     for line in fp:
                         # Remove whitespace
                         line = line.strip()
                         # Convert the string containing the coordinates into a list
                         control_point_row = line.split(';')
-                        self._control_points_size_v = 0
+                        sz_v = 0
                         for cpr in control_point_row:
-                            cpt = cpr.split(',')
-                            pt_temp = []
-                            for pt in cpt:
-                                pt_temp.append(float(pt.strip()))
-                            # Add control points to the global control point list
-                            self._control_points.append(pt_temp)
-                            self._control_points_size_v += 1
-                        self._control_points_size_u += 1
+                            ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
+                            sz_v += 1
+                        sz_u += 1
                 else:
                     # Check inputs
                     if size_u <= 0 or size_v <= 0:
@@ -1490,23 +1498,11 @@ class Surface(Abstract.Surface):
                     for line in fp:
                         # Remove whitespace
                         line = line.strip()
-                        # Convert the string containing the coordinates into a list
-                        coords = line.split(',')
-                        # Remove extra whitespace and convert to float
-                        pt = []
-                        for coord in coords:
-                            pt.append(float(coord.strip()))
-                        self._control_points.append(pt)
-                    # These depends on the user input
-                    self._control_points_size_u = size_u
-                    self._control_points_size_v = size_v
+                        # Clean & convert the values
+                        ctrlpts.append([float(c.strip()) for c in line.split(',')])
 
-            # Generate a 2D list of control points
-            for i in range(0, self._control_points_size_u):
-                ctrlpts_v = []
-                for j in range(0, self._control_points_size_v):
-                    ctrlpts_v.append(self._control_points[j + (i * self._control_points_size_v)])
-                self._control_points2D.append(ctrlpts_v)
+                # Set control points
+                self.set_ctrlpts(ctrlpts, sz_u, sz_v)
 
         except IOError:
             # Show a warning about not finding the file

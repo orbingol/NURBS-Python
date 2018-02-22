@@ -20,6 +20,7 @@ class Curve(BSpline.Curve):
 
     The following properties are present in this class:
 
+    * dimension
     * order
     * degree
     * knotvector
@@ -316,6 +317,7 @@ class Surface(BSpline.Surface):
 
     The following properties are present in this class:
 
+    * dimension
     * order_u
     * order_v
     * degree_u
@@ -353,8 +355,6 @@ class Surface(BSpline.Surface):
 
     def __init__(self):
         super(Surface, self).__init__()
-        # Override dimension variable
-        self._dimension = 4  # 3D coordinates + weights
         self._rational = True
         # Variables for caching
         self._cache_ctrlpts = []
