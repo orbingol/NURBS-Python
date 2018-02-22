@@ -339,7 +339,14 @@ class Curve(Abstract.Curve):
         :return: header of the CSV file
         :rtype: str
         """
-        return "coord x, coord y, coord z, scalar\n"
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+        line = ""
+        for i in range(0, dim):
+            line += "dim " + str(i + 1) + ", "
+        line += "scalar\n"
+        return line
 
     # Saves control points to a CSV file
     def save_ctrlpts_to_csv(self, filename="", scalar=0):
@@ -983,15 +990,6 @@ class Curve2D(Curve):
 
     __repr__ = __str__
 
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        return "coord x, coord y, scalar\n"
-
     def convert3d(self):
         """ Converts 2D curve to a 3D curve.
 
@@ -1583,7 +1581,14 @@ class Surface(Abstract.Surface):
         :return: header of the CSV file
         :rtype: str
         """
-        return "coord x, coord y, coord z, scalar\n"
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+        line = ""
+        for i in range(0, dim):
+            line += "dim " + str(i + 1) + ", "
+        line += "scalar\n"
+        return line
 
     # Saves control points to a CSV file
     def save_ctrlpts_to_csv(self, filename="", scalar=0, mode='linear'):

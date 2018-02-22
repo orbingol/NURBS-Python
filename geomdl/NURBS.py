@@ -114,15 +114,6 @@ class Curve(BSpline.Curve):
             return self.ctrlpts
         return self._cache_ctrlpts
 
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        return "coord x, coord y, coord z, scalar\n"
-
     # Evaluates the rational curve at the given parameter
     def curvept(self, u=-1, **kwargs):
         """ Evaluates the curve at the input parameter value.
@@ -279,15 +270,6 @@ class Curve2D(Curve):
 
     __repr__ = __str__
 
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        return "coord x, coord y, scalar\n"
-
     def convert3d(self):
         """ Converts 2D curve to a 3D curve.
 
@@ -419,15 +401,6 @@ class Surface(BSpline.Surface):
         if not self._cache_ctrlpts:
             return self.ctrlpts
         return self._cache_ctrlpts
-
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        return "coord x, coord y, coord z, scalar\n"
 
     # Evaluates rational surface at the given (u, v) parameters
     def surfpt(self, u=-1, v=-1, **kwargs):
