@@ -56,7 +56,7 @@ class Curve(Abstract.Curve):
         self._knot_vector = []
         self._control_points = []
         self._curve_points = []
-        self._dimension = 3  # 3D coordinates
+        self._dimension = 0
         self._rational = False
 
     def __str__(self):
@@ -124,6 +124,9 @@ class Curve(Abstract.Curve):
         # Clean up the curve and control points lists, if necessary
         self._reset_evalpts()
         self._reset_ctrlpts()
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
 
         for idx, cpt in enumerate(ctrlpts):
             if not isinstance(cpt, (list, tuple)):
@@ -262,16 +265,17 @@ class Curve(Abstract.Curve):
         try:
             with open(filename, 'r') as fp:
 
+                ctrlpts = []
                 for line in fp:
                     # Remove whitespace
                     line = line.strip()
                     # Convert the string containing the coordinates into a list
-                    coords = line.split(',')
-                    # Remove extra whitespace and convert to float
-                    pt = []
-                    for coord in coords:
-                        pt.append(float(coord.strip()))
-                    self._control_points.append(pt)
+                    coord = line.split(',')
+                    # Remove extra whitespace, convert to float and add to control points array
+                    ctrlpts.append([float(c.strip()) for c in coord])
+
+                # Set control points
+                self.ctrlpts = ctrlpts
 
         except IOError:
             # Show a warning on failure to open file
