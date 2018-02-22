@@ -58,7 +58,7 @@ class Curve(BSpline.Curve):
         self._cache_weights = []
 
     def __str__(self):
-        return "3D NURBS Curve"
+        return "NURBS Curve"
 
     __repr__ = __str__
 

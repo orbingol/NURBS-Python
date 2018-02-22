@@ -59,7 +59,7 @@ class Curve(Abstract.Curve):
         self._rational = False
 
     def __str__(self):
-        return "3D B-Spline Curve"
+        return "B-Spline Curve"
 
     __repr__ = __str__
 
