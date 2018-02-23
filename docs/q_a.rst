@@ -33,8 +33,8 @@ approach also allows users to debug and extend the library in a convenient way.
 Minimum Requirements
 ====================
 
-NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. It doesn't require any additional packages, such as NumPy,
-so that you can run it even on a plain Python installation as well as on a scientific distribution, such as Anaconda.
+NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. The core library doesn't depend on any additional packages,
+so that you can run it on a plain python installation as well as on a scientific distribution, such as Anaconda.
 
 .. note::
 

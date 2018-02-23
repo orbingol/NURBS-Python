@@ -7,11 +7,11 @@ the library and its modules.
 
 The Examples_ repository contains examples on the following:
 
-* Bézier surfaces and 2D/3D curves
-* 2D/3D BSpline & NURBS curve generation
-* Surface generation
+* Bézier curves and surfaces
+* BSplines & NURBS curves
+* B-Spline and NURBS surfaces
 * Control points grid generation for ``Surface`` classes
-* Automatic knot vector generation for curves and surfacee
+* Automatic knot vector generation for curves and surfaces
 * Visualization
 * Automatic NURBS curve and surface generation
 * Curve & surface splitting and Bézier decomposition
