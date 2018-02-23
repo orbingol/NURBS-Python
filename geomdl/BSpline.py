@@ -964,7 +964,7 @@ class Curve(Abstract.Curve):
             new_ctrlpts.append(temp)
 
         # Convert to (x+1)-D curve, where x = self.dimension
-        ret_val = Curve()
+        ret_val = self.__class__()
         ret_val.degree = self.degree
         ret_val.ctrlpts = new_ctrlpts
         ret_val.knotvector = self.knotvector
