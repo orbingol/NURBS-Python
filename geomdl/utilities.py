@@ -160,11 +160,13 @@ def frange(start, stop, step=1.0, decimals=7):
 
 
 # Normalizes knot vector (internal functionality)
-def normalize_knot_vector(knot_vector=()):
+def normalize_knot_vector(knot_vector=(), decimals=4):
     """ Normalizes the input knot vector between 0 and 1.
 
     :param knot_vector: input knot vector
     :type knot_vector: tuple
+    :param decimals: rounding number
+    :type decimals: int
     :return: normalized knot vector
     :rtype: list
     """
@@ -173,10 +175,10 @@ def normalize_knot_vector(knot_vector=()):
 
     first_knot = float(knot_vector[0])
     last_knot = float(knot_vector[-1])
+    denominator = last_knot - first_knot
 
-    knot_vector_out = []
-    for kv in knot_vector:
-        knot_vector_out.append((float(kv) - first_knot) / (last_knot - first_knot))
+    knot_vector_out = [(float(("%0." + str(decimals) + "f") % ((float(kv) - first_knot) / denominator)))
+                       for kv in knot_vector]
 
     return knot_vector_out
 
@@ -205,28 +207,18 @@ def generate_knot_vector(degree=0, control_points_size=0):
     # p: degree, n+1: number of control points; m+1: number of knots
     m = degree + control_points_size + 1
 
-    # Initialize return value and counter
-    knot_vector = []
-    i = 0
-
-    # First degree+1 knots are "knot_min"
-    while i < degree:
-        knot_vector.append(knot_min)
-        i += 1
-
     # Calculate a uniform interval for middle knots
     num_segments = (m - (degree + 1) * 2) + 1  # number of segments in the middle
     spacing = (knot_max - knot_min) / num_segments  # spacing between the knots (uniform)
 
+    # First degree+1 knots are "knot_min"
+    knot_vector = [float(0) for _ in range(0, degree)]
+
     # Middle knots
-    for mid_knot in frange(0, 1, spacing, decimals=4):
-        knot_vector.append(mid_knot)
-        i += 1
+    knot_vector += [mid_knot for mid_knot in frange(0, 1, spacing, decimals=4)]
 
     # Last degree+1 knots are "knot_max"
-    while i < m:
-        knot_vector.append(knot_max)
-        i += 1
+    knot_vector += [float(1) for _ in range(0, degree)]
 
     # Return auto-generated knot vector
     return knot_vector
@@ -242,18 +234,14 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
     if len(knot_vector) is not degree + control_points_size + 1:
         return False
 
-    # Set up a return value
-    ret_val = True
-
     # Check ascending order
     prev_knot = knot_vector[0]
     for knot in knot_vector:
         if prev_knot > knot:
-            ret_val = False
-            break
+            return False
         prev_knot = knot
 
-    return ret_val
+    return True
 
 
 # FindSpan (Algorithm A2.1) implementation using linear search
@@ -355,7 +343,6 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
     # Initialize variables for easy access
     left = [None for _ in range(degree + 1)]
     right = [None for _ in range(degree + 1)]
-    # ndu = [[None for x in range(degree + 1)] for y in range(degree + 1)]
     ndu = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
 
     # N[0][0] = 1.0 by definition
@@ -376,13 +363,11 @@ def basis_functions_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
         ndu[j][j] = saved
 
     # Load the basis functions
-    # ders = [[None for x in range(degree + 1)] for y in range((min(degree, order) + 1))]
     ders = [[None for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
     for j in range(0, degree + 1):
         ders[0][j] = ndu[j][degree]
 
     # Start calculating derivatives
-    # a = [[None for x in range(degree + 1)] for y in range(2)]
     a = [[None for _ in range(degree + 1)] for _ in range(2)]
     # Loop over function index
     for r in range(0, degree + 1):
