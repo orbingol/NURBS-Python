@@ -118,8 +118,7 @@ class Curve(object):
 
         .. note::
 
-            The visualization component is completely optional to use. ``render()`` method should also be implemented,
-            if the visualization component is planned to be used in the implementation.
+            The visualization component is completely optional to use.
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component
@@ -363,11 +362,6 @@ class Surface(object):
     @property
     def vis(self):
         """ Visualization component.
-
-        .. note::
-
-            The visualization component is completely optional to use. ``render()`` method should also be implemented,
-            if the visualization component is planned to be used in the implementation.
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component

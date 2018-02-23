@@ -32,8 +32,6 @@ class Curve(BSpline.Curve):
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
-    .. note:: Control points are stored as a list of (x*w, y*w, z*w, w) coordinates
-
     **Evaluation**
 
     The evaluation methods are:
@@ -283,9 +281,6 @@ class Surface(BSpline.Surface):
     * weights
     * surfpts
 
-    **Details on Control Points**
-
-    Control points are stored as a list of (x*w, y*w, z*w, w) coordinates, where *w* corresponds to the weight.
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
 

@@ -33,8 +33,6 @@ class Curve(Abstract.Curve):
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
 
-    .. note:: Control points are stored as a list of (x, y, z) coordinates
-
     **Evaluation**
 
     The evaluation methods are:
@@ -1033,11 +1031,8 @@ class Surface(Abstract.Surface):
     * ctrlpts2d
     * surfpts
 
-    **Details on Control Points**
-
-    Control points are stored as a list of (x, y, z) coordinates. The function :func:`.read_ctrlpts_from_txt()`
-    provides an easy way to read control points from a text file. Additional details on the file formats can be found
-    on the documentation.
+    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
+    Additional details on the file formats can be found on the documentation.
 
     **Evaluation**
 
