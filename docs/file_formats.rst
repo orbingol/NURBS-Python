@@ -156,7 +156,7 @@ For all classes:
 
 * ``export_ctrlpts_to_csv``: Saves control points list as a CSV file
 
-For ``Curve`` and ``Curve2D`` classes:
+For ``Curve`` class:
 
 * ``export_curvepts_to_csv``: Saves evaluated curve points as a CSV file
 

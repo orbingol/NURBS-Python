@@ -20,7 +20,7 @@ main_module = 'geomdl'
 setup(
     name='NURBS-Python',
     version=get_property('__version__', main_module),
-    description='NURBS 2D/3D curve and surface evaluation library in native Python',
+    description='NURBS curve and surface evaluation library in pure Python',
     author='Onur Rauf Bingol',
     author_email='contact@onurbingol.net',
     license='MIT',

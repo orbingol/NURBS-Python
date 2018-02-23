@@ -32,8 +32,7 @@ The core library contains 4 modules:
 
 ``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
 
-* **Curve** for evaluating 3D curves
-* **Curve2D** for evaluating 2D curves
+* **Curve** for evaluating curves (in any dimension)
 * **Surface** for evaluating surfaces
 
 ``geomdl.CPGen`` module contains 2 classes for grid generation:
