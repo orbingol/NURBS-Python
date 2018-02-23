@@ -200,35 +200,6 @@ class Curve(Abstract.Curve):
 
         return self._curve_points
 
-    # Runs visualization component to render the surface
-    def render(self, cpcolor="blue", curvecolor="black"):
-        """ Renders the curve using the loaded visualization component
-
-        The visualization component must be set using :py:attr:`~vis` property before calling this method.
-
-        :param cpcolor: Color of the control points polygon
-        :type cpcolor: str
-        :param curvecolor: Color of the curve
-        :type curvecolor: str
-        :return: None
-        """
-        if not self._vis_component:
-            warnings.warn("No visualization component has set")
-            return
-
-        # Check all parameters are set
-        self._check_variables()
-
-        # Check if the surface has been evaluated
-        if not self._curve_points:
-            self.evaluate()
-
-        # Run the visualization component
-        self._vis_component.clear()
-        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type=1)
-        self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor)
-        self._vis_component.render()
-
     # Resets the control points
     def _reset_ctrlpts(self):
         if self._control_points:
@@ -1384,39 +1355,6 @@ class Surface(Abstract.Surface):
             self.evaluate()
 
         return self._surface_points
-
-    # Runs visualization component to render the surface
-    def render(self, cpcolor="blue", surfcolor="green"):
-        """ Renders the surface using the loaded visualization component.
-
-        The visualization component must be set using :py:attr:`~vis` property before calling this method.
-
-        :param cpcolor: Color of the control points grid
-        :type cpcolor: str
-        :param surfcolor: Color of the surface
-        :type surfcolor: str
-        :return: None
-        """
-        if not self._vis_component:
-            warnings.warn("No visualization component has set")
-            return
-
-        # Check all parameters are set
-        self._check_variables()
-
-        # Check if the surface has been evaluated
-        if not self._surface_points:
-            self.evaluate()
-
-        # Run the visualization component
-        self._vis_component.clear()
-        self._vis_component.add(ptsarr=self.ctrlpts,
-                                size=[self._control_points_size_u, self._control_points_size_v],
-                                name="Control Points", color=cpcolor, plot_type=1)
-        self._vis_component.add(ptsarr=self._surface_points,
-                                size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
-                                name="Surface", color=surfcolor)
-        self._vis_component.render()
 
     # Cleans up the control points
     def _reset_ctrlpts(self):
