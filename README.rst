@@ -118,8 +118,8 @@ Included *setup.py* script will take care of the installation and automatically 
 
 ``python setup.py install``
 
-If you don't want to put the files into your Python distribution's *site-packages* directory for some reason,
-you can run
+If you don't want to put the files into your Python distribution's *site-packages* directory for some reason (e.g.
+extension development or bug fixing), you can run
 
 ``python setup.py develop``
 
