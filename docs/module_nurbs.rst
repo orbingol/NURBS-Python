@@ -1,9 +1,9 @@
 NURBS Module
 ^^^^^^^^^^^^
 
-``NURBS`` module provides data storage and evaluation functions for NURBS 2D/3D curves and surfaces.
+``NURBS`` module provides data storage and evaluation functions for NURBS curves and surfaces.
 
-3D NURBS Curve
+NURBS Curve
 ==============
 
 .. autoclass:: geomdl.NURBS.Curve
@@ -12,8 +12,8 @@ NURBS Module
     :inherited-members:
     :show-inheritance:
 
-2D NURBS Curve
-==============
+2D NURBS Curve (Deprecated)
+===========================
 
 .. autoclass:: geomdl.NURBS.Curve2D
     :members:

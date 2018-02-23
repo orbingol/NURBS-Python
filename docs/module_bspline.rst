@@ -1,9 +1,9 @@
 B-Spline Module
 ^^^^^^^^^^^^^^^
 
-``BSpline`` module provides data storage and evaluation functions for B-Spline (NUBS) 2D/3D curves and surfaces.
+``BSpline`` module provides data storage and evaluation functions for B-Spline (NUBS) curves and surfaces.
 
-3D B-Spline Curve
+B-Spline Curve
 =================
 
 .. autoclass:: geomdl.BSpline.Curve
@@ -12,8 +12,8 @@ B-Spline Module
     :inherited-members:
     :show-inheritance:
 
-2D B-Spline Curve
-=================
+2D B-Spline Curve (Deprecated)
+==============================
 
 .. autoclass:: geomdl.BSpline.Curve2D
     :members:
