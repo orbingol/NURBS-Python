@@ -138,6 +138,11 @@ class Curve(object):
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
+        Possible keyword arguments are
+
+        * ``cpcolor``: sets the color of the control points polygon
+        * ``curvecolor``: sets the color of the curve
+
         """
         if not self._vis_component:
             warn("No visualization component has set")
@@ -407,6 +412,11 @@ class Surface(object):
         """ Renders the surface using the loaded visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        Possible keyword arguments are
+
+        * ``cpcolor``: sets the color of the control points grid
+        * ``surfcolor``: sets the color of the surface
 
         """
         if not self._vis_component:
