@@ -55,7 +55,7 @@ The core library contains 4 modules:
 * ``geomdl.CPGen`` contains simple control points grid generation algorithms
 * ``geomdl.utilities`` contains helper functions for generating and altering knot vectors and control points
 
-``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain 3 classes for geometric evaluation:
+``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain the following classes:
 
 * **Curve** for evaluating curves (in any dimension)
 * **Surface** for evaluating surfaces
