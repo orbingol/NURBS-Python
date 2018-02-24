@@ -415,7 +415,6 @@ class Curve(Abstract.Curve):
         :rtype: list
         """
         check_vars = kwargs.get('check_vars', True)
-        get_ctrlpts = kwargs.get('get_ctrlpts', False)
 
         if check_vars:
             # Check all parameters are set before the curve evaluation
@@ -433,12 +432,7 @@ class Curve(Abstract.Curve):
         for i in range(0, self._degree + 1):
             cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in
                       zip(cpt, self._control_points[span - self._degree + i])]
-            if get_ctrlpts:
-                ctrlpts.append(self._control_points[span - self._degree + i])
 
-        # Return associated control points
-        if get_ctrlpts:
-            return cpt, ctrlpts
         return cpt
 
     # Evaluates the B-Spline curve
@@ -1710,7 +1704,6 @@ class Surface(Abstract.Surface):
         :rtype: list
         """
         check_vars = kwargs.get('check_vars', True)
-        get_ctrlpts = kwargs.get('get_ctrlpts', False)
 
         if check_vars:
             # Check all parameters are set before the surface evaluation
@@ -1735,13 +1728,8 @@ class Surface(Abstract.Surface):
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-                if get_ctrlpts:
-                    ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
-        # Return associated control points
-        if get_ctrlpts:
-            return spt, ctrlpts
         return spt
 
     # Evaluates the B-Spline surface

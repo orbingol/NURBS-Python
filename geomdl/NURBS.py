@@ -122,7 +122,6 @@ class Curve(BSpline.Curve):
         :rtype: list
         """
         check_vars = kwargs.get('check_vars', True)
-        get_ctrlpts = kwargs.get('get_ctrlpts', False)
 
         if check_vars:
             # Check all parameters are set before the curve evaluation
@@ -140,17 +139,12 @@ class Curve(BSpline.Curve):
         for i in range(0, self._degree + 1):
             cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in
                        zip(cptw, self._control_points[span - self._degree + i])]
-            if get_ctrlpts:
-                ctrlpts.append(self._control_points[span - self._degree + i])
 
         # Divide by weight
         cpt = []
         for idx in range(self._dimension - 1):
             cpt.append(float(cptw[idx] / cptw[-1]))
 
-        # Return associated control points
-        if get_ctrlpts:
-            return cpt, ctrlpts
         return cpt
 
     # Evaluates the rational curve derivative
@@ -370,7 +364,6 @@ class Surface(BSpline.Surface):
         :rtype: list
         """
         check_vars = kwargs.get('check_vars', True)
-        get_ctrlpts = kwargs.get('get_ctrlpts', False)
 
         if check_vars:
             # Check all parameters are set before the surface evaluation
@@ -394,16 +387,11 @@ class Surface(BSpline.Surface):
             idx_v = span_v - self._degree_v + l
             for k in range(0, self._degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-                if get_ctrlpts:
-                    ctrlpts.append(self._control_points2D[idx_u + k][idx_v])
             sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
 
         # Divide by weight
         spt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
 
-        # Return associated control points
-        if get_ctrlpts:
-            return spt, ctrlpts
         return spt
 
     # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
