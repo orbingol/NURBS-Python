@@ -242,23 +242,13 @@ class Curve2D(Curve):
     def convert3d(self):
         """ Converts 2D curve to a 3D curve.
 
+        .. deprecated:: 3.5
+            Use :py:meth:`.add_dimension()`
+
         :return: 3D curve
         :rtype: NURBS.Curve
         """
-        # Modify weighted control points
-        new_ctrlpts = []
-        for point in self._control_points:
-            temp = [point[0], point[1], 0.0, point[2]]
-            new_ctrlpts.append(temp)
-
-        # Convert to 3D curve
-        ret_val = Curve()
-        ret_val.degree = self.degree
-        ret_val.ctrlpts = new_ctrlpts
-        ret_val.knotvector = self.knotvector
-        ret_val.delta = self.delta
-
-        return ret_val
+        return self.add_dimension()
 
 
 class Surface(BSpline.Surface):
