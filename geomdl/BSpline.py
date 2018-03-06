@@ -55,6 +55,7 @@ class Curve(Abstract.Curve):
         self._knot_vector = []
         self._control_points = []
         self._curve_points = []
+        self._bounding_box = []
         self._rational = False
 
     def __str__(self):
@@ -200,11 +201,39 @@ class Curve(Abstract.Curve):
 
         return self._curve_points
 
+    @property
+    def bbox(self):
+        if not self._bounding_box:
+            self._eval_bbox()
+        return self._bounding_box
+
+    def _eval_bbox(self):
+        """ Evaluates bounding box of the curve. """
+        # Find correct dimension of the control points
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+
+        # Evaluate bounding box
+        bbmin = [float('inf') for _ in range(0, dim)]
+        bbmax = [0.0 for _ in range(0, dim)]
+        for cpt in self.ctrlpts:
+            for i, arr in enumerate(zip(cpt, bbmin)):
+                if arr[0] < arr[1]:
+                    bbmin[i] = arr[0]
+            for i, arr in enumerate(zip(cpt, bbmax)):
+                if arr[0] > arr[1]:
+                    bbmax[i] = arr[0]
+
+        self._bounding_box = [bbmin, bbmax]
+
     # Resets the control points
     def _reset_ctrlpts(self):
         if self._control_points:
             # Delete control points
             del self._control_points[:]
+            # Delete bounding box
+            del self._bounding_box[:]
 
     # Resets the evaluated curve points
     def _reset_evalpts(self):
@@ -1013,6 +1042,7 @@ class Surface(Abstract.Surface):
         self._control_points = []
         self._control_points2D = []  # in [u][v] format
         self._surface_points = []
+        self._bounding_box = []
         self._rational = False
 
     def __str__(self):
@@ -1340,6 +1370,32 @@ class Surface(Abstract.Surface):
 
         return self._surface_points
 
+    @property
+    def bbox(self):
+        if not self._bounding_box:
+            self._eval_bbox()
+        return self._bounding_box
+
+    def _eval_bbox(self):
+        """ Evaluates bounding box of the surface. """
+        # Find correct dimension of the control points
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+
+        # Evaluate bounding box
+        bbmin = [float('inf') for _ in range(0, dim)]
+        bbmax = [0.0 for _ in range(0, dim)]
+        for cpt in self.ctrlpts:
+            for i, arr in enumerate(zip(cpt, bbmin)):
+                if arr[0] < arr[1]:
+                    bbmin[i] = arr[0]
+            for i, arr in enumerate(zip(cpt, bbmax)):
+                if arr[0] > arr[1]:
+                    bbmax[i] = arr[0]
+
+        self._bounding_box = [bbmin, bbmax]
+
     # Cleans up the control points
     def _reset_ctrlpts(self):
         if self._control_points:
@@ -1349,6 +1405,8 @@ class Surface(Abstract.Surface):
             # Set the control point sizes to zero
             self._control_points_size_u = 0
             self._control_points_size_v = 0
+            # Delete bounding box
+            del self._bounding_box[:]
 
     # Cleans the evaluated surface points (private)
     def _reset_evalpts(self):

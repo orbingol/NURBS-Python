@@ -23,6 +23,7 @@ class Curve(object):
         self._curve_points = None  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
+        self._bounding_box = None  # bounding box
 
     @property
     def dimension(self):
@@ -132,6 +133,10 @@ class Curve(object):
             return
         self._vis_component = value
 
+    @property
+    def bbox(self):
+        return self._bounding_box
+
     # Runs visualization component to render the surface
     def render(self, **kwargs):
         """ Renders the curve using the loaded visualization component
@@ -211,6 +216,7 @@ class Surface(object):
         self._surface_points = None  # evaluated points
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
+        self._bounding_box = None  # bounding box
 
     @property
     def dimension(self):
@@ -406,6 +412,10 @@ class Surface(object):
             warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
+
+    @property
+    def bbox(self):
+        return self._bounding_box
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
