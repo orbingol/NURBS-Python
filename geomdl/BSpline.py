@@ -193,7 +193,7 @@ class Curve(Abstract.Curve):
     def curvepts(self):
         """ Evaluated curve points.
 
-        :getter: (x, y) coordinates of the evaluated surface points
+        :getter: Gets the coordinates of the evaluated points
         :type: list
         """
         if not self._curve_points:
@@ -1369,7 +1369,7 @@ class Surface(Abstract.Surface):
     def surfpts(self):
         """ Evaluated surface points.
 
-        :getter: (x, y, z) coordinates of the evaluated surface points
+        :getter: Gets the coordinates of the evaluated points
         :type: list
         """
         if not self._surface_points:
