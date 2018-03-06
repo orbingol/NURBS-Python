@@ -203,6 +203,11 @@ class Curve(Abstract.Curve):
 
     @property
     def bbox(self):
+        """ Bounding box.
+
+        Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
+        :getter: Gets bounding box
+        """
         if not self._bounding_box:
             self._eval_bbox()
         return self._bounding_box
@@ -1372,6 +1377,11 @@ class Surface(Abstract.Surface):
 
     @property
     def bbox(self):
+        """ Bounding box.
+
+        Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
+        :getter: Gets bounding box
+        """
         if not self._bounding_box:
             self._eval_bbox()
         return self._bounding_box

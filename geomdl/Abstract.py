@@ -135,6 +135,10 @@ class Curve(object):
 
     @property
     def bbox(self):
+        """ Bounding box.
+
+        :getter: Gets bounding box
+        """
         return self._bounding_box
 
     # Runs visualization component to render the surface
@@ -415,6 +419,10 @@ class Surface(object):
 
     @property
     def bbox(self):
+        """ Bounding box.
+
+        :getter: Gets bounding box
+        """
         return self._bounding_box
 
     # Runs visualization component to render the surface
