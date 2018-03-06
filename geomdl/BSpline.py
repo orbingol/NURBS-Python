@@ -206,7 +206,9 @@ class Curve(Abstract.Curve):
         """ Bounding box.
 
         Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
+
         :getter: Gets bounding box
+        :type: list
         """
         if not self._bounding_box:
             self._eval_bbox()
@@ -1380,7 +1382,9 @@ class Surface(Abstract.Surface):
         """ Bounding box.
 
         Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
+
         :getter: Gets bounding box
+        :type: list
         """
         if not self._bounding_box:
             self._eval_bbox()
