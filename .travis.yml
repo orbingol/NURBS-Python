@@ -10,9 +10,14 @@ python:
 # install required packages
 install:
   - pip install pytest
+  - pip install codecov
 
 # install package and run tests
 script: "python setup.py develop && pytest"
 
 # require the branch name to be master
 if: branch = master
+
+# call at the end of CI build
+after_success:
+  - codecov
