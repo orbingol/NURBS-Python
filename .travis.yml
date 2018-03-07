@@ -9,11 +9,11 @@ python:
 
 # install required packages
 install:
-  - pip install pytest
+  - pip install pytest pytest-cov
   - pip install codecov
 
 # install package and run tests
-script: "python setup.py develop && pytest"
+script: "python setup.py develop && pytest --cov=./"
 
 # require the branch name to be master
 if: branch = master
