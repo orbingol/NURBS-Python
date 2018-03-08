@@ -60,12 +60,14 @@ class VisCurve2D(Abstract.VisAbstract):
         # Start plotting
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    cpplot, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
-                    legend_proxy.append(cpplot)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                cpplot, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
+                legend_proxy.append(cpplot)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
@@ -107,14 +109,15 @@ class VisCurve3D(Abstract.VisAbstract):
             if pts.shape[1] == 2:
                 pts = np.c_[pts, np.zeros(pts.shape[0])]
 
-            # Control points or not
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
-                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                    legend_proxy.append(plot1_proxy)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
+                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot1_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
@@ -154,15 +157,17 @@ class VisSurface(Abstract.VisAbstractSurf):
 
         # Start plotting
         for plot in self._plots:
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
-                    cp_z = pts[:, 2] + self._ctrlpts_offset
-                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                    legend_proxy.append(plot1_proxy)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                cp_z = pts[:, 2] + self._ctrlpts_offset
+                ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot1_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 pts = np.array(utils.make_triangle(plot['ptsarr'], plot['size'][1], plot['size'][0]))
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
@@ -203,15 +208,17 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
         # Start plotting
         for plot in self._plots:
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    pts = np.array(plot['ptsarr'])
-                    cp_z = pts[:, 2] + self._ctrlpts_offset
-                    ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
-                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                    legend_proxy.append(plot1_proxy)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(plot['ptsarr'])
+                cp_z = pts[:, 2] + self._ctrlpts_offset
+                ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
+                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot1_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
@@ -252,15 +259,17 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
         # Start plotting
         for plot in self._plots:
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
-                    cp_z = pts[:, 2] + self._ctrlpts_offset
-                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                    legend_proxy.append(plot1_proxy)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                cp_z = pts[:, 2] + self._ctrlpts_offset
+                ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot1_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 pts = np.array(plot['ptsarr'])
                 ax.plot_trisurf(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
@@ -301,15 +310,17 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
 
         # Start plotting
         for plot in self._plots:
-            if plot['type'] == 1:
-                if self._config.display_ctrlpts:
-                    pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
-                    cp_z = pts[:, 2] + self._ctrlpts_offset
-                    ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                    plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                    legend_proxy.append(plot1_proxy)
-                    legend_names.append(plot['name'])
-            else:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(utils.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                cp_z = pts[:, 2] + self._ctrlpts_offset
+                ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot1_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
                 pts = np.array(plot['ptsarr'])
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
