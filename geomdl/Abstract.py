@@ -176,19 +176,23 @@ class Curve(object):
     # Checks whether the curve evaluation is possible or not
     def _check_variables(self):
         works = True
-        # Check degree values
+        param_list = []
         if self._degree == 0:
             works = False
+            param_list.append('degree')
         if not self._control_points:
             works = False
+            param_list.append('ctrlpts')
         if not self._knot_vector:
             works = False
+            param_list.append('knotvector')
         if not works:
-            raise ValueError("Some required parameters for curve evaluation are not set")
+            raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     # Resets the control points
     def _reset_ctrlpts(self):
         self._control_points = None
+        self._bounding_box = None
 
     # Resets the evaluated points
     def _reset_evalpts(self):
@@ -464,6 +468,7 @@ class Surface(object):
     # Resets the control points
     def _reset_ctrlpts(self):
         self._control_points = None
+        self._bounding_box = None
 
     # Resets the evaluated points
     def _reset_evalpts(self):
@@ -472,14 +477,24 @@ class Surface(object):
     # Checks whether the surface evaluation is possible or not
     def _check_variables(self):
         works = True
-        if self._degree_u == 0 or self._degree_v == 0:
+        param_list = []
+        if self._degree_u == 0:
             works = False
+            param_list.append('degree_u')
+        if self._degree_v == 0:
+            works = False
+            param_list.append('degree_v')
         if not self._control_points:
             works = False
-        if not self._knot_vector_u or not self._knot_vector_v:
+            param_list.append('ctrlpts')
+        if not self._knot_vector_u:
             works = False
+            param_list.append('knotvector_u')
+        if not self._knot_vector_v:
+            works = False
+            param_list.append('knotvector_v')
         if not works:
-            raise ValueError("Some required parameters for surface evaluation are not set.")
+            raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
