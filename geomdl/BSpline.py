@@ -486,14 +486,17 @@ class Curve(Abstract.Curve):
         .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
 
         """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
         start = kwargs.get('start', self._knot_vector[self._degree])
         stop = kwargs.get('stop', self._knot_vector[-(self._degree+1)])
 
         # Check if the input parameters are in the range
         utils.check_uv(start)
         utils.check_uv(stop)
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
+
         # Clean up the curve points, if necessary
         self._reset_evalpts()
 
@@ -1822,15 +1825,19 @@ class Surface(Abstract.Surface):
         .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
 
         """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
         start_u = kwargs.get('start_u', self._knot_vector_u[self._degree_u])
         stop_u = kwargs.get('stop_u', self._knot_vector_u[-(self._degree_u+1)])
         start_v = kwargs.get('start_v', self._knot_vector_v[self._degree_v])
         stop_v = kwargs.get('stop_v', self._knot_vector_v[-(self._degree_v+1)])
+
         # Check if all the input parameters are in the range
         utils.check_uv(start_u, stop_u)
         utils.check_uv(start_v, stop_v)
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
+
         # Clean up the surface points lists, if necessary
         self._reset_evalpts()
 
