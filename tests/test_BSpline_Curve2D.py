@@ -3,12 +3,12 @@
     Released under The MIT License. See LICENSE file for details.
     Copyright (c) 2018 Onur Rauf Bingol
 
-    Tests geomdl.BSpline.Curve2D module. Requires "pytest" to run.
+    Tests geomdl.BSpline.Curve module. Requires "pytest" to run.
 """
 from geomdl import BSpline
 
 GEOMDL_DELTA = 0.001
-OBJECT_INSTANCE = BSpline.Curve2D
+OBJECT_INSTANCE = BSpline.Curve
 CONTROL_POINTS = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
 
 
@@ -33,6 +33,7 @@ def test_bspline_curve2d_ctrlpts():
     curve.ctrlpts = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
 
     assert curve.ctrlpts == ((5.0, 5.0), (10.0, 10.0), (20.0, 15.0), (35.0, 15.0), (45.0, 10.0), (50.0, 5.0))
+    assert curve.dimension == 2
 
 
 def test_bspline_curve2d_knot_vector():

@@ -75,6 +75,7 @@ def test_nurbs_surface_ctrlpts1():
 
     # Check assignment
     assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0, 1.0)
+    assert surf.dimension == 4
 
 
 def test_nurbs_surface_ctrlpts2():

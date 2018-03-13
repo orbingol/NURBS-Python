@@ -61,6 +61,7 @@ def test_bspline_surface_ctrlpts1():
 
     # Check assignment
     assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0)
+    assert surf.dimension == 3
 
 
 def test_bspline_surface_ctrlpts2():

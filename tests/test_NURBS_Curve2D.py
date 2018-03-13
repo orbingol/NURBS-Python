@@ -3,12 +3,12 @@
     Released under The MIT License. See LICENSE file for details.
     Copyright (c) 2018 Onur Rauf Bingol
 
-    Tests geomdl.NURBS.Curve2D module. Requires "pytest" to run.
+    Tests geomdl.NURBS.Curve module. Requires "pytest" to run.
 """
 from geomdl import NURBS
 
 GEOMDL_DELTA = 0.001
-OBJECT_INSTANCE = NURBS.Curve2D
+OBJECT_INSTANCE = NURBS.Curve
 CONTROL_POINTS = [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0],
                   [50.0, 5.0, 1.0]]
 CONTROL_POINTS2 = [[5.0, 5.0, 0.5], [10.0, 10.0, 1.0], [20.0, 15.0, 0.1], [35.0, 15.0, 0.25], [45.0, 10.0, 1.0],
