@@ -1,6 +1,8 @@
 File Formats
 ^^^^^^^^^^^^
 
+NURBS-Python uses right-handed notation in input and output files.
+
 TXT Files
 =========
 
@@ -53,6 +55,11 @@ The format of the control points file for generating **2D NURBS curves** is as f
 | x\ :sub:`3`\*w\ :sub:`3`  | y\ :sub:`3`\*w\ :sub:`3`  | w\ :sub:`3` |
 +---------------------------+---------------------------+-------------+
 
+.. note::
+
+    :doc:`compatibility <module_compatibility>` module provides several functions to manipulate & convert control
+    point arrays into NURBS-Python compatible ones and more.
+
 3D Curves
 ---------
 
@@ -94,6 +101,11 @@ The format of the control points file for generating 3D NURBS curves is as follo
 +---------------------------+---------------------------+---------------------------+-------------+
 | x\ :sub:`3`\*w\ :sub:`3`  | y\ :sub:`3`\*w\ :sub:`3`  | z\ :sub:`3`\*w\ :sub:`3`  | w\ :sub:`3` |
 +---------------------------+---------------------------+---------------------------+-------------+
+
+.. note::
+
+    :doc:`compatibility <module_compatibility>` module provides several functions to manipulate & convert control
+    point arrays into NURBS-Python compatible ones and more.
 
 Surfaces
 --------
@@ -144,7 +156,10 @@ The format of the control points file for generating NURBS surfaces is as follow
 | **u2** | (x\*w, y\*w, z\*w, w) | (x\*w, y\*w, z\*w, w) | (x\*w, y\*w, z\*w, w) | (x\*w, y\*w, z\*w, w) |
 +--------+-----------------------+-----------------------+-----------------------+-----------------------+
 
-.. note:: The control points correspond to a right-handed coordinate system.
+.. note::
+
+    :doc:`compatibility <module_compatibility>` module provides several functions to manipulate & convert control
+    point arrays into NURBS-Python compatible ones and more.
 
 CSV Files
 =========
@@ -257,4 +272,4 @@ STL Files
 
 Exporting to STL files works in the same way explained in OBJ Files section. To export a NURBS surface as a .stl file,
 you can use :py:func:`.save_stl()` function. This function saves in binary format by default but there is an option to
-change the save file format to plain text. Please see the documentation for details.
+change the save file format to plain text. Please see the :doc:`documentation <module_exchange>` for details.

@@ -266,7 +266,7 @@ def combine_ctrlpts_weights(ctrlpts, weights):
     :param weights: weights vector
     :type weights: list, tuple
     :return: weighted control points
-    :rtype; list
+    :rtype: list
     """
     ctrlptsw = []
     for pt, w in zip(ctrlpts, weights):
