@@ -102,7 +102,7 @@ class Curve(object):
     def delta(self):
         """ Evaluation delta.
 
-        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate curve points. Decreasing step size results in generation of more curve points.
         Therefore; smaller the delta value, smoother the curve.
 
@@ -398,7 +398,7 @@ class Surface(object):
     def delta(self):
         """ Evaluation delta.
 
-        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
 
@@ -558,7 +558,7 @@ class Multi(object):
     def delta(self):
         """ Evaluation delta.
 
-        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate evaluated points. Decreasing step size results in generation of more evaluated points.
         Therefore; smaller the delta value, smoother the shape.
 
