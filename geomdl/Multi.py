@@ -16,10 +16,9 @@ from . import utilities
 class MultiCurve(Abstract.Multi):
     """ Container class for storing multiple curves.
 
-    The elements contained in this class can be 2D or 3D curves but there are no checks for the curve types.
-
-    Visualization depends on the visualization instance, e.g. you can visualize a 3D curve using a ``VisCurve2D``
-    instance but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
+    Rendering depends on the visualization instance, e.g. if you are using ``VisMPL`` module,
+    you can visualize a 3D curve using a ``VisCurve2D`` instance
+    but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
     """
 
     def __init__(self):

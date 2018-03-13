@@ -6,8 +6,9 @@ Control Points Generator Module
 it doesn't have the capabilities of a fully-featured grid generator, but it should be enough to be used side by side
 with ``BSpline`` and ``NURBS`` modules.
 
-``CPGen.Grid`` class provides an easy way to generate control point grids for use with :py:class:`.BSpline.Surface`
-class and ``CPGen.GridWeighted`` does the same for :py:class:`.NURBS.Surface` class.
+:py:class:`.CPGen.Grid` class provides an easy way to generate control point grids for use with
+:py:class:`.BSpline.Surface` class and :py:class:`.CPGen.GridWeighted` does the same for :py:class:`.NURBS.Surface`
+class.
 
 Grid
 ====
