@@ -975,37 +975,6 @@ class Curve(Abstract.Curve):
         return ret_val
 
 
-class Curve2D(Curve):
-    """ Data storage and evaluation class for 2D B-Spline (NUBS) curves.
-
-    .. deprecated:: 3.5
-        Use :py:class:`.Curve` instead
-
-    """
-
-    def __init__(self):
-        super(Curve2D, self).__init__()
-        # Override dimension variable
-        self._dimension = 2  # 2D coordinates
-        self._rational = False
-
-    def __str__(self):
-        return "2D B-Spline Curve"
-
-    __repr__ = __str__
-
-    def convert3d(self):
-        """ Converts 2D curve to a 3D curve.
-
-        .. deprecated:: 3.5
-            Use :py:meth:`.add_dimension()`
-
-        :return: 3D curve
-        :rtype: BSpline.Curve
-        """
-        return self.add_dimension()
-
-
 class Surface(Abstract.Surface):
     """ Data storage and evaluation class for B-Spline (NUBS) surfaces.
 

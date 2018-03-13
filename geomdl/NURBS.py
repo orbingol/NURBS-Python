@@ -214,37 +214,6 @@ class Curve(BSpline.Curve):
         self.ctrlpts = new_ctrlpts
 
 
-class Curve2D(Curve):
-    """ Data storage and evaluation class for 2D NURBS curves.
-
-    .. deprecated:: 3.5
-        Use :py:class:`.Curve` instead
-
-    """
-
-    def __init__(self):
-        super(Curve2D, self).__init__()
-        # Override dimension variable
-        self._dimension = 3  # 2D coordinates + weights
-        self._rational = True
-
-    def __str__(self):
-        return "2D NURBS Curve"
-
-    __repr__ = __str__
-
-    def convert3d(self):
-        """ Converts 2D curve to a 3D curve.
-
-        .. deprecated:: 3.5
-            Use :py:meth:`.add_dimension()`
-
-        :return: 3D curve
-        :rtype: NURBS.Curve
-        """
-        return self.add_dimension()
-
-
 class Surface(BSpline.Surface):
     """ Data storage and evaluation class for NURBS surfaces.
 
