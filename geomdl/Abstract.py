@@ -102,6 +102,10 @@ class Curve(object):
     def delta(self):
         """ Evaluation delta.
 
+        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        generate curve points. Decreasing step size results in generation of more curve points.
+        Therefore; smaller the delta value, smoother the curve.
+
         .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
@@ -394,6 +398,10 @@ class Surface(object):
     def delta(self):
         """ Evaluation delta.
 
+        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
         .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
@@ -549,6 +557,10 @@ class Multi(object):
     @property
     def delta(self):
         """ Evaluation delta.
+
+        Evaluation delta corresponds to the *step size* while ``execute`` function iterates on the knot vector to
+        generate evaluated points. Decreasing step size results in generation of more evaluated points.
+        Therefore; smaller the delta value, smoother the shape.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
