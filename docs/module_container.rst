@@ -9,7 +9,7 @@ This module provides curve and surface containers which could be created
 
 This module works with ``BSpline`` and ``NURBS`` modules and it contains the following classes:
 
-* :py:class:`.MultiAbstract` abstract base class for all containers
+* :py:class:`.Multi` abstract base class for all containers
 * :py:class:`.MultiCurve` curve container class
 * :py:class:`.MultiSurface` surface container class
 
