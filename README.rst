@@ -179,6 +179,7 @@ NURBS-Python_ project.
 * Luke Frisken (`@kellpossible <https://github.com/kellpossible>`_)
 * John-Eric Dufour (`@jedufour <https://github.com/jedufour>`_)
 * Jan Heczko (`@heczis <https://github.com/heczis>`_)
+* Pavel Vlasanek (`@tucna <https://github.com/tucna>`_)
 
 License
 =======
