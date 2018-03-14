@@ -136,10 +136,10 @@ def make_triangle(points, row_size, col_size):
 
 
 # A float range function, implementation of https://stackoverflow.com/a/47877721
-def frange(start, stop, step=1.0, decimals=7):
+def frange(start, stop, step=1.0):
     """ Implementation of Python's ``range()`` function which works with floats.
 
-    Reference to this implementation: https://stackoverflow.com/a/47877721
+    Reference to this implementation: https://stackoverflow.com/a/36091634
 
     :param start: start value
     :type start: float
@@ -152,11 +152,17 @@ def frange(start, stop, step=1.0, decimals=7):
     :return: float
     :rtype: generator
     """
-    # Originally range((int(start / step), int(stop / step))) but intentionally added "+ 1" to the end to get
-    # the last element when step is too small. Just to make it clear, frange function is here because we don't want
-    # to use numpy or its alternatives
-    for i in range(int(start / step), int(stop / step) + 1):
-        yield float(("%0." + str(decimals) + "f") % (i * step))
+    i = 0.0
+    x = float(start)  # Prevent yielding integers.
+    x0 = x
+    epsilon = step / 2.0
+    yield x  # always yield first value
+    while x + epsilon < stop:
+        i += 1.0
+        x = x0 + i * step
+        yield x
+    if stop > x:
+        yield stop  # for yielding last value of the knot vector if the step is a large value, like 0.1
 
 
 # Normalizes knot vector (internal functionality)
@@ -215,7 +221,7 @@ def generate_knot_vector(degree=0, control_points_size=0):
     knot_vector = [float(0) for _ in range(0, degree)]
 
     # Middle knots
-    knot_vector += [mid_knot for mid_knot in frange(0, 1, spacing, decimals=4)]
+    knot_vector += [mid_knot for mid_knot in frange(0, 1, spacing)]
 
     # Last degree+1 knots are "knot_max"
     knot_vector += [float(1) for _ in range(0, degree)]
