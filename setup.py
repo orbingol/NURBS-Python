@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 try:
     from setuptools import setup
 except ImportError:
@@ -18,6 +19,7 @@ def get_property(prop, project):
 
 setup(
     name='NURBS-Python',
+    # name='geomdl',
     version=get_property('__version__', 'geomdl'),
     description='NURBS curve and surface evaluation library in pure python',
     author='Onur Rauf Bingol',
