@@ -43,10 +43,11 @@ class MultiCurve(Abstract.Multi):
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     name="Control Points " + str(idx + 1),
                                     color=color[0],
-                                    plot_type=1)
+                                    plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.curvepts,
                                     name="Curve " + str(idx + 1),
-                                    color=color[1])
+                                    color=color[1],
+                                    plot_type='evalpts')
         self._vis_component.render()
 
 
@@ -76,9 +77,10 @@ class MultiSurface(Abstract.Multi):
                                     size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
                                     name="Control Points " + str(idx + 1),
                                     color=color[0],
-                                    plot_type=1)
+                                    plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.surfpts,
                                     size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
                                     name="Surface " + str(idx + 1),
-                                    color=color[1])
+                                    color=color[1],
+                                    plot_type='evalpts')
         self._vis_component.render()
