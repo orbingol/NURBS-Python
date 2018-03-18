@@ -1,7 +1,7 @@
 NURBS-Python
 ^^^^^^^^^^^^
 
-|DOI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |LANDSCAPEIO|_ |WAFFLEIO|_
+|DOI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
 
 Description
 ===========
@@ -98,9 +98,6 @@ NURBS-Python is licensed under The MIT License.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
-
-.. |LANDSCAPEIO| image:: https://landscape.io/github/orbingol/NURBS-Python/master/landscape.svg?style=flat
-.. _LANDSCAPEIO: https://landscape.io/github/orbingol/NURBS-Python/master
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
