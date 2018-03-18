@@ -8,7 +8,7 @@
 build: false
 
 # Build tags only
-skip_non_tags: true
+#skip_non_tags: true
 
 # Fetch repository as a zip archive
 shallow_clone: true
