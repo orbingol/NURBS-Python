@@ -24,6 +24,7 @@ class Curve(object):
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
+        self._cache = {}  # cache dictionary
 
     @property
     def dimension(self):
@@ -229,6 +230,7 @@ class Surface(object):
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
+        self._cache = {}  # cache dictionary
 
     @property
     def dimension(self):

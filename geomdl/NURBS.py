@@ -53,8 +53,8 @@ class Curve(BSpline.Curve):
         super(Curve, self).__init__()
         self._rational = True
         # Variables for caching
-        self._cache_ctrlpts = []
-        self._cache_weights = []
+        self._cache['ctrlpts'] = []
+        self._cache['weights'] = []
 
     def __str__(self):
         return "NURBS Curve"
@@ -69,13 +69,13 @@ class Curve(BSpline.Curve):
         :setter: Sets weighted control points
         :type: list
         """
-        if not self._cache_ctrlpts:
+        if not self._cache['ctrlpts']:
             for pt in self._control_points:
                 temp = []
                 for idx in range(self._dimension - 1):
                     temp.append(float(pt[idx] / pt[-1]))
-                self._cache_ctrlpts.append(tuple(temp))
-        return tuple(self._cache_ctrlpts)
+                self._cache['ctrlpts'].append(tuple(temp))
+        return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -88,18 +88,18 @@ class Curve(BSpline.Curve):
         :getter: Extracts the weights vector from weighted control points array
         :type: list
         """
-        if not self._cache_weights:
+        if not self._cache['weights']:
             for pt in self._control_points:
-                self._cache_weights.append(pt[-1])
-        return tuple(self._cache_weights)
+                self._cache['weights'].append(pt[-1])
+        return tuple(self._cache['weights'])
 
     # Cleans up the control points and the cache
     def _reset_ctrlpts(self):
         # Call parent function to process control points
         super(Curve, self)._reset_ctrlpts()
         # Delete the caches
-        del self._cache_ctrlpts[:]
-        del self._cache_ctrlpts[:]
+        del self._cache['ctrlpts'][:]
+        del self._cache['weights'][:]
 
     # Prepares control points for exporting as a CSV file
     def _get_ctrlpts_for_exporting(self):
@@ -108,9 +108,9 @@ class Curve(BSpline.Curve):
         :return: list of control points
         :rtype: list
         """
-        if not self._cache_ctrlpts:
+        if not self._cache['ctrlpts']:
             return self.ctrlpts
-        return self._cache_ctrlpts
+        return self._cache['ctrlpts']
 
     # Evaluates the rational curve at the given parameter
     def curvept(self, u=-1, **kwargs):
@@ -258,8 +258,8 @@ class Surface(BSpline.Surface):
         super(Surface, self).__init__()
         self._rational = True
         # Variables for caching
-        self._cache_ctrlpts = []
-        self._cache_weights = []
+        self._cache['ctrlpts'] = []
+        self._cache['weights'] = []
 
     def __str__(self):
         return "NURBS Surface"
@@ -274,13 +274,13 @@ class Surface(BSpline.Surface):
         :setter: Sets weighted control points.
         :type: list
         """
-        if not self._cache_ctrlpts:
+        if not self._cache['ctrlpts']:
             for pt in self._control_points:
                 temp = []
                 for idx in range(self._dimension - 1):
                     temp.append(float(pt[idx] / pt[-1]))
-                self._cache_ctrlpts.append(tuple(temp))
-        return tuple(self._cache_ctrlpts)
+                self._cache['ctrlpts'].append(tuple(temp))
+        return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -297,18 +297,18 @@ class Surface(BSpline.Surface):
         :getter: Extracts the weights vector from weighted control points array
         :type: list
         """
-        if not self._cache_weights:
+        if not self._cache['weights']:
             for pt in self._control_points:
-                self._cache_weights.append(pt[-1])
-        return tuple(self._cache_weights)
+                self._cache['weights'].append(pt[-1])
+        return tuple(self._cache['weights'])
 
     # Cleans up the control points and the cache
     def _reset_ctrlpts(self):
         # Call parent function to process control points
         super(Surface, self)._reset_ctrlpts()
         # Delete the caches
-        del self._cache_ctrlpts[:]
-        del self._cache_ctrlpts[:]
+        del self._cache['ctrlpts'][:]
+        del self._cache['weights'][:]
 
     # Prepares control points for exporting as a CSV file
     def _get_ctrlpts_for_exporting(self):
@@ -317,9 +317,9 @@ class Surface(BSpline.Surface):
         :return: list of control points
         :rtype: list
         """
-        if not self._cache_ctrlpts:
+        if not self._cache['ctrlpts']:
             return self.ctrlpts
-        return self._cache_ctrlpts
+        return self._cache['ctrlpts']
 
     # Evaluates rational surface at the given (u, v) parameters
     def surfpt(self, u=-1, v=-1, **kwargs):
