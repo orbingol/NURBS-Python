@@ -49,16 +49,16 @@ install:
 
   # Upgrade to the latest version of pip to avoid it displaying warnings
   # about it being out of date.
-  - "pip install --disable-pip-version-check --upgrade pip"
+  - "python -m pip install --disable-pip-version-check --upgrade pip"
 
   # Upgrade setuptools
-  - "pip install --upgrade setuptools"
+  - "python -m pip install --upgrade setuptools"
 
   # Install pytest
-  - "pip install pytest"
+  - "python -m pip install pytest"
 
   # Install wheel
-  - "pip install wheel"
+  - "python -m pip install wheel"
 
 build_script:
   # Install the python module
