@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 class VisConfig(Abstract.VisConfigAbstract):
-    """ Configuration class for Matplotlib visualizaion mmodule.
+    """ Configuration class for Matplotlib visualization module.
 
     This class is only required when you prefer to change the default plotting behavior, such as hiding control points
     plot or legend. By default, the following variables and their default values are used in all ``VisMPL``
