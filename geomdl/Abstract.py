@@ -16,6 +16,7 @@ class Curve(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
+        self._rational = False  # defines whether the curve is rational or not
         self._degree = 0  # degree
         self._knot_vector = None  # knot vector
         self._control_points = None  # control points
@@ -33,6 +34,7 @@ class Curve(object):
         Dimension will be automatically estimated from the first element of the control points array.
 
         :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
+        :type: integer
         """
         return self._dimension
 
@@ -58,12 +60,21 @@ class Curve(object):
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
+        :type: integer
         """
         return self._degree
 
     @degree.setter
     def degree(self, value):
-        self._degree = value
+        val = int(value)
+        if val < 0:
+            raise ValueError("Degree cannot be less than zero")
+
+        # Clean up the curve points list, if necessary
+        self._reset_evalpts()
+
+        # Set degree
+        self._degree = val
 
     @property
     def knotvector(self):
@@ -93,15 +104,18 @@ class Curve(object):
 
     @property
     def curvepts(self):
-        """ Curve points.
+        """ Evaluated curve points.
 
-        :getter: Coordinates of the evaluated surface points
+        :getter: Gets the coordinates of the evaluated points
         """
+        if not self._curve_points:
+            self.evaluate()
+
         return self._curve_points
 
     @property
     def delta(self):
-        """ Evaluation delta.
+        """ Curve evaluation delta.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate curve points. Decreasing step size results in generation of more curve points.
@@ -111,12 +125,21 @@ class Curve(object):
 
         :getter: Gets the delta value
         :setter: Sets the delta value
+        :type: float
         """
         return self._delta
 
     @delta.setter
     def delta(self, value):
-        self._delta = value
+        # Delta value for surface evaluation should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
+
+        # Clean up the curve points list, if necessary
+        self._reset_evalpts()
+
+        # Set new delta value
+        self._delta = float(value)
 
     @property
     def vis(self):
@@ -142,9 +165,35 @@ class Curve(object):
     def bbox(self):
         """ Bounding box.
 
+        Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
+
         :getter: Gets bounding box
+        :type: tuple
         """
-        return self._bounding_box
+        if not self._bounding_box:
+            self._eval_bbox()
+
+        return tuple(self._bounding_box)
+
+    def _eval_bbox(self):
+        """ Evaluates bounding box of the curve. """
+        # Find correct dimension of the control points
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+
+        # Evaluate bounding box
+        bbmin = [float('inf') for _ in range(0, dim)]
+        bbmax = [0.0 for _ in range(0, dim)]
+        for cpt in self.ctrlpts:
+            for i, arr in enumerate(zip(cpt, bbmin)):
+                if arr[0] < arr[1]:
+                    bbmin[i] = arr[0]
+            for i, arr in enumerate(zip(cpt, bbmax)):
+                if arr[0] > arr[1]:
+                    bbmax[i] = arr[0]
+
+        self._bounding_box = [bbmin, bbmax]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -223,6 +272,7 @@ class Surface(object):
         self._knot_vector_v = None  # knot vector
         self._control_points_size_v = 0  # control points array length
         # Common
+        self._rational = False  # defines whether the surface is rational or not
         self._delta = 0.1  # evaluation delta
         self._control_points = None  # control points, 1-D array (v-order)
         self._control_points2D = None  # control points, 2-D array [u][v]
@@ -239,6 +289,7 @@ class Surface(object):
         Dimension will be automatically estimated from the first element of the control points array.
 
         :getter: Gets the dimension of the surface
+        :type: integer
         """
         return self._dimension
 
@@ -286,7 +337,13 @@ class Surface(object):
 
     @degree_u.setter
     def degree_u(self, value):
-        self._degree_u = value
+        val = int(value)
+        if val <= 0:
+            raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+        # Set degree u
+        self._degree_u = int(value)
 
     @property
     def degree_v(self):
@@ -300,7 +357,13 @@ class Surface(object):
 
     @degree_v.setter
     def degree_v(self, value):
-        self._degree_v = value
+        val = int(value)
+        if val <= 0:
+            raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+        # Set degree v
+        self._degree_v = val
 
     @property
     def knotvector_u(self):
@@ -390,10 +453,13 @@ class Surface(object):
 
     @property
     def surfpts(self):
-        """ Surface points.
+        """ Evaluated surface points.
 
-        :getter: Coordinates of evaluated surface points
+        :getter: Gets the coordinates of the evaluated points
         """
+        if not self._surface_points:
+            self.evaluate()
+
         return self._surface_points
 
     @property
@@ -408,12 +474,21 @@ class Surface(object):
 
         :getter: Gets the delta value
         :setter: Sets the delta value
+        :type: float
         """
         return self._delta
 
     @delta.setter
     def delta(self, value):
-        self._delta = value
+        # Delta value for surface evaluation should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+
+        # Set a new delta value
+        self._delta = float(value)
 
     @property
     def vis(self):
@@ -429,15 +504,42 @@ class Surface(object):
         if not isinstance(value, VisAbstract):
             warn("Visualization component is NOT an instance of VisAbstract class")
             return
+
         self._vis_component = value
 
     @property
     def bbox(self):
         """ Bounding box.
 
+        Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
+
         :getter: Gets bounding box
+        :type: tuple
         """
-        return self._bounding_box
+        if not self._bounding_box:
+            self._eval_bbox()
+
+        return tuple(self._bounding_box)
+
+    def _eval_bbox(self):
+        """ Evaluates bounding box of the surface. """
+        # Find correct dimension of the control points
+        dim = self._dimension
+        if self._rational:
+            dim -= 1
+
+        # Evaluate bounding box
+        bbmin = [float('inf') for _ in range(0, dim)]
+        bbmax = [0.0 for _ in range(0, dim)]
+        for cpt in self.ctrlpts:
+            for i, arr in enumerate(zip(cpt, bbmin)):
+                if arr[0] < arr[1]:
+                    bbmin[i] = arr[0]
+            for i, arr in enumerate(zip(cpt, bbmax)):
+                if arr[0] > arr[1]:
+                    bbmax[i] = arr[0]
+
+        self._bounding_box = [bbmin, bbmax]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -518,11 +620,11 @@ class Multi(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-        self._elements = []
-        self._delta = 0.1
-        self._vis_component = None
-        self._iter_index = 0
-        self._instance = None
+        self._elements = []  # elements contained
+        self._delta = 0.1  # evaluation delta
+        self._vis_component = None  # visualization component
+        self._iter_index = 0  # iterator index
+        self._instance = None  # type of the initial element
 
     def __iter__(self):
         self._iter_index = 0

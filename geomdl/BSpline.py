@@ -43,7 +43,6 @@ class Curve(Abstract.Curve):
         self._control_points = []
         self._curve_points = []
         self._bounding_box = []
-        self._rational = False
 
     def __str__(self):
         return "B-Spline Curve"
@@ -56,29 +55,6 @@ class Curve(Abstract.Curve):
         self.degree = degree
         self.ctrlpts = ctrlpts
         self.knotvector = knotvector
-
-    @property
-    def degree(self):
-        """ Curve degree.
-
-        :getter: Gets the curve degree
-        :setter: Sets the curve degree
-        :type: integer
-        """
-        return self._degree
-
-    @degree.setter
-    def degree(self, value):
-        # degree = 0, dots
-        # degree = 1, polylines
-        # degree = 2, quadratic curves
-        # degree = 3, cubic curves
-        if value < 0:
-            raise ValueError("Degree cannot be less than zero")
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
-        # Set degree
-        self._degree = value
 
     @property
     def ctrlpts(self):
@@ -151,75 +127,6 @@ class Curve(Abstract.Curve):
 
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
-
-    @property
-    def delta(self):
-        """ Curve evaluation delta.
-
-        .. note:: The delta value is 0.1 by default.
-
-        :getter: Gets the delta value
-        :setter: Sets the delta value
-        :type: float
-        """
-        return self._delta
-
-    @delta.setter
-    def delta(self, value):
-        # Delta value for surface evaluation should be between 0 and 1
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
-
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
-
-        # Set new delta value
-        self._delta = float(value)
-
-    @property
-    def curvepts(self):
-        """ Evaluated curve points.
-
-        :getter: Gets the coordinates of the evaluated points
-        :type: list
-        """
-        if not self._curve_points:
-            self.evaluate()
-
-        return self._curve_points
-
-    @property
-    def bbox(self):
-        """ Bounding box.
-
-        Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
-
-        :getter: Gets bounding box
-        :type: list
-        """
-        if not self._bounding_box:
-            self._eval_bbox()
-        return self._bounding_box
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the curve. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [bbmin, bbmax]
 
     # Resets the control points
     def _reset_ctrlpts(self):
@@ -1013,44 +920,6 @@ class Surface(Abstract.Surface):
         self.knotvector_v = knotvector_v
 
     @property
-    def degree_u(self):
-        """ Surface degree for U direction.
-
-        :getter: Gets the surface degree for U direction
-        :setter: Sets the surface degree for U direction
-        :type: integer
-        """
-        return self._degree_u
-
-    @degree_u.setter
-    def degree_u(self, value):
-        if value < 0:
-            raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
-        # Set degree u
-        self._degree_u = value
-
-    @property
-    def degree_v(self):
-        """ Surface degree for V direction.
-
-        :getter: Gets the surface degree for V direction
-        :setter: Sets the surface degree for V direction
-        :type: integer
-        """
-        return self._degree_v
-
-    @degree_v.setter
-    def degree_v(self, value):
-        if value < 0:
-            raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
-        # Set degree v
-        self._degree_v = value
-
-    @property
     def ctrlpts(self):
         """ 1D Control points.
 
@@ -1288,73 +1157,6 @@ class Surface(Abstract.Surface):
 
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
-
-    @property
-    def delta(self):
-        """ Surface evaluation delta.
-
-        .. note:: The delta value is 0.1 by default.
-
-        :getter: Gets the delta value
-        :setter: Sets the delta value
-        :type: float
-        """
-        return self._delta
-
-    @delta.setter
-    def delta(self, value):
-        # Delta value for surface evaluation should be between 0 and 1
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
-        # Set a new delta value
-        self._delta = float(value)
-
-    @property
-    def surfpts(self):
-        """ Evaluated surface points.
-
-        :getter: Gets the coordinates of the evaluated points
-        :type: list
-        """
-        if not self._surface_points:
-            self.evaluate()
-
-        return self._surface_points
-
-    @property
-    def bbox(self):
-        """ Bounding box.
-
-        Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
-
-        :getter: Gets bounding box
-        :type: list
-        """
-        if not self._bounding_box:
-            self._eval_bbox()
-        return self._bounding_box
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the surface. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [bbmin, bbmax]
 
     # Cleans up the control points
     def _reset_ctrlpts(self):
