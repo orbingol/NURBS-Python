@@ -18,8 +18,6 @@ from . import utilities as utils
 class Curve(Abstract.Curve):
     """ Data storage and evaluation class for B-Spline (NUBS) curves.
 
-    **Data Storage**
-
     The following properties are present in this class:
 
     * dimension
@@ -32,17 +30,6 @@ class Curve(Abstract.Curve):
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
 
     .. note::
 
@@ -978,8 +965,6 @@ class Curve(Abstract.Curve):
 class Surface(Abstract.Surface):
     """ Data storage and evaluation class for B-Spline (NUBS) surfaces.
 
-    **Data Storage**
-
     The following properties are present in this class:
 
     * dimension
@@ -996,17 +981,6 @@ class Surface(Abstract.Surface):
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
 
     .. note::
 

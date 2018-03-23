@@ -16,8 +16,6 @@ from . import utilities as utils
 class Curve(BSpline.Curve):
     """ Data storage and evaluation class for NURBS curves.
 
-    **Data Storage**
-
     The following properties are present in this class:
 
     * dimension
@@ -31,17 +29,6 @@ class Curve(BSpline.Curve):
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
 
     .. note::
 
@@ -217,8 +204,6 @@ class Curve(BSpline.Curve):
 class Surface(BSpline.Surface):
     """ Data storage and evaluation class for NURBS surfaces.
 
-    **Data Storage**
-
     The following properties are present in this class:
 
     * dimension
@@ -236,17 +221,6 @@ class Surface(BSpline.Surface):
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
-
-    **Evaluation**
-
-    The evaluation methods are:
-
-    * :py:meth:`.evaluate()`
-    * :py:meth:`.derivatives()`
-    * :py:meth:`.tangent()`
-    * :py:meth:`.normal()`
-    * :py:meth:`.binormal()`
-    * :py:meth:`.insert_knot()`
 
     .. note::
 
