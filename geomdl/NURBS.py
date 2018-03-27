@@ -151,11 +151,8 @@ class Curve(BSpline.Curve):
         # Algorithm A4.2
         CK = [[None for _ in range(self._dimension - 1)] for _ in range(order + 1)]
         for k in range(0, order + 1):
-            v = []
-            for idx in range(self._dimension - 1):
-                v.append(CKw[idx])
-
-            for i in range(1, order + 1):
+            v = [val for val in CKw[k][0:self._dimension-1]]
+            for i in range(1, k + 1):
                 v[:] = [tmp - (utils.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
             CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
 
