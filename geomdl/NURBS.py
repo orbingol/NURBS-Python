@@ -116,9 +116,6 @@ class Curve(BSpline.Curve):
             # Check if u parameter is in the range
             utils.check_uv(u)
 
-        # Initialize an empty list which will contain the list of associated control points
-        ctrlpts = []
-
         # Algorithm A4.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
@@ -128,9 +125,7 @@ class Curve(BSpline.Curve):
                        zip(cptw, self._control_points[span - self._degree + i])]
 
         # Divide by weight
-        cpt = []
-        for idx in range(self._dimension - 1):
-            cpt.append(float(cptw[idx] / cptw[-1]))
+        cpt = [float(pt / cptw[-1]) for pt in cptw[0:(self._dimension - 1)]]
 
         return cpt
 
@@ -151,7 +146,7 @@ class Curve(BSpline.Curve):
         # Algorithm A4.2
         CK = [[None for _ in range(self._dimension - 1)] for _ in range(order + 1)]
         for k in range(0, order + 1):
-            v = [val for val in CKw[k][0:self._dimension-1]]
+            v = [val for val in CKw[k][0:(self._dimension - 1)]]
             for i in range(1, k + 1):
                 v[:] = [tmp - (utils.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
             CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
@@ -310,9 +305,6 @@ class Surface(BSpline.Surface):
             self._check_variables()
             # Check if u and v parameters are correct
             utils.check_uv(u, v)
-
-        # Initialize an empty list which will contain the list of associated control points
-        ctrlpts = []
 
         # Algorithm A4.3
         span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)

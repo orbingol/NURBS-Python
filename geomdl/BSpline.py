@@ -352,9 +352,6 @@ class Curve(Abstract.Curve):
             # Check u parameters are correct
             utils.check_uv(u)
 
-        # Initialize an empty list which will contain the list of associated control points
-        ctrlpts = []
-
         # Algorithm A3.1
         span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
         basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
@@ -1530,9 +1527,6 @@ class Surface(Abstract.Surface):
             self._check_variables()
             # Check u and v parameters are correct
             utils.check_uv(u, v)
-
-        # Initialize an empty list which will contain the list of associated control points
-        ctrlpts = []
 
         # Algorithm A3.5
         span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
