@@ -15,6 +15,7 @@ from . import Multi
 from . import exchange_helpers as exh
 
 
+# Saves surfaces as a .obj file
 def save_obj(surf_in=None, file_name=None, vertex_spacing=2):
     """ Exports surface(s) as a .obj file.
 
@@ -28,27 +29,29 @@ def save_obj(surf_in=None, file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     if isinstance(surf_in, Multi.MultiSurface):
-        save_obj_multi(surf_in, file_name, vertex_spacing)
+        save_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        save_obj_single(surf_in, file_name, vertex_spacing)
+        save_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves B-Spline and/or NURBS surface as a Wavefront OBJ file
-def save_obj_single(surface=None, file_name=None, vertex_spacing=2):
+def save_obj_single(surface=None, **kwargs):
     """ Saves a single surface as a .obj file.
 
     :param surface: surface to be saved
     :type surface: Abstract.Surface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.obj')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
         raise ValueError("Input is not a surface")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -83,22 +86,24 @@ def save_obj_single(surface=None, file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-# Saves B-Spline and/or NURBS surfaces as a single Wavefront OBJ file
-def save_obj_multi(surface_list=(), file_name=None, vertex_spacing=2):
+def save_obj_multi(surface_list=(), **kwargs):
     """ Saves multiple surfaces as a single .obj file.
 
     :param surface_list: list of surfaces to be saved
     :type surface_list: Multi.MultiSurface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.obj')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface_list, Multi.MultiSurface):
         raise ValueError("Input must be a list of surfaces")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -164,6 +169,7 @@ def save_obj_multi(surface_list=(), file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
+# Saves surfaces as a .stl file
 def save_stl(surf_in=None, file_name=None, binary=True, vertex_spacing=2):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
@@ -180,31 +186,34 @@ def save_stl(surf_in=None, file_name=None, binary=True, vertex_spacing=2):
     """
     if isinstance(surf_in, Multi.MultiSurface):
         if binary:
-            save_stl_binary_multi(surf_in, file_name, vertex_spacing)
+            save_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
-            save_stl_ascii_multi(surf_in, file_name, vertex_spacing)
+            save_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
         if binary:
-            save_stl_binary_single(surf_in, file_name, vertex_spacing)
+            save_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
-            save_stl_ascii_single(surf_in, file_name, vertex_spacing)
+            save_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-def save_stl_ascii_single(surface=None, file_name=None, vertex_spacing=2):
+def save_stl_ascii_single(surface=None, **kwargs):
     """ Saves a single surface as an ASCII .stl file.
 
     :param surface: surface to be saved
     :type surface: Abstract.Surface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.stl')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
         raise ValueError("Input is not a surface")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -231,21 +240,24 @@ def save_stl_ascii_single(surface=None, file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_multi(surface_list=(), file_name=None, vertex_spacing=2):
+def save_stl_ascii_multi(surface_list=(), **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
     :type surface_list: Multi.MultiAbstract
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.stl')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface_list, Abstract.Multi):
         raise ValueError("Input must be a list of surfaces")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -282,23 +294,26 @@ def save_stl_ascii_multi(surface_list=(), file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_single(surface=None, file_name=None, vertex_spacing=2):
+def save_stl_binary_single(surface=None, **kwargs):
     """ Saves a single surface as a binary .stl file.
 
     Inspired from https://github.com/apparentlymart/python-stl
 
     :param surface: surface to be saved
     :type surface: Abstract.Surface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.stl')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
         raise ValueError("Input is not a surface")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -322,21 +337,24 @@ def save_stl_binary_single(surface=None, file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_multi(surface_list=(), file_name=None, vertex_spacing=2):
+def save_stl_binary_multi(surface_list=(), **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
     :type surface_list: Multi.MultiAbstract
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.stl')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface_list, Abstract.Multi):
         raise ValueError("Input must be a list of surfaces")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -371,6 +389,7 @@ def save_stl_binary_multi(surface_list=(), file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
+# Saves surfaces as a .off file
 def save_off(surf_in=None, file_name=None, vertex_spacing=2):
     """ Exports surface(s) as a .off file.
 
@@ -384,27 +403,29 @@ def save_off(surf_in=None, file_name=None, vertex_spacing=2):
     :type vertex_spacing: int
     """
     if isinstance(surf_in, Multi.MultiSurface):
-        save_off_multi(surf_in, file_name, vertex_spacing)
+        save_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        save_off_single(surf_in, file_name, vertex_spacing)
+        save_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves a B-Spline and/or NURBS surface in Object File Format (OFF)
-def save_off_single(surface=None, file_name=None, vertex_spacing=2):
+def save_off_single(surface=None, **kwargs):
     """ Saves a single surface as a .off file.
 
     :param surface: surface to be saved
     :type surface: Abstract.Surface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.off')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
         raise ValueError("Input is not a surface")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
@@ -434,22 +455,24 @@ def save_off_single(surface=None, file_name=None, vertex_spacing=2):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-# Saves B-Spline and/or NURBS surfaces in Object File Format (OFF)
-def save_off_multi(surface_list=(), file_name=None, vertex_spacing=2):
+def save_off_multi(surface_list=(), **kwargs):
     """ Saves multiple surfaces as a single .off file.
 
     :param surface_list: list of surfaces to be saved
     :type surface_list: Multi.MultiSurface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        file_name (str): name of the output file
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    # Get keyword arguments
+    file_name = kwargs.get('file_name', 'default.off')
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     # Input validity checking
     if not isinstance(surface_list, Multi.MultiSurface):
         raise ValueError("Input must be a list of surfaces")
-    if not file_name:
-        raise ValueError("File name field is required")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
