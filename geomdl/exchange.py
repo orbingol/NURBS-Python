@@ -15,23 +15,76 @@ from . import Multi
 from . import exchange_helpers as exh
 
 
-# Saves surfaces as a .obj file
-def save_obj(surf_in=None, file_name=None, vertex_spacing=2):
+# Saves surface(s) as a .obj file
+def save_obj(surf_in=None, file_name=None, **kwargs):
     """ Exports surface(s) as a .obj file.
-
-    This function works as a router function between possible exporting options.
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
+
+    Keyword Arguments:
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
     """
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
     if isinstance(surf_in, Multi.MultiSurface):
         save_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
         save_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+
+
+# Saves surface(s) as a .stl file
+def save_stl(surf_in=None, file_name=None, **kwargs):
+    """ Exports surface(s) as a .stl file in plain text or binary format.
+
+    :param surf_in: surface or surfaces to be saved
+    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+
+    Keyword Arguments:
+        binary (bool): True if the saved STL file is going to be in binary format
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
+    """
+    binary = kwargs.get('binary', True)
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
+    if isinstance(surf_in, Multi.MultiSurface):
+        if binary:
+            save_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        else:
+            save_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+    else:
+        if binary:
+            save_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        else:
+            save_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+
+
+# Saves surface(s) as a .off file
+def save_off(surf_in=None, file_name=None, **kwargs):
+    """ Exports surface(s) as a .off file.
+
+    :param surf_in: surface or surfaces to be saved
+    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+
+    Keyword Arguments:
+        binary (bool): True if the saved STL file is going to be in binary format
+        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+
+    """
+    vertex_spacing = kwargs.get('vertex_spacing', 2)
+
+    if isinstance(surf_in, Multi.MultiSurface):
+        save_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+    else:
+        save_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 def save_obj_single(surface=None, **kwargs):
@@ -167,33 +220,6 @@ def save_obj_multi(surface_list=(), **kwargs):
                 fp.write(line)
     except IOError:
         print("Cannot open " + str(file_name) + " for writing")
-
-
-# Saves surfaces as a .stl file
-def save_stl(surf_in=None, file_name=None, binary=True, vertex_spacing=2):
-    """ Exports surface(s) as a .stl file in plain text or binary format.
-
-    This function works as a router function between possible exporting options.
-
-    :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param binary: True if the saved STL file is going to be in binary format
-    :type binary: bool
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
-    """
-    if isinstance(surf_in, Multi.MultiSurface):
-        if binary:
-            save_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
-        else:
-            save_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
-    else:
-        if binary:
-            save_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
-        else:
-            save_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 def save_stl_ascii_single(surface=None, **kwargs):
@@ -387,25 +413,6 @@ def save_stl_binary_multi(surface_list=(), **kwargs):
                 fp.write(b'\0\0')  # attribute byte count
     except IOError:
         print("Cannot open " + str(file_name) + " for writing")
-
-
-# Saves surfaces as a .off file
-def save_off(surf_in=None, file_name=None, vertex_spacing=2):
-    """ Exports surface(s) as a .off file.
-
-    This function works as a router function between possible exporting options.
-
-    :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
-    :param file_name: name of the output file
-    :type file_name: str
-    :param vertex_spacing: size of the triangle edge in terms of points sampled on the surface
-    :type vertex_spacing: int
-    """
-    if isinstance(surf_in, Multi.MultiSurface):
-        save_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
-    else:
-        save_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 def save_off_single(surface=None, **kwargs):
