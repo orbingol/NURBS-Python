@@ -25,7 +25,7 @@ def save_obj(surf_in=None, file_name=None, **kwargs):
     :type file_name: str
 
     Keyword Arguments:
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
 
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
@@ -46,8 +46,8 @@ def save_stl(surf_in=None, file_name=None, **kwargs):
     :type file_name: str
 
     Keyword Arguments:
-        binary (bool): True if the saved STL file is going to be in binary format
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * *binary* (``bool``): True if the saved STL file is going to be in binary format
+        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
 
     """
     binary = kwargs.get('binary', True)
@@ -75,8 +75,7 @@ def save_off(surf_in=None, file_name=None, **kwargs):
     :type file_name: str
 
     Keyword Arguments:
-        binary (bool): True if the saved STL file is going to be in binary format
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
 
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
@@ -94,8 +93,8 @@ def save_obj_single(surface=None, **kwargs):
     :type surface: Abstract.Surface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -146,8 +145,8 @@ def save_obj_multi(surface_list=(), **kwargs):
     :type surface_list: Multi.MultiSurface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -229,8 +228,8 @@ def save_stl_ascii_single(surface=None, **kwargs):
     :type surface: Abstract.Surface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -273,8 +272,8 @@ def save_stl_ascii_multi(surface_list=(), **kwargs):
     :type surface_list: Multi.MultiAbstract
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -329,8 +328,8 @@ def save_stl_binary_single(surface=None, **kwargs):
     :type surface: Abstract.Surface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -370,8 +369,8 @@ def save_stl_binary_multi(surface_list=(), **kwargs):
     :type surface_list: Multi.MultiAbstract
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -422,8 +421,8 @@ def save_off_single(surface=None, **kwargs):
     :type surface: Abstract.Surface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
@@ -469,8 +468,8 @@ def save_off_multi(surface_list=(), **kwargs):
     :type surface_list: Multi.MultiSurface
 
     Keyword Arguments:
-        file_name (str): name of the output file
-        vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * file_name (str): name of the output file
+        * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
 
     """
     # Get keyword arguments
