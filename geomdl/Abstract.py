@@ -580,6 +580,7 @@ class Surface(object):
     # Resets the control points
     def _reset_ctrlpts(self):
         self._control_points = None
+        self._control_points2D = None
         self._bounding_box = None
 
     # Resets the evaluated points
