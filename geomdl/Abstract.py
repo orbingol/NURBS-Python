@@ -218,7 +218,7 @@ class Curve(object):
         self._check_variables()
 
         # Check if the surface has been evaluated
-        if not self._curve_points:
+        if self._curve_points is None or len(self._curve_points) == 0:
             self.evaluate()
 
         # Run the visualization component
@@ -234,10 +234,10 @@ class Curve(object):
         if self._degree == 0:
             works = False
             param_list.append('degree')
-        if not self._control_points:
+        if self._control_points is None or len(self._control_points) == 0:
             works = False
             param_list.append('ctrlpts')
-        if not self._knot_vector:
+        if self._knot_vector is None or len(self._knot_vector) == 0:
             works = False
             param_list.append('knotvector')
         if not works:
@@ -564,7 +564,7 @@ class Surface(object):
         self._check_variables()
 
         # Check if the surface has been evaluated
-        if not self._surface_points:
+        if self._surface_points is None or len(self._surface_points) == 0:
             self.evaluate()
 
         # Run the visualization component
@@ -597,13 +597,13 @@ class Surface(object):
         if self._degree_v == 0:
             works = False
             param_list.append('degree_v')
-        if not self._control_points:
+        if self._control_points is None or len(self._control_points) == 0:
             works = False
             param_list.append('ctrlpts')
-        if not self._knot_vector_u:
+        if self._knot_vector_u is None or len(self._knot_vector_u) == 0:
             works = False
             param_list.append('knotvector_u')
-        if not self._knot_vector_v:
+        if self._knot_vector_v is None or len(self._knot_vector_v) == 0:
             works = False
             param_list.append('knotvector_v')
         if not works:
@@ -782,7 +782,9 @@ class VisAbstract(object):
         :param plot_type: type of the plot, control points (type = 1) or evaluated points (type = 0)
         :type plot_type: int
         """
-        if not ptsarr or not color or not name:
+        if ptsarr is None or len(ptsarr) == 0:
+            return
+        if not color or not name:
             return
         # Add points, size, plot color and name on the legend
         elem = {'ptsarr': ptsarr, 'size': size, 'name': name, 'color': color, 'type': plot_type}
