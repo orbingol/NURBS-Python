@@ -9,6 +9,7 @@
 
 import abc
 from warnings import warn
+import math
 
 
 class Curve(object):
@@ -112,6 +113,22 @@ class Curve(object):
             self.evaluate()
 
         return self._curve_points
+
+    @property
+    def sample_size(self):
+        """ Sample size.
+
+        Sample size defines the number of curve points to generate. It sets the ``delta`` property.
+
+        :getter: Gets sample size
+        :setter: Sets sample size
+        :type: int
+        """
+        return int(math.ceil(1.0 / self.delta)) + 1
+
+    @sample_size.setter
+    def sample_size(self, value):
+        self.delta = 1.0 / float(value - 1)
 
     @property
     def delta(self):
@@ -463,6 +480,22 @@ class Surface(object):
         return self._surface_points
 
     @property
+    def sample_size(self):
+        """ Sample size.
+
+        Sample size defines the number of surface points to generate. It sets the ``delta`` property.
+
+        :getter: Gets sample size
+        :setter: Sets sample size
+        :type: int
+        """
+        return int(math.ceil(1.0 / self.delta)) + 1
+
+    @sample_size.setter
+    def sample_size(self, value):
+        self.delta = 1.0 / float(value - 1)
+
+    @property
     def delta(self):
         """ Evaluation delta.
 
@@ -660,6 +693,22 @@ class Multi(object):
         return ret
 
     @property
+    def sample_size(self):
+        """ Sample size.
+
+        Sample size defines the number of evaluated points to generate. It sets the ``delta`` property.
+
+        :getter: Gets sample size
+        :setter: Sets sample size
+        :type: int
+        """
+        return int(math.ceil(1.0 / self.delta)) + 1
+
+    @sample_size.setter
+    def sample_size(self, value):
+        self.delta = 1.0 / float(value - 1)
+
+    @property
     def delta(self):
         """ Evaluation delta.
 
@@ -677,7 +726,7 @@ class Multi(object):
     def delta(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+            raise ValueError("Evaluation delta should be between 0.0 and 1.0")
 
         # Set a new delta value
         self._delta = float(value)
