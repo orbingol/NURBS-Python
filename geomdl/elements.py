@@ -1,7 +1,7 @@
 """
 .. module:: elements
     :platform: Unix, Windows
-    :synopsis: Classes representing the geometry and topology elements
+    :synopsis: Classes representing geometry and topology elements
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -11,14 +11,29 @@ from array import array
 from . import utilities as utils
 
 
-# Vertex class
-class Vertex(object):
-    def __init__(self, value=()):
+# Abstract class for geometry and topology elements
+class AbstractElement(object):
+    def __init__(self):
         self._id = 0
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        if not isinstance(value, int):
+            raise ValueError("ID value must be an integer")
+        self._id = value
+
+
+# Vertex class
+class Vertex(AbstractElement):
+    def __init__(self):
+        super(Vertex, self).__init__()
         self._value = array('f', [0.0, 0.0, 0.0])
-        if len(value) == 3:
-            self._value = array('f', value)
         self._uv = None
+        self._inside = 1
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._value.tolist())
@@ -42,16 +57,6 @@ class Vertex(object):
 
     def __reversed__(self):
         return reversed(self._value)
-
-    @property
-    def id(self):
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        if not isinstance(value, int):
-            raise ValueError("ID value must be an integer")
-        self._id = value
 
     @property
     def x(self):
@@ -84,23 +89,44 @@ class Vertex(object):
     @uv.setter
     def uv(self, value):
         if not isinstance(value, (list, tuple)) or len(value) != 2:
-            raise ValueError("UV must have 2 components")
+            print("UV must have 2 components")
+            return
         self._uv = array("d", list(value))
+
+    @property
+    def inside(self):
+        return self._inside
+
+    @inside.setter
+    def inside(self, value):
+        self._inside = value
 
     @property
     def data(self):
         return self._value.tolist()
 
+    @data.setter
+    def data(self, value):
+        if len(value) == 3:
+            raise ValueError("Vertex can only store 3 components")
+        self._value = array('f', value)
+
+    @property
+    def data_full(self):
+        ret_list = self.data
+        ret_list.append(self._inside)
+        return ret_list
+
 
 # Triangle class
-class Triangle(object):
+class Triangle(AbstractElement):
     def __init__(self):
-        self._id = 0
+        super(Triangle, self).__init__()
         self._vertices = []
         self._normal = None
 
     def __str__(self):
-        return "Triangular face " + str(self._id)
+        return "Triangle " + str(self._id)
 
     __repr__ = __str__
 
@@ -117,16 +143,6 @@ class Triangle(object):
         return reversed(self._vertices)
 
     @property
-    def id(self):
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        if not isinstance(value, int):
-            raise ValueError("ID value must be an integer")
-        self._id = value
-
-    @property
     def normal(self):
         if not self._normal:
             vec1 = utils.vector_generate(self._vertices[0].data, self._vertices[1].data)
@@ -137,9 +153,11 @@ class Triangle(object):
 
     def add_vertex(self, vertex=None):
         if len(self._vertices) > 2:
-            raise ValueError("Cannot add more vertices")
+            print("Cannot add more vertices")
+            return
         if not isinstance(vertex, Vertex):
-            raise ValueError("Input must be a Vertex object")
+            print("Input must be a Vertex object")
+            return
         self._vertices.append(vertex)
 
     @property
@@ -149,3 +167,71 @@ class Triangle(object):
     @property
     def vertex_ids(self):
         return [self._vertices[0].id, self._vertices[1].id, self._vertices[2].id]
+
+
+# Face class
+class Face(AbstractElement):
+    def __init__(self):
+        super(Face, self).__init__()
+        self._triangles = []
+
+    def __str__(self):
+        return "Face " + str(self._id)
+
+    __repr__ = __str__
+
+    def __len__(self):
+        return len(self._triangles)
+
+    def __getitem__(self, key):
+        return self._triangles[key]
+
+    def __iter__(self):
+        return iter(self._triangles)
+
+    def __reversed__(self):
+        return reversed(self._triangles)
+
+    @property
+    def triangles(self):
+        return self._triangles
+
+    def add_triangle(self, triangle):
+        if not isinstance(triangle, Triangle):
+            print("Input must be a Triangle object")
+            return
+        self._triangles.append(triangle)
+
+
+# Body class
+class Body(AbstractElement):
+    def __init__(self):
+        super(Body, self).__init__()
+        self._faces = []
+
+    def __str__(self):
+        return "Body " + str(self._id)
+
+    __repr__ = __str__
+
+    def __len__(self):
+        return len(self._faces)
+
+    def __getitem__(self, key):
+        return self._faces[key]
+
+    def __iter__(self):
+        return iter(self._faces)
+
+    def __reversed__(self):
+        return reversed(self._faces)
+
+    @property
+    def faces(self):
+        return self._faces
+
+    def add_face(self, face):
+        if not isinstance(face, Face):
+            print("Input must be a Face object")
+            return
+        self._faces.append(face)
