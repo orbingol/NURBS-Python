@@ -104,7 +104,8 @@ def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
         vert_list = []
         v = 0.0
         for row_idx in range(0, row_size, vertex_spacing):
-            temp = Vertex(points2d[col_idx][row_idx])
+            temp = Vertex()
+            temp.data = points2d[col_idx][row_idx]
             temp.id = vert_id
             temp.uv = [u, v]
             vert_list.append(temp)
