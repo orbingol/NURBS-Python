@@ -32,7 +32,7 @@ class Vertex(AbstractElement):
     def __init__(self):
         super(Vertex, self).__init__()
         self._value = array('f', [0.0, 0.0, 0.0])
-        self._uv = None
+        self._uv = array('f', [0.0, 0.0])
         self._inside = 1
 
     def __str__(self):
@@ -64,7 +64,7 @@ class Vertex(AbstractElement):
 
     @x.setter
     def x(self, value):
-        self._value[0] = float(value)
+        self._value[0] = value
 
     @property
     def y(self):
@@ -72,7 +72,7 @@ class Vertex(AbstractElement):
 
     @y.setter
     def y(self, value):
-        self._value[1] = float(value)
+        self._value[1] = value
 
     @property
     def z(self):
@@ -80,11 +80,27 @@ class Vertex(AbstractElement):
 
     @z.setter
     def z(self, value):
-        self._value[2] = float(value)
+        self._value[2] = value
+
+    @property
+    def u(self):
+        return self._uv[0]
+
+    @u.setter
+    def u(self, value):
+        self._uv[0] = value
+
+    @property
+    def v(self):
+        return self._uv[1]
+
+    @v.setter
+    def v(self, value):
+        self._uv[1] = value
 
     @property
     def uv(self):
-        return self._uv
+        return self._uv.tolist()
 
     @uv.setter
     def uv(self, value):
