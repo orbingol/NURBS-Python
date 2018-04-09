@@ -152,14 +152,17 @@ class Triangle(AbstractElement):
             self._normal = utils.vector_cross(vec1, vec2)
         return self._normal
 
-    def add_vertex(self, vertex=None):
+    def add_vertex(self, element=None):
         if len(self._vertices) > 2:
             print("Cannot add more vertices")
             return
-        if not isinstance(vertex, Vertex):
+        if isinstance(element, Vertex):
+            self._vertices.append(element)
+        elif isinstance(element, list):
+            self._vertices += element
+        else:
             print("Input must be a Vertex object")
             return
-        self._vertices.append(vertex)
 
     @property
     def vertices(self):
@@ -197,11 +200,14 @@ class Face(AbstractElement):
     def triangles(self):
         return self._triangles
 
-    def add_triangle(self, triangle):
-        if not isinstance(triangle, Triangle):
+    def add_triangle(self, element):
+        if isinstance(element, Triangle):
+            self._triangles.append(element)
+        elif isinstance(element, list):
+            self._triangles += element
+        else:
             print("Input must be a Triangle object")
             return
-        self._triangles.append(triangle)
 
 
 # Body class
@@ -231,8 +237,11 @@ class Body(AbstractElement):
     def faces(self):
         return self._faces
 
-    def add_face(self, face):
-        if not isinstance(face, Face):
+    def add_face(self, element):
+        if isinstance(element, Face):
+            self._faces.append(element)
+        elif isinstance(element, list):
+            self._faces += element
+        else:
             print("Input must be a Face object")
             return
-        self._faces.append(face)
