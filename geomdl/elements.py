@@ -31,9 +31,8 @@ class AbstractElement(object):
 class Vertex(AbstractElement):
     def __init__(self):
         super(Vertex, self).__init__()
-        self._value = array('f', [0.0, 0.0, 0.0])
+        self._value = array('f', [0.0, 0.0, 0.0, 1.0])  # x, y, z, 1.0 if inside is True
         self._uv = array('f', [0.0, 0.0])
-        self._inside = 1
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._value.tolist())
@@ -111,28 +110,26 @@ class Vertex(AbstractElement):
 
     @property
     def inside(self):
-        return self._inside
+        return self._value[3]
 
     @inside.setter
     def inside(self, value):
-        self._inside = value
+        self._value = value
 
     @property
     def data(self):
-        return self._value.tolist()
+        return self._value.tolist()[0:-1]
 
     @data.setter
     def data(self, value):
         if len(value) == 3:
-            self._value = array('f', value)
+            self._value = array('f', value + [1.0])
         else:
             raise ValueError("Vertex can only store 3 components")
 
     @property
     def data_full(self):
-        ret_list = self.data
-        ret_list.append(self._inside)
-        return ret_list
+        self._value.tolist()
 
 
 # Triangle class
