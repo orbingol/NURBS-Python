@@ -210,7 +210,7 @@ class Curve(object):
                 if arr[0] > arr[1]:
                     bbmax[i] = arr[0]
 
-        self._bounding_box = [bbmin, bbmax]
+        self._bounding_box = (bbmin, bbmax)
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
