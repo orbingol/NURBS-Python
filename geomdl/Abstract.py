@@ -187,7 +187,7 @@ class Curve(object):
         :getter: Gets bounding box
         :type: tuple
         """
-        if self._bounding_box is None or len(self._curve_points) == 0:
+        if self._bounding_box is None or len(self._bounding_box) == 0:
             self._eval_bbox()
 
         return self._bounding_box
