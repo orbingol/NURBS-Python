@@ -595,6 +595,36 @@ class Surface(object):
         self._delta_v = float(value)
 
     @property
+    def delta(self):
+        """ Evaluation delta in U- and V-directions.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        .. note:: The delta value is 0.1 by default.
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        :type: float
+        """
+        return self.delta_u, self.delta_v
+
+    @delta.setter
+    def delta(self, value):
+        if isinstance(value, float):
+            self.delta_u = value
+            self.delta_v = value
+        elif isinstance(value, (list, tuple)):
+            if len(value) == 2:
+                self.delta_u = value[0]
+                self.delta_v = value[1]
+            else:
+                raise ValueError("Surface requires 2 delta values")
+        else:
+            warn("Cannot set delta. Please use a float or a list with 2 elements")
+
+    @property
     def vis(self):
         """ Visualization component.
 
