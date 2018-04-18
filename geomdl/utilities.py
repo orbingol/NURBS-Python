@@ -12,14 +12,14 @@ import random
 
 
 # Changes linearly ordered list of points into a zig-zag shape
-def make_zigzag(points, row_size):
+def make_zigzag(points, num_cols):
     """ Changes linearly ordered list of points into a zig-zag shape.
 
     This function is designed to create input for the visualization software. It orders the points to draw a zig-zag
     shape which enables generating properly connected lines without any scanlines. Please see the below sketch on the
-    functionality of the ``row_size`` parameter::
+    functionality of the ``num_cols`` parameter::
 
-             row size
+             num cols
         <-=============->
         ------->>-------|
         |------<<-------|
@@ -31,8 +31,8 @@ def make_zigzag(points, row_size):
 
     :param points: list of points to be ordered
     :type points: list
-    :param row_size: number of elements in a row which the zig-zag generated
-    :param row_size: int
+    :param num_cols: number of elements in a row which the zig-zag is generated
+    :param num_cols: int
     :return: re-ordered points
     :rtype: list
     """
@@ -48,9 +48,9 @@ def make_zigzag(points, row_size):
             new_points.append(points[rev_idx])
             rev_idx -= 1
         idx += 1
-        if idx % row_size == 0:
+        if idx % num_cols == 0:
             forward = False if forward else True
-            rev_idx = idx + row_size - 1
+            rev_idx = idx + num_cols - 1
 
     return new_points
 
