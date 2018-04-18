@@ -124,7 +124,7 @@ class Curve(object):
         :setter: Sets sample size
         :type: int
         """
-        return int(math.ceil(1.0 / self.delta)) + 1
+        return int(1.0 / self.delta) + 1
 
     @sample_size.setter
     def sample_size(self, value):
@@ -489,7 +489,7 @@ class Surface(object):
         :setter: Sets sample size
         :type: int
         """
-        return int(math.ceil(1.0 / self.delta)) + 1
+        return int(1.0 / self.delta) + 1
 
     @sample_size.setter
     def sample_size(self, value):
