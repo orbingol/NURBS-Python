@@ -147,8 +147,6 @@ def frange(start, stop, step=1.0):
     :type stop: float
     :param step: increment
     :type step: float
-    :param decimals: rounding number
-    :type decimals: int
     :return: float
     :rtype: generator
     """
