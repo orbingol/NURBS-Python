@@ -22,6 +22,7 @@ class Curve(object):
         self._knot_vector = None  # knot vector
         self._control_points = None  # control points
         self._delta = 0.1  # evaluation delta
+        self._sample_size = None  # sample size
         self._curve_points = None  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
@@ -124,11 +125,28 @@ class Curve(object):
         :setter: Sets sample size
         :type: int
         """
-        return int(1.0 / self.delta) + 1
+        if self._sample_size is None:
+            if self._knot_vector is not None and len(self._knot_vector) != 0:
+                self._sample_size = int(1.0 / self.delta) + 1
+            else:
+                warn("Cannot determine the sample size.")
+                return 0
+        return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        self.delta = 1.0 / float(value - 1)
+        if self._knot_vector is None or len(self._knot_vector) != 0:
+            warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
+            return
+        # Set global variable
+        self._sample_size = value
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start = self._knot_vector[self._degree]
+        stop = self._knot_vector[-(self._degree+1)]
+
+        # Set delta value
+        self.delta = (stop - start) / float(value - 1)
 
     @property
     def delta(self):
@@ -284,13 +302,15 @@ class Surface(object):
         self._degree_u = 0  # degree
         self._knot_vector_u = None  # knot vector
         self._control_points_size_u = 0  # control points array length
+        self._delta_u = 0.1  # evaluation delta
         # V-direction
         self._degree_v = 0  # degree
         self._knot_vector_v = None  # knot vector
         self._control_points_size_v = 0  # control points array length
+        self._delta_v = 0.1  # evaluation delta
         # Common
         self._rational = False  # defines whether the surface is rational or not
-        self._delta = 0.1  # evaluation delta
+        self._sample_size = None  # defines sample size
         self._control_points = None  # control points, 1-D array (v-order)
         self._control_points2D = None  # control points, 2-D array [u][v]
         self._surface_points = None  # evaluated points
@@ -489,15 +509,38 @@ class Surface(object):
         :setter: Sets sample size
         :type: int
         """
-        return int(1.0 / self.delta) + 1
+        if self._sample_size is None:
+            if self._knot_vector_u is not None and len(self._knot_vector_u) != 0:
+                self._sample_size = int(1.0 / self.delta_u) + 1
+            elif self._knot_vector_v is not None and len(self._knot_vector_v) != 0:
+                self._sample_size = int(1.0 / self.delta_v) + 1
+            else:
+                warn("Cannot determine the sample size")
+                return 0
+        return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        self.delta = 1.0 / float(value - 1)
+        if (self._knot_vector_u is None or len(self._knot_vector_u) != 0) or\
+                (self._knot_vector_v is None or len(self._knot_vector_v) != 0):
+            warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
+            return
+        # Set global variable
+        self._sample_size = value
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_u = self._knot_vector_u[self._degree_u]
+        stop_u = self._knot_vector_u[-(self._degree_u+1)]
+        start_v = self._knot_vector_v[self._degree_u]
+        stop_v = self._knot_vector_v[-(self._degree_u+1)]
+
+        # Set delta values
+        self.delta_u = (stop_u - start_u) / float(value - 1)
+        self.delta_v = (stop_v - start_v) / float(value - 1)
 
     @property
-    def delta(self):
-        """ Evaluation delta.
+    def delta_u(self):
+        """ Evaluation delta in U-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -509,10 +552,10 @@ class Surface(object):
         :setter: Sets the delta value
         :type: float
         """
-        return self._delta
+        return self._delta_u
 
-    @delta.setter
-    def delta(self, value):
+    @delta_u.setter
+    def delta_u(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
@@ -521,7 +564,35 @@ class Surface(object):
         self._reset_evalpts()
 
         # Set a new delta value
-        self._delta = float(value)
+        self._delta_u = float(value)
+
+    @property
+    def delta_v(self):
+        """ Evaluation delta in V-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        .. note:: The delta value is 0.1 by default.
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        :type: float
+        """
+        return self._delta_v
+
+    @delta_v.setter
+    def delta_v(self, value):
+        # Delta value for surface evaluation should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+
+        # Set a new delta value
+        self._delta_v = float(value)
 
     @property
     def vis(self):
@@ -606,7 +677,7 @@ class Surface(object):
                                 size=[self._control_points_size_u, self._control_points_size_v],
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self._surface_points,
-                                size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
+                                size=[self._sample_size, self._sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render()
 

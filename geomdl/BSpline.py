@@ -1445,13 +1445,11 @@ class Surface(Abstract.Surface):
 
                 # If the user requested a different point arrangment, apply it here
                 if mode == 'zigzag':
-                    points = utils.make_zigzag(self._surface_points, int((1.0 / self._delta) + 1))
+                    points = utils.make_zigzag(self._surface_points, self._sample_size)
                 elif mode == 'wireframe':
-                    points = utils.make_quad(self._surface_points, int((1.0 / self._delta) + 1),
-                                             int((1.0 / self._delta) + 1))
+                    points = utils.make_quad(self._surface_points, self._sample_size, self._sample_size)
                 elif mode == 'triangle':
-                    points = utils.make_triangle(self._surface_points, int((1.0 / self._delta) + 1),
-                                                 int((1.0 / self._delta) + 1))
+                    points = utils.make_triangle(self._surface_points, self._sample_size, self._sample_size)
                 else:
                     points = self._surface_points
 
@@ -1581,8 +1579,8 @@ class Surface(Abstract.Surface):
         self._reset_evalpts()
 
         # Evaluate the surface in the input range
-        for u in utils.frange(start_u, stop_u, self._delta):
-            for v in utils.frange(start_v, stop_v, self._delta):
+        for u in utils.frange(start_u, stop_u, self._delta_u):
+            for v in utils.frange(start_v, stop_v, self._delta_v):
                 spt = self.surfpt(u, v, check_vars=False)
                 self._surface_points.append(spt)
 
