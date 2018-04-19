@@ -138,15 +138,18 @@ class Curve(object):
         if self._knot_vector is None or len(self._knot_vector) == 0:
             warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
             return
-        # Set global variable
-        self._sample_size = value
-
         # To make it operate like linspace, we have to know the starting and ending points.
         start = self._knot_vector[self._degree]
         stop = self._knot_vector[-(self._degree+1)]
 
+        # Clean up the curve points list, if necessary
+        self._reset_evalpts()
+
         # Set delta value
-        self.delta = (stop - start) / float(value - 1)
+        self._delta = (stop - start) / float(value - 1)
+
+        # Set sample size
+        self._sample_size = value
 
     @property
     def delta(self):
@@ -525,8 +528,6 @@ class Surface(object):
                 (self._knot_vector_v is None or len(self._knot_vector_v) == 0):
             warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
             return
-        # Set global variable
-        self._sample_size = value
 
         # To make it operate like linspace, we have to know the starting and ending points.
         start_u = self._knot_vector_u[self._degree_u]
@@ -534,9 +535,15 @@ class Surface(object):
         start_v = self._knot_vector_v[self._degree_v]
         stop_v = self._knot_vector_v[-(self._degree_v+1)]
 
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+
         # Set delta values
-        self.delta_u = (stop_u - start_u) / float(value - 1)
-        self.delta_v = (stop_v - start_v) / float(value - 1)
+        self._delta_u = (stop_u - start_u) / float(value - 1)
+        self._delta_v = (stop_v - start_v) / float(value - 1)
+
+        # Set sample size
+        self._sample_size = value
 
     @property
     def delta_u(self):
@@ -613,12 +620,16 @@ class Surface(object):
     @delta.setter
     def delta(self, value):
         if isinstance(value, float):
-            self.delta_u = value
-            self.delta_v = value
+            if float(value) <= 0 or float(value) >= 1:
+                raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+            self._delta_u = value
+            self._delta_v = value
         elif isinstance(value, (list, tuple)):
             if len(value) == 2:
-                self.delta_u = value[0]
-                self.delta_v = value[1]
+                if float(value[0]) <= 0 or float(value[0]) >= 1 or float(value[1]) <= 0 or float(value[1]) >= 1:
+                    raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+                self._delta_u = value[0]
+                self._delta_v = value[1]
             else:
                 raise ValueError("Surface requires 2 delta values")
         else:
