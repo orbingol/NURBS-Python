@@ -37,7 +37,7 @@ class MultiCurve(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.delta = self._delta
+            elem.sample_size = self._sample_size
             elem.evaluate()
             color = utilities.color_generator()
             self._vis_component.add(ptsarr=elem.ctrlpts,
@@ -70,7 +70,7 @@ class MultiSurface(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.delta = self._delta
+            elem.sample_size = self._sample_size
             elem.evaluate()
             color = utilities.color_generator()
             self._vis_component.add(ptsarr=elem.ctrlpts,
@@ -79,7 +79,7 @@ class MultiSurface(Abstract.Multi):
                                     color=color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.surfpts,
-                                    size=[int((1.0 / self._delta) + 1), int((1.0 / self._delta) + 1)],
+                                    size=[elem.sample_size, elem.sample_size],
                                     name="Surface " + str(idx + 1),
                                     color=color[1],
                                     plot_type='evalpts')

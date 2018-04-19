@@ -756,7 +756,7 @@ class Multi(object):
 
     def __init__(self):
         self._elements = []  # elements contained
-        self._delta = 0.1  # evaluation delta
+        self._sample_size = 10 # sample size
         self._vis_component = None  # visualization component
         self._iter_index = 0  # iterator index
         self._instance = None  # type of the initial element
@@ -803,34 +803,11 @@ class Multi(object):
         :setter: Sets sample size
         :type: int
         """
-        return int(math.ceil(1.0 / self.delta)) + 1
+        return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        self.delta = 1.0 / float(value - 1)
-
-    @property
-    def delta(self):
-        """ Evaluation delta.
-
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
-        generate evaluated points. Decreasing step size results in generation of more evaluated points.
-        Therefore; smaller the delta value, smoother the shape.
-
-        :getter: Gets the delta value
-        :setter: Sets the delta value
-        :type: float
-        """
-        return self._delta
-
-    @delta.setter
-    def delta(self, value):
-        # Delta value for surface evaluation should be between 0 and 1
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Evaluation delta should be between 0.0 and 1.0")
-
-        # Set a new delta value
-        self._delta = float(value)
+        self._sample_size = value
 
     @property
     def vis(self):
