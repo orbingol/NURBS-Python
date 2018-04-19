@@ -135,7 +135,7 @@ class Curve(object):
 
     @sample_size.setter
     def sample_size(self, value):
-        if self._knot_vector is None or len(self._knot_vector) != 0:
+        if self._knot_vector is None or len(self._knot_vector) == 0:
             warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
             return
         # Set global variable
@@ -521,8 +521,8 @@ class Surface(object):
 
     @sample_size.setter
     def sample_size(self, value):
-        if (self._knot_vector_u is None or len(self._knot_vector_u) != 0) or\
-                (self._knot_vector_v is None or len(self._knot_vector_v) != 0):
+        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or\
+                (self._knot_vector_v is None or len(self._knot_vector_v) == 0):
             warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
             return
         # Set global variable
@@ -531,8 +531,8 @@ class Surface(object):
         # To make it operate like linspace, we have to know the starting and ending points.
         start_u = self._knot_vector_u[self._degree_u]
         stop_u = self._knot_vector_u[-(self._degree_u+1)]
-        start_v = self._knot_vector_v[self._degree_u]
-        stop_v = self._knot_vector_v[-(self._degree_u+1)]
+        start_v = self._knot_vector_v[self._degree_v]
+        stop_v = self._knot_vector_v[-(self._degree_v+1)]
 
         # Set delta values
         self.delta_u = (stop_u - start_u) / float(value - 1)
