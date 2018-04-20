@@ -718,7 +718,7 @@ class Surface(object):
                                 size=[self._control_points_size_u, self._control_points_size_v],
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self._surface_points,
-                                size=[self._sample_size, self._sample_size],
+                                size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render()
 
