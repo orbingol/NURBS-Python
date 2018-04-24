@@ -139,8 +139,8 @@ pytest will automatically find the tests under ``tests/`` directory, execute the
 Branch Information
 ==================
 
-* ``master`` branch contains code for NURBS-Python v3.x series
-* ``2.x`` branch contains code for *NURBS-Python v2.x* series
+* ``3.x`` branch contains code for NURBS-Python v3.x series
+* ``2.x`` branch contains code for NURBS-Python v2.x series
 
 There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
 versions won't be receiving any new features and updates.
