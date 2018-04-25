@@ -9,7 +9,8 @@
 
 import abc
 from warnings import warn
-import math
+from . import utilities as utils
+from . import common
 
 
 class Curve(object):
@@ -754,10 +755,110 @@ class Surface(object):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-    @abc.abstractmethod
+    def surfpt(self, u, v):
+        """ Evaluates the B-Spline surface at the given (u,v) parameters.
+
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :return: evaluated surface point at the given knot values
+        :rtype: list
+        """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+        # Check u and v parameters are correct
+        utils.check_uv(u, v)
+
+        # Algorithm A3.5
+        span_u = common.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
+        basis_u = common.basis_function(self.degree_u, self.knotvector_u, span_u, u)
+        span_v = common.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
+        basis_v = common.basis_function(self.degree_v, self.knotvector_v, span_v, v)
+
+        idx_u = span_u - self._degree_u
+        spt = [0.0 for _ in range(self._dimension)]
+
+        for l in range(0, self._degree_v + 1):
+            temp = [0.0 for _ in range(self._dimension)]
+            idx_v = span_v - self._degree_v + l
+            for k in range(0, self._degree_u + 1):
+                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
+            spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
+
+        # Divide by weight, if the surface is rational
+        if self._rational:
+            surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
+        else:
+            surfpt = spt
+
+        return surfpt
+
     def evaluate(self, **kwargs):
-        """ Evaluates the surface. """
-        pass
+        """ Evaluates the surface in the given (u,v) intervals.
+
+        Possible keyword arguments are
+
+        * ``start_u``: start parameter in u-direction
+        * ``stop_u``: stop parameter in u-direction
+        * ``start_v``: start parameter in v-direction
+        * ``stop_v``: stop parameter in v-direction
+
+        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
+        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
+        and ``stop_v`` parameter values.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
+
+        """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
+        start_u = kwargs.get('start_u', self._knot_vector_u[self._degree_u])
+        stop_u = kwargs.get('stop_u', self._knot_vector_u[-(self._degree_u+1)])
+        start_v = kwargs.get('start_v', self._knot_vector_v[self._degree_v])
+        stop_v = kwargs.get('stop_v', self._knot_vector_v[-(self._degree_v+1)])
+
+        # Check if all the input parameters are in the range
+        utils.check_uv(start_u, stop_u)
+        utils.check_uv(start_v, stop_v)
+
+        # Clean up the surface points lists, if necessary
+        self._reset_evalpts()
+
+        # Compute knots in the range
+        knots_u = common.linspace(start_u, stop_u, self.sample_size)
+        knots_v = common.linspace(start_v, stop_v, self.sample_size)
+
+        # Find spans belonging to the knots
+        spans_u = common.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
+        spans_v = common.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
+
+        # Find basis functions
+        basis_u = common.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
+        basis_v = common.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
+
+        # Evaluate the surface directly
+        for i in range(len(knots_u)):
+            idx_u = spans_u[i] - self._degree_u
+            for j in range(len(knots_v)):
+                spt = [0.0 for _ in range(self._dimension)]
+                for l in range(0, self._degree_v + 1):
+                    temp = [0.0 for _ in range(self._dimension)]
+                    idx_v = spans_v[j] - self._degree_v + l
+                    for k in range(0, self._degree_u + 1):
+                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
+                                   zip(temp, self._control_points2D[idx_u + k][idx_v])]
+                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
+
+                # Divide by weight, if the surface is rational
+                if self._rational:
+                    surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
+                else:
+                    surfpt = spt
+
+                self._surface_points.append(surfpt)
 
 
 class Multi(object):

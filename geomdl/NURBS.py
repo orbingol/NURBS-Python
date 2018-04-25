@@ -287,45 +287,6 @@ class Surface(BSpline.Surface):
             return self.ctrlpts
         return self._cache['ctrlpts']
 
-    # Evaluates rational surface at the given (u, v) parameters
-    def surfpt(self, u=-1, v=-1, **kwargs):
-        """ Evaluates the surface at the given (u, v) parameter pair.
-
-        :param u: parameter in the U direction
-        :type u: float
-        :param v: parameter in the V direction
-        :type v: float
-        :return: evaluated surface point at the given knot values
-        :rtype: list
-        """
-        check_vars = kwargs.get('check_vars', True)
-
-        if check_vars:
-            # Check all parameters are set before the surface evaluation
-            self._check_variables()
-            # Check if u and v parameters are correct
-            utils.check_uv(u, v)
-
-        # Algorithm A4.3
-        span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
-        basis_v = utils.basis_functions(self._degree_v, tuple(self._knot_vector_v), span_v, v)
-        span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
-        basis_u = utils.basis_functions(self._degree_u, tuple(self._knot_vector_u), span_u, u)
-        idx_u = span_u - self._degree_u
-        sptw = [0.0 for _ in range(self._dimension)]
-
-        for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self._dimension)]
-            idx_v = span_v - self._degree_v + l
-            for k in range(0, self._degree_u + 1):
-                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-            sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
-
-        # Divide by weight
-        spt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
-
-        return spt
-
     # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
         """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair from the rational surface.
