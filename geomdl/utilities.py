@@ -233,7 +233,7 @@ def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001
         raise ValueError("Input knot vector cannot be empty")
 
     # Check the formula; m = p + n + 1
-    if len(knot_vector) is not degree + control_points_size + 1:
+    if len(knot_vector) != degree + control_points_size + 1:
         return False
 
     # Check ascending order
