@@ -9,6 +9,7 @@
 
 import math
 import random
+from .common import linspace
 
 
 # Changes linearly ordered list of points into a zig-zag shape
@@ -188,41 +189,38 @@ def normalize_knot_vector(knot_vector=(), decimals=4):
 
 
 # Generates a uniform knot vector using the given degree and the number of control points
-def generate_knot_vector(degree=0, control_points_size=0):
+def generate_knot_vector(degree, num_ctrlpts):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
-    This function can also generate knot vectors for Bezier curves and surfaces.
+    It uses the following equation to generate knot vector:
 
-    :param degree: degree of the knot vector direction
+    m = n + p + 1
+
+    where;
+
+    p: degree, n+1: number of control points, m+1: number of knots
+
+    :param degree: degree
     :type degree: integer
-    :param control_points_size: number of control points on that direction
-    :type control_points_size: integer
-    :return: knot vector
+    :param num_ctrlpts: number of control points
+    :type num_ctrlpts: integer
+    :return: uniform knot vector
     :rtype: list
     """
-    if degree == 0 or control_points_size == 0:
+    if degree == 0 or num_ctrlpts == 0:
         raise ValueError("Input values should be different than zero.")
 
-    # Min and max knot vector values
-    knot_min = 0.0
-    knot_max = 1.0
+    # First knots
+    knot_vector = [0.0 for _ in range(0, degree)]
 
-    # Equation to use: m = n + p + 1
-    # p: degree, n+1: number of control points; m+1: number of knots
-    m = degree + control_points_size + 1
-
-    # Calculate a uniform interval for middle knots
-    num_segments = (m - (degree + 1) * 2) + 1  # number of segments in the middle
-    spacing = (knot_max - knot_min) / num_segments  # spacing between the knots (uniform)
-
-    # First degree+1 knots are "knot_min"
-    knot_vector = [float(0) for _ in range(0, degree)]
+    # Number of knots in the middle
+    num_segments = num_ctrlpts - (degree + 1)
 
     # Middle knots
-    knot_vector += [mid_knot for mid_knot in frange(0, 1, spacing)]
+    knot_vector += linspace(0.0, 1.0, num_segments + 2)
 
-    # Last degree+1 knots are "knot_max"
-    knot_vector += [float(1) for _ in range(0, degree)]
+    # Last knots
+    knot_vector += [1.0 for _ in range(0, degree)]
 
     # Return auto-generated knot vector
     return knot_vector
