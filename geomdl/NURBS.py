@@ -99,36 +99,6 @@ class Curve(BSpline.Curve):
             return self.ctrlpts
         return self._cache['ctrlpts']
 
-    # Evaluates the rational curve at the given parameter
-    def curvept(self, u=-1, **kwargs):
-        """ Evaluates the curve at the input parameter value.
-
-        :param u: parameter
-        :type u: float
-        :return: evaluated curve point at the given knot value
-        :rtype: list
-        """
-        check_vars = kwargs.get('check_vars', True)
-
-        if check_vars:
-            # Check all parameters are set before the curve evaluation
-            self._check_variables()
-            # Check if u parameter is in the range
-            utils.check_uv(u)
-
-        # Algorithm A4.1
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
-        cptw = [0.0 for _ in range(self._dimension)]
-        for i in range(0, self._degree + 1):
-            cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in
-                       zip(cptw, self._control_points[span - self._degree + i])]
-
-        # Divide by weight
-        cpt = [float(pt / cptw[-1]) for pt in cptw[0:(self._dimension - 1)]]
-
-        return cpt
-
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.

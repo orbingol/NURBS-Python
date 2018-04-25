@@ -291,10 +291,82 @@ class Curve(object):
     def _reset_evalpts(self):
         self._curve_points = None
 
-    @abc.abstractmethod
+    def curvept(self, u):
+        """ Evaluates the curve at the given parameter.
+
+        :param u: parameter
+        :type u: float
+        :return: evaluated curve point
+        :rtype: list
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+        # Check u parameters are correct
+        utils.check_uv(u)
+
+        # Algorithm A3.1 and A4.1
+        span = common.find_span(self.knotvector, len(self._control_points), u)
+        basis = common.basis_function(self.degree, self.knotvector, span, u)
+
+        cpt = [0.0 for _ in range(self._dimension)]
+        for i in range(0, self._degree + 1):
+            cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
+                      zip(cpt, self._control_points[span - self._degree + i])]
+
+        # Divide by weight, if the curve is rational
+        if self._rational:
+            curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
+        else:
+            curvept = cpt
+
+        return curvept
+
     def evaluate(self, **kwargs):
-        """ Evaluates the curve. """
-        pass
+        """ Evaluates the curve.
+
+        Keyword arguments:
+
+        * ``start``: start parameter
+        * ``stop``: stop parameter
+
+        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
+        the curve will also be evaluated at the ``stop`` parameter value.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
+
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
+        start = kwargs.get('start', self.knotvector[self.degree])
+        stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
+
+        # Check if the input parameters are in the range
+        utils.check_uv(start)
+        utils.check_uv(stop)
+
+        # Clean up the curve points, if necessary
+        self._reset_evalpts()
+
+        knots = common.linspace(start, stop, self.sample_size)
+        spans = common.find_spans(self.knotvector, len(self._control_points), knots)
+        basis = common.basis_functions(self.degree, self.knotvector, spans, knots)
+
+        # Evaluate the curve in the input range
+        for idx in range(len(knots)):
+            cpt = [0.0 for _ in range(self.dimension)]
+            for i in range(0, self.degree + 1):
+                cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
+                          zip(cpt, self._control_points[spans[idx] - self.degree + i])]
+
+            # Divide by weight, if the curve is rational
+            if self._rational:
+                curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self.dimension - 1)]]
+            else:
+                curvept = cpt
+
+            self._curve_points.append(curvept)
 
 
 class Surface(object):

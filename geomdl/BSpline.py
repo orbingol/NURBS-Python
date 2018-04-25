@@ -335,67 +335,6 @@ class Curve(Abstract.Curve):
 
         return ret_check
 
-    # Evaluates the B-Spline curve at the given parameter
-    def curvept(self, u=-1, **kwargs):
-        """ Evaluates the B-Spline curve at the given parameter value.
-
-        :param u: parameter
-        :type u: float
-        :return: evaluated curve point at the given knot value
-        :rtype: list
-        """
-        check_vars = kwargs.get('check_vars', True)
-
-        if check_vars:
-            # Check all parameters are set before the curve evaluation
-            self._check_variables()
-            # Check u parameters are correct
-            utils.check_uv(u)
-
-        # Algorithm A3.1
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
-        cpt = [0.0 for _ in range(self._dimension)]
-        for i in range(0, self._degree + 1):
-            cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in
-                      zip(cpt, self._control_points[span - self._degree + i])]
-
-        return cpt
-
-    # Evaluates the B-Spline curve
-    def evaluate(self, **kwargs):
-        """ Evaluates the curve in the given interval.
-
-        Possible keyword arguments are
-
-        * ``start``: start parameter
-        * ``stop``: stop parameter
-
-        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
-        the curve will also be evaluated at the ``stop`` parameter value.
-
-        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
-
-        """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-
-        # Find evaluation start and stop parameter values
-        start = kwargs.get('start', self._knot_vector[self._degree])
-        stop = kwargs.get('stop', self._knot_vector[-(self._degree+1)])
-
-        # Check if the input parameters are in the range
-        utils.check_uv(start)
-        utils.check_uv(stop)
-
-        # Clean up the curve points, if necessary
-        self._reset_evalpts()
-
-        # Evaluate the curve in the input range
-        for u in utils.frange(start, stop, self._delta):
-            cpt = self.curvept(u, check_vars=False)
-            self._curve_points.append(cpt)
-
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.
