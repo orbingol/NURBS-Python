@@ -756,7 +756,7 @@ class Surface(object):
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     def surfpt(self, u, v):
-        """ Evaluates the B-Spline surface at the given (u,v) parameters.
+        """ Evaluates the surface at the given (u,v) parameter.
 
         :param u: parameter in the U direction
         :type u: float
@@ -776,28 +776,28 @@ class Surface(object):
         span_v = common.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
         basis_v = common.basis_function(self.degree_v, self.knotvector_v, span_v, v)
 
-        idx_u = span_u - self._degree_u
-        spt = [0.0 for _ in range(self._dimension)]
+        idx_u = span_u - self.degree_u
+        spt = [0.0 for _ in range(self.dimension)]
 
         for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self._dimension)]
-            idx_v = span_v - self._degree_v + l
-            for k in range(0, self._degree_u + 1):
+            temp = [0.0 for _ in range(self.dimension)]
+            idx_v = span_v - self.degree_v + l
+            for k in range(0, self.degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
         # Divide by weight, if the surface is rational
         if self._rational:
-            surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
+            surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
         else:
             surfpt = spt
 
         return surfpt
 
     def evaluate(self, **kwargs):
-        """ Evaluates the surface in the given (u,v) intervals.
+        """ Evaluates the surface.
 
-        Possible keyword arguments are
+        Keyword arguments:
 
         * ``start_u``: start parameter in u-direction
         * ``stop_u``: stop parameter in u-direction
@@ -815,10 +815,10 @@ class Surface(object):
         self._check_variables()
 
         # Find evaluation start and stop parameter values
-        start_u = kwargs.get('start_u', self._knot_vector_u[self._degree_u])
-        stop_u = kwargs.get('stop_u', self._knot_vector_u[-(self._degree_u+1)])
-        start_v = kwargs.get('start_v', self._knot_vector_v[self._degree_v])
-        stop_v = kwargs.get('stop_v', self._knot_vector_v[-(self._degree_v+1)])
+        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
 
         # Check if all the input parameters are in the range
         utils.check_uv(start_u, stop_u)
@@ -841,20 +841,20 @@ class Surface(object):
 
         # Evaluate the surface directly
         for i in range(len(knots_u)):
-            idx_u = spans_u[i] - self._degree_u
+            idx_u = spans_u[i] - self.degree_u
             for j in range(len(knots_v)):
-                spt = [0.0 for _ in range(self._dimension)]
-                for l in range(0, self._degree_v + 1):
-                    temp = [0.0 for _ in range(self._dimension)]
-                    idx_v = spans_v[j] - self._degree_v + l
-                    for k in range(0, self._degree_u + 1):
+                spt = [0.0 for _ in range(self.dimension)]
+                for l in range(0, self.degree_v + 1):
+                    temp = [0.0 for _ in range(self.dimension)]
+                    idx_v = spans_v[j] - self.degree_v + l
+                    for k in range(0, self.degree_u + 1):
                         temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
                                    zip(temp, self._control_points2D[idx_u + k][idx_v])]
                     spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
 
                 # Divide by weight, if the surface is rational
                 if self._rational:
-                    surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
+                    surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
                 else:
                     surfpt = spt
 
