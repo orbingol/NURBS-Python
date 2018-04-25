@@ -770,7 +770,7 @@ class Surface(object):
         # Check u and v parameters are correct
         utils.check_uv(u, v)
 
-        # Algorithm A3.5
+        # Algorithm A3.5 nd A4.3
         span_u = common.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
         basis_u = common.basis_function(self.degree_u, self.knotvector_u, span_u, u)
         span_v = common.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
