@@ -211,7 +211,7 @@ class Curve(object):
         if self._bounding_box is None or len(self._bounding_box) == 0:
             self._eval_bbox()
 
-        return self._bounding_box
+        return tuple(self._bounding_box)
 
     def _eval_bbox(self):
         """ Evaluates bounding box of the curve. """
@@ -231,7 +231,7 @@ class Curve(object):
                 if arr[0] > arr[1]:
                     bbmax[i] = arr[0]
 
-        self._bounding_box = (tuple(bbmin), tuple(bbmax))
+        self._bounding_box = [tuple(bbmin), tuple(bbmax)]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
