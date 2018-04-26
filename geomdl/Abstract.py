@@ -10,7 +10,7 @@
 from . import abc
 from . import warnings
 from . import utilities
-from . import common
+from . import helpers
 
 
 class Curve(object):
@@ -302,11 +302,11 @@ class Curve(object):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        common.check_uv(u)
+        helpers.check_uv(u)
 
         # Algorithm A3.1 and A4.1
-        span = common.find_span(self.knotvector, len(self._control_points), u)
-        basis = common.basis_function(self.degree, self.knotvector, span, u)
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        basis = helpers.basis_function(self.degree, self.knotvector, span, u)
 
         cpt = [0.0 for _ in range(self._dimension)]
         for i in range(0, self._degree + 1):
@@ -343,15 +343,15 @@ class Curve(object):
         stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
 
         # Check if the input parameters are in the range
-        common.check_uv(start)
-        common.check_uv(stop)
+        helpers.check_uv(start)
+        helpers.check_uv(stop)
 
         # Clean up the curve points, if necessary
         self._reset_evalpts()
 
         knots = utilities.linspace(start, stop, self.sample_size)
-        spans = common.find_spans(self.knotvector, len(self._control_points), knots)
-        basis = common.basis_functions(self.degree, self.knotvector, spans, knots)
+        spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)
+        basis = helpers.basis_functions(self.degree, self.knotvector, spans, knots)
 
         # Evaluate the curve in the input range
         for idx in range(len(knots)):
@@ -840,13 +840,13 @@ class Surface(object):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
-        common.check_uv(u, v)
+        helpers.check_uv(u, v)
 
         # Algorithm A3.5 nd A4.3
-        span_u = common.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
-        basis_u = common.basis_function(self.degree_u, self.knotvector_u, span_u, u)
-        span_v = common.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
-        basis_v = common.basis_function(self.degree_v, self.knotvector_v, span_v, v)
+        span_u = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
+        basis_u = helpers.basis_function(self.degree_u, self.knotvector_u, span_u, u)
+        span_v = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
+        basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
 
         idx_u = span_u - self.degree_u
         spt = [0.0 for _ in range(self.dimension)]
@@ -893,8 +893,8 @@ class Surface(object):
         stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
 
         # Check if all the input parameters are in the range
-        common.check_uv(start_u, stop_u)
-        common.check_uv(start_v, stop_v)
+        helpers.check_uv(start_u, stop_u)
+        helpers.check_uv(start_v, stop_v)
 
         # Clean up the surface points lists, if necessary
         self._reset_evalpts()
@@ -904,12 +904,12 @@ class Surface(object):
         knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
 
         # Find spans belonging to the knots
-        spans_u = common.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
-        spans_v = common.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
+        spans_u = helpers.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
+        spans_v = helpers.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
 
         # Find basis functions
-        basis_u = common.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
-        basis_v = common.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
+        basis_u = helpers.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
+        basis_v = helpers.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
 
         # Evaluate the surface directly
         for i in range(len(knots_u)):

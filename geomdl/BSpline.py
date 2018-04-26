@@ -12,7 +12,7 @@ from . import copy
 from . import Abstract
 from . import Multi
 from . import utilities
-from . import common
+from . import helpers
 
 
 class Curve(Abstract.Curve):
@@ -351,7 +351,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        common.check_uv(u)
+        helpers.check_uv(u)
 
         # Algorithm A3.2
         du = min(self._degree, order)
@@ -360,8 +360,8 @@ class Curve(Abstract.Curve):
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
 
-        span = common.find_span(self.knotvector, len(self._control_points), u)
-        bfunsders = common.basis_function_ders(self._degree, tuple(self._knot_vector), span, u, du)
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        bfunsders = helpers.basis_function_ders(self._degree, tuple(self._knot_vector), span, u, du)
 
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
@@ -419,7 +419,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        common.check_uv(u)
+        helpers.check_uv(u)
 
         # Algorithm A3.4
         du = min(self._degree, order)
@@ -428,8 +428,8 @@ class Curve(Abstract.Curve):
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
 
-        span = common.find_span(self.knotvector, len(self._control_points), u)
-        bfuns = common.basis_function_all(self._degree, tuple(self._knot_vector), span, u)
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        bfuns = helpers.basis_function_all(self._degree, tuple(self._knot_vector), span, u)
         PK = self.derivatives_ctrlpts(du, span - self._degree, span)
 
         for k in range(0, du + 1):
@@ -600,12 +600,12 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        common.check_uv(u)
+        helpers.check_uv(u)
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of insertions (r) must be a positive integer value')
 
-        s = common.find_multiplicity(u, self._knot_vector)
+        s = helpers.find_multiplicity(u, self._knot_vector)
 
         # Check if it is possible add that many number of knots
         if check_r and r > self._degree - s:
@@ -613,7 +613,7 @@ class Curve(Abstract.Curve):
             return
 
         # Algorithm A5.1
-        k = common.find_span(self.knotvector, len(self._control_points), u)
+        k = helpers.find_span(self.knotvector, len(self._control_points), u)
         mp = len(self._knot_vector)
         np = len(self._control_points)
         nq = np + r
@@ -679,22 +679,22 @@ class Curve(Abstract.Curve):
         # Validate input data
         if u == 0.0 or u == 1.0:
             raise ValueError("Cannot split on the corner points")
-        common.check_uv(u)
+        helpers.check_uv(u)
 
         # Create backups of the original curve
         original_kv = copy.deepcopy(self._knot_vector)
         original_cpts = copy.deepcopy(self._control_points)
 
         # Find multiplicity of the knot
-        ks = common.find_span(self.knotvector, len(self._control_points), u) - self._degree + 1
-        s = common.find_multiplicity(u, self._knot_vector)
+        ks = helpers.find_span(self.knotvector, len(self._control_points), u) - self._degree + 1
+        s = helpers.find_multiplicity(u, self._knot_vector)
         r = self._degree - s
 
         # Insert knot
         self.insert_knot(u, r, check_r=False)
 
         # Knot vectors
-        knot_span = common.find_span(self.knotvector, len(self._control_points), u) + 1
+        knot_span = helpers.find_span(self.knotvector, len(self._control_points), u) + 1
         curve1_kv = self._knot_vector[0:knot_span]
         curve1_kv.append(u)
         curve2_kv = self._knot_vector[knot_span:]
@@ -1467,7 +1467,7 @@ class Surface(Abstract.Surface):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
-        common.check_uv(u, v)
+        helpers.check_uv(u, v)
 
         # Algorithm A3.6
         du = min(self._degree_u, order)
@@ -1475,10 +1475,10 @@ class Surface(Abstract.Surface):
 
         SKL = [[[0.0 for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
-        span_u = common.find_span(self.knotvector_u, self._control_points_size_u, u)
-        bfunsders_u = common.basis_function_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
-        span_v = common.find_span(self.knotvector_v, self._control_points_size_v, v)
-        bfunsders_v = common.basis_function_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
+        span_u = helpers.find_span(self.knotvector_u, self._control_points_size_u, u)
+        bfunsders_u = helpers.basis_function_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
+        span_v = helpers.find_span(self.knotvector_v, self._control_points_size_v, v)
+        bfunsders_v = helpers.basis_function_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
 
         for k in range(0, du + 1):
             temp = [[] for _ in range(self._degree_v + 1)]
@@ -1574,7 +1574,7 @@ class Surface(Abstract.Surface):
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
-        common.check_uv(u, v)
+        helpers.check_uv(u, v)
 
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
@@ -1644,7 +1644,7 @@ class Surface(Abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if u or v:
-            common.check_uv(u, v)
+            helpers.check_uv(u, v)
 
         if not isinstance(ru, int) or ru < 0:
             raise ValueError("Number of insertions in U-direction must be a positive integer")
@@ -1660,7 +1660,7 @@ class Surface(Abstract.Surface):
             np = self._control_points_size_u
             mp = self._control_points_size_v
 
-            s_u = common.find_multiplicity(u, self._knot_vector_u)
+            s_u = helpers.find_multiplicity(u, self._knot_vector_u)
 
             # Check if it is possible add that many number of knots
             if check_r and ru > p - s_u:
@@ -1668,7 +1668,7 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                k_u = common.find_span(self.knotvector_u, self._control_points_size_u, u)
+                k_u = helpers.find_span(self.knotvector_u, self._control_points_size_u, u)
 
                 # Initialize new knot vector array
                 UQ = [None for _ in range(len(self._knot_vector_u) + ru)]
@@ -1730,7 +1730,7 @@ class Surface(Abstract.Surface):
             np = self._control_points_size_u
             mp = self._control_points_size_v
 
-            s_v = common.find_multiplicity(v, self._knot_vector_v)
+            s_v = helpers.find_multiplicity(v, self._knot_vector_v)
 
             # Check if it is possible add that many number of knots
             if check_r and rv > q - s_v:
@@ -1738,7 +1738,7 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                k_v = common.find_span(self.knotvector_v, self._control_points_size_v, v)
+                k_v = helpers.find_span(self.knotvector_v, self._control_points_size_v, v)
 
                 # Initialize new knot vector array
                 VQ = [None for _ in range(len(self._knot_vector_v) + rv)]
@@ -1814,7 +1814,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        common.check_uv(t)
+        helpers.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_u)
@@ -1823,15 +1823,15 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = common.find_span(self.knotvector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
-        s = common.find_multiplicity(t, self._knot_vector_u)
+        ks = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
+        s = helpers.find_multiplicity(t, self._knot_vector_u)
         r = self._degree_u - s
 
         # Split the original surface
         self.insert_knot(u=t, ru=r, check_r=False)
 
         # Knot vectors
-        knot_span = common.find_span(self.knotvector_u, self.ctrlpts_size_u, t) + 1
+        knot_span = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) + 1
         surf1_kv = self._knot_vector_u[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_u[knot_span:]
@@ -1886,7 +1886,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        common.check_uv(t)
+        helpers.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_v)
@@ -1895,15 +1895,15 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = common.find_span(self.knotvector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
-        s = common.find_multiplicity(t, self._knot_vector_v)
+        ks = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
+        s = helpers.find_multiplicity(t, self._knot_vector_v)
         r = self._degree_v - s
 
         # Split the original surface
         self.insert_knot(v=t, rv=r, check_r=False)
 
         # Knot vectors
-        knot_span = common.find_span(self.knotvector_v, self.ctrlpts_size_v, t) + 1
+        knot_span = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) + 1
         surf1_kv = self._knot_vector_v[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_v[knot_span:]
