@@ -7,9 +7,8 @@
 
 """
 
-import warnings
-import struct
-
+from . import warnings
+from . import struct
 from . import Abstract
 from . import Multi
 from .elements import Vertex, Triangle

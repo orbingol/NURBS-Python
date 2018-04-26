@@ -7,9 +7,9 @@
 
 """
 
-import abc
-from warnings import warn
-from . import utilities as utils
+from . import abc
+from . import warnings
+from . import utilities
 from . import common
 
 
@@ -130,14 +130,14 @@ class Curve(object):
             if self._knot_vector is not None and len(self._knot_vector) != 0:
                 self._sample_size = int(1.0 / self.delta) + 1
             else:
-                warn("Cannot determine the sample size.")
+                warnings.warn("Cannot determine the sample size.")
                 return 0
         return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
         if self._knot_vector is None or len(self._knot_vector) == 0:
-            warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
+            warnings.warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
             return
         # To make it operate like linspace, we have to know the starting and ending points.
         start = self._knot_vector[self._degree]
@@ -196,7 +196,7 @@ class Curve(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of VisAbstract class")
+            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
 
@@ -247,7 +247,7 @@ class Curve(object):
 
         """
         if not self._vis_component:
-            warn("No visualization component has set")
+            warnings.warn("No visualization component has been set")
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
@@ -302,7 +302,7 @@ class Curve(object):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        utils.check_uv(u)
+        common.check_uv(u)
 
         # Algorithm A3.1 and A4.1
         span = common.find_span(self.knotvector, len(self._control_points), u)
@@ -343,13 +343,13 @@ class Curve(object):
         stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
 
         # Check if the input parameters are in the range
-        utils.check_uv(start)
-        utils.check_uv(stop)
+        common.check_uv(start)
+        common.check_uv(stop)
 
         # Clean up the curve points, if necessary
         self._reset_evalpts()
 
-        knots = common.linspace(start, stop, self.sample_size)
+        knots = utilities.linspace(start, stop, self.sample_size)
         spans = common.find_spans(self.knotvector, len(self._control_points), knots)
         basis = common.basis_functions(self.degree, self.knotvector, spans, knots)
 
@@ -591,7 +591,7 @@ class Surface(object):
             elif self._knot_vector_v is not None and len(self._knot_vector_v) != 0:
                 self._sample_size = int(1.0 / self.delta_v) + 1
             else:
-                warn("Cannot determine the sample size")
+                warnings.warn("Cannot determine the sample size")
                 return 0
         return self._sample_size
 
@@ -599,7 +599,7 @@ class Surface(object):
     def sample_size(self, value):
         if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or\
                 (self._knot_vector_v is None or len(self._knot_vector_v) == 0):
-            warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
+            warnings.warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -706,7 +706,7 @@ class Surface(object):
             else:
                 raise ValueError("Surface requires 2 delta values")
         else:
-            warn("Cannot set delta. Please use a float or a list with 2 elements")
+            warnings.warn("Cannot set delta. Please use a float or a list with 2 elements")
 
     @property
     def vis(self):
@@ -720,7 +720,7 @@ class Surface(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of VisAbstract class")
+            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
 
         self._vis_component = value
@@ -772,7 +772,7 @@ class Surface(object):
 
         """
         if not self._vis_component:
-            warn("No visualization component has set")
+            warnings.warn("No visualization component has been set")
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
@@ -840,7 +840,7 @@ class Surface(object):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
-        utils.check_uv(u, v)
+        common.check_uv(u, v)
 
         # Algorithm A3.5 nd A4.3
         span_u = common.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
@@ -893,15 +893,15 @@ class Surface(object):
         stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
 
         # Check if all the input parameters are in the range
-        utils.check_uv(start_u, stop_u)
-        utils.check_uv(start_v, stop_v)
+        common.check_uv(start_u, stop_u)
+        common.check_uv(start_v, stop_v)
 
         # Clean up the surface points lists, if necessary
         self._reset_evalpts()
 
         # Compute knots in the range
-        knots_u = common.linspace(start_u, stop_u, self.sample_size)
-        knots_v = common.linspace(start_v, stop_v, self.sample_size)
+        knots_u = utilities.linspace(start_u, stop_u, self.sample_size)
+        knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
 
         # Find spans belonging to the knots
         spans_u = common.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
@@ -1006,7 +1006,7 @@ class Multi(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of the abstract class")
+            warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
 
@@ -1017,7 +1017,7 @@ class Multi(object):
         :type element:
         """
         if not isinstance(element, self._instance):
-            warn("Cannot add, incompatible type.")
+            warnings.warn("Cannot add, incompatible type.")
             return
         self._elements.append(element)
 
@@ -1028,7 +1028,7 @@ class Multi(object):
         :type elements: list, tuple
         """
         if not isinstance(elements, (list, tuple)):
-            warn("Input must be a list or a tuple")
+            warnings.warn("Input must be a list or a tuple")
             return
 
         for element in elements:

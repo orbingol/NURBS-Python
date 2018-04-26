@@ -7,10 +7,9 @@
 
 """
 
-import copy
-
+from . import copy
 from . import BSpline
-from . import utilities as utils
+from . import utilities
 
 
 class Curve(BSpline.Curve):
@@ -118,7 +117,7 @@ class Curve(BSpline.Curve):
         for k in range(0, order + 1):
             v = [val for val in CKw[k][0:(self._dimension - 1)]]
             for i in range(1, k + 1):
-                v[:] = [tmp - (utils.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
+                v[:] = [tmp - (utilities.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
             CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
 
         # Return C(u) derivatives
@@ -290,16 +289,16 @@ class Surface(BSpline.Surface):
                 v = copy.deepcopy(SKLw[k][l])
 
                 for j in range(1, l + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (utilities.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
                             zip(v, SKL[k][l - j])]
                 for i in range(1, k + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
                             zip(v, SKL[k - i][l])]
                     v2 = [0.0 for _ in range(self._dimension - 1)]
                     for j in range(1, l + 1):
-                        v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
+                        v2[:] = [tmp + (utilities.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
                                  zip(v2, SKL[k - i][l - j])]
-                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
                 SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(self._dimension - 1)]]
 

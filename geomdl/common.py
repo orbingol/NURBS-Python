@@ -1,35 +1,55 @@
 """
 .. module:: common
     :platform: Unix, Windows
-    :synopsis: Common utility functions
+    :synopsis: Evaluation utility functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 
 
-def linspace(start, stop, num, decimals=6):
-    """ Returns a list of evenly spaced numbers over a specified interval.
+def check_uv(u=None, v=None):
+    """ Checks if the input knot values (i.e. parameters) are defined between 0 and 1."""
+    # Check u value
+    if u is not None:
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
 
-    Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
+    # Check v value, if necessary
+    if v is not None:
+        if v < 0.0 or v > 1.0:
+            raise ValueError('"v" value should be between 0 and 1.')
 
-    :param start: starting value
-    :type start: float
-    :param stop: end value
-    :type stop: float
-    :param num: number of samples to generate
-    :type num: int
-    :param decimals: number of significands
-    :type decimals: int
-    :return: a list of equally spaced numbers
-    :rtype: list
+
+def find_span_binsearch(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
+    """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller.
+
+    .. note:: This algorithm uses binary search to find the knot span.
+
+    The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
+    if FindSpan returns 1, then the knot is between the internal [0, 1).
     """
-    start = float(start)
-    stop = float(stop)
-    num = int(num)
-    div = num - 1
-    delta = stop - start
-    return [float(("%0." + str(decimals) + "f") % (float(x) * float(delta) / float(div))) for x in range(num)]
+    # Number of knots; m + 1
+    # Number of control points; n + 1
+    # n = m - p - 1; where p = degree
+    # m = len(knot_vector) - 1
+    # n = m - degree - 1
+    n = control_points_size - 1
+    if abs(knot_vector[n + 1] - knot) <= tol:
+        return n
+
+    low = degree
+    high = n + 1
+    mid = int((low + high) / 2)
+
+    while (knot < knot_vector[mid]) or (knot >= knot_vector[mid + 1]):
+        if knot < knot_vector[mid]:
+            high = mid
+        else:
+            low = mid
+        mid = int((low + high) / 2)
+
+    return mid
 
 
 def find_span(knot_vector, num_ctrlpts, knot):
@@ -122,3 +142,102 @@ def basis_functions(degree, knot_vector, spans, knots):
     for span, knot in zip(spans, knots):
         basis.append(basis_function(degree, knot_vector, span, knot))
     return basis
+
+
+def basis_function_all(degree, knot_vector, span, knot):
+    """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
+    N = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
+    for i in range(0, degree + 1):
+        bfuns = basis_function(i, knot_vector, span, knot)
+        for j in range(0, i + 1):
+            N[j][i] = bfuns[j]
+    return N
+
+
+def basis_function_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
+    """ Algorithm A2.3 of The NURBS Book by Piegl & Tiller."""
+    # Initialize variables for easy access
+    left = [None for _ in range(degree + 1)]
+    right = [None for _ in range(degree + 1)]
+    ndu = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
+
+    # N[0][0] = 1.0 by definition
+    ndu[0][0] = 1.0
+
+    for j in range(1, degree + 1):
+        left[j] = knot - knot_vector[span + 1 - j]
+        right[j] = knot_vector[span + j] - knot
+        saved = 0.0
+        r = 0
+        for r in range(r, j):
+            # Lower triangle
+            ndu[j][r] = right[r + 1] + left[j - r]
+            temp = ndu[r][j - 1] / ndu[j][r]
+            # Upper triangle
+            ndu[r][j] = saved + (right[r + 1] * temp)
+            saved = left[j - r] * temp
+        ndu[j][j] = saved
+
+    # Load the basis functions
+    ders = [[None for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
+    for j in range(0, degree + 1):
+        ders[0][j] = ndu[j][degree]
+
+    # Start calculating derivatives
+    a = [[None for _ in range(degree + 1)] for _ in range(2)]
+    # Loop over function index
+    for r in range(0, degree + 1):
+        # Alternate rows in array a
+        s1 = 0
+        s2 = 1
+        a[0][0] = 1.0
+        # Loop to compute k-th derivative
+        for k in range(1, order + 1):
+            d = 0.0
+            rk = r - k
+            pk = degree - k
+            if r >= k:
+                a[s2][0] = a[s1][0] / ndu[pk + 1][rk]
+                d = a[s2][0] * ndu[rk][pk]
+            if rk >= -1:
+                j1 = 1
+            else:
+                j1 = -rk
+            if (r - 1) <= pk:
+                j2 = k - 1
+            else:
+                j2 = degree - r
+            for j in range(j1, j2 + 1):
+                a[s2][j] = (a[s1][j] - a[s1][j - 1]) / ndu[pk + 1][rk + j]
+                d += (a[s2][j] * ndu[rk + j][pk])
+            if r <= pk:
+                a[s2][k] = -a[s1][k - 1] / ndu[pk + 1][r]
+                d += (a[s2][k] * ndu[r][pk])
+            ders[k][r] = d
+
+            # Switch rows
+            j = s1
+            s1 = s2
+            s2 = j
+
+    # Multiply through by the the correct factors
+    r = float(degree)
+    for k in range(1, order + 1):
+        for j in range(0, degree + 1):
+            ders[k][j] *= r
+        r *= (degree - k)
+
+    # Return the basis function derivatives list
+    return ders
+
+
+def find_multiplicity(knot, knot_vector, tol=0.001):
+    """ Finds knot multiplicity."""
+    # Find and return the multiplicity of the input knot in the given knot vector
+    mult = 0  # initial multiplicity
+    # Loop through the knot vector
+    for kv in knot_vector:
+        # Float equality should be checked w.r.t a tolerance value
+        if abs(knot - kv) <= tol:
+            mult += 1
+    return mult
