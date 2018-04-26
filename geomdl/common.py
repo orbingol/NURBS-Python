@@ -9,7 +9,13 @@
 
 
 def check_uv(u=None, v=None):
-    """ Checks if the input knot values (i.e. parameters) are defined between 0 and 1."""
+    """ Checks if the parameter values are valid, i.e. between 0 and 1.
+
+    :param u: u parameter
+    :type u: float
+    :param v: v parameter
+    :type v: float
+    """
     # Check u value
     if u is not None:
         if u < 0.0 or u > 1.0:
@@ -22,9 +28,9 @@ def check_uv(u=None, v=None):
 
 
 def find_span_binsearch(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
-    """ Algorithm A2.1 of The NURBS Book by Piegl & Tiller.
+    """ Finds the span of the knot over the input knot vector using binary search.
 
-    .. note:: This algorithm uses binary search to find the knot span.
+    Implementation of Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
     The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
     if FindSpan returns 1, then the knot is between the internal [0, 1).
@@ -53,7 +59,9 @@ def find_span_binsearch(degree=0, knot_vector=(), control_points_size=0, knot=0,
 
 
 def find_span(knot_vector, num_ctrlpts, knot):
-    """ Finds the span of the knot over the input knot vector.
+    """ Finds the span of the knot over the input knot vector using linear search.
+
+    Alternative implementation for the Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
     :param knot_vector: knot vector
     :type knot_vector: list, tuple
@@ -92,7 +100,7 @@ def find_spans(knot_vector, num_ctrlpts, knots):
 def basis_function(degree, knot_vector, span, knot):
     """ Computes the non-vanishing basis functions for a single knot.
 
-    Implementation of Algorithm A2.2 in The NURBS Book by Piegl & Tiller.
+    Implementation of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
     :param degree: degree
     :type degree: int
@@ -125,8 +133,6 @@ def basis_function(degree, knot_vector, span, knot):
 def basis_functions(degree, knot_vector, spans, knots):
     """ Computes the non-vanishing basis functions.
 
-    Implementation of Algorithm A2.2 in The NURBS Book by Piegl & Tiller.
-
     :param degree: degree
     :type degree: int
     :param knot_vector: knot vector
@@ -145,7 +151,21 @@ def basis_functions(degree, knot_vector, spans, knots):
 
 
 def basis_function_all(degree, knot_vector, span, knot):
-    """ A modified version of Algorithm A2.2 of The NURBS Book by Piegl & Tiller."""
+    """ Finds all non-zero basis functions of all degrees from 0 up to the input degree.
+
+    A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
+
+    :param degree: degree
+    :type degree: int
+    :param knot_vector:  knot vector
+    :type knot_vector: list, tuple
+    :param span: span of the knot
+    :type span: int
+    :param knot: knot
+    :type knot: float
+    :return: basis functions
+    :rtype: list
+    """
     N = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
     for i in range(0, degree + 1):
         bfuns = basis_function(i, knot_vector, span, knot)
@@ -154,15 +174,28 @@ def basis_function_all(degree, knot_vector, span, knot):
     return N
 
 
-def basis_function_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
-    """ Algorithm A2.3 of The NURBS Book by Piegl & Tiller."""
-    # Initialize variables for easy access
-    left = [None for _ in range(degree + 1)]
-    right = [None for _ in range(degree + 1)]
-    ndu = [[None for _ in range(degree + 1)] for _ in range(degree + 1)]
+def basis_function_ders(degree, knot_vector, span, knot, order):
+    """ Finds derivatives of the basis functions.
 
-    # N[0][0] = 1.0 by definition
-    ndu[0][0] = 1.0
+    Implementation of Algorithm A2.3 from The NURBS Book by Piegl & Tiller.
+
+    :param degree: degree
+    :type degree: int
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :param span: span of the knot
+    :type span: int
+    :param knot: knot
+    :type knot: float
+    :param order: order of the derivative
+    :type order: int
+    :return: basis function derivatives
+    :rtype: list
+    """
+    # Initialize variables
+    left = [1.0 for _ in range(degree + 1)]
+    right = [1.0 for _ in range(degree + 1)]
+    ndu = [[1.0 for _ in range(degree + 1)] for _ in range(degree + 1)]  # N[0][0] = 1.0 by definition
 
     for j in range(1, degree + 1):
         left[j] = knot - knot_vector[span + 1 - j]
@@ -179,12 +212,12 @@ def basis_function_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
         ndu[j][j] = saved
 
     # Load the basis functions
-    ders = [[None for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
+    ders = [[0.0 for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
     for j in range(0, degree + 1):
         ders[0][j] = ndu[j][degree]
 
     # Start calculating derivatives
-    a = [[None for _ in range(degree + 1)] for _ in range(2)]
+    a = [[1.0 for _ in range(degree + 1)] for _ in range(2)]
     # Loop over function index
     for r in range(0, degree + 1):
         # Alternate rows in array a
@@ -231,13 +264,22 @@ def basis_function_ders(degree=0, knot_vector=(), span=0, knot=0, order=0):
     return ders
 
 
-def find_multiplicity(knot, knot_vector, tol=0.001):
-    """ Finds knot multiplicity."""
-    # Find and return the multiplicity of the input knot in the given knot vector
+def find_multiplicity(knot, knot_vector, **kwargs):
+    """ Finds knot multiplicity over the input knot vector.
+
+    :param knot: knot
+    :type knot: float
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :return: multiplicity of the knot
+    :rtype: int
+    """
+    tol = kwargs.get('tol', 0.001)
+
     mult = 0  # initial multiplicity
-    # Loop through the knot vector
+
     for kv in knot_vector:
-        # Float equality should be checked w.r.t a tolerance value
         if abs(knot - kv) <= tol:
             mult += 1
+
     return mult
