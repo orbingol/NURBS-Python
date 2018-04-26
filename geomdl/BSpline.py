@@ -50,8 +50,7 @@ class Curve(Abstract.Curve):
     __repr__ = __str__
 
     def __call__(self, degree, ctrlpts, knotvector):
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        self.reset(ctrlpts=True, evalpts=True)
         self.degree = degree
         self.ctrlpts = ctrlpts
         self.knotvector = knotvector
@@ -83,9 +82,8 @@ class Curve(Abstract.Curve):
         if len(ctrlpts) < self._degree + 1:
             raise ValueError("Number of control points should be at least degree + 1")
 
-        # Clean up the curve and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
+        # Clean up the curve and control points lists
+        self.reset(ctrlpts=True, evalpts=True)
 
         # Estimate dimension by checking the size of the first element
         self._dimension = len(ctrlpts[0])
@@ -122,24 +120,29 @@ class Curve(Abstract.Curve):
         if not utilities.check_knot_vector(self._degree, value_normalized, len(self._control_points)):
             raise ValueError("Input is not a valid knot vector")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points lists
+        self.reset(evalpts=True)
 
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
 
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        if self._control_points:
-            # Delete control points
+    def reset(self, **kwargs):
+        """ Resets control or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
             del self._control_points[:]
-            # Delete bounding box
             del self._bounding_box[:]
 
-    # Resets the evaluated curve points
-    def _reset_evalpts(self):
-        if self._curve_points:
-            # Delete the curve points
+        if reset_evalpts:
             del self._curve_points[:]
 
     # Reads control points from a text file
@@ -153,9 +156,8 @@ class Curve(Abstract.Curve):
         :return: True if control points are loaded correctly, False otherwise
         :rtype: bool
         """
-        # Clean up the curve and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
+        # Clean up the curve and control points lists
+        self.reset(ctrlpts=True, evalpts=True)
 
         # Initialize the return value
         ret_check = True

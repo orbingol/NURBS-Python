@@ -73,8 +73,8 @@ class Curve(object):
         if val < 0:
             raise ValueError("Degree cannot be less than zero")
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set degree
         self._degree = val
@@ -143,8 +143,8 @@ class Curve(object):
         start = self._knot_vector[self._degree]
         stop = self._knot_vector[-(self._degree+1)]
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set delta value
         self._delta = (stop - start) / float(value - 1)
@@ -174,8 +174,8 @@ class Curve(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set new delta value
         self._delta = float(value)
@@ -282,14 +282,24 @@ class Curve(object):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        self._control_points = None
-        self._bounding_box = None
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
 
-    # Resets the evaluated points
-    def _reset_evalpts(self):
-        self._curve_points = None
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
+            self._control_points = None
+            self._bounding_box = None
+
+        if reset_evalpts:
+            self._curve_points = None
 
     def curvept(self, u):
         """ Evaluates the curve at the given parameter.
@@ -346,8 +356,8 @@ class Curve(object):
         helpers.check_uv(start)
         helpers.check_uv(stop)
 
-        # Clean up the curve points, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points
+        self.reset(evalpts=True)
 
         knots = utilities.linspace(start, stop, self.sample_size)
         spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)

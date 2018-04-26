@@ -79,13 +79,25 @@ class Curve(BSpline.Curve):
                 self._cache['weights'].append(pt[-1])
         return tuple(self._cache['weights'])
 
-    # Cleans up the control points and the cache
-    def _reset_ctrlpts(self):
-        # Call parent function to process control points
-        super(Curve, self)._reset_ctrlpts()
-        # Delete the caches
-        del self._cache['ctrlpts'][:]
-        del self._cache['weights'][:]
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        # Call parent function
+        super(Curve, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
+
+        if reset_ctrlpts:
+            # Delete the caches
+            del self._cache['ctrlpts'][:]
+            del self._cache['weights'][:]
 
     # Prepares control points for exporting as a CSV file
     def _get_ctrlpts_for_exporting(self):
