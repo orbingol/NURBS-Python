@@ -463,8 +463,8 @@ class Surface(object):
         val = int(value)
         if val <= 0:
             raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
         # Set degree u
         self._degree_u = int(value)
 
@@ -483,8 +483,8 @@ class Surface(object):
         val = int(value)
         if val <= 0:
             raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
         # Set degree v
         self._degree_v = val
 
@@ -618,8 +618,8 @@ class Surface(object):
         start_v = self._knot_vector_v[self._degree_v]
         stop_v = self._knot_vector_v[-(self._degree_v+1)]
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set delta values
         self._delta_u = (stop_u - start_u) / float(value - 1)
@@ -650,8 +650,8 @@ class Surface(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set a new delta value
         self._delta_u = float(value)
@@ -678,8 +678,8 @@ class Surface(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set a new delta value
         self._delta_v = float(value)
@@ -805,15 +805,27 @@ class Surface(object):
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render()
 
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        self._control_points = None
-        self._control_points2D = None
-        self._bounding_box = None
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
 
-    # Resets the evaluated points
-    def _reset_evalpts(self):
-        self._surface_points = None
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
+            self._control_points = None
+            self._control_points2D = None
+            self._control_points_size_u = 0
+            self._control_points_size_v = 0
+            self._bounding_box = None
+
+        if reset_evalpts:
+            self._surface_points = None
 
     # Checks whether the surface evaluation is possible or not
     def _check_variables(self):
@@ -906,8 +918,8 @@ class Surface(object):
         helpers.check_uv(start_u, stop_u)
         helpers.check_uv(start_v, stop_v)
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Compute knots in the range
         knots_u = utilities.linspace(start_u, stop_u, self.sample_size)

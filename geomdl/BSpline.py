@@ -849,8 +849,7 @@ class Surface(Abstract.Surface):
     __repr__ = __str__
 
     def __call__(self, degree_u, degree_v, ctrlpts_size_u, ctrlpts_size_v, ctrlpts, knotvector_u, knotvector_v):
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        self.reset(evalpts=True, ctrlpts=True)
         self.degree_u = degree_u
         self.degree_v = degree_v
         self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
@@ -950,9 +949,8 @@ class Surface(Abstract.Surface):
         if not isinstance(value, (list, tuple)):
             raise ValueError("The input must be a list or tuple")
 
-        # Reset control points and the surface points
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
 
         # Assume that the user has prepared the lists correctly
         self._control_points_size_u = len(value)
@@ -998,9 +996,8 @@ class Surface(Abstract.Surface):
         :type size_v: int
         :return: None
         """
-        # Clean up the surface and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
 
         # Degree must be set before setting the control points
         if self._degree_u == 0 or self._degree_v == 0:
@@ -1062,8 +1059,8 @@ class Surface(Abstract.Surface):
         if not utilities.check_knot_vector(self._degree_u, value_normalized, self._control_points_size_u):
             raise ValueError("Input is not a valid knot vector (u-direction)")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set knot vector u
         self._knot_vector_u = [float(kv) for kv in value_normalized]
@@ -1090,28 +1087,32 @@ class Surface(Abstract.Surface):
         if not utilities.check_knot_vector(self._degree_v, value_normalized, self._control_points_size_v):
             raise ValueError("Input is not a valid knot vector (v-direction)")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
 
-    # Cleans up the control points
-    def _reset_ctrlpts(self):
-        if self._control_points:
-            # Delete control points
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
             del self._control_points[:]
             del self._control_points2D[:]
-            # Set the control point sizes to zero
             self._control_points_size_u = 0
             self._control_points_size_v = 0
-            # Delete bounding box
             del self._bounding_box[:]
 
-    # Cleans the evaluated surface points (private)
-    def _reset_evalpts(self):
-        if self._surface_points:
-            # Delete the surface points
+        if reset_evalpts:
             del self._surface_points[:]
 
     # Reads control points from a text file
@@ -1136,9 +1137,8 @@ class Surface(Abstract.Surface):
         :return: True if control points are loaded correctly, False otherwise
         :rtype: bool
         """
-        # Clean up the surface and control points lists, if necessary
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
 
         # Initialize the return value
         ret_check = True
@@ -1436,8 +1436,8 @@ class Surface(Abstract.Surface):
             for u in range(0, ctrlpts_new_size_u):
                 ctrlpts_new.append(ctrlpts2d_new[u][v])
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Save transposed data
         self._degree_u = degree_u_new
