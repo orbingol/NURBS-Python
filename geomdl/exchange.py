@@ -1,5 +1,5 @@
 """
-.. module:: exchange_helpers
+.. module:: exchange
     :platform: Unix, Windows
     :synopsis: CAD exchange and interoperability module for NURBS-Python
 

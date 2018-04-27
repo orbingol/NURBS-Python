@@ -1,5 +1,5 @@
 """
-.. module:: common
+.. module:: helpers
     :platform: Unix, Windows
     :synopsis: Evaluation utility functions
 
