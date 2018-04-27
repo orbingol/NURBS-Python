@@ -31,6 +31,11 @@ class Curve(object):
         self._cache = {}  # cache dictionary
 
     @property
+    def rational(self):
+        """ Returns True if the curve is rational. """
+        return self._rational
+
+    @property
     def dimension(self):
         """ Dimension of the curve.
 
@@ -104,6 +109,16 @@ class Curve(object):
     @ctrlpts.setter
     def ctrlpts(self, value):
         self._control_points = value
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        .. note: Same as ``curvepts`` property.
+
+        :getter: Gets the evaluated points
+        """
+        return self.curvepts
 
     @property
     def curvepts(self):
@@ -406,6 +421,11 @@ class Surface(object):
         self._cache = {}  # cache dictionary
 
     @property
+    def rational(self):
+        """ Returns True if the surface is rational. """
+        return self._rational
+
+    @property
     def dimension(self):
         """ Dimension of the surface.
 
@@ -573,6 +593,16 @@ class Surface(object):
 
         # Assume that user is doing this right
         self._control_points_size_v = value
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        .. note: Same as ``surfpts`` property.
+
+        :getter: Gets the evaluated points
+        """
+        return self.surfpts
 
     @property
     def surfpts(self):
