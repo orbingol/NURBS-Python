@@ -177,6 +177,83 @@ class Curve(Abstract.Curve):
         if reset_evalpts:
             del self._curve_points[:]
 
+    def curvept(self, u):
+        """ Evaluates the curve at the given parameter.
+
+        :param u: parameter
+        :type u: float
+        :return: evaluated curve point
+        :rtype: list
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+        # Check u parameters are correct
+        utilities.check_uv(u)
+
+        # Algorithm A3.1 and A4.1
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        basis = helpers.basis_function(self.degree, self.knotvector, span, u)
+
+        cpt = [0.0 for _ in range(self._dimension)]
+        for i in range(0, self._degree + 1):
+            cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
+                      zip(cpt, self._control_points[span - self._degree + i])]
+
+        # Divide by weight, if the curve is rational
+        if self._rational:
+            curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
+        else:
+            curvept = cpt
+
+        return curvept
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the curve.
+
+        Keyword arguments:
+
+        * ``start``: start parameter
+        * ``stop``: stop parameter
+
+        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
+        the curve will also be evaluated at the ``stop`` parameter value.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
+
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
+        start = kwargs.get('start', self.knotvector[self.degree])
+        stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
+
+        # Check if the input parameters are in the range
+        utilities.check_uv(start)
+        utilities.check_uv(stop)
+
+        # Clean up the curve points
+        self.reset(evalpts=True)
+
+        knots = utilities.linspace(start, stop, self.sample_size)
+        spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)
+        basis = helpers.basis_functions(self.degree, self.knotvector, spans, knots)
+
+        # Evaluate the curve in the input range
+        for idx in range(len(knots)):
+            cpt = [0.0 for _ in range(self.dimension)]
+            for i in range(0, self.degree + 1):
+                cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
+                          zip(cpt, self._control_points[spans[idx] - self.degree + i])]
+
+            # Divide by weight, if the curve is rational
+            if self._rational:
+                curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self.dimension - 1)]]
+            else:
+                curvept = cpt
+
+            self._curve_points.append(curvept)
+
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.
@@ -193,7 +270,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        helpers.check_uv(u)
+        utilities.check_uv(u)
 
         # Algorithm A3.2
         du = min(self._degree, order)
@@ -261,7 +338,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        helpers.check_uv(u)
+        utilities.check_uv(u)
 
         # Algorithm A3.4
         du = min(self._degree, order)
@@ -442,7 +519,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        helpers.check_uv(u)
+        utilities.check_uv(u)
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of insertions (r) must be a positive integer value')
@@ -521,7 +598,7 @@ class Curve(Abstract.Curve):
         # Validate input data
         if u == 0.0 or u == 1.0:
             raise ValueError("Cannot split on the corner points")
-        helpers.check_uv(u)
+        utilities.check_uv(u)
 
         # Create backups of the original curve
         original_kv = copy.deepcopy(self._knot_vector)
@@ -994,12 +1071,8 @@ class Surface(Abstract.Surface):
         if reset_evalpts:
             del self._surface_points[:]
 
-    # Transposes the surface by swapping U and V directions
     def transpose(self):
-        """ Transposes the surface by swapping U and V directions.
-
-        :return: None
-        """
+        """ Transposes the surface by swapping U and V directions. """
         # Transpose existing data
         degree_u_new = self._degree_v
         degree_v_new = self._degree_u
@@ -1033,6 +1106,111 @@ class Surface(Abstract.Surface):
         self._control_points_size_v = ctrlpts_new_size_v
         self._control_points2D = ctrlpts2d_new
 
+    def surfpt(self, u, v):
+        """ Evaluates the surface at the given (u,v) parameter.
+
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :return: evaluated surface point at the given knot values
+        :rtype: list
+        """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+        # Check u and v parameters are correct
+        utilities.check_uv(u, v)
+
+        # Algorithm A3.5 nd A4.3
+        span_u = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
+        basis_u = helpers.basis_function(self.degree_u, self.knotvector_u, span_u, u)
+        span_v = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
+        basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
+
+        idx_u = span_u - self.degree_u
+        spt = [0.0 for _ in range(self.dimension)]
+
+        for l in range(0, self._degree_v + 1):
+            temp = [0.0 for _ in range(self.dimension)]
+            idx_v = span_v - self.degree_v + l
+            for k in range(0, self.degree_u + 1):
+                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
+            spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
+
+        # Divide by weight, if the surface is rational
+        if self._rational:
+            surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
+        else:
+            surfpt = spt
+
+        return surfpt
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the surface.
+
+        Keyword arguments:
+
+        * ``start_u``: start parameter in u-direction
+        * ``stop_u``: stop parameter in u-direction
+        * ``start_v``: start parameter in v-direction
+        * ``stop_v``: stop parameter in v-direction
+
+        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
+        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
+        and ``stop_v`` parameter values.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
+
+        """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+
+        # Find evaluation start and stop parameter values
+        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
+
+        # Check if all the input parameters are in the range
+        utilities.check_uv(start_u, stop_u)
+        utilities.check_uv(start_v, stop_v)
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Compute knots in the range
+        knots_u = utilities.linspace(start_u, stop_u, self.sample_size)
+        knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
+
+        # Find spans belonging to the knots
+        spans_u = helpers.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
+        spans_v = helpers.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
+
+        # Find basis functions
+        basis_u = helpers.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
+        basis_v = helpers.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
+
+        # Evaluate the surface directly
+        for i in range(len(knots_u)):
+            idx_u = spans_u[i] - self.degree_u
+            for j in range(len(knots_v)):
+                spt = [0.0 for _ in range(self.dimension)]
+                for l in range(0, self.degree_v + 1):
+                    temp = [0.0 for _ in range(self.dimension)]
+                    idx_v = spans_v[j] - self.degree_v + l
+                    for k in range(0, self.degree_u + 1):
+                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
+                                   zip(temp, self._control_points2D[idx_u + k][idx_v])]
+                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
+
+                # Divide by weight, if the surface is rational
+                if self._rational:
+                    surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
+                else:
+                    surfpt = spt
+
+                self._surface_points.append(surfpt)
+
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
         """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
@@ -1053,7 +1231,7 @@ class Surface(Abstract.Surface):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
-        helpers.check_uv(u, v)
+        utilities.check_uv(u, v)
 
         # Algorithm A3.6
         du = min(self._degree_u, order)
@@ -1160,7 +1338,7 @@ class Surface(Abstract.Surface):
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
-        helpers.check_uv(u, v)
+        utilities.check_uv(u, v)
 
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
@@ -1230,7 +1408,7 @@ class Surface(Abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if u or v:
-            helpers.check_uv(u, v)
+            utilities.check_uv(u, v)
 
         if not isinstance(ru, int) or ru < 0:
             raise ValueError("Number of insertions in U-direction must be a positive integer")
@@ -1400,7 +1578,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        helpers.check_uv(t)
+        utilities.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_u)
@@ -1472,7 +1650,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        helpers.check_uv(t)
+        utilities.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_v)

@@ -8,25 +8,6 @@
 """
 
 
-def check_uv(u=None, v=None):
-    """ Checks if the parameter values are valid, i.e. between 0 and 1.
-
-    :param u: u parameter
-    :type u: float
-    :param v: v parameter
-    :type v: float
-    """
-    # Check u value
-    if u is not None:
-        if u < 0.0 or u > 1.0:
-            raise ValueError('"u" value should be between 0 and 1.')
-
-    # Check v value, if necessary
-    if v is not None:
-        if v < 0.0 or v > 1.0:
-            raise ValueError('"v" value should be between 0 and 1.')
-
-
 def find_span_binsearch(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
     """ Finds the span of the knot over the input knot vector using binary search.
 

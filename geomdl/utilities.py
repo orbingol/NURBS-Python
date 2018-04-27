@@ -181,6 +181,54 @@ def binomial_coefficient(k, i):
     return float(k_fact / (k_i_fact * i_fact))
 
 
+def check_uv(u=None, v=None):
+    """ Checks if the parameter values are valid, i.e. between 0 and 1.
+
+    :param u: u parameter
+    :type u: float
+    :param v: v parameter
+    :type v: float
+    """
+    # Check u value
+    if u is not None:
+        if u < 0.0 or u > 1.0:
+            raise ValueError('"u" value should be between 0 and 1.')
+
+    # Check v value, if necessary
+    if v is not None:
+        if v < 0.0 or v > 1.0:
+            raise ValueError('"v" value should be between 0 and 1.')
+
+
+def evaluate_bounding_box(ctrlpts, dimension, rational):
+    """ Evaluates the bounding box of a curve or a surface.
+
+    :param ctrlpts: control points
+    :type ctrlpts: list, tuple
+    :param dimension: dimension of the surface/curve
+    :type dimension: int
+    :param rational: flag for rational surface/curve
+    :type rational: bool
+    :return: bounding box
+    :rtype: list
+    """
+    # Find correct dimension of the control points
+    dim = dimension - 1 if rational else dimension
+
+    # Evaluate bounding box
+    bbmin = [float('inf') for _ in range(0, dim)]
+    bbmax = [0.0 for _ in range(0, dim)]
+    for cpt in ctrlpts:
+        for i, arr in enumerate(zip(cpt, bbmin)):
+            if arr[0] < arr[1]:
+                bbmin[i] = arr[0]
+        for i, arr in enumerate(zip(cpt, bbmax)):
+            if arr[0] > arr[1]:
+                bbmax[i] = arr[0]
+
+    return [tuple(bbmin), tuple(bbmax)]
+
+
 # Changes linearly ordered list of points into a zig-zag shape
 def make_zigzag(points, num_cols):
     """ Changes linearly ordered list of points into a zig-zag shape.

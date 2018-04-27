@@ -10,7 +10,6 @@
 from . import abc
 from . import warnings
 from . import utilities
-from . import helpers
 
 
 class Curve(object):
@@ -112,16 +111,6 @@ class Curve(object):
 
     @property
     def evalpts(self):
-        """ Evaluated points.
-
-        .. note: Same as ``curvepts`` property.
-
-        :getter: Gets the evaluated points
-        """
-        return self.curvepts
-
-    @property
-    def curvepts(self):
         """ Evaluated curve points.
 
         :getter: Gets the coordinates of the evaluated points
@@ -225,29 +214,9 @@ class Curve(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._eval_bbox()
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts, self.dimension, self.rational)
 
         return tuple(self._bounding_box)
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the curve. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [tuple(bbmin), tuple(bbmax)]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -278,24 +247,8 @@ class Curve(object):
         # Run the visualization component
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.evalpts, name="Curve", color=curvecolor, plot_type='evalpts')
         self._vis_component.render()
-
-    # Checks whether the curve evaluation is possible or not
-    def _check_variables(self):
-        works = True
-        param_list = []
-        if self._degree == 0:
-            works = False
-            param_list.append('degree')
-        if self._control_points is None or len(self._control_points) == 0:
-            works = False
-            param_list.append('ctrlpts')
-        if self._knot_vector is None or len(self._knot_vector) == 0:
-            works = False
-            param_list.append('knotvector')
-        if not works:
-            raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -316,82 +269,26 @@ class Curve(object):
         if reset_evalpts:
             self._curve_points = None
 
-    def curvept(self, u):
-        """ Evaluates the curve at the given parameter.
+    # Checks whether the curve evaluation is possible or not
+    def _check_variables(self):
+        works = True
+        param_list = []
+        if self._degree == 0:
+            works = False
+            param_list.append('degree')
+        if self._control_points is None or len(self._control_points) == 0:
+            works = False
+            param_list.append('ctrlpts')
+        if self._knot_vector is None or len(self._knot_vector) == 0:
+            works = False
+            param_list.append('knotvector')
+        if not works:
+            raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-        :param u: parameter
-        :type u: float
-        :return: evaluated curve point
-        :rtype: list
-        """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-        # Check u parameters are correct
-        helpers.check_uv(u)
-
-        # Algorithm A3.1 and A4.1
-        span = helpers.find_span(self.knotvector, len(self._control_points), u)
-        basis = helpers.basis_function(self.degree, self.knotvector, span, u)
-
-        cpt = [0.0 for _ in range(self._dimension)]
-        for i in range(0, self._degree + 1):
-            cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
-                      zip(cpt, self._control_points[span - self._degree + i])]
-
-        # Divide by weight, if the curve is rational
-        if self._rational:
-            curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
-        else:
-            curvept = cpt
-
-        return curvept
-
+    @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the curve.
-
-        Keyword arguments:
-
-        * ``start``: start parameter
-        * ``stop``: stop parameter
-
-        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
-        the curve will also be evaluated at the ``stop`` parameter value.
-
-        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
-
-        """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-
-        # Find evaluation start and stop parameter values
-        start = kwargs.get('start', self.knotvector[self.degree])
-        stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
-
-        # Check if the input parameters are in the range
-        helpers.check_uv(start)
-        helpers.check_uv(stop)
-
-        # Clean up the curve points
-        self.reset(evalpts=True)
-
-        knots = utilities.linspace(start, stop, self.sample_size)
-        spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)
-        basis = helpers.basis_functions(self.degree, self.knotvector, spans, knots)
-
-        # Evaluate the curve in the input range
-        for idx in range(len(knots)):
-            cpt = [0.0 for _ in range(self.dimension)]
-            for i in range(0, self.degree + 1):
-                cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
-                          zip(cpt, self._control_points[spans[idx] - self.degree + i])]
-
-            # Divide by weight, if the curve is rational
-            if self._rational:
-                curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self.dimension - 1)]]
-            else:
-                curvept = cpt
-
-            self._curve_points.append(curvept)
+        """ Evaluates the curve. """
+        pass
 
 
 class Surface(object):
@@ -596,16 +493,6 @@ class Surface(object):
 
     @property
     def evalpts(self):
-        """ Evaluated points.
-
-        .. note: Same as ``surfpts`` property.
-
-        :getter: Gets the evaluated points
-        """
-        return self.surfpts
-
-    @property
-    def surfpts(self):
         """ Evaluated surface points.
 
         :getter: Gets the coordinates of the evaluated points
@@ -775,29 +662,9 @@ class Surface(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._eval_bbox()
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts, self.dimension, self.rational)
 
         return tuple(self._bounding_box)
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the surface. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [tuple(bbmin), tuple(bbmax)]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -805,7 +672,7 @@ class Surface(object):
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
-        Possible keyword arguments are
+        Keyword Arguments:
 
         * ``cpcolor``: sets the color of the control points grid
         * ``surfcolor``: sets the color of the surface
@@ -830,7 +697,7 @@ class Surface(object):
         self._vis_component.add(ptsarr=self.ctrlpts,
                                 size=[self._control_points_size_u, self._control_points_size_v],
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self._surface_points,
+        self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render()
@@ -879,110 +746,10 @@ class Surface(object):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-    def surfpt(self, u, v):
-        """ Evaluates the surface at the given (u,v) parameter.
-
-        :param u: parameter in the U direction
-        :type u: float
-        :param v: parameter in the V direction
-        :type v: float
-        :return: evaluated surface point at the given knot values
-        :rtype: list
-        """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
-        # Check u and v parameters are correct
-        helpers.check_uv(u, v)
-
-        # Algorithm A3.5 nd A4.3
-        span_u = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
-        basis_u = helpers.basis_function(self.degree_u, self.knotvector_u, span_u, u)
-        span_v = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
-        basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
-
-        idx_u = span_u - self.degree_u
-        spt = [0.0 for _ in range(self.dimension)]
-
-        for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self.dimension)]
-            idx_v = span_v - self.degree_v + l
-            for k in range(0, self.degree_u + 1):
-                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-            spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
-
-        # Divide by weight, if the surface is rational
-        if self._rational:
-            surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
-        else:
-            surfpt = spt
-
-        return surfpt
-
+    @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the surface.
-
-        Keyword arguments:
-
-        * ``start_u``: start parameter in u-direction
-        * ``stop_u``: stop parameter in u-direction
-        * ``start_v``: start parameter in v-direction
-        * ``stop_v``: stop parameter in v-direction
-
-        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
-        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
-        and ``stop_v`` parameter values.
-
-        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
-
-        """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
-
-        # Find evaluation start and stop parameter values
-        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
-        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
-        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
-        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
-
-        # Check if all the input parameters are in the range
-        helpers.check_uv(start_u, stop_u)
-        helpers.check_uv(start_v, stop_v)
-
-        # Clean up the surface points
-        self.reset(evalpts=True)
-
-        # Compute knots in the range
-        knots_u = utilities.linspace(start_u, stop_u, self.sample_size)
-        knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
-
-        # Find spans belonging to the knots
-        spans_u = helpers.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
-        spans_v = helpers.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
-
-        # Find basis functions
-        basis_u = helpers.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
-        basis_v = helpers.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
-
-        # Evaluate the surface directly
-        for i in range(len(knots_u)):
-            idx_u = spans_u[i] - self.degree_u
-            for j in range(len(knots_v)):
-                spt = [0.0 for _ in range(self.dimension)]
-                for l in range(0, self.degree_v + 1):
-                    temp = [0.0 for _ in range(self.dimension)]
-                    idx_v = spans_v[j] - self.degree_v + l
-                    for k in range(0, self.degree_u + 1):
-                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
-                                   zip(temp, self._control_points2D[idx_u + k][idx_v])]
-                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
-
-                # Divide by weight, if the surface is rational
-                if self._rational:
-                    surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
-                else:
-                    surfpt = spt
-
-                self._surface_points.append(surfpt)
+        """ Evaluates the surface. """
+        pass
 
 
 class Multi(object):
