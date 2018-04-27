@@ -24,7 +24,7 @@ class Curve(BSpline.Curve):
     * delta
     * ctrlpts
     * weights
-    * curvepts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
@@ -32,7 +32,7 @@ class Curve(BSpline.Curve):
     .. note::
 
         If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -179,7 +179,7 @@ class Surface(BSpline.Surface):
     * ctrlpts
     * ctrlpts2d
     * weights
-    * surfpts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
@@ -187,7 +187,7 @@ class Surface(BSpline.Surface):
     .. note::
 
         If you update any of the data storage elements after the surface evaluation, the surface points stored in
-        :py:attr:`~surfpts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):

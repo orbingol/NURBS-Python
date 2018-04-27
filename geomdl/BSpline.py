@@ -27,7 +27,7 @@ class Curve(Abstract.Curve):
     * knotvector
     * delta
     * ctrlpts
-    * curvepts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
@@ -35,7 +35,7 @@ class Curve(Abstract.Curve):
     .. note::
 
         If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -55,6 +55,10 @@ class Curve(Abstract.Curve):
         self.degree = degree
         self.ctrlpts = ctrlpts
         self.knotvector = knotvector
+
+    @property
+    def curvepts(self):
+        return self.evalpts
 
     @property
     def ctrlpts(self):
@@ -218,7 +222,7 @@ class Curve(Abstract.Curve):
         The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
         the curve will also be evaluated at the ``stop`` parameter value.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
 
         """
         # Check all parameters are set before the curve evaluation
@@ -739,7 +743,7 @@ class Surface(Abstract.Surface):
     * delta
     * ctrlpts
     * ctrlpts2d
-    * surfpts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
@@ -747,7 +751,7 @@ class Surface(Abstract.Surface):
     .. note::
 
         If you update any of the data storage elements after the surface evaluation, the surface points stored in
-        :py:attr:`~surfpts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -772,6 +776,10 @@ class Surface(Abstract.Surface):
         self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
         self.knotvector_u = knotvector_u
         self.knotvector_v = knotvector_v
+
+    @property
+    def surfpts(self):
+        return self.evalpts
 
     @property
     def ctrlpts(self):
@@ -1159,7 +1167,7 @@ class Surface(Abstract.Surface):
         in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
         and ``stop_v`` parameter values.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
 
         """
         # Check all parameters are set before the surface evaluation
