@@ -63,7 +63,6 @@ def export_csv(obj, file_name, point_type='ctrlpts', scalar=0):
     :type point_type: str
     :param scalar: scalar value (required for Paraview)
     :type scalar: int
-    :return:
     """
     if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
         raise ValueError("Input object should be a surve or a surface")
