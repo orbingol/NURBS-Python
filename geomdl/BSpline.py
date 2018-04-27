@@ -9,11 +9,11 @@
 
 from . import warnings
 from . import copy
-from . import pickle
 from . import Abstract
 from . import Multi
 from . import utilities
 from . import helpers
+from . import exchange
 
 
 class Curve(Abstract.Curve):
@@ -130,33 +130,24 @@ class Curve(Abstract.Curve):
     def _save_data(self):
         # Create a dictionary from the curve data
         expdata = {'degree': self.degree,
-                   'knot vector': self.knotvector,
-                   'control points': self.ctrlpts}
+                   'knotvector': self.knotvector,
+                   'ctrlpts': self.ctrlpts}
         return expdata
 
     def _load_data(self, impdata):
         # Set the curve data
         self.degree = impdata['degree']
-        self.ctrlpts = impdata['control points']
-        self.knotvector = impdata['knot vector']
+        self.ctrlpts = impdata['ctrlpts']
+        self.knotvector = impdata['knotvector']
 
     def save(self, file_name):
-        """ Saves the curve object as a file using pickle.
+        """  Saves the curve as a pickled file.
 
         :param file_name: name of the file to be saved
         :type file_name: str
         """
-        # Try opening the file for writing
-        try:
-            with open(file_name, 'wb') as fp:
-                # Create the dictionary
-                expdata = self._save_data()
-
-                # Pickle the dictionary
-                pickle.dump(expdata, fp)
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+        data_dict = self._save_data()
+        exchange.save_pickle(data_dict, file_name)
 
     def load(self, file_name):
         """ Loads the curve from a pickled file.
@@ -164,17 +155,8 @@ class Curve(Abstract.Curve):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        # Try opening the file for reading
-        try:
-            with open(file_name, 'rb') as fp:
-                # Read pickled file
-                impdata = pickle.load(fp)
-
-                # Load the dictionary
-                self._load_data(impdata)
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(file_name) + " cannot be opened for reading.")
+        data_dict = exchange.load_pickle(file_name)
+        self._load_data(data_dict)
 
     def reset(self, **kwargs):
         """ Resets control or evaluated points.
@@ -950,6 +932,45 @@ class Surface(Abstract.Surface):
 
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
+
+    def _save_data(self):
+        # Create a dictionary from the surface data
+        expdata = {'degree_u': self.degree_u,
+                   'degree_v': self.degree_v,
+                   'knotvector_u': self.knotvector_u,
+                   'knotvector_v': self.knotvector_v,
+                   'ctrlpts_size_u': self.ctrlpts_size_u,
+                   'ctrlpts_size_v': self.ctrlpts_size_v,
+                   'ctrlpts': self.ctrlpts}
+        return expdata
+
+    def _load_data(self, impdata):
+        # Set the surface data
+        self.degree_u = impdata['degree_u']
+        self.degree_v = impdata['degree_v']
+        self.ctrlpts_size_u = impdata['ctrlpts_size_u']
+        self.ctrlpts_size_v = impdata['ctrlpts_size_v']
+        self.ctrlpts = impdata['ctrlpts']
+        self.knotvector_u = impdata['knotvector_u']
+        self.knotvector_v = impdata['knotvector_v']
+
+    def save(self, file_name):
+        """ Saves the surface as a pickled file.
+
+        :param file_name: name of the file to be saved
+        :type file_name: str
+        """
+        data_dict = self._save_data()
+        exchange.save_pickle(data_dict, file_name)
+
+    def load(self, file_name):
+        """ Loads the surface from a pickled file.
+
+        :param file_name: name of the file to be loaded
+        :type file_name: str
+        """
+        data_dict = exchange.load_pickle(file_name)
+        self._load_data(data_dict)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
