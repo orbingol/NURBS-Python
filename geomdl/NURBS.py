@@ -99,17 +99,6 @@ class Curve(BSpline.Curve):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
-
-        :return: list of control points
-        :rtype: list
-        """
-        if not self._cache['ctrlpts']:
-            return self.ctrlpts
-        return self._cache['ctrlpts']
-
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.
@@ -268,17 +257,6 @@ class Surface(BSpline.Surface):
             # Delete the caches
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
-
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
-
-        :return: list of control points
-        :rtype: list
-        """
-        if not self._cache['ctrlpts']:
-            return self.ctrlpts
-        return self._cache['ctrlpts']
 
     # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
