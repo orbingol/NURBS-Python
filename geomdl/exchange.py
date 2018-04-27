@@ -15,7 +15,7 @@ from .elements import Vertex, Triangle
 
 
 # Saves surface(s) as a .obj file
-def save_obj(surf_in=None, file_name=None, **kwargs):
+def save_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     :param surf_in: surface or surfaces to be saved
@@ -36,7 +36,7 @@ def save_obj(surf_in=None, file_name=None, **kwargs):
 
 
 # Saves surface(s) as a .stl file
-def save_stl(surf_in=None, file_name=None, **kwargs):
+def save_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
     :param surf_in: surface or surfaces to be saved
@@ -65,7 +65,7 @@ def save_stl(surf_in=None, file_name=None, **kwargs):
 
 
 # Saves surface(s) as a .off file
-def save_off(surf_in=None, file_name=None, **kwargs):
+def save_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
     :param surf_in: surface or surfaces to be saved
@@ -149,7 +149,7 @@ def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
     return vertices, triangles
 
 
-def save_obj_single(surface=None, **kwargs):
+def save_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
     :param surface: surface to be saved
@@ -200,7 +200,7 @@ def save_obj_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_obj_multi(surface_list=(), **kwargs):
+def save_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
 
     :param surface_list: list of surfaces to be saved
@@ -282,7 +282,7 @@ def save_obj_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_single(surface=None, **kwargs):
+def save_stl_ascii_single(surface, **kwargs):
     """ Saves a single surface as an ASCII .stl file.
 
     :param surface: surface to be saved
@@ -325,7 +325,7 @@ def save_stl_ascii_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_multi(surface_list=(), **kwargs):
+def save_stl_ascii_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -379,7 +379,7 @@ def save_stl_ascii_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_single(surface=None, **kwargs):
+def save_stl_binary_single(surface, **kwargs):
     """ Saves a single surface as a binary .stl file.
 
     Inspired from https://github.com/apparentlymart/python-stl
@@ -421,7 +421,7 @@ def save_stl_binary_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_multi(surface_list=(), **kwargs):
+def save_stl_binary_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -472,7 +472,7 @@ def save_stl_binary_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_single(surface=None, **kwargs):
+def save_off_single(surface, **kwargs):
     """ Saves a single surface as a .off file.
 
     :param surface: surface to be saved
@@ -518,7 +518,7 @@ def save_off_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_multi(surface_list=(), **kwargs):
+def save_off_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .off file.
 
     :param surface_list: list of surfaces to be saved
