@@ -9,6 +9,7 @@
 
 from . import warnings
 from . import copy
+from . import pickle
 from . import Abstract
 from . import Multi
 from . import utilities
@@ -125,6 +126,55 @@ class Curve(Abstract.Curve):
 
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
+
+    def _save_data(self):
+        # Create a dictionary from the curve data
+        expdata = {'degree': self.degree,
+                   'knot vector': self.knotvector,
+                   'control points': self.ctrlpts}
+        return expdata
+
+    def _load_data(self, impdata):
+        # Set the curve data
+        self.degree = impdata['degree']
+        self.ctrlpts = impdata['control points']
+        self.knotvector = impdata['knot vector']
+
+    def save(self, file_name):
+        """ Saves the curve object as a file using pickle.
+
+        :param file_name: name of the file to be saved
+        :type file_name: str
+        """
+        # Try opening the file for writing
+        try:
+            with open(file_name, 'wb') as fp:
+                # Create the dictionary
+                expdata = self._save_data()
+
+                # Pickle the dictionary
+                pickle.dump(expdata, fp)
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+
+    def load(self, file_name):
+        """ Loads the curve from a pickled file.
+
+        :param file_name: name of the file to be loaded
+        :type file_name: str
+        """
+        # Try opening the file for reading
+        try:
+            with open(file_name, 'rb') as fp:
+                # Read pickled file
+                impdata = pickle.load(fp)
+
+                # Load the dictionary
+                self._load_data(impdata)
+        except IOError:
+            # Show a warning on failure to open file
+            warnings.warn("File " + str(file_name) + " cannot be opened for reading.")
 
     def reset(self, **kwargs):
         """ Resets control or evaluated points.
