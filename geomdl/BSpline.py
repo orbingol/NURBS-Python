@@ -809,7 +809,7 @@ class Surface(Abstract.Surface):
 
     @property
     def ctrlpts2d(self):
-        """ 2D Control points.
+        """ 2D control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
         The rows of the returned tuple correspond to V-direction and the columns correspond to U-direction.

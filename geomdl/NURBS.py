@@ -242,6 +242,23 @@ class Surface(BSpline.Surface):
     __repr__ = __str__
 
     @property
+    def ctrlptsw(self):
+        """ Weighted control points (Pw).
+
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets weighted control points
+        :setter: Sets weighted control points
+        """
+        return self._control_points
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        self.set_ctrlpts(value)
+
+    @property
     def ctrlpts(self):
         """ Control points (P).
 
@@ -278,7 +295,8 @@ class Surface(BSpline.Surface):
     def weights(self):
         """ Weights vector.
 
-        :getter: Extracts the weights vector from weighted control points array
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
         :type: list
         """
         if not self._cache['weights']:
