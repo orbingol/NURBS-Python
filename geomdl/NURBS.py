@@ -74,7 +74,7 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = c
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
             self._cache['weights'] = w
         return tuple(self._cache['ctrlpts'])
 
@@ -103,7 +103,7 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = c
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
             self._cache['weights'] = w
         return tuple(self._cache['weights'])
 
