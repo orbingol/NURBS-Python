@@ -200,24 +200,20 @@ def check_uv(u=None, v=None):
             raise ValueError('"v" value should be between 0 and 1.')
 
 
-def evaluate_bounding_box(ctrlpts, dimension, rational):
+def evaluate_bounding_box(ctrlpts):
     """ Evaluates the bounding box of a curve or a surface.
 
     :param ctrlpts: control points
     :type ctrlpts: list, tuple
-    :param dimension: dimension of the surface/curve
-    :type dimension: int
-    :param rational: flag for rational surface/curve
-    :type rational: bool
     :return: bounding box
     :rtype: list
     """
-    # Find correct dimension of the control points
-    dim = dimension - 1 if rational else dimension
+    # Estimate dimension from the first element of the control points
+    dimension = len(ctrlpts[0])
 
     # Evaluate bounding box
-    bbmin = [float('inf') for _ in range(0, dim)]
-    bbmax = [0.0 for _ in range(0, dim)]
+    bbmin = [float('inf') for _ in range(0, dimension)]
+    bbmax = [0.0 for _ in range(0, dimension)]
     for cpt in ctrlpts:
         for i, arr in enumerate(zip(cpt, bbmin)):
             if arr[0] < arr[1]:

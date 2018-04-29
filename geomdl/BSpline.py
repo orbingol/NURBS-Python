@@ -239,7 +239,7 @@ class Curve(Abstract.Curve):
 
         # Evaluate the curve in the input range
         for idx in range(len(knots)):
-            cpt = [0.0 for _ in range(self.dimension)]
+            cpt = [0.0 for _ in range(self._dimension)]
             for i in range(0, self.degree + 1):
                 cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
                           zip(cpt, self._control_points[spans[idx] - self.degree + i])]
@@ -1124,10 +1124,10 @@ class Surface(Abstract.Surface):
         basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
 
         idx_u = span_u - self.degree_u
-        spt = [0.0 for _ in range(self.dimension)]
+        spt = [0.0 for _ in range(self._dimension)]
 
         for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self.dimension)]
+            temp = [0.0 for _ in range(self._dimension)]
             idx_v = span_v - self.degree_v + l
             for k in range(0, self.degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
@@ -1184,9 +1184,9 @@ class Surface(Abstract.Surface):
         for i in range(len(knots_u)):
             idx_u = spans_u[i] - self.degree_u
             for j in range(len(knots_v)):
-                spt = [0.0 for _ in range(self.dimension)]
+                spt = [0.0 for _ in range(self._dimension)]
                 for l in range(0, self.degree_v + 1):
-                    temp = [0.0 for _ in range(self.dimension)]
+                    temp = [0.0 for _ in range(self._dimension)]
                     idx_v = spans_v[j] - self.degree_v + l
                     for k in range(0, self.degree_u + 1):
                         temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in

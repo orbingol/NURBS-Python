@@ -43,6 +43,8 @@ class Curve(object):
         :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
         :type: integer
         """
+        if self._rational:
+            return self._dimension - 1
         return self._dimension
 
     @property
@@ -214,7 +216,7 @@ class Curve(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts, self.dimension, self.rational)
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
 
@@ -331,6 +333,8 @@ class Surface(object):
         :getter: Gets the dimension of the surface
         :type: integer
         """
+        if self._rational:
+            return self._dimension - 1
         return self._dimension
 
     @property
@@ -662,7 +666,7 @@ class Surface(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts, self.dimension, self.rational)
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
 
