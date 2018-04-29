@@ -25,7 +25,7 @@ def test_nurbs_curve3d_eval1():
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS
+    curve.ctrlptsw = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -49,7 +49,7 @@ def test_nurbs_curve3d_eval2():
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS
+    curve.ctrlptsw = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -73,7 +73,7 @@ def test_nurbs_curve3d_eval3():
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS
+    curve.ctrlptsw = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -97,7 +97,7 @@ def test_nurbs_curve3d_eval4():
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS
+    curve.ctrlptsw = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -121,7 +121,7 @@ def test_nurbs_curve3d_eval5():
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS
+    curve.ctrlptsw = CONTROL_POINTS
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -145,7 +145,7 @@ def test_nurbs_curve3d_eval6():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -169,7 +169,7 @@ def test_nurbs_curve3d_eval7():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -193,7 +193,7 @@ def test_nurbs_curve3d_eval8():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -217,7 +217,7 @@ def test_nurbs_curve3d_eval9():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -241,7 +241,7 @@ def test_nurbs_curve3d_eval10():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -265,7 +265,7 @@ def test_nurbs_curve3d_insert_knot1():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -295,7 +295,7 @@ def test_nurbs_curve3d_insert_knot2():
     curve.degree = 5
 
     # Set weighted control points
-    curve.ctrlpts = CONTROL_POINTS2
+    curve.ctrlptsw = CONTROL_POINTS2
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
