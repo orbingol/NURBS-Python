@@ -618,13 +618,13 @@ class Curve(Abstract.Curve):
         # Create a new curve for the first half
         curve1 = self.__class__()
         curve1.degree = self.degree
-        curve1.ctrlpts = curve1_ctrlpts
+        curve1.set_ctrlpts(curve1_ctrlpts)
         curve1.knotvector = curve1_kv
 
         # Create another curve fot the second half
         curve2 = self.__class__()
         curve2.degree = self.degree
-        curve2.ctrlpts = curve2_ctrlpts
+        curve2.set_ctrlpts(curve2_ctrlpts)
         curve2.knotvector = curve2_kv
 
         # Restore the original curve
