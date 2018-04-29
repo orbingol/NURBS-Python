@@ -10,6 +10,7 @@
 from . import copy
 from . import BSpline
 from . import utilities
+from . import compatibility
 
 
 class Curve(BSpline.Curve):
@@ -48,36 +49,74 @@ class Curve(BSpline.Curve):
     __repr__ = __str__
 
     @property
-    def ctrlpts(self):
-        """ Control points.
+    def ctrlptsw(self):
+        """ Weighted control points (Pw).
 
-        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets weighted control points
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        :getter: Gets the weighted control points
+        :setter: Sets the weighted ccontrol points
+        """
+        return self._control_points
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        self.set_ctrlpts(value)
+
+    @property
+    def ctrlpts(self):
+        """ Unweighted control points (P).
+
+        :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets unweighted control points
         :type: list
         """
+        # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
-            for pt in self._control_points:
-                temp = []
-                for idx in range(self._dimension - 1):
-                    temp.append(float(pt[idx] / pt[-1]))
-                self._cache['ctrlpts'].append(tuple(temp))
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = c
+            self._cache['weights'] = w
         return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        self.set_ctrlpts(value)
+        # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+        if not self.weights:
+            weights = [1.0 for _ in range(len(self._control_points))]
+        else:
+            weights = self.weights
+
+        # Generate weighted control points using the new control points
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
+
+        # Set new weighted control points
+        self.set_ctrlpts(ctrlptsw)
 
     @property
     def weights(self):
         """ Weights vector.
 
-        :getter: Extracts the weights vector from weighted control points array
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
         :type: list
         """
+        # Populate the cache, if necessary
         if not self._cache['weights']:
-            for pt in self._control_points:
-                self._cache['weights'].append(pt[-1])
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = c
+            self._cache['weights'] = w
         return tuple(self._cache['weights'])
+
+    @weights.setter
+    def weights(self, value):
+        if not self.ctrlpts:
+            raise ValueError("Set control points first")
+
+        # Generate weighted control points using the new weights
+        ctrlptsw = compatibility.combine_ctrlpts_weights(self.ctrlpts, value)
+
+        # Set new weighted control points
+        self.set_ctrlpts(ctrlptsw)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -204,18 +243,18 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ 1D Control points.
+        """ Control points (P).
 
-        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets weighted control points.
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets unweighted control points.
         :type: list
         """
         if not self._cache['ctrlpts']:
-            for pt in self._control_points:
-                temp = []
-                for idx in range(self._dimension - 1):
-                    temp.append(float(pt[idx] / pt[-1]))
-                self._cache['ctrlpts'].append(tuple(temp))
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = c
+            self._cache['weights'] = w
         return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
@@ -223,8 +262,17 @@ class Surface(BSpline.Surface):
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
-        # Use set_ctrlpts directly
-        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+        # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+        if not self.weights:
+            weights = [1.0 for _ in range(len(self._control_points))]
+        else:
+            weights = self.weights
+
+        # Generate weighted control points using the new control points
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
+
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self._control_points_size_u, self._control_points_size_v)
 
     @property
     def weights(self):
@@ -234,9 +282,21 @@ class Surface(BSpline.Surface):
         :type: list
         """
         if not self._cache['weights']:
-            for pt in self._control_points:
-                self._cache['weights'].append(pt[-1])
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = c
+            self._cache['weights'] = w
         return tuple(self._cache['weights'])
+
+    @weights.setter
+    def weights(self, value):
+        if not self.ctrlpts:
+            raise ValueError("Set control points first")
+
+        # Generate weighted control points using the new weights
+        ctrlptsw = compatibility.combine_ctrlpts_weights(self.ctrlpts, value)
+
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self._control_points_size_u, self._control_points_size_v)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.

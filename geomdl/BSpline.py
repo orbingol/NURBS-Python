@@ -78,7 +78,7 @@ class Curve(Abstract.Curve):
         self.set_ctrlpts(value)
 
     def set_ctrlpts(self, ctrlpts):
-        """ Sets control points.
+        """ Sets control points and checks if the data is consistent.
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
