@@ -138,6 +138,47 @@ class Curve(BSpline.Curve):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
+    def curvept(self, u):
+        """ Evaluates the curve at the given parameter.
+
+        :param u: parameter
+        :type u: float
+        :return: evaluated curve point
+        :rtype: list
+        """
+        # Call parent function
+        cpt = super(Curve, self).curvept(u)
+
+        # Divide by weight
+        curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
+
+        return curvept
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the curve.
+
+        Keyword arguments:
+
+        * ``start``: start parameter
+        * ``stop``: stop parameter
+
+        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
+        the curve will also be evaluated at the ``stop`` parameter value.
+
+        .. note:: The evaluated curve points are stored in :py:attr:`~evalpts`.
+
+        """
+        # Call parent function
+        super(Curve, self).evaluate(**kwargs)
+
+        # Divide by weight
+        curvepts = []
+        for cptw in self._curve_points:
+            curvept = [float(c / cptw[-1]) for c in cptw[0:(self._dimension - 1)]]
+            curvepts.append(curvept)
+
+        self._curve_points = curvepts
+
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.
@@ -335,6 +376,52 @@ class Surface(BSpline.Surface):
             # Delete the caches
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
+
+    def surfpt(self, u, v):
+        """ Evaluates the surface at the given (u,v) parameter.
+
+        :param u: parameter in the U direction
+        :type u: float
+        :param v: parameter in the V direction
+        :type v: float
+        :return: evaluated surface point at the given knot values
+        :rtype: list
+        """
+        # Call parent function
+        spt = super(Surface, self).surfpt(u, v)
+
+        # Divide by weight
+        surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
+
+        return surfpt
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the surface.
+
+        Keyword arguments:
+
+        * ``start_u``: start parameter in u-direction
+        * ``stop_u``: stop parameter in u-direction
+        * ``start_v``: start parameter in v-direction
+        * ``stop_v``: stop parameter in v-direction
+
+        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
+        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
+        and ``stop_v`` parameter values.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
+
+        """
+        # Call parent function
+        super(Surface, self).evaluate(**kwargs)
+
+        # Divide by weight
+        surfpts = []
+        for sptw in self._surface_points:
+            surfpt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
+            surfpts.append(surfpt)
+
+        self._surface_points = surfpts
 
     # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
     def derivatives(self, u=-1, v=-1, order=0):

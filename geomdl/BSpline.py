@@ -203,13 +203,7 @@ class Curve(Abstract.Curve):
             cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
                       zip(cpt, self._control_points[span - self._degree + i])]
 
-        # Divide by weight, if the curve is rational
-        if self._rational:
-            curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
-        else:
-            curvept = cpt
-
-        return curvept
+        return cpt
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -222,7 +216,7 @@ class Curve(Abstract.Curve):
         The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
         the curve will also be evaluated at the ``stop`` parameter value.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
+        .. note:: The evaluated curve points are stored in :py:attr:`~evalpts`.
 
         """
         # Check all parameters are set before the curve evaluation
@@ -250,13 +244,7 @@ class Curve(Abstract.Curve):
                 cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
                           zip(cpt, self._control_points[spans[idx] - self.degree + i])]
 
-            # Divide by weight, if the curve is rational
-            if self._rational:
-                curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self.dimension - 1)]]
-            else:
-                curvept = cpt
-
-            self._curve_points.append(curvept)
+            self._curve_points.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
@@ -1145,13 +1133,7 @@ class Surface(Abstract.Surface):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
-        # Divide by weight, if the surface is rational
-        if self._rational:
-            surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
-        else:
-            surfpt = spt
-
-        return surfpt
+        return spt
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
@@ -1211,13 +1193,7 @@ class Surface(Abstract.Surface):
                                    zip(temp, self._control_points2D[idx_u + k][idx_v])]
                     spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
 
-                # Divide by weight, if the surface is rational
-                if self._rational:
-                    surfpt = [float(c / spt[-1]) for c in spt[0:(self.dimension - 1)]]
-                else:
-                    surfpt = spt
-
-                self._surface_points.append(surfpt)
+                self._surface_points.append(spt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
