@@ -34,13 +34,18 @@ def bspline_to_nurbs(obj):
 
 
 def bspline_to_nurbs_curve(bs_curve):
-    ctrlptsw = compatibility.combine_ctrlpts_weights(bs_curve.ctrlpts)
     nurbs_curve = NURBS.Curve()
     nurbs_curve.degree = bs_curve.degree
-    nurbs_curve.ctrlpts = ctrlptsw
+    nurbs_curve.ctrlpts = bs_curve.ctrlpts
     nurbs_curve.knotvector = bs_curve.knotvector
     return nurbs_curve
 
 
 def bspline_to_nurbs_surface(bs_surface):
-    pass
+    nurbs_surface = NURBS.Surface()
+    nurbs_surface.degree_u = bs_surface.degree_u
+    nurbs_surface.degree_v = bs_surface.degree_v
+    nurbs_surface.ctrlpts = bs_surface.ctrlpts
+    nurbs_surface.knotvector_u = bs_surface.knotvector_u
+    nurbs_surface.knotvector_v = bs_surface.knotvector_v
+    return nurbs_surface
