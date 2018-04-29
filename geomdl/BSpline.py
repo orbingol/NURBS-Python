@@ -131,27 +131,19 @@ class Curve(Abstract.Curve):
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
 
-    def _save_data(self):
-        # Create a dictionary from the curve data
-        expdata = {'degree': self.degree,
-                   'knotvector': self.knotvector,
-                   'ctrlpts': self.ctrlpts}
-        return expdata
-
-    def _load_data(self, impdata):
-        # Set the curve data
-        self.degree = impdata['degree']
-        self.ctrlpts = impdata['ctrlpts']
-        self.knotvector = impdata['knotvector']
-
     def save(self, file_name):
         """  Saves the curve as a pickled file.
 
         :param file_name: name of the file to be saved
         :type file_name: str
         """
-        data_dict = self._save_data()
-        exchange.save_pickle(data_dict, file_name)
+        # Create a dictionary from the curve data
+        expdata = {'rational': self._rational,
+                   'degree': self._degree,
+                   'knotvector': self._knot_vector,
+                   'ctrlpts': self._control_points}
+
+        exchange.save_pickle(expdata, file_name)
 
     def load(self, file_name):
         """ Loads the curve from a pickled file.
@@ -159,8 +151,15 @@ class Curve(Abstract.Curve):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        data_dict = exchange.load_pickle(file_name)
-        self._load_data(data_dict)
+        impdata = exchange.load_pickle(file_name)
+
+        if self._rational != impdata['rational']:
+            raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
+
+        # Set the curve data
+        self._degree = impdata['degree']
+        self._control_points = impdata['ctrlpts']
+        self._knot_vector = impdata['knotvector']
 
     def reset(self, **kwargs):
         """ Resets control or evaluated points.
@@ -1006,35 +1005,23 @@ class Surface(Abstract.Surface):
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
 
-    def _save_data(self):
-        # Create a dictionary from the surface data
-        expdata = {'degree_u': self.degree_u,
-                   'degree_v': self.degree_v,
-                   'knotvector_u': self.knotvector_u,
-                   'knotvector_v': self.knotvector_v,
-                   'ctrlpts_size_u': self.ctrlpts_size_u,
-                   'ctrlpts_size_v': self.ctrlpts_size_v,
-                   'ctrlpts': self.ctrlpts}
-        return expdata
-
-    def _load_data(self, impdata):
-        # Set the surface data
-        self.degree_u = impdata['degree_u']
-        self.degree_v = impdata['degree_v']
-        self.ctrlpts_size_u = impdata['ctrlpts_size_u']
-        self.ctrlpts_size_v = impdata['ctrlpts_size_v']
-        self.ctrlpts = impdata['ctrlpts']
-        self.knotvector_u = impdata['knotvector_u']
-        self.knotvector_v = impdata['knotvector_v']
-
     def save(self, file_name):
         """ Saves the surface as a pickled file.
 
         :param file_name: name of the file to be saved
         :type file_name: str
         """
-        data_dict = self._save_data()
-        exchange.save_pickle(data_dict, file_name)
+        # Create a dictionary from the surface data
+        expdata = {'rational': self._rational,
+                   'degree_u': self._degree_u,
+                   'degree_v': self._degree_v,
+                   'knotvector_u': self._knot_vector_u,
+                   'knotvector_v': self._knot_vector_v,
+                   'ctrlpts_size_u': self._control_points_size_u,
+                   'ctrlpts_size_v': self._control_points_size_v,
+                   'ctrlpts': self._control_points}
+
+        exchange.save_pickle(expdata, file_name)
 
     def load(self, file_name):
         """ Loads the surface from a pickled file.
@@ -1042,8 +1029,20 @@ class Surface(Abstract.Surface):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        data_dict = exchange.load_pickle(file_name)
-        self._load_data(data_dict)
+        impdata = exchange.load_pickle(file_name)
+
+        # Check if we have loaded the correct type of surface
+        if self._rational != impdata['rational']:
+            raise TypeError("Surface types are not compatible (NURBS-BSpline mismatch)")
+
+        # Set the surface data
+        self._degree_u = impdata['degree_u']
+        self._degree_v = impdata['degree_v']
+        self._control_points_size_u = impdata['ctrlpts_size_u']
+        self._control_points_size_v = impdata['ctrlpts_size_v']
+        self._control_points = impdata['ctrlpts']
+        self._knot_vector_u = impdata['knotvector_u']
+        self._knot_vector_v = impdata['knotvector_v']
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
