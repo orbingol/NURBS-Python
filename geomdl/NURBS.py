@@ -55,7 +55,7 @@ class Curve(BSpline.Curve):
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
         :getter: Gets the weighted control points
-        :setter: Sets the weighted ccontrol points
+        :setter: Sets the weighted control points
         """
         return self._control_points
 
