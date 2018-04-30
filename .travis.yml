@@ -7,6 +7,13 @@ python:
   - "3.6"
   - "pypy"
 
+# branch safelist
+branches:
+  only:
+    - master
+    - 3.x
+    - 2.x
+
 # install required packages
 install:
   - pip install pytest pytest-cov
@@ -14,9 +21,6 @@ install:
 
 # install package and run tests
 script: "python setup.py develop && pytest --cov=./"
-
-# require the branch name to be master
-if: branch = master
 
 # call at the end of CI build
 after_success:
