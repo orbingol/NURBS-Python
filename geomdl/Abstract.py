@@ -880,6 +880,9 @@ class EvaluationStrategy(object):
     i.e. the algorithms that are used to evaluate the curve & surface, take derivatives and more.
     Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
     or improve existing ones.
+
+    The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
+    The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
     """
     __metaclass__ = abc.ABCMeta
 
@@ -887,11 +890,23 @@ class EvaluationStrategy(object):
         pass
 
     @abc.abstractmethod
-    def evaluate_bspline(self, **kwargs):
+    def evaluate_single(self, **kwargs):
+        """ Abstract method for computation of a single point at the specified parameter(s). """
         pass
 
     @abc.abstractmethod
-    def evaluate_nurbs(self, **kwargs):
+    def evaluate(self, **kwargs):
+        """ Abstract method for computation of points over a range of parameters. """
+        pass
+
+    @abc.abstractmethod
+    def derivatives_single(self, **kwargs):
+        """ Abstract method for computation of derivatives at the specified parameter(s). """
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, **kwargs):
+        """ Abstract method for computation of derivatives over a range of parameters. """
         pass
 
 
