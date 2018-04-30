@@ -63,7 +63,7 @@ def read_txt(file_name, two_dimensional=False):
     :type file_name: str
     :param two_dimensional: type of the text file
     :type two_dimensional: bool
-    :return: list of control points
+    :return: list of control points, if two_dimensional, then also returns size in u- and v-directions
     :rtype: list
     """
     ctrlpts = []
@@ -73,14 +73,22 @@ def read_txt(file_name, two_dimensional=False):
         with open(file_name, 'r') as fp:
                 if two_dimensional:
                     # Start reading file
+                    size_u = 0
+                    size_v = 0
                     for line in fp:
                         # Remove whitespace
                         line = line.strip()
                         # Convert the string containing the coordinates into a list
                         control_point_row = line.split(';')
                         # Clean and convert the values
+                        size_v = 0
                         for cpr in control_point_row:
                             ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
+                            size_v += 1
+                        size_u += 1
+
+                    # Return control points, size in u- and v-directions
+                    return ctrlpts, size_u, size_v
                 else:
                     # Start reading file
                     for line in fp:
@@ -88,11 +96,12 @@ def read_txt(file_name, two_dimensional=False):
                         line = line.strip()
                         # Clean and convert the values
                         ctrlpts.append([float(c.strip()) for c in line.split(',')])
+
+                    # Return control points
+                    return ctrlpts
     except IOError:
         # Show a warning on failure to open file
         warnings.warn("File " + str(file_name) + " cannot be opened for reading")
-
-    return ctrlpts
 
 
 def export_csv(obj, file_name, point_type='ctrlpts', scalar=0):
