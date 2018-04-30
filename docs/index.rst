@@ -3,8 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-NURBS-Python Documentation
+NURBS-Python v2.x Documentation
 ==========================
+
+.. note::
+
+    This documentation is for an unsupported version of NURBS-Python. Please remove the old versions and install the
+    latest version via ``pip install geomdl``.
 
 Introduction
 ------------

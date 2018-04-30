@@ -1,0 +1,22 @@
+# https://travis-ci.org/orbingol/NURBS-Python
+
+language: python
+
+python:
+  - "2.7"
+  - "3.6"
+  - "pypy"
+
+# branch safelist
+branches:
+  only:
+    - master
+    - 3.x
+    - 2.x
+
+# install required packages
+install:
+  - pip install pytest
+
+# install package and run tests
+script: "python setup.py develop"
