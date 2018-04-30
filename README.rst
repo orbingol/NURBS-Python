@@ -12,6 +12,14 @@ This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and s
 Python with minimum possible dependencies. The library is fully object-oriented and does *not* depend on any external
 C/C++ libraries.
 
+Branch Information
+------------------
+
+* ``master`` branch contains code for NURBS-Python v4.x series
+* ``3.x`` branch contains code for NURBS-Python v3.x series
+* ``2.x`` branch contains code for NURBS-Python v2.x series
+
+
 Implementation
 --------------
 
@@ -30,85 +38,16 @@ Citing NURBS-Python
 
 I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
 
-Features
-========
-
-NURBS-Python consists of the following modules:
-
-* Core library
-* Multi module
-* Exchange module
-* Visualization module
-
-In addition, it also contains the following experimental components:
-
-* Matplotlib visualization component
-* Shapes component
-
-Core Library
-------------
-
-The core library contains 4 modules:
-
-* ``geomdl.BSpline`` contains Non-Uniform B-Spline (NUBS) evaluation and storage functionality
-* ``geomdl.NURBS`` contains Non-Uniform Rational B-Spline (NURBS) evaluation and storage functionality
-* ``geomdl.CPGen`` contains simple control points grid generation algorithms
-* ``geomdl.utilities`` contains helper functions for generating and altering knot vectors and control points
-
-``geomdl.BSpline`` and ``geomdl.NURBS`` modules contain the following classes:
-
-* **Curve** for evaluating curves (in any dimension)
-* **Surface** for evaluating surfaces
-
-``geomdl.CPGen`` module contains 2 classes for grid generation:
-
-* **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
-* **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
-
-Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes with ``geomdl.Abstract``
-module.
-
-Multi Module
-------------
-
-NURBS-Python provides container-like classes for visualization of multiple curves and surfaces with ``geomdl.Multi``
-module. Please see the documentation for details.
-
-Exchange Module
----------------
-
-NURBS-Python can export `Surface` types in OBJ and STL format using ``geomdl.exchange`` module. This module contains 2
-major functions:
-
-* ``save_obj()`` for saving surfaces as .obj files
-* ``save_stl()`` for saving surfaces as .stl files in ascii or binary format (default is binary)
-
-Visualization Module
---------------------
-
-NURBS-Python provides a visualization module, ``geomdl.VisBase`` to serve as a basis for all possible visualization
-components, such as OpenGL, for plotting 2D/3D curves and surfaces directly using ``render()`` method.
-
-NURBS-Python comes with an experimental visualization component, ``geomdl.visualization`` which implements Matplotlib.
-This component provides a variety of visualization options for surfaces and 2D/3D curves.
-
-Shapes Component
-----------------
-
-Starting from NURBS-Python v3.1, a new experimental component ``geomdl.shapes`` is shipped with the NURBS-Python
-package. The aim of this component is providing an easy way to generate the most common curves and surfaces,
-such as circles and cylinders.
-
 Installation
 ============
 
 Using Pip
 ---------
 
-You can find the NURBS-Python library on `Python Package Index <https://pypi.python.org/pypi/NURBS-Python>`_ and install
+You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl/>`_ and install
 using the following command:
 
-``pip install NURBS-Python``
+``pip install geomdl``
 
 Manual Method
 -------------
@@ -135,15 +74,6 @@ After installing the required packages, execute the following from your favorite
 ``pytest``
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
-
-Branch Information
-==================
-
-* ``3.x`` branch contains code for NURBS-Python v3.x series
-* ``2.x`` branch contains code for NURBS-Python v2.x series
-
-There are some API changes between *v2.x* and *v3.x* series and all updates will be added to the latest version. Old
-versions won't be receiving any new features and updates.
 
 Issues and Reporting
 ====================
@@ -184,7 +114,7 @@ NURBS-Python_ project.
 License
 =======
 
-NURBS-Python is licensed under `The MIT License <LICENSE>`_.
+NURBS-Python is licensed under the `MIT License <LICENSE>`_.
 
 Acknowledgments
 ===============
