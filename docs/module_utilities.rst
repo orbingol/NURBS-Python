@@ -6,5 +6,5 @@ addition, it contains conversion operations related to control points, such as f
 
 .. automodule:: geomdl.utilities
     :members:
-    :exclude-members: basis_functions, basis_functions_all, basis_functions_ders, check_uv, find_span, find_span2, find_multiplicity, check_knot_vector
+    :exclude-members: check_uv, check_knot_vector
     :undoc-members:

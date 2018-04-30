@@ -109,7 +109,7 @@ def generate_ctrlptsw(ctrlpts):
 
     This function
 
-    #. Takes in a 1-D control points list whose coordinates are organized like (x, y, z, w)
+    #. Takes in a 1-D control points list whose coordinates are organized in (x, y, z, w) format
     #. converts into (x*w, y*w, z*w, w) format
     #. Returns the result
 
@@ -133,7 +133,7 @@ def generate_ctrlptsw2d(ctrlpts2d):
 
     This function
 
-    #. Takes in a 2D control points list whose coordinates are organized like (x, y, z, w)
+    #. Takes in a 2D control points list whose coordinates are organized in (x, y, z, w) format
     #. converts into (x*w, y*w, z*w, w) format
     #. Returns the result
 
@@ -163,7 +163,7 @@ def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
 
     This function
 
-    #. Takes in a 2-D control points file whose coordinates are organized like (x, y, z, w)
+    #. Takes in a 2-D control points file whose coordinates are organized in (x, y, z, w) format
     #. Converts into (x*w, y*w, z*w, w) format
     #. Saves the result to a file
 
@@ -189,7 +189,7 @@ def generate_ctrlpts_weights(ctrlpts):
 
     This function
 
-    #. Takes in 1-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
+    #. Takes in 1-D control points list whose coordinates are organized in (x*w, y*w, z*w, w) format
     #. Converts the input control points list into (x, y, z, w) format
     #. Returns the result
 
@@ -258,16 +258,24 @@ def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-def combine_ctrlpts_weights(ctrlpts, weights):
-    """ Multiplies control points with the weights to generate weighted control points in any dimension.
+def combine_ctrlpts_weights(ctrlpts, weights=None):
+    """ Multiplies control points by the weights to generate weighted control points.
 
-    :param ctrlpts: un-weighted control points
+    This function is dimension agnostic, i.e. control points can be in any dimension but weights should be 1D.
+
+    The ``weights`` function parameter can be set to None to let the function generate a weights vector composed of
+    1.0 values. This feature can be used to convert B-Spline basis to NURBS basis.
+
+    :param ctrlpts: unweighted control points
     :type ctrlpts: list, tuple
-    :param weights: weights vector
-    :type weights: list, tuple
+    :param weights: weights vector; if set to None, a weights vector of 1.0s will be automatically generated
+    :type weights: list, tuple or None
     :return: weighted control points
     :rtype: list
     """
+    if weights is None:
+        weights = [1.0 for _ in range(len(ctrlpts))]
+
     ctrlptsw = []
     for pt, w in zip(ctrlpts, weights):
         temp = [float(c * w) for c in pt]
@@ -275,6 +283,27 @@ def combine_ctrlpts_weights(ctrlpts, weights):
         ctrlptsw.append(temp)
 
     return ctrlptsw
+
+
+def separate_ctrlpts_weights(ctrlptsw):
+    """ Divides weighted control points by weights to generate unweighted control points and weights vector.
+
+    This function is dimension agnostic, i.e. control points can be in any dimension but the last element of the array
+    should indicate the weight.
+
+    :param ctrlptsw: weighted control points
+    :type ctrlptsw: list, tuple
+    :return: unweighted control points and weights vector
+    :rtype: list
+    """
+    ctrlpts = []
+    weights = []
+    for ptw in ctrlptsw:
+        temp = [float(pw / ptw[-1]) for pw in ptw[:-1]]
+        ctrlpts.append(temp)
+        weights.append(ptw[-1])
+
+    return [ctrlpts, weights]
 
 
 def _read_ctrltps2d_file(file_in):

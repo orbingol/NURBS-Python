@@ -7,10 +7,10 @@
 
 """
 
-import copy
-
+from . import copy
 from . import BSpline
-from . import utilities as utils
+from . import utilities
+from . import compatibility
 
 
 class Curve(BSpline.Curve):
@@ -25,7 +25,7 @@ class Curve(BSpline.Curve):
     * delta
     * ctrlpts
     * weights
-    * curvepts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
@@ -33,7 +33,7 @@ class Curve(BSpline.Curve):
     .. note::
 
         If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -49,85 +49,135 @@ class Curve(BSpline.Curve):
     __repr__ = __str__
 
     @property
-    def ctrlpts(self):
-        """ Control points.
+    def ctrlptsw(self):
+        """ Weighted control points (Pw).
 
-        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets weighted control points
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        :getter: Gets the weighted control points
+        :setter: Sets the weighted control points
+        """
+        return self._control_points
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        self.set_ctrlpts(value)
+
+    @property
+    def ctrlpts(self):
+        """ Unweighted control points (P).
+
+        :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets unweighted control points
         :type: list
         """
+        # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
-            for pt in self._control_points:
-                temp = []
-                for idx in range(self._dimension - 1):
-                    temp.append(float(pt[idx] / pt[-1]))
-                self._cache['ctrlpts'].append(tuple(temp))
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
         return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        self.set_ctrlpts(value)
+        # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+        if not self.weights:
+            weights = [1.0 for _ in range(len(self._control_points))]
+        else:
+            weights = self.weights
+
+        # Generate weighted control points using the new control points
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
+
+        # Set new weighted control points
+        self.set_ctrlpts(ctrlptsw)
 
     @property
     def weights(self):
         """ Weights vector.
 
-        :getter: Extracts the weights vector from weighted control points array
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
         :type: list
         """
+        # Populate the cache, if necessary
         if not self._cache['weights']:
-            for pt in self._control_points:
-                self._cache['weights'].append(pt[-1])
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
         return tuple(self._cache['weights'])
 
-    # Cleans up the control points and the cache
-    def _reset_ctrlpts(self):
-        # Call parent function to process control points
-        super(Curve, self)._reset_ctrlpts()
-        # Delete the caches
-        del self._cache['ctrlpts'][:]
-        del self._cache['weights'][:]
+    @weights.setter
+    def weights(self, value):
+        if not self.ctrlpts:
+            raise ValueError("Set control points first")
 
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
+        # Generate weighted control points using the new weights
+        ctrlptsw = compatibility.combine_ctrlpts_weights(self.ctrlpts, value)
 
-        :return: list of control points
-        :rtype: list
+        # Set new weighted control points
+        self.set_ctrlpts(ctrlptsw)
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
         """
-        if not self._cache['ctrlpts']:
-            return self.ctrlpts
-        return self._cache['ctrlpts']
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
 
-    # Evaluates the rational curve at the given parameter
-    def curvept(self, u=-1, **kwargs):
-        """ Evaluates the curve at the input parameter value.
+        # Call parent function
+        super(Curve, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
+
+        if reset_ctrlpts:
+            # Delete the caches
+            del self._cache['ctrlpts'][:]
+            del self._cache['weights'][:]
+
+    def curvept(self, u):
+        """ Evaluates the curve at the given parameter.
 
         :param u: parameter
         :type u: float
-        :return: evaluated curve point at the given knot value
+        :return: evaluated curve point
         :rtype: list
         """
-        check_vars = kwargs.get('check_vars', True)
-
-        if check_vars:
-            # Check all parameters are set before the curve evaluation
-            self._check_variables()
-            # Check if u parameter is in the range
-            utils.check_uv(u)
-
-        # Algorithm A4.1
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
-        cptw = [0.0 for _ in range(self._dimension)]
-        for i in range(0, self._degree + 1):
-            cptw[:] = [elem1 + (basis[i] * elem2) for elem1, elem2 in
-                       zip(cptw, self._control_points[span - self._degree + i])]
+        # Call parent function
+        cpt = super(Curve, self).curvept(u)
 
         # Divide by weight
-        cpt = [float(pt / cptw[-1]) for pt in cptw[0:(self._dimension - 1)]]
+        curvept = [float(pt / cpt[-1]) for pt in cpt[0:(self._dimension - 1)]]
 
-        return cpt
+        return curvept
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the curve.
+
+        Keyword arguments:
+
+        * ``start``: start parameter
+        * ``stop``: stop parameter
+
+        The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
+        the curve will also be evaluated at the ``stop`` parameter value.
+
+        .. note:: The evaluated curve points are stored in :py:attr:`~evalpts`.
+
+        """
+        # Call parent function
+        super(Curve, self).evaluate(**kwargs)
+
+        # Divide by weight
+        curvepts = []
+        for cptw in self._curve_points:
+            curvept = [float(c / cptw[-1]) for c in cptw[0:(self._dimension - 1)]]
+            curvepts.append(curvept)
+
+        self._curve_points = curvepts
 
     # Evaluates the rational curve derivative
     def derivatives(self, u=-1, order=0):
@@ -148,7 +198,7 @@ class Curve(BSpline.Curve):
         for k in range(0, order + 1):
             v = [val for val in CKw[k][0:(self._dimension - 1)]]
             for i in range(1, k + 1):
-                v[:] = [tmp - (utils.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
+                v[:] = [tmp - (utilities.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
             CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
 
         # Return C(u) derivatives
@@ -209,7 +259,7 @@ class Surface(BSpline.Surface):
     * ctrlpts
     * ctrlpts2d
     * weights
-    * surfpts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
@@ -217,7 +267,7 @@ class Surface(BSpline.Surface):
     .. note::
 
         If you update any of the data storage elements after the surface evaluation, the surface points stored in
-        :py:attr:`~surfpts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -233,19 +283,39 @@ class Surface(BSpline.Surface):
     __repr__ = __str__
 
     @property
-    def ctrlpts(self):
-        """ 1D Control points.
+    def ctrlptsw(self):
+        """ Weighted control points (Pw).
 
-        :getter: Gets un-weighted control points. Use :py:attr:`~weights` to get weights vector.
-        :setter: Sets weighted control points.
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets weighted control points
+        :setter: Sets weighted control points
+        """
+        return self._control_points
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
+            raise ValueError("Please set size of the control points in u and v directions")
+
+        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+
+    @property
+    def ctrlpts(self):
+        """ Control points (P).
+
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets unweighted control points.
         :type: list
         """
         if not self._cache['ctrlpts']:
-            for pt in self._control_points:
-                temp = []
-                for idx in range(self._dimension - 1):
-                    temp.append(float(pt[idx] / pt[-1]))
-                self._cache['ctrlpts'].append(tuple(temp))
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
         return tuple(self._cache['ctrlpts'])
 
     @ctrlpts.setter
@@ -253,43 +323,65 @@ class Surface(BSpline.Surface):
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
-        # Use set_ctrlpts directly
-        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+        # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+        if not self.weights:
+            weights = [1.0 for _ in range(len(self._control_points))]
+        else:
+            weights = self.weights
+
+        # Generate weighted control points using the new control points
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
+
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self._control_points_size_u, self._control_points_size_v)
 
     @property
     def weights(self):
         """ Weights vector.
 
-        :getter: Extracts the weights vector from weighted control points array
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
         :type: list
         """
         if not self._cache['weights']:
-            for pt in self._control_points:
-                self._cache['weights'].append(pt[-1])
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
         return tuple(self._cache['weights'])
 
-    # Cleans up the control points and the cache
-    def _reset_ctrlpts(self):
-        # Call parent function to process control points
-        super(Surface, self)._reset_ctrlpts()
-        # Delete the caches
-        del self._cache['ctrlpts'][:]
-        del self._cache['weights'][:]
+    @weights.setter
+    def weights(self, value):
+        if not self.ctrlpts:
+            raise ValueError("Set control points first")
 
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
+        # Generate weighted control points using the new weights
+        ctrlptsw = compatibility.combine_ctrlpts_weights(self.ctrlpts, value)
 
-        :return: list of control points
-        :rtype: list
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self._control_points_size_u, self._control_points_size_v)
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
         """
-        if not self._cache['ctrlpts']:
-            return self.ctrlpts
-        return self._cache['ctrlpts']
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
 
-    # Evaluates rational surface at the given (u, v) parameters
-    def surfpt(self, u=-1, v=-1, **kwargs):
-        """ Evaluates the surface at the given (u, v) parameter pair.
+        # Call parent function
+        super(Surface, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
+
+        if reset_ctrlpts:
+            # Delete the caches
+            del self._cache['ctrlpts'][:]
+            del self._cache['weights'][:]
+
+    def surfpt(self, u, v):
+        """ Evaluates the surface at the given (u,v) parameter.
 
         :param u: parameter in the U direction
         :type u: float
@@ -298,33 +390,41 @@ class Surface(BSpline.Surface):
         :return: evaluated surface point at the given knot values
         :rtype: list
         """
-        check_vars = kwargs.get('check_vars', True)
-
-        if check_vars:
-            # Check all parameters are set before the surface evaluation
-            self._check_variables()
-            # Check if u and v parameters are correct
-            utils.check_uv(u, v)
-
-        # Algorithm A4.3
-        span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
-        basis_v = utils.basis_functions(self._degree_v, tuple(self._knot_vector_v), span_v, v)
-        span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
-        basis_u = utils.basis_functions(self._degree_u, tuple(self._knot_vector_u), span_u, u)
-        idx_u = span_u - self._degree_u
-        sptw = [0.0 for _ in range(self._dimension)]
-
-        for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self._dimension)]
-            idx_v = span_v - self._degree_v + l
-            for k in range(0, self._degree_u + 1):
-                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-            sptw[:] = [ptw + (basis_v[l] * tmp) for ptw, tmp in zip(sptw, temp)]
+        # Call parent function
+        spt = super(Surface, self).surfpt(u, v)
 
         # Divide by weight
-        spt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
+        surfpt = [float(c / spt[-1]) for c in spt[0:(self._dimension - 1)]]
 
-        return spt
+        return surfpt
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the surface.
+
+        Keyword arguments:
+
+        * ``start_u``: start parameter in u-direction
+        * ``stop_u``: stop parameter in u-direction
+        * ``start_v``: start parameter in v-direction
+        * ``stop_v``: stop parameter in v-direction
+
+        The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
+        in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
+        and ``stop_v`` parameter values.
+
+        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
+
+        """
+        # Call parent function
+        super(Surface, self).evaluate(**kwargs)
+
+        # Divide by weight
+        surfpts = []
+        for sptw in self._surface_points:
+            surfpt = [float(c / sptw[-1]) for c in sptw[0:(self._dimension - 1)]]
+            surfpts.append(surfpt)
+
+        self._surface_points = surfpts
 
     # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
@@ -359,16 +459,16 @@ class Surface(BSpline.Surface):
                 v = copy.deepcopy(SKLw[k][l])
 
                 for j in range(1, l + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (utilities.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
                             zip(v, SKL[k][l - j])]
                 for i in range(1, k + 1):
-                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
                             zip(v, SKL[k - i][l])]
                     v2 = [0.0 for _ in range(self._dimension - 1)]
                     for j in range(1, l + 1):
-                        v2[:] = [tmp + (utils.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
+                        v2[:] = [tmp + (utilities.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
                                  zip(v2, SKL[k - i][l - j])]
-                    v[:] = [tmp - (utils.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
                 SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(self._dimension - 1)]]
 

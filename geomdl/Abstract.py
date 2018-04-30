@@ -7,9 +7,9 @@
 
 """
 
-import abc
-from warnings import warn
-import math
+from . import abc
+from . import warnings
+from . import utilities
 
 
 class Curve(object):
@@ -30,6 +30,11 @@ class Curve(object):
         self._cache = {}  # cache dictionary
 
     @property
+    def rational(self):
+        """ Returns True if the curve is rational. """
+        return self._rational
+
+    @property
     def dimension(self):
         """ Dimension of the curve.
 
@@ -38,6 +43,8 @@ class Curve(object):
         :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
         :type: integer
         """
+        if self._rational:
+            return self._dimension - 1
         return self._dimension
 
     @property
@@ -72,8 +79,8 @@ class Curve(object):
         if val < 0:
             raise ValueError("Degree cannot be less than zero")
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set degree
         self._degree = val
@@ -105,7 +112,7 @@ class Curve(object):
         self._control_points = value
 
     @property
-    def curvepts(self):
+    def evalpts(self):
         """ Evaluated curve points.
 
         :getter: Gets the coordinates of the evaluated points
@@ -129,21 +136,21 @@ class Curve(object):
             if self._knot_vector is not None and len(self._knot_vector) != 0:
                 self._sample_size = int(1.0 / self.delta) + 1
             else:
-                warn("Cannot determine the sample size.")
+                warnings.warn("Cannot determine the sample size.")
                 return 0
         return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
         if self._knot_vector is None or len(self._knot_vector) == 0:
-            warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
+            warnings.warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
             return
         # To make it operate like linspace, we have to know the starting and ending points.
         start = self._knot_vector[self._degree]
         stop = self._knot_vector[-(self._degree+1)]
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set delta value
         self._delta = (stop - start) / float(value - 1)
@@ -173,8 +180,8 @@ class Curve(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the curve points list, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points list
+        self.reset(evalpts=True)
 
         # Set new delta value
         self._delta = float(value)
@@ -195,7 +202,7 @@ class Curve(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of VisAbstract class")
+            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
 
@@ -209,29 +216,9 @@ class Curve(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._eval_bbox()
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the curve. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [tuple(bbmin), tuple(bbmax)]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -246,7 +233,7 @@ class Curve(object):
 
         """
         if not self._vis_component:
-            warn("No visualization component has set")
+            warnings.warn("No visualization component has been set")
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
@@ -262,8 +249,27 @@ class Curve(object):
         # Run the visualization component
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self.curvepts, name="Curve", color=curvecolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.evalpts, name="Curve", color=curvecolor, plot_type='evalpts')
         self._vis_component.render()
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
+            self._control_points = None
+            self._bounding_box = None
+
+        if reset_evalpts:
+            self._curve_points = None
 
     # Checks whether the curve evaluation is possible or not
     def _check_variables(self):
@@ -280,15 +286,6 @@ class Curve(object):
             param_list.append('knotvector')
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
-
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        self._control_points = None
-        self._bounding_box = None
-
-    # Resets the evaluated points
-    def _reset_evalpts(self):
-        self._curve_points = None
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
@@ -323,6 +320,11 @@ class Surface(object):
         self._cache = {}  # cache dictionary
 
     @property
+    def rational(self):
+        """ Returns True if the surface is rational. """
+        return self._rational
+
+    @property
     def dimension(self):
         """ Dimension of the surface.
 
@@ -331,6 +333,8 @@ class Surface(object):
         :getter: Gets the dimension of the surface
         :type: integer
         """
+        if self._rational:
+            return self._dimension - 1
         return self._dimension
 
     @property
@@ -380,8 +384,8 @@ class Surface(object):
         val = int(value)
         if val <= 0:
             raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
         # Set degree u
         self._degree_u = int(value)
 
@@ -400,8 +404,8 @@ class Surface(object):
         val = int(value)
         if val <= 0:
             raise ValueError("Degree cannot be less than zero")
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
         # Set degree v
         self._degree_v = val
 
@@ -492,7 +496,7 @@ class Surface(object):
         self._control_points_size_v = value
 
     @property
-    def surfpts(self):
+    def evalpts(self):
         """ Evaluated surface points.
 
         :getter: Gets the coordinates of the evaluated points
@@ -518,7 +522,7 @@ class Surface(object):
             elif self._knot_vector_v is not None and len(self._knot_vector_v) != 0:
                 self._sample_size = int(1.0 / self.delta_v) + 1
             else:
-                warn("Cannot determine the sample size")
+                warnings.warn("Cannot determine the sample size")
                 return 0
         return self._sample_size
 
@@ -526,7 +530,7 @@ class Surface(object):
     def sample_size(self, value):
         if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or\
                 (self._knot_vector_v is None or len(self._knot_vector_v) == 0):
-            warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
+            warnings.warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -535,8 +539,8 @@ class Surface(object):
         start_v = self._knot_vector_v[self._degree_v]
         stop_v = self._knot_vector_v[-(self._degree_v+1)]
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set delta values
         self._delta_u = (stop_u - start_u) / float(value - 1)
@@ -567,8 +571,8 @@ class Surface(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set a new delta value
         self._delta_u = float(value)
@@ -595,8 +599,8 @@ class Surface(object):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set a new delta value
         self._delta_v = float(value)
@@ -633,7 +637,7 @@ class Surface(object):
             else:
                 raise ValueError("Surface requires 2 delta values")
         else:
-            warn("Cannot set delta. Please use a float or a list with 2 elements")
+            warnings.warn("Cannot set delta. Please use a float or a list with 2 elements")
 
     @property
     def vis(self):
@@ -647,7 +651,7 @@ class Surface(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of VisAbstract class")
+            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
 
         self._vis_component = value
@@ -662,29 +666,9 @@ class Surface(object):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._eval_bbox()
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
-
-    def _eval_bbox(self):
-        """ Evaluates bounding box of the surface. """
-        # Find correct dimension of the control points
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-
-        # Evaluate bounding box
-        bbmin = [float('inf') for _ in range(0, dim)]
-        bbmax = [0.0 for _ in range(0, dim)]
-        for cpt in self.ctrlpts:
-            for i, arr in enumerate(zip(cpt, bbmin)):
-                if arr[0] < arr[1]:
-                    bbmin[i] = arr[0]
-            for i, arr in enumerate(zip(cpt, bbmax)):
-                if arr[0] > arr[1]:
-                    bbmax[i] = arr[0]
-
-        self._bounding_box = [tuple(bbmin), tuple(bbmax)]
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -692,14 +676,14 @@ class Surface(object):
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
-        Possible keyword arguments are
+        Keyword Arguments:
 
         * ``cpcolor``: sets the color of the control points grid
         * ``surfcolor``: sets the color of the surface
 
         """
         if not self._vis_component:
-            warn("No visualization component has set")
+            warnings.warn("No visualization component has been set")
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
@@ -717,20 +701,32 @@ class Surface(object):
         self._vis_component.add(ptsarr=self.ctrlpts,
                                 size=[self._control_points_size_u, self._control_points_size_v],
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self._surface_points,
+        self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render()
 
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        self._control_points = None
-        self._control_points2D = None
-        self._bounding_box = None
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
 
-    # Resets the evaluated points
-    def _reset_evalpts(self):
-        self._surface_points = None
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
+            self._control_points = None
+            self._control_points2D = None
+            self._control_points_size_u = 0
+            self._control_points_size_v = 0
+            self._bounding_box = None
+
+        if reset_evalpts:
+            self._surface_points = None
 
     # Checks whether the surface evaluation is possible or not
     def _check_variables(self):
@@ -833,7 +829,7 @@ class Multi(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warn("Visualization component is NOT an instance of the abstract class")
+            warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
 
@@ -844,7 +840,7 @@ class Multi(object):
         :type element:
         """
         if not isinstance(element, self._instance):
-            warn("Cannot add, incompatible type.")
+            warnings.warn("Cannot add, incompatible type.")
             return
         self._elements.append(element)
 
@@ -855,7 +851,7 @@ class Multi(object):
         :type elements: list, tuple
         """
         if not isinstance(elements, (list, tuple)):
-            warn("Input must be a list or a tuple")
+            warnings.warn("Input must be a list or a tuple")
             return
 
         for element in elements:

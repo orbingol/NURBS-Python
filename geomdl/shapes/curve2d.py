@@ -7,7 +7,7 @@
 
 """
 
-from geomdl import NURBS
+from . import NURBS
 
 
 # Generates a NURBS circle from 9 control points

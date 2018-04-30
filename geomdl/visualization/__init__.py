@@ -7,3 +7,7 @@
 __author__ = "Onur Rauf Bingol"
 __version__ = "1.0.0"
 __license__ = "MIT"
+
+
+from geomdl import Abstract
+from geomdl import utilities

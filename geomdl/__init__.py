@@ -5,5 +5,16 @@
 """
 
 __author__ = "Onur Rauf Bingol"
-__version__ = "3.7.5"
+__version__ = "4.0-beta1"
 __license__ = "MIT"
+
+
+import sys
+import abc
+import math
+from array import array
+import random
+import copy
+import warnings
+import struct
+import pickle

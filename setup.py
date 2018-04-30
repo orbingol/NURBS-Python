@@ -18,8 +18,7 @@ def get_property(prop, project):
 
 
 setup(
-    name='NURBS-Python',
-    # name='geomdl',
+    name='geomdl',
     version=get_property('__version__', 'geomdl'),
     description='NURBS curve and surface evaluation library in pure python',
     author='Onur Rauf Bingol',

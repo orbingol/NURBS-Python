@@ -7,12 +7,13 @@
 
 """
 
-import warnings
-import copy
-
+from . import warnings
+from . import copy
 from . import Abstract
 from . import Multi
-from . import utilities as utils
+from . import utilities
+from . import helpers
+from . import exchange
 
 
 class Curve(Abstract.Curve):
@@ -26,7 +27,7 @@ class Curve(Abstract.Curve):
     * knotvector
     * delta
     * ctrlpts
-    * curvepts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
     Additional details on the file formats can be found in the documentation.
@@ -34,7 +35,7 @@ class Curve(Abstract.Curve):
     .. note::
 
         If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~curvepts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -50,11 +51,14 @@ class Curve(Abstract.Curve):
     __repr__ = __str__
 
     def __call__(self, degree, ctrlpts, knotvector):
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        self.reset(ctrlpts=True, evalpts=True)
         self.degree = degree
         self.ctrlpts = ctrlpts
         self.knotvector = knotvector
+
+    @property
+    def curvepts(self):
+        return self.evalpts
 
     @property
     def ctrlpts(self):
@@ -74,7 +78,7 @@ class Curve(Abstract.Curve):
         self.set_ctrlpts(value)
 
     def set_ctrlpts(self, ctrlpts):
-        """ Sets control points.
+        """ Sets control points and checks if the data is consistent.
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
@@ -83,9 +87,8 @@ class Curve(Abstract.Curve):
         if len(ctrlpts) < self._degree + 1:
             raise ValueError("Number of control points should be at least degree + 1")
 
-        # Clean up the curve and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
+        # Clean up the curve and control points lists
+        self.reset(ctrlpts=True, evalpts=True)
 
         # Estimate dimension by checking the size of the first element
         self._dimension = len(ctrlpts[0])
@@ -116,257 +119,95 @@ class Curve(Abstract.Curve):
             raise ValueError("Set degree and control points first")
 
         # Normalize the input knot vector
-        value_normalized = utils.normalize_knot_vector(value)
+        value_normalized = utilities.normalize_knot_vector(value)
 
         # Check knot vector validity
-        if not utils.check_knot_vector(self._degree, value_normalized, len(self._control_points)):
+        if not utilities.check_knot_vector(self._degree, value_normalized, len(self._control_points)):
             raise ValueError("Input is not a valid knot vector")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points lists
+        self.reset(evalpts=True)
 
         # Set knot vector
         self._knot_vector = [float(kv) for kv in value_normalized]
 
-    # Resets the control points
-    def _reset_ctrlpts(self):
-        if self._control_points:
-            # Delete control points
+    def save(self, file_name):
+        """  Saves the curve as a pickled file.
+
+        :param file_name: name of the file to be saved
+        :type file_name: str
+        """
+        # Create a dictionary from the curve data
+        expdata = {'rational': self._rational,
+                   'degree': self._degree,
+                   'knotvector': self._knot_vector,
+                   'ctrlpts': self._control_points}
+
+        exchange.save_pickle(expdata, file_name)
+
+    def load(self, file_name):
+        """ Loads the curve from a pickled file.
+
+        :param file_name: name of the file to be loaded
+        :type file_name: str
+        """
+        impdata = exchange.load_pickle(file_name)
+
+        if self._rational != impdata['rational']:
+            raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
+
+        # Set the curve data
+        self._degree = impdata['degree']
+        self._control_points = impdata['ctrlpts']
+        self._knot_vector = impdata['knotvector']
+
+    def reset(self, **kwargs):
+        """ Resets control or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
             del self._control_points[:]
-            # Delete bounding box
             del self._bounding_box[:]
 
-    # Resets the evaluated curve points
-    def _reset_evalpts(self):
-        if self._curve_points:
-            # Delete the curve points
+        if reset_evalpts:
             del self._curve_points[:]
 
-    # Reads control points from a text file
-    def read_ctrlpts_from_txt(self, filename=''):
-        """ Loads control points from a text file.
-
-        Please see the documentation for the text file format.
-
-        :param filename: input file name
-        :type filename: str
-        :return: True if control points are loaded correctly, False otherwise
-        :rtype: bool
-        """
-        # Clean up the curve and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for reading
-        try:
-            with open(filename, 'r') as fp:
-
-                ctrlpts = []
-                for line in fp:
-                    # Remove whitespace
-                    line = line.strip()
-                    # Convert the string containing the coordinates into a list
-                    coord = line.split(',')
-                    # Remove extra whitespace, convert to float and add to control points array
-                    ctrlpts.append([float(c.strip()) for c in coord])
-
-                # Set control points
-                self.ctrlpts = ctrlpts
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for reading")
-            ret_check = False
-
-        return ret_check
-
-    # Saves control points to a text file
-    def save_ctrlpts_to_txt(self, filename=""):
-        """ Saves control points to a text file.
-
-        Please see the documentation for the text file format.
-
-        :param filename: output file name
-        :type filename: str
-        :return: True if control points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        # Check if we have any control points
-        if not self._control_points:
-            warnings.warn("There are no control points to save!")
-            return
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-
-                # Loop through the control points
-                for pt in self._control_points:
-                    line = ""
-                    for idx, coord in enumerate(pt):
-                        if idx:  # Add comma if we are not on the first element
-                            line += ","
-                        line += str(coord)
-                    fp.write(line + "\n")
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing")
-            ret_check = False
-
-        return ret_check
-
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
-
-        :return: list of control points
-        :rtype: list
-        """
-        return self._control_points
-
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-        line = ""
-        for i in range(0, dim):
-            line += "dim " + str(i + 1) + ", "
-        line += "scalar\n"
-        return line
-
-    # Saves control points to a CSV file
-    def save_ctrlpts_to_csv(self, filename="", scalar=0):
-        """ Saves control points to a comma separated text file.
-
-        :param filename: output file name
-        :type filename: str
-        :param scalar: value of the scalar column in the output, defaults to 0
-        :type scalar: int
-        :return: True if control points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        # Check if we have any control points
-        if not self._control_points:
-            warnings.warn("There are no control points to save!")
-            return
-
-        if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float")
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-                # Construct the header and write it to the file
-                fp.write(self._get_csv_header())
-
-                # Loop through control points
-                ctrlpts = self._get_ctrlpts_for_exporting()
-                for pt in ctrlpts:
-                    # Fill coordinates
-                    line = ", ".join(str(c) for c in pt)
-                    # Fill scalar column
-                    line += ", " + str(scalar) + "\n"
-                    # Write line to file
-                    fp.write(line)
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
-            ret_check = False
-
-        return ret_check
-
-    # Saves evaluated curve points to a CSV file
-    def save_curvepts_to_csv(self, filename="", scalar=0):
-        """ Saves evaluated curve points to a comma separated text file.
-
-        :param filename: output file name
-        :type filename: str
-        :param scalar: value of the scalar column in the output, defaults to 0
-        :type scalar: int
-        :return: True if curve points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float")
-
-        # Find surface points if there is none
-        if not self._curve_points:
-            self.evaluate()
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-                # Construct the header and write it to the file
-                fp.write(self._get_csv_header())
-
-                # Loop through control points
-                for pt in self._curve_points:
-                    # Fill coordinates
-                    line = ", ".join(str(c) for c in pt)
-                    # Fill scalar column
-                    line += ", " + str(scalar) + "\n"
-                    # Write line to file
-                    fp.write(line)
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing")
-            ret_check = False
-
-        return ret_check
-
-    # Evaluates the B-Spline curve at the given parameter
-    def curvept(self, u=-1, **kwargs):
-        """ Evaluates the B-Spline curve at the given parameter value.
+    def curvept(self, u):
+        """ Evaluates the curve at the given parameter.
 
         :param u: parameter
         :type u: float
-        :return: evaluated curve point at the given knot value
+        :return: evaluated curve point
         :rtype: list
         """
-        check_vars = kwargs.get('check_vars', True)
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+        # Check u parameters are correct
+        utilities.check_uv(u)
 
-        if check_vars:
-            # Check all parameters are set before the curve evaluation
-            self._check_variables()
-            # Check u parameters are correct
-            utils.check_uv(u)
+        # Algorithm A3.1 and A4.1
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        basis = helpers.basis_function(self.degree, self.knotvector, span, u)
 
-        # Algorithm A3.1
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        basis = utils.basis_functions(self._degree, tuple(self._knot_vector), span, u)
         cpt = [0.0 for _ in range(self._dimension)]
         for i in range(0, self._degree + 1):
-            cpt[:] = [curve_pt + (basis[i] * ctrl_pt) for curve_pt, ctrl_pt in
+            cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
                       zip(cpt, self._control_points[span - self._degree + i])]
 
         return cpt
 
-    # Evaluates the B-Spline curve
     def evaluate(self, **kwargs):
-        """ Evaluates the curve in the given interval.
+        """ Evaluates the curve.
 
-        Possible keyword arguments are
+        Keyword arguments:
 
         * ``start``: start parameter
         * ``stop``: stop parameter
@@ -374,26 +215,34 @@ class Curve(Abstract.Curve):
         The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
         the curve will also be evaluated at the ``stop`` parameter value.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~curvepts`.
+        .. note:: The evaluated curve points are stored in :py:attr:`~evalpts`.
 
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
 
         # Find evaluation start and stop parameter values
-        start = kwargs.get('start', self._knot_vector[self._degree])
-        stop = kwargs.get('stop', self._knot_vector[-(self._degree+1)])
+        start = kwargs.get('start', self.knotvector[self.degree])
+        stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
 
         # Check if the input parameters are in the range
-        utils.check_uv(start)
-        utils.check_uv(stop)
+        utilities.check_uv(start)
+        utilities.check_uv(stop)
 
-        # Clean up the curve points, if necessary
-        self._reset_evalpts()
+        # Clean up the curve points
+        self.reset(evalpts=True)
+
+        knots = utilities.linspace(start, stop, self.sample_size)
+        spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)
+        basis = helpers.basis_functions(self.degree, self.knotvector, spans, knots)
 
         # Evaluate the curve in the input range
-        for u in utils.frange(start, stop, self._delta):
-            cpt = self.curvept(u, check_vars=False)
+        for idx in range(len(knots)):
+            cpt = [0.0 for _ in range(self._dimension)]
+            for i in range(0, self.degree + 1):
+                cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
+                          zip(cpt, self._control_points[spans[idx] - self.degree + i])]
+
             self._curve_points.append(cpt)
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
@@ -412,7 +261,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        utils.check_uv(u)
+        utilities.check_uv(u)
 
         # Algorithm A3.2
         du = min(self._degree, order)
@@ -421,8 +270,8 @@ class Curve(Abstract.Curve):
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
 
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        bfunsders = utils.basis_functions_ders(self._degree, tuple(self._knot_vector), span, u, du)
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        bfunsders = helpers.basis_function_ders(self._degree, tuple(self._knot_vector), span, u, du)
 
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
@@ -480,7 +329,7 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        utils.check_uv(u)
+        utilities.check_uv(u)
 
         # Algorithm A3.4
         du = min(self._degree, order)
@@ -489,8 +338,8 @@ class Curve(Abstract.Curve):
         for k in range(self._degree + 1, order + 1):
             CK[k] = [0.0 for _ in range(self._dimension)]
 
-        span = utils.find_span(self._degree, tuple(self._knot_vector), len(self._control_points), u)
-        bfuns = utils.basis_functions_all(self._degree, tuple(self._knot_vector), span, u)
+        span = helpers.find_span(self.knotvector, len(self._control_points), u)
+        bfuns = helpers.basis_function_all(self._degree, tuple(self._knot_vector), span, u)
         PK = self.derivatives_ctrlpts(du, span - self._degree, span)
 
         for k in range(0, du + 1):
@@ -524,7 +373,7 @@ class Curve(Abstract.Curve):
 
         # Normalize the tangent vector
         if normalize:
-            der_u = utils.vector_normalize(der_u)
+            der_u = utilities.vector_normalize(der_u)
 
         # Return the list
         return point, der_u
@@ -573,7 +422,7 @@ class Curve(Abstract.Curve):
 
         # Normalize the normal vector
         if normalize:
-            der_u = utils.vector_normalize(der_u)
+            der_u = utilities.vector_normalize(der_u)
 
         # Return the list
         return point, der_u
@@ -617,11 +466,11 @@ class Curve(Abstract.Curve):
         norm_vector = self.normal(u, normalize=normalize)
 
         point = tan_vector[0]
-        binorm_vector = utils.vector_cross(tan_vector[1], norm_vector[1])
+        binorm_vector = utilities.vector_cross(tan_vector[1], norm_vector[1])
 
         # Normalize the binormal vector
         if normalize:
-            binorm_vector = utils.vector_normalize(binorm_vector)
+            binorm_vector = utilities.vector_normalize(binorm_vector)
 
         # Return the list
         return point, binorm_vector
@@ -661,12 +510,12 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
         # Check u parameters are correct
-        utils.check_uv(u)
+        utilities.check_uv(u)
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of insertions (r) must be a positive integer value')
 
-        s = utils.find_multiplicity(u, self._knot_vector)
+        s = helpers.find_multiplicity(u, self._knot_vector)
 
         # Check if it is possible add that many number of knots
         if check_r and r > self._degree - s:
@@ -674,7 +523,7 @@ class Curve(Abstract.Curve):
             return
 
         # Algorithm A5.1
-        k = utils.find_span(self._degree, self._knot_vector, len(self._control_points), u)
+        k = helpers.find_span(self.knotvector, len(self._control_points), u)
         mp = len(self._knot_vector)
         np = len(self._control_points)
         nq = np + r
@@ -740,22 +589,22 @@ class Curve(Abstract.Curve):
         # Validate input data
         if u == 0.0 or u == 1.0:
             raise ValueError("Cannot split on the corner points")
-        utils.check_uv(u)
+        utilities.check_uv(u)
 
         # Create backups of the original curve
         original_kv = copy.deepcopy(self._knot_vector)
         original_cpts = copy.deepcopy(self._control_points)
 
         # Find multiplicity of the knot
-        ks = utils.find_span(self._degree, self._knot_vector, len(self._control_points), u) - self._degree + 1
-        s = utils.find_multiplicity(u, self._knot_vector)
+        ks = helpers.find_span(self.knotvector, len(self._control_points), u) - self._degree + 1
+        s = helpers.find_multiplicity(u, self._knot_vector)
         r = self._degree - s
 
         # Insert knot
         self.insert_knot(u, r, check_r=False)
 
         # Knot vectors
-        knot_span = utils.find_span(self._degree, self._knot_vector, len(self._control_points), u) + 1
+        knot_span = helpers.find_span(self.knotvector, len(self._control_points), u) + 1
         curve1_kv = self._knot_vector[0:knot_span]
         curve1_kv.append(u)
         curve2_kv = self._knot_vector[knot_span:]
@@ -769,13 +618,13 @@ class Curve(Abstract.Curve):
         # Create a new curve for the first half
         curve1 = self.__class__()
         curve1.degree = self.degree
-        curve1.ctrlpts = curve1_ctrlpts
+        curve1.set_ctrlpts(curve1_ctrlpts)
         curve1.knotvector = curve1_kv
 
         # Create another curve fot the second half
         curve2 = self.__class__()
         curve2.degree = self.degree
-        curve2.ctrlpts = curve2_ctrlpts
+        curve2.set_ctrlpts(curve2_ctrlpts)
         curve2.knotvector = curve2_kv
 
         # Restore the original curve
@@ -881,7 +730,7 @@ class Surface(Abstract.Surface):
     * delta
     * ctrlpts
     * ctrlpts2d
-    * surfpts
+    * evalpts
 
     The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
     Additional details on the file formats can be found on the documentation.
@@ -889,7 +738,7 @@ class Surface(Abstract.Surface):
     .. note::
 
         If you update any of the data storage elements after the surface evaluation, the surface points stored in
-        :py:attr:`~surfpts` property will be deleted automatically.
+        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -908,13 +757,16 @@ class Surface(Abstract.Surface):
     __repr__ = __str__
 
     def __call__(self, degree_u, degree_v, ctrlpts_size_u, ctrlpts_size_v, ctrlpts, knotvector_u, knotvector_v):
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        self.reset(evalpts=True, ctrlpts=True)
         self.degree_u = degree_u
         self.degree_v = degree_v
         self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
         self.knotvector_u = knotvector_u
         self.knotvector_v = knotvector_v
+
+    @property
+    def surfpts(self):
+        return self.evalpts
 
     @property
     def ctrlpts(self):
@@ -944,7 +796,7 @@ class Surface(Abstract.Surface):
 
     @property
     def ctrlpts2d(self):
-        """ 2D Control points.
+        """ 2D control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
         The rows of the returned tuple correspond to V-direction and the columns correspond to U-direction.
@@ -1009,9 +861,8 @@ class Surface(Abstract.Surface):
         if not isinstance(value, (list, tuple)):
             raise ValueError("The input must be a list or tuple")
 
-        # Reset control points and the surface points
-        self._reset_ctrlpts()
-        self._reset_evalpts()
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
 
         # Assume that the user has prepared the lists correctly
         self._control_points_size_u = len(value)
@@ -1057,9 +908,8 @@ class Surface(Abstract.Surface):
         :type size_v: int
         :return: None
         """
-        # Clean up the surface and control points lists, if necessary
-        self._reset_evalpts()
-        self._reset_ctrlpts()
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
 
         # Degree must be set before setting the control points
         if self._degree_u == 0 or self._degree_v == 0:
@@ -1115,14 +965,14 @@ class Surface(Abstract.Surface):
             raise ValueError("Set degree and control points first (u-direction)")
 
         # Normalize the input knot vector
-        value_normalized = utils.normalize_knot_vector(value)
+        value_normalized = utilities.normalize_knot_vector(value)
 
         # Check knot vector validity
-        if not utils.check_knot_vector(self._degree_u, value_normalized, self._control_points_size_u):
+        if not utilities.check_knot_vector(self._degree_u, value_normalized, self._control_points_size_u):
             raise ValueError("Input is not a valid knot vector (u-direction)")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set knot vector u
         self._knot_vector_u = [float(kv) for kv in value_normalized]
@@ -1143,338 +993,81 @@ class Surface(Abstract.Surface):
             raise ValueError("Set degree and control points first (v-direction)")
 
         # Normalize the input knot vector
-        value_normalized = utils.normalize_knot_vector(value)
+        value_normalized = utilities.normalize_knot_vector(value)
 
         # Check knot vector validity
-        if not utils.check_knot_vector(self._degree_v, value_normalized, self._control_points_size_v):
+        if not utilities.check_knot_vector(self._degree_v, value_normalized, self._control_points_size_v):
             raise ValueError("Input is not a valid knot vector (v-direction)")
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Set knot vector v
         self._knot_vector_v = [float(kv) for kv in value_normalized]
 
-    # Cleans up the control points
-    def _reset_ctrlpts(self):
-        if self._control_points:
-            # Delete control points
+    def save(self, file_name):
+        """ Saves the surface as a pickled file.
+
+        :param file_name: name of the file to be saved
+        :type file_name: str
+        """
+        # Create a dictionary from the surface data
+        expdata = {'rational': self._rational,
+                   'degree_u': self._degree_u,
+                   'degree_v': self._degree_v,
+                   'knotvector_u': self._knot_vector_u,
+                   'knotvector_v': self._knot_vector_v,
+                   'ctrlpts_size_u': self._control_points_size_u,
+                   'ctrlpts_size_v': self._control_points_size_v,
+                   'ctrlpts': self._control_points}
+
+        exchange.save_pickle(expdata, file_name)
+
+    def load(self, file_name):
+        """ Loads the surface from a pickled file.
+
+        :param file_name: name of the file to be loaded
+        :type file_name: str
+        """
+        impdata = exchange.load_pickle(file_name)
+
+        # Check if we have loaded the correct type of surface
+        if self._rational != impdata['rational']:
+            raise TypeError("Surface types are not compatible (NURBS-BSpline mismatch)")
+
+        # Set the surface data
+        self._degree_u = impdata['degree_u']
+        self._degree_v = impdata['degree_v']
+        self._control_points_size_u = impdata['ctrlpts_size_u']
+        self._control_points_size_v = impdata['ctrlpts_size_v']
+        self._control_points = impdata['ctrlpts']
+        self._knot_vector_u = impdata['knotvector_u']
+        self._knot_vector_v = impdata['knotvector_v']
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
             del self._control_points[:]
             del self._control_points2D[:]
-            # Set the control point sizes to zero
             self._control_points_size_u = 0
             self._control_points_size_v = 0
-            # Delete bounding box
             del self._bounding_box[:]
 
-    # Cleans the evaluated surface points (private)
-    def _reset_evalpts(self):
-        if self._surface_points:
-            # Delete the surface points
+        if reset_evalpts:
             del self._surface_points[:]
 
-    # Reads control points from a text file
-    def read_ctrlpts_from_txt(self, filename='', two_dimensional=True, size_u=0, size_v=0):
-        """ Loads control points from a text file.
-
-        The control points loaded from the file should follow the right-hand rule.
-        In case two_dimensional = False, then the following rules apply. Please check the documentation for the details
-        of the text file format.
-
-        * The v index varies first. That is, a row of v control points for the first u value is found first.
-        * Then, the row of v control points for the next u value.
-
-        :param filename: input file name
-        :type filename: str
-        :param two_dimensional: flag to control point list. one dimensional or two dimensional
-        :type two_dimensional: bool
-        :param size_u: length of the control points array in U-direction
-        :type size_u: int
-        :param size_v: length of the control points array in V-direction
-        :type size_v: int
-        :return: True if control points are loaded correctly, False otherwise
-        :rtype: bool
-        """
-        # Clean up the surface and control points lists, if necessary
-        self._reset_ctrlpts()
-        self._reset_evalpts()
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for reading
-        try:
-            with open(filename, 'r') as fp:
-
-                sz_u = size_u
-                sz_v = size_v
-                ctrlpts = []
-
-                if two_dimensional:
-                    sz_u = 0
-                    sz_v = 0
-                    # Start reading file
-                    for line in fp:
-                        # Remove whitespace
-                        line = line.strip()
-                        # Convert the string containing the coordinates into a list
-                        control_point_row = line.split(';')
-                        sz_v = 0
-                        for cpr in control_point_row:
-                            ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
-                            sz_v += 1
-                        sz_u += 1
-                else:
-                    # Check inputs
-                    if size_u <= 0 or size_v <= 0:
-                        raise ValueError("size_u and size_v inputs must be positive integers")
-                    # Start reading file
-                    for line in fp:
-                        # Remove whitespace
-                        line = line.strip()
-                        # Clean & convert the values
-                        ctrlpts.append([float(c.strip()) for c in line.split(',')])
-
-                # Set control points
-                self.set_ctrlpts(ctrlpts, sz_u, sz_v)
-
-        except IOError:
-            # Show a warning about not finding the file
-            warnings.warn("File " + str(filename) + " cannot be opened for reading.")
-            ret_check = False
-
-        return ret_check
-
-    # Saves control points to a text file
-    def save_ctrlpts_to_txt(self, filename="", two_dimensional=True):
-        """ Saves control points to a text file.
-
-        The control points saved to the file follow the right-hand rule.
-        In case two_dimensional = False, then the following rules apply. Please check the documentation for the details
-        of the text file format.
-
-        * The v index varies first. That is, a row of v control points for the first u value is found first.
-        * Then, the row of v control points for the next u value.
-
-        :param filename: output file name
-        :type filename: str
-        :param two_dimensional: flag to control point list
-        :type two_dimensional: bool
-        :return: True if control points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        # Check if we have any control points
-        if not self._control_points:
-            warnings.warn("There are no control points to save!")
-            return
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-
-                if two_dimensional:
-                    for i in range(0, self._control_points_size_u):
-                        line = ""
-                        for j in range(0, self._control_points_size_v):
-                            for idx, coord in enumerate(self._control_points2D[i][j]):
-                                if idx:  # Add comma if we are not on the first element
-                                    line += ","
-                                line += str(coord)
-                            if j != self._control_points_size_v - 1:
-                                line += ";"
-                            else:
-                                line += "\n"
-                        fp.write(line)
-                else:
-                    for pt in self._control_points:
-                        # Fill coordinates
-                        line = ", ".join(str(c) for c in pt)
-                        fp.write(line)
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing")
-            ret_check = False
-
-        return ret_check
-
-    # Prepares control points for exporting as a CSV file
-    def _get_ctrlpts_for_exporting(self):
-        """ Prepares control points for exporting as a CSV file.
-
-        :return: list of control points
-        :rtype: list
-        """
-        return self._control_points
-
-    # Prepares and returns the CSV file header
-    def _get_csv_header(self):
-        """ Prepares and returns the CSV file header.
-
-        :return: header of the CSV file
-        :rtype: str
-        """
-        dim = self._dimension
-        if self._rational:
-            dim -= 1
-        line = ""
-        for i in range(0, dim):
-            line += "dim " + str(i + 1) + ", "
-        line += "scalar\n"
-        return line
-
-    # Saves control points to a CSV file
-    def save_ctrlpts_to_csv(self, filename="", scalar=0, mode='linear'):
-        """ Saves control points to a comma separated text file.
-
-        **Available Modes**
-
-        The following modes are available via ``mode=`` parameter:
-
-        * ``linear``: Default mode, saves the stored point array without any change
-        * ``zigzag``: Generates a zig-zag shape
-        * ``wireframe``: Generates a wireframe
-
-        Please note that mode parameter does not modify the stored points in the object instance.
-
-        :param filename: output file name
-        :type filename: str
-        :param scalar: value of the scalar column in the output, defaults to 0
-        :type scalar: int
-        :param mode: sets the arrangement of the points, default is linear
-        :type: str
-        :return: True if control points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        # Check if we have any control points
-        if not self._control_points:
-            warnings.warn("There are no control points to save!")
-            return
-
-        # Check possible modes
-        mode_list = ['linear', 'zigzag', 'wireframe']
-        if mode not in mode_list:
-            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'")
-
-        # Check input parameters
-        if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float")
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-                # Construct the header and write it to the file
-                fp.write(self._get_csv_header())
-
-                # Get the control points
-                ctrlpts = self._get_ctrlpts_for_exporting()
-
-                # If the user requested a different point arrangment, apply it here
-                if mode == 'zigzag':
-                    ctrlpts = utils.make_zigzag(ctrlpts, self._control_points_size_v)
-                if mode == 'wireframe':
-                    ctrlpts = utils.make_quad(ctrlpts, self._control_points_size_v, self._control_points_size_u)
-
-                # Loop through control points
-                for pt in ctrlpts:
-                    # Fill coordinates
-                    line = ", ".join(str(c) for c in pt)
-                    # Fill scalar column
-                    line += ", " + str(scalar) + "\n"
-                    # Write line to file
-                    fp.write(line)
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing.")
-            ret_check = False
-
-        return ret_check
-
-    # Saves evaluated surface points to a CSV file
-    def save_surfpts_to_csv(self, filename="", scalar=0, mode='linear'):
-        """ Saves evaluated surface points to a comma separated text file.
-
-        **Available Modes**
-
-        The following modes are available via ``mode=`` parameter:
-
-        * ``linear``: Default mode, saves the stored point array without any change
-        * ``zigzag``: Generates a zig-zag shape
-        * ``wireframe``: Generates a wireframe/quad mesh
-        * ``triangle``: Generates a triangular mesh
-
-        Please note that mode parameter does not modify the stored points in the object instance.
-
-        :param filename: output file name
-        :type filename: str
-        :param scalar: value of the scalar column in the output, defaults to 0
-        :type scalar: int
-        :param mode: sets the arrangement of the points, default is linear
-        :type: str
-        :return: True if surface points are saved correctly, False otherwise
-        :rtype: bool
-        """
-        # Check possible modes
-        mode_list = ['linear', 'zigzag', 'wireframe', 'triangle']
-        if mode not in mode_list:
-            warnings.warn("Input mode '" + mode + "' is not valid, defaulting to 'linear'")
-
-        # Check input parameters
-        if not isinstance(scalar, (int, float)):
-            raise ValueError("Value of scalar must be integer or float.")
-
-        # Find surface points if there is none
-        if not self._surface_points:
-            self.evaluate()
-
-        # Initialize the return value
-        ret_check = True
-
-        # Try opening the file for writing
-        try:
-            with open(filename, 'w') as fp:
-                # Construct the header and write it to the file
-                fp.write(self._get_csv_header())
-
-                # If the user requested a different point arrangment, apply it here
-                if mode == 'zigzag':
-                    points = utils.make_zigzag(self._surface_points, self._sample_size)
-                elif mode == 'wireframe':
-                    points = utils.make_quad(self._surface_points, self._sample_size, self._sample_size)
-                elif mode == 'triangle':
-                    points = utils.make_triangle(self._surface_points, self._sample_size, self._sample_size)
-                else:
-                    points = self._surface_points
-
-                # Loop through control points
-                for pt in points:
-                    # Fill coordinates
-                    line = ", ".join(str(c) for c in pt)
-                    # Fill scalar column
-                    line += ", " + str(scalar) + "\n"
-                    # Write line to file
-                    fp.write(line)
-
-        except IOError:
-            # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for writing")
-            ret_check = False
-
-        return ret_check
-
-    # Transposes the surface by swapping U and V directions
     def transpose(self):
-        """ Transposes the surface by swapping U and V directions.
-
-        :return: None
-        """
+        """ Transposes the surface by swapping U and V directions. """
         # Transpose existing data
         degree_u_new = self._degree_v
         degree_v_new = self._degree_u
@@ -1495,8 +1088,8 @@ class Surface(Abstract.Surface):
             for u in range(0, ctrlpts_new_size_u):
                 ctrlpts_new.append(ctrlpts2d_new[u][v])
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
         # Save transposed data
         self._degree_u = degree_u_new
@@ -1508,8 +1101,8 @@ class Surface(Abstract.Surface):
         self._control_points_size_v = ctrlpts_new_size_v
         self._control_points2D = ctrlpts2d_new
 
-    def surfpt(self, u=-1, v=-1, **kwargs):
-        """ Evaluates the B-Spline surface at the given (u,v) parameters.
+    def surfpt(self, u, v):
+        """ Evaluates the surface at the given (u,v) parameter.
 
         :param u: parameter in the U direction
         :type u: float
@@ -1518,37 +1111,33 @@ class Surface(Abstract.Surface):
         :return: evaluated surface point at the given knot values
         :rtype: list
         """
-        check_vars = kwargs.get('check_vars', True)
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
+        # Check u and v parameters are correct
+        utilities.check_uv(u, v)
 
-        if check_vars:
-            # Check all parameters are set before the surface evaluation
-            self._check_variables()
-            # Check u and v parameters are correct
-            utils.check_uv(u, v)
+        # Algorithm A3.5 nd A4.3
+        span_u = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
+        basis_u = helpers.basis_function(self.degree_u, self.knotvector_u, span_u, u)
+        span_v = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
+        basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
 
-        # Algorithm A3.5
-        span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
-        basis_v = utils.basis_functions(self._degree_v, tuple(self._knot_vector_v), span_v, v)
-        span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
-        basis_u = utils.basis_functions(self._degree_u, tuple(self._knot_vector_u), span_u, u)
-
-        idx_u = span_u - self._degree_u
+        idx_u = span_u - self.degree_u
         spt = [0.0 for _ in range(self._dimension)]
 
         for l in range(0, self._degree_v + 1):
             temp = [0.0 for _ in range(self._dimension)]
-            idx_v = span_v - self._degree_v + l
-            for k in range(0, self._degree_u + 1):
+            idx_v = span_v - self.degree_v + l
+            for k in range(0, self.degree_u + 1):
                 temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
         return spt
 
-    # Evaluates the B-Spline surface
     def evaluate(self, **kwargs):
-        """ Evaluates the surface in the given (u,v) intervals.
+        """ Evaluates the surface.
 
-        Possible keyword arguments are
+        Keyword arguments:
 
         * ``start_u``: start parameter in u-direction
         * ``stop_u``: stop parameter in u-direction
@@ -1559,29 +1148,50 @@ class Surface(Abstract.Surface):
         in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
         and ``stop_v`` parameter values.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~surfpts`.
+        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
 
         """
         # Check all parameters are set before the surface evaluation
         self._check_variables()
 
         # Find evaluation start and stop parameter values
-        start_u = kwargs.get('start_u', self._knot_vector_u[self._degree_u])
-        stop_u = kwargs.get('stop_u', self._knot_vector_u[-(self._degree_u+1)])
-        start_v = kwargs.get('start_v', self._knot_vector_v[self._degree_v])
-        stop_v = kwargs.get('stop_v', self._knot_vector_v[-(self._degree_v+1)])
+        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
 
         # Check if all the input parameters are in the range
-        utils.check_uv(start_u, stop_u)
-        utils.check_uv(start_v, stop_v)
+        utilities.check_uv(start_u, stop_u)
+        utilities.check_uv(start_v, stop_v)
 
-        # Clean up the surface points lists, if necessary
-        self._reset_evalpts()
+        # Clean up the surface points
+        self.reset(evalpts=True)
 
-        # Evaluate the surface in the input range
-        for u in utils.frange(start_u, stop_u, self._delta_u):
-            for v in utils.frange(start_v, stop_v, self._delta_v):
-                spt = self.surfpt(u, v, check_vars=False)
+        # Compute knots in the range
+        knots_u = utilities.linspace(start_u, stop_u, self.sample_size)
+        knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
+
+        # Find spans belonging to the knots
+        spans_u = helpers.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
+        spans_v = helpers.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
+
+        # Find basis functions
+        basis_u = helpers.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
+        basis_v = helpers.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
+
+        # Evaluate the surface directly
+        for i in range(len(knots_u)):
+            idx_u = spans_u[i] - self.degree_u
+            for j in range(len(knots_v)):
+                spt = [0.0 for _ in range(self._dimension)]
+                for l in range(0, self.degree_v + 1):
+                    temp = [0.0 for _ in range(self._dimension)]
+                    idx_v = spans_v[j] - self.degree_v + l
+                    for k in range(0, self.degree_u + 1):
+                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
+                                   zip(temp, self._control_points2D[idx_u + k][idx_v])]
+                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
+
                 self._surface_points.append(spt)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
@@ -1604,7 +1214,7 @@ class Surface(Abstract.Surface):
         # Check all parameters are set before the surface evaluation
         self._check_variables()
         # Check u and v parameters are correct
-        utils.check_uv(u, v)
+        utilities.check_uv(u, v)
 
         # Algorithm A3.6
         du = min(self._degree_u, order)
@@ -1612,10 +1222,10 @@ class Surface(Abstract.Surface):
 
         SKL = [[[0.0 for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
 
-        span_u = utils.find_span(self._degree_u, tuple(self._knot_vector_u), self._control_points_size_u, u)
-        bfunsders_u = utils.basis_functions_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
-        span_v = utils.find_span(self._degree_v, tuple(self._knot_vector_v), self._control_points_size_v, v)
-        bfunsders_v = utils.basis_functions_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
+        span_u = helpers.find_span(self.knotvector_u, self._control_points_size_u, u)
+        bfunsders_u = helpers.basis_function_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
+        span_v = helpers.find_span(self.knotvector_v, self._control_points_size_v, v)
+        bfunsders_v = helpers.basis_function_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
 
         for k in range(0, du + 1):
             temp = [[] for _ in range(self._degree_v + 1)]
@@ -1660,8 +1270,8 @@ class Surface(Abstract.Surface):
 
         # Normalize the tangent vectors
         if normalize:
-            der_u = utils.vector_normalize(der_u)
-            der_v = utils.vector_normalize(der_v)
+            der_u = utilities.vector_normalize(der_u)
+            der_v = utilities.vector_normalize(der_v)
 
         # Return the list of tangents w.r.t. u and v
         return tuple(point), der_u, der_v
@@ -1711,7 +1321,7 @@ class Surface(Abstract.Surface):
         :rtype: list
         """
         # Check u and v parameters are correct for the normal evaluation
-        utils.check_uv(u, v)
+        utilities.check_uv(u, v)
 
         # Take the 1st derivative of the surface
         skl = self.derivatives(u, v, 1)
@@ -1721,11 +1331,11 @@ class Surface(Abstract.Surface):
         der_v = skl[0][1]
 
         # Compute normal
-        normal = utils.vector_cross(der_u, der_v)
+        normal = utilities.vector_cross(der_u, der_v)
 
         if normalize:
             # Convert normal vector to a unit vector
-            normal = utils.vector_normalize(tuple(normal))
+            normal = utilities.vector_normalize(tuple(normal))
 
         # Return the surface normal at the input u,v location
         return skl[0][0], normal
@@ -1781,7 +1391,7 @@ class Surface(Abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if u or v:
-            utils.check_uv(u, v)
+            utilities.check_uv(u, v)
 
         if not isinstance(ru, int) or ru < 0:
             raise ValueError("Number of insertions in U-direction must be a positive integer")
@@ -1797,7 +1407,7 @@ class Surface(Abstract.Surface):
             np = self._control_points_size_u
             mp = self._control_points_size_v
 
-            s_u = utils.find_multiplicity(u, self._knot_vector_u)
+            s_u = helpers.find_multiplicity(u, self._knot_vector_u)
 
             # Check if it is possible add that many number of knots
             if check_r and ru > p - s_u:
@@ -1805,7 +1415,7 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                k_u = utils.find_span(self._degree_u, self._knot_vector_u, self._control_points_size_u, u)
+                k_u = helpers.find_span(self.knotvector_u, self._control_points_size_u, u)
 
                 # Initialize new knot vector array
                 UQ = [None for _ in range(len(self._knot_vector_u) + ru)]
@@ -1867,7 +1477,7 @@ class Surface(Abstract.Surface):
             np = self._control_points_size_u
             mp = self._control_points_size_v
 
-            s_v = utils.find_multiplicity(v, self._knot_vector_v)
+            s_v = helpers.find_multiplicity(v, self._knot_vector_v)
 
             # Check if it is possible add that many number of knots
             if check_r and rv > q - s_v:
@@ -1875,7 +1485,7 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                k_v = utils.find_span(self._degree_v, self._knot_vector_v, self._control_points_size_v, v)
+                k_v = helpers.find_span(self.knotvector_v, self._control_points_size_v, v)
 
                 # Initialize new knot vector array
                 VQ = [None for _ in range(len(self._knot_vector_v) + rv)]
@@ -1951,7 +1561,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        utils.check_uv(t)
+        utilities.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_u)
@@ -1960,15 +1570,15 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = utils.find_span(self._degree_u, self._knot_vector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
-        s = utils.find_multiplicity(t, self._knot_vector_u)
+        ks = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
+        s = helpers.find_multiplicity(t, self._knot_vector_u)
         r = self._degree_u - s
 
         # Split the original surface
         self.insert_knot(u=t, ru=r, check_r=False)
 
         # Knot vectors
-        knot_span = utils.find_span(self._degree_u, self._knot_vector_u, self.ctrlpts_size_u, t) + 1
+        knot_span = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) + 1
         surf1_kv = self._knot_vector_u[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_u[knot_span:]
@@ -2023,7 +1633,7 @@ class Surface(Abstract.Surface):
         # Validate input data
         if t == 0.0 or t == 1.0:
             raise ValueError("Cannot split on the corner points")
-        utils.check_uv(t)
+        utilities.check_uv(t)
 
         # Create backups of the original surface
         original_kv = copy.deepcopy(self._knot_vector_v)
@@ -2032,15 +1642,15 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = utils.find_span(self._degree_v, self._knot_vector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
-        s = utils.find_multiplicity(t, self._knot_vector_v)
+        ks = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
+        s = helpers.find_multiplicity(t, self._knot_vector_v)
         r = self._degree_v - s
 
         # Split the original surface
         self.insert_knot(v=t, rv=r, check_r=False)
 
         # Knot vectors
-        knot_span = utils.find_span(self._degree_v, self._knot_vector_v, self.ctrlpts_size_v, t) + 1
+        knot_span = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) + 1
         surf1_kv = self._knot_vector_v[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_v[knot_span:]

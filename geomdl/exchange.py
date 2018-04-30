@@ -1,5 +1,5 @@
 """
-.. module:: exchange_helpers
+.. module:: exchange
     :platform: Unix, Windows
     :synopsis: CAD exchange and interoperability module for NURBS-Python
 
@@ -7,16 +7,157 @@
 
 """
 
-import warnings
-import struct
-
+from . import warnings
+from . import struct
+from . import pickle
 from . import Abstract
 from . import Multi
 from .elements import Vertex, Triangle
 
 
+def save_pickle(data_dict, file_name):
+    """ Saves the contents of the data dictionary as a pickled file.
+
+    Helper function for curve and surface ``save`` method.
+
+    :param data_dict: data dictionary
+    :type data_dict: dict
+    :param file_name: name of the file to be saved
+    :type file_name: str
+    """
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'wb') as fp:
+            # Pickle the data dictionary
+            pickle.dump(data_dict, fp)
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+
+
+def load_pickle(file_name):
+    """ Loads a data dictionary from a pickled file.
+
+    Helper function for curve and surface ``load`` method.
+
+    :param file_name: name of the file to be loaded
+    :type file_name: str
+    :return: data dictionary
+    :rtype: dict
+    """
+    # Try opening the file for reading
+    try:
+        with open(file_name, 'rb') as fp:
+            # Read and return the pickled file
+            impdata = pickle.load(fp)
+            return impdata
+    except IOError:
+        # Raise an exception on failure to open file
+        raise IOError("File " + str(file_name) + " cannot be opened for reading.")
+
+
+def read_txt(file_name, two_dimensional=False):
+    """ Reads control points from a text file and generates a 1-D list of control points.
+
+    :param file_name: file name of the text file
+    :type file_name: str
+    :param two_dimensional: type of the text file
+    :type two_dimensional: bool
+    :return: list of control points, if two_dimensional, then also returns size in u- and v-directions
+    :rtype: list
+    """
+    ctrlpts = []
+
+    # Try opening the file for reading
+    try:
+        with open(file_name, 'r') as fp:
+                if two_dimensional:
+                    # Start reading file
+                    size_u = 0
+                    size_v = 0
+                    for line in fp:
+                        # Remove whitespace
+                        line = line.strip()
+                        # Convert the string containing the coordinates into a list
+                        control_point_row = line.split(';')
+                        # Clean and convert the values
+                        size_v = 0
+                        for cpr in control_point_row:
+                            ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
+                            size_v += 1
+                        size_u += 1
+
+                    # Return control points, size in u- and v-directions
+                    return ctrlpts, size_u, size_v
+                else:
+                    # Start reading file
+                    for line in fp:
+                        # Remove whitespace
+                        line = line.strip()
+                        # Clean and convert the values
+                        ctrlpts.append([float(c.strip()) for c in line.split(',')])
+
+                    # Return control points
+                    return ctrlpts
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for reading")
+
+
+def export_csv(obj, file_name, point_type='ctrlpts', scalar=0):
+    """ Exports control points or evaluated points as a CSV file.
+
+    :param obj: a curve or a surface object
+    :type obj: Abstract.Curve, Abstract.Surface
+    :param file_name: output file name
+    :param point_type: ctrlpts for control points or evalpts for evaluated points
+    :type point_type: str
+    :param scalar: scalar value (required for Paraview)
+    :type scalar: int
+    """
+    if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+        raise ValueError("Input object should be a surve or a surface")
+
+    # Find dimension of the points, e.g. 2D or 3D or something else
+    dim = obj.dimension - 1 if obj.rational else obj.dimension
+
+    # Prepare CSV header
+    header = ""
+    for i in range(dim):
+        header += "dim " + str(i + 1) + ", "
+    header += "scalar\n"
+
+    # Pick correct points from the object
+    if point_type == 'ctrlpts':
+        points = obj.ctrlpts
+    elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
+        points = obj.evalpts
+    else:
+        warnings.warn("Please choose a valid point type option")
+        return
+
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'w') as fp:
+            # Write header to the file
+            fp.write(header)
+
+            # Loop through points
+            for pt in points:
+                # Fill coordinates
+                line = ", ".join(str(c) for c in pt)
+                # Fill scalar column
+                line += ", " + str(scalar) + "\n"
+                # Write line to file
+                fp.write(line)
+
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+
+
 # Saves surface(s) as a .obj file
-def save_obj(surf_in=None, file_name=None, **kwargs):
+def save_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     :param surf_in: surface or surfaces to be saved
@@ -37,7 +178,7 @@ def save_obj(surf_in=None, file_name=None, **kwargs):
 
 
 # Saves surface(s) as a .stl file
-def save_stl(surf_in=None, file_name=None, **kwargs):
+def save_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
     :param surf_in: surface or surfaces to be saved
@@ -66,7 +207,7 @@ def save_stl(surf_in=None, file_name=None, **kwargs):
 
 
 # Saves surface(s) as a .off file
-def save_off(surf_in=None, file_name=None, **kwargs):
+def save_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
     :param surf_in: surface or surfaces to be saved
@@ -150,7 +291,7 @@ def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
     return vertices, triangles
 
 
-def save_obj_single(surface=None, **kwargs):
+def save_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
     :param surface: surface to be saved
@@ -201,7 +342,7 @@ def save_obj_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_obj_multi(surface_list=(), **kwargs):
+def save_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
 
     :param surface_list: list of surfaces to be saved
@@ -283,7 +424,7 @@ def save_obj_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_single(surface=None, **kwargs):
+def save_stl_ascii_single(surface, **kwargs):
     """ Saves a single surface as an ASCII .stl file.
 
     :param surface: surface to be saved
@@ -326,7 +467,7 @@ def save_stl_ascii_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_multi(surface_list=(), **kwargs):
+def save_stl_ascii_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -380,7 +521,7 @@ def save_stl_ascii_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_single(surface=None, **kwargs):
+def save_stl_binary_single(surface, **kwargs):
     """ Saves a single surface as a binary .stl file.
 
     Inspired from https://github.com/apparentlymart/python-stl
@@ -422,7 +563,7 @@ def save_stl_binary_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_multi(surface_list=(), **kwargs):
+def save_stl_binary_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -473,7 +614,7 @@ def save_stl_binary_multi(surface_list=(), **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_single(surface=None, **kwargs):
+def save_off_single(surface, **kwargs):
     """ Saves a single surface as a .off file.
 
     :param surface: surface to be saved
@@ -519,7 +660,7 @@ def save_off_single(surface=None, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_multi(surface_list=(), **kwargs):
+def save_off_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .off file.
 
     :param surface_list: list of surfaces to be saved

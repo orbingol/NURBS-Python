@@ -7,10 +7,10 @@
 
 """
 
-import sys
-import math
-import random
-import warnings
+from . import sys
+from . import math
+from . import random
+from . import warnings
 
 
 class Grid(object):

@@ -37,7 +37,7 @@ The following will **NOT** be tolerated in any way:
 * Contempt in explicit and/or implicit ways
 * Any sort of accusation directed to the authors and/or contributors (that's why we have the LICENSE file)
 * Complaints about implementation choices (instead, please ask about the reason nicely or fix it and create a PR)
-* "Bad" tone in writing (i.e. please triple-check how you say what you want to say)
+* "Bad" tone in writing (i.e. please triple-check how you say what you would like to say)
 * A strange thought that people who read the issue tracker have ability to read your mind (happens all the time)
 
 I would like to remind that all authors and contributors spend their free time to put some effort on development of 
@@ -66,7 +66,12 @@ instead of asking me to implement them** :)
 
 ## Pull requests
 
-Please [create pull requests](https://help.github.com/articles/creating-a-pull-request/) against `devmaster` branch.
+Please [create pull requests](https://help.github.com/articles/creating-a-pull-request/) against relevant branch.
+
+* For NURBS-Python v4.x, PR against `master`
+* For NURBS-Python v3.x, PR against `3.x`
+* For NURBS-Python v2.x, PR against `2.x`
+
 CI tools are set to test every pull request, and I would appreciate if you could add tests for your changes and test
 your code with a Python linter utility, e.g. `pylint` and/or `prospector`.
  
@@ -80,10 +85,6 @@ Feel free to open an issue on the project issue tracker, if you have any questio
 
 The project includes automated tests under `'tests/` directory and all tests are designed to run with `pytest`.
 I would appreciate if you could contribute more tests to increase their code coverage.
-
-Just to present some code coverage metrics, it was around 70% after running all the included tests and 
-the examples in the [Examples Repository](https://github.com/orbingol/NURBS-Python_Examples)
-at the end of January 2018 (metrics acquired with the [coverage](https://pypi.python.org/pypi/coverage) tool).
 
 -----
 
