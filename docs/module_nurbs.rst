@@ -12,15 +12,6 @@ NURBS Curve
     :inherited-members:
     :show-inheritance:
 
-2D NURBS Curve (Deprecated)
-===========================
-
-.. autoclass:: geomdl.NURBS.Curve2D
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
 NURBS Surface
 =============
 

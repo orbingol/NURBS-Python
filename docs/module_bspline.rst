@@ -12,15 +12,6 @@ B-Spline Curve
     :inherited-members:
     :show-inheritance:
 
-2D B-Spline Curve (Deprecated)
-==============================
-
-.. autoclass:: geomdl.BSpline.Curve2D
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
 B-Spline Surface
 ================
 
