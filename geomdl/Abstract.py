@@ -873,6 +873,28 @@ class Multi(object):
         pass
 
 
+class EvaluationStrategy(object):
+    """ Evaluator abstract class
+
+    Evaluators, or namely Evaluation Strategies, allow users to change curve and/or surface evaluation strategy,
+    i.e. the algorithms that are used to evaluate the curve & surface, take derivatives and more.
+    Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
+    or improve existing ones.
+    """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def evaluate_bspline(self, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def evaluate_nurbs(self, **kwargs):
+        pass
+
+
 class VisConfigAbstract(object):
     """ Visualization configuration abstract class
 
