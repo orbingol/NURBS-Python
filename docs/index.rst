@@ -44,7 +44,7 @@ This documentation is organized into a couple sections:
     :caption: Using the Library
 
     install
-    examples
+    examples_repo
     file_formats
     compatibility
     visualization
