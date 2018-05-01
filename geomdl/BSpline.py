@@ -141,7 +141,8 @@ class Curve(Abstract.Curve):
         expdata = {'rational': self._rational,
                    'degree': self._degree,
                    'knotvector': self._knot_vector,
-                   'ctrlpts': self._control_points}
+                   'ctrlpts': self._control_points,
+                   'dimension': self._dimension}
 
         exchange.save_pickle(expdata, file_name)
 
@@ -156,10 +157,14 @@ class Curve(Abstract.Curve):
         if self._rational != impdata['rational']:
             raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
 
+        # Clean control points and evaluated points
+        self.reset(ctrlpts=True, evalpts=True)
+
         # Set the curve data
         self._degree = impdata['degree']
-        self._control_points = impdata['ctrlpts']
         self._knot_vector = impdata['knotvector']
+        self._dimension = impdata['dimension']
+        self._control_points = impdata['ctrlpts']
 
     def reset(self, **kwargs):
         """ Resets control or evaluated points.
@@ -1019,7 +1024,8 @@ class Surface(Abstract.Surface):
                    'knotvector_v': self._knot_vector_v,
                    'ctrlpts_size_u': self._control_points_size_u,
                    'ctrlpts_size_v': self._control_points_size_v,
-                   'ctrlpts': self._control_points}
+                   'ctrlpts': self._control_points,
+                   'dimension': self._dimension}
 
         exchange.save_pickle(expdata, file_name)
 
@@ -1035,14 +1041,18 @@ class Surface(Abstract.Surface):
         if self._rational != impdata['rational']:
             raise TypeError("Surface types are not compatible (NURBS-BSpline mismatch)")
 
+        # Clean control points and evaluated points
+        self.reset(ctrlpts=True, evalpts=True)
+
         # Set the surface data
         self._degree_u = impdata['degree_u']
         self._degree_v = impdata['degree_v']
-        self._control_points_size_u = impdata['ctrlpts_size_u']
-        self._control_points_size_v = impdata['ctrlpts_size_v']
-        self._control_points = impdata['ctrlpts']
         self._knot_vector_u = impdata['knotvector_u']
         self._knot_vector_v = impdata['knotvector_v']
+        self._control_points_size_u = impdata['ctrlpts_size_u']
+        self._control_points_size_v = impdata['ctrlpts_size_v']
+        self._dimension = impdata['dimension']
+        self._control_points = impdata['ctrlpts']
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
