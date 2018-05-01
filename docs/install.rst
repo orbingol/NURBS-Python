@@ -4,10 +4,10 @@ Installation
 Using Pip
 =========
 
-You can find the NURBS-Python library on `Python Package Index <https://pypi.python.org/pypi/NURBS-Python>`_ and install
+You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl>`_ and install
 using the following command:
 
-``pip install NURBS-Python``
+``pip install geomdl``
 
 Manual Method
 =============
