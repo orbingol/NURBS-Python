@@ -133,18 +133,16 @@ class Curve(object):
         :type: int
         """
         if self._sample_size is None:
-            if self._knot_vector is not None and len(self._knot_vector) != 0:
-                self._sample_size = int(1.0 / self.delta) + 1
-            else:
-                warnings.warn("Cannot determine the sample size.")
-                return 0
+            # Try to estimate a sample size
+            self._sample_size = int(1.0 / self.delta) + 1
         return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        if self._knot_vector is None or len(self._knot_vector) == 0:
-            warnings.warn("Cannot determine the delta value. Please set knot vector before setting the sample size.")
+        if self._knot_vector is None or len(self._knot_vector) == 0 or self._degree == 0:
+            warnings.warn("Cannot determine the delta value. Please set knot vector and degree before sample size.")
             return
+
         # To make it operate like linspace, we have to know the starting and ending points.
         start = self._knot_vector[self._degree]
         stop = self._knot_vector[-(self._degree+1)]
@@ -517,20 +515,16 @@ class Surface(object):
         :type: int
         """
         if self._sample_size is None:
-            if self._knot_vector_u is not None and len(self._knot_vector_u) != 0:
-                self._sample_size = int(1.0 / self.delta_u) + 1
-            elif self._knot_vector_v is not None and len(self._knot_vector_v) != 0:
-                self._sample_size = int(1.0 / self.delta_v) + 1
-            else:
-                warnings.warn("Cannot determine the sample size")
-                return 0
+            # Try to estimate a sample size
+            self._sample_size = int(1.0 / self.delta_u) + 1
+            # self._sample_size = int(1.0 / self.delta_v) + 1
         return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or\
-                (self._knot_vector_v is None or len(self._knot_vector_v) == 0):
-            warnings.warn("Cannot determine the delta value. Please set knot vectors before setting the sample size.")
+        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or self._degree_u == 0 or\
+                (self._knot_vector_v is None or len(self._knot_vector_v) == 0 or self._degree_v == 0):
+            warnings.warn("Cannot determine the delta value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
