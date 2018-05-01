@@ -44,7 +44,6 @@ This documentation is organized into a couple sections:
     :caption: Using the Library
 
     install
-    package_name
     examples
     file_formats
     compatibility
