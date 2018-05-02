@@ -82,7 +82,7 @@ class Curve(BSpline.Curve):
     def ctrlpts(self, value):
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
-            weights = [1.0 for _ in range(len(self._control_points))]
+            weights = [1.0 for _ in range(len(value))]
         else:
             weights = self.weights
 
@@ -325,7 +325,7 @@ class Surface(BSpline.Surface):
 
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
-            weights = [1.0 for _ in range(len(self._control_points))]
+            weights = [1.0 for _ in range(len(value))]
         else:
             weights = self.weights
 
