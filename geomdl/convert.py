@@ -45,6 +45,8 @@ def bspline_to_nurbs_surface(bs_surface):
     nurbs_surface = NURBS.Surface()
     nurbs_surface.degree_u = bs_surface.degree_u
     nurbs_surface.degree_v = bs_surface.degree_v
+    nurbs_surface.ctrlpts_size_u = bs_surface.ctrlpts_size_u
+    nurbs_surface.ctrlpts_size_v = bs_surface.ctrlpts_size_v
     nurbs_surface.ctrlpts = bs_surface.ctrlpts
     nurbs_surface.knotvector_u = bs_surface.knotvector_u
     nurbs_surface.knotvector_v = bs_surface.knotvector_v
