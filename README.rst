@@ -180,6 +180,7 @@ NURBS-Python_ project.
 * John-Eric Dufour (`@jedufour <https://github.com/jedufour>`_)
 * Jan Heczko (`@heczis <https://github.com/heczis>`_)
 * Pavel Vlasanek (`@tucna <https://github.com/tucna>`_)
+* Xuefeng Zhao
 
 License
 =======
