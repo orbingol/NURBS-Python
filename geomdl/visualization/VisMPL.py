@@ -42,32 +42,21 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     @staticmethod
     def set_axes_equal(ax):
-        """ Makes axes of 3D plot have equal scale so that spheres appear as spheres, cubes as cubes, etc..
+        """ Sets equal aspect ratio across the three axes of a 3D plot.
 
-        This is one possible solution to Matplotlib's ax.set_aspect('equal') and ax.axis('equal') not working for 3D.
-
-        Ref: https://stackoverflow.com/a/31364297
+        This function is contributed by Dr. Xuefeng Zhao <xxzhao1@gmail.com>
 
         :param ax: a Matplotlib axis, e.g., as output from plt.gca().
         """
-        x_limits = ax.get_xlim3d()
-        y_limits = ax.get_ylim3d()
-        z_limits = ax.get_zlim3d()
-
-        x_range = abs(x_limits[1] - x_limits[0])
-        x_middle = np.mean(x_limits)
-        y_range = abs(y_limits[1] - y_limits[0])
-        y_middle = np.mean(y_limits)
-        z_range = abs(z_limits[1] - z_limits[0])
-        z_middle = np.mean(z_limits)
-
-        # The plot bounding box is a sphere in the sense of the infinity
-        # norm, hence I call half the max range the plot radius.
-        plot_radius = 0.5 * max([x_range, y_range, z_range])
-
-        ax.set_xlim3d([x_middle - plot_radius, x_middle + plot_radius])
-        ax.set_ylim3d([y_middle - plot_radius, y_middle + plot_radius])
-        ax.set_zlim3d([z_middle - plot_radius, z_middle + plot_radius])
+        bounds = [ax.get_xlim3d(), ax.get_ylim3d(), ax.get_zlim3d()]
+        ranges = [abs(bound[1] - bound[0]) for bound in bounds]
+        centers = [np.mean(bound) for bound in bounds]
+        radius = 0.5 * max(ranges)
+        lower_limits = centers - radius
+        upper_limits = centers + radius
+        ax.set_xlim3d([lower_limits[0], upper_limits[0]])
+        ax.set_ylim3d([lower_limits[1], upper_limits[1]])
+        ax.set_zlim3d([lower_limits[2], upper_limits[2]])
 
 
 class VisCurve2D(Abstract.VisAbstract):
