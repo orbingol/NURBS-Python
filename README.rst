@@ -132,8 +132,8 @@ for his guidance and supervision throughout the course of this project.
 .. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
 .. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
 
-.. |PYPI| image:: https://img.shields.io/pypi/v/NURBS-Python.svg
-.. _PYPI: https://pypi.python.org/pypi/NURBS-Python
+.. |PYPI| image:: https://img.shields.io/pypi/v/geomdl.svg
+.. _PYPI: https://pypi.org/project/geomdl/
 
 .. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
 .. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
