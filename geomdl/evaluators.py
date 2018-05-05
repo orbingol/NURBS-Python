@@ -3,12 +3,20 @@ from . import helpers
 
 
 class CurveEvaluator(Evaluator):
+    """ Sequential B-Spline curve evaluation algorithms.
+
+    This evaluator implements the following algorithms from The NURBS Book:
+
+    * Algorithm A3.1
+
+    """
 
     def __init__(self):
         super(Evaluator, self).__init__()
         self._name = "Curve Evaluator"
 
     def evaluate_single(self, **kwargs):
+        """ Evaluates a single curve point. """
         knot = kwargs.get('knot')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
@@ -26,6 +34,7 @@ class CurveEvaluator(Evaluator):
         return cpt
 
     def evaluate(self, **kwargs):
+        """ Evaluates the curve. """
         knots = kwargs.get('knots')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
@@ -55,12 +64,20 @@ class CurveEvaluator(Evaluator):
 
 
 class SurfaceEvaluator(Evaluator):
+    """ Sequential B-Spline surface evaluation algorithms.
+
+    This evaluator implements the following algorithms from The NURBS Book:
+
+    * Algorithm A3.5
+
+    """
 
     def __init__(self):
         super(Evaluator, self).__init__()
         self._name = "Surface Evaluator"
 
     def evaluate_single(self, **kwargs):
+        """ Evaluates a single surface point. """
         knot_u = kwargs.get('knot_u')
         knot_v = kwargs.get('knot_v')
         degree_u = kwargs.get('degree_u')
@@ -92,6 +109,7 @@ class SurfaceEvaluator(Evaluator):
         return spt
 
     def evaluate(self, **kwargs):
+        """ Evaluates the surface. """
         knots_u = kwargs.get('knots_u')
         knots_v = kwargs.get('knots_v')
         degree_u = kwargs.get('degree_u')
@@ -135,12 +153,20 @@ class SurfaceEvaluator(Evaluator):
 
 
 class NURBSCurveEvaluator(CurveEvaluator):
+    """ Sequential NURBS curve evaluation algorithms.
+
+    This evaluator implements the following algorithms from The NURBS Book:
+
+    * Algorithm A4.1
+
+    """
 
     def __init__(self):
         super(CurveEvaluator, self).__init__()
         self._name = "NURBS Curve Evaluator"
 
     def evaluate_single(self, **kwargs):
+        """ Evaluates a single curve point. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.1
@@ -152,6 +178,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return cpt
 
     def evaluate(self, **kwargs):
+        """ Evaluates the curve. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.1
@@ -173,12 +200,20 @@ class NURBSCurveEvaluator(CurveEvaluator):
 
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
+    """ Sequential NURBS surface evaluation algorithms.
+
+    This evaluator implements the following algorithms from The NURBS Book:
+
+    * Algorithm A4.3
+
+    """
 
     def __init__(self):
         super(SurfaceEvaluator, self).__init__()
         self._name = "NURBS Surface Evaluator"
 
     def evaluate_single(self, **kwargs):
+        """ Evaluates a single surface point. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.3
@@ -190,6 +225,7 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
         return cpt
 
     def evaluate(self, **kwargs):
+        """ Evaluates the surface. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.3
