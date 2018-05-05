@@ -14,6 +14,7 @@ from . import Multi
 from . import utilities
 from . import helpers
 from . import exchange
+from . import evaluators
 
 
 class Curve(Abstract.Curve):
@@ -44,6 +45,7 @@ class Curve(Abstract.Curve):
         self._control_points = []
         self._curve_points = []
         self._bounding_box = []
+        self._evaluator = evaluators.CurveEvaluator()
 
     def __str__(self):
         return "B-Spline Curve"
@@ -195,17 +197,16 @@ class Curve(Abstract.Curve):
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
+
         # Check u parameters are correct
         utilities.check_uv(u)
 
-        # Algorithm A3.1 and A4.1
-        span = helpers.find_span(self.knotvector, len(self._control_points), u)
-        basis = helpers.basis_function(self.degree, self.knotvector, span, u)
-
-        cpt = [0.0 for _ in range(self._dimension)]
-        for i in range(0, self._degree + 1):
-            cpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
-                      zip(cpt, self._control_points[span - self._degree + i])]
+        # Evaluate
+        cpt = self._evaluator.evaluate_single(knot=u,
+                                              degree=self.degree,
+                                              knotvector=self.knotvector,
+                                              ctrlpts=self._control_points,
+                                              dimension=self._dimension)
 
         return cpt
 
@@ -237,18 +238,17 @@ class Curve(Abstract.Curve):
         # Clean up the curve points
         self.reset(evalpts=True)
 
+        # Generate the knots in the range
         knots = utilities.linspace(start, stop, self.sample_size)
-        spans = helpers.find_spans(self.knotvector, len(self._control_points), knots)
-        basis = helpers.basis_functions(self.degree, self.knotvector, spans, knots)
 
-        # Evaluate the curve in the input range
-        for idx in range(len(knots)):
-            cpt = [0.0 for _ in range(self._dimension)]
-            for i in range(0, self.degree + 1):
-                cpt[:] = [crvpt + (basis[idx][i] * ctrlpt) for crvpt, ctrlpt in
-                          zip(cpt, self._control_points[spans[idx] - self.degree + i])]
+        # Evaluate
+        cpts = self._evaluator.evaluate(knots=knots,
+                                        degree=self.degree,
+                                        knotvector=self.knotvector,
+                                        ctrlpts=self._control_points,
+                                        dimension=self._dimension)
 
-            self._curve_points.append(cpt)
+        self._curve_points = cpts
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives2(self, u=-1, order=0):
@@ -754,7 +754,7 @@ class Surface(Abstract.Surface):
         self._control_points2D = []  # in [u][v] format
         self._surface_points = []
         self._bounding_box = []
-        self._rational = False
+        self._evaluator = evaluators.SurfaceEvaluator()
 
     def __str__(self):
         return "B-Spline Surface"
@@ -1123,24 +1123,17 @@ class Surface(Abstract.Surface):
         """
         # Check all parameters are set before the surface evaluation
         self._check_variables()
+
         # Check u and v parameters are correct
         utilities.check_uv(u, v)
 
-        # Algorithm A3.5 nd A4.3
-        span_u = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, u)
-        basis_u = helpers.basis_function(self.degree_u, self.knotvector_u, span_u, u)
-        span_v = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, v)
-        basis_v = helpers.basis_function(self.degree_v, self.knotvector_v, span_v, v)
-
-        idx_u = span_u - self.degree_u
-        spt = [0.0 for _ in range(self._dimension)]
-
-        for l in range(0, self._degree_v + 1):
-            temp = [0.0 for _ in range(self._dimension)]
-            idx_v = span_v - self.degree_v + l
-            for k in range(0, self.degree_u + 1):
-                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, self._control_points2D[idx_u + k][idx_v])]
-            spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
+        # Evaluate the surface
+        spt = self._evaluator.evaluate_single(knot_u=u, knot_v=v,
+                                              degree_u=self.degree_u, degree_v=self.degree_v,
+                                              knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                              ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
+                                              ctrlpts=self._control_points2D,
+                                              dimension=self._dimension)
 
         return spt
 
@@ -1181,28 +1174,14 @@ class Surface(Abstract.Surface):
         knots_u = utilities.linspace(start_u, stop_u, self.sample_size)
         knots_v = utilities.linspace(start_v, stop_v, self.sample_size)
 
-        # Find spans belonging to the knots
-        spans_u = helpers.find_spans(self.knotvector_u, self.ctrlpts_size_u, knots_u)
-        spans_v = helpers.find_spans(self.knotvector_v, self.ctrlpts_size_v, knots_v)
+        spts = self._evaluator.evaluate(knots_u=knots_u, knots_v=knots_v,
+                                        degree_u=self.degree_u, degree_v=self.degree_v,
+                                        knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                        ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
+                                        ctrlpts=self._control_points2D,
+                                        dimension=self._dimension)
 
-        # Find basis functions
-        basis_u = helpers.basis_functions(self.degree_u, self.knotvector_u, spans_u, knots_u)
-        basis_v = helpers.basis_functions(self.degree_v, self.knotvector_v, spans_v, knots_v)
-
-        # Evaluate the surface directly
-        for i in range(len(knots_u)):
-            idx_u = spans_u[i] - self.degree_u
-            for j in range(len(knots_v)):
-                spt = [0.0 for _ in range(self._dimension)]
-                for l in range(0, self.degree_v + 1):
-                    temp = [0.0 for _ in range(self._dimension)]
-                    idx_v = spans_v[j] - self.degree_v + l
-                    for k in range(0, self.degree_u + 1):
-                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
-                                   zip(temp, self._control_points2D[idx_u + k][idx_v])]
-                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
-
-                self._surface_points.append(spt)
+        self._surface_points = spts
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u=-1, v=-1, order=0):
