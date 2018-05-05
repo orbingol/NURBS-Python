@@ -27,7 +27,28 @@ class Curve(object):
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
+        self._evaluator = None  # evaluator instance
         self._cache = {}  # cache dictionary
+
+    @property
+    def evaluator(self):
+        """ Curve evaluator.
+
+        Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
+        documentation on ``Evaluator`` classes.
+
+        :getter: Prints the name of the evaluator and returns the current Evaluator instance
+        :setter: Sets the evaluator
+        """
+        if self._evaluator:
+            print("Using " + self._evaluator.name)
+            return self._evaluator
+
+    @evaluator.setter
+    def evaluator(self, value):
+        if not isinstance(value, Evaluator):
+            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        self._evaluator = value
 
     @property
     def rational(self):
@@ -315,7 +336,28 @@ class Surface(object):
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
+        self._evaluator = None  # evaluator instance
         self._cache = {}  # cache dictionary
+
+    @property
+    def evaluator(self):
+        """ Curve evaluator.
+
+        Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
+        documentation on ``Evaluator`` classes.
+
+        :getter: Prints the name of the evaluator and returns the current Evaluator instance
+        :setter: Sets the evaluator
+        """
+        if self._evaluator:
+            print("Using " + self._evaluator.name)
+            return self._evaluator
+
+    @evaluator.setter
+    def evaluator(self, value):
+        if not isinstance(value, Evaluator):
+            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        self._evaluator = value
 
     @property
     def rational(self):
@@ -867,10 +909,10 @@ class Multi(object):
         pass
 
 
-class EvaluationStrategy(object):
+class Evaluator(object):
     """ Evaluator abstract class
 
-    Evaluators, or namely Evaluation Strategies, allow users to change curve and/or surface evaluation strategy,
+    Evaluators (or evaluation strategies) allow users to change curve and/or surface evaluation strategy,
     i.e. the algorithms that are used to evaluate the curve & surface, take derivatives and more.
     Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
     or improve existing ones.
@@ -881,7 +923,17 @@ class EvaluationStrategy(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
+        self._name = ""  # You should override this variable
         pass
+
+    @property
+    def name(self):
+        """ Evaluator name (as a string).
+
+        :getter: Gets the name of the evaluator
+        :type: str
+        """
+        return self._name
 
     @abc.abstractmethod
     def evaluate_single(self, **kwargs):
