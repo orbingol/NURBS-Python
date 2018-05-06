@@ -9,6 +9,7 @@ __version__ = "4.0-beta1"
 __license__ = "MIT"
 
 
+import os
 import sys
 import abc
 import math

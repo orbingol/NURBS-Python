@@ -7,11 +7,14 @@
 
 """
 
+from . import os
 from . import warnings
 from . import struct
 from . import pickle
 from . import Abstract
+from . import NURBS
 from . import Multi
+from . import compatibility
 from .elements import Vertex, Triangle
 
 
@@ -777,3 +780,98 @@ def save_off_multi(surface_list, **kwargs):
                 fp.write(line)
     except IOError:
         print("Cannot open " + str(file_name) + " for writing")
+
+
+def read_smesh(file_name):
+    """ Generates a NURBS surface from a smesh file.
+
+    *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
+    NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
+    several NURBS surfaces. The files have the extensions of ``txt`` or ``dat`` and they are named as
+
+    * ``smesh.X.Y.txt``
+    * ``smesh.X.dat``
+
+    where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
+    the surface inside the complete object.
+
+    This function reads a single smesh file and converts it into a NURBS surface. Please see the following functions
+    for reading the smesh file sets:
+
+    * :func:`.read_smesh_list()`
+    * :func:`.read_smesh_dir()`
+
+    :param file_name: smesh file to read
+    :type file_name: str
+    :return: a NURBS surface
+    :rtype: NURBS.Surface
+    """
+    try:
+        with open(file_name, 'r') as fp:
+            content = fp.readlines()
+            content = [x.strip().split() for x in content]
+    except IOError:
+        print("Cannot open " + str(file_name) + " for reading")
+        return
+
+    # 1st line defines the dimension and it must be 3
+    if int(content[0][0]) != 3:
+        warnings.warn("Input smesh file" + str(file_name) + " is not a surface")
+        return
+
+    # Create a NURBS surface instance and fill with the data read from smesh file
+    surf = NURBS.Surface()
+
+    # 2nd line is the degrees
+    surf.degree_u = int(content[1][0])
+    surf.degree_v = int(content[1][1])
+
+    # 3rd line is the number of weighted control points in u and v directions
+    dim_u = int(content[2][0])
+    dim_v = int(content[2][1])
+    ctrlpts_end = 5 + (dim_u * dim_v)
+
+    # Starting from 6th line, we have the weighted control points
+    ctrlpts_smesh = content[5:ctrlpts_end]
+
+    # smesh files have the control points in u-row order format
+    ctrlpts = compatibility.change_ctrlpts_row_order(ctrlpts_smesh, dim_u, dim_v)
+
+    # smesh files store control points in format (x, y, z, w) -- Rhino format
+    ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
+
+    # Set control points
+    surf.set_ctrlpts(ctrlptsw, dim_u, dim_v)
+
+    # 4th and 5th lines are knot vectors
+    surf.knotvector_u = [float(u) for u in content[3]]
+    surf.knotvector_v = [float(v) for v in content[4]]
+
+    # Return the surface instance
+    return surf
+
+
+def read_smesh_list(file_list):
+    """ Creates a MultiSurface instance from a list of smesh files.
+
+    :param file_list: file list containing the names of the smesh files
+    :type file_list: list, tuple
+    :return: a MultiSurface instance containing all NURBS surfaces
+    :rtype: Multi.MultiSurface
+    """
+    ret = Multi.MultiSurface()
+    for file in file_list:
+        ret.add(read_smesh(file))
+    return ret
+
+
+def read_smesh_dir(file_path):
+    """ Creates a MultiSurface instance from a list of smesh files inside a directory.
+
+    :param file_path: path to the directory containing smesh files
+    :type file_path: str`
+    :return: a MultiSurface instance containing all NURBS surfaces
+    :rtype: Multi.MultiSurface
+    """
+    files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
+    return read_smesh_list(files)
