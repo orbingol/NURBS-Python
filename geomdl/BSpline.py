@@ -30,13 +30,6 @@ class Curve(Abstract.Curve):
     * ctrlpts
     * evalpts
 
-    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read weighted control points from a text file.
-    Additional details on the file formats can be found in the documentation.
-
-    .. note::
-
-        If you update any of the data storage elements after the curve evaluation, the surface points stored in
-        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
@@ -737,13 +730,6 @@ class Surface(Abstract.Surface):
     * ctrlpts2d
     * evalpts
 
-    The function :func:`.read_ctrlpts_from_txt()` provides an easy way to read control points from a text file.
-    Additional details on the file formats can be found on the documentation.
-
-    .. note::
-
-        If you update any of the data storage elements after the surface evaluation, the surface points stored in
-        :py:attr:`~evalpts` property will be deleted automatically.
     """
 
     def __init__(self):
