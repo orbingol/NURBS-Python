@@ -40,23 +40,6 @@ Using NURBS-Python
 Issues and Reporting
 ====================
 
-Contributions to NURBS-Python
------------------------------
-
-All contributions to NURBS-Python are welcomed. I would recommend you reading `CONTRIBUTING <.github/CONTRIBUTING.md>`_
-file for more details.
-
-Bugs and Issues
----------------
-
-Please use the issue tracker for reporting bugs and other related issues.
-
-Comments and Questions
-----------------------
-
-If you have any questions or comments related to the NURBS-Python package, please don't hesitate to contact the
-developers by email.
-
 Author
 ======
 
