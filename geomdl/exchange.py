@@ -157,6 +157,49 @@ def export_csv(obj, file_name, point_type='evalpts', scalar=0):
         warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
 
 
+def export_vtk(obj, file_name, point_type='evalpts'):
+    """ Exports control points or evaluated points as a VTK file (legacy format).
+
+    Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
+
+    :param obj: a curve or a surface object
+    :type obj: Abstract.Curve, Abstract.Surface
+    :param file_name: output file name
+    :type file_name: str
+    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
+    :type point_type: str
+    """
+    if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+        raise ValueError("Input object should be a curve or a surface")
+
+    # Pick correct points from the object
+    if point_type == 'ctrlpts':
+        points = obj.ctrlpts
+    elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
+        points = obj.evalpts
+    else:
+        warnings.warn("Please choose a valid point type option")
+        return
+
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'w') as fp:
+            # Write header to the file
+            fp.write("# vtk DataFile Version 3.0\n")
+            fp.write(repr(obj) + "\n")
+            fp.write("ASCII\nDATASET POLYDATA\n")
+            fp.write("POINTS " + str(len(points)) + " FLOAT\n")
+
+            # Loop through points
+            for pt in points:
+                line = " ".join(str(c) for c in pt) + "\n"
+                fp.write(line)
+
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+
+
 # Saves surface(s) as a .obj file
 def save_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
