@@ -869,7 +869,7 @@ def read_smesh_dir(file_path):
     """ Creates a MultiSurface instance from a list of smesh files inside a directory.
 
     :param file_path: path to the directory containing smesh files
-    :type file_path: str`
+    :type file_path: str
     :return: a MultiSurface instance containing all NURBS surfaces
     :rtype: Multi.MultiSurface
     """
