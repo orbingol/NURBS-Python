@@ -35,8 +35,8 @@ def save_pickle(data_dict, file_name):
         warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
 
 
-def load_pickle(file_name):
-    """ Loads a data dictionary from a pickled file.
+def read_pickle(file_name):
+    """ Reads a data dictionary from a pickled file.
 
     Helper function for curve and surface ``load`` method.
 

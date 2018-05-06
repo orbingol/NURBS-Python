@@ -154,7 +154,7 @@ class Curve(Abstract.Curve):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        impdata = exchange.load_pickle(file_name)
+        impdata = exchange.read_pickle(file_name)
 
         if self._rational != impdata['rational']:
             raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
@@ -1035,7 +1035,7 @@ class Surface(Abstract.Surface):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        impdata = exchange.load_pickle(file_name)
+        impdata = exchange.read_pickle(file_name)
 
         # Check if we have loaded the correct type of surface
         if self._rational != impdata['rational']:
