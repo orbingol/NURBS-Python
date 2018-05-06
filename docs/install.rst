@@ -1,5 +1,5 @@
-Installation
-^^^^^^^^^^^^
+Installation and Testing
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
 
@@ -10,8 +10,8 @@ Installation
 
 **Installation via pip is the recommended method for all users.** Manual method is only recommended for advanced users.
 
-Using Pip
-=========
+Install via Pip
+===============
 
 .. note::
 
@@ -23,8 +23,8 @@ using the following command:
 
 ``pip install geomdl``
 
-Manual Method
-=============
+Manual Install
+==============
 
 Included *setup.py* script will take care of the installation and automatically copy the required files to
 *site-packages* directory. Please run the following from the command line:
@@ -37,3 +37,15 @@ make extension development, bug fixing or testing easy), you can run
 ``python setup.py develop``
 
 from the command line to generate a link to the package directory inside *site-packages*.
+
+
+Testing
+=======
+
+The package includes ``tests/`` directory which contains all the automated testing scripts.
+These scripts require `pytest <https://pytest.readthedocs.io/en/latest>`_ installed on your Python distribution.
+After installing the required packages, execute the following from your favorite IDE or from the command line:
+
+``pytest``
+
+pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
