@@ -65,7 +65,7 @@ def read_txt(file_name, two_dimensional=False):
         warnings.warn("File " + str(file_name) + " cannot be opened for reading")
 
 
-def export_csv(obj, file_name, point_type='evalpts', scalar=0):
+def export_csv(obj, file_name, point_type='evalpts'):
     """ Exports control points or evaluated points as a CSV file.
 
     :param obj: a curve or a surface object
@@ -74,20 +74,9 @@ def export_csv(obj, file_name, point_type='evalpts', scalar=0):
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
-    :param scalar: scalar value (required for Paraview)
-    :type scalar: int
     """
     if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
-
-    # Find dimension of the points, e.g. 2D or 3D or something else
-    dim = obj.dimension - 1 if obj.rational else obj.dimension
-
-    # Prepare CSV header
-    header = ""
-    for i in range(dim):
-        header += "dim " + str(i + 1) + ", "
-    header += "scalar\n"
 
     # Pick correct points from the object
     if point_type == 'ctrlpts':
@@ -98,6 +87,13 @@ def export_csv(obj, file_name, point_type='evalpts', scalar=0):
         warnings.warn("Please choose a valid point type option")
         return
 
+    # Prepare CSV header
+    dim = len(points[0])
+    header = "dim "
+    for i in range(dim-1):
+        header += str(i + 1) + ", dim "
+    header += str(dim) + "\n"
+
     # Try opening the file for writing
     try:
         with open(file_name, 'w') as fp:
@@ -107,9 +103,7 @@ def export_csv(obj, file_name, point_type='evalpts', scalar=0):
             # Loop through points
             for pt in points:
                 # Fill coordinates
-                line = ", ".join(str(c) for c in pt)
-                # Fill scalar column
-                line += ", " + str(scalar) + "\n"
+                line = ", ".join(str(c) for c in pt) + "\n"
                 # Write line to file
                 fp.write(line)
 
