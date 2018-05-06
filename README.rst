@@ -38,7 +38,10 @@ Using NURBS-Python
 * **Documentation**: http://nurbs-python.rtfd.org
 
 Issues and Reporting
-====================
+--------------------
+
+Please see the `documentation <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_
+for details.
 
 Author
 ======
