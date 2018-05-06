@@ -9,11 +9,11 @@
 
 from . import warnings
 from . import copy
+from . import pickle
 from . import Abstract
 from . import Multi
 from . import utilities
 from . import helpers
-from . import exchange
 from . import evaluators
 
 
@@ -139,7 +139,7 @@ class Curve(Abstract.Curve):
                    'ctrlpts': self._control_points,
                    'dimension': self._dimension}
 
-        exchange.save_pickle(expdata, file_name)
+        save_pickle(expdata, file_name)
 
     def load(self, file_name):
         """ Loads the curve from a pickled file.
@@ -147,7 +147,7 @@ class Curve(Abstract.Curve):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        impdata = exchange.read_pickle(file_name)
+        impdata = read_pickle(file_name)
 
         if self._rational != impdata['rational']:
             raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
@@ -1013,7 +1013,7 @@ class Surface(Abstract.Surface):
                    'ctrlpts': self._control_points,
                    'dimension': self._dimension}
 
-        exchange.save_pickle(expdata, file_name)
+        save_pickle(expdata, file_name)
 
     def load(self, file_name):
         """ Loads the surface from a pickled file.
@@ -1021,7 +1021,7 @@ class Surface(Abstract.Surface):
         :param file_name: name of the file to be loaded
         :type file_name: str
         """
-        impdata = exchange.read_pickle(file_name)
+        impdata = read_pickle(file_name)
 
         # Check if we have loaded the correct type of surface
         if self._rational != impdata['rational']:
@@ -1727,3 +1727,44 @@ class Surface(Abstract.Surface):
             new_ctrlpts.append(temp)
 
         self.ctrlpts = new_ctrlpts
+
+
+def save_pickle(data_dict, file_name):
+    """ Saves the contents of the data dictionary as a pickled file.
+
+    Helper function for curve and surface ``save`` method.
+
+    :param data_dict: data dictionary
+    :type data_dict: dict
+    :param file_name: name of the file to be saved
+    :type file_name: str
+    """
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'wb') as fp:
+            # Pickle the data dictionary
+            pickle.dump(data_dict, fp)
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+
+
+def read_pickle(file_name):
+    """ Reads a data dictionary from a pickled file.
+
+    Helper function for curve and surface ``load`` method.
+
+    :param file_name: name of the file to be loaded
+    :type file_name: str
+    :return: data dictionary
+    :rtype: dict
+    """
+    # Try opening the file for reading
+    try:
+        with open(file_name, 'rb') as fp:
+            # Read and return the pickled file
+            impdata = pickle.load(fp)
+            return impdata
+    except IOError:
+        # Raise an exception on failure to open file
+        raise IOError("File " + str(file_name) + " cannot be opened for reading.")

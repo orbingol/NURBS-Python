@@ -10,53 +10,11 @@
 from . import os
 from . import warnings
 from . import struct
-from . import pickle
 from . import Abstract
 from . import NURBS
 from . import Multi
 from . import compatibility
 from .elements import Vertex, Triangle
-
-
-def save_pickle(data_dict, file_name):
-    """ Saves the contents of the data dictionary as a pickled file.
-
-    Helper function for curve and surface ``save`` method.
-
-    :param data_dict: data dictionary
-    :type data_dict: dict
-    :param file_name: name of the file to be saved
-    :type file_name: str
-    """
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'wb') as fp:
-            # Pickle the data dictionary
-            pickle.dump(data_dict, fp)
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
-
-
-def read_pickle(file_name):
-    """ Reads a data dictionary from a pickled file.
-
-    Helper function for curve and surface ``load`` method.
-
-    :param file_name: name of the file to be loaded
-    :type file_name: str
-    :return: data dictionary
-    :rtype: dict
-    """
-    # Try opening the file for reading
-    try:
-        with open(file_name, 'rb') as fp:
-            # Read and return the pickled file
-            impdata = pickle.load(fp)
-            return impdata
-    except IOError:
-        # Raise an exception on failure to open file
-        raise IOError("File " + str(file_name) + " cannot be opened for reading.")
 
 
 def read_txt(file_name, two_dimensional=False):
