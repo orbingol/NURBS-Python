@@ -1,9 +1,9 @@
 NURBS-Python
 ^^^^^^^^^^^^
 
-|DOI|_
+|DOI|_ |PYPI|_ |ANACONDA|_
 
-|PYPI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
+|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
 
 Introduction
 ============
@@ -19,61 +19,23 @@ Branch Information
 * ``3.x`` branch contains code for NURBS-Python v3.x series
 * ``2.x`` branch contains code for NURBS-Python v2.x series
 
-
-Implementation
---------------
-
-NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
-the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
-features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
-
-Examples
---------
-
-The Examples_ repository contains example scripts describing how to use NURBS-Python with advanced visualization
-examples. Please see the documentation for more details.
-
 Citing NURBS-Python
 -------------------
 
-I would be glad if you cite this repository using the DOI_ provided as a badge at the top.
+Please see the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section in the documentation
+for more details.
 
-Installation
-============
+Installation and Testing
+========================
 
-Using Pip
----------
+Please see the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
+in the documentation.
 
-You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl/>`_ and install
-using the following command:
+Using NURBS-Python
+------------------
 
-``pip install geomdl``
-
-Manual Method
--------------
-
-Included *setup.py* script will take care of the installation and automatically copy the required files to
-*site-packages* directory. Please run the following from the command line:
-
-``python setup.py install``
-
-If you don't want to put the files into your Python distribution's *site-packages* directory for some reason (e.g.
-extension development or bug fixing), you can run
-
-``python setup.py develop``
-
-from the command line to generate a link to the package directory inside *site-packages*.
-
-Testing
--------
-
-``tests/`` directory contains the testing scripts. In order to execute the tests which comes with NURBS-Python,
-you need to install `pytest <https://pytest.readthedocs.io/en/latest>`_ on your Python distribution.
-After installing the required packages, execute the following from your favorite IDE or from the command line:
-
-``pytest``
-
-pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
+* **Examples**: https://github.com/orbingol/NURBS-Python_Examples
+* **Documentation**: http://nurbs-python.rtfd.org
 
 Issues and Reporting
 ====================
@@ -141,5 +103,7 @@ for his guidance and supervision throughout the course of this project.
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
 
+.. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
+.. _ANACONDA: https://anaconda.org/orbingol/geomdl
+
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
-.. _Examples: https://github.com/orbingol/NURBS-Python_Examples
