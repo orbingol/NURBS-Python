@@ -104,19 +104,20 @@ def read_txt(file_name, two_dimensional=False):
         warnings.warn("File " + str(file_name) + " cannot be opened for reading")
 
 
-def export_csv(obj, file_name, point_type='ctrlpts', scalar=0):
+def export_csv(obj, file_name, point_type='evalpts', scalar=0):
     """ Exports control points or evaluated points as a CSV file.
 
     :param obj: a curve or a surface object
     :type obj: Abstract.Curve, Abstract.Surface
     :param file_name: output file name
-    :param point_type: ctrlpts for control points or evalpts for evaluated points
+    :type file_name: str
+    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
     :param scalar: scalar value (required for Paraview)
     :type scalar: int
     """
     if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
-        raise ValueError("Input object should be a surve or a surface")
+        raise ValueError("Input object should be a curve or a surface")
 
     # Find dimension of the points, e.g. 2D or 3D or something else
     dim = obj.dimension - 1 if obj.rational else obj.dimension
