@@ -48,17 +48,6 @@ Author
 
 * Onur Rauf Bingol (`@orbingol <https://github.com/orbingol>`_)
 
-Contributors
-============
-
-I would like to thank all contributors for their help and support in testing, bug fixing and improvement of the
-NURBS-Python_ project.
-
-* Luke Frisken (`@kellpossible <https://github.com/kellpossible>`_)
-* John-Eric Dufour (`@jedufour <https://github.com/jedufour>`_)
-* Jan Heczko (`@heczis <https://github.com/heczis>`_)
-* Pavel Vlasanek (`@tucna <https://github.com/tucna>`_)
-
 License
 =======
 
@@ -69,6 +58,9 @@ Acknowledgments
 
 I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_,
 for his guidance and supervision throughout the course of this project.
+
+In addition, I would like to thank `all NURBS-Python contributors <CONTRIBUTORS.rst>`_ for their time and effort in
+fixing, extending and supporting this project.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
@@ -91,5 +83,3 @@ for his guidance and supervision throughout the course of this project.
 
 .. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
 .. _ANACONDA: https://anaconda.org/orbingol/geomdl
-
-.. _NURBS-Python: https://github.com/orbingol/NURBS-Python
