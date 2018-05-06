@@ -1,2 +1,3 @@
 include LICENSE
 include tests/*
+include DESCRIPTION.rst
