@@ -10,7 +10,7 @@
 from . import Abstract
 from . import utilities
 
-import numpy as np
+from . import numpy as np
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
