@@ -77,3 +77,60 @@ class VisCurve2D(Abstract.VisAbstract):
             "layout": plot_layout
         }, show_link=False)
 
+
+class VisCurve3D(Abstract.VisAbstract):
+    """ Plotly visualization module for 3D Curves """
+    def __init__(self, config=VisConfig()):
+        super(VisCurve3D, self).__init__(config=config)
+
+    def render(self):
+        plot_data = []
+        for plot in self._plots:
+            pts = np.array(plot['ptsarr'])
+
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='lines+markers',
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width,
+                        dash='dashdot'
+                    ),
+                    marker=dict(
+                        color=plot['color'],
+                        size=self._config.line_width
+                    )
+                )
+                plot_data.append(figure)
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts':
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='lines',
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width
+                    ),
+                )
+                plot_data.append(figure)
+
+        plot_layout = dict(
+            width=self._config.figure_size[0],
+            height=self._config.figure_size[1],
+            autosize=False,
+            showlegend=self._config.display_legend
+        )
+
+        plotly.offline.plot({
+            "data": plot_data,
+            "layout": plot_layout
+        }, show_link=False)
