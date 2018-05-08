@@ -18,6 +18,9 @@ class VisConfig(Abstract.VisConfigAbstract):
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
+        self.figure_size = kwargs.get('figure_size', [800, 800])
+        self.display_legend = kwargs.get('legend', True)
+        self.line_width = kwargs.get('linewidth', 2)
 
 
 class VisCurve2D(Abstract.VisAbstract):
@@ -39,7 +42,7 @@ class VisCurve2D(Abstract.VisAbstract):
                     mode='lines+markers',
                     line=dict(
                         color=plot['color'],
-                        width=2,
+                        width=self._config.line_width,
                         dash='dashdot'
                     )
                 )
@@ -54,9 +57,23 @@ class VisCurve2D(Abstract.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=2
+                        width=self._config.line_width
                     )
                 )
                 plot_data.append(figure)
 
-        plotly.offline.plot(plot_data)
+        plot_layout = dict(
+            width=self._config.figure_size[0],
+            height=self._config.figure_size[1],
+            autosize=False,
+            showlegend= self._config.display_legend,
+            yaxis=dict(
+                scaleanchor="x",
+            )
+        )
+
+        plotly.offline.plot({
+            "data": plot_data,
+            "layout": plot_layout
+        }, show_link=False)
+
