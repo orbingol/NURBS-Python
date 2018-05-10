@@ -56,7 +56,23 @@ issue.
 * If you have used `pip` to install the package, please indicate the version that you are using.
 * Did I say details are very important?
 
-**Note:** There will be no bug fixes and updates to `v2.x` branch.
+## Coding Standards
+
+You must follow the standards below when developing for the [the core library](http://nurbs-python.readthedocs.io/en/latest/modules.html) without any exceptions.
+
+* Pure python code, i.e. no compilable code, including C/C++ code using Python's C API, Cython, etc.
+* Using the modules that come with Python's standard library. Please note that NumPy, SciPy, etc. **are not** included in the standard library.
+* Compatible (at least) with Python 2.7.x and 3.5.x together.
+* It is acceptable to use very well-known backporting and helper modules like [functools32](https://pypi.org/project/functools32/) only if critically necessary. These modules must be installable via `pip` on all platforms without any issues or additional requirements.
+* Soft dependencies are acceptable; e.g. if some module is installed, then use the functionality. Otherwise, use a custom or simplified implementation of it.
+* Please don't mix the data types (lists, tuples, arrays, etc.)
+
+Since all visualization components are considered as experimental, using external libraries (and even NumPy) are 
+acceptable when developing new visualization components or improving the existing ones. 
+You don't need to add them to `setup.py` as dependencies.
+
+I would be glad if you could follow these standards while developing for NURBS-Python. Failure to follow may cause
+rejection of your contributions (as pull requests or other methods).
 
 ## Feature requests
 
@@ -76,8 +92,7 @@ CI tools are set to test every pull request, and I would appreciate if you could
 your code with a Python linter utility, e.g. `pylint` and/or `prospector`.
  
 All your changes will be reviewed and if they are accepted, they will be merged to the `master` branch in the next 
-subsequent release of NURBS-Python 
-and your name will be added under the *Contributors* section of the [README](../README.rst) file.
+subsequent release of NURBS-Python and your name will be added to the [CONTRIBUTORS](../README.rst) file.
 
 Feel free to open an issue on the project issue tracker, if you have any questions.
 
