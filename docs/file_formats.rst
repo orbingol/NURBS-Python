@@ -3,17 +3,12 @@ File Formats
 
 NURBS-Python uses right-handed notation in input and output files.
 
-TXT Files
-=========
+Text Files
+==========
 
-NURBS-Python library provides 2 functions in each class included for **reading** and **saving** the control points list.
-These are:
-
-* ``read_ctrlpts_from_txt``: Reads control points list from a text file
-* ``save_ctrlpts_to_txt``: Saves control points list to a text file
-
-The format of the text file depends on the type of the geometric element, i.e. curve or surface, that you are trying to
-export. The following explains the file formats for `.txt` files which contain control points.
+NURBS-Python library provides :py:func:`.read_txt()` function for reading control points of curves and surfaces from a
+text file. The format of the text file depends on the type of the geometric element, i.e. curve or surface.
+The following explains the file formats for `.txt` files which contain control points.
 
 2D Curves
 ---------
@@ -35,7 +30,7 @@ The format of the control points file for generating 2D B-Spline curves is as fo
 | x\ :sub:`3` | y\ :sub:`3` |
 +-------------+-------------+
 
-The control points file format of the NURBS curves are very similiar to B-Spline ones with the difference of weights.
+The control points file format of the NURBS curves are very similar to B-Spline ones with the difference of weights.
 To generate a **2D NURBS curve**, you need a list of *(x\*w, y\*w, w)* coordinates representing the weighted control
 points (P\ :sub:`w`) where,
 
@@ -161,54 +156,22 @@ The format of the control points file for generating NURBS surfaces is as follow
     :doc:`compatibility <module_compatibility>` module provides several functions to manipulate & convert control
     point arrays into NURBS-Python compatible ones and more.
 
-CSV Files
-=========
+Comma-Separated (CSV)
+=====================
 
-NURBS-Python library provides 2 functions in each class for exporting *control points* and *evaluted points* as CSV files.
-These functions are:
+NURBS-Python library provides :py:func:`.export_csv()` function for saving control points and/or evaluated points as a
+CSV file.
 
-For all classes:
+VTK (Legacy) Format
+===================
 
-* ``export_ctrlpts_to_csv``: Saves control points list as a CSV file
+NURBS-Python library provides :py:func:`.export_vtk()` function for saving control points and/or evaluated points as a
+VTK file (legacy format).
 
-For ``Curve`` class:
+OBJ Format
+==========
 
-* ``export_curvepts_to_csv``: Saves evaluated curve points as a CSV file
-
-For ``Surface`` class:
-
-* ``export_surfpts_to_csv``: Saves evaluted surface points as a CSV file
-
-Customization Options
----------------------
-
-The control points and the evaluated curve points list are always linear and there are no customization options. On the
-other hand, CSV exports from surface classes have some customization options.
-
-Surface Control Points
-~~~~~~~~~~~~~~~~~~~~~~
-
-The following modes are available via ``mode=`` parameter of the ``export_ctrlpts_to_csv`` method:
-
-* ``linear``: Default mode, saves the stored point array without any change
-* ``zigzag``: Generates a zig-zag shape
-* ``wireframe``: Generates a wireframe
-
-Evaluated Surface Points
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following modes are available via ``mode=`` parameter of the ``export_surfpts_to_csv`` method:
-
-* ``linear``: Default mode, saves the stored point array without any change
-* ``zigzag``: Generates a zig-zag shape
-* ``wireframe``: Generates a wireframe/quad mesh
-* ``triangle``: Generates a triangular mesh
-
-OBJ Files
-=========
-
-Starting from NURBS-Python v3.1.0, a new experimental module called :code:`exchange` has been added to the package. This
-module provides functionality for exporting NURBS surfaces to common CAD exchange formats.
+You may use :py:func:`.save_obj()` function to export a NURBS surface as a Wavefront .obj file.
 
 Example 1
 ---------
@@ -267,9 +230,15 @@ The following example combines :code:`shapes` module together with :code:`exchan
     # Save surface as a .obj file
     exchange.save_obj(surf, "cylindirical_surf.obj")
 
-STL Files
-=========
+STL Format
+==========
 
 Exporting to STL files works in the same way explained in OBJ Files section. To export a NURBS surface as a .stl file,
-you can use :py:func:`.save_stl()` function. This function saves in binary format by default but there is an option to
+you may use :py:func:`.save_stl()` function. This function saves in binary format by default but there is an option to
 change the save file format to plain text. Please see the :doc:`documentation <module_exchange>` for details.
+
+Object File Format (OFF)
+========================
+
+Very similar to exporting as OBJ and STL formats, you may use :py:func:`.save_off()` function to export a NURBS surface
+as a .off file.
