@@ -57,6 +57,14 @@ class Curve(Abstract.Curve):
         self.knotvector = knotvector
 
     @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        :getter: Gets the coordinates of the evaluated points
+        """
+        return self.curvepts
+
+    @property
     def ctrlpts(self):
         """ Control points.
 
@@ -915,6 +923,14 @@ class Surface(Abstract.Surface):
         self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
         self.knotvector_u = knotvector_u
         self.knotvector_v = knotvector_v
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        :getter: Gets the coordinates of the evaluated points
+        """
+        return self.surfpts
 
     @property
     def ctrlpts(self):
