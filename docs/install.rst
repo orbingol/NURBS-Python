@@ -13,15 +13,14 @@ Installation and Testing
 Install via Pip
 ===============
 
-.. note::
-
-    Python provides a package manager called `pip <https://pypi.org/project/pip>`_ and it comes installed with all
-    distributions (including Anaconda). Please see the ``pip`` documentation for more details.
-
-You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl>`_ and install
-using the following command:
+You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl>`_ and easily install
+via `pip <https://pip.pypa.io/en/stable/>`_.
 
 ``pip install geomdl``
+
+Upgrading to the latest version:
+
+``pip install geomdl --upgrade``
 
 Manual Install
 ==============
@@ -38,6 +37,22 @@ make extension development, bug fixing or testing easy), you can run
 
 from the command line to generate a link to the package directory inside *site-packages*.
 
+Checking Installation
+=====================
+
+If you would like to check if you have installed the package correctly, you may try to print ``geomdl.__version__``
+variable after import. The following example illustrates installation check on a Windows PowerShell instance::
+
+    Windows PowerShell
+    Copyright (C) Microsoft Corporation. All rights reserved.
+
+    PS C:\> python
+    Python 3.6.2 (v3.6.2:5fd33b5, Jul  8 2017, 04:57:36) [MSC v.1900 64 bit (AMD64)] on win32
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import geomdl
+    >>> geomdl.__version__
+    '3.6.1'
+    >>>
 
 Testing
 =======
