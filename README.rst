@@ -60,7 +60,7 @@ I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.
 for his guidance and supervision throughout the course of this project.
 
 In addition, I would like to thank `all NURBS-Python contributors <CONTRIBUTORS.rst>`_ for their time and effort in
-fixing, extending and supporting this project.
+supporting this project.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
