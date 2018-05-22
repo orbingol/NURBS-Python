@@ -29,6 +29,9 @@ class VisCurve2D(Abstract.VisAbstract):
         super(VisCurve2D, self).__init__(config=config)
 
     def render(self):
+        if not self._plots:
+            return
+
         plot_data = []
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
@@ -66,7 +69,7 @@ class VisCurve2D(Abstract.VisAbstract):
             width=self._config.figure_size[0],
             height=self._config.figure_size[1],
             autosize=False,
-            showlegend= self._config.display_legend,
+            showlegend=self._config.display_legend,
             yaxis=dict(
                 scaleanchor="x",
             )
@@ -84,6 +87,9 @@ class VisCurve3D(Abstract.VisAbstract):
         super(VisCurve3D, self).__init__(config=config)
 
     def render(self):
+        if not self._plots:
+            return
+
         plot_data = []
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
