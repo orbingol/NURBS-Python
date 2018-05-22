@@ -245,18 +245,10 @@ class Surface(BSpline.Surface):
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
-        if isinstance(value, (list, tuple)):
-            # Process output of exchange.read_txt
-            pts = value[0]
-            self._control_points_size_u = value[1]
-            self._control_points_size_v = value[2]
-        else:
-            pts = value
-
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
-        self.set_ctrlpts(pts, self._control_points_size_u, self._control_points_size_v)
+        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
 
     @property
     def ctrlpts(self):
@@ -276,14 +268,6 @@ class Surface(BSpline.Surface):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        if isinstance(value, (list, tuple)):
-            # Process output of exchange.read_txt
-            pts = value[0]
-            self._control_points_size_u = value[1]
-            self._control_points_size_v = value[2]
-        else:
-            pts = value
-
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
@@ -294,7 +278,7 @@ class Surface(BSpline.Surface):
             weights = self.weights
 
         # Generate weighted control points using the new control points
-        ctrlptsw = compatibility.combine_ctrlpts_weights(pts, weights)
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
 
         # Set weighted control points
         self.set_ctrlpts(ctrlptsw, self._control_points_size_u, self._control_points_size_v)

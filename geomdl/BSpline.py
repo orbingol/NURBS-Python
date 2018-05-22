@@ -779,19 +779,11 @@ class Surface(Abstract.Surface):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        if isinstance(value, (list, tuple)):
-            # Process output of exchange.read_txt
-            pts = value[0]
-            self._control_points_size_u = value[1]
-            self._control_points_size_v = value[2]
-        else:
-            pts = value
-
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
         # Use set_ctrlpts directly
-        self.set_ctrlpts(pts, self._control_points_size_u, self._control_points_size_v)
+        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
 
     @property
     def ctrlpts2d(self):
