@@ -20,7 +20,7 @@ def test_check_knot_vector():
     degree = 4
     num_ctrlpts = 12
     autogen_kv = utilities.generate_knot_vector(degree, num_ctrlpts)
-    check_result = utilities.check_knot_vector(degree=degree, control_points_size=num_ctrlpts, knot_vector=autogen_kv)
+    check_result = utilities.check_knot_vector(degree=degree, num_ctrlpts=num_ctrlpts, knot_vector=autogen_kv)
     assert check_result
 
 

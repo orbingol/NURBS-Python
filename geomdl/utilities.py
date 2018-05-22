@@ -440,13 +440,23 @@ def generate_knot_vector(degree, num_ctrlpts):
 
 
 # Checks if the input knot vector follows the mathematical rules
-def check_knot_vector(degree=0, knot_vector=(), control_points_size=0):
-    """ Checks if the input knot vector follows the mathematical rules. """
+def check_knot_vector(degree=0, knot_vector=(), num_ctrlpts=0):
+    """ Checks if the input knot vector follows the mathematical rules.
+
+    :param degree: degree of the curve or the surface
+    :type degree: int
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :param num_ctrlpts: number of control points
+    :type num_ctrlpts: int
+    :return: True if the knot vector is valid, False otherwise
+    :rtype: bool
+    """
     if not knot_vector or len(knot_vector) == 0:
         raise ValueError("Input knot vector cannot be empty")
 
     # Check the formula; m = p + n + 1
-    if len(knot_vector) != degree + control_points_size + 1:
+    if len(knot_vector) != degree + num_ctrlpts + 1:
         return False
 
     # Check ascending order
