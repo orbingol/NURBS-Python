@@ -74,12 +74,12 @@ def vector_dot(vector1, vector2):
         raise ValueError("Input vectors cannot be empty")
 
     # Compute dot product
-    sum = 0
+    prod = 0
     for v1, v2 in zip(vector1, vector2):
-        sum += v1 * v2
+        prod += v1 * v2
 
     # Return the dot product of the input vectors
-    return sum
+    return prod
 
 
 # Normalizes the input vector
@@ -377,7 +377,7 @@ def frange(start, stop, step=1.0):
         yield stop  # for yielding last value of the knot vector if the step is a large value, like 0.1
 
 
-# Normalizes knot vector (internal functionality)
+# Normalizes knot vector
 def normalize_knot_vector(knot_vector=(), decimals=4):
     """ Normalizes the input knot vector between 0 and 1.
 
@@ -388,7 +388,7 @@ def normalize_knot_vector(knot_vector=(), decimals=4):
     :return: normalized knot vector
     :rtype: list
     """
-    if not knot_vector:
+    if not knot_vector or len(knot_vector) == 0:
         return knot_vector
 
     first_knot = float(knot_vector[0])
@@ -440,9 +440,9 @@ def generate_knot_vector(degree, num_ctrlpts):
 
 
 # Checks if the input knot vector follows the mathematical rules
-def check_knot_vector(degree=0, knot_vector=(), control_points_size=0, tol=0.001):
+def check_knot_vector(degree=0, knot_vector=(), control_points_size=0):
     """ Checks if the input knot vector follows the mathematical rules. """
-    if not knot_vector:
+    if not knot_vector or len(knot_vector) == 0:
         raise ValueError("Input knot vector cannot be empty")
 
     # Check the formula; m = p + n + 1
