@@ -26,6 +26,10 @@ setup(
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
+    extras_require={
+        'tests': ['pytest'],
+        'visualization': ['matplotlib', 'plotly'],
+    },
     long_description=read('DESCRIPTION.rst'),
     keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
