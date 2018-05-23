@@ -57,6 +57,7 @@ This documentation is organized into a couple sections:
     :caption: Modules
 
     modules
+    modules_visualization
     modules_experimental
 
 
