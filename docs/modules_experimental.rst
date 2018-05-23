@@ -6,23 +6,23 @@ might come with extra requirements or their API might change between NURBS-Pytho
 they are distributed with the package, due to these reasons they are considered as experimental. However, they are
 mature enough to be used in production environments.
 
-Visualization Module
-====================
+Visualization Modules
+=====================
 
 NURBS-Python provides an abstract base for visualization modules described under :doc:`Abstract <module_abstract>`
-class reference. This abstract base is a part of the :doc:`Core Library <modules>` and it is considered as mature now.
+class reference. This abstract base is a part of the :doc:`Core Library <modules>` and it can be used to implement
+various visualization backends.
 
-In addition, NURBS-Python comes with a sample experimental visualization module which implements the core abstract base.
-This experimental module uses several features of `Matplotlib <https://matplotlib.org/>`_  as its visualization backend.
+NURBS-Python comes with the following visualization modules:
 
 .. toctree::
     :maxdepth: 1
 
     module_vis_mpl
+    module_vis_plotly
 
-Although there exists a visualization module, the users are completely free to use any visualization method
-or visualization software. For instance, CSV exporting facility of the curve and surface classes can be used to plot
-control points, curves and surfaces using a software, such as Paraview_.
+The users are not limited with these visualization backends. For instance, control points and evaluated points can be
+exported via :py:func:`.export_csv()` or :py:func:`.export_vtk()` functions to plot with COTS software.
 
 Generating Common Shapes
 ========================
@@ -33,5 +33,3 @@ NURBS-Python provides an experimental module for automatic generation of the mos
     :maxdepth: 2
 
     module_shapes
-
-.. _Paraview: https://www.paraview.org/
