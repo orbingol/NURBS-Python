@@ -16,6 +16,20 @@ from plotly import graph_objs
 
 
 class VisConfig(Abstract.VisConfigAbstract):
+    """ Configuration class for Plotly visualization module.
+
+    This class is only required when you prefer to change the default plotting behavior, such as hiding control points
+    plot or legend. By default, the following variables and their default values are used in all ``VisPlotly``
+    visualization classes.
+
+    * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot on the figure
+    * ``legend`` (True or False): Enables/Disables legend on the figure
+    * ``axes`` (True or False): Enables/Disables axes and grid on the figure
+    * ``figure_size`` (list, *default: [800, 800]*): Size of the figure in (x, y)
+    * ``linewidth`` (int, *default: 2*): thickness of the lines on the figure
+
+    Please refer to the **Examples Repository** for details.
+    """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
@@ -30,6 +44,7 @@ class VisCurve2D(Abstract.VisAbstract):
         super(VisCurve2D, self).__init__(config=config)
 
     def render(self):
+        """ Plots the curve and the control points polygon """
         if not self._plots:
             return
 
@@ -88,6 +103,7 @@ class VisCurve3D(Abstract.VisAbstract):
         super(VisCurve3D, self).__init__(config=config)
 
     def render(self):
+        """ Plots the curve and the control points polygon """
         if not self._plots:
             return
 
