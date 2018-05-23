@@ -1,0 +1,18 @@
+# https://nurbs-python.readthedocs.io/en/latest/
+
+# Use RTD latest python image
+build:
+  image: latest
+
+# Build HTML and PDF docs
+formats:
+  - htmlzip
+  - pdf
+
+# Python options
+python:
+  version: 3.5
+  setup_py_install: false
+  pip_install: true  # extra_requirements only works when pip_install is true
+  extra_requirements:
+    - visualization
