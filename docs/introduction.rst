@@ -16,8 +16,8 @@ Some significant features of NURBS-Python are:
 * CSV export functionality with customizable meshing options
 * Python 2.7.x and 3.x compatibility
 * No external C/C++ library dependencies
-* No compilation steps necessary, everything is implemented in pure python
-* Easy to install via ``pip install NURBS-Python``
+* No compilation steps are necessary, everything is implemented in pure python
+* Easy to install via pip: ``pip install geomdl``
 
 References
 ==========
@@ -47,6 +47,7 @@ Onur Rauf Bingol
 
 * E-mail: contact@onurbingol.net
 * Twitter: https://twitter.com/orbingol
+* LinkedIn: https://www.linkedin.com/in/onurraufbingol/
 
 Acknowledgments
 ===============

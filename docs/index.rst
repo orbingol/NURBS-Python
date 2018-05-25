@@ -14,7 +14,7 @@ NURBS-Python Documentation
     Please note that there might be small API changes between the versions listed above.
 
 
-Welcome to the NURBS-Python Library documentation! NURBS-Python Library contains native Python implementations of several
+Welcome to the NURBS-Python (geomdl) documentation! NURBS-Python contains native Python implementations of several
 `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
 Non-Uniform Rational B-Spline (NURBS) curves and surfaces.
 
@@ -61,8 +61,8 @@ This documentation is organized into a couple sections:
     modules_experimental
 
 
-The NURBS-Python Library is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released
-under `The MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
+NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released under the
+`MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
 
 
 .. Indices and tables
