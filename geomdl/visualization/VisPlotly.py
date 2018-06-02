@@ -61,12 +61,12 @@ class VisConfig(Abstract.VisConfigAbstract):
 
 
 class VisCurve2D(Abstract.VisAbstract):
-    """ Plotly visualization module for 2D Curves """
+    """ Plotly visualization module for 2D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
 
     def render(self):
-        """ Plots the curve and the control points polygon """
+        """ Plots the curve and the control points polygon. """
         if not self._plots:
             return
 
@@ -130,12 +130,12 @@ class VisCurve2D(Abstract.VisAbstract):
 
 
 class VisCurve3D(Abstract.VisAbstract):
-    """ Plotly visualization module for 3D Curves """
+    """ Plotly visualization module for 3D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
 
     def render(self):
-        """ Plots the curve and the control points polygon """
+        """ Plots the curve and the control points polygon. """
         if not self._plots:
             return
 
@@ -215,12 +215,15 @@ class VisCurve3D(Abstract.VisAbstract):
 
 
 class VisSurface(Abstract.VisAbstractSurf):
-    """ Plotly visualization module for Surfaces """
+    """ Plotly visualization module for surfaces.
+
+    Triangular mesh plot for the surface and wireframe plot for the control points grid.
+    """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
 
     def render(self):
-        """ Plots the surface and the control points grid """
+        """ Plots the surface and the control points grid. """
         if not self._plots:
             return
 

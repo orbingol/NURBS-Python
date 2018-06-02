@@ -65,7 +65,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     def set_axes_equal(ax):
         """ Sets equal aspect ratio across the three axes of a 3D plot.
 
-        This function is contributed by Dr. Xuefeng Zhao <xxzhao1@gmail.com>
+        This function is contributed by Dr. Xuefeng Zhao.
 
         :param ax: a Matplotlib axis, e.g., as output from plt.gca().
         """
@@ -81,12 +81,12 @@ class VisConfig(Abstract.VisConfigAbstract):
 
 
 class VisCurve2D(Abstract.VisAbstract):
-    """ Matplotlib visualization module for 2D Curves """
+    """ Matplotlib visualization module for 2D curves """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
 
     def render(self):
-        """ Plots the 2D curve and the control points polygon """
+        """ Plots the 2D curve and the control points polygon. """
         if not self._plots:
             return
 
@@ -128,12 +128,12 @@ class VisCurve2D(Abstract.VisAbstract):
 
 
 class VisCurve3D(Abstract.VisAbstract):
-    """ Matplotlib visualization module for 3D Curves """
+    """ Matplotlib visualization module for 3D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
 
     def render(self):
-        """ Plots the 3D curve and the control points polygon """
+        """ Plots the 3D curve and the control points polygon. """
         if not self._plots:
             return
 
@@ -182,15 +182,15 @@ class VisCurve3D(Abstract.VisAbstract):
 
 
 class VisSurface(Abstract.VisAbstractSurf):
-    """ Matplotlib visualization module for Surfaces
+    """ Matplotlib visualization module for surfaces.
 
-    Triangular mesh plot for the surface and wireframe plot for the control points grid
+    Triangular mesh plot for the surface and wireframe plot for the control points grid.
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
 
     def render(self):
-        """ Plots the surface and the control points grid """
+        """ Plots the surface and the control points grid. """
         if not self._plots:
             return
 
@@ -236,15 +236,15 @@ class VisSurface(Abstract.VisAbstractSurf):
 
 
 class VisSurfWireframe(Abstract.VisAbstractSurf):
-    """ Matplotlib visualization module for Surfaces
+    """ Matplotlib visualization module for surfaces.
 
-    Scatter plot for the control points and wireframe for the surface points
+    Scatter plot for the control points and wireframe plot for the surface points.
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
 
     def render(self):
-        """ Plots the surface and the control points grid """
+        """ Plots the surface and the control points grid. """
         if not self._plots:
             return
 
@@ -290,15 +290,15 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
 
 class VisSurfTriangle(Abstract.VisAbstractSurf):
-    """ Matplotlib visualization module for Surfaces
+    """ Matplotlib visualization module for surfaces.
 
-    Wireframe plot for the control points and triangulated plot for the surface points
+    Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfTriangle, self).__init__(config=config)
 
     def render(self):
-        """ Plots the surface and the control points grid """
+        """ Plots the surface and the control points grid. """
         if not self._plots:
             return
 
@@ -344,15 +344,15 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
 
 class VisSurfScatter(Abstract.VisAbstractSurf):
-    """ Matplotlib visualization module for Surfaces
+    """ Matplotlib visualization module for surfaces.
 
-    Wireframe plot for the control points and scatter plot for the surface points
+    Wireframe plot for the control points and scatter plot for the surface points.
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfScatter, self).__init__(config=config)
 
     def render(self):
-        """ Plots the surface and the control points grid """
+        """ Plots the surface and the control points grid. """
         if not self._plots:
             return
 
