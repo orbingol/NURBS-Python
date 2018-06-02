@@ -16,5 +16,4 @@ Helpers
 
 .. automodule:: geomdl.helpers
     :members:
-    :exclude-members:
     :undoc-members:
