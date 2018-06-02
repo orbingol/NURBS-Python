@@ -9,6 +9,8 @@ or improve existing ones.
 Abstract Evaluator
 ==================
 
+This class provides an abstract base for all evaluator classes.
+
 .. autoclass:: geomdl.Abstract.Evaluator
     :members:
     :undoc-members:
