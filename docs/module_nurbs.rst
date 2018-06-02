@@ -4,7 +4,7 @@ NURBS Module
 ``NURBS`` module provides data storage and evaluation functions for NURBS curves and surfaces.
 
 NURBS Curve
-==============
+===========
 
 .. autoclass:: geomdl.NURBS.Curve
     :members:

@@ -1,10 +1,20 @@
-Utilities Module
-^^^^^^^^^^^^^^^^
+Utilities and Helpers Modules
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This module contains common helper functions for B-spline and NURBS curve and surface evaluation. In
-addition, it contains conversion operations related to control points, such as flipping arrays and adding weights.
+These modules contain common utility and helper functions for B-Spline / NURBS curve and surface evaluation operations.
+
+Utilities
+=========
 
 .. automodule:: geomdl.utilities
     :members:
     :exclude-members: check_uv, check_knot_vector
+    :undoc-members:
+
+Helpers
+=======
+
+.. automodule:: geomdl.helpers
+    :members:
+    :exclude-members:
     :undoc-members:

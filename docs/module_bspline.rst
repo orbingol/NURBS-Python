@@ -4,7 +4,7 @@ B-Spline Module
 ``BSpline`` module provides data storage and evaluation functions for B-Spline (NUBS) curves and surfaces.
 
 B-Spline Curve
-=================
+==============
 
 .. autoclass:: geomdl.BSpline.Curve
     :members:

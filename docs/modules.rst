@@ -13,7 +13,9 @@ Following modules are included in this library:
     module_abstract
     module_bspline
     module_nurbs
+    module_evaluators
     module_utilities
+    module_convert
     module_compatibility
     module_cpgen
     module_container
