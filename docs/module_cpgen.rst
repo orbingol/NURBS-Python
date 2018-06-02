@@ -1,5 +1,5 @@
-Control Points Generator Module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Surface Generator
+^^^^^^^^^^^^^^^^^
 
 ``CPGen`` module allows users to generate control points grids as an input to :py:class:`.BSpline.Surface` and
 :py:class:`.NURBS.Surface` classes. This module is designed to enable more testing cases in a very simple way and

@@ -14,6 +14,7 @@ Abstract Visualization
     :inherited-members:
     :show-inheritance:
 
+
 Abstract Visualization for Surfaces
 ===================================
 
@@ -22,6 +23,7 @@ Abstract Visualization for Surfaces
     :undoc-members:
     :inherited-members:
     :show-inheritance:
+
 
 Abstract Visualization Configuration
 ====================================
