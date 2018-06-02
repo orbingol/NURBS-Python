@@ -944,12 +944,7 @@ class Multi(object):
 
 
 class Evaluator(object):
-    """ Evaluator abstract class
-
-    Evaluators (or evaluation strategies) allow users to change curve and/or surface evaluation strategy,
-    i.e. the algorithms that are used to evaluate the curve & surface, take derivatives and more.
-    Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
-    or improve existing ones.
+    """ Evaluator abstract base class.
 
     The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
     The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
