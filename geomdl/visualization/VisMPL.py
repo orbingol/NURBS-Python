@@ -29,7 +29,28 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
     * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
 
-    Please refer to the **Examples Repository** for details.
+    The following example illustrates the usage of the configuration class.
+
+    .. code-block:: python
+
+        # Create a curve (or a surface) instance
+        curve = NURBS.Curve()
+
+        # Skipping degree, knot vector and control points assignments
+
+        # Create a visualization configuration instance with no legend, no axes and set the resolution to 120 dpi
+        vis_config = VisMPL.VisConfig(legend=False, axes=False, figure_dpi=120)
+
+        # Create a visualization method instance using the configuration above
+        vis_obj = VisMPL.VisCurve2D(vis_config)
+
+        # Set the visualization method of the curve object
+        curve.vis = vis_obj
+
+        # Plot the curve
+        curve.render()
+
+    Please refer to the **Examples Repository** for more details.
     """
 
     def __init__(self, **kwargs):

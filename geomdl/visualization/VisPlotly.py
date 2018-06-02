@@ -28,7 +28,28 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``figure_size`` (list, *default: [800, 800]*): Size of the figure in (x, y)
     * ``linewidth`` (int, *default: 2*): thickness of the lines on the figure
 
-    Please refer to the **Examples Repository** for details.
+    The following example illustrates the usage of the configuration class.
+
+    .. code-block:: python
+
+        # Create a surface (or a curve) instance
+        surf = NURBS.Surface()
+
+        # Skipping degree, knot vector and control points assignments
+
+        # Create a visualization configuration instance with no legend, no axes and no control points grid
+        vis_config = VisPlotly.VisConfig(legend=False, axes=False, ctrlpts=False)
+
+        # Create a visualization method instance using the configuration above
+        vis_obj = VisPlotly.VisSurface(vis_config)
+
+        # Set the visualization method of the surface object
+        surf.vis = vis_obj
+
+        # Plot the surface
+        surf.render()
+
+    Please refer to the **Examples Repository** for more details.
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
