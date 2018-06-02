@@ -54,6 +54,10 @@ class Curve(Abstract.Curve):
 
     @property
     def curvepts(self):
+        """ Evaluated points (deprecated).
+
+        This property is deprecated. Please use :py:attr:`~evalpts` instead.
+        """
         return self.evalpts
 
     @property
@@ -759,6 +763,10 @@ class Surface(Abstract.Surface):
 
     @property
     def surfpts(self):
+        """ Evaluated points (deprecated).
+
+        This property is deprecated. Please use :py:attr:`~evalpts` instead.
+        """
         return self.evalpts
 
     @property
