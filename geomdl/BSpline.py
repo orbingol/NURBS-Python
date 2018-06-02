@@ -34,6 +34,7 @@ class Curve(Abstract.Curve):
 
     def __init__(self):
         super(Curve, self).__init__()
+        self._name = "B-Spline Curve"
         self._knot_vector = []
         self._control_points = []
         self._curve_points = []
@@ -41,7 +42,7 @@ class Curve(Abstract.Curve):
         self._evaluator = evaluators.CurveEvaluator()
 
     def __str__(self):
-        return "B-Spline Curve"
+        return self.name
 
     __repr__ = __str__
 
@@ -734,6 +735,7 @@ class Surface(Abstract.Surface):
 
     def __init__(self):
         super(Surface, self).__init__()
+        self._name = "B-Spline Surface"
         self._knot_vector_u = []
         self._knot_vector_v = []
         self._control_points = []
@@ -743,7 +745,7 @@ class Surface(Abstract.Surface):
         self._evaluator = evaluators.SurfaceEvaluator()
 
     def __str__(self):
-        return "B-Spline Surface"
+        return self.name
 
     __repr__ = __str__
 

@@ -17,6 +17,7 @@ class Curve(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
+        self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
         self._degree = 0  # degree
         self._knot_vector = None  # knot vector
@@ -29,6 +30,22 @@ class Curve(object):
         self._bounding_box = None  # bounding box
         self._evaluator = None  # evaluator instance
         self._cache = {}  # cache dictionary
+
+    @property
+    def name(self):
+        """ Curve descriptor (as a string or a number).
+
+        Descriptor field allows users to assign an identification to the curve object. The identification can be a
+        string or a number.
+
+        :getter: Gets the descriptor
+        :setter: Sets the descriptor
+        """
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     @property
     def evaluator(self):
@@ -328,6 +345,7 @@ class Surface(object):
         self._control_points_size_v = 0  # control points array length
         self._delta_v = 0.1  # evaluation delta
         # Common
+        self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._sample_size = None  # defines sample size
         self._control_points = None  # control points, 1-D array (v-order)
@@ -338,6 +356,22 @@ class Surface(object):
         self._bounding_box = None  # bounding box
         self._evaluator = None  # evaluator instance
         self._cache = {}  # cache dictionary
+
+    @property
+    def name(self):
+        """ Surface descriptor (as a string or a number).
+
+        Descriptor field allows users to assign an identification to the surface object. The identification can be a
+        string or a number.
+
+        :getter: Gets the descriptor
+        :setter: Sets the descriptor
+        """
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     @property
     def evaluator(self):

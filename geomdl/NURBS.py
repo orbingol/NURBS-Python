@@ -32,14 +32,15 @@ class Curve(BSpline.Curve):
 
     def __init__(self):
         super(Curve, self).__init__()
-        self._evaluator = evaluators.NURBSCurveEvaluator()
+        self._name = "NURBS Curve"
         self._rational = True
+        self._evaluator = evaluators.NURBSCurveEvaluator()
         # Variables for caching
         self._cache['ctrlpts'] = []
         self._cache['weights'] = []
 
     def __str__(self):
-        return "NURBS Curve"
+        return self.name
 
     __repr__ = __str__
 
@@ -219,14 +220,15 @@ class Surface(BSpline.Surface):
 
     def __init__(self):
         super(Surface, self).__init__()
-        self._evaluator = evaluators.NURBSSurfaceEvaluator()
+        self._name = "NURBS Surface"
         self._rational = True
+        self._evaluator = evaluators.NURBSSurfaceEvaluator()
         # Variables for caching
         self._cache['ctrlpts'] = []
         self._cache['weights'] = []
 
     def __str__(self):
-        return "NURBS Surface"
+        return self.name
 
     __repr__ = __str__
 
