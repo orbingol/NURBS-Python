@@ -13,6 +13,6 @@ formats:
 python:
   version: 3.5
   setup_py_install: false
-  pip_install: true  # extra_requirements only works when pip_install is true
-  extra_requirements:
-    - visualization
+  pip_install: false  # extra_requirements only works when pip_install is true
+#  extra_requirements:
+#    - visualization

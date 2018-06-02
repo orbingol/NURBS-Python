@@ -38,6 +38,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',
               'sphinx.ext.autosummary']
 
+# List of modules to be mocked up
+autodoc_mock_imports = ['matplotlib', 'plotly']
+
 # # Order of functions in the documentation; default is 'alphabetical'
 # autodoc_member_order = 'bysource'
 autosummary_generate = False
@@ -165,7 +168,6 @@ texinfo_documents = [
      author, 'NURBS-Python', description,
      'Miscellaneous'),
 ]
-
 
 
 # -- Options for Epub output ----------------------------------------------
