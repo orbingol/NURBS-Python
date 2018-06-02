@@ -8,20 +8,34 @@
 """
 
 
-def find_span_binsearch(degree=0, knot_vector=(), control_points_size=0, knot=0, tol=0.001):
+def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, tol=0.001):
     """ Finds the span of the knot over the input knot vector using binary search.
 
     Implementation of Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
     The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
     if FindSpan returns 1, then the knot is between the internal [0, 1).
+
+    :param degree: degree
+    :type degree: int
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :param num_ctrlpts: number of control points
+    :type num_ctrlpts: int
+    :param knot: knot
+    :param knot: knot
+    :type knot: float
+    :param tol: tolerance value for equality checking
+    :type tol: float
+    :return: span of the knot over the knot vector
+    :rtype: int
     """
     # Number of knots; m + 1
     # Number of control points; n + 1
     # n = m - p - 1; where p = degree
     # m = len(knot_vector) - 1
     # n = m - degree - 1
-    n = control_points_size - 1
+    n = num_ctrlpts - 1
     if abs(knot_vector[n + 1] - knot) <= tol:
         return n
 
