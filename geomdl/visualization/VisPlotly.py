@@ -35,6 +35,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.figure_size = kwargs.get('figure_size', [800, 800])
         self.display_legend = kwargs.get('legend', True)
+        self.display_axes = kwargs.get('axes', True)
         self.line_width = kwargs.get('linewidth', 2)
 
 
@@ -88,6 +89,16 @@ class VisCurve2D(Abstract.VisAbstract):
             showlegend=self._config.display_legend,
             yaxis=dict(
                 scaleanchor="x",
+                showgrid=self._config.display_axes,
+                showline=self._config.display_axes,
+                zeroline=self._config.display_axes,
+                showticklabels=self._config.display_axes,
+            ),
+            xaxis=dict(
+                showgrid=self._config.display_axes,
+                showline=self._config.display_axes,
+                zeroline=self._config.display_axes,
+                showticklabels=self._config.display_axes,
             )
         )
 
@@ -150,7 +161,30 @@ class VisCurve3D(Abstract.VisAbstract):
             width=self._config.figure_size[0],
             height=self._config.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend
+            showlegend=self._config.display_legend,
+            scene=graph_objs.Scene(
+                xaxis=graph_objs.XAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                yaxis=graph_objs.YAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                zaxis=graph_objs.ZAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+            ),
         )
 
         plotly.offline.plot({
@@ -213,7 +247,30 @@ class VisSurface(Abstract.VisAbstractSurf):
             width=self._config.figure_size[0],
             height=self._config.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend
+            showlegend=self._config.display_legend,
+            scene=graph_objs.Scene(
+                xaxis=graph_objs.XAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                yaxis=graph_objs.YAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                zaxis=graph_objs.ZAxis(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+            ),
         )
 
         plotly.offline.plot({
