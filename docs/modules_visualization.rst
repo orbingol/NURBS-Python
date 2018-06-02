@@ -1,8 +1,8 @@
 Visualization Modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-NURBS-Python provides an abstract base for visualization modules. This abstract base is a part of the
-:doc:`Core Library <modules>` and it can be used to implement various visualization backends.
+NURBS-Python provides an abstract base for visualization modules. It is a part of the :doc:`Core Library <modules>`
+and it can be used to implement various visualization backends.
 
 NURBS-Python comes with the following visualization modules:
 

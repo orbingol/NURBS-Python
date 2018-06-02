@@ -15,5 +15,4 @@ Included Evaluators
 
 .. automodule:: geomdl.evaluators
     :members:
-    :exclude-members:
     :undoc-members:
