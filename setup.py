@@ -42,7 +42,7 @@ setup(
         'Programming Language :: Python :: 3'
     ],
     project_urls={
-        'Documentation': 'http://nurbs-python.rtfd.org/',
+        'Documentation': 'http://nurbs-python.readthedocs.io/',
         'Source': 'https://github.com/orbingol/NURBS-Python',
         'Tracker': 'https://github.com/orbingol/NURBS-Python/issues',
     },

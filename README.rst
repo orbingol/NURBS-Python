@@ -35,7 +35,7 @@ Using NURBS-Python
 ------------------
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
-* **Documentation**: http://nurbs-python.rtfd.org
+* **Documentation**: http://nurbs-python.readthedocs.io/
 
 Issues and Reporting
 --------------------
