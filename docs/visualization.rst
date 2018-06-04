@@ -142,8 +142,6 @@ mpl_curve3d_vectors.py
 This example illustrates a visualization option for plotting the 3D curve tangent, normal and binormal vectors
 alongside with the control points grid and the evaluated curve.
 
-Please note that binormal vector evaluation method for the curves is added on version *3.0.6*.
-
 .. image:: images/ex_curve3d02_mpl.png
     :alt: 3D curve example 2 with tangent, normal and binormal vector quiver plots
 
