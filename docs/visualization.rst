@@ -1,48 +1,37 @@
 Visualization
 ^^^^^^^^^^^^^
 
-Visualization Component
-=======================
+NURBS-Python comes with some visualization modules for direct plotting evaluated curves and surfaces. Examples_
+repository contains examples on how to use the visualization components with surfaces and curves.
 
-NURBS-Python v3.x series include a visualization module for plotting evaluated curves and surfaces. Examples_
-repository contains some examples on how to use the visualization component with surfaces and 2D/3D curves.
+Examples
+========
 
-Advanced Visualization Options
-==============================
-
-``visualization/`` directory in the Examples_ repository contains customizable scripts for more advanced visualization
-options using `Matplotlib <https://matplotlib.org>`_.
-
-Visualization Examples
-======================
-
-The following examples illustrate the visualization component which comes with the NURBS-Python package and
+The following examples illustrate the visualization components which come with the NURBS-Python package and
 the advanced visualization options using the scripts in the Examples_ repository.
 
 Surfaces
 --------
 
-The following figures are generated using `Matplotlib v2.1.0 <https://matplotlib.org>`_ from the outputs of the examples
-shared in the Examples_ repository. Please see :doc:`File Formats <file_formats>` section on details of CSV exporting
-capabilities. Visualization scripts can be found in the Examples_ repository under ``visualization`` directory.
+The following figures are generated using the following plotting libraries:
+
+* `Matplotlib v2.2.2 <https://matplotlib.org>`_
+* `Plotly v2.5.1 <https://plot.ly/python/>`_
+
+The figures are generated from the scripts shared on the Examples_ repository.
 
 ex_surface01.py
 ~~~~~~~~~~~~~~~
 
-* Control points CSV export mode: ``wireframe``
-* Surface points CSV export mode: ``linear``
-* Evaluation delta: 0.05
-* Script used: ``mpl_wframe_trisurf.py``
-
 .. image:: images/ex_surface01_mpl.png
-    :alt: Surface example 1
+    :alt: Surface example 1 with Matplotlib
 
 -----
 
-* Control points CSV export mode: ``wireframe``
-* Surface points CSV export mode: ``wireframe``
-* Evaluation delta: 0.005
-* Script used: ``mpl_wframe_wframe.py``
+.. image:: images/ex_surface01_plotly.png
+    :alt: Surface example 1 with Plotly
+
+-----
 
 .. image:: images/ex_surface01_mpl_wf.png
     :alt: Surface example 1 - wireframe model
@@ -50,24 +39,24 @@ ex_surface01.py
 ex_surface02.py
 ~~~~~~~~~~~~~~~
 
-* Control points CSV export mode: ``wireframe``
-* Surface points CSV export mode: ``linear``
-* Evaluation delta: 0.05
-* Script used: ``mpl_wframe_trisurf.py``
-
 .. image:: images/ex_surface02_mpl.png
-    :alt: Surface example 2
+    :alt: Surface example 2 with Matplotlib
+
+-----
+
+.. image:: images/ex_surface02_plotly.png
+    :alt: Surface example 2 with Plotly
 
 ex_surface03.py
 ~~~~~~~~~~~~~~~
 
-* Control points CSV export mode: ``linear``
-* Surface points CSV export mode: ``wireframe``
-* Evaluation delta: 0.05
-* Script used: ``mpl_scatter_wframe.py``
-
 .. image:: images/ex_surface03_mpl.png
-    :alt: Surface example 3
+    :alt: Surface example 3 with Matplotlib
+
+-----
+
+.. image:: images/ex_surface03_plotly.png
+    :alt: Surface example 3 with Plotly
 
 mpl_trisurf_vectors.py
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -80,9 +69,6 @@ The example script can be found in Examples_ repository under the ``visualizatio
 
 2D Curves
 ---------
-
-The following examples illustrate the direct output of the visualization component, ``geomdl.visualization`` for 2D
-curves.
 
 ex_curve01.py
 ~~~~~~~~~~~~~
@@ -125,8 +111,12 @@ ex_curve3d02.py
 ~~~~~~~~~~~~~~~
 
 .. image:: images/ex_curve3d02_vis.png
-    :alt: 3D curve example 2
+    :alt: 3D curve example 2 with Matplotlib
 
+-----
+
+.. image:: images/ex_curve3d02_plotly.png
+    :alt: 3D curve example 2 with Plotly
 
 Advanced Visualization for 2D/3D Curves
 ---------------------------------------
@@ -154,7 +144,7 @@ control points grid and the evaluated curve.
 mpl_curve3d_vectors.py
 ~~~~~~~~~~~~~~~~~~~~~~
 
-This example illustrates a visualization option for plotting the 3D curve tangent, normal and binnormal vectors
+This example illustrates a visualization option for plotting the 3D curve tangent, normal and binormal vectors
 alongside with the control points grid and the evaluated curve.
 
 Please note that binormal vector evaluation method for the curves is added on version *3.0.6*.
