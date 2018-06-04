@@ -158,7 +158,7 @@ class VisCurve3D(Abstract.VisAbstract):
                     ),
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width
+                        size=self._config.line_width * 2,
                     )
                 )
                 plot_data.append(figure)
@@ -246,7 +246,7 @@ class VisSurface(Abstract.VisAbstractSurf):
                     ),
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width
+                        size=self._config.line_width * 2,
                     )
                 )
                 plot_data.append(figure)
