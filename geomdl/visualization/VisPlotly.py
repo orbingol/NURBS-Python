@@ -205,6 +205,7 @@ class VisCurve3D(Abstract.VisAbstract):
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
+                aspectmode='data',
             ),
         )
 
@@ -294,6 +295,7 @@ class VisSurface(Abstract.VisAbstractSurf):
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
+                aspectmode='data',
             ),
         )
 
