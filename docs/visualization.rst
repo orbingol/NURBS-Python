@@ -1,24 +1,22 @@
 Visualization
 ^^^^^^^^^^^^^
 
-NURBS-Python comes with some visualization modules for direct plotting evaluated curves and surfaces. Examples_
-repository contains examples on how to use the visualization components with surfaces and curves.
+NURBS-Python comes with the following visualization modules for direct plotting evaluated curves and surfaces:
+
+* `Matplotlib v2.2.2 <https://matplotlib.org>`_ as implemented in ``visualization.VisMPL`` module
+* `Plotly v2.5.1 <https://plot.ly/python/>`_ as implemented in ``visualization.VisPlotly`` module
+
+Examples_ repository contains examples on how to use the visualization components with surfaces and curves. Please see
+:doc:`Visualization Modules Documentation <module_visualization>` for more details.
 
 Examples
 ========
 
-The following examples illustrate the visualization components which come with the NURBS-Python package and
-the advanced visualization options using the scripts in the Examples_ repository.
+The following figures illustrate some example 2D/3D curves and surfaces that can be generated and directly visualized
+using NURBS-Python.
 
 Surfaces
 --------
-
-The following figures are generated using the following plotting libraries:
-
-* `Matplotlib v2.2.2 <https://matplotlib.org>`_
-* `Plotly v2.5.1 <https://plot.ly/python/>`_
-
-The figures are generated from the scripts shared on the Examples_ repository.
 
 ex_surface01.py
 ~~~~~~~~~~~~~~~
@@ -97,9 +95,6 @@ ex_curve04.py
 
 3D Curves
 ---------
-
-The following examples illustrate the direct output of the visualization component, ``geomdl.visualization`` for 3D
-curves.
 
 ex_curve3d01.py
 ~~~~~~~~~~~~~~~
