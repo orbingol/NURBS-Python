@@ -6,8 +6,9 @@ NURBS-Python (geomdl)
 Description
 ===========
 
-NURBS-Python provides Non-Uniform Rational B-Spline (NURBS) surface and 2D/3D curve data structures and computation
-algorithms in native Python. The library is fully object-oriented and does *not* depend on any external libraries.
+NURBS-Python (geomdl) provides fully object-oriented Non-Uniform Rational B-Spline (NURBS) surface and curve data
+structures and extensible advanced computation algorithms in pure python. It allows users to directly visualize the
+computed curves and surfaces using various visualization libraries. Additionally, it comes with a surface generator.
 
 Features
 ========
@@ -50,7 +51,7 @@ Further Reading
 
 * Github repository: https://github.com/orbingol/NURBS-Python
 * Examples: https://github.com/orbingol/NURBS-Python_Examples
-* Documentation: http://nurbs-python.rtfd.org/
+* Documentation: http://nurbs-python.readthedocs.io/
 
 License
 =======
@@ -72,6 +73,3 @@ NURBS-Python is licensed under the MIT License.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
-
-.. _NURBS-Python: https://github.com/orbingol/NURBS-Python
-.. _Examples: https://github.com/orbingol/NURBS-Python_Examples
