@@ -65,6 +65,57 @@ def read_txt(file_name, two_dimensional=False):
         warnings.warn("File " + str(file_name) + " cannot be opened for reading")
 
 
+def save_txt(obj, file_name, two_dimensional=False):
+    """ Saves control points to a text file.
+
+    For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
+    point output file using ``two_dimensional`` flag. Please see the supported file formats for more details on the
+    text file format.
+
+    :param obj: a curve or a surface object
+    :type obj: Abstract.Curve, Abstract.Surface
+    :param file_name: file name of the text file to be saved
+    :type file_name: str
+    :param two_dimensional: type of the text file (only works for Surface objects)
+    :type two_dimensional: bool
+    """
+    # Check if the user has set any control points
+    if obj.ctrlpts is None or len(obj.ctrlpts) == 0:
+        warnings.warn("There are no control points to save!")
+        return
+
+    # Check the usage of two_dimensional flag
+    if isinstance(obj, Abstract.Curve) and two_dimensional:
+        warnings.warn("Ignoring two_dimensional flag since it only makes difference with surface objects...")
+        two_dimensional = False
+
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'w') as fp:
+            if two_dimensional:
+                for i in range(0, obj.ctrlpts_size_u):
+                    line = ""
+                    for j in range(0, obj.ctrlpts_size_v):
+                        for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
+                            if idx:  # Add comma if we are not on the first element
+                                line += ","
+                            line += str(coord)
+                        if j != obj.ctrlpts_size_v - 1:
+                            line += ";"
+                        else:
+                            line += "\n"
+                    fp.write(line)
+            else:
+                for pt in obj.ctrlpts:
+                    # Fill coordinates
+                    line = ",".join(str(c) for c in pt) + "\n"
+                    fp.write(line)
+
+    except IOError:
+        # Show a warning on failure to open file
+        warnings.warn("File " + str(file_name) + " cannot be opened for writing")
+
+
 def export_csv(obj, file_name, point_type='evalpts'):
     """ Exports control points or evaluated points as a CSV file.
 
