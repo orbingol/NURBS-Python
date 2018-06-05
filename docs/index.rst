@@ -47,6 +47,7 @@ This documentation is organized into a couple sections:
     examples_repo
     file_formats
     compatibility
+    surface_generator
     visualization
     visualization_splitting
 
