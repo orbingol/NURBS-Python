@@ -4,7 +4,7 @@ Visualization
 NURBS-Python comes with the following visualization modules for direct plotting evaluated curves and surfaces:
 
 * `Matplotlib v2.2.2 <https://matplotlib.org>`_ as implemented in ``visualization.VisMPL`` module
-* `Plotly v2.5.1 <https://plot.ly/python/>`_ as implemented in ``visualization.VisPlotly`` module
+* `Plotly v2.7.0 <https://plot.ly/python/>`_ as implemented in ``visualization.VisPlotly`` module
 
 Examples_ repository contains examples on how to use the visualization components with surfaces and curves. Please see
 :doc:`Visualization Modules Documentation <modules_visualization>` for more details.
