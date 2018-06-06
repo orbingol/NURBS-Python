@@ -13,7 +13,7 @@ Installation and Testing
 Install via Pip
 ===============
 
-You can find the NURBS-Python library on `Python Package Index <https://pypi.org/project/geomdl>`_ and easily install
+You may find NURBS-Python on `Python Package Index <https://pypi.org/project/geomdl>`_ and install
 via `pip <https://pip.pypa.io/en/stable/>`_.
 
 ``pip install geomdl``
@@ -21,6 +21,18 @@ via `pip <https://pip.pypa.io/en/stable/>`_.
 Upgrading to the latest version:
 
 ``pip install geomdl --upgrade``
+
+Install via Conda
+=================
+
+For your convenience, NURBS-Python has also been uploaded to `Anaconda Cloud <https://anaconda.org/orbingol/geomdl>`_.
+You may use `conda <https://conda.io/>`_ to install:
+
+``conda install -c orbingol geomdl``
+
+To upgrade:
+
+``conda upgrade -c orbingol geomdl``
 
 Manual Install
 ==============
