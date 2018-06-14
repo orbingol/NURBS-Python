@@ -1037,7 +1037,7 @@ class VisAbstract(object):
         self._plots.append(elem)
 
     @abc.abstractmethod
-    def render(self):
+    def render(self, **kwargs):
         """ Abstract method for rendering plots of the point sets.
 
         This method must be implemented in all subclasses of ``VisAbstract`` class.
@@ -1066,7 +1066,7 @@ class VisAbstractSurf(VisAbstract):
         self._ctrlpts_offset = float(offset_value)
 
     @abc.abstractmethod
-    def render(self):
+    def render(self, **kwargs):
         """ Abstract method for rendering plots of the point sets.
 
         This method must be implemented in all subclasses of ``VisAbstractSurf`` class.
