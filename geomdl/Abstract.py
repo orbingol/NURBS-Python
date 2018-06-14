@@ -265,7 +265,7 @@ class Curve(object):
         Possible keyword arguments are
 
         * ``cpcolor``: sets the color of the control points polygon
-        * ``curvecolor``: sets the color of the curve
+        * ``evalcolor``: sets the color of the curve
 
         """
         if not self._vis_component:
@@ -273,7 +273,7 @@ class Curve(object):
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
-        curvecolor = kwargs.get('curvecolor', 'black')
+        curvecolor = kwargs.get('evalcolor', 'black')
 
         # Check all parameters are set
         self._check_variables()
@@ -749,7 +749,7 @@ class Surface(object):
         Keyword Arguments:
 
         * ``cpcolor``: sets the color of the control points grid
-        * ``surfcolor``: sets the color of the surface
+        * ``evalcolor``: sets the color of the surface
 
         """
         if not self._vis_component:
@@ -757,7 +757,7 @@ class Surface(object):
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
-        surfcolor = kwargs.get('surfcolor', 'green')
+        surfcolor = kwargs.get('evalcolor', 'green')
 
         # Check all parameters are set
         self._check_variables()
