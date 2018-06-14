@@ -24,14 +24,24 @@ class MultiCurve(Abstract.Multi):
         super(MultiCurve, self).__init__()
         self._instance = Abstract.Curve
 
-    def render(self):
+    def render(self, **kwargs):
         """ Renders the curve the using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        Keyword Arguments:
+
+        * ``cpcolor``: sets the color of the control points grid
+        * ``evalcolor``: sets the color of the surface
+
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")
             return
+
+        # Get the color values from keyword arguments
+        cpcolor = kwargs.get('cpcolor')
+        evalcolor = kwargs.get('evalcolor')
 
         # Run the visualization component
         self._vis_component.clear()
@@ -41,11 +51,11 @@ class MultiCurve(Abstract.Multi):
             color = utilities.color_generator()
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     name="Control Points " + str(idx + 1),
-                                    color=color[0],
+                                    color=cpcolor if cpcolor is not None else color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.curvepts,
                                     name="Curve " + str(idx + 1),
-                                    color=color[1],
+                                    color=evalcolor if evalcolor is not None else color[1],
                                     plot_type='evalpts')
         self._vis_component.render()
 
@@ -57,14 +67,24 @@ class MultiSurface(Abstract.Multi):
         super(MultiSurface, self).__init__()
         self._instance = Abstract.Surface
 
-    def render(self):
+    def render(self, **kwargs):
         """ Renders the surface the using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        Keyword Arguments:
+
+        * ``cpcolor``: sets the color of the control points grid
+        * ``evalcolor``: sets the color of the surface
+
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")
             return
+
+        # Get the color values from keyword arguments
+        cpcolor = kwargs.get('cpcolor')
+        evalcolor = kwargs.get('evalcolor')
 
         # Run the visualization component
         self._vis_component.clear()
@@ -75,11 +95,11 @@ class MultiSurface(Abstract.Multi):
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
                                     name="Control Points " + str(idx + 1),
-                                    color=color[0],
+                                    color=cpcolor if cpcolor is not None else color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.surfpts,
                                     size=[elem.sample_size, elem.sample_size],
                                     name="Surface " + str(idx + 1),
-                                    color=color[1],
+                                    color=evalcolor if evalcolor is not None else color[1],
                                     plot_type='evalpts')
         self._vis_component.render()
