@@ -17,7 +17,7 @@ from . import compatibility
 from .elements import Vertex, Triangle
 
 
-def read_txt(file_name, two_dimensional=False):
+def import_txt(file_name, two_dimensional=False):
     """ Reads control points from a text file and generates a 1-D list of control points.
 
     :param file_name: file name of the text file
@@ -65,7 +65,7 @@ def read_txt(file_name, two_dimensional=False):
         warnings.warn("File " + str(file_name) + " cannot be opened for reading")
 
 
-def save_txt(obj, file_name, two_dimensional=False):
+def export_txt(obj, file_name, two_dimensional=False):
     """ Saves control points to a text file.
 
     For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
@@ -207,7 +207,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
 
 
 # Saves surface(s) as a .obj file
-def save_obj(surf_in, file_name, **kwargs):
+def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     :param surf_in: surface or surfaces to be saved
@@ -222,13 +222,13 @@ def save_obj(surf_in, file_name, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     if isinstance(surf_in, Multi.MultiSurface):
-        save_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        save_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 # Saves surface(s) as a .stl file
-def save_stl(surf_in, file_name, **kwargs):
+def export_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
     :param surf_in: surface or surfaces to be saved
@@ -246,18 +246,18 @@ def save_stl(surf_in, file_name, **kwargs):
 
     if isinstance(surf_in, Multi.MultiSurface):
         if binary:
-            save_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
-            save_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
         if binary:
-            save_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
-            save_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 # Saves surface(s) as a .off file
-def save_off(surf_in, file_name, **kwargs):
+def export_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
     :param surf_in: surface or surfaces to be saved
@@ -272,9 +272,9 @@ def save_off(surf_in, file_name, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     if isinstance(surf_in, Multi.MultiSurface):
-        save_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        save_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
 # Generates triangles
@@ -341,7 +341,7 @@ def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
     return vertices, triangles
 
 
-def save_obj_single(surface, **kwargs):
+def _export_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
     :param surface: surface to be saved
@@ -392,7 +392,7 @@ def save_obj_single(surface, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_obj_multi(surface_list, **kwargs):
+def _export_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
 
     :param surface_list: list of surfaces to be saved
@@ -474,7 +474,7 @@ def save_obj_multi(surface_list, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_single(surface, **kwargs):
+def _export_stl_ascii_single(surface, **kwargs):
     """ Saves a single surface as an ASCII .stl file.
 
     :param surface: surface to be saved
@@ -517,7 +517,7 @@ def save_stl_ascii_single(surface, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_ascii_multi(surface_list, **kwargs):
+def _export_stl_ascii_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -571,7 +571,7 @@ def save_stl_ascii_multi(surface_list, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_single(surface, **kwargs):
+def _export_stl_binary_single(surface, **kwargs):
     """ Saves a single surface as a binary .stl file.
 
     Inspired from https://github.com/apparentlymart/python-stl
@@ -613,7 +613,7 @@ def save_stl_binary_single(surface, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_stl_binary_multi(surface_list, **kwargs):
+def _export_stl_binary_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
@@ -664,7 +664,7 @@ def save_stl_binary_multi(surface_list, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_single(surface, **kwargs):
+def _export_off_single(surface, **kwargs):
     """ Saves a single surface as a .off file.
 
     :param surface: surface to be saved
@@ -710,7 +710,7 @@ def save_off_single(surface, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def save_off_multi(surface_list, **kwargs):
+def _export_off_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .off file.
 
     :param surface_list: list of surfaces to be saved
@@ -785,7 +785,7 @@ def save_off_multi(surface_list, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def read_smesh(file_name):
+def import_smesh(file_name):
     """ Generates a NURBS surface from a smesh file.
 
     *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
@@ -801,8 +801,8 @@ def read_smesh(file_name):
     This function reads a single smesh file and converts it into a NURBS surface. Please see the following functions
     for reading the smesh file sets:
 
-    * :func:`.read_smesh_list()`
-    * :func:`.read_smesh_dir()`
+    * :func:`.import_smesh_list()`
+    * :func:`.import_smesh_dir()`
 
     :param file_name: smesh file to read
     :type file_name: str
@@ -854,7 +854,7 @@ def read_smesh(file_name):
     return surf
 
 
-def read_smesh_list(file_list):
+def import_smesh_list(file_list):
     """ Creates a MultiSurface instance from a list of smesh files.
 
     :param file_list: file list containing the names of the smesh files
@@ -864,11 +864,11 @@ def read_smesh_list(file_list):
     """
     ret = Multi.MultiSurface()
     for file in file_list:
-        ret.add(read_smesh(file))
+        ret.add(import_smesh(file))
     return ret
 
 
-def read_smesh_dir(file_path):
+def import_smesh_dir(file_path):
     """ Creates a MultiSurface instance from a list of smesh files inside a directory.
 
     :param file_path: path to the directory containing smesh files
@@ -877,4 +877,4 @@ def read_smesh_dir(file_path):
     :rtype: Multi.MultiSurface
     """
     files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
-    return read_smesh_list(files)
+    return import_smesh_list(files)

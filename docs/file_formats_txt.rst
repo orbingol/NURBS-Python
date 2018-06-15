@@ -1,9 +1,11 @@
 NURBS-Python Custom Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-NURBS-Python library provides :py:func:`.read_txt()` function for reading control points of curves and surfaces from a
-text file. The format of the text file depends on the type of the geometric element, i.e. curve or surface.
-The following explains the file formats for `.txt` files which contain control points.
+NURBS-Python provides :py:func:`.import_txt()` function for reading control points of curves and surfaces from a
+text file. For saving the control points :py:func:`.export_txt()` function may be used.
+
+The format of the text file depends on the type of the geometric element, i.e. curve or surface. The following sections
+explain this custom format.
 
 2D Curves
 =========

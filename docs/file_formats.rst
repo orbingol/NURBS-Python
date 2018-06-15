@@ -30,7 +30,7 @@ You may use :py:func:`.export_vtk()` function to save control points and/or eval
 OBJ Format
 ==========
 
-You may use :py:func:`.save_obj()` function to export a NURBS surface as a Wavefront .obj file.
+You may use :py:func:`.export_obj()` function to export a NURBS surface as a Wavefront .obj file.
 
 Example 1
 ---------
@@ -65,7 +65,7 @@ The following example demonstrates saving surfaces as .obj files:
     surf.evaluate()
 
     # Save surface as a .obj file
-    exchange.save_obj(surf, "bezier_surf.obj")
+    exchange.export_obj(surf, "bezier_surf.obj")
 
 Example 2
 ---------
@@ -87,17 +87,17 @@ The following example combines :code:`shapes` module together with :code:`exchan
     surf.evaluate()
 
     # Save surface as a .obj file
-    exchange.save_obj(surf, "cylindirical_surf.obj")
+    exchange.export_obj(surf, "cylindirical_surf.obj")
 
 STL Format
 ==========
 
 Exporting to STL files works in the same way explained in OBJ Files section. To export a NURBS surface as a .stl file,
-you may use :py:func:`.save_stl()` function. This function saves in binary format by default but there is an option to
+you may use :py:func:`.export_stl()` function. This function saves in binary format by default but there is an option to
 change the save file format to plain text. Please see the :doc:`documentation <module_exchange>` for details.
 
 Object File Format (OFF)
 ========================
 
-Very similar to exporting as OBJ and STL formats, you may use :py:func:`.save_off()` function to export a NURBS surface
+Very similar to exporting as OBJ and STL formats, you may use :py:func:`.export_off()` function to export a NURBS surface
 as a .off file.
