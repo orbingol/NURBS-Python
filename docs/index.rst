@@ -45,6 +45,7 @@ This documentation is organized into a couple sections:
 
     install
     examples_repo
+    load_save
     file_formats
     compatibility
     surface_generator
