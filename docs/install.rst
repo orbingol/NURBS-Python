@@ -37,17 +37,17 @@ To upgrade:
 Manual Install
 ==============
 
-Included *setup.py* script will take care of the installation and automatically copy the required files to
-*site-packages* directory. Please run the following from the command line:
+Included *setup.py* script will take care of the installation and automatically copy/link the required files to
+your Python distribution's *site-packages* directory. The following command will copy NURBS-Python package to your
+Python distribution's *site-packages* directory:
 
 ``python setup.py install``
 
-If you don't want to put the files into your Python distribution's *site-packages* directory for some reason (e.g.
-make extension development, bug fixing or testing easy), you can run
+If you don't prefer copying for some reason (e.g. extension development, bug fixing and/or testing), you may run the
+following from the command line to generate a link to the NURBS-Python package in your Python distribution's
+*site-packages* directory:
 
 ``python setup.py develop``
-
-from the command line to generate a link to the package directory inside *site-packages*.
 
 Checking Installation
 =====================
@@ -71,7 +71,7 @@ Testing
 
 The package includes ``tests/`` directory which contains all the automated testing scripts.
 These scripts require `pytest <https://pytest.readthedocs.io/en/latest>`_ installed on your Python distribution.
-After installing the required packages, execute the following from your favorite IDE or from the command line:
+After installing the required packages, you may execute the following from your favorite IDE or from the command line:
 
 ``pytest``
 
