@@ -8,13 +8,13 @@ the library and its modules.
 The Examples_ repository contains examples on the following:
 
 * Bézier curves and surfaces
-* BSplines & NURBS curves
-* B-Spline and NURBS surfaces
+* B-Spline & NURBS curves and surfaces
 * Control points grid generation for ``Surface`` classes
 * Automatic knot vector generation for curves and surfaces
-* Visualization
+* Visualization components (Matplotlib and Plotly)
 * Automatic NURBS curve and surface generation
 * Curve & surface splitting and Bézier decomposition
+* Exporting curves and surfaces using ``exchange`` module
 
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
