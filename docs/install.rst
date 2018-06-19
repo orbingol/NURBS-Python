@@ -26,7 +26,9 @@ Install via Conda
 =================
 
 For your convenience, NURBS-Python has also been uploaded to `Anaconda Cloud <https://anaconda.org/orbingol/geomdl>`_.
-You may use `conda <https://conda.io/>`_ to install:
+You may use `conda <https://conda.io/>`_ package manager to install and/or upgrade NURBS-Python.
+
+To install:
 
 ``conda install -c orbingol geomdl``
 
@@ -38,14 +40,15 @@ Manual Install
 ==============
 
 Included *setup.py* script will take care of the installation and automatically copy/link the required files to
-your Python distribution's *site-packages* directory. The following command will copy NURBS-Python package to your
-Python distribution's *site-packages* directory:
+your Python distribution's *site-packages* directory. First, you need to clone the repository to your computer.
+
+The following command will copy NURBS-Python package to your Python distribution's *site-packages* directory:
 
 ``python setup.py install``
 
 If you don't prefer copying for some reason (e.g. extension development, bug fixing and/or testing), you may run the
-following from the command line to generate a link to the NURBS-Python package in your Python distribution's
-*site-packages* directory:
+following from the command line to generate a link to the directory where you cloned NURBS-Python package inside your
+Python distribution's *site-packages* directory:
 
 ``python setup.py develop``
 
