@@ -32,7 +32,7 @@ def linspace(start, stop, num, decimals=6):
     num = int(num)
     div = num - 1
     delta = stop - start
-    return [float(("%0." + str(decimals) + "f") % (float(x) * float(delta) / float(div))) for x in range(num)]
+    return [float(("%0." + str(decimals) + "f") % (start + (float(x) * float(delta) / float(div)))) for x in range(num)]
 
 
 def vector_cross(vector1, vector2):
