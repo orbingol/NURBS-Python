@@ -60,6 +60,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_axes = kwargs.get('axes', True)
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
+        self.figure_image_filename = "temp-figure.png"
 
     @staticmethod
     def set_axes_equal(ax):
@@ -79,13 +80,23 @@ class VisConfig(Abstract.VisConfigAbstract):
         ax.set_ylim3d([lower_limits[1], upper_limits[1]])
         ax.set_zlim3d([lower_limits[2], upper_limits[2]])
 
+    @staticmethod
+    def save_figure_as(fig, filename):
+        """ Saves the figure as a file.
+
+        :param fig: a Matplotlib figure instance
+        :param filename: file name to save
+        """
+        if filename is not None:
+            fig.savefig(str(filename), bbox_inches='tight')
+
 
 class VisCurve2D(Abstract.VisAbstract):
     """ Matplotlib visualization module for 2D curves """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the 2D curve and the control points polygon. """
         if not self._plots:
             return
@@ -123,8 +134,18 @@ class VisCurve2D(Abstract.VisAbstract):
         # Set aspect ratio
         ax.set_aspect('equal')
 
-        # Display 2D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
 
 
 class VisCurve3D(Abstract.VisAbstract):
@@ -132,7 +153,7 @@ class VisCurve3D(Abstract.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the 3D curve and the control points polygon. """
         if not self._plots:
             return
@@ -177,8 +198,18 @@ class VisCurve3D(Abstract.VisAbstract):
         # Set axes equal
         self._config.set_axes_equal(ax)
 
-        # Display the 3D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
 
 
 class VisSurface(Abstract.VisAbstractSurf):
@@ -189,7 +220,7 @@ class VisSurface(Abstract.VisAbstractSurf):
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         if not self._plots:
             return
@@ -231,8 +262,18 @@ class VisSurface(Abstract.VisAbstractSurf):
         # Set axes equal
         self._config.set_axes_equal(ax)
 
-        # Display the 3D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
 
 
 class VisSurfWireframe(Abstract.VisAbstractSurf):
@@ -243,7 +284,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         if not self._plots:
             return
@@ -285,8 +326,18 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
         # Set axes equal
         self._config.set_axes_equal(ax)
 
-        # Display the 3D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
 
 
 class VisSurfTriangle(Abstract.VisAbstractSurf):
@@ -297,7 +348,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
     def __init__(self, config=VisConfig()):
         super(VisSurfTriangle, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         if not self._plots:
             return
@@ -339,8 +390,18 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         # Set axes equal
         self._config.set_axes_equal(ax)
 
-        # Display the 3D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
 
 
 class VisSurfScatter(Abstract.VisAbstractSurf):
@@ -351,7 +412,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
     def __init__(self, config=VisConfig()):
         super(VisSurfScatter, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         if not self._plots:
             return
@@ -393,5 +454,15 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
         # Set axes equal
         self._config.set_axes_equal(ax)
 
-        # Display the 3D plot
-        plt.show()
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)

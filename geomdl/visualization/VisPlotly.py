@@ -58,6 +58,9 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.line_width = kwargs.get('linewidth', 2)
+        self.figure_image_filename = "temp-figure"
+        self.figure_image_format = "png"
+        self.figure_filename = "temp-plot.html"  # name of the offline plot file
 
 
 class VisCurve2D(Abstract.VisAbstract):
@@ -65,7 +68,7 @@ class VisCurve2D(Abstract.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         if not self._plots:
             return
@@ -123,10 +126,20 @@ class VisCurve2D(Abstract.VisAbstract):
             )
         )
 
-        plotly.offline.plot({
-            "data": plot_data,
-            "layout": plot_layout
-        }, show_link=False)
+        # Generate the figure
+        fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        plotly.offline.plot(fig,
+                            show_link=False,
+                            filename=self._config.figure_filename,
+                            image=None if fig_display else self._config.figure_format,
+                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            auto_open=True if fig_display else False)
 
 
 class VisCurve3D(Abstract.VisAbstract):
@@ -134,7 +147,7 @@ class VisCurve3D(Abstract.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         if not self._plots:
             return
@@ -209,10 +222,20 @@ class VisCurve3D(Abstract.VisAbstract):
             ),
         )
 
-        plotly.offline.plot({
-            "data": plot_data,
-            "layout": plot_layout
-        }, show_link=False)
+        # Generate the figure
+        fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        plotly.offline.plot(fig,
+                            show_link=False,
+                            filename=self._config.figure_filename,
+                            image=None if fig_display else self._config.figure_format,
+                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            auto_open=True if fig_display else False)
 
 
 class VisSurface(Abstract.VisAbstractSurf):
@@ -223,7 +246,7 @@ class VisSurface(Abstract.VisAbstractSurf):
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
 
-    def render(self):
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         if not self._plots:
             return
@@ -299,7 +322,17 @@ class VisSurface(Abstract.VisAbstractSurf):
             ),
         )
 
-        plotly.offline.plot({
-            "data": plot_data,
-            "layout": plot_layout
-        }, show_link=False)
+        # Generate the figure
+        fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as')
+        fig_display = kwargs.get('display_plot')
+
+        # Display the plot
+        plotly.offline.plot(fig,
+                            show_link=False,
+                            filename=self._config.figure_filename,
+                            image=None if fig_display else self._config.figure_format,
+                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            auto_open=True if fig_display else False)

@@ -266,7 +266,13 @@ class Curve(object):
 
         * ``cpcolor``: sets the color of the control points polygon
         * ``evalcolor``: sets the color of the curve
+        * ``filename``: saves the plot with the input name
+        * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -274,6 +280,8 @@ class Curve(object):
 
         cpcolor = kwargs.get('cpcolor', 'blue')
         curvecolor = kwargs.get('evalcolor', 'black')
+        filename = kwargs.get('filename', None)
+        display_plot = kwargs.get('plot', True)
 
         # Check all parameters are set
         self._check_variables()
@@ -286,7 +294,7 @@ class Curve(object):
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self.evalpts, name="Curve", color=curvecolor, plot_type='evalpts')
-        self._vis_component.render()
+        self._vis_component.render(fig_save_as=filename, plot=display_plot)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -750,7 +758,13 @@ class Surface(object):
 
         * ``cpcolor``: sets the color of the control points grid
         * ``evalcolor``: sets the color of the surface
+        * ``filename``: saves the plot with the input name
+        * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -758,6 +772,8 @@ class Surface(object):
 
         cpcolor = kwargs.get('cpcolor', 'blue')
         surfcolor = kwargs.get('evalcolor', 'green')
+        filename = kwargs.get('filename', None)
+        display_plot = kwargs.get('plot', True)
 
         # Check all parameters are set
         self._check_variables()
@@ -774,7 +790,7 @@ class Surface(object):
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
-        self._vis_component.render()
+        self._vis_component.render(save_fig_as=filename, plot=display_plot)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
