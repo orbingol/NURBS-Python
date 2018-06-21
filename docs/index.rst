@@ -51,6 +51,7 @@ This documentation is organized into a couple sections:
     surface_generator
     visualization
     visualization_splitting
+    visualization_export
 
 .. _modules:
 
