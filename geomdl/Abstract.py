@@ -790,7 +790,7 @@ class Surface(object):
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
-        self._vis_component.render(save_fig_as=filename, display_plot=plot_visible)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
