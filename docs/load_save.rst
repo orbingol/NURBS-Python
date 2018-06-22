@@ -39,7 +39,7 @@ The following example demonstrates the save functionality on a curve:
     # Save the curve
     curve.save("mycurve.pickle")
 
-The saved curve can be loaded from the file with the following simple code:
+The saved curve can be loaded from the file with the following simple code segment:
 
 .. code-block:: python
 
@@ -52,7 +52,7 @@ The saved curve can be loaded from the file with the following simple code:
     curve2.load("mycurve.pickle")
 
 Since the load-save functionality implements Python's ``pickle`` module, the saved file can also be loaded directly
-without using the URBS-Python library.
+without using the NURBS-Python library.
 
 .. code-block:: python
 
@@ -60,3 +60,5 @@ without using the URBS-Python library.
 
     # "data" variable will be a dictionary containing the curve information
     data = pickle.load(open("mycurve.pickle"), "rb")
+
+The ``pickle`` module has its own limitations by its design. Please see the Python documentation for more details.
