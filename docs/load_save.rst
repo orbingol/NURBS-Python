@@ -15,3 +15,48 @@ These functions implement Python's `pickle` module to serialize the degree, knot
 The idea behind this system is only to provide users a basic data persistence capability, not to introduce a new
 file type. Since the data is *pickled*, it can be loaded with any compatible Python version even without using
 any special library.
+
+The following example demonstrates the save functionality on a curve:
+
+.. code-block:: python
+
+    from geomdl import BSpline
+    from geomdl import utilities
+    from geomdl import exchange
+
+    # Create a B-Spline curve instance
+    curve = BSpline.Curve()
+
+    # Set the degree
+    curve.degree = 3
+
+    # Load control points from a text file
+    curve.ctrlpts = exchange.import_txt("control_points.txt")
+
+    # Auto-generate the knot vector
+    curve.knotvector = utilities.generate_knot_vector(curve.degree, len(curve.ctrlpts))
+
+    # Save the curve
+    curve.save("mycurve.pickle")
+
+The saved curve can be loaded from the file with the following simple code:
+
+.. code-block:: python
+
+    from geomdl import BSpline
+
+    # Create a B-Spline curve instance
+    curve2 = BSpline.Curve()
+
+    # Load the saved curve from a file
+    curve2.load("mycurve.pickle")
+
+Since the load-save functionality implements Python's ``pickle`` module, the saved file can also be loaded directly
+without using the URBS-Python library.
+
+.. code-block:: python
+
+    import pickle
+
+    # "data" variable will be a dictionary containing the curve information
+    data = pickle.load(open("mycurve.pickle"), "rb")
