@@ -281,7 +281,7 @@ class Curve(object):
         cpcolor = kwargs.get('cpcolor', 'blue')
         curvecolor = kwargs.get('evalcolor', 'black')
         filename = kwargs.get('filename', None)
-        display_plot = kwargs.get('plot', True)
+        plot_visible = kwargs.get('plot', True)
 
         # Check all parameters are set
         self._check_variables()
@@ -294,7 +294,7 @@ class Curve(object):
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self.evalpts, name="Curve", color=curvecolor, plot_type='evalpts')
-        self._vis_component.render(fig_save_as=filename, plot=display_plot)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -773,7 +773,7 @@ class Surface(object):
         cpcolor = kwargs.get('cpcolor', 'blue')
         surfcolor = kwargs.get('evalcolor', 'green')
         filename = kwargs.get('filename', None)
-        display_plot = kwargs.get('plot', True)
+        plot_visible = kwargs.get('plot', True)
 
         # Check all parameters are set
         self._check_variables()
@@ -790,7 +790,7 @@ class Surface(object):
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size, self.sample_size],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
-        self._vis_component.render(save_fig_as=filename, plot=display_plot)
+        self._vis_component.render(save_fig_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.

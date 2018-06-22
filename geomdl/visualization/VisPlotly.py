@@ -137,8 +137,8 @@ class VisCurve2D(Abstract.VisAbstract):
         plotly.offline.plot(fig,
                             show_link=False,
                             filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_format,
-                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            image=None if fig_display else self._config.figure_image_format,
+                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
                             auto_open=True if fig_display else False)
 
 
@@ -233,8 +233,8 @@ class VisCurve3D(Abstract.VisAbstract):
         plotly.offline.plot(fig,
                             show_link=False,
                             filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_format,
-                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            image=None if fig_display else self._config.figure_image_format,
+                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
                             auto_open=True if fig_display else False)
 
 
@@ -333,6 +333,6 @@ class VisSurface(Abstract.VisAbstractSurf):
         plotly.offline.plot(fig,
                             show_link=False,
                             filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_format,
-                            image_filename=self._config.figure_filename if fig_filename is None else fig_filename,
+                            image=None if fig_display else self._config.figure_image_format,
+                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
                             auto_open=True if fig_display else False)

@@ -142,7 +142,7 @@ class VisCurve2D(Abstract.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
@@ -206,7 +206,7 @@ class VisCurve3D(Abstract.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
@@ -270,7 +270,7 @@ class VisSurface(Abstract.VisAbstractSurf):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
@@ -334,7 +334,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
@@ -398,7 +398,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
@@ -462,7 +462,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_filename if fig_filename is None else fig_filename
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
