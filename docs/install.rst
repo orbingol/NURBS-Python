@@ -8,7 +8,8 @@ Installation and Testing
     However, installation via ``setup.py`` requires manual removal of the packages from Python's ``site-packages``
     directory. Directories to delete: *nurbs* and/or *geomdl*.
 
-**Installation via pip is the recommended method for all users.** Manual method is only recommended for advanced users.
+**Installation via pip or conda is the recommended method for all users.**
+Manual method is only recommended for advanced users.
 
 Install via Pip
 ===============
@@ -35,6 +36,9 @@ To install:
 To upgrade:
 
 ``conda upgrade -c orbingol geomdl``
+
+If you are experiencing problems with this method, you can try to upgrade ``conda`` package itself before
+installing the NURBS-Python library.
 
 Manual Install
 ==============
