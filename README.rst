@@ -15,9 +15,10 @@ C/C++ libraries.
 Implementation
 --------------
 
-NURBS-Python is a high-level Python library following the object-oriented design principles. In its core, it implements
-the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines these algorithms with other useful
-features. Please see the documentation for function reference and how to use the library: http://nurbs-python.rtfd.org
+NURBS-Python is a high-level Python library following the object-oriented design principles.
+In its core, it implements the algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller and combines
+these algorithms with other useful features. Please see the documentation for function reference
+and details on how to use the library: https://nurbs-python.readthedocs.io/en/3.x/
 
 Examples
 --------
