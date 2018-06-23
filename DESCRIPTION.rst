@@ -3,6 +3,13 @@ NURBS-Python
 
 |DOI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
 
+
+.. note::
+
+    Starting from v4.0, this package will be renamed to `geomdl <https://pypi.org/project/geomdl/>`_.
+    Please see the `documentation <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ for more details.
+
+
 Description
 ===========
 
@@ -40,8 +47,7 @@ The core library contains 4 modules:
 * **Grid** for generating inputs for ``geomdl.BSpline.Surface`` class
 * **GridWeighted** for generating inputs for ``geomdl.NURBS.Surface`` class
 
-Starting from version 3.2, NURBS-Python provides abstract *Curve* and *Surface* base classes in ``geomdl.Abstract``
-module.
+NURBS-Python provides abstract *Curve* and *Surface* base classes in ``geomdl.Abstract`` module.
 
 Multi Module
 ------------
@@ -67,16 +73,16 @@ NURBS-Python comes with an experimental visualization module, ``geomdl.visualiza
 Shapes Component
 ----------------
 
-Starting from NURBS-Python v3.1, a new experimental module ``geomdl.shapes`` is shipped with the NURBS-Python package.
+A new experimental module ``geomdl.shapes`` is also shipped with the NURBS-Python package.
 The aim of this component is providing an easy way to generate the most common curves and surfaces, such as circles and
 cylinders.
 
 Further Reading
 ===============
 
-* Github repository: https://github.com/orbingol/NURBS-Python
-* Examples: https://github.com/orbingol/NURBS-Python_Examples
-* Documentation: http://nurbs-python.rtfd.org/
+* Github repository: https://github.com/orbingol/NURBS-Python/tree/3.x
+* Examples: https://github.com/orbingol/NURBS-Python_Examples/tree/3.x
+* Documentation: https://nurbs-python.readthedocs.io/en/3.x/
 
 License
 =======
