@@ -139,7 +139,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
 
 def point_translate(point_in, vector_in):
-    """ Translates the input points using the given vector.
+    """ Translates the input points using the input vector.
 
     :param point_in: input point
     :type point_in: list, tuple
