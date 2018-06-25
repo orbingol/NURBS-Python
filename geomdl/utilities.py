@@ -83,37 +83,33 @@ def vector_dot(vector1, vector2):
 
 
 # Normalizes the input vector
-def vector_normalize(vector_in):
+def vector_normalize(vector_in, decimals=6):
     """ Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
     :type vector_in: list, tuple
+    :param decimals: number of significands
+    :type decimals: int
     :return: the normalized vector (i.e. the unit vector)
     :rtype: list
     """
     if vector_in is None or len(vector_in) == 0:
         raise ValueError("Input vector cannot be empty")
 
-    sq_sum = math.pow(vector_in[0], 2) + math.pow(vector_in[1], 2)
-    if len(vector_in) == 3:
-        sq_sum += math.pow(vector_in[2], 2)
-
     # Calculate magnitude of the vector
+    sq_sum = 0
+    for vin in vector_in:
+        sq_sum += vin**2
     magnitude = math.sqrt(sq_sum)
 
-    if magnitude != 0:
+    # Normalize the vector
+    if magnitude > 0:
+        vector_out = []
+        for vin in vector_in:
+            vector_out.append(vin / magnitude)
 
-        # Normalize the vector
-        if len(vector_in) == 3:
-            vector_out = [vector_in[0] / magnitude,
-                          vector_in[1] / magnitude,
-                          vector_in[2] / magnitude]
-        else:
-            vector_out = [vector_in[0] / magnitude,
-                          vector_in[1] / magnitude]
-
-        # Return the normalized vector
-        return vector_out
+        # Return the normalized vector and consider the number of significands
+        return [float(("%0." + str(decimals) + "f") % vout) for vout in vector_out]
     else:
         raise ValueError("The magnitude of the vector is zero")
 
