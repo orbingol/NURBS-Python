@@ -169,6 +169,10 @@ def binomial_coefficient(k, i):
     :return: combination of *k* and *i*
     :rtype: float
     """
+    # Special case
+    if i > k:
+        return float(0)
+    # Compute binomial coefficient
     k_fact = math.factorial(k)
     i_fact = math.factorial(i)
     k_i_fact = math.factorial(k - i)
