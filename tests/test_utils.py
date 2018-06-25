@@ -5,6 +5,7 @@
 
     Tests geomdl.utilities module. Requires "pytest" to run.
 """
+import pytest
 from geomdl import utilities
 
 
@@ -31,6 +32,34 @@ def test_normalize_knot_vector():
     assert to_check == output_kv
 
 
+def test_check_uv1():
+    with pytest.raises(ValueError):
+        u = -0.1
+        v = 0.1
+        utilities.check_uv(u, v)
+
+
+def test_check_uv2():
+    with pytest.raises(ValueError):
+        u = 2
+        v = 0.1
+        utilities.check_uv(u, v)
+
+
+def test_check_uv3():
+    with pytest.raises(ValueError):
+        v = -0.1
+        u = 0.1
+        utilities.check_uv(u, v)
+
+
+def test_check_uv4():
+    with pytest.raises(ValueError):
+        v = 2
+        u = 0.1
+        utilities.check_uv(u, v)
+
+
 def test_linspace():
     start = 5
     stop = 11
@@ -40,7 +69,14 @@ def test_linspace():
     assert to_check == result
 
 
-def test_vector_dot():
+def test_vector_dot1():
+    with pytest.raises(ValueError):
+        vec1 = ()
+        vec2 = ()
+        utilities.vector_dot(vec1, vec2)
+
+
+def test_vector_dot2():
     result = 32
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
@@ -48,12 +84,38 @@ def test_vector_dot():
     assert to_check == result
 
 
-def test_vector_cross():
+def test_vector_cross1():
+    with pytest.raises(ValueError):
+        vec1 = ()
+        vec2 = ()
+        utilities.vector_cross(vec1, vec2)
+
+
+def test_vector_cross2():
+    with pytest.raises(ValueError):
+        vec1 = (1, 2, 3, 4)
+        vec2 = (1, 5, 7, 9)
+        utilities.vector_cross(vec1, vec2)
+
+
+def test_vector_cross3():
     result = [-1.0, -4.0, 3.0]
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
     to_check = utilities.vector_cross(vec1, vec2)
     assert to_check == result
+
+
+def test_vector_normalize1():
+    with pytest.raises(ValueError):
+        vec = ()
+        utilities.vector_normalize(vec)
+
+
+def test_vector_normalize2():
+    with pytest.raises(ValueError):
+        vec = (0, 0)
+        utilities.vector_normalize(vec)
 
 
 def test_vector3_normalize():
@@ -70,7 +132,14 @@ def test_vector4_normalize():
     assert to_check == result
 
 
-def test_vector_generate():
+def test_vector_generate1():
+    with pytest.raises(ValueError):
+        pt1 = ()
+        pt2 = (1, 2, 3)
+        utilities.vector_generate(pt1, pt2)
+
+
+def test_vector_generate2():
     pt1 = (0, 0, 0)
     pt2 = (5, 3, 4)
     result = [5, 3, 4]
@@ -81,7 +150,14 @@ def test_vector_generate():
     assert to_check_normalized == result_normalized
 
 
-def test_point_translate():
+def test_vector_translate1():
+    with pytest.raises(ValueError):
+        pt1 = ()
+        pt2 = (1, 2, 3)
+        utilities.point_translate(pt1, pt2)
+
+
+def test_point_translate2():
     pt = (1, 0, 0)
     vec = (5, 5, 5)
     result = [6, 5, 5]
@@ -104,4 +180,15 @@ def test_binomial_coefficient2():
 def test_binomial_coefficient3():
     result = 680.0
     to_check = utilities.binomial_coefficient(17, 3)
+    assert to_check == result
+
+
+def test_frange():
+    start = 5
+    stop = 11
+    step = 2
+    to_check = []
+    for fr in utilities.frange(start, stop, step):
+        to_check.append(fr)
+    result = [5.0, 7.0, 9.0, 11.0]
     assert to_check == result
