@@ -115,13 +115,11 @@ def vector_normalize(vector_in, decimals=6):
 
 
 def vector_generate(start_pt, end_pt, normalize=False):
-    """ Generates a vector from 2 input 3D points.
+    """ Generates a vector from 2 input points.
 
-    The input points must be a list with length 3.
-
-    :param start_pt: starting point of the vector
+    :param start_pt: start point of the vector
     :type start_pt: list, tuple
-    :param end_pt: ending point of the vector
+    :param end_pt: end point of the vector
     :type end_pt: list, tuple
     :param normalize: if True, the generated vector is normalized
     :type normalize: bool
@@ -133,7 +131,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
     ret_vec = []
     for sp, ep in zip(start_pt, end_pt):
-        ret_vec.append(sp - ep)
+        ret_vec.append(ep - sp)
 
     if normalize:
         ret_vec = vector_normalize(ret_vec)
