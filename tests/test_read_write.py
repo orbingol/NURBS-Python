@@ -94,6 +94,7 @@ def test_export_obj_single():
     exchange.export_obj(surf_save, fname)
 
     assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
@@ -117,6 +118,7 @@ def test_export_off_single():
     exchange.export_off(surf_save, fname)
 
     assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
@@ -140,6 +142,7 @@ def test_export_stl_single():
     exchange.export_stl(surf_save, fname)
 
     assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
@@ -163,6 +166,7 @@ def test_export_stl_ascii_single():
     exchange.export_stl(surf_save, fname, binary=False)
 
     assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
