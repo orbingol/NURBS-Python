@@ -164,7 +164,13 @@ class Curve(object):
     def sample_size(self):
         """ Sample size.
 
-        Sample size defines the number of curve points to generate. It sets the ``delta`` property.
+        Sample size defines the number of curve points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \[\underbrace {\left[ {{u_{start}}, \ldots ,{u_{end}}} \right]}_{{n_{sample}}}\]
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -201,6 +207,12 @@ class Curve(object):
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate curve points. Decreasing step size results in generation of more curve points.
         Therefore; smaller the delta value, smoother the curve.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \[\left[ {{u_{start}},{u_{start}} + \delta ,({u_{start}} + \delta ) + \delta , \ldots ,{u_{end}}} \right]\]
 
         .. note:: The delta value is 0.1 by default.
 
@@ -592,7 +604,13 @@ class Surface(object):
     def sample_size(self):
         """ Sample size.
 
-        Sample size defines the number of surface points to generate. It sets the ``delta`` property.
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \[\underbrace {\left[ {{u_{start}}, \ldots ,{u_{end}}} \right]}_{{n_{sample}}}\]
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -662,6 +680,12 @@ class Surface(object):
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \[\left[ {{u_{start}},{u_{start}} + \delta ,({u_{start}} + \delta ) + \delta , \ldots ,{u_{end}}} \right]\]
 
         .. note:: The delta value is 0.1 by default.
 
