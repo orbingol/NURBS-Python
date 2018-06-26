@@ -7,7 +7,8 @@
 """
 
 import os
-from geomdl import BSpline
+from geomdl import BSpline, NURBS
+from geomdl import exchange
 
 FILE_NAME = 'testing'
 SAMPLE_SIZE = 25
@@ -74,3 +75,95 @@ def test_bspline_surface_loadsave():
     assert surf_save.ctrlpts_size_u == surf_load.ctrlpts_size_u
     assert surf_save.ctrlpts_size_v == surf_load.ctrlpts_size_v
     assert surf_save.dimension == surf_load.dimension
+
+
+# Tests if the .obj file exists
+def test_export_obj_single():
+    fname = FILE_NAME + ".obj"
+
+    surf_save = NURBS.Surface()
+    surf_save.degree_u = S_DEGREE_U
+    surf_save.degree_v = S_DEGREE_V
+    surf_save.ctrlpts_size_u = 3
+    surf_save.ctrlpts_size_v = 3
+    surf_save.ctrlpts = S_CTRLPTS
+    surf_save.knotvector_u = S_KV_U
+    surf_save.knotvector_v = S_KV_V
+
+    surf_save.sample_size = SAMPLE_SIZE
+    exchange.export_obj(surf_save, fname)
+
+    assert os.path.isfile(fname)
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .off file exists
+def test_export_off_single():
+    fname = FILE_NAME + ".off"
+
+    surf_save = NURBS.Surface()
+    surf_save.degree_u = S_DEGREE_U
+    surf_save.degree_v = S_DEGREE_V
+    surf_save.ctrlpts_size_u = 3
+    surf_save.ctrlpts_size_v = 3
+    surf_save.ctrlpts = S_CTRLPTS
+    surf_save.knotvector_u = S_KV_U
+    surf_save.knotvector_v = S_KV_V
+
+    surf_save.sample_size = SAMPLE_SIZE
+    exchange.export_off(surf_save, fname)
+
+    assert os.path.isfile(fname)
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .stl file exists
+def test_export_stl_single():
+    fname = FILE_NAME + ".stl"
+
+    surf_save = NURBS.Surface()
+    surf_save.degree_u = S_DEGREE_U
+    surf_save.degree_v = S_DEGREE_V
+    surf_save.ctrlpts_size_u = 3
+    surf_save.ctrlpts_size_v = 3
+    surf_save.ctrlpts = S_CTRLPTS
+    surf_save.knotvector_u = S_KV_U
+    surf_save.knotvector_v = S_KV_V
+
+    surf_save.sample_size = SAMPLE_SIZE
+    exchange.export_stl(surf_save, fname)
+
+    assert os.path.isfile(fname)
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .stl file exists (ascii)
+def test_export_stl_ascii_single():
+    fname = FILE_NAME + ".stl"
+
+    surf_save = NURBS.Surface()
+    surf_save.degree_u = S_DEGREE_U
+    surf_save.degree_v = S_DEGREE_V
+    surf_save.ctrlpts_size_u = 3
+    surf_save.ctrlpts_size_v = 3
+    surf_save.ctrlpts = S_CTRLPTS
+    surf_save.knotvector_u = S_KV_U
+    surf_save.knotvector_v = S_KV_V
+
+    surf_save.sample_size = SAMPLE_SIZE
+    exchange.export_stl(surf_save, fname, binary=False)
+
+    assert os.path.isfile(fname)
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
