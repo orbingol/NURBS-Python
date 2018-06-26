@@ -170,7 +170,7 @@ class Curve(object):
 
         .. math::
 
-            \[\underbrace {\left[ {{u_{start}}, \ldots ,{u_{end}}} \right]}_{{n_{sample}}}\]
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -212,7 +212,7 @@ class Curve(object):
 
         .. math::
 
-            \[\left[ {{u_{start}},{u_{start}} + \delta ,({u_{start}} + \delta ) + \delta , \ldots ,{u_{end}}} \right]\]
+            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 
@@ -610,7 +610,7 @@ class Surface(object):
 
         .. math::
 
-            \[\underbrace {\left[ {{u_{start}}, \ldots ,{u_{end}}} \right]}_{{n_{sample}}}\]
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -681,12 +681,6 @@ class Surface(object):
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
 
-        The following figure illustrates the working principles of the delta property:
-
-        .. math::
-
-            \[\left[ {{u_{start}},{u_{start}} + \delta ,({u_{start}} + \delta ) + \delta , \ldots ,{u_{end}}} \right]\]
-
         .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
@@ -714,6 +708,12 @@ class Surface(object):
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 
