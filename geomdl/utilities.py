@@ -467,14 +467,20 @@ def check_knot_vector(degree=0, knot_vector=(), num_ctrlpts=0):
     return True
 
 
-def color_generator():
-    """ Generates colors for control and evaluated curve/surface points plots.
+def color_generator(seed=None):
+    """ Generates random colors for control and evaluated curve/surface points plots.
+
+    The ``seed`` argument is used to set the random seed by directly passing the value to ``random.seed()`` function.
+    Please see the Python documentation for more details on the ``random`` module .
 
     Inspired from https://stackoverflow.com/a/14019260
 
+    :param seed: Sets the random seed
     :return: list of color strings in hex format
     :rtype: list
     """
+    if seed is not None:
+        random.seed(seed)
     r = lambda: random.randint(0, 255)
     color_string = '#%02X%02X%02X'
     return [color_string % (r(), r(), r()), color_string % (r(), r(), r())]
