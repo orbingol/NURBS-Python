@@ -9,7 +9,28 @@ import pytest
 from geomdl import utilities
 
 
-def test_autogen_knot_vector():
+def test_generate_knot_vector1():
+    with pytest.raises(ValueError):
+        degree = 0
+        num_ctrlpts = 12
+        utilities.generate_knot_vector(degree, num_ctrlpts)
+
+
+def test_generate_knot_vector2():
+    with pytest.raises(ValueError):
+        degree = 4
+        num_ctrlpts = 0
+        utilities.generate_knot_vector(degree, num_ctrlpts)
+
+
+def test_generate_knot_vector3():
+    with pytest.raises(ValueError):
+        degree = 0
+        num_ctrlpts = 0
+        utilities.generate_knot_vector(degree, num_ctrlpts)
+
+
+def test_generate_knot_vector4():
     degree = 4
     num_ctrlpts = 12
     autogen_kv = utilities.generate_knot_vector(degree, num_ctrlpts)
@@ -17,7 +38,24 @@ def test_autogen_knot_vector():
     assert autogen_kv == result
 
 
-def test_check_knot_vector():
+def test_check_knot_vector1():
+    with pytest.raises(ValueError):
+        utilities.check_knot_vector(4, tuple(), 12)
+
+
+def test_check_knot_vector2():
+    to_check = utilities.check_knot_vector(4, (1, 2, 3, 4), 12)
+    result = False
+    assert to_check == result
+
+
+def test_check_knot_vector3():
+    to_check = utilities.check_knot_vector(3, (5, 3, 6, 5, 4, 5, 6), 3)
+    result = False
+    assert to_check == result
+
+
+def test_check_knot_vector4():
     degree = 4
     num_ctrlpts = 12
     autogen_kv = utilities.generate_knot_vector(degree, num_ctrlpts)
@@ -25,7 +63,13 @@ def test_check_knot_vector():
     assert check_result
 
 
-def test_normalize_knot_vector():
+def test_normalize_knot_vector1():
+    result = tuple()
+    to_check = utilities.normalize_knot_vector(result)
+    assert to_check == result
+
+
+def test_normalize_knot_vector2():
     input_kv = (-5, -5, -3, -2, 2, 3, 5, 5)
     output_kv = [0.0, 0.0, 0.2, 0.3, 0.7, 0.8, 1.0, 1.0]
     to_check = utilities.normalize_knot_vector(input_kv)
@@ -191,4 +235,11 @@ def test_frange():
     for fr in utilities.frange(start, stop, step):
         to_check.append(fr)
     result = [5.0, 7.0, 9.0, 11.0]
+    assert to_check == result
+
+
+def test_color_generator():
+    seed = 17  # some number to be used as the random seed
+    result = utilities.color_generator(seed)
+    to_check = utilities.color_generator(seed)
     assert to_check == result
