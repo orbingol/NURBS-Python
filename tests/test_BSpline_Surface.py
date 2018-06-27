@@ -400,6 +400,35 @@ def test_bspline_surface_eval12():
     assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
 
 
+def test_bspline_surface_bbox():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Evaluate bounding box
+    to_check = surf.bbox
+
+    # Evaluation result
+    result = ((-25.0, -25.0, -10.0), (25.0, 25.0, 2.0))
+
+    assert abs(to_check[0][0] - result[0][0]) < GEOMDL_DELTA
+    assert abs(to_check[0][1] - result[0][1]) < GEOMDL_DELTA
+    assert abs(to_check[0][2] - result[0][2]) < GEOMDL_DELTA
+    assert abs(to_check[1][0] - result[1][0]) < GEOMDL_DELTA
+    assert abs(to_check[1][1] - result[1][1]) < GEOMDL_DELTA
+    assert abs(to_check[1][2] - result[1][2]) < GEOMDL_DELTA
+
+
 def test_bspline_surface_insert_knot1():
     # Create a surface instance
     surf = OBJECT_INSTANCE()

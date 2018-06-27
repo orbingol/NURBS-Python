@@ -133,6 +133,33 @@ def test_bspline_curve3d_eval5():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
+def test_bspline_curve3d_bbox():
+    # Create a curve instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = 4
+
+    # Set control points
+    curve.ctrlpts = CONTROL_POINTS
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    # Evaluate bounding box
+    to_check = curve.bbox
+
+    # Evaluation result
+    result = ((5.0, -10.0, 0.0), (20.0, 25.0, 40.0))
+
+    assert abs(to_check[0][0] - result[0][0]) < GEOMDL_DELTA
+    assert abs(to_check[0][1] - result[0][1]) < GEOMDL_DELTA
+    assert abs(to_check[0][2] - result[0][2]) < GEOMDL_DELTA
+    assert abs(to_check[1][0] - result[1][0]) < GEOMDL_DELTA
+    assert abs(to_check[1][1] - result[1][1]) < GEOMDL_DELTA
+    assert abs(to_check[1][2] - result[1][2]) < GEOMDL_DELTA
+
+
 def test_bspline_curve3d_deriv1():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
