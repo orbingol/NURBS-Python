@@ -33,7 +33,13 @@ class MultiCurve(Abstract.Multi):
 
         * ``cpcolor``: sets the color of the control points grid
         * ``evalcolor``: sets the color of the surface
+        * ``filename``: saves the plot with the input name
+        * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")
@@ -42,6 +48,8 @@ class MultiCurve(Abstract.Multi):
         # Get the color values from keyword arguments
         cpcolor = kwargs.get('cpcolor')
         evalcolor = kwargs.get('evalcolor')
+        filename = kwargs.get('filename', None)
+        plot_visible = kwargs.get('plot', True)
 
         # Run the visualization component
         self._vis_component.clear()
@@ -57,7 +65,7 @@ class MultiCurve(Abstract.Multi):
                                     name="Curve " + str(idx + 1),
                                     color=evalcolor if evalcolor is not None else color[1],
                                     plot_type='evalpts')
-        self._vis_component.render()
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
 class MultiSurface(Abstract.Multi):
@@ -76,7 +84,13 @@ class MultiSurface(Abstract.Multi):
 
         * ``cpcolor``: sets the color of the control points grid
         * ``evalcolor``: sets the color of the surface
+        * ``filename``: saves the plot with the input name
+        * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")
@@ -85,6 +99,8 @@ class MultiSurface(Abstract.Multi):
         # Get the color values from keyword arguments
         cpcolor = kwargs.get('cpcolor')
         evalcolor = kwargs.get('evalcolor')
+        filename = kwargs.get('filename', None)
+        plot_visible = kwargs.get('plot', True)
 
         # Run the visualization component
         self._vis_component.clear()
@@ -102,4 +118,4 @@ class MultiSurface(Abstract.Multi):
                                     name="Surface " + str(idx + 1),
                                     color=evalcolor if evalcolor is not None else color[1],
                                     plot_type='evalpts')
-        self._vis_component.render()
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
