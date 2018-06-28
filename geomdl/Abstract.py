@@ -1006,7 +1006,7 @@ class Evaluator(object):
 
     @abc.abstractmethod
     def evaluate_single(self, **kwargs):
-        """ Abstract method for computation of a single point at the specified parameter(s). """
+        """ Abstract method for computation of a single point at a specified parameter. """
         pass
 
     @abc.abstractmethod
@@ -1016,12 +1016,17 @@ class Evaluator(object):
 
     @abc.abstractmethod
     def derivatives_single(self, **kwargs):
-        """ Abstract method for computation of derivatives at the specified parameter(s). """
+        """ Abstract method for computation of derivatives at a specified parameter. """
         pass
 
     @abc.abstractmethod
     def derivatives(self, **kwargs):
         """ Abstract method for computation of derivatives over a range of parameters. """
+        pass
+
+    @abc.abstractmethod
+    def insert_knot(self, **kwargs):
+        """ Abstract method for knot insertion. """
         pass
 
 

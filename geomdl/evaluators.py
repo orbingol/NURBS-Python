@@ -62,6 +62,9 @@ class CurveEvaluator(Evaluator):
     def derivatives(self, **kwargs):
         pass
 
+    def insert_knot(self, **kwargs):
+        pass
+
 
 class SurfaceEvaluator(Evaluator):
     """ Sequential B-Spline surface evaluation algorithms.
@@ -149,6 +152,9 @@ class SurfaceEvaluator(Evaluator):
         pass
 
     def derivatives(self, **kwargs):
+        pass
+
+    def insert_knot(self, **kwargs):
         pass
 
 
