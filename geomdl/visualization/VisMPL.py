@@ -135,8 +135,8 @@ class VisCurve2D(Abstract.VisAbstract):
         ax.set_aspect('equal')
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
@@ -199,8 +199,8 @@ class VisCurve3D(Abstract.VisAbstract):
         self._config.set_axes_equal(ax)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
@@ -263,8 +263,8 @@ class VisSurface(Abstract.VisAbstractSurf):
         self._config.set_axes_equal(ax)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
@@ -327,8 +327,8 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
         self._config.set_axes_equal(ax)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
@@ -391,8 +391,8 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         self._config.set_axes_equal(ax)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
@@ -455,8 +455,8 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
         self._config.set_axes_equal(ax)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as')
-        fig_display = kwargs.get('display_plot')
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', None)
 
         # Display the plot
         if fig_display:
