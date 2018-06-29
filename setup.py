@@ -2,10 +2,27 @@
 
 """
     NURBS-Python (geomdl) Setup Script
-    NURBS-Python is released under the MIT License.
+    NURBS-Python is released under the MIT License. Copyright (c) Onur Rauf Bingol.
 
-    The setup script directly depends on "setuptools" package and it does not fallback to "distutils".
-    As a result, "setuptools" package has been set as an install requirement.
+    The setup script directly depends on "setuptools" package and it does not fallback to "distutils" which might
+    cause issues on some Python distributions, especially on the embedded distributions.
+
+    To solve this issue, you may want to start with installing "pip" using the "get_pip.py" script
+    from the following link if it doesn't exist on your distribution:
+
+    https://pip.pypa.io/en/stable/installing/
+
+    Then, you may install "setuptools" package using the following command:
+
+    pip install setuptools
+
+    The "setuptools" package comes installed by default with the official Python.org distribution and in all "conda"
+    environments. On the other hand, it might require an update. You may update your "setuptools" package using
+    the following command:
+
+    pip install setuptools --update
+
+    After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl".
 """
 
 from setuptools import setup
@@ -52,7 +69,6 @@ setup(
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
-    install_requires=['setuptools'],
     extras_require={
         'visualization': ['matplotlib', 'plotly'],
     },
