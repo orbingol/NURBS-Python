@@ -1,21 +1,23 @@
-NURBS-Python
-^^^^^^^^^^^^
+NURBS-Python (geomdl)
+^^^^^^^^^^^^^^^^^^^^^
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 
-|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
+|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CODECOV|_
+
+|WAFFLEIO|_
 
 Introduction
 ============
 
-This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and surface computation algorithms in native
-Python with minimum possible dependencies. The library is fully object-oriented and does *not* depend on any external
-C/C++ libraries.
+This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and surface computation algorithms in pure
+Python with minimum possible dependencies. The library is fully object-oriented and does **not** depend on any external
+libraries.
 
 Branch Information
 ------------------
 
-* ``master`` branch contains code for NURBS-Python v4.x series
+* ``master`` branch contains code for NURBS-Python (geomdl) v4.x series
 * ``3.x`` branch contains code for NURBS-Python v3.x series
 * ``2.x`` branch contains code for NURBS-Python v2.x series
 
@@ -83,3 +85,6 @@ supporting this project.
 
 .. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
 .. _ANACONDA: https://anaconda.org/orbingol/geomdl
+
+.. |CODECOV| image:: https://codecov.io/gh/orbingol/NURBS-Python/branch/master/graph/badge.svg
+.. _CODECOV: https://codecov.io/gh/orbingol/NURBS-Python

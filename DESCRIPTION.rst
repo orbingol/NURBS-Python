@@ -1,10 +1,14 @@
 NURBS-Python (geomdl)
 ^^^^^^^^^^^^^^^^^^^^^
 
-|DOI|_ |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |WAFFLEIO|_
+|DOI|_ |ANACONDA|_
 
-Description
-===========
+|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CODECOV|_
+
+|WAFFLEIO|_
+
+Introduction
+============
 
 NURBS-Python (geomdl) provides fully object-oriented Non-Uniform Rational B-Spline (NURBS) surface and curve data
 structures and extensible advanced computation algorithms in pure python. It allows users to directly visualize the
@@ -73,3 +77,9 @@ NURBS-Python is licensed under the MIT License.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
+.. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
+.. _ANACONDA: https://anaconda.org/orbingol/geomdl
+
+.. |CODECOV| image:: https://codecov.io/gh/orbingol/NURBS-Python/branch/master/graph/badge.svg
+.. _CODECOV: https://codecov.io/gh/orbingol/NURBS-Python
