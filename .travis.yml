@@ -16,6 +16,7 @@ branches:
 
 # install required packages
 install:
+  - pip install setuptools --upgrade
   - pip install pytest pytest-cov
   - pip install codecov
 
