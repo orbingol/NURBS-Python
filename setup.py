@@ -1,8 +1,16 @@
 #!/usr/bin/env python
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+
+"""
+    NURBS-Python (geomdl) Setup Script
+    NURBS-Python is released under the MIT License.
+
+    The setup script directly depends on "setuptools" package and it does not fallback to "distutils".
+    As a result, "setuptools" package has been set as an install requirement.
+"""
+
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
+import sys
 import os
 import re
 
@@ -17,6 +25,24 @@ def get_property(prop, project):
     return result.group(1)
 
 
+# Reference: https://docs.pytest.org/en/latest/goodpractices.html
+class PyTest(TestCommand):
+    user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = ""
+
+    def run_tests(self):
+        import shlex
+
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+
+        errno = pytest.main(shlex.split(self.pytest_args))
+        sys.exit(errno)
+
+
 setup(
     name='geomdl',
     version=get_property('__version__', 'geomdl'),
@@ -26,10 +52,12 @@ setup(
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
+    install_requires=['setuptools'],
     extras_require={
-        'tests': ['pytest'],
         'visualization': ['matplotlib', 'plotly'],
     },
+    tests_require=["pytest"],
+    cmdclass={"test": PyTest},
     long_description=read('DESCRIPTION.rst'),
     keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
