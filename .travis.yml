@@ -20,7 +20,8 @@ install:
   - pip install codecov
 
 # install package and run tests
-script: "python setup.py develop && pytest --cov=./"
+#script: "python setup.py develop && pytest --cov=./"
+script: 'python setup.py develop && python setup.py test -a "--cov=./"'
 
 # call at the end of CI build
 after_success:
