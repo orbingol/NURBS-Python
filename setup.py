@@ -20,7 +20,7 @@
     environments. On the other hand, it might require an update. You may update your "setuptools" package using
     the following command:
 
-    pip install setuptools --update
+    pip install setuptools --upgrade
 
     After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl".
 """
