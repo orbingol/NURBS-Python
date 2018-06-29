@@ -1,7 +1,7 @@
 NURBS-Python Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-|DOI|_
+|DOI|_ |PYPI|_ |ANACONDA|_
 
 .. note::
 
@@ -78,3 +78,9 @@ NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ a
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
+
+.. |PYPI| image:: https://img.shields.io/pypi/v/geomdl.svg
+.. _PYPI: https://pypi.org/project/geomdl/
+
+.. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
+.. _ANACONDA: https://anaconda.org/orbingol/geomdl
