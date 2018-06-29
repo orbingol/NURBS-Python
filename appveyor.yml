@@ -24,6 +24,9 @@ branches:
     - gh-pages
 
 environment:
+  global:
+    MPLBACKEND: "Agg"
+
   matrix:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
@@ -60,11 +63,14 @@ install:
   # Upgrade setuptools
   - "python -m pip install --upgrade setuptools"
 
+  # Install numpy & matplotlib
+  - "python -m pip install numpy matplotlib"
+
   # Install pytest
   - "python -m pip install pytest"
 
-  # Install wheel
-  - "python -m pip install wheel"
+#  # Install wheel
+#  - "python -m pip install wheel"
 
 build_script:
   # Install the python module
@@ -72,7 +78,7 @@ build_script:
 
 test_script:
   # Run the project tests
-  - "%CMD_IN_ENV% pytest"
+  - "%CMD_IN_ENV% python setup.py test"
 
 #after_test:
 #  # If tests are successful, create binary packages for the project.
