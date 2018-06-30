@@ -20,6 +20,19 @@ from .elements import Vertex, Triangle
 def import_txt(file_name, two_dimensional=False):
     """ Reads control points from a text file and generates a 1-D list of control points.
 
+    The following code examples illustrate importing different types of text files for curves and surfaces:
+
+    .. code-block:: python
+
+        # Import curve control points from a text file
+        curve_ctrlpts = exchange.import_txt(file_name="control_points.txt")
+
+        # Import surface control points from a text file (1-dimensional file)
+        surf_ctrlpts = exchange.import_txt(file_name="control_points.txt")
+
+        # Import surface control points from a text file (2-dimensional file)
+        surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
+
     :param file_name: file name of the text file
     :type file_name: str
     :param two_dimensional: type of the text file
