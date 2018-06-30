@@ -243,7 +243,10 @@ class Surface(BSpline.Surface):
         :getter: Gets weighted control points
         :setter: Sets weighted control points
         """
-        return self._control_points
+        ret_list = []
+        for pt in self._control_points:
+            ret_list.append(tuple(pt))
+        return tuple(ret_list)
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
