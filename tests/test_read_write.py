@@ -433,14 +433,13 @@ def test_export_csv_surface_evalpts(bspline_surface):
 
 
 # Testing read-write operations in compatibility module
-def test_export_flip_txt2d_surface(bspline_surface):
+def test_compatibility_flip_ctrlpts2d_file(bspline_surface):
     fname_in = FILE_NAME + "_in.txt"
     fname_out = FILE_NAME + "_out.txt"
 
     bspline_surface.sample_size = SAMPLE_SIZE
     exchange.export_txt(bspline_surface, fname_in, two_dimensional=True)
 
-    # Try to flip control points
     compatibility.flip_ctrlpts2d_file(fname_in, fname_out)
 
     assert os.path.isfile(fname_out)
@@ -450,3 +449,68 @@ def test_export_flip_txt2d_surface(bspline_surface):
     if os.path.isfile(fname_in):
         os.remove(fname_in)
         os.remove(fname_out)
+
+
+def test_compatibility_generate_ctrlpts2d_weights_file(nurbs_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = FILE_NAME + "_out.txt"
+
+    nurbs_surface.sample_size = SAMPLE_SIZE
+    exchange.export_txt(nurbs_surface, fname_in, two_dimensional=True)
+
+    compatibility.generate_ctrlpts2d_weights_file(fname_in, fname_out)
+
+    assert os.path.isfile(fname_out)
+    assert os.path.getsize(fname_out) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname_in):
+        os.remove(fname_in)
+        os.remove(fname_out)
+
+
+def test_compatibility_generate_ctrlptsw2d_file1(nurbs_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = FILE_NAME + "_out.txt"
+    fname_final = FILE_NAME + "_final.txt"
+
+    exchange.export_txt(nurbs_surface, fname_in, two_dimensional=True)
+
+    compatibility.generate_ctrlpts2d_weights_file(fname_in, fname_out)
+    compatibility.generate_ctrlptsw2d_file(fname_out, fname_final)
+
+    assert os.path.isfile(fname_final)
+    assert os.path.getsize(fname_final) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname_in):
+        os.remove(fname_in)
+        os.remove(fname_out)
+        os.remove(fname_final)
+
+
+def test_compatibility_generate_ctrlptsw2d_file2(nurbs_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = FILE_NAME + "_out.txt"
+    fname_final = FILE_NAME + "_final.txt"
+
+    exchange.export_txt(nurbs_surface, fname_in, two_dimensional=True)
+
+    compatibility.generate_ctrlpts2d_weights_file(fname_in, fname_out)
+    compatibility.generate_ctrlptsw2d_file(fname_out, fname_final)
+    ctrlpts, size_u, size_v = exchange.import_txt(fname_final, two_dimensional=True)
+    ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
+
+    res_array = []
+    for res in ctrlptsw:
+        res_array.append(tuple(res))
+
+    assert nurbs_surface.ctrlptsw == tuple(res_array)
+    assert nurbs_surface.ctrlpts_size_u == size_u
+    assert nurbs_surface.ctrlpts_size_v == size_v
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname_in):
+        os.remove(fname_in)
+        os.remove(fname_out)
+        os.remove(fname_final)
