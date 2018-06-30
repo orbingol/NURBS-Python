@@ -58,6 +58,23 @@ def nurbs_surface():
     return surf
 
 
+@pytest.fixture
+def nurbs_surface_decompose():
+    """ Creates a NURBS surface instance (decomposable) """
+    surf = NURBS.Surface()
+    surf.degree_u = 2
+    surf.degree_v = 2
+    surf.ctrlpts_size_u = 3
+    surf.ctrlpts_size_v = 4
+    surf.ctrlpts = [[0, 0, 0], [0, 1, 0], [0, 2, -3], [0, 3, 7],
+                    [1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8],
+                    [2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]]
+    # use the auto-generated weights vector
+    surf.knotvector_u = [0, 0, 0, 1, 1, 1]
+    surf.knotvector_v = [0, 0, 0, 0.5, 1, 1, 1]
+    return surf
+
+
 # Tests pickled load-save operations on curves
 def test_bspline_curve_loadsave(bspline_curve3d):
     fname = FILE_NAME + ".pickle"
@@ -149,6 +166,74 @@ def test_export_stl_ascii_single(nurbs_surface):
 
     nurbs_surface.sample_size = SAMPLE_SIZE
     exchange.export_stl(nurbs_surface, fname, binary=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .obj file exists
+def test_export_obj_multi(nurbs_surface_decompose):
+    fname = FILE_NAME + ".obj"
+
+    nurbs_multi = nurbs_surface_decompose.decompose()
+
+    nurbs_multi.sample_size = SAMPLE_SIZE
+    exchange.export_obj(nurbs_multi, fname)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .off file exists
+def test_export_off_multi(nurbs_surface_decompose):
+    fname = FILE_NAME + ".off"
+
+    nurbs_multi = nurbs_surface_decompose.decompose()
+
+    nurbs_multi.sample_size = SAMPLE_SIZE
+    exchange.export_off(nurbs_multi, fname)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .stl file exists
+def test_export_stl_multi(nurbs_surface_decompose):
+    fname = FILE_NAME + ".stl"
+
+    nurbs_multi = nurbs_surface_decompose.decompose()
+
+    nurbs_multi.sample_size = SAMPLE_SIZE
+    exchange.export_stl(nurbs_multi, fname)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Tests if the .stl file exists (ascii)
+def test_export_stl_ascii_multi(nurbs_surface_decompose):
+    fname = FILE_NAME + ".stl"
+
+    nurbs_multi = nurbs_surface_decompose.decompose()
+
+    nurbs_multi.sample_size = SAMPLE_SIZE
+    exchange.export_stl(nurbs_multi, fname, binary=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
