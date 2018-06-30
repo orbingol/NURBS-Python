@@ -156,3 +156,191 @@ def test_export_stl_ascii_single(nurbs_surface):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+def test_export_txt_curve(bspline_curve3d):
+    fname = FILE_NAME + ".txt"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_curve3d, fname)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_import_txt_curve(bspline_curve3d):
+    fname = FILE_NAME + ".txt"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_curve3d, fname)
+
+    # Import text file
+    result = exchange.import_txt(fname)
+
+    res_array = []
+    for res in result:
+        res_array.append(tuple(res))
+
+    assert tuple(res_array) == bspline_curve3d.ctrlpts
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_import_txt_surface1(bspline_surface):
+    fname = FILE_NAME + ".txt"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_surface, fname, two_dimensional=False)
+
+    # Import text file
+    result = exchange.import_txt(fname, two_dimensional=False)
+
+    res_array = []
+    for res in result:
+        res_array.append(tuple(res))
+
+    assert tuple(res_array) == bspline_surface.ctrlpts
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_import_txt_surface2(bspline_surface):
+    fname = FILE_NAME + ".txt"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_surface, fname, two_dimensional=True)
+
+    # Import text file
+    result, size_u, size_v = exchange.import_txt(fname, two_dimensional=True)
+
+    res_array = []
+    for res in result:
+        res_array.append(tuple(res))
+
+    assert tuple(res_array) == bspline_surface.ctrlpts
+    assert size_u == bspline_surface.ctrlpts_size_u
+    assert size_v == bspline_surface.ctrlpts_size_v
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_vtk_curve_ctrlpts(bspline_curve3d):
+    fname = FILE_NAME + ".vtk"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_vtk(bspline_curve3d, fname, point_type="ctrlpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_vtk_surface_ctrlpts(bspline_surface):
+    fname = FILE_NAME + ".vtk"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_vtk(bspline_surface, fname, point_type="ctrlpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_vtk_curve_evalpts(bspline_curve3d):
+    fname = FILE_NAME + ".vtk"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_vtk(bspline_curve3d, fname, point_type="evalpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_vtk_surface_evalpts(bspline_surface):
+    fname = FILE_NAME + ".vtk"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_vtk(bspline_surface, fname, point_type="evalpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_csv_curve_ctrlpts(bspline_curve3d):
+    fname = FILE_NAME + ".csv"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_csv(bspline_curve3d, fname, point_type="ctrlpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_csv_surface_ctrlpts(bspline_surface):
+    fname = FILE_NAME + ".csv"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_csv(bspline_surface, fname, point_type="ctrlpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_csv_curve_evalpts(bspline_curve3d):
+    fname = FILE_NAME + ".csv"
+
+    bspline_curve3d.sample_size = SAMPLE_SIZE
+    exchange.export_csv(bspline_curve3d, fname, point_type="evalpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_export_csv_surface_evalpts(bspline_surface):
+    fname = FILE_NAME + ".csv"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_csv(bspline_surface, fname, point_type="evalpts")
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
