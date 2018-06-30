@@ -101,6 +101,39 @@ def test_curve3d_fig_save(bspline_curve3d):
         os.remove(fname)
 
 
+# Test if plotting a 3-dimensional multi-curve without a window is possible
+def test_curve3d_multi_fig_nowindow(bspline_curve3d):
+    multi = bspline_curve3d.decompose()
+    conf = VisMPL.VisConfig()
+    vis = VisMPL.VisCurve3D(config=conf)
+    multi.vis = vis
+    multi.render(plot=False)
+
+    assert os.path.isfile(conf.figure_image_filename)
+    assert os.path.getsize(conf.figure_image_filename) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(conf.figure_image_filename):
+        os.remove(conf.figure_image_filename)
+
+
+# Test if using a different file name is possible
+def test_curve3d_multi_fig_save(bspline_curve3d):
+    fname = "test-multi_curve.png"
+    multi = bspline_curve3d.decompose()
+    conf = VisMPL.VisConfig()
+    vis = VisMPL.VisCurve3D(config=conf)
+    multi.vis = vis
+    multi.render(filename=fname, plot=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
 # Test if plotting a surface without a window is possible
 def test_surf_fig_nowindow(bspline_surface):
     conf = VisMPL.VisConfig()
@@ -123,6 +156,39 @@ def test_surf_fig_save(bspline_surface):
     vis = VisMPL.VisSurface(config=conf)
     bspline_surface.vis = vis
     bspline_surface.render(filename=fname, plot=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+# Test if plotting a multi-surface without a window is possible
+def test_surf_multi_fig_nowindow(bspline_surface):
+    multi = bspline_surface.decompose()
+    conf = VisMPL.VisConfig()
+    vis = VisMPL.VisSurface(config=conf)
+    multi.vis = vis
+    multi.render(plot=False)
+
+    assert os.path.isfile(conf.figure_image_filename)
+    assert os.path.getsize(conf.figure_image_filename) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(conf.figure_image_filename):
+        os.remove(conf.figure_image_filename)
+
+
+# Test if using a different file name is possible
+def test_surf_multi_fig_save(bspline_surface):
+    fname = "test-multi_surface.png"
+    multi = bspline_surface.decompose()
+    conf = VisMPL.VisConfig()
+    vis = VisMPL.VisSurface(config=conf)
+    multi.vis = vis
+    multi.render(filename=fname, plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
