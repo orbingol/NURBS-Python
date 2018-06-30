@@ -68,8 +68,8 @@ supporting this project.
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
 
-.. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=stable
-.. _RTD: http://nurbs-python.readthedocs.io/en/stable/?badge=stable
+.. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
+.. _RTD: http://nurbs-python.readthedocs.io/en/stable/?badge=latest
 
 .. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
 .. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
