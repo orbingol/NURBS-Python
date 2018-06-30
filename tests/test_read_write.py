@@ -10,6 +10,7 @@ import os
 import pytest
 from geomdl import BSpline, NURBS
 from geomdl import exchange
+from geomdl import compatibility
 
 FILE_NAME = 'testing'
 SAMPLE_SIZE = 25
@@ -429,3 +430,23 @@ def test_export_csv_surface_evalpts(bspline_surface):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+# Testing read-write operations in compatibility module
+def test_export_flip_txt2d_surface(bspline_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = FILE_NAME + "_out.txt"
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_surface, fname_in, two_dimensional=True)
+
+    # Try to flip control points
+    compatibility.flip_ctrlpts2d_file(fname_in, fname_out)
+
+    assert os.path.isfile(fname_out)
+    assert os.path.getsize(fname_out) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname_in):
+        os.remove(fname_in)
+        os.remove(fname_out)
