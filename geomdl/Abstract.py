@@ -1087,6 +1087,11 @@ class VisAbstract(object):
 
         This method must be implemented in all subclasses of ``VisAbstract`` class.
         """
+        # We need something to plot
+        if self._plots is None or len(self._plots) == 0:
+            raise ValueError("Nothing to plot")
+
+        # Remaining should be implemented
         pass
 
 
@@ -1116,4 +1121,8 @@ class VisAbstractSurf(VisAbstract):
 
         This method must be implemented in all subclasses of ``VisAbstractSurf`` class.
         """
+        # Calling parent function
+        super(VisAbstractSurf, self).render()
+
+        # Remaining should be implemented
         pass

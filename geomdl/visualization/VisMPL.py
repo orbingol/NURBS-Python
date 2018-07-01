@@ -98,9 +98,10 @@ class VisCurve2D(Abstract.VisAbstract):
 
     def render(self, **kwargs):
         """ Plots the 2D curve and the control points polygon. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisCurve2D, self).render(**kwargs)
 
+        # Initialize variables
         legend_proxy = []
         legend_names = []
 
@@ -155,15 +156,16 @@ class VisCurve3D(Abstract.VisAbstract):
 
     def render(self, **kwargs):
         """ Plots the 3D curve and the control points polygon. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisCurve3D, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
 
         # Draw control points polygon and the 3D curve
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
-
-        legend_proxy = []
-        legend_names = []
 
         # Start plotting
         for plot in self._plots:
@@ -222,15 +224,16 @@ class VisSurface(Abstract.VisAbstractSurf):
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisSurface, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
-
-        legend_proxy = []
-        legend_names = []
 
         # Start plotting
         for plot in self._plots:
@@ -286,15 +289,16 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisSurfWireframe, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
-
-        legend_proxy = []
-        legend_names = []
 
         # Start plotting
         for plot in self._plots:
@@ -350,15 +354,16 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisSurfTriangle, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
-
-        legend_proxy = []
-        legend_names = []
 
         # Start plotting
         for plot in self._plots:
@@ -414,15 +419,16 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisSurfScatter, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
-
-        legend_proxy = []
-        legend_names = []
 
         # Start plotting
         for plot in self._plots:

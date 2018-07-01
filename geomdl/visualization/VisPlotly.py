@@ -70,10 +70,12 @@ class VisCurve2D(Abstract.VisAbstract):
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisCurve2D, self).render(**kwargs)
 
+        # Initialize variables
         plot_data = []
+
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
 
@@ -131,7 +133,7 @@ class VisCurve2D(Abstract.VisAbstract):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         plotly.offline.plot(fig,
@@ -139,7 +141,7 @@ class VisCurve2D(Abstract.VisAbstract):
                             filename=self._config.figure_filename,
                             image=None if fig_display else self._config.figure_image_format,
                             image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=True if fig_display else False)
+                            auto_open=fig_display)
 
 
 class VisCurve3D(Abstract.VisAbstract):
@@ -149,10 +151,12 @@ class VisCurve3D(Abstract.VisAbstract):
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisCurve3D, self).render(**kwargs)
 
+        # Initialize variables
         plot_data = []
+
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
 
@@ -248,10 +252,12 @@ class VisSurface(Abstract.VisAbstractSurf):
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
-        if not self._plots:
-            return
+        # Calling parent function
+        super(VisSurface, self).render(**kwargs)
 
+        # Initialize variables
         plot_data = []
+
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
