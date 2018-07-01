@@ -7,7 +7,6 @@
 
 """
 
-from . import sys
 from . import math
 from . import random
 from . import warnings
@@ -442,7 +441,7 @@ class GridWeighted(Grid):
         """
         # Check if the input weight is valid
         if w <= 0:
-            raise ValueError("Weight value must be bigger than 0.")
+            raise ValueError("Weight value must be bigger than 0")
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) == self._dimension:
@@ -473,7 +472,7 @@ class GridWeighted(Grid):
         """
         # Check if the input weight is valid
         if w <= 0:
-            raise ValueError("Weight value must be bigger than 0.")
+            raise ValueError("Weight value must be bigger than 0")
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) != self._dimension:
