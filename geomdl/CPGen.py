@@ -304,10 +304,10 @@ class Grid(object):
 
         This method accepts the following keyword arguments:
 
-        * num_bumps (int): Number of bumps (i.e. hills) to be generated on the 2D grid. Default: 0
-        * all_positive (bool): Generate all bumps on the positive z direction. Default: False
-        * bump_height (float): z-value of the generated bumps on the grid. Default: 5.0
-        * smoothness (int): defines the boundaries of the hill base in terms of grid points. Default: 3
+        * ``num_bumps``: number of bumps (i.e. hills) to be generated on the 2D grid. *Default: 0*
+        * ``all_positive``: generate all bumps on the positive z direction. *Default: False*
+        * ``bump_height``: z-value of the generated bumps on the grid. *Default: 5.0*
+        * ``smoothness``: defines the boundaries of the hill base in terms of grid points. *Default: 3*
 
         """
         num_bumps = kwargs.get("num_bumps", 0)
