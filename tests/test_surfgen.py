@@ -118,7 +118,7 @@ def test_grid_save(grid):
 
 
 def test_bumps1(grid2):
-    grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_size=2)
+    grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=2)
     check_vals = grid2.grid()
 
     check = False
@@ -134,4 +134,4 @@ def test_bumps1(grid2):
 def test_bumps2(grid2):
     with pytest.raises(ValueError):
         # impossible to add 10 bumps with a smoothness of 5 on this specific grid
-        grid2.bumps(num_bumps=10, all_positive=False, bump_height=5, base_size=5)
+        grid2.bumps(num_bumps=10, all_positive=False, bump_height=5, base_extent=5)

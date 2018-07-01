@@ -30,6 +30,9 @@ class Grid(object):
         self._origin = [0.0, 0.0, 0.0]
         self._size_x = float(size_x)
         self._size_y = float(size_y)
+        # Grid size
+        self._size_u = 0
+        self._size_v = 0
         # Initialize a list to store generated grid points
         self._grid_points = []
         # Set a default tolerance
@@ -98,6 +101,10 @@ class Grid(object):
             self._grid_points.append(row)
             # Set x the value for the next column
             current_x = current_x + spacing_x
+
+        # Set class variables
+        self._size_u = num_u
+        self._size_v = num_v
 
     # Rotates the grid about the z-axis
     def rotate_z(self, angle=0.0):
@@ -307,14 +314,14 @@ class Grid(object):
         * ``num_bumps``: number of bumps (i.e. hills) to be generated on the 2D grid. *Default: 0*
         * ``all_positive``: generate all bumps on the positive z direction. *Default: False*
         * ``bump_height``: z-value of the generated bumps on the grid. *Default: 5.0*
-        * ``base_size``: size of the hill base in terms of grid points. *Default: 3*
+        * ``base_extent``: extension of the hill base from its center in terms of grid points. *Default: 3*
         * ``base_adjust``: moves hills to the center or outside the surface boundaries. *Default: 0*
 
         """
         num_bumps = kwargs.get("num_bumps", 0)
         all_positive = kwargs.get("all_positive", False)
         bump_height = kwargs.get("bump_height", 5.0)
-        base_size = kwargs.get("base_size", 3)
+        base_extent = kwargs.get("base_extent", 3)
         base_adjust = kwargs.get("base_adjust", 0)
         max_trials = kwargs.get("max_trials", 25)
 
@@ -342,11 +349,14 @@ class Grid(object):
         if not isinstance(all_positive, bool):
             raise ValueError("all_positive must be a boolean value!")
 
-        if base_size < 1:
+        if base_extent < 1:
             raise ValueError("Base size must be bigger than 1 grid point")
 
-        if abs(base_adjust) >= math.floor(base_size / 2):
-            raise ValueError("base_adjust cannot be bigger than and equal to base_size / 2")
+        if (2 * base_extent) > self._size_u or (2 * base_extent) > self._size_v:
+            raise ValueError("The area of the base must be less than the are of the grid")
+
+        if abs(base_adjust) >= math.floor(base_extent / 2):
+            raise ValueError("base_adjust cannot be bigger than and equal to base_extent / 2")
 
         # Initialize a list to store bumps
         bump_list = []
@@ -363,18 +373,19 @@ class Grid(object):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(0 + base_size + base_adjust, len_u - base_size - 1 - base_adjust)
-                v = random.randint(0 + base_size + base_adjust, len_v - base_size - 1 - base_adjust)
+                u = random.randint(0 + base_extent + base_adjust, len_u - base_extent - 1 - base_adjust)
+                v = random.randint(0 + base_extent + base_adjust, len_v - base_extent - 1 - base_adjust)
                 temp = [u, v]
-                if self._check_bump(bump_list, temp, base_size):
+                if self._check_bump(bump_list, temp, base_extent):
                     bump_list.append(temp)
                     trials = max_trials + 1  # set number of trials to a big value
                     break
                 else:
                     trials = trials + 1
             if trials == max_trials:
-                raise ValueError("Cannot generate %d bumps with a base size of %d on this grid. "
-                                 "You might need to generate a grid with more divisions." % (num_bumps, base_size))
+                raise ValueError("Cannot generate %d bumps with a base extent of %d on this grid. "
+                                 "You need to generate a larger grid than %dx%d."
+                                 % (num_bumps, base_extent, self._size_u, self._size_v))
 
         # Update the grid with the bumps
         for u, v in bump_list:
@@ -389,13 +400,13 @@ class Grid(object):
                 z_val = float(-1 * bump_height)
 
             # Update the grid points
-            for ur in range(-base_size+1, base_size):
-                for vr in range(-base_size+1, base_size):
+            for ur in range(-base_extent+1, base_extent):
+                for vr in range(-base_extent+1, base_extent):
                     denominator = 1 if ur == 0 and vr == 0 else (abs(ur) + abs(vr))
                     self._grid_points[u + ur][v + vr][2] = z_val / denominator
 
     # Checks the possibility of placing the bump at the specified location
-    def _check_bump(self, uv_list, to_be_checked_uv, base_size):
+    def _check_bump(self, uv_list, to_be_checked_uv, base_extent):
         # If input list is empty, return true
         if not uv_list:
             return True
@@ -405,8 +416,8 @@ class Grid(object):
             u = to_be_checked_uv[0]
             v = to_be_checked_uv[1]
             check_list = []
-            for ur in range(-base_size, base_size + 1):
-                for vr in range(-base_size, base_size + 1):
+            for ur in range(-base_extent, base_extent + 1):
+                for vr in range(-base_extent, base_extent + 1):
                     check_list.append([u + ur, v + vr])
             for check in check_list:
                 if abs(uv[0] - check[0]) < self._delta and abs(uv[1] - check[1]) < self._delta:
