@@ -1,8 +1,17 @@
-from .Abstract import Evaluator
+"""
+.. module:: evaluators
+    :platform: Unix, Windows
+    :synopsis: NURBS & B-Spline evaluation algorithms
+
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+
+"""
+
+from . import Abstract
 from . import helpers
 
 
-class CurveEvaluator(Evaluator):
+class CurveEvaluator(Abstract.Evaluator):
     """ Sequential B-Spline curve evaluation algorithms.
 
     This evaluator implements the following algorithms from The NURBS Book:
@@ -12,7 +21,7 @@ class CurveEvaluator(Evaluator):
     """
 
     def __init__(self):
-        super(Evaluator, self).__init__()
+        super(CurveEvaluator, self).__init__()
         self._name = "Curve Evaluator"
 
     def evaluate_single(self, **kwargs):
@@ -66,7 +75,7 @@ class CurveEvaluator(Evaluator):
         pass
 
 
-class SurfaceEvaluator(Evaluator):
+class SurfaceEvaluator(Abstract.Evaluator):
     """ Sequential B-Spline surface evaluation algorithms.
 
     This evaluator implements the following algorithms from The NURBS Book:
@@ -76,7 +85,7 @@ class SurfaceEvaluator(Evaluator):
     """
 
     def __init__(self):
-        super(Evaluator, self).__init__()
+        super(SurfaceEvaluator, self).__init__()
         self._name = "Surface Evaluator"
 
     def evaluate_single(self, **kwargs):
@@ -168,7 +177,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
     """
 
     def __init__(self):
-        super(CurveEvaluator, self).__init__()
+        super(NURBSCurveEvaluator, self).__init__()
         self._name = "NURBS Curve Evaluator"
 
     def evaluate_single(self, **kwargs):
@@ -215,7 +224,7 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """
 
     def __init__(self):
-        super(SurfaceEvaluator, self).__init__()
+        super(NURBSSurfaceEvaluator, self).__init__()
         self._name = "NURBS Surface Evaluator"
 
     def evaluate_single(self, **kwargs):
