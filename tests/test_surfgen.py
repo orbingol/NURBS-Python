@@ -150,12 +150,20 @@ def test_grid_save1(grid):
 def test_grid_save2():
     test_grid = CPGen.Grid(5, 7)
     with pytest.raises(RuntimeError):
+        # trying to save before generate()
         test_grid.save()
 
 
 def test_grid_save3(grid):
     with pytest.raises(TypeError):
+        # file name should be a string
         grid.save(5)
+
+
+def test_grid_save4(grid):
+    with pytest.warns(UserWarning):
+        # impossible file name
+        grid.save("")
 
 
 def test_bumps1(grid2):
