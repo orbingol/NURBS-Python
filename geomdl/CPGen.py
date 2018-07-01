@@ -373,8 +373,8 @@ class Grid(object):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(0 + base_extent + base_adjust, len_u - base_extent - 1 - base_adjust)
-                v = random.randint(0 + base_extent + base_adjust, len_v - base_extent - 1 - base_adjust)
+                u = random.randint(0 + base_extent - base_adjust, len_u - base_extent - 1 + base_adjust)
+                v = random.randint(0 + base_extent - base_adjust, len_v - base_extent - 1 + base_adjust)
                 temp = [u, v]
                 if self._check_bump(bump_list, temp, base_extent):
                     bump_list.append(temp)
