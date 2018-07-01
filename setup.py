@@ -16,13 +16,24 @@
 
     pip install setuptools
 
-    The "setuptools" package comes installed by default with the official Python.org distribution and in all "conda"
-    environments. On the other hand, it might require an update. You may update your "setuptools" package using
-    the following command:
+    "setuptools" is a collection of enhancements to the Python's "distutils" package. You may check its documentation
+    from the following link:
+
+    http://setuptools.readthedocs.io/en/latest/setuptools.html#command-reference
+
+    It also comes installed by default with the official Python.org distribution and in all "conda" environments.
+    On the other hand, it might require an update. You may update your "setuptools" package using the following command:
 
     pip install setuptools --upgrade
 
-    After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl".
+    or
+
+    conda update setuptools
+
+    depending on the package manager that you are using.
+
+    After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl" or
+    alternatively, you may use "conda": https://anaconda.org/orbingol/geomdl
 """
 
 from setuptools import setup
@@ -64,26 +75,31 @@ setup(
     name='geomdl',
     version=get_property('__version__', 'geomdl'),
     description='NURBS curve and surface evaluation library in pure python',
+    long_description=read('DESCRIPTION.rst'),
+    license='MIT',
     author='Onur Rauf Bingol',
     author_email='contact@onurbingol.net',
-    license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
+    keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
     extras_require={
         'visualization': ['matplotlib', 'plotly'],
     },
-    tests_require=["pytest"],
+    tests_require=["pytest>=3.0.0"],
     cmdclass={"test": PyTest},
-    long_description=read('DESCRIPTION.rst'),
-    keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Scientific/Engineering :: Visualization',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 3'
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7'
     ],
     project_urls={
         'Documentation': 'http://nurbs-python.readthedocs.io/',
