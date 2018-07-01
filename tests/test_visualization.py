@@ -274,6 +274,27 @@ def test_surf_fig_save(bspline_surface):
         os.remove(fname)
 
 
+# Test offsetting control points grid
+def test_surf_ctrlpts_offset(bspline_surface):
+    conf = VisMPL.VisConfig()
+    vis = VisMPL.VisSurface(config=conf)
+
+    # Set control points grid offset
+    vis.set_ctrlpts_offset(3.5)
+
+    fname = "test-surface.png"
+
+    bspline_surface.vis = vis
+    bspline_surface.render(filename=fname, plot=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
 # Test if plotting a multi-surface without a window is possible
 def test_surf_multi_fig_nowindow(bspline_surface):
     conf = VisMPL.VisConfig()
