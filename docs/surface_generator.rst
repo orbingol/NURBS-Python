@@ -19,14 +19,14 @@ The following example illustrates a sample usage of the B-Spline surface generat
     from geomdl import utilities
     from geomdl.visualization import VisPlotly
 
-    # Generate a control points grid
+    # Generate a plane with the dimensions 50x100
     surfgrid = CPGen.Grid(50, 100)
 
-    # Split the width into 5 equal pieces and the height into 10 equal pieces
-    surfgrid.generate(5, 10)
+    # Generate a grid of 25x30
+    surfgrid.generate(25, 30)
 
-    # Generate 4 bumps on the grid
-    surfgrid.bumps(num_bumps=6, all_positive=False, bump_height=45)
+    # Generate bumps on the grid
+    surfgrid.bumps(num_bumps=5, all_positive=True, bump_height=20, base_extent=4)
 
     # Create a BSpline surface instance
     surf = BSpline.Surface()
