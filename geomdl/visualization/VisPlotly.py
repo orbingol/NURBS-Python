@@ -231,7 +231,7 @@ class VisCurve3D(Abstract.VisAbstract):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         plotly.offline.plot(fig,
@@ -239,7 +239,7 @@ class VisCurve3D(Abstract.VisAbstract):
                             filename=self._config.figure_filename,
                             image=None if fig_display else self._config.figure_image_format,
                             image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=True if fig_display else False)
+                            auto_open=fig_display)
 
 
 class VisSurface(Abstract.VisAbstractSurf):
@@ -333,7 +333,7 @@ class VisSurface(Abstract.VisAbstractSurf):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         plotly.offline.plot(fig,
@@ -341,4 +341,4 @@ class VisSurface(Abstract.VisAbstractSurf):
                             filename=self._config.figure_filename,
                             image=None if fig_display else self._config.figure_image_format,
                             image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=True if fig_display else False)
+                            auto_open=fig_display)

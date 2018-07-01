@@ -137,7 +137,7 @@ class VisCurve2D(Abstract.VisAbstract):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
@@ -202,7 +202,7 @@ class VisCurve3D(Abstract.VisAbstract):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
@@ -267,7 +267,7 @@ class VisSurface(Abstract.VisAbstractSurf):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
@@ -332,7 +332,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
@@ -397,7 +397,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
@@ -462,7 +462,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', None)
+        fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
         if fig_display:
