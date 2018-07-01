@@ -384,7 +384,7 @@ class Grid(object):
                     trials = trials + 1
             if trials == max_trials:
                 raise ValueError("Cannot generate %d bumps with a base extent of %d on this grid. "
-                                 "You need to generate a larger grid than %dx%d."
+                                 "You need to generate a grid larger than %dx%d."
                                  % (num_bumps, base_extent, self._size_u, self._size_v))
 
         # Update the grid with the bumps
