@@ -5,6 +5,7 @@
 
     Tests geomdl.GPGen module. Requires "pytest" to run.
 """
+import os
 import pytest
 from geomdl import CPGen
 
@@ -114,3 +115,15 @@ def test_modify_weight3(gridw):
     with pytest.raises(ValueError):
         gridw.add_weight()
         gridw.modify_weight(-0.5)
+
+
+def test_grid_save(grid):
+    fname = "test_grid.txt"
+    grid.save(fname)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
