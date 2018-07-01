@@ -34,6 +34,36 @@ def gridw():
     return surfgrid
 
 
+def test_grid_generate1():
+    test_grid = CPGen.GridWeighted(7, 13)
+    with pytest.raises(ValueError):
+        test_grid.generate(-1, 5)
+
+
+def test_grid_generate2():
+    test_grid = CPGen.GridWeighted(7, 13)
+    with pytest.raises(ValueError):
+        test_grid.generate(5, -1)
+
+
+def test_grid_generate3():
+    test_grid = CPGen.GridWeighted(7, 13)
+    with pytest.warns(UserWarning):
+        test_grid.generate(3.5, 4)
+
+
+def test_grid_generate4():
+    test_grid = CPGen.GridWeighted(7, 13)
+    with pytest.warns(UserWarning):
+        test_grid.generate(3, 4.2)
+
+
+def test_grid_generate5(gridw):
+    gridw.add_weight()
+    with pytest.raises(RuntimeError):
+        gridw.generate(3, 4)
+
+
 def test_grid(grid):
     result = [[[0.0, 0.0, 0.0], [0.0, 3.25, 0.0], [0.0, 6.5, 0.0], [0.0, 9.75, 0.0], [0.0, 13.0, 0.0]],
               [[2.3333333333333335, 0.0, 0.0], [2.3333333333333335, 3.25, 0.0],
@@ -63,10 +93,10 @@ def test_add_weight1(gridw):
 
 
 def test_add_weight2(gridw):
-    with pytest.warns(UserWarning):
+    with pytest.raises(RuntimeError):
         # add weights
         gridw.add_weight()
-        # second call should issue a UserWarning
+        # second call should issue a RuntimeError
         gridw.add_weight()
 
 
@@ -94,7 +124,7 @@ def test_modify_weight1(gridw):
 
 
 def test_modify_weight2(gridw):
-    with pytest.warns(UserWarning):
+    with pytest.raises(RuntimeError):
         # calling modify weights should issue a UserWarning
         gridw.modify_weight(0.5)
 
@@ -105,7 +135,7 @@ def test_modify_weight3(gridw):
         gridw.modify_weight(-0.5)
 
 
-def test_grid_save(grid):
+def test_grid_save1(grid):
     fname = "test_grid.txt"
     grid.save(fname)
 
@@ -115,6 +145,17 @@ def test_grid_save(grid):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+def test_grid_save2():
+    test_grid = CPGen.Grid(5, 7)
+    with pytest.raises(RuntimeError):
+        test_grid.save()
+
+
+def test_grid_save3(grid):
+    with pytest.raises(TypeError):
+        grid.save(5)
 
 
 def test_bumps1(grid2):
@@ -134,4 +175,45 @@ def test_bumps1(grid2):
 def test_bumps2(grid2):
     with pytest.raises(ValueError):
         # impossible to add 10 bumps with a smoothness of 5 on this specific grid
-        grid2.bumps(num_bumps=10, all_positive=False, bump_height=5, base_extent=5)
+        grid2.bumps(num_bumps=10, all_positive=True, bump_height=5, base_extent=5)
+
+
+def test_bumps3(gridw):
+    gridw.add_weight()
+    with pytest.raises(RuntimeError):
+        # bumps after adding weights
+        gridw.bumps(num_bumps=2)
+
+
+def test_bumps4():
+    test_grid = CPGen.Grid(5, 7)
+    with pytest.raises(RuntimeError):
+        # bumps before calling generate()
+        test_grid.bumps(num_bumps=3)
+
+
+def test_bumps5(grid2):
+    with pytest.warns(UserWarning):
+        # non-integer num_bumpds
+        grid2.bumps(num_bumps=1.1, all_positive=False, bump_height=5, base_extent=2)
+
+
+def test_bumps6(grid2):
+    with pytest.raises(ValueError):
+        # negative bump_height
+        grid2.bumps(num_bumps=1, all_positive=False, bump_height=-5, base_extent=2)
+
+
+def test_bumps7(grid2):
+    with pytest.raises(ValueError):
+        grid2.bumps(num_bumps=1, all_positive=15, bump_height=5, base_extent=2)
+
+
+def test_bumps8(grid2):
+    with pytest.raises(ValueError):
+        grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=5)
+
+
+def test_bumps9(grid2):
+    with pytest.raises(ValueError):
+        grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=2, base_adjust=2)
