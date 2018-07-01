@@ -61,8 +61,7 @@ class Grid(object):
 
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Some error checking and fixing
         if num_u < 1:
@@ -73,11 +72,13 @@ class Grid(object):
 
         if not isinstance(num_u, int):
             num_u = int(num_u)
-            print("Number of divisions must be an integer value. %d will be used as the value of num_u" % num_u)
+            warnings.warn("Number of divisions must be an integer value. %d will be used as the value of num_u" % num_u,
+                          UserWarning)
 
         if not isinstance(num_v, int):
             num_v = int(num_v)
-            print("Number of divisions must be an integer value. %d will be used as the value of num_v" % num_v)
+            warnings.warn("Number of divisions must be an integer value. %d will be used as the value of num_v" % num_v,
+                          UserWarning)
 
         # Set the number of divisions for each direction
         spacing_x = self._size_x / num_u
@@ -116,12 +117,11 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         # Get current origin / starting point (we need a copy of the self._origin)
         current_origin = list(self._origin)
@@ -151,12 +151,11 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         # Get current origin / starting point (we need a copy of the self._origin)
         current_origin = list(self._origin)
@@ -186,12 +185,11 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         # Get current origin / starting point (we need a copy of the self._origin)
         current_origin = list(self._origin)
@@ -223,8 +221,7 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Check if the grid points are generated
         if not self._grid_points:
@@ -256,10 +253,10 @@ class Grid(object):
         """
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         if not isinstance(filename, str):
-            raise ValueError("File name must be a string")
+            raise TypeError("File name must be a string")
 
         # Initialize the return value
         ret_check = True
@@ -294,7 +291,7 @@ class Grid(object):
         return ret_check
 
     # Generates hills (a.k.a. bumps) on the grid
-    def bumps(self, **kwargs):
+    def bumps(self, num_bumps, **kwargs):
         """ Generates arbitrary bumps (i.e. hills) on the 2D grid.
         
         This method generates hills on the grid defined by the **num_bumps** argument. The direction of the generated
@@ -311,14 +308,14 @@ class Grid(object):
 
         This method accepts the following keyword arguments:
 
-        * ``num_bumps``: number of bumps (i.e. hills) to be generated on the 2D grid. *Default: 0*
         * ``all_positive``: generate all bumps on the positive z direction. *Default: False*
         * ``bump_height``: z-value of the generated bumps on the grid. *Default: 5.0*
         * ``base_extent``: extension of the hill base from its center in terms of grid points. *Default: 3*
         * ``base_adjust``: moves hills to the center or outside the surface boundaries. *Default: 0*
 
+        :param num_bumps: number of bumps (i.e. hills) to be generated on the 2D grid
+        :type num_bumps: int
         """
-        num_bumps = kwargs.get("num_bumps", 0)
         all_positive = kwargs.get("all_positive", False)
         bump_height = kwargs.get("bump_height", 5.0)
         base_extent = kwargs.get("base_extent", 3)
@@ -327,12 +324,11 @@ class Grid(object):
 
         # Check if we can update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
-            return
+            raise RuntimeError("Grid cannot be updated due to an irreversible operation (e.g. adding weights)")
 
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         # Some error checking
         if num_bumps <= 0:
@@ -341,7 +337,8 @@ class Grid(object):
 
         if not isinstance(num_bumps, int):
             num_bumps = int(num_bumps)
-            print("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps)
+            warnings.warn("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps,
+                          UserWarning)
 
         if bump_height < 0:
             raise ValueError("Height must be a positive number")
@@ -462,8 +459,7 @@ class GridWeighted(Grid):
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) == self._dimension:
-            warnings.warn("Please use modify_weight() to change the weight value", UserWarning)
-            return
+            raise RuntimeError("Please use modify_weight() to change the weight value")
 
         # Start adding weights
         weighted_gp = []
@@ -493,8 +489,7 @@ class GridWeighted(Grid):
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) != self._dimension:
-            warnings.warn("Need to add weights first", UserWarning)
-            return
+            raise RuntimeError("Need to add weights first")
 
         # Start modifying weights
         weighted_gp = []
