@@ -285,7 +285,8 @@ class Grid(object):
 
         except IOError:
             # Show a warning on failure to open file
-            warnings.warn("File " + str(filename) + " cannot be opened for saving")
+            warnings.warn("File " + ("(empty)" if not filename else str(filename)) + " cannot be opened for saving",
+                          UserWarning)
             ret_check = False
 
         return ret_check
