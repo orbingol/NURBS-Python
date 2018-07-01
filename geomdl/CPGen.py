@@ -341,6 +341,9 @@ class Grid(object):
         if not isinstance(all_positive, bool):
             raise ValueError("all_positive must be a boolean value!")
 
+        if smoothness < 1:
+            raise ValueError("Smoothness value must be bigger than 1")
+
         # Initialize a list to store bumps
         bump_list = []
 
@@ -356,8 +359,8 @@ class Grid(object):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(1 + smoothness, len_u - smoothness - 2)
-                v = random.randint(1 + smoothness, len_v - smoothness - 2)
+                u = random.randint(0 + smoothness, len_u - smoothness)
+                v = random.randint(0 + smoothness, len_v - smoothness)
                 temp = [u, v]
                 if self._check_bump(bump_list, temp, smoothness):
                     bump_list.append(temp)
@@ -382,8 +385,8 @@ class Grid(object):
                 z_val = float(-1 * bump_height)
 
             # Update the grid points
-            for ur in range(-smoothness, smoothness+1):
-                for vr in range(-smoothness, smoothness+1):
+            for ur in range(-smoothness+1, smoothness):
+                for vr in range(-smoothness+1, smoothness):
                     self._grid_points[u + ur][v + vr][2] = z_val / (abs(ur) + abs(vr) + 1)
 
     # Checks the possibility of placing the bump at the specified location
@@ -397,8 +400,8 @@ class Grid(object):
             u = to_be_checked_uv[0]
             v = to_be_checked_uv[1]
             check_list = []
-            for ur in range(-smoothness-1, smoothness+2):
-                for vr in range(-smoothness-1, smoothness+2):
+            for ur in range(-smoothness, smoothness+1):
+                for vr in range(-smoothness, smoothness+1):
                     check_list.append([u + ur, v + vr])
             for check in check_list:
                 if abs(uv[0] - check[0]) < self._delta and abs(uv[1] - check[1]) < self._delta:
