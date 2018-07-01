@@ -288,30 +288,36 @@ class Grid(object):
         return ret_check
 
     # Generates hills (a.k.a. bumps) on the grid
-    def bumps(self, num_bumps=0, all_positive=False, bump_height=3):
-        """ Generates random bumps (i.e. hills) on the 2D grid.
+    def bumps(self, **kwargs):
+        """ Generates arbitrary bumps (i.e. hills) on the 2D grid.
         
-        This method generates hills on the grid defined by the **num_bumps** parameter. The direction of the generated
-        hills are chosen randomly by default, but this behavior can be controlled by **all_positive** parameter.
-        It is also possible to control the z-value using **bump_height** parameter.
+        This method generates hills on the grid defined by the **num_bumps** argument. The direction of the generated
+        hills are chosen randomly by default, but this behavior can be controlled by **all_positive** argument.
+        It is also possible to control the z-value using **bump_height** argument.
          
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
-        uses a trial-and-error method to determine whether the bumps can be generated or not. For instance::
+        uses a brute-force algorithm to determine whether the bumps can be generated or not. For instance::
         
             testgrid = Grid(5, 10) # generates a 5x10 rectangle
             testgrid.generate(2, 2) # splits the rectangle into 4 pieces
             testgrid.bumps(100) # impossible, it will return an error message
             testgrid.bumps(1) # You will get a bump at the center of the generated grid
-                
-        :param num_bumps: Number of bumps (i.e. hills) to be generated on the 2D grid
-        :type num_bumps: int
-        :param all_positive: Generate all bumps on the positive z direction
-        :type all_positive: bool
-        :param bump_height: z-value of the generated bumps on the grid
-        :type bump_height: float
-        :return: None
+
+        This method accepts the following keyword arguments:
+
+        * num_bumps (int): Number of bumps (i.e. hills) to be generated on the 2D grid. Default: 0
+        * all_positive (bool): Generate all bumps on the positive z direction. Default: False
+        * bump_height (float): z-value of the generated bumps on the grid. Default: 5.0
+        * smoothness (int): defines the boundaries of the hill base in terms of grid points. Default: 3
+
         """
-        # Check if we could update the grid
+        num_bumps = kwargs.get("num_bumps", 0)
+        all_positive = kwargs.get("all_positive", False)
+        bump_height = kwargs.get("bump_height", 5.0)
+        smoothness = kwargs.get("smoothness", 3)
+        max_trials = kwargs.get("max_trials", 25)
+
+        # Check if we can update the grid
         if self._no_change:
             warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
             return
@@ -343,29 +349,25 @@ class Grid(object):
         len_v = len(self._grid_points[0])
 
         # Set a max number of trials for the point finding algorithm
-        max_trials = 25
+        max_trials = int(max_trials)
 
         # Try to generate bumps
-        for _ in range(1, num_bumps):
+        for _ in range(0, num_bumps):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(1, len_u - 2)
-                v = random.randint(1, len_v - 2)
+                u = random.randint(1 + smoothness, len_u - smoothness - 2)
+                v = random.randint(1 + smoothness, len_v - smoothness - 2)
                 temp = [u, v]
-                if not bump_list:
+                if self._check_bump(bump_list, temp, smoothness):
                     bump_list.append(temp)
+                    trials = max_trials + 1  # set number of trials to a big value
+                    break
                 else:
-                    if self._check_bump(bump_list, temp):
-                        bump_list.append(temp)
-                        trials = max_trials + 1  # set number of trials to a big value
-                        break
-                    else:
-                        trials = trials + 1
+                    trials = trials + 1
             if trials == max_trials:
-                print("Cannot generate %d bumps on this grid." % num_bumps)
-                print("You might need to generate a grid with more divisions.")
-                sys.exit(0)
+                raise ValueError("Cannot generate %d bumps with a smoothness of %d on this grid. "
+                                 "You might need to generate a grid with more divisions." % (num_bumps, smoothness))
 
         # Update the grid with the bumps
         for u, v in bump_list:
@@ -380,18 +382,12 @@ class Grid(object):
                 z_val = float(-1 * bump_height)
 
             # Update the grid points
-            self._grid_points[u - 1][v - 1][2] = z_val / 2.0
-            self._grid_points[u - 1][v][2] = z_val / 2.0
-            self._grid_points[u - 1][v + 1][2] = z_val / 2.0
-            self._grid_points[u][v - 1][2] = z_val / 2.0
-            self._grid_points[u][v][2] = z_val
-            self._grid_points[u][v + 1][2] = z_val / 2.0
-            self._grid_points[u + 1][v - 1][2] = z_val / 2.0
-            self._grid_points[u + 1][v][2] = z_val / 2.0
-            self._grid_points[u + 1][v + 1][2] = z_val / 2.0
+            for ur in range(-smoothness, smoothness+1):
+                for vr in range(-smoothness, smoothness+1):
+                    self._grid_points[u + ur][v + vr][2] = z_val / (abs(ur) + abs(vr) + 1)
 
     # Checks the possibility of placing the bump at the specified location
-    def _check_bump(self, uv_list=(), to_be_checked_uv=(0, 0)):
+    def _check_bump(self, uv_list, to_be_checked_uv, smoothness):
         # If input list is empty, return true
         if not uv_list:
             return True
@@ -400,17 +396,10 @@ class Grid(object):
         for uv in uv_list:
             u = to_be_checked_uv[0]
             v = to_be_checked_uv[1]
-            check_list = [
-                [u - 1, v - 1],
-                [u - 1, v],
-                [u - 1, v + 1],
-                [u, v - 1],
-                [u, v],
-                [u, v + 1],
-                [u + 1, v - 1],
-                [u + 1, v],
-                [u + 1, v + 1],
-            ]
+            check_list = []
+            for ur in range(-smoothness-1, smoothness+2):
+                for vr in range(-smoothness-1, smoothness+2):
+                    check_list.append([u + ur, v + vr])
             for check in check_list:
                 if abs(uv[0] - check[0]) < self._delta and abs(uv[1] - check[1]) < self._delta:
                     return False
@@ -472,7 +461,7 @@ class GridWeighted(Grid):
         self._no_change = True
         self._grid_points = weighted_gp
 
-    def modify_weight(self, w=-1.0):
+    def modify_weight(self, w=1.0):
         """ Modifies weight value of the grid points.
 
         :param w: weight value to be added
