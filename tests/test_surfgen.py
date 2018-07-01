@@ -12,9 +12,17 @@ from geomdl import CPGen
 
 @pytest.fixture
 def grid():
-    """ Generates a control points grid """
+    """ Generates a 3x4 control points grid """
     surfgrid = CPGen.Grid(7, 13)
     surfgrid.generate(3, 4)
+    return surfgrid
+
+
+@pytest.fixture
+def grid2():
+    """ Generates a 6x6 control points grid """
+    surfgrid = CPGen.Grid(7, 13)
+    surfgrid.generate(6, 6)
     return surfgrid
 
 
@@ -35,26 +43,6 @@ def test_grid(grid):
               [[7.0, 0.0, 0.0], [7.0, 3.25, 0.0], [7.0, 6.5, 0.0], [7.0, 9.75, 0.0], [7.0, 13.0, 0.0]]]
 
     assert grid.grid() == result
-
-
-def test_bumps1(grid):
-    grid.bumps(num_bumps=1, all_positive=False, bump_height=5, smoothness=2)
-    check_vals = grid.grid()
-
-    check = False
-    for rows in check_vals:
-        for val in rows:
-            # should consider negative values too
-            if abs(val[2]) == 5.0:
-                check = True
-
-    assert check
-
-
-def test_bumps2(grid):
-    with pytest.raises(ValueError):
-        # impossible to add 10 bumps with a smoothness of 5 on this specific grid
-        grid.bumps(num_bumps=10, all_positive=False, bump_height=5, smoothness=5)
 
 
 def test_add_weight1(gridw):
@@ -127,3 +115,23 @@ def test_grid_save(grid):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+def test_bumps1(grid2):
+    grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_size=2)
+    check_vals = grid2.grid()
+
+    check = False
+    for rows in check_vals:
+        for val in rows:
+            # should consider negative values too
+            if abs(val[2]) == 5.0:
+                check = True
+
+    assert check
+
+
+def test_bumps2(grid2):
+    with pytest.raises(ValueError):
+        # impossible to add 10 bumps with a smoothness of 5 on this specific grid
+        grid2.bumps(num_bumps=10, all_positive=False, bump_height=5, base_size=5)
