@@ -59,7 +59,7 @@ class Grid(object):
 
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Some error checking and fixing
@@ -110,7 +110,7 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Check if the grid points are generated
@@ -145,7 +145,7 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Check if the grid points are generated
@@ -180,7 +180,7 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Check if the grid points are generated
@@ -217,7 +217,7 @@ class Grid(object):
         """
         # Check if we could update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Check if the grid points are generated
@@ -319,7 +319,7 @@ class Grid(object):
 
         # Check if we can update the grid
         if self._no_change:
-            warnings.warn("Grid cannot be updated due to an irreversible operation (such as adding weights)")
+            warnings.warn("Grid cannot be updated due to an irreversible operation (e.g. adding weights)", UserWarning)
             return
 
         # Check if the grid points are generated
@@ -328,7 +328,7 @@ class Grid(object):
 
         # Some error checking
         if num_bumps <= 0:
-            print("No bumps are generated!")
+            warnings.warn("No bumps were generated!", UserWarning)
             return
 
         if not isinstance(num_bumps, int):
@@ -446,7 +446,7 @@ class GridWeighted(Grid):
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) == self._dimension:
-            warnings.warn("Weight has already been added. Please use modify_weight() to change weight value")
+            warnings.warn("Please use modify_weight() to change the weight value", UserWarning)
             return
 
         # Start adding weights
@@ -477,7 +477,7 @@ class GridWeighted(Grid):
 
         # Check if we have already added weights
         if len(self._grid_points[0][0]) != self._dimension:
-            warnings.warn("Need to add weights first.")
+            warnings.warn("Need to add weights first", UserWarning)
             return
 
         # Start modifying weights
