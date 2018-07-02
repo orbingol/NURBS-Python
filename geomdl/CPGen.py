@@ -205,7 +205,7 @@ class Grid(object):
         """
         # Check if the grid points are generated
         if not self._grid_points:
-            raise ValueError("Grid must be generated before calling this function")
+            raise RuntimeError("Grid must be generated before calling this function")
 
         # Check input position validity
         if not isinstance(pos, (list, tuple)):
