@@ -58,6 +58,16 @@ def test_grid_generate4():
         test_grid.generate(3, 4.2)
 
 
+def test_grid_generate5(grid):
+    # testing regeneration of the grid
+    grid.generate(13, 17)
+
+    assert grid._size_u == 13
+    assert grid._size_v == 17
+    assert len(grid.grid) == 14
+    assert len(grid.grid[0]) == 18
+
+
 def test_grid(grid):
     result = [[[0.0, 0.0, 0.0], [0.0, 3.25, 0.0], [0.0, 6.5, 0.0], [0.0, 9.75, 0.0], [0.0, 13.0, 0.0]],
               [[2.3333333333333335, 0.0, 0.0], [2.3333333333333335, 3.25, 0.0],
