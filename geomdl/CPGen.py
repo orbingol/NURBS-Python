@@ -323,7 +323,8 @@ class Grid(object):
         if base_extent < 1:
             raise ValueError("Base size must be bigger than 1 grid point")
 
-        if (2 * base_extent) > self._size_u or (2 * base_extent) > self._size_v:
+        if (2 * (base_extent - base_adjust)) > self._size_u \
+                or (2 * (base_extent - base_adjust)) > self._size_v:
             raise ValueError("The area of the base must be less than the area of the grid")
 
         if abs(base_adjust) >= math.floor(base_extent / 2):
