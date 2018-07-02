@@ -13,7 +13,6 @@ The following example illustrates a sample usage of the B-Spline surface generat
 
 .. code-block:: python
 
-    # Example script: grid/ex_surfgen.py
     from geomdl import BSpline
     from geomdl import CPGen
     from geomdl import utilities
@@ -58,3 +57,10 @@ The following example illustrates a sample usage of the B-Spline surface generat
     # Plot the split surface
     split_surf.render()
 
+:py:meth:`.CPGen.Grid.bumps()` method takes the following keyword arguments:
+
+* ``num_bumps``: Number of hills to be generated
+* ``all_positive``: The hills (bumps) can be in *-z* or *+z* directions. If this argument is ``False``, then the direction is randomly selected. If this argument is ``True``, then all the hills are generated in *+z* direction.
+* ``bump_height``: This argument defines the peak height of the generated hills
+* ``base_extent``: Due to the structure of the grid, the hill base can be defined as a square with the edge length of *a*. ``base_extent`` is defined by the value of *a/2*.
+* ``base_adjust``: This argument simply defines the padding of the area where the hills are generated. It accepts positive and negative values. A negative value means a padding to the inside of the grid and a positive value means padding to the outside of the grid.
