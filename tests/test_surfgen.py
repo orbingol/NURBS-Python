@@ -343,7 +343,7 @@ def test_grid_rotate_x1(grid):
 def test_grid_rotate_x2():
     test_grid = CPGen.Grid(7, 13)
     with pytest.raises(RuntimeError):
-        test_grid.translate(15)
+        test_grid.rotate_x(15)
 
 
 def test_grid_rotate_y1(grid):
