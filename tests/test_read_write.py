@@ -94,6 +94,20 @@ def test_bspline_curve_loadsave(bspline_curve3d):
     assert bspline_curve3d.dimension == curve_load.dimension
 
 
+def test_bspline_curve_save_error(bspline_curve3d):
+    fname = ""
+
+    with pytest.raises(IOError):
+        bspline_curve3d.save(fname)
+
+
+def test_bspline_curve_load_error(bspline_curve3d):
+    fname = ""
+
+    with pytest.raises(IOError):
+        bspline_curve3d.load(fname)
+
+
 # Tests pickled load-save operations on surfaces
 def test_bspline_surface_loadsave(bspline_surface):
     fname = FILE_NAME + ".pickle"
