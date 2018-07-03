@@ -44,7 +44,7 @@ The following example illustrates the usage of :code:`compatibility` module:
     t_ctrlptsw = compat.combine_ctrlpts_weights(p_ctrlpts, p_weights)
 
     # Since NURBS-Python uses v-row order, we need to convert the exported ones
-    n_ctrlptsw = compat.change_ctrlpts_row_order(t_ctrlptsw, p_size_u, p_size_v)
+    n_ctrlptsw = compat.flip_ctrlpts_u(t_ctrlptsw, p_size_u, p_size_v)
 
     # Since we have no information on knot vectors, let's auto-generate them
     n_knotvector_u = utils.generate_knot_vector(p_degree_u, p_size_u)

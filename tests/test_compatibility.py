@@ -60,7 +60,7 @@ def test_change_ctrlpts_row_order():
               [1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8],
               [2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]]
 
-    check = compatibility.change_ctrlpts_row_order(ctrlpts, size_u, size_v)
+    check = compatibility.flip_ctrlpts_u(ctrlpts, size_u, size_v)
 
     assert check == result
 

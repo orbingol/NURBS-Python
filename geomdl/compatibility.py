@@ -8,14 +8,17 @@
 """
 
 
-def change_ctrlpts_row_order(ctrlpts, size_u, size_v):
-    """ Converts a u-row order 1-D control points list to a v-row order one.
+def flip_ctrlpts_u(ctrlpts, size_u, size_v):
+    """ Flips a list of 1-dimensional control points in u-row order to v-row order.
+
+    **u-row order**: each row corresponds to a list of u values (in 2-dimensions, an array of [v][u])
+    **v-row order**: each row corresponds to a list of v values (in 2-dimensions, an array of [u][v])
 
     :param ctrlpts: control points in u-row order
     :type ctrlpts: list, tuple
-    :param size_u: size in U-direction
+    :param size_u: size in u-direction
     :type size_u: int
-    :param size_v: size in V-direction
+    :param size_v: size in v-direction
     :type size_v: int
     :return: control points in v-row order
     :rtype: list
@@ -30,15 +33,18 @@ def change_ctrlpts_row_order(ctrlpts, size_u, size_v):
 
 
 def flip_ctrlpts(ctrlpts, size_u, size_v):
-    """ Flips a list of surface 1-D control points in v-row order.
+    """ Flips a list of 1-dimensional control points in v-row order to u-row order.
 
-    :param ctrlpts: control points
+    **u-row order**: each row corresponds to a list of u values (in 2-dimensions, an array of [v][u])
+    **v-row order**: each row corresponds to a list of v values (in 2-dimensions, an array of [u][v])
+
+    :param ctrlpts: control points in v-row order
     :type ctrlpts: list, tuple
-    :param size_u: size in U-direction (row length)
+    :param size_u: size in u-direction (row length)
     :type size_u: int
-    :param size_v: size in V-direction (column length)
+    :param size_v: size in v-direction (column length)
     :type size_v: int
-    :return: flipped control points
+    :return: control points in u-row order
     :rtype: list
     """
     ctrlpts2d = []
