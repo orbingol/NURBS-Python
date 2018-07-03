@@ -7,6 +7,7 @@
 
 """
 
+from . import copy
 from . import Abstract
 from . import helpers
 from . import utilities
@@ -19,6 +20,7 @@ class CurveEvaluator(Abstract.Evaluator):
 
     * Algorithm A3.1: CurvePoint
     * Algorithm A3.2: CurveDerivsAlg1
+    * Algorithm A5.1: CurveKnotIns
 
     """
 
@@ -100,7 +102,60 @@ class CurveEvaluator(Abstract.Evaluator):
         pass
 
     def insert_knot(self, **kwargs):
-        pass
+        knot = kwargs.get('knot')
+        r = kwargs.get('r')  # number of knot insertions
+        s = kwargs.get('s')  # multiplicity
+        degree = kwargs.get('degree')
+        knot_vector = kwargs.get('knotvector')
+        control_points = kwargs.get('ctrlpts')
+
+        # Algorithm A5.1
+        k = helpers.find_span(knot_vector, len(control_points), knot)
+        mp = len(knot_vector)
+        np = len(control_points)
+        nq = np + r
+
+        # Initialize new knot vector array
+        UQ = [None for _ in range(mp + r)]
+        # Initialize new control points array (control points may be weighted or not)
+        Q = [None for _ in range(nq)]
+        # Initialize a local array of length p + 1
+        R = [None for _ in range(degree + 1)]
+
+        # Load new knot vector
+        for i in range(0, k + 1):
+            UQ[i] = knot_vector[i]
+        for i in range(1, r + 1):
+            UQ[k + i] = knot
+        for i in range(k + 1, mp):
+            UQ[i + r] = knot_vector[i]
+
+        # Save unaltered control points
+        for i in range(0, k - degree + 1):
+            Q[i] = control_points[i]
+        for i in range(k - s, np):
+            Q[i + r] = control_points[i]
+
+        # The algorithm uses R array to update control points
+        for i in range(0, degree - s + 1):
+            R[i] = copy.deepcopy(control_points[k - degree + i])
+
+        # Insert the knot r times
+        for j in range(1, r + 1):
+            L = k - degree + j
+            for i in range(0, degree - j - s + 1):
+                alpha = (knot - knot_vector[L + i]) / (knot_vector[i + k + 1] - knot_vector[L + i])
+                R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
+            Q[L] = copy.deepcopy(R[0])
+            Q[k + r - j - s] = copy.deepcopy(R[degree - j - s])
+
+        # Load remaining control points
+        L = k - degree + r
+        for i in range(L + 1, k - s):
+            Q[i] = copy.deepcopy(R[i - L])
+
+        # Return updated knot vector and control points
+        return UQ, Q
 
 
 class CurveEvaluator2(CurveEvaluator):
@@ -111,6 +166,7 @@ class CurveEvaluator2(CurveEvaluator):
     * Algorithm A3.1: CurvePoint
     * Algorithm A3.3: CurveDerivCpts
     * Algorithm A3.4: CurveDerivsAlg2
+    * Algorithm A5.1: CurveKnotIns
 
     """
 
@@ -193,8 +249,9 @@ class NURBSCurveEvaluator(CurveEvaluator):
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
-    * Algorithm A4.1: CurvePoint
+    * Algorithm A3.1: CurvePoint
     * Algorithm A4.2: RatCurveDerivs
+    * Algorithm A5.1: CurveKnotIns
 
     """
 

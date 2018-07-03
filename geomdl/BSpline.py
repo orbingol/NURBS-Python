@@ -434,61 +434,24 @@ class Curve(Abstract.Curve):
         self._check_variables()
         # Check u parameters are correct
         utilities.check_uv(u)
+
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of insertions (r) must be a positive integer value')
 
-        s = helpers.find_multiplicity(u, self._knot_vector)
+        s = helpers.find_multiplicity(u, self.knotvector)
 
         # Check if it is possible add that many number of knots
         if check_r and r > self._degree - s:
-            warnings.warn("Cannot insert " + str(r) + " number of knots")
-            return
+            raise ValueError("Cannot insert " + str(r) + " number of knots")
 
-        # Algorithm A5.1
-        k = helpers.find_span(self.knotvector, len(self._control_points), u)
-        mp = len(self._knot_vector)
-        np = len(self._control_points)
-        nq = np + r
-
-        # Initialize new knot vector array
-        UQ = [None for _ in range(mp + r)]
-        # Initialize new control points array (control points can be weighted or not)
-        Q = [None for _ in range(nq)]
-        # Initialize a local array of length p + 1
-        R = [None for _ in range(self._degree + 1)]
-
-        # Load new knot vector
-        for i in range(0, k + 1):
-            UQ[i] = self._knot_vector[i]
-        for i in range(1, r + 1):
-            UQ[k + i] = u
-        for i in range(k + 1, mp):
-            UQ[i + r] = self._knot_vector[i]
-
-        # Save unaltered control points
-        for i in range(0, k - self._degree + 1):
-            Q[i] = self._control_points[i]
-        for i in range(k - s, np):
-            Q[i + r] = self._control_points[i]
-
-        # The algorithm uses R array to update control points
-        for i in range(0, self._degree - s + 1):
-            R[i] = copy.deepcopy(self._control_points[k - self._degree + i])
-
-        # Insert the knot r times
-        for j in range(1, r + 1):
-            L = k - self._degree + j
-            for i in range(0, self._degree - j - s + 1):
-                alpha = (u - self._knot_vector[L + i]) / (self._knot_vector[i + k + 1] - self._knot_vector[L + i])
-                R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
-            Q[L] = copy.deepcopy(R[0])
-            Q[k + r - j - s] = copy.deepcopy(R[self._degree - j - s])
-
-        # Load remaining control points
-        L = k - self._degree + r
-        for i in range(L + 1, k - s):
-            Q[i] = copy.deepcopy(R[i - L])
+        UQ, Q = self._evaluator.insert_knot(knot=u,
+                                            r=r,
+                                            s=s,
+                                            degree=self.degree,
+                                            knotvector=self.knotvector,
+                                            ctrlpts=self._control_points,
+                                            dimension=self._dimension)
 
         # Update class variables
         self._knot_vector = UQ
