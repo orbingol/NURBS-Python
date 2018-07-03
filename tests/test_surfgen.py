@@ -194,7 +194,7 @@ def test_grid_save3(grid):
 
 
 def test_grid_save4(grid):
-    with pytest.warns(UserWarning):
+    with pytest.raises(IOError):
         # impossible file name
         grid.save("")
 

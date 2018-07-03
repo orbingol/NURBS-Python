@@ -333,8 +333,11 @@ def _read_ctrltps2d_file(file_in):
                     size_v += 1
                 ctrlpts.append(ctrlpts_v)
                 size_u += 1
-    except IOError:
-        raise ValueError("File " + str(file_in) + " cannot be opened for reading")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
     return ctrlpts, size_u, size_v
 
@@ -355,5 +358,8 @@ def _save_ctrlpts2d_file(ctrlpts2d, size_u, size_v, file_out):
                     else:
                         line += "\n"
                 fp.write(line)
-    except IOError:
-        raise ValueError("File " + str(file_out) + " cannot be opened for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise

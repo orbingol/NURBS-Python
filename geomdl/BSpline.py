@@ -1754,9 +1754,11 @@ def save_pickle(data_dict, file_name):
         with open(file_name, 'wb') as fp:
             # Pickle the data dictionary
             pickle.dump(data_dict, fp)
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+    except IOError as e:
+        print("An error occurred. {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def read_pickle(file_name):
@@ -1775,6 +1777,8 @@ def read_pickle(file_name):
             # Read and return the pickled file
             impdata = pickle.load(fp)
             return impdata
-    except IOError:
-        # Raise an exception on failure to open file
-        raise IOError("File " + str(file_name) + " cannot be opened for reading.")
+    except IOError as e:
+        print("An error occurred. {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise

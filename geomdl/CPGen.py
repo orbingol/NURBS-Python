@@ -264,9 +264,11 @@ class Grid(object):
                             line += ";"
                     line += "\n"
                     fp.write(line)
-        except IOError:
-            warnings.warn("File " + ("(empty)" if not filename else str(filename)) + " cannot be opened for saving",
-                          UserWarning)
+        except IOError as e:
+            print("An error occurred: {}".format(e.args[-1]))
+            raise e
+        except Exception:
+            raise
 
     # Generates hills (a.k.a. bumps) on the grid
     def bumps(self, num_bumps, **kwargs):

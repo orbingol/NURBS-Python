@@ -73,9 +73,11 @@ def import_txt(file_name, two_dimensional=False):
 
                     # Return control points
                     return ctrlpts
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for reading")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def export_txt(obj, file_name, two_dimensional=False):
@@ -123,10 +125,11 @@ def export_txt(obj, file_name, two_dimensional=False):
                     # Fill coordinates
                     line = ",".join(str(c) for c in pt) + "\n"
                     fp.write(line)
-
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def export_csv(obj, file_name, point_type='evalpts'):
@@ -170,11 +173,11 @@ def export_csv(obj, file_name, point_type='evalpts'):
                 line = ", ".join(str(c) for c in pt) + "\n"
                 # Write line to file
                 fp.write(line)
-
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
-
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 def export_vtk(obj, file_name, point_type='evalpts'):
     """ Exports control points or evaluated points as a VTK file (legacy format).
@@ -213,10 +216,11 @@ def export_vtk(obj, file_name, point_type='evalpts'):
             for pt in points:
                 line = " ".join(str(c) for c in pt) + "\n"
                 fp.write(line)
-
-    except IOError:
-        # Show a warning on failure to open file
-        warnings.warn("File " + str(file_name) + " cannot be opened for writing.")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 # Saves surface(s) as a .obj file
@@ -401,9 +405,11 @@ def _export_obj_single(surface, **kwargs):
                 vl = t.vertex_ids
                 line = "f " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
                 fp.write(line)
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
-
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 def _export_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
@@ -483,8 +489,11 @@ def _export_obj_multi(surface_list, **kwargs):
                 fp.write(line)
             for line in str_f:
                 fp.write(line)
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_stl_ascii_single(surface, **kwargs):
@@ -526,8 +535,11 @@ def _export_stl_ascii_single(surface, **kwargs):
                 fp.write("\t\tendloop\n")
                 fp.write("\tendfacet\n")
             fp.write("endsolid Surface\n")
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_stl_ascii_multi(surface_list, **kwargs):
@@ -580,8 +592,11 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
                     fp.write("\tendfacet\n")
 
             fp.write("endsolid Surface\n")
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_stl_binary_single(surface, **kwargs):
@@ -622,8 +637,11 @@ def _export_stl_binary_single(surface, **kwargs):
                 for v in t.vertices:
                     fp.write(struct.pack('<3f', *v.data))  # vertices
                 fp.write(b'\0\0')  # attribute byte count
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_stl_binary_multi(surface_list, **kwargs):
@@ -673,8 +691,11 @@ def _export_stl_binary_multi(surface_list, **kwargs):
                 for v in t.vertices:
                     fp.write(struct.pack('<3f', *v.data))  # vertices
                 fp.write(b'\0\0')  # attribute byte count
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_off_single(surface, **kwargs):
@@ -719,8 +740,11 @@ def _export_off_single(surface, **kwargs):
                 vl = t.vertex_ids
                 line = "3 " + str(vl[0] - 1) + " " + str(vl[1] - 1) + " " + str(vl[2] - 1) + "\n"
                 fp.write(line)
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _export_off_multi(surface_list, **kwargs):
@@ -794,8 +818,11 @@ def _export_off_multi(surface_list, **kwargs):
                 fp.write(line)
             for line in str_f:
                 fp.write(line)
-    except IOError:
-        print("Cannot open " + str(file_name) + " for writing")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def import_smesh(file):
@@ -820,7 +847,7 @@ def import_smesh(file):
     elif os.path.isdir(file):
         return _import_smesh_multi(file)
     else:
-        raise IOError("Input is not a file or a directory")
+        raise RuntimeError("Input is not a file or a directory")
 
 
 def _import_smesh_single(file_name):
@@ -835,13 +862,15 @@ def _import_smesh_single(file_name):
         with open(file_name, 'r') as fp:
             content = fp.readlines()
             content = [x.strip().split() for x in content]
-    except IOError:
-        print("Cannot open " + str(file_name) + " for reading")
-        return
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
     # 1st line defines the dimension and it must be 3
     if int(content[0][0]) != 3:
-        warnings.warn("Input smesh file" + str(file_name) + " is not a surface")
+        warnings.warn("Input smesh file" + str(file_name) + " is not a surface", UserWarning)
         return
 
     # Create a NURBS surface instance and fill with the data read from smesh file
