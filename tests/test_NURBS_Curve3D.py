@@ -257,6 +257,30 @@ def test_nurbs_curve3d_eval10():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
+def test_nurbs_curve3d_deriv1():
+    # Create a curve instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = 5
+
+    # Set weighted control points
+    curve.ctrlptsw = CONTROL_POINTS2
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    # Evaluate curve
+    ept = curve.curvept(0.35)
+
+    # Take the derivative
+    der = curve.derivatives(u=0.35, order=7)
+
+    assert abs(ept[0] - der[0][0]) < GEOMDL_DELTA
+    assert abs(ept[1] - der[0][1]) < GEOMDL_DELTA
+    assert abs(ept[2] - der[0][2]) < GEOMDL_DELTA
+
+
 def test_nurbs_curve3d_insert_knot1():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
