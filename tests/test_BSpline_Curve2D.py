@@ -6,6 +6,7 @@
     Tests geomdl.BSpline.Curve module. Requires "pytest" to run.
 """
 from geomdl import BSpline
+from geomdl import evaluators
 
 GEOMDL_DELTA = 0.001
 OBJECT_INSTANCE = BSpline.Curve
@@ -182,7 +183,8 @@ def test_bspline_curve2d_deriv1():
 
     # Take the derivative
     der1 = curve.derivatives(u=0.35, order=2)
-    der2 = curve.derivatives2(u=0.35, order=2)
+    curve.evaluator = evaluators.CurveEvaluator2()
+    der2 = curve.derivatives(u=0.35, order=2)
 
     assert abs(der1[0][0] - der2[0][0]) < GEOMDL_DELTA
     assert abs(der1[0][1] - der2[0][1]) < GEOMDL_DELTA
@@ -208,7 +210,8 @@ def test_bspline_curve2d_deriv2():
     # Take the derivative
     evalpt = curve.curvept(u=0.35)
     der1 = curve.derivatives(u=0.35)
-    der2 = curve.derivatives2(u=0.35)
+    curve.evaluator = evaluators.CurveEvaluator2()
+    der2 = curve.derivatives(u=0.35)
 
     assert abs(der1[0][0] - evalpt[0]) < GEOMDL_DELTA
     assert abs(der1[0][1] - evalpt[1]) < GEOMDL_DELTA
