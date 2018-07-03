@@ -175,9 +175,9 @@ def test_bspline_curve3d_deriv1():
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
 
     # Take the derivative
-    der1 = curve.derivatives(u=0.35, order=2)
+    der1 = curve.derivatives(u=0.35, order=5)
     curve.evaluator = evaluators.CurveEvaluator2()
-    der2 = curve.derivatives(u=0.35, order=2)
+    der2 = curve.derivatives(u=0.35, order=5)
 
     assert abs(der1[0][0] - der2[0][0]) < GEOMDL_DELTA
     assert abs(der1[0][1] - der2[0][1]) < GEOMDL_DELTA
