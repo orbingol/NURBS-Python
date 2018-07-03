@@ -233,7 +233,7 @@ def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     Keyword Arguments:
-        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -254,8 +254,8 @@ def export_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
     Keyword Arguments:
-        * *binary* (``bool``): True if the saved STL file is going to be in binary format
-        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
+        * ``binary``: flag to generate a binary STL file. *Default: True*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -283,7 +283,7 @@ def export_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
     Keyword Arguments:
-        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -313,6 +313,7 @@ def import_smesh(file):
     the surface inside the complete object.
 
     :param file: path to a directory containing smesh files or a single smesh file
+    :type file: str
     :return: NURBS surface(s)
     :rtype: NURBS.Surface or Multi.MultiSurface
     :raises IOError: an error occurred reading the file
