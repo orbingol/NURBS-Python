@@ -433,7 +433,7 @@ def test_export_csv_surface_evalpts(bspline_surface):
 
 
 # Testing read-write operations in compatibility module
-def test_compatibility_flip_ctrlpts2d_file(bspline_surface):
+def test_compatibility_flip_ctrlpts2d_file1(bspline_surface):
     fname_in = FILE_NAME + "_in.txt"
     fname_out = FILE_NAME + "_out.txt"
 
@@ -449,6 +449,29 @@ def test_compatibility_flip_ctrlpts2d_file(bspline_surface):
     if os.path.isfile(fname_in):
         os.remove(fname_in)
         os.remove(fname_out)
+
+
+def test_compatibility_flip_ctrlpts2d_file2(bspline_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = FILE_NAME + "_out.txt"
+
+    with pytest.raises(IOError):
+        compatibility.flip_ctrlpts2d_file(fname_in, fname_out)
+
+
+def test_compatibility_flip_ctrlpts2d_file3(bspline_surface):
+    fname_in = FILE_NAME + "_in.txt"
+    fname_out = ""
+
+    bspline_surface.sample_size = SAMPLE_SIZE
+    exchange.export_txt(bspline_surface, fname_in, two_dimensional=True)
+
+    with pytest.raises(IOError):
+        compatibility.flip_ctrlpts2d_file(fname_in, fname_out)
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname_in):
+        os.remove(fname_in)
 
 
 def test_compatibility_generate_ctrlpts2d_weights_file(nurbs_surface):
