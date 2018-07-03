@@ -18,6 +18,7 @@ Some significant features of NURBS-Python are:
 * No external C/C++ library dependencies
 * No compilation steps are necessary, everything is implemented in pure python
 * Easy to install via pip: ``pip install geomdl``
+* Conda packages are also available for installation: ``conda install -c orbingol geomdl``
 
 References
 ==========
