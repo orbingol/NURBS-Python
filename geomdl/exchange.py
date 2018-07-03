@@ -799,7 +799,7 @@ def _export_off_multi(surface_list, **kwargs):
 
 
 def import_smesh(file):
-    """ Generates NURBS surface(s) from smesh files.
+    """ Generates NURBS surface(s) from smesh file(s).
 
     *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
     NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
@@ -812,7 +812,8 @@ def import_smesh(file):
     the surface inside the complete object.
 
     :param file: path to a directory containing smesh files or a single smesh file
-    :return: NURBS.Surface or Multi.MultiSurface
+    :return: NURBS surface(s)
+    :rtype: NURBS.Surface or Multi.MultiSurface
     """
     if os.path.isfile(file):
         return _import_smesh_single(file)
