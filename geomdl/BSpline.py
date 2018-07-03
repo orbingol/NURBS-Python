@@ -1086,31 +1086,13 @@ class Surface(Abstract.Surface):
         # Check u and v parameters are correct
         utilities.check_uv(u, v)
 
-        # Algorithm A3.6
-        du = min(self._degree_u, order)
-        dv = min(self._degree_v, order)
-
-        SKL = [[[0.0 for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
-
-        span_u = helpers.find_span(self.knotvector_u, self._control_points_size_u, u)
-        bfunsders_u = helpers.basis_function_ders(self._degree_u, self._knot_vector_u, span_u, u, du)
-        span_v = helpers.find_span(self.knotvector_v, self._control_points_size_v, v)
-        bfunsders_v = helpers.basis_function_ders(self._degree_v, self._knot_vector_v, span_v, v, dv)
-
-        for k in range(0, du + 1):
-            temp = [[] for _ in range(self._degree_v + 1)]
-            for s in range(0, self._degree_v + 1):
-                temp[s] = [0.0 for _ in range(self._dimension)]
-                for r in range(0, self._degree_u + 1):
-                    cu = span_u - self._degree_u + r
-                    cv = span_v - self._degree_v + s
-                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
-                                  zip(temp[s], self._control_points2D[cu][cv])]
-
-            dd = min(order - k, dv)
-            for l in range(0, dd + 1):
-                for s in range(0, self._degree_v + 1):
-                    SKL[k][l][:] = [elem + (bfunsders_v[l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
+        SKL = self._evaluator.derivatives_single(knot_u=u, knot_v=v, deriv_order=order,
+                                                 degree_u=self.degree_u, degree_v=self.degree_v,
+                                                 knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                                 ctrlpts_size_u=self.ctrlpts_size_u,
+                                                 ctrlpts_size_v=self.ctrlpts_size_v,
+                                                 ctrlpts=self._control_points2D,
+                                                 dimension=self._dimension)
 
         # Return the derivatives
         return SKL

@@ -82,9 +82,7 @@ class CurveEvaluator(Abstract.Evaluator):
         # Algorithm A3.2
         du = min(degree, deriv_order)
 
-        CK = [[None for _ in range(dimension)] for _ in range(deriv_order + 1)]
-        for k in range(degree + 1, deriv_order + 1):
-            CK[k] = [0.0 for _ in range(dimension)]
+        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
         span = helpers.find_span(knot_vector, len(control_points), knot)
         bfunsders = helpers.basis_function_ders(degree, tuple(knot_vector), span, knot, du)
@@ -226,9 +224,7 @@ class CurveEvaluator2(CurveEvaluator):
         # Algorithm A3.4
         du = min(degree, deriv_order)
 
-        CK = [[None for _ in range(dimension)] for _ in range(deriv_order + 1)]
-        for k in range(degree + 1, deriv_order + 1):
-            CK[k] = [0.0 for _ in range(dimension)]
+        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
         span = helpers.find_span(knot_vector, len(control_points), knot)
         bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
@@ -296,7 +292,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         CKw = super(NURBSCurveEvaluator, self).derivatives_single(**kwargs)
 
         # Algorithm A4.2
-        CK = [[None for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
+        CK = [[0.0 for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
         for k in range(0, deriv_order + 1):
             v = [val for val in CKw[k][0:(dimension - 1)]]
             for i in range(1, k + 1):
@@ -313,7 +309,9 @@ class SurfaceEvaluator(Abstract.Evaluator):
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
-    * Algorithm A3.5
+    * Algorithm A3.5: SurfacePoint
+    * Algorithm A3.6: SurfaceDerivsAlg1
+    * Algorithm A5.3: SurfaceKnotIns
 
     """
 
@@ -391,7 +389,46 @@ class SurfaceEvaluator(Abstract.Evaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        pass
+        """ Evaluates n-th order surface derivatives at the given (u, v) parameter. """
+        deriv_order = kwargs.get('deriv_order')
+        knot_u = kwargs.get('knot_u')
+        knot_v = kwargs.get('knot_v')
+        degree_u = kwargs.get('degree_u')
+        degree_v = kwargs.get('degree_v')
+        knot_vector_u = kwargs.get('knotvector_u')
+        knot_vector_v = kwargs.get('knotvector_v')
+        control_points2D = kwargs.get('ctrlpts')
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        dimension = kwargs.get('dimension')
+
+        # Algorithm A3.6
+        du = min(degree_u, deriv_order)
+        dv = min(degree_v, deriv_order)
+
+        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+
+        span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
+        bfunsders_u = helpers.basis_function_ders(degree_u, knot_vector_u, span_u, knot_u, du)
+        span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
+        bfunsders_v = helpers.basis_function_ders(degree_v, knot_vector_v, span_v, knot_v, dv)
+
+        for k in range(0, du + 1):
+            temp = [[] for _ in range(degree_v + 1)]
+            for s in range(0, degree_v + 1):
+                temp[s] = [0.0 for _ in range(dimension)]
+                for r in range(0, degree_u + 1):
+                    cu = span_u - degree_u + r
+                    cv = span_v - degree_v + s
+                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
+                                  zip(temp[s], control_points2D[cu][cv])]
+
+            dd = min(deriv_order - k, dv)
+            for l in range(0, dd + 1):
+                for s in range(0, degree_v + 1):
+                    SKL[k][l][:] = [elem + (bfunsders_v[l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
+
+        return SKL
 
     def derivatives(self, **kwargs):
         pass
@@ -405,7 +442,9 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
-    * Algorithm A4.3
+    * Algorithm A4.3: SurfacePoint
+    * Algorithm A4.4: RatSurfaceDerivs
+    * Algorithm A5.3: SurfaceKnotIns
 
     """
 
@@ -441,7 +480,35 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        pass
+        """ Evaluates n-th order surface derivatives at the given (u, v) parameter. """
+        deriv_order = kwargs.get('deriv_order')
+        dimension = kwargs.get('dimension')
 
-    def derivatives(self, **kwargs):
-        pass
+        # Call the parent function to evaluate A(u) and w(u) derivatives
+        SKLw = super(NURBSSurfaceEvaluator, self).derivatives_single(**kwargs)
+
+        # Generate an empty list of derivatives
+        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+
+        # Algorithm A4.4
+        for k in range(0, deriv_order + 1):
+            for l in range(0, deriv_order - k + 1):
+                # Deep copying might seem a little overkill but we also want to avoid same pointer issues too
+                v = copy.deepcopy(SKLw[k][l])
+
+                for j in range(1, l + 1):
+                    v[:] = [tmp - (utilities.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
+                            zip(v, SKL[k][l - j])]
+                for i in range(1, k + 1):
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
+                            zip(v, SKL[k - i][l])]
+                    v2 = [0.0 for _ in range(dimension - 1)]
+                    for j in range(1, l + 1):
+                        v2[:] = [tmp + (utilities.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
+                                 zip(v2, SKL[k - i][l - j])]
+                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
+
+                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(dimension - 1)]]
+
+        # Return S(u,v) derivatives
+        return SKL

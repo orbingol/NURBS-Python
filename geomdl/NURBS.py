@@ -295,55 +295,6 @@ class Surface(BSpline.Surface):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
-    # Evaluates n-th order rational surface derivatives at the given (u, v) parameter
-    def derivatives(self, u=-1, v=-1, order=0):
-        """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair from the rational surface.
-
-        * SKL[0][0] will be the surface point itself
-        * SKL[0][1] will be the 1st derivative w.r.t. v
-        * SKL[2][1] will be the 2nd derivative w.r.t. u and 1st derivative w.r.t. v
-
-        :param u: parameter in the U direction
-        :type u: float
-        :param v: parameter in the V direction
-        :type v: float
-        :param order: derivative order
-        :type order: integer
-        :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
-        :rtype: list
-        """
-        # Call the parent function to evaluate A(u) and w(u) derivatives
-        SKLw = super(Surface, self).derivatives(u, v, order)
-
-        # Algorithm A4.4
-        du = min(self._degree_u, order)
-        dv = min(self._degree_v, order)
-
-        # Generate an empty list of derivatives
-        SKL = [[[None for _ in range(self._dimension)] for _ in range(dv + 1)] for _ in range(du + 1)]
-
-        for k in range(0, order + 1):
-            for l in range(0, order - k + 1):
-                # Deep copying might seem a little overkill but we also want to avoid same pointer issues too
-                v = copy.deepcopy(SKLw[k][l])
-
-                for j in range(1, l + 1):
-                    v[:] = [tmp - (utilities.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
-                            zip(v, SKL[k][l - j])]
-                for i in range(1, k + 1):
-                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
-                            zip(v, SKL[k - i][l])]
-                    v2 = [0.0 for _ in range(self._dimension - 1)]
-                    for j in range(1, l + 1):
-                        v2[:] = [tmp + (utilities.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
-                                 zip(v2, SKL[k - i][l - j])]
-                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
-
-                SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(self._dimension - 1)]]
-
-        # Return S(u,v) derivatives
-        return SKL
-
     def translate(self, vec=()):
         """ Translates the surface by the input vector.
 
