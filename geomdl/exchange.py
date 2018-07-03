@@ -798,8 +798,8 @@ def _export_off_multi(surface_list, **kwargs):
         print("Cannot open " + str(file_name) + " for writing")
 
 
-def import_smesh(file_name):
-    """ Generates a NURBS surface from a smesh file.
+def import_smesh(file):
+    """ Generates NURBS surface(s) from smesh files.
 
     *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
     NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
@@ -811,11 +811,19 @@ def import_smesh(file_name):
     where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
     the surface inside the complete object.
 
-    This function reads a single smesh file and converts it into a NURBS surface. Please see the following functions
-    for reading the smesh file sets:
+    :param file: path to a directory containing smesh files or a single smesh file
+    :return: NURBS.Surface or Multi.MultiSurface
+    """
+    if os.path.isfile(file):
+        return _import_smesh_single(file)
+    elif os.path.isdir(file):
+        return _import_smesh_multi(file)
+    else:
+        raise IOError("Input is not a file or a directory")
 
-    * :func:`.import_smesh_list()`
-    * :func:`.import_smesh_dir()`
+
+def _import_smesh_single(file_name):
+    """ Generates a NURBS surface from a smesh file.
 
     :param file_name: smesh file to read
     :type file_name: str
@@ -867,22 +875,8 @@ def import_smesh(file_name):
     return surf
 
 
-def import_smesh_list(file_list):
-    """ Creates a MultiSurface instance from a list of smesh files.
-
-    :param file_list: file list containing the names of the smesh files
-    :type file_list: list, tuple
-    :return: a MultiSurface instance containing all NURBS surfaces
-    :rtype: Multi.MultiSurface
-    """
-    ret = Multi.MultiSurface()
-    for file in file_list:
-        ret.add(import_smesh(file))
-    return ret
-
-
-def import_smesh_dir(file_path):
-    """ Creates a MultiSurface instance from a list of smesh files inside a directory.
+def _import_smesh_multi(file_path):
+    """ Generates NURBS surfaces from smesh files contained in the input directory.
 
     :param file_path: path to the directory containing smesh files
     :type file_path: str
@@ -890,4 +884,7 @@ def import_smesh_dir(file_path):
     :rtype: Multi.MultiSurface
     """
     files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
-    return import_smesh_list(files)
+    surf = Multi.MultiSurface()
+    for f in files:
+        surf.add(import_smesh(f))
+    return surf
