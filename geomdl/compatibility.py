@@ -91,25 +91,6 @@ def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
     return new_ctrlpts2d
 
 
-# Reads 2D control points file, flips it and saves it
-def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
-    """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
-
-    :param file_in: name of the input file (to be read)
-    :type file_in: str
-    :param file_out: name of the output file (to be saved)
-    :type file_out: str
-    """
-    # Read control points
-    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
-
-    # Flip control points array
-    new_ctrlpts2d = flip_ctrlpts2d(ctrlpts2d, size_u, size_v)
-
-    # Save new control points
-    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
-
-
 def generate_ctrlptsw(ctrlpts):
     """ Generates weighted control points from unweighted ones in 1-D.
 
@@ -163,33 +144,6 @@ def generate_ctrlptsw2d(ctrlpts2d):
     return new_ctrlpts2d
 
 
-# Generates weighted control points from unweighted ones
-def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
-    """ Generates weighted control points from unweighted ones in 2-D.
-
-    This function
-
-    #. Takes in a 2-D control points file whose coordinates are organized in (x, y, z, w) format
-    #. Converts into (x*w, y*w, z*w, w) format
-    #. Saves the result to a file
-
-    Therefore, the resultant file could be a direct input of the NURBS.Surface class.
-
-    :param file_in: name of the input file (to be read)
-    :type file_in: str
-    :param file_out: name of the output file (to be saved)
-    :type file_out: str
-    """
-    # Read control points
-    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
-
-    # Multiply control points by weight
-    new_ctrlpts2d = generate_ctrlptsw2d(ctrlpts2d)
-
-    # Save new control points
-    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
-
-
 def generate_ctrlpts_weights(ctrlpts):
     """ Generates unweighted control points from weighted ones in 1-D.
 
@@ -241,29 +195,6 @@ def generate_ctrlpts2d_weights(ctrlpts2d):
     return new_ctrlpts2d
 
 
-# Generates unweighted control points from weighted ones
-def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
-    """ Generates unweighted control points from weighted ones in 2-D.
-
-    #. Takes in 2-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
-    #. Converts the input control points list into (x, y, z, w) format
-    #. Saves the result to a file
-
-    :param file_in: name of the input file (to be read)
-    :type file_in: str
-    :param file_out: name of the output file (to be saved)
-    :type file_out: str
-    """
-    # Read control points
-    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
-
-    # Divide control points by weight
-    new_ctrlpts2d = generate_ctrlpts2d_weights(ctrlpts2d)
-
-    # Save new control points
-    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
-
-
 def combine_ctrlpts_weights(ctrlpts, weights=None):
     """ Multiplies control points by the weights to generate weighted control points.
 
@@ -310,6 +241,78 @@ def separate_ctrlpts_weights(ctrlptsw):
         weights.append(ptw[-1])
 
     return [ctrlpts, weights]
+
+
+# Reads 2D control points file, flips it and saves it
+def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
+    """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
+
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
+    :raises IOError: an error occurred reading or writing the file
+    """
+    # Read control points
+    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
+
+    # Flip control points array
+    new_ctrlpts2d = flip_ctrlpts2d(ctrlpts2d, size_u, size_v)
+
+    # Save new control points
+    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
+
+
+# Generates weighted control points from unweighted ones
+def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
+    """ Generates weighted control points from unweighted ones in 2-D.
+
+    This function
+
+    #. Takes in a 2-D control points file whose coordinates are organized in (x, y, z, w) format
+    #. Converts into (x*w, y*w, z*w, w) format
+    #. Saves the result to a file
+
+    Therefore, the resultant file could be a direct input of the NURBS.Surface class.
+
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
+    :raises IOError: an error occurred reading or writing the file
+    """
+    # Read control points
+    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
+
+    # Multiply control points by weight
+    new_ctrlpts2d = generate_ctrlptsw2d(ctrlpts2d)
+
+    # Save new control points
+    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
+
+
+# Generates unweighted control points from weighted ones
+def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
+    """ Generates unweighted control points from weighted ones in 2-D.
+
+    #. Takes in 2-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
+    #. Converts the input control points list into (x, y, z, w) format
+    #. Saves the result to a file
+
+    :param file_in: name of the input file (to be read)
+    :type file_in: str
+    :param file_out: name of the output file (to be saved)
+    :type file_out: str
+    :raises IOError: an error occurred reading or writing the file
+    """
+    # Read control points
+    ctrlpts2d, size_u, size_v = _read_ctrltps2d_file(file_in)
+
+    # Divide control points by weight
+    new_ctrlpts2d = generate_ctrlpts2d_weights(ctrlpts2d)
+
+    # Save new control points
+    _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
 def _read_ctrltps2d_file(file_in):

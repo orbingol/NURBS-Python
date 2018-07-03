@@ -235,6 +235,7 @@ class Grid(object):
 
         :param filename: File name to be saved
         :type filename: str
+        :raises IOError: an error occurred writing the file
         """
         # Check if the grid points are generated
         if not self._grid_points:

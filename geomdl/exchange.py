@@ -39,6 +39,7 @@ def import_txt(file_name, two_dimensional=False):
     :type two_dimensional: bool
     :return: list of control points, if two_dimensional, then also returns size in u- and v-directions
     :rtype: list
+    :raises IOError: an error occurred reading the file
     """
     ctrlpts = []
 
@@ -93,6 +94,7 @@ def export_txt(obj, file_name, two_dimensional=False):
     :type file_name: str
     :param two_dimensional: type of the text file (only works for Surface objects)
     :type two_dimensional: bool
+    :raises IOError: an error occurred writing the file
     """
     # Check if the user has set any control points
     if obj.ctrlpts is None or len(obj.ctrlpts) == 0:
@@ -141,6 +143,7 @@ def export_csv(obj, file_name, point_type='evalpts'):
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
+    :raises IOError: an error occurred writing the file
     """
     if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
@@ -179,6 +182,7 @@ def export_csv(obj, file_name, point_type='evalpts'):
     except Exception:
         raise
 
+
 def export_vtk(obj, file_name, point_type='evalpts'):
     """ Exports control points or evaluated points as a VTK file (legacy format).
 
@@ -190,6 +194,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
+    :raises IOError: an error occurred writing the file
     """
     if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
@@ -227,14 +232,14 @@ def export_vtk(obj, file_name, point_type='evalpts'):
 def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
+    Keyword Arguments:
+        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
+
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
-
-    Keyword Arguments:
-        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
-
+    :raises IOError: an error occurred writing the file
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
@@ -248,15 +253,15 @@ def export_obj(surf_in, file_name, **kwargs):
 def export_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
-    :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
-    :param file_name: name of the output file
-    :type file_name: str
-
     Keyword Arguments:
         * *binary* (``bool``): True if the saved STL file is going to be in binary format
         * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
 
+    :param surf_in: surface or surfaces to be saved
+    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
     """
     binary = kwargs.get('binary', True)
     vertex_spacing = kwargs.get('vertex_spacing', 2)
@@ -277,14 +282,14 @@ def export_stl(surf_in, file_name, **kwargs):
 def export_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
+    Keyword Arguments:
+        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
+
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
-
-    Keyword Arguments:
-        * *vertex_spacing* (``int``): size of the triangle edge in terms of points sampled on the surface
-
+    :raises IOError: an error occurred writing the file
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
@@ -292,6 +297,32 @@ def export_off(surf_in, file_name, **kwargs):
         _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
         _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+
+
+def import_smesh(file):
+    """ Generates NURBS surface(s) from smesh file(s).
+
+    *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
+    NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
+    several NURBS surfaces. The files have the extensions of ``txt`` or ``dat`` and they are named as
+
+    * ``smesh.X.Y.txt``
+    * ``smesh.X.dat``
+
+    where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
+    the surface inside the complete object.
+
+    :param file: path to a directory containing smesh files or a single smesh file
+    :return: NURBS surface(s)
+    :rtype: NURBS.Surface or Multi.MultiSurface
+    :raises IOError: an error occurred reading the file
+    """
+    if os.path.isfile(file):
+        return _import_smesh_single(file)
+    elif os.path.isdir(file):
+        return _import_smesh_multi(file)
+    else:
+        raise IOError("Input is not a file or a directory")
 
 
 # Generates triangles
@@ -410,6 +441,7 @@ def _export_obj_single(surface, **kwargs):
         raise e
     except Exception:
         raise
+
 
 def _export_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
@@ -823,31 +855,6 @@ def _export_off_multi(surface_list, **kwargs):
         raise e
     except Exception:
         raise
-
-
-def import_smesh(file):
-    """ Generates NURBS surface(s) from smesh file(s).
-
-    *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
-    NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
-    several NURBS surfaces. The files have the extensions of ``txt`` or ``dat`` and they are named as
-
-    * ``smesh.X.Y.txt``
-    * ``smesh.X.dat``
-
-    where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
-    the surface inside the complete object.
-
-    :param file: path to a directory containing smesh files or a single smesh file
-    :return: NURBS surface(s)
-    :rtype: NURBS.Surface or Multi.MultiSurface
-    """
-    if os.path.isfile(file):
-        return _import_smesh_single(file)
-    elif os.path.isdir(file):
-        return _import_smesh_multi(file)
-    else:
-        raise RuntimeError("Input is not a file or a directory")
 
 
 def _import_smesh_single(file_name):

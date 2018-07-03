@@ -136,6 +136,7 @@ class Curve(Abstract.Curve):
 
         :param file_name: name of the file to be saved
         :type file_name: str
+        :raises IOError: an error occurred writing the file
         """
         # Create a dictionary from the curve data
         expdata = {'rational': self._rational,
@@ -151,6 +152,7 @@ class Curve(Abstract.Curve):
 
         :param file_name: name of the file to be loaded
         :type file_name: str
+        :raises IOError: an error occurred reading the file
         """
         impdata = read_pickle(file_name)
 
@@ -1011,6 +1013,7 @@ class Surface(Abstract.Surface):
 
         :param file_name: name of the file to be saved
         :type file_name: str
+        :raises IOError: an error occurred writing the file
         """
         # Create a dictionary from the surface data
         expdata = {'rational': self._rational,
@@ -1030,6 +1033,7 @@ class Surface(Abstract.Surface):
 
         :param file_name: name of the file to be loaded
         :type file_name: str
+        :raises IOError: an error occurred reading the file
         """
         impdata = read_pickle(file_name)
 
@@ -1748,6 +1752,7 @@ def save_pickle(data_dict, file_name):
     :type data_dict: dict
     :param file_name: name of the file to be saved
     :type file_name: str
+    :raises IOError: an error occurred writing the file
     """
     # Try opening the file for writing
     try:
@@ -1770,6 +1775,7 @@ def read_pickle(file_name):
     :type file_name: str
     :return: data dictionary
     :rtype: dict
+    :raises IOError: an error occurred reading the file
     """
     # Try opening the file for reading
     try:
