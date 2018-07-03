@@ -40,7 +40,7 @@ class CurveEvaluator(Abstract.Evaluator):
 
         crvpt = [0.0 for _ in range(dimension)]
         for i in range(0, degree + 1):
-            crvpt[:] = [crvpt + (basis[i] * ctrlpt) for crvpt, ctrlpt in
+            crvpt[:] = [crv_p + (basis[i] * ctl_p) for crv_p, ctl_p in
                         zip(crvpt, control_points[span - degree + i])]
 
         return crvpt
@@ -90,7 +90,7 @@ class CurveEvaluator(Abstract.Evaluator):
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(dimension)]
             for j in range(0, degree + 1):
-                CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in
+                CK[k][:] = [drv + (bfunsders[k][j] * ctl_pt) for drv, ctl_pt in
                             zip(CK[k], control_points[span - degree + j])]
 
         # Return the derivatives
@@ -181,7 +181,7 @@ class CurveEvaluator2(CurveEvaluator):
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(dimension)]
             for j in range(0, degree - k + 1):
-                CK[k][:] = [elem + (bfuns[j][degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in
+                CK[k][:] = [elem + (bfuns[j][degree - k] * drv_ctl_p) for elem, drv_ctl_p in
                             zip(CK[k], PK[k][j])]
 
         # Return the derivatives
