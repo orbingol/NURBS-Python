@@ -250,80 +250,10 @@ class Curve(Abstract.Curve):
 
         self._curve_points = cpts
 
-    # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
-    def derivatives2(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given parameter value.
-
-        Implements Algorithm A3.2 of *The NURBS Book*.
-
-        :param u: knot value
-        :type u: float
-        :param order: derivative order
-        :type order: integer
-        :return: a list containing up to {order}-th derivative of the curve
-        :rtype: list
-        """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-        # Check u parameters are correct
-        utilities.check_uv(u)
-
-        # Algorithm A3.2
-        du = min(self._degree, order)
-
-        CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
-        for k in range(self._degree + 1, order + 1):
-            CK[k] = [0.0 for _ in range(self._dimension)]
-
-        span = helpers.find_span(self.knotvector, len(self._control_points), u)
-        bfunsders = helpers.basis_function_ders(self._degree, tuple(self._knot_vector), span, u, du)
-
-        for k in range(0, du + 1):
-            CK[k] = [0.0 for _ in range(self._dimension)]
-            for j in range(0, self._degree + 1):
-                CK[k][:] = [drv + (bfunsders[k][j] * ctrl_pt) for drv, ctrl_pt in
-                            zip(CK[k], self._control_points[span - self._degree + j])]
-
-        # Return the derivatives
-        return CK
-
-    # Computes the control points of all derivative curves up to and including the d-th derivative
-    def derivatives_ctrlpts(self, order=0, r1=0, r2=0):
-        """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
-
-        Implements Algorithm A3.3 of *The NURBS Book*.
-        Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
-
-        :param order: derivative order
-        :type order: integer
-        :param r1: minimum span
-        :type r1: integer
-        :param r2: maximum span
-        :type r2: integer
-        :return: PK, a 2D list of control points
-        :rtype: list
-        """
-        # Algorithm A3.3
-        r = r2 - r1
-        PK = [[[None for _ in range(self._dimension)] for _ in range(r + 1)] for _ in range(order + 1)]
-        for i in range(0, r + 1):
-            PK[0][i][:] = [elem for elem in self._control_points[r1 + i]]
-
-        for k in range(1, order + 1):
-            tmp = self._degree - k + 1
-            for i in range(0, r - k + 1):
-                PK[k][i][:] = [tmp * (elem1 - elem2) / (
-                    self._knot_vector[r1 + i + self._degree + 1] - self._knot_vector[r1 + i + k]) for elem1, elem2
-                               in zip(PK[k - 1][i + 1], PK[k - 1][i])]
-
-        return PK
-
-    # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
+    # Evaluates the curve derivative
     def derivatives(self, u=-1, order=0):
         """ Evaluates n-th order curve derivatives at the given parameter value.
 
-        Implements Algorithm A3.4 of *The NURBS Book*.
-
         :param u: knot value
         :type u: float
         :param order: derivative order
@@ -336,25 +266,13 @@ class Curve(Abstract.Curve):
         # Check u parameters are correct
         utilities.check_uv(u)
 
-        # Algorithm A3.4
-        du = min(self._degree, order)
-
-        CK = [[None for _ in range(self._dimension)] for _ in range(order + 1)]
-        for k in range(self._degree + 1, order + 1):
-            CK[k] = [0.0 for _ in range(self._dimension)]
-
-        span = helpers.find_span(self.knotvector, len(self._control_points), u)
-        bfuns = helpers.basis_function_all(self._degree, tuple(self._knot_vector), span, u)
-        PK = self.derivatives_ctrlpts(du, span - self._degree, span)
-
-        for k in range(0, du + 1):
-            CK[k] = [0.0 for _ in range(self._dimension)]
-            for j in range(0, self._degree - k + 1):
-                CK[k][:] = [elem + (bfuns[j][self._degree - k] * drv_ctrlpt) for elem, drv_ctrlpt in
-                            zip(CK[k], PK[k][j])]
-
-        # Return the derivatives
-        return CK
+        # Evaluate derivative at knot u
+        return self._evaluator.derivatives_single(knot=u,
+                                                  deriv_order=order,
+                                                  degree=self.degree,
+                                                  knotvector=self.knotvector,
+                                                  ctrlpts=self._control_points,
+                                                  dimension=self._dimension)
 
     # Evaluates the curve tangent at the given u parameter
     def tangent(self, u=-1, normalize=False):

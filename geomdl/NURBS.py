@@ -134,44 +134,6 @@ class Curve(BSpline.Curve):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
-    # Evaluates the rational curve derivative
-    def derivatives(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given parameter value.
-
-        :param u: knot value
-        :type u: float
-        :param order: derivative order
-        :type order: integer
-        :return: A list containing up to {order}-th derivative of the curve
-        :rtype: list
-        """
-        # Call the parent function to evaluate A(u) and w(u) derivatives
-        CKw = super(Curve, self).derivatives(u, order)
-
-        # Algorithm A4.2
-        CK = [[None for _ in range(self._dimension - 1)] for _ in range(order + 1)]
-        for k in range(0, order + 1):
-            v = [val for val in CKw[k][0:(self._dimension - 1)]]
-            for i in range(1, k + 1):
-                v[:] = [tmp - (utilities.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in zip(v, CK[k - i])]
-            CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
-
-        # Return C(u) derivatives
-        return CK
-
-    # Evaluates the rational curve derivative
-    def derivatives2(self, u=-1, order=0):
-        """ Evaluates n-th order curve derivatives at the given parameter value.
-
-        :param u: knot value
-        :type u: float
-        :param order: derivative order
-        :type order: integer
-        :return: A list containing up to {order}-th derivative of the curve
-        :rtype: list
-        """
-        return self.derivatives(u, order)
-
     def translate(self, vec=()):
         """ Translates the curve by the input vector.
 
