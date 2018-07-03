@@ -886,5 +886,5 @@ def _import_smesh_multi(file_path):
     files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
     surf = Multi.MultiSurface()
     for f in files:
-        surf.add(import_smesh(f))
+        surf.add(_import_smesh_single(f))
     return surf
