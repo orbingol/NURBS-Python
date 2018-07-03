@@ -3,6 +3,19 @@ Citing NURBS-Python
 
 |DOI|_
 
+BibTeX
+======
+
+::
+
+    @misc{bingol2016geomdl,
+      author       = {Onur Rauf Bingol},
+      title        = {NURBS-Python},
+      year         = 2016,
+      doi          = {10.5281/zenodo.815010},
+      url          = {https://doi.org/10.5281/zenodo.815010}
+    }
+
 License
 =======
 
