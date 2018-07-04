@@ -353,17 +353,17 @@ class Surface(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-        # U-direction
+        # Define u-direction variables
         self._degree_u = 0  # degree
         self._knot_vector_u = None  # knot vector
         self._control_points_size_u = 0  # control points array length
         self._delta_u = 0.1  # evaluation delta
-        # V-direction
+        # Define v-direction variables
         self._degree_v = 0  # degree
         self._knot_vector_v = None  # knot vector
         self._control_points_size_v = 0  # control points array length
         self._delta_v = 0.1  # evaluation delta
-        # Common
+        # Define common variables
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._sample_size = None  # defines sample size
@@ -556,10 +556,10 @@ class Surface(object):
 
     @property
     def ctrlpts_size_u(self):
-        """ Size of the control points array in U-direction.
+        """ Size of the control points array in u-direction.
 
-        :getter: Gets number of control points in U-direction
-        :setter: Sets number of control points in U-direction
+        :getter: Gets number of control points in u-direction
+        :setter: Sets number of control points in u-direction
         """
         return self._control_points_size_u
 
@@ -573,10 +573,10 @@ class Surface(object):
 
     @property
     def ctrlpts_size_v(self):
-        """ Size of the control points array in V-direction.
+        """ Size of the control points array in v-direction.
 
-        :getter: Gets number of control points in V-direction
-        :setter: Sets number of control points in V-direction
+        :getter: Gets number of control points in v-direction
+        :setter: Sets number of control points in v-direction
         """
         return self._control_points_size_v
 
@@ -646,7 +646,7 @@ class Surface(object):
 
     @property
     def delta_u(self):
-        """ Evaluation delta in U-direction.
+        """ Evaluation delta in u-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -674,7 +674,7 @@ class Surface(object):
 
     @property
     def delta_v(self):
-        """ Evaluation delta in V-direction.
+        """ Evaluation delta in v-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -702,7 +702,7 @@ class Surface(object):
 
     @property
     def delta(self):
-        """ Evaluation delta in U- and V-directions.
+        """ Evaluation delta in u- and v-directions.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -1089,7 +1089,7 @@ class VisAbstract(object):
 
         :param ptsarr: control, curve or surface points
         :type ptsarr: list, tuple
-        :param size: size in all directions, e.g. in U- and V-direction
+        :param size: size in all directions, e.g. in u- and v-directions
         :type size: int, tuple, list
         :param name: name of the point on the legend
         :type name: str

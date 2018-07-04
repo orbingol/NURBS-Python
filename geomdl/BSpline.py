@@ -683,7 +683,7 @@ class Surface(Abstract.Surface):
         """ 2D control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
-        The rows of the returned tuple correspond to V-direction and the columns correspond to U-direction.
+        The rows of the returned tuple correspond to v-direction and the columns correspond to u-direction.
 
         The following example can be used to traverse 2D control points:
 
@@ -786,9 +786,9 @@ class Surface(Abstract.Surface):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
-        :param size_u: size of the control points grid in U-direction
+        :param size_u: size of the control points grid in u-direction
         :type size_u: int
-        :param size_v: size of the control points grid in V-direction
+        :param size_v: size of the control points grid in v-direction
         :type size_v: int
         :return: None
         """
@@ -1246,10 +1246,10 @@ class Surface(Abstract.Surface):
             utilities.check_uv(u, v)
 
         if not isinstance(ru, int) or ru < 0:
-            raise ValueError("Number of insertions in U-direction must be a positive integer")
+            raise ValueError("Number of insertions in u-direction must be a positive integer")
 
         if not isinstance(rv, int) or rv < 0:
-            raise ValueError("Number of insertions in V-direction must be a positive integer")
+            raise ValueError("Number of insertions in v-direction must be a positive integer")
 
         # Algorithm A5.3
         if u:
@@ -1307,12 +1307,12 @@ class Surface(Abstract.Surface):
             self.evaluate()
 
     def split_u(self, t=-1):
-        """ Splits the surface at the input parametric coordinate in U-direction.
+        """ Splits the surface at the input parametric coordinate in u-direction.
 
-        This method splits the surface into two pieces at the given parametric coordinate in U-direction,
-        generates two different surface objects and returns them. It doesn't change anything on the initial surface.
+        This method splits the surface into two pieces at the given parametric coordinate in u-direction,
+        generates two different surface objects and returns them. It doesn't change anything on the operating surface.
 
-        :param t: parametric coordinate in U-direction
+        :param t: parametric coordinate in u-direction
         :type t: float
         :return: a list of surface as the split pieces of the initial surface
         :rtype: Multi.MultiSurface
@@ -1379,12 +1379,12 @@ class Surface(Abstract.Surface):
         return ret_val
 
     def split_v(self, t=-1):
-        """ Splits the surface at the input parametric coordinate in V-direction.
+        """ Splits the surface at the input parametric coordinate in v-direction.
 
-        This method splits the surface into two pieces at the given parametric coordinate in V-direction,
-        generates two different surface objects and returns them. It doesn't change anything on the initial surface.
+        This method splits the surface into two pieces at the given parametric coordinate in v-direction,
+        generates two different surface objects and returns them. It doesn't change anything on the operating surface.
 
-        :param t: parametric coordinate in U-direction
+        :param t: parametric coordinate in v-direction
         :type t: float
         :return: a list of surface as the split pieces of the initial surface
         :rtype: Multi.MultiSurface
@@ -1469,7 +1469,7 @@ class Surface(Abstract.Surface):
         # Work with an identical copy
         surf = copy.deepcopy(self)
 
-        # U-direction
+        # Process u-direction
         knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
         while knots_u:
             knot = knots_u[0]
@@ -1479,7 +1479,7 @@ class Surface(Abstract.Surface):
             knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
         surf_list.append(surf)
 
-        # Work on the split surfaces in V-direction
+        # Process v-direction
         multi_surf = Multi.MultiSurface()
         for surf in surf_list:
             knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
