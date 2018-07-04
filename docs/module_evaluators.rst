@@ -40,3 +40,5 @@ package.
 .. automodule:: geomdl.evaluators
     :members:
     :undoc-members:
+    :inherited-members:
+    :show-inheritance:
