@@ -1006,7 +1006,7 @@ class Evaluator(object):
 
     @abc.abstractmethod
     def evaluate_single(self, **kwargs):
-        """ Abstract method for computation of a single point at a specified parameter. """
+        """ Abstract method for computation of a single point at a single parameter. """
         pass
 
     @abc.abstractmethod
@@ -1016,7 +1016,7 @@ class Evaluator(object):
 
     @abc.abstractmethod
     def derivatives_single(self, **kwargs):
-        """ Abstract method for computation of derivatives at a specified parameter. """
+        """ Abstract method for computation of derivatives at a single parameter. """
         pass
 
     @abc.abstractmethod
@@ -1024,9 +1024,35 @@ class Evaluator(object):
         """ Abstract method for computation of derivatives over a range of parameters. """
         pass
 
+
+class CurveEvaluator(object):
+    """ Curve customizations for Evaluator abstract base class. """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self):
+        pass
+
     @abc.abstractmethod
     def insert_knot(self, **kwargs):
-        """ Abstract method for knot insertion. """
+        """ Abstract method for implementation of knot insertion algorithm. """
+        pass
+
+
+class SurfaceEvaluator(object):
+    """ Surface customizations for the Evaluator abstract base class. """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def insert_knot_u(self, **kwargs):
+        """ Abstract method for implementation of knot insertion algorithm in u-direction. """
+        pass
+
+    @abc.abstractmethod
+    def insert_knot_v(self, **kwargs):
+        """ Abstract method for implementation of knot insertion algorithm in v-direction. """
         pass
 
 

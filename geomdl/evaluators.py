@@ -13,7 +13,7 @@ from . import helpers
 from . import utilities
 
 
-class CurveEvaluator(Abstract.Evaluator):
+class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
     """ Sequential B-Spline curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -72,6 +72,7 @@ class CurveEvaluator(Abstract.Evaluator):
 
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives_single(self, **kwargs):
+        """ Evaluates n-th order curve derivatives at a single parameter. """
         knot = kwargs.get('knot')
         deriv_order = kwargs.get('deriv_order', 0)
         degree = kwargs.get('degree')
@@ -97,7 +98,8 @@ class CurveEvaluator(Abstract.Evaluator):
         return CK
 
     def derivatives(self, **kwargs):
-        pass
+        """ Evaluates n-th order curve derivatives over a range of parameters. """
+        raise NotImplementedError("This functionality is not implemented at the moment")
 
     def insert_knot(self, **kwargs):
         knot = kwargs.get('knot')
@@ -170,22 +172,13 @@ class CurveEvaluator2(CurveEvaluator):
 
     def __init__(self):
         super(CurveEvaluator2, self).__init__()
-        self._name = "Curve Evaluator using A3.4 CurveDerivsAlg2"
+        self._name = "Curve Evaluator w/ A3.4 CurveDerivsAlg2"
 
     # Computes the control points of all derivative curves up to and including the d-th derivative
     def _derivatives_ctrlpts(self, **kwargs):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
 
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
-
-        :param order: derivative order
-        :type order: integer
-        :param r1: minimum span
-        :type r1: integer
-        :param r2: maximum span
-        :type r2: integer
-        :return: PK, a 2D list of control points
-        :rtype: list
         """
         r1 = kwargs.get('r1', 0)  # minimum span
         r2 = kwargs.get('r2', 0)  # maximum span
@@ -213,7 +206,7 @@ class CurveEvaluator2(CurveEvaluator):
 
     # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order curve derivatives at the given parameter value. """
+        """ Evaluates n-th order curve derivatives at a single parameter. """
         knot = kwargs.get('knot')
         deriv_order = kwargs.get('deriv_order')
         degree = kwargs.get('degree')
@@ -284,7 +277,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
 
     # Evaluates the rational curve derivative
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order curve derivatives at the given parameter value. """
+        """ Evaluates n-th order curve derivatives at a single parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
@@ -304,7 +297,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return CK
 
 
-class SurfaceEvaluator(Abstract.Evaluator):
+class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
     """ Sequential B-Spline surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -389,7 +382,7 @@ class SurfaceEvaluator(Abstract.Evaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order surface derivatives at the given (u, v) parameter. """
+        """ Evaluates n-th order surface derivatives at a (u, v) parameter. """
         deriv_order = kwargs.get('deriv_order')
         knot_u = kwargs.get('knot_u')
         knot_v = kwargs.get('knot_v')
@@ -431,10 +424,128 @@ class SurfaceEvaluator(Abstract.Evaluator):
         return SKL
 
     def derivatives(self, **kwargs):
-        pass
+        """ Evaluates n-th order surface derivatives over a range of (u, v) parameters. """
+        raise NotImplementedError("This functionality is not implemented at the moment")
 
-    def insert_knot(self, **kwargs):
-        pass
+    def insert_knot_u(self, **kwargs):
+        """ Inserts knot(s) in u-direction. """
+        u = kwargs.get('knot')
+        r = kwargs.get('r')
+        s = kwargs.get('s')
+        degree = kwargs.get('degree')
+        knot_vector = kwargs.get('knotvector')
+        control_points2D = kwargs.get('ctrlpts')
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+
+        # Algorithm A5.3
+        span = helpers.find_span(knot_vector, ctrlpts_size_u, u)
+
+        # Initialize new knot vector array
+        UQ = [None for _ in range(len(knot_vector) + r)]
+        # Initialize new control points array (control points can be weighted or not)
+        Q = [[None for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u + r)]
+        # Initialize a local array of length p + 1
+        R = [None for _ in range(degree + 1)]
+
+        # Load new knot vector
+        for i in range(0, span + 1):
+            UQ[i] = knot_vector[i]
+        for i in range(1, r + 1):
+            UQ[span + i] = u
+        for i in range(span + 1, len(knot_vector)):
+            UQ[i + r] = knot_vector[i]
+
+        # Save the alphas
+        alpha = [[0.0 for _ in range(r + 1)] for _ in range(degree - s)]
+        for j in range(1, r + 1):
+            L = span - degree + j
+            for i in range(0, degree - j - s + 1):
+                alpha[i][j] = (u - knot_vector[L + i]) / (knot_vector[i + span + 1] - knot_vector[L + i])
+
+        # Update control points
+        for row in range(0, ctrlpts_size_v):
+            for i in range(0, span - degree + 1):
+                Q[i][row] = control_points2D[i][row]
+            for i in range(span - s, ctrlpts_size_u):
+                Q[i + r][row] = control_points2D[i][row]
+            # Load auxiliary control points
+            for i in range(0, degree - s + 1):
+                R[i] = copy.deepcopy(control_points2D[span - degree + i][row])
+            # Insert the knot r times
+            for j in range(1, r + 1):
+                L = span - degree + j
+                for i in range(0, degree - j - s + 1):
+                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1
+                               for elem1, elem2 in zip(R[i], R[i + 1])]
+                Q[L][row] = copy.deepcopy(R[0])
+                Q[span + r - j - s][row] = copy.deepcopy(R[degree - j - s])
+            # Load the remaining control points
+            L = span - degree + r
+            for i in range(L + 1, span - s):
+                Q[i][row] = copy.deepcopy(R[i - L])
+
+        return UQ, Q
+
+    def insert_knot_v(self, **kwargs):
+        """ Inserts knot(s) in v-direction. """
+        v = kwargs.get('knot')
+        r = kwargs.get('r')
+        s = kwargs.get('s')
+        degree = kwargs.get('degree')
+        knot_vector = kwargs.get('knotvector')
+        control_points2D = kwargs.get('ctrlpts')
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+
+        # Algorithm A5.3
+        span = helpers.find_span(knot_vector, ctrlpts_size_v, v)
+
+        # Initialize new knot vector array
+        VQ = [None for _ in range(len(knot_vector) + r)]
+        # Initialize new control points array (control points can be weighted or not)
+        Q = [[None for _ in range(ctrlpts_size_v + r)] for _ in range(ctrlpts_size_u)]
+        # Initialize a local array of length q + 1
+        R = [None for _ in range(degree + 1)]
+
+        # Load new knot vector
+        for i in range(0, span + 1):
+            VQ[i] = knot_vector[i]
+        for i in range(1, r + 1):
+            VQ[span + i] = v
+        for i in range(span + 1, len(knot_vector)):
+            VQ[i + r] = knot_vector[i]
+
+        # Save the alphas
+        alpha = [[0.0 for _ in range(r + 1)] for _ in range(degree - s)]
+        for j in range(1, r + 1):
+            L = span - degree + j
+            for i in range(0, degree - j - s + 1):
+                alpha[i][j] = (v - knot_vector[L + i]) / (knot_vector[i + span + 1] - knot_vector[L + i])
+
+        # Update control points
+        for col in range(0, ctrlpts_size_u):
+            for i in range(0, span - degree + 1):
+                Q[col][i] = control_points2D[col][i]
+            for i in range(span - s, ctrlpts_size_v):
+                Q[col][i + r] = control_points2D[col][i]
+            # Load auxiliary control points
+            for i in range(0, degree - s + 1):
+                R[i] = copy.deepcopy(control_points2D[col][span - degree + i])
+            # Insert the knot r times
+            for j in range(1, r + 1):
+                L = span - degree + j
+                for i in range(0, degree - j - s + 1):
+                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in
+                               zip(R[i], R[i + 1])]
+                Q[col][L] = copy.deepcopy(R[0])
+                Q[col][span + r - j - s] = copy.deepcopy(R[degree - j - s])
+            # Load the remaining control points
+            L = span - degree + r
+            for i in range(L + 1, span - s):
+                Q[col][i] = copy.deepcopy(R[i - L])
+
+        return VQ, Q
 
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
@@ -480,7 +591,7 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order surface derivatives at the given (u, v) parameter. """
+        """ Evaluates n-th order surface derivatives at a (u, v) parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
