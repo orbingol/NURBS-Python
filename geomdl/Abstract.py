@@ -54,11 +54,10 @@ class Curve(object):
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
 
-        :getter: Prints the name of the evaluator and returns the current Evaluator instance
+        :getter: Gets the current Evaluator instance
         :setter: Sets the evaluator
         """
         if self._evaluator:
-            print("Using " + self._evaluator.name)
             return self._evaluator
 
     @evaluator.setter
