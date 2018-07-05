@@ -30,6 +30,9 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single curve point. """
+        # Call parent method
+        super(CurveEvaluator, self).evaluate_single(**kwargs)
+
         knot = kwargs.get('knot')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
@@ -49,6 +52,9 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
+        # Call parent method
+        super(CurveEvaluator, self).evaluate(**kwargs)
+
         knots = kwargs.get('knots')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
@@ -73,6 +79,9 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
     # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives_single(self, **kwargs):
         """ Evaluates n-th order curve derivatives at a single parameter. """
+        # Call parent method
+        super(CurveEvaluator, self).derivatives_single(**kwargs)
+
         knot = kwargs.get('knot')
         deriv_order = kwargs.get('deriv_order', 0)
         degree = kwargs.get('degree')
@@ -99,9 +108,17 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
     def derivatives(self, **kwargs):
         """ Evaluates n-th order curve derivatives over a range of parameters. """
+        # Call parent method
+        super(CurveEvaluator, self).derivatives(**kwargs)
+
+        # Not implemented, yet...
         raise NotImplementedError("This functionality is not implemented at the moment")
 
     def insert_knot(self, **kwargs):
+        """ Insert knot multiple times at a single parameter. """
+        # Call parent method
+        super(CurveEvaluator, self).insert_knot(**kwargs)
+
         knot = kwargs.get('knot')
         r = kwargs.get('r')  # number of knot insertions
         s = kwargs.get('s')  # multiplicity
@@ -314,6 +331,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single surface point. """
+        # Call parent method
+        super(SurfaceEvaluator, self).evaluate_single(**kwargs)
+
         knot_u = kwargs.get('knot_u')
         knot_v = kwargs.get('knot_v')
         degree_u = kwargs.get('degree_u')
@@ -346,6 +366,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """
+        # Call parent method
+        super(SurfaceEvaluator, self).evaluate(**kwargs)
+
         knots_u = kwargs.get('knots_u')
         knots_v = kwargs.get('knots_v')
         degree_u = kwargs.get('degree_u')
@@ -383,6 +406,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     def derivatives_single(self, **kwargs):
         """ Evaluates n-th order surface derivatives at a (u, v) parameter. """
+        # Call parent method
+        super(SurfaceEvaluator, self).derivatives_single(**kwargs)
+
         deriv_order = kwargs.get('deriv_order')
         knot_u = kwargs.get('knot_u')
         knot_v = kwargs.get('knot_v')
@@ -425,10 +451,17 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     def derivatives(self, **kwargs):
         """ Evaluates n-th order surface derivatives over a range of (u, v) parameters. """
+        # Call parent method
+        super(SurfaceEvaluator, self).derivatives(**kwargs)
+
+        # Not implemented, yet
         raise NotImplementedError("This functionality is not implemented at the moment")
 
     def insert_knot_u(self, **kwargs):
         """ Inserts knot(s) in u-direction. """
+        # Call parent method
+        super(SurfaceEvaluator, self).insert_knot_u(**kwargs)
+
         u = kwargs.get('knot')
         r = kwargs.get('r')
         s = kwargs.get('s')
@@ -489,6 +522,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     def insert_knot_v(self, **kwargs):
         """ Inserts knot(s) in v-direction. """
+        # Call parent method
+        super(SurfaceEvaluator, self).insert_knot_v(**kwargs)
+
         v = kwargs.get('knot')
         r = kwargs.get('r')
         s = kwargs.get('s')
