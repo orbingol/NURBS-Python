@@ -728,8 +728,8 @@ class Surface(Abstract.Surface):
             Please note that the setter doesn't check for inconsistencies and using the setter is not recommended.
             Instead of the setter property, please use :func:`.set_ctrlpts()` function.
 
-        :getter: Gets the control points in U and V directions
-        :setter: Sets the control points in U and V directions
+        :getter: Gets the control points as a 2-dimensional array in [u][v] format
+        :setter: Sets the control points as a 2-dimensional array in [u][v] format
         :type: list
         """
         ret_list = []
@@ -786,9 +786,9 @@ class Surface(Abstract.Surface):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
-        :param size_u: size of the control points grid in u-direction
+        :param size_u: size of the control points grid on the u-direction
         :type size_u: int
-        :param size_v: size of the control points grid in v-direction
+        :param size_v: size of the control points grid on the v-direction
         :type size_v: int
         :return: None
         """
@@ -801,9 +801,9 @@ class Surface(Abstract.Surface):
 
         # Check array size validity
         if size_u < self._degree_u + 1:
-            raise ValueError("Number of control points in u-direction should be at least degree + 1")
+            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
         if size_v < self._degree_v + 1:
-            raise ValueError("Number of control points in v-direction should be at least degree + 1")
+            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
 
         # Estimate dimension by checking the size of the first element
         self._dimension = len(ctrlpts[0])
@@ -835,10 +835,10 @@ class Surface(Abstract.Surface):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for U direction.
+        """ Knot vector for u-direction.
 
-        :getter: Gets the knot vector for U direction
-        :setter: Sets the knot vector for U direction
+        :getter: Gets the knot vector for u-direction
+        :setter: Sets the knot vector for u-direction
         :type: list
         """
         return tuple(self._knot_vector_u)
@@ -863,10 +863,10 @@ class Surface(Abstract.Surface):
 
     @property
     def knotvector_v(self):
-        """ Knot vector for V direction.
+        """ Knot vector for v-direction.
 
-        :getter: Gets the knot vector for V direction
-        :setter: Sets the knot vector for V direction
+        :getter: Gets the knot vector for v-direction
+        :setter: Sets the knot vector for v-direction
         :type: list
         """
         return tuple(self._knot_vector_v)
@@ -958,7 +958,7 @@ class Surface(Abstract.Surface):
             del self._surface_points[:]
 
     def transpose(self):
-        """ Transposes the surface by swapping U and V directions. """
+        """ Transposes the surface by swapping u- and v-directions. """
         # Transpose existing data
         degree_u_new = self._degree_v
         degree_v_new = self._degree_u
@@ -995,9 +995,9 @@ class Surface(Abstract.Surface):
     def surfpt(self, u, v):
         """ Evaluates the surface at the given (u,v) parameter.
 
-        :param u: parameter in the U direction
+        :param u: parameter on the u-direction
         :type u: float
-        :param v: parameter in the V direction
+        :param v: parameter on the v-direction
         :type v: float
         :return: evaluated surface point at the given knot values
         :rtype: list
@@ -1023,10 +1023,10 @@ class Surface(Abstract.Surface):
 
         Keyword arguments:
 
-        * ``start_u``: start parameter in u-direction
-        * ``stop_u``: stop parameter in u-direction
-        * ``start_v``: start parameter in v-direction
-        * ``stop_v``: stop parameter in v-direction
+        * ``start_u``: start parameter on the u-direction
+        * ``stop_u``: stop parameter on the u-direction
+        * ``start_v``: start parameter on the v-direction
+        * ``stop_v``: stop parameter on the v-direction
 
         The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
         in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
@@ -1072,9 +1072,9 @@ class Surface(Abstract.Surface):
         * SKL[0][1] will be the 1st derivative w.r.t. v
         * SKL[2][1] will be the 2nd derivative w.r.t. u and 1st derivative w.r.t. v
 
-        :param u: parameter in the U direction
+        :param u: parameter on the u-direction
         :type u: float
-        :param v: parameter in the V direction
+        :param v: parameter on the v-direction
         :type v: float
         :param order: derivative order
         :type order: integer
@@ -1103,9 +1103,9 @@ class Surface(Abstract.Surface):
 
         The output returns a list containing the starting point (i.e. origin) of the vector and the vectors themselves.
 
-        :param u: parameter in the U direction
+        :param u: parameter on the u-direction
         :type u: float
-        :param v: parameter in the V direction
+        :param v: parameter on the v-direction
         :type v: float
         :param normalize: if True, the returned tangent vector is converted to a unit vector
         :type normalize: bool
@@ -1163,9 +1163,9 @@ class Surface(Abstract.Surface):
 
         The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
-        :param u: parameter in the U direction
+        :param u: parameter on the u-direction
         :type u: float
-        :param v: parameter in the V direction
+        :param v: parameter on the v-direction
         :type v: float
         :param normalize: if True, the returned normal vector is converted to a unit vector
         :type normalize: bool
@@ -1225,13 +1225,13 @@ class Surface(Abstract.Surface):
     def insert_knot(self, u=None, v=None, ru=1, rv=1, check_r=True):
         """ Inserts the knot in single (single u or v) or multi-dimensions ((u,v) pair).
 
-        :param u: Knot to be inserted in u-direction
+        :param u: Knot to be inserted on the u-direction
         :type u: float
-        :param v: Knot to be inserted in v-direction
+        :param v: Knot to be inserted on the v-direction
         :type v: float
-        :param ru: Number of knot insertions in u-direction
+        :param ru: Number of knot insertions on the u-direction
         :type ru: int
-        :param rv: Number of knot insertions in v-direction
+        :param rv: Number of knot insertions on the v-direction
         :type rv: int
         :param check_r: enables/disables number of knot insertions check
         :type check_r: bool
@@ -1246,10 +1246,10 @@ class Surface(Abstract.Surface):
             utilities.check_uv(u, v)
 
         if not isinstance(ru, int) or ru < 0:
-            raise ValueError("Number of insertions in u-direction must be a positive integer")
+            raise ValueError("Number of insertions on the u-direction must be a positive integer")
 
         if not isinstance(rv, int) or rv < 0:
-            raise ValueError("Number of insertions in v-direction must be a positive integer")
+            raise ValueError("Number of insertions on the v-direction must be a positive integer")
 
         # Algorithm A5.3
         if u:
@@ -1257,7 +1257,7 @@ class Surface(Abstract.Surface):
 
             # Check if it is possible add that many number of knots
             if check_r and ru > self.degree_u - s_u:
-                warnings.warn("Cannot insert " + str(ru) + " knots in the u-direction")
+                warnings.warn("Cannot insert " + str(ru) + " knots on the u-direction")
                 can_insert_knot = False
 
             if can_insert_knot:
@@ -1282,7 +1282,7 @@ class Surface(Abstract.Surface):
 
             # Check if it is possible add that many number of knots
             if check_r and rv > self.degree_v - s_v:
-                warnings.warn("Cannot insert " + str(rv) + " knots in the V direction")
+                warnings.warn("Cannot insert " + str(rv) + " knots on the v-direction")
                 can_insert_knot = False
 
             if can_insert_knot:
@@ -1307,12 +1307,12 @@ class Surface(Abstract.Surface):
             self.evaluate()
 
     def split_u(self, t=-1):
-        """ Splits the surface at the input parametric coordinate in u-direction.
+        """ Splits the surface at the input parametric coordinate on the u-direction.
 
-        This method splits the surface into two pieces at the given parametric coordinate in u-direction,
+        This method splits the surface into two pieces at the given parametric coordinate on the u-direction,
         generates two different surface objects and returns them. It doesn't change anything on the operating surface.
 
-        :param t: parametric coordinate in u-direction
+        :param t: parametric coordinate on the u-direction
         :type t: float
         :return: a list of surface as the split pieces of the initial surface
         :rtype: Multi.MultiSurface
@@ -1379,12 +1379,12 @@ class Surface(Abstract.Surface):
         return ret_val
 
     def split_v(self, t=-1):
-        """ Splits the surface at the input parametric coordinate in v-direction.
+        """ Splits the surface at the input parametric coordinate on the v-direction.
 
-        This method splits the surface into two pieces at the given parametric coordinate in v-direction,
+        This method splits the surface into two pieces at the given parametric coordinate on the v-direction,
         generates two different surface objects and returns them. It doesn't change anything on the operating surface.
 
-        :param t: parametric coordinate in v-direction
+        :param t: parametric coordinate on the v-direction
         :type t: float
         :return: a list of surface as the split pieces of the initial surface
         :rtype: Multi.MultiSurface

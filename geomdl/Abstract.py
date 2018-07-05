@@ -432,12 +432,12 @@ class Surface(object):
 
     @property
     def order_u(self):
-        """ Surface order for U direction.
+        """ Surface order for u-direction.
 
         Follows the following equality: order = degree + 1
 
-        :getter: Gets the surface order for U direction
-        :setter: Sets the surface order for U direction
+        :getter: Gets the surface order for u-direction
+        :setter: Sets the surface order for u-direction
         :type: integer
         """
         return self._degree_u + 1
@@ -448,12 +448,12 @@ class Surface(object):
 
     @property
     def order_v(self):
-        """ Surface order for V direction.
+        """ Surface order for v-direction.
 
         Follows the following equality: order = degree + 1
 
-        :getter: Gets the surface order for V direction
-        :setter: Sets the surface order for V direction
+        :getter: Gets the surface order for v-direction
+        :setter: Sets the surface order for v-direction
         :type: integer
         """
         return self._degree_v + 1
@@ -464,10 +464,10 @@ class Surface(object):
 
     @property
     def degree_u(self):
-        """ Surface degree for U direction.
+        """ Surface degree for u-direction.
 
-        :getter: Gets the surface degree for U direction
-        :setter: Sets the surface degree for U direction
+        :getter: Gets the surface degree for u-direction
+        :setter: Sets the surface degree for u-direction
         :type: integer
         """
         return self._degree_u
@@ -484,10 +484,10 @@ class Surface(object):
 
     @property
     def degree_v(self):
-        """ Surface degree for V direction.
+        """ Surface degree for v-direction.
 
-        :getter: Gets the surface degree for V direction
-        :setter: Sets the surface degree for V direction
+        :getter: Gets the surface degree for v-direction
+        :setter: Sets the surface degree for v-direction
         :type: integer
         """
         return self._degree_v
@@ -504,10 +504,10 @@ class Surface(object):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for U direction.
+        """ Knot vector for u-direction.
 
-        :getter: Gets the knot vector for U direction
-        :setter: Sets the knot vector for U direction
+        :getter: Gets the knot vector for u-direction
+        :setter: Sets the knot vector for u-direction
         """
         return self._knot_vector_u
 
@@ -517,10 +517,10 @@ class Surface(object):
 
     @property
     def knotvector_v(self):
-        """ Knot vector for V direction.
+        """ Knot vector for v-direction.
 
-        :getter: Gets the knot vector for V direction
-        :setter: Sets the knot vector for V direction
+        :getter: Gets the knot vector for v-direction
+        :setter: Sets the knot vector for v-direction
         """
         return self._knot_vector_v
 
@@ -545,8 +545,8 @@ class Surface(object):
     def ctrlpts2d(self):
         """ 2-D control points.
 
-        :getter: Gets the control points in U and V directions
-        :setter: Sets the control points in U and V directions
+        :getter: Gets the control points as a 2-dimensional array in [u][v] format
+        :setter: Sets the control points as a 2-dimensional array in [u][v] format
         """
         return self._control_points2D
 
@@ -556,15 +556,17 @@ class Surface(object):
 
     @property
     def ctrlpts_size_u(self):
-        """ Size of the control points array in u-direction.
+        """ Size of the control points array on the u-direction.
 
-        :getter: Gets number of control points in u-direction
-        :setter: Sets number of control points in u-direction
+        :getter: Gets number of control points on the u-direction
+        :setter: Sets number of control points on the u-direction
         """
         return self._control_points_size_u
 
     @ctrlpts_size_u.setter
     def ctrlpts_size_u(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Number of control points on the u-direction must be an integer number")
         if value <= 0:
             raise ValueError("Control points size cannot be less than and equal to zero")
 
@@ -573,15 +575,17 @@ class Surface(object):
 
     @property
     def ctrlpts_size_v(self):
-        """ Size of the control points array in v-direction.
+        """ Size of the control points array on the v-direction.
 
-        :getter: Gets number of control points in v-direction
-        :setter: Sets number of control points in v-direction
+        :getter: Gets number of control points on the v-direction
+        :setter: Sets number of control points on the v-direction
         """
         return self._control_points_size_v
 
     @ctrlpts_size_v.setter
     def ctrlpts_size_v(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Number of control points on the v-direction must be an integer number")
         if value <= 0:
             raise ValueError("Control points size cannot be less than and equal to zero")
 
@@ -646,7 +650,7 @@ class Surface(object):
 
     @property
     def delta_u(self):
-        """ Evaluation delta in u-direction.
+        """ Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -664,7 +668,7 @@ class Surface(object):
     def delta_u(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+            raise ValueError("Surface evaluation delta (u-direction) must be between 0.0 and 1.0")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -674,7 +678,7 @@ class Surface(object):
 
     @property
     def delta_v(self):
-        """ Evaluation delta in v-direction.
+        """ Evaluation delta for the v-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -692,7 +696,7 @@ class Surface(object):
     def delta_v(self, value):
         # Delta value for surface evaluation should be between 0 and 1
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
+            raise ValueError("Surface evaluation delta (v-direction) should be between 0.0 and 1.0")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -702,7 +706,7 @@ class Surface(object):
 
     @property
     def delta(self):
-        """ Evaluation delta in u- and v-directions.
+        """ Evaluation delta for both u- and v-directions.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -734,7 +738,7 @@ class Surface(object):
             else:
                 raise ValueError("Surface requires 2 delta values")
         else:
-            warnings.warn("Cannot set delta. Please use a float or a list with 2 elements")
+            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 2 numeric values")
 
     @property
     def vis(self):
@@ -748,7 +752,7 @@ class Surface(object):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
+            warnings.warn("Visualization component must be an instance of VisAbstract class")
             return
 
         self._vis_component = value
@@ -1042,12 +1046,12 @@ class SurfaceEvaluator(object):
 
     @abc.abstractmethod
     def insert_knot_u(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm in u-direction. """
+        """ Abstract method for implementation of knot insertion algorithm on the u-direction. """
         pass
 
     @abc.abstractmethod
     def insert_knot_v(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm in v-direction. """
+        """ Abstract method for implementation of knot insertion algorithm on the v-direction. """
         pass
 
 

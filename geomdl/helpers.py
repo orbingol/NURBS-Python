@@ -54,7 +54,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, tol=0.001):
 
 
 def find_span(knot_vector, num_ctrlpts, knot):
-    """ Finds the span of the knot over the input knot vector using linear search.
+    """ Finds the span of a single knot over the knot vector using linear search.
 
     Alternative implementation for the Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
@@ -75,7 +75,7 @@ def find_span(knot_vector, num_ctrlpts, knot):
 
 
 def find_spans(knot_vector, num_ctrlpts, knots):
-    """ Find spans of a knot list over the input knot vector.
+    """ Finds spans of a list of knots over the knot vector.
 
     :param knot_vector: knot vector
     :type knot_vector: list, tuple
@@ -126,7 +126,7 @@ def basis_function(degree, knot_vector, span, knot):
 
 
 def basis_functions(degree, knot_vector, spans, knots):
-    """ Computes the non-vanishing basis functions.
+    """ Computes the non-vanishing basis functions for a list of knots.
 
     :param degree: degree
     :type degree: int
@@ -135,7 +135,7 @@ def basis_functions(degree, knot_vector, spans, knots):
     :param spans: spans
     :type spans:  list, tuple
     :param knots: knots
-    :type knots: list, float
+    :type knots: list, tuple
     :return: basis functions
     :rtype: list
     """
@@ -146,7 +146,7 @@ def basis_functions(degree, knot_vector, spans, knots):
 
 
 def basis_function_all(degree, knot_vector, span, knot):
-    """ Finds all non-zero basis functions of all degrees from 0 up to the input degree.
+    """ Finds all non-zero basis functions of all degrees from 0 up to the input degree for a single knot.
 
     A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
@@ -170,7 +170,7 @@ def basis_function_all(degree, knot_vector, span, knot):
 
 
 def basis_function_ders(degree, knot_vector, span, knot, order):
-    """ Finds derivatives of the basis functions.
+    """ Finds derivatives of the basis functions for a single knot.
 
     Implementation of Algorithm A2.3 from The NURBS Book by Piegl & Tiller.
 
@@ -260,7 +260,7 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
 
 
 def find_multiplicity(knot, knot_vector, **kwargs):
-    """ Finds knot multiplicity over the input knot vector.
+    """ Finds knot multiplicity over the knot vector.
 
     :param knot: knot
     :type knot: float

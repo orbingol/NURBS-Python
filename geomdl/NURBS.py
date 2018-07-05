@@ -211,7 +211,7 @@ class Surface(BSpline.Surface):
     @ctrlptsw.setter
     def ctrlptsw(self, value):
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
-            raise ValueError("Please set size of the control points in u and v directions")
+            raise ValueError("Please set size of the control points on the u- and v-directions")
 
         self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
 
@@ -234,7 +234,7 @@ class Surface(BSpline.Surface):
     @ctrlpts.setter
     def ctrlpts(self, value):
         if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
-            raise ValueError("Please set size of the control points in u and v directions")
+            raise ValueError("Please set size of the control points on the u- and v-directions")
 
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
