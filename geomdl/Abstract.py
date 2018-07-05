@@ -98,7 +98,7 @@ class Curve(object):
 
     @order.setter
     def order(self, value):
-        self._degree = value - 1
+        self.degree = value - 1
 
     @property
     def degree(self):
@@ -444,7 +444,7 @@ class Surface(object):
 
     @order_u.setter
     def order_u(self, value):
-        self._degree_u = value - 1
+        self.degree_u = value - 1
 
     @property
     def order_v(self):
@@ -460,7 +460,7 @@ class Surface(object):
 
     @order_v.setter
     def order_v(self, value):
-        self._degree_v = value - 1
+        self.degree_v = value - 1
 
     @property
     def degree_u(self):
@@ -724,17 +724,13 @@ class Surface(object):
 
     @delta.setter
     def delta(self, value):
-        if isinstance(value, float):
-            if float(value) <= 0 or float(value) >= 1:
-                raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
-            self._delta_u = value
-            self._delta_v = value
+        if isinstance(value, (int, float)):
+            self.delta_u = value
+            self.delta_v = value
         elif isinstance(value, (list, tuple)):
             if len(value) == 2:
-                if float(value[0]) <= 0 or float(value[0]) >= 1 or float(value[1]) <= 0 or float(value[1]) >= 1:
-                    raise ValueError("Surface evaluation delta should be between 0.0 and 1.0")
-                self._delta_u = value[0]
-                self._delta_v = value[1]
+                self.delta_u = value[0]
+                self.delta_v = value[1]
             else:
                 raise ValueError("Surface requires 2 delta values")
         else:
