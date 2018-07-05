@@ -7,9 +7,7 @@
 
 """
 
-from . import copy
 from . import BSpline
-from . import utilities
 from . import compatibility
 from . import evaluators
 
