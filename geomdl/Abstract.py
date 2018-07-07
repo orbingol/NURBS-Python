@@ -987,9 +987,8 @@ class Evaluator(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        self._name = ""  # You should override this variable
-        pass
+    def __init__(self, **kwargs):
+        self._name = kwargs.get('name', self.__class__.__name__)
 
     @property
     def name(self):
@@ -1025,7 +1024,7 @@ class CurveEvaluator(object):
     """ Curve customizations for Evaluator abstract base class. """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
 
     @abc.abstractmethod
@@ -1038,7 +1037,7 @@ class SurfaceEvaluator(object):
     """ Surface customizations for the Evaluator abstract base class. """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
 
     @abc.abstractmethod

@@ -24,9 +24,8 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
     """
 
-    def __init__(self):
-        super(CurveEvaluator, self).__init__()
-        self._name = "Curve Evaluator"
+    def __init__(self, **kwargs):
+        super(CurveEvaluator, self).__init__(**kwargs)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single curve point. """
@@ -176,7 +175,7 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
 
 class CurveEvaluator2(CurveEvaluator):
-    """ Sequential B-Spline curve evaluation algorithms.
+    """ Sequential B-Spline curve evaluation algorithms (alternative).
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -187,9 +186,8 @@ class CurveEvaluator2(CurveEvaluator):
 
     """
 
-    def __init__(self):
-        super(CurveEvaluator2, self).__init__()
-        self._name = "Curve Evaluator w/ A3.4 CurveDerivsAlg2"
+    def __init__(self, **kwargs):
+        super(CurveEvaluator2, self).__init__(**kwargs)
 
     # Computes the control points of all derivative curves up to and including the d-th derivative
     def _derivatives_ctrlpts(self, **kwargs):
@@ -261,9 +259,8 @@ class NURBSCurveEvaluator(CurveEvaluator):
 
     """
 
-    def __init__(self):
-        super(NURBSCurveEvaluator, self).__init__()
-        self._name = "NURBS Curve Evaluator"
+    def __init__(self, **kwargs):
+        super(NURBSCurveEvaluator, self).__init__(**kwargs)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single curve point. """
@@ -325,9 +322,8 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     """
 
-    def __init__(self):
-        super(SurfaceEvaluator, self).__init__()
-        self._name = "Surface Evaluator"
+    def __init__(self, **kwargs):
+        super(SurfaceEvaluator, self).__init__(**kwargs)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single surface point. """
@@ -595,9 +591,8 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
 
     """
 
-    def __init__(self):
-        super(NURBSSurfaceEvaluator, self).__init__()
-        self._name = "NURBS Surface Evaluator"
+    def __init__(self, **kwargs):
+        super(NURBSSurfaceEvaluator, self).__init__(**kwargs)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single surface point. """
