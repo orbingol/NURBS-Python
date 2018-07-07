@@ -19,3 +19,4 @@ import copy
 import warnings
 import struct
 import pickle
+import six

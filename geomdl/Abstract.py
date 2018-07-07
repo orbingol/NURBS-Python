@@ -8,13 +8,13 @@
 """
 
 from . import abc
+from . import six
 from . import warnings
 from . import utilities
 
 
-class Curve(object):
+class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all curves. """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self):
         self._name = "Curve"  # descriptor field
@@ -347,9 +347,8 @@ class Curve(object):
         pass
 
 
-class Surface(object):
+class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all surfaces. """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self):
         # Define u-direction variables
@@ -862,10 +861,8 @@ class Surface(object):
         pass
 
 
-class Multi(object):
+class Multi(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for curve and surface containers. """
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self):
         self._elements = []  # elements contained
@@ -979,13 +976,12 @@ class Multi(object):
         pass
 
 
-class Evaluator(object):
+class Evaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Evaluator abstract base class.
 
     The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
     The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
         self._name = kwargs.get('name', self.__class__.__name__)
@@ -1020,9 +1016,8 @@ class Evaluator(object):
         pass
 
 
-class CurveEvaluator(object):
+class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Curve customizations for Evaluator abstract base class. """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
         pass
@@ -1033,9 +1028,8 @@ class CurveEvaluator(object):
         pass
 
 
-class SurfaceEvaluator(object):
+class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Surface customizations for the Evaluator abstract base class. """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
         pass
@@ -1051,26 +1045,24 @@ class SurfaceEvaluator(object):
         pass
 
 
-class VisConfigAbstract(object):
+class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """ Visualization configuration abstract class
 
     Uses Python's *Abstract Base Class* implementation to define a base for all visualization configurations
     in NURBS-Python package.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __init__(self, **kwargs):
         pass
 
 
-class VisAbstract(object):
+class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """ Visualization abstract class
 
     Uses Python's *Abstract Base Class* implementation to define a base for all common visualization options
     in NURBS-Python package.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, config=None):
         self._plots = []
@@ -1116,13 +1108,12 @@ class VisAbstract(object):
         pass
 
 
-class VisAbstractSurf(VisAbstract):
+class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     """ Visualization abstract class for surfaces
 
     Implements ``VisABstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
     for **surface** visualization options in NURBS-Python package.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, config=None):
         super(VisAbstractSurf, self).__init__(config=config)

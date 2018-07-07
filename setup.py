@@ -82,6 +82,7 @@ setup(
     url='https://github.com/orbingol/NURBS-Python',
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
+    install_requires=['six>=1.9.0'],
     extras_require={
         'visualization': ['matplotlib', 'plotly'],
     },
