@@ -13,6 +13,7 @@ GEOMDL_DELTA = 0.001
 
 @pytest.fixture
 def nurbs_curve():
+    """ Creates a 4th order 2D NURBS Curve instance """
     # Create a curve instance
     curve = NURBS.Curve()
 
@@ -31,6 +32,7 @@ def nurbs_curve():
 
 @pytest.fixture
 def nurbs_curve2():
+    """ Creates a 5th order 2D NURBS Curve instance """
     # Create a curve instance
     curve = NURBS.Curve()
 
