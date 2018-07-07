@@ -57,8 +57,7 @@ class Curve(object):
         :getter: Gets the current Evaluator instance
         :setter: Sets the evaluator
         """
-        if self._evaluator:
-            return self._evaluator
+        return self._evaluator
 
     @evaluator.setter
     def evaluator(self, value):
@@ -402,9 +401,7 @@ class Surface(object):
         :getter: Prints the name of the evaluator and returns the current Evaluator instance
         :setter: Sets the evaluator
         """
-        if self._evaluator:
-            print("Using " + self._evaluator.name)
-            return self._evaluator
+        return self._evaluator
 
     @evaluator.setter
     def evaluator(self, value):
