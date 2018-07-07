@@ -153,7 +153,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the coordinates of the evaluated points
         """
-        if not self._curve_points:
+        if self._curve_points is None or len(self._curve_points) == 0:
             self.evaluate()
 
         return self._curve_points
@@ -594,7 +594,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the coordinates of the evaluated points
         """
-        if not self._surface_points:
+        if self._surface_points is None or len(self._surface_points) == 0:
             self.evaluate()
 
         return self._surface_points
