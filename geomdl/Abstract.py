@@ -1045,6 +1045,18 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
+class SurfaceTessellator(six.with_metaclass(abc.ABCMeta, object)):
+    """ Tessellator abstract base for the surface evaluator classes. """
+
+    def __init__(self, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def tessellate(self, **kwargs):
+        """ Abstract method for implementation of the surface tessellation algorithm. """
+        pass
+
+
 class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """ Visualization configuration abstract class
 
