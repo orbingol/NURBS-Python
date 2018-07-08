@@ -133,6 +133,17 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @knotvector.setter
     def knotvector(self, value):
+        if self._degree == 0 or not self._control_points:
+            raise ValueError("Set degree and control points first")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self._degree, value, len(self._control_points)):
+            raise ValueError("Input is not a valid knot vector")
+
+        # Clean up the curve points lists
+        self.reset(evalpts=True)
+
+        # Set knot vector
         self._knot_vector = value
 
     @property
@@ -373,6 +384,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
         self._evaluator = None  # evaluator instance
+        self._precision = 6  # number of decimal places to round to
         self._cache = {}  # cache dictionary
 
     @property
@@ -510,6 +522,17 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @knotvector_u.setter
     def knotvector_u(self, value):
+        if self._degree_u == 0 or self._control_points_size_u == 0:
+            raise ValueError("Set degree and control points first on the u-direction")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self._degree_u, value, self._control_points_size_u):
+            raise ValueError("Input is not a valid knot vector on the u-direction")
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Set knot vector
         self._knot_vector_u = value
 
     @property
@@ -523,6 +546,17 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @knotvector_v.setter
     def knotvector_v(self, value):
+        if self._degree_v == 0 or self._control_points_size_v == 0:
+            raise ValueError("Set degree and control points first on the v-direction")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self._degree_v, value, self._control_points_size_v):
+            raise ValueError("Input is not a valid knot vector on the v-direction")
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Set knot vector
         self._knot_vector_v = value
 
     @property

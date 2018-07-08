@@ -115,21 +115,11 @@ class Curve(Abstract.Curve):
 
     @knotvector.setter
     def knotvector(self, value):
-        if self._degree == 0 or not self._control_points:
-            raise ValueError("Set degree and control points first")
+        # Call parent property setter
+        super(Curve, self.__class__).knotvector.fset(self, value)
 
-        # Normalize the input knot vector
-        value_normalized = utilities.normalize_knot_vector(value)
-
-        # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree, value_normalized, len(self._control_points)):
-            raise ValueError("Input is not a valid knot vector")
-
-        # Clean up the surface points lists
-        self.reset(evalpts=True)
-
-        # Set knot vector
-        self._knot_vector = [float(kv) for kv in value_normalized]
+        # Normalize knot vector
+        self._knot_vector = utilities.normalize_knot_vector(self._knot_vector, decimals=self._precision)
 
     def save(self, file_name):
         """  Saves the curve as a pickled file.
@@ -845,21 +835,11 @@ class Surface(Abstract.Surface):
 
     @knotvector_u.setter
     def knotvector_u(self, value):
-        if self._degree_u == 0 or self._control_points_size_u == 0:
-            raise ValueError("Set degree and control points first (u-direction)")
+        # Call parent property setter
+        super(Surface, self.__class__).knotvector_u.fset(self, value)
 
-        # Normalize the input knot vector
-        value_normalized = utilities.normalize_knot_vector(value)
-
-        # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree_u, value_normalized, self._control_points_size_u):
-            raise ValueError("Input is not a valid knot vector (u-direction)")
-
-        # Clean up the surface points
-        self.reset(evalpts=True)
-
-        # Set knot vector u
-        self._knot_vector_u = [float(kv) for kv in value_normalized]
+        # Normalize knot vector
+        self._knot_vector_u = utilities.normalize_knot_vector(self._knot_vector_u, decimals=self._precision)
 
     @property
     def knotvector_v(self):
@@ -873,21 +853,11 @@ class Surface(Abstract.Surface):
 
     @knotvector_v.setter
     def knotvector_v(self, value):
-        if self._degree_v == 0 or self._control_points_size_v == 0:
-            raise ValueError("Set degree and control points first (v-direction)")
+        # Call parent property setter
+        super(Surface, self.__class__).knotvector_v.fset(self, value)
 
-        # Normalize the input knot vector
-        value_normalized = utilities.normalize_knot_vector(value)
-
-        # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree_v, value_normalized, self._control_points_size_v):
-            raise ValueError("Input is not a valid knot vector (v-direction)")
-
-        # Clean up the surface points
-        self.reset(evalpts=True)
-
-        # Set knot vector v
-        self._knot_vector_v = [float(kv) for kv in value_normalized]
+        # Normalize knot vector
+        self._knot_vector_v = utilities.normalize_knot_vector(self._knot_vector_v, decimals=self._precision)
 
     def save(self, file_name):
         """ Saves the surface as a pickled file.
