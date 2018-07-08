@@ -376,11 +376,11 @@ def frange(start, stop, step=1.0):
 
 
 # Normalizes knot vector
-def normalize_knot_vector(knot_vector=(), decimals=4):
+def normalize_knot_vector(knot_vector, decimals=4):
     """ Normalizes the input knot vector between 0 and 1.
 
-    :param knot_vector: input knot vector
-    :type knot_vector: tuple
+    :param knot_vector: knot vector to be normalized
+    :type knot_vector: list, tuple
     :param decimals: rounding number
     :type decimals: int
     :return: normalized knot vector
@@ -438,12 +438,12 @@ def generate_knot_vector(degree, num_ctrlpts):
 
 
 # Checks if the input knot vector follows the mathematical rules
-def check_knot_vector(degree=0, knot_vector=(), num_ctrlpts=0):
+def check_knot_vector(degree, knot_vector, num_ctrlpts):
     """ Checks if the input knot vector follows the mathematical rules.
 
     :param degree: degree of the curve or the surface
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector to be checked
     :type knot_vector: list, tuple
     :param num_ctrlpts: number of control points
     :type num_ctrlpts: int
