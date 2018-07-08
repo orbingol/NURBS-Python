@@ -45,8 +45,14 @@ def vector_cross(vector1, vector2):
     :return: result of the cross product
     :rtype: list
     """
-    if not vector1 or not vector2:
-        raise ValueError("Input vectors cannot be empty")
+    try:
+        if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
+            raise ValueError("Input vectors cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Input must be a list or tuple")
+    except Exception:
+        raise
 
     if len(vector1) != 3 or len(vector2) != 3:
         raise ValueError("Input should contain 3 elements")
@@ -70,8 +76,14 @@ def vector_dot(vector1, vector2):
     :return: result of the dot product
     :rtype: list
     """
-    if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
-        raise ValueError("Input vectors cannot be empty")
+    try:
+        if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
+            raise ValueError("Input vectors cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Input must be a list or tuple")
+    except Exception:
+        raise
 
     # Compute dot product
     prod = 0
@@ -93,8 +105,14 @@ def vector_normalize(vector_in, decimals=6):
     :return: the normalized vector (i.e. the unit vector)
     :rtype: list
     """
-    if vector_in is None or len(vector_in) == 0:
-        raise ValueError("Input vector cannot be empty")
+    try:
+        if vector_in is None or len(vector_in) == 0:
+            raise ValueError("Input vector cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Input must be a list or tuple")
+    except Exception:
+        raise
 
     # Calculate magnitude of the vector
     sq_sum = 0
@@ -126,8 +144,14 @@ def vector_generate(start_pt, end_pt, normalize=False):
     :return: a vector from start_pt to end_pt
     :rtype: list
     """
-    if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
-        raise ValueError("Input points cannot be empty")
+    try:
+        if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
+            raise ValueError("Input points cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Input must be a list or tuple")
+    except Exception:
+        raise
 
     ret_vec = []
     for sp, ep in zip(start_pt, end_pt):
@@ -148,8 +172,14 @@ def point_translate(point_in, vector_in):
     :return: translated point
     :rtype: list
     """
-    if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
-        raise ValueError("Inputs cannot be empty")
+    try:
+        if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
+            raise ValueError("Input arguments cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Input must be a list or tuple")
+    except Exception:
+        raise
 
     # Translate the point using the input vector
     point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
@@ -386,8 +416,14 @@ def normalize_knot_vector(knot_vector, decimals=4):
     :return: normalized knot vector
     :rtype: list
     """
-    if knot_vector is None or len(knot_vector) == 0:
-        return knot_vector
+    try:
+        if knot_vector is None or len(knot_vector) == 0:
+            raise ValueError("Input knot vector cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Knot vector must be a list or tuple")
+    except Exception:
+        raise
 
     first_knot = float(knot_vector[0])
     last_knot = float(knot_vector[-1])
@@ -450,8 +486,14 @@ def check_knot_vector(degree, knot_vector, num_ctrlpts):
     :return: True if the knot vector is valid, False otherwise
     :rtype: bool
     """
-    if knot_vector is None or len(knot_vector) == 0:
-        raise ValueError("Input knot vector cannot be empty")
+    try:
+        if knot_vector is None or len(knot_vector) == 0:
+            raise ValueError("Input knot vector cannot be empty")
+    except TypeError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise TypeError("Knot vector must be a list or tuple")
+    except Exception:
+        raise
 
     # Check the formula; m = p + n + 1
     if len(knot_vector) != degree + num_ctrlpts + 1:

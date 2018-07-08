@@ -64,9 +64,9 @@ def test_check_knot_vector4():
 
 
 def test_normalize_knot_vector1():
-    result = tuple()
-    to_check = utilities.normalize_knot_vector(result)
-    assert to_check == result
+    # check for empty list/tuple
+    with pytest.raises(ValueError):
+        utilities.normalize_knot_vector(tuple())
 
 
 def test_normalize_knot_vector2():
