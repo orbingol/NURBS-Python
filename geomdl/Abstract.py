@@ -29,6 +29,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = None  # visualization component
         self._bounding_box = None  # bounding box
         self._evaluator = None  # evaluator instance
+        self._precision = 6  # number of decimal places to round to
         self._cache = {}  # cache dictionary
 
     @property
