@@ -133,7 +133,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @knotvector.setter
     def knotvector(self, value):
-        if self._degree == 0 or not self._control_points:
+        if self._degree == 0 or self._control_points is None or len(self._control_points) == 0:
             raise ValueError("Set degree and control points first")
 
         # Check knot vector validity

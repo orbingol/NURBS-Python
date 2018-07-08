@@ -386,7 +386,7 @@ def normalize_knot_vector(knot_vector, decimals=4):
     :return: normalized knot vector
     :rtype: list
     """
-    if not knot_vector or len(knot_vector) == 0:
+    if knot_vector is None or len(knot_vector) == 0:
         return knot_vector
 
     first_knot = float(knot_vector[0])
@@ -450,7 +450,7 @@ def check_knot_vector(degree, knot_vector, num_ctrlpts):
     :return: True if the knot vector is valid, False otherwise
     :rtype: bool
     """
-    if not knot_vector or len(knot_vector) == 0:
+    if knot_vector is None or len(knot_vector) == 0:
         raise ValueError("Input knot vector cannot be empty")
 
     # Check the formula; m = p + n + 1
