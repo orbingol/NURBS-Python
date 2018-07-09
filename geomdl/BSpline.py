@@ -201,15 +201,30 @@ class Curve(Abstract.Curve):
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
 
-        Keyword arguments:
+        **The evaluated curve points are stored in :py:attr:`~evalpts` property.**
 
-        * ``start``: start parameter
-        * ``stop``: stop parameter
+        Keyword arguments:
+            * ``start``: start parameter
+            * ``stop``: stop parameter
 
         The ``start`` and ``stop`` parameters allow evaluation of a curve segment in the range *[start, stop]*, i.e.
         the curve will also be evaluated at the ``stop`` parameter value.
 
-        .. note:: The evaluated curve points are stored in :py:attr:`~evalpts`.
+        The following examples illustrate the usage of the keyword arguments.
+
+        .. code-block:: python
+
+            # Start evaluating from u=0.2 to u=1.0
+            curve.evaluate(start=0.2)
+
+            # Start evaluating from u=0.0 to u=0.7
+            curve.evaluate(stop=0.7)
+
+            # Start evaluating from u=0.1 to u=0.5
+            curve.evaluate(start=0.1, stop=0.5)
+
+            # Get the evaluated points
+            curve_points = curve.evalpts
 
         """
         # Check all parameters are set before the curve evaluation
@@ -988,18 +1003,30 @@ class Surface(Abstract.Surface):
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
 
-        Keyword arguments:
+        **The evaluated surface points are stored in :py:attr:`~evalpts` property.**
 
-        * ``start_u``: start parameter on the u-direction
-        * ``stop_u``: stop parameter on the u-direction
-        * ``start_v``: start parameter on the v-direction
-        * ``stop_v``: stop parameter on the v-direction
+        Keyword arguments:
+            * ``start_u``: start parameter on the u-direction
+            * ``stop_u``: stop parameter on the u-direction
+            * ``start_v``: start parameter on the v-direction
+            * ``stop_v``: stop parameter on the v-direction
 
         The ``start_u``, ``start_v`` and ``stop_u`` and ``stop_v`` parameters allow evaluation of a surface segment
         in the range  *[start_u, stop_u][start_v, stop_v]* i.e. the surface will also be evaluated at the ``stop_u``
         and ``stop_v`` parameter values.
 
-        .. note:: The evaluated surface points are stored in :py:attr:`~evalpts`.
+        The following examples illustrate the usage of the keyword arguments.
+
+        .. code-block:: python
+
+            # Start evaluating in range u=[0, 0.7] and v=[0.1, 1]
+            surf.evaluate(stop_u=0.7, start_v=0.1)
+
+            # Start evaluating in range u=[0, 1] and v=[0.1, 0.3]
+            surf.evaluate(start_v=0.1, stop_v=0.3)
+
+            # Get the evaluated points
+            surface_points = surf.evalpts
 
         """
         # Check all parameters are set before the surface evaluation
