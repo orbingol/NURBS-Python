@@ -632,12 +632,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
-
         :getter: Gets sample size for the u-direction
         :setter: Sets sample size for the u-direction
         :type: int
@@ -665,12 +659,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         """ Sample size for the v-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
-
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
         :getter: Gets sample size for the v-direction
         :setter: Sets sample size for the v-direction
