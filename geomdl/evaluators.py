@@ -369,8 +369,11 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Call parent method
         super(SurfaceEvaluator, self).evaluate(**kwargs)
 
-        knots_u = kwargs.get('knots_u')
-        knots_v = kwargs.get('knots_v')
+        start_u = kwargs.get('start_u')
+        stop_u = kwargs.get('stop_u')
+        start_v = kwargs.get('start_v')
+        stop_v = kwargs.get('stop_v')
+        sample_size = kwargs.get('sample_size')
         degree_u = kwargs.get('degree_u')
         degree_v = kwargs.get('degree_v')
         knot_vector_u = kwargs.get('knotvector_u')
@@ -379,8 +382,12 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
         dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
 
         # Algorithm A3.5
+        knots_u = utilities.linspace(start_u, stop_u, sample_size[0], decimals=precision)
+        knots_v = utilities.linspace(start_v, stop_v, sample_size[1], decimals=precision)
+
         spans_u = helpers.find_spans(knot_vector_u, ctrlpts_size_u, knots_u)
         spans_v = helpers.find_spans(knot_vector_v, ctrlpts_size_v, knots_v)
 

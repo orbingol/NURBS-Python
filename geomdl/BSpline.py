@@ -228,10 +228,10 @@ class Curve(Abstract.Curve):
 
         # Evaluate
         cpts = self._evaluator.evaluate(start_u=start, stop_u=stop,
-                                        sample_size=self.sample_size,
                                         degree=self.degree,
                                         knotvector=self.knotvector,
                                         ctrlpts=self._control_points,
+                                        sample_size=self.sample_size,
                                         dimension=self._dimension,
                                         precision=self._precision)
 
@@ -1018,16 +1018,15 @@ class Surface(Abstract.Surface):
         # Clean up the surface points
         self.reset(evalpts=True)
 
-        # Compute knots in the range
-        knots_u = utilities.linspace(start_u, stop_u, self.sample_size, decimals=self._precision)
-        knots_v = utilities.linspace(start_v, stop_v, self.sample_size, decimals=self._precision)
-
-        spts = self._evaluator.evaluate(knots_u=knots_u, knots_v=knots_v,
+        # Evaluate
+        spts = self._evaluator.evaluate(start_u=start_u, stop_u=stop_u, start_v=start_v, stop_v=stop_v,
                                         degree_u=self.degree_u, degree_v=self.degree_v,
                                         knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
                                         ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
                                         ctrlpts=self._control_points2D,
-                                        dimension=self._dimension)
+                                        sample_size=self.sample_size,
+                                        dimension=self._dimension,
+                                        precision=self._precision)
 
         self._surface_points = spts
 
