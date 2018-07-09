@@ -694,7 +694,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
-        :getter: Gets sample size as a tuple of values corresponding to u- and v-directions
+        :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same sample size value for both u- and v-directions
         :type: int
         """
@@ -723,14 +723,17 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def delta_u(self):
         """ Evaluation delta for the u-direction.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
 
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
+
         .. note:: The delta value is 0.1 by default.
 
-        :getter: Gets the delta value
-        :setter: Sets the delta value
+        :getter: Gets the delta value for the u-direction
+        :setter: Sets the delta value for the u-direction
         :type: float
         """
         return self._delta_u
@@ -751,14 +754,17 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def delta_v(self):
         """ Evaluation delta for the v-direction.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
 
+        Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
         .. note:: The delta value is 0.1 by default.
 
-        :getter: Gets the delta value
-        :setter: Sets the delta value
+        :getter: Gets the delta value for the v-direction
+        :setter: Sets the delta value for the v-direction
         :type: float
         """
         return self._delta_v
@@ -779,9 +785,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def delta(self):
         """ Evaluation delta for both u- and v-directions.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
         Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
 
         The following figure illustrates the working principles of the delta property:
 
@@ -791,8 +800,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         .. note:: The delta value is 0.1 by default.
 
-        :getter: Gets the delta value
-        :setter: Sets the delta value
+        :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
+        :setter: Sets the same delta value for both u- and v-directions
         :type: float
         """
         return self.delta_u, self.delta_v
