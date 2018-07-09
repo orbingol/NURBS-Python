@@ -582,7 +582,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiAbstract
+    :type surface_list: Multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -687,7 +687,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiAbstract
+    :type surface_list: Multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
