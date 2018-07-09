@@ -23,7 +23,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._knot_vector = None  # knot vector
         self._control_points = None  # control points
         self._delta = 0.1  # evaluation delta
-        self._sample_size = None  # sample size
         self._curve_points = None  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
@@ -186,13 +185,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets sample size
         :type: int
         """
-        if self._sample_size is None:
-            # Try to estimate a sample size
-            self._sample_size = int(1.0 / self.delta) + 1
-        return self._sample_size
+        return int(1 / self.delta) + 1
 
     @sample_size.setter
     def sample_size(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
         if self._knot_vector is None or len(self._knot_vector) == 0 or self._degree == 0:
             warnings.warn("Cannot determine the delta value. Please set knot vector and degree before sample size.")
             return
@@ -201,14 +200,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         start = self._knot_vector[self._degree]
         stop = self._knot_vector[-(self._degree+1)]
 
-        # Clean up the curve points list
-        self.reset(evalpts=True)
-
         # Set delta value
-        self._delta = (stop - start) / float(value - 1)
-
-        # Set sample size
-        self._sample_size = value
+        self.delta = (stop - start) / float(value - 1)
 
     @property
     def delta(self):
@@ -376,7 +369,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Define common variables
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
-        self._sample_size = None  # defines sample size
         self._control_points = None  # control points, 1-D array (v-order)
         self._control_points2D = None  # control points, 2-D array [u][v]
         self._surface_points = None  # evaluated points
@@ -635,8 +627,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         return self._surface_points
 
     @property
-    def sample_size(self):
-        """ Sample size.
+    def sample_size_u(self):
+        """ Sample size for the u-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
@@ -646,15 +638,81 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
-        :getter: Gets sample size
-        :setter: Sets sample size
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
         :type: int
         """
-        if self._sample_size is None:
-            # Try to estimate a sample size
-            self._sample_size = int(1.0 / self.delta_u) + 1
-            # self._sample_size = int(1.0 / self.delta_v) + 1
-        return self._sample_size
+        return int(1 / self.delta_u) + 1
+
+    @sample_size_u.setter
+    def sample_size_u(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
+        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or self._degree_u == 0:
+            warnings.warn("Cannot determine the delta_u value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_u = self._knot_vector_u[self._degree_u]
+        stop_u = self._knot_vector_u[-(self._degree_u+1)]
+
+        # Set delta values
+        self.delta_u = (stop_u - start_u) / float(value - 1)
+
+    @property
+    def sample_size_v(self):
+        """ Sample size for the v-direction.
+
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        :getter: Gets sample size for the v-direction
+        :setter: Sets sample size for the v-direction
+        :type: int
+        """
+        return int(1 / self.delta_v) + 1
+
+    @sample_size_v.setter
+    def sample_size_v(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
+        if (self._knot_vector_v is None or len(self._knot_vector_v) == 0) or self._degree_v == 0:
+            warnings.warn("Cannot determine the delta_v value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_v = self._knot_vector_v[self._degree_v]
+        stop_v = self._knot_vector_v[-(self._degree_v+1)]
+
+        # Set delta values
+        self.delta_v = (stop_v - start_v) / float(value - 1)
+
+    @property
+    def sample_size(self):
+        """ Sample size for both u- and v-directions.
+
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        :getter: Gets sample size as a tuple of values corresponding to u- and v-directions
+        :setter: Sets the same sample size value for both u- and v-directions
+        :type: int
+        """
+        sample_size_u = int(1 / self.delta_u) + 1
+        sample_size_v = int(1 / self.delta_v) + 1
+        return sample_size_u, sample_size_v
 
     @sample_size.setter
     def sample_size(self, value):
@@ -669,15 +727,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         start_v = self._knot_vector_v[self._degree_v]
         stop_v = self._knot_vector_v[-(self._degree_v+1)]
 
-        # Clean up the surface points
-        self.reset(evalpts=True)
-
         # Set delta values
-        self._delta_u = (stop_u - start_u) / float(value - 1)
-        self._delta_v = (stop_v - start_v) / float(value - 1)
-
-        # Set sample size
-        self._sample_size = value
+        self.delta_u = (stop_u - start_u) / float(value - 1)
+        self.delta_v = (stop_v - start_v) / float(value - 1)
 
     @property
     def delta_u(self):
@@ -704,7 +756,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Clean up the surface points
         self.reset(evalpts=True)
 
-        # Set a new delta value
+        # Set new delta value
         self._delta_u = float(value)
 
     @property
@@ -732,7 +784,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Clean up the surface points
         self.reset(evalpts=True)
 
-        # Set a new delta value
+        # Set new delta value
         self._delta_v = float(value)
 
     @property
@@ -842,7 +894,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                                 size=[self._control_points_size_u, self._control_points_size_v],
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self.evalpts,
-                                size=[self.sample_size, self.sample_size],
+                                size=[self.sample_size_u, self.sample_size_v],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
@@ -901,7 +953,6 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     def __init__(self):
         self._elements = []  # elements contained
-        self._sample_size = 10 # sample size
         self._vis_component = None  # visualization component
         self._iter_index = 0  # iterator index
         self._instance = None  # type of the initial element
@@ -937,22 +988,6 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         new_elems = self._elements + other._elements
         ret.add_list(new_elems)
         return ret
-
-    @property
-    def sample_size(self):
-        """ Sample size.
-
-        Sample size defines the number of evaluated points to generate. It sets the ``delta`` property.
-
-        :getter: Gets sample size
-        :setter: Sets sample size
-        :type: int
-        """
-        return self._sample_size
-
-    @sample_size.setter
-    def sample_size(self, value):
-        self._sample_size = value
 
     @property
     def vis(self):
