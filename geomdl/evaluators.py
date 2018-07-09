@@ -54,13 +54,17 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         # Call parent method
         super(CurveEvaluator, self).evaluate(**kwargs)
 
-        knots = kwargs.get('knots')
+        start_u = kwargs.get('start_u')
+        stop_u = kwargs.get('stop_u')
+        sample_size = kwargs.get('sample_size')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
         control_points = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
 
         # Algorithm A3.1
+        knots = utilities.linspace(start_u, stop_u, sample_size, decimals=precision)
         spans = helpers.find_spans(knot_vector, len(control_points), knots)
         basis = helpers.basis_functions(degree, knot_vector, spans, knots)
 

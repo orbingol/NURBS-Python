@@ -192,13 +192,11 @@ class Curve(Abstract.Curve):
         utilities.check_uv(u)
 
         # Evaluate
-        cpt = self._evaluator.evaluate_single(knot=u,
-                                              degree=self.degree,
-                                              knotvector=self.knotvector,
-                                              ctrlpts=self._control_points,
-                                              dimension=self._dimension)
-
-        return cpt
+        return self._evaluator.evaluate_single(knot=u,
+                                               degree=self.degree,
+                                               knotvector=self.knotvector,
+                                               ctrlpts=self._control_points,
+                                               dimension=self._dimension)
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -228,15 +226,14 @@ class Curve(Abstract.Curve):
         # Clean up the curve points
         self.reset(evalpts=True)
 
-        # Generate the knots in the range
-        knots = utilities.linspace(start, stop, self.sample_size, decimals=self._precision)
-
         # Evaluate
-        cpts = self._evaluator.evaluate(knots=knots,
+        cpts = self._evaluator.evaluate(start_u=start, stop_u=stop,
+                                        sample_size=self.sample_size,
                                         degree=self.degree,
                                         knotvector=self.knotvector,
                                         ctrlpts=self._control_points,
-                                        dimension=self._dimension)
+                                        dimension=self._dimension,
+                                        precision=self._precision)
 
         self._curve_points = cpts
 
