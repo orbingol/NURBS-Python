@@ -2,10 +2,10 @@ Compatibility
 ^^^^^^^^^^^^^
 
 Most of the time, users experience problems in converting data between different software packages. To aid this problem
-a little bit, NURBS-Python provides a ``compatibility`` module. The purpose of ``compatibility`` module is simple:
-converting control points sets into NURBS-Python compatible ones.
+a little bit, NURBS-Python provides a :doc:`compatibility <module_compatibility>` module for converting control points
+sets into NURBS-Python compatible ones.
 
-The following example illustrates the usage of :code:`compatibility` module:
+The following example illustrates the usage of :doc:`compatibility <module_compatibility>` module:
 
 .. code-block:: python
 
