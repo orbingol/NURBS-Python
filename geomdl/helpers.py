@@ -278,3 +278,57 @@ def find_multiplicity(knot, knot_vector, **kwargs):
             mult += 1
 
     return mult
+
+def basis_function_one(degree, knot_vector, span, knot):
+    """Computes the value of a basis function for a knot
+
+    :param degree: degree
+    :type degree: int
+    :param knot_vector: knot vector
+    :type knot_vector: list, typle
+    :param span: span of the knot
+    :type span: int
+    :param knot: knot
+    :type knot: float
+    :return: basis function value
+    :rtype: float
+    """
+    # Special case at boundaries
+    if (span == 0 and knot == knot_vector[0]) or \
+       (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector - 1)]:
+        return 1.0;
+
+    #Knot is outside of span range
+    if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
+        return 0.0;
+
+    N = [None for _ in range(degree + span + 1)]
+
+    #Initialize the zeroth degree basis functions
+    for j in range(0, degree + 1):
+        if knot >= knot_vector[span + j] and knot < knot_vector[span + j + 1]:
+            N[j] = 1.0
+        else:
+            N[j] = 0.0
+
+    #Computing triangular table of basis functions
+    for k in range(1, degree + 1):
+        if N[0] == 0.0:
+            saved = 0.0
+        else:
+            saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
+
+        for j in range(0, degree - k + 1):
+            Uleft = knot_vector[span + j + 1]
+            Uright = knot_vector[span + j + degree + 1]
+
+            if N[j + 1] == 0.0:
+                N[j] = saved
+                saved = 0.0
+            else:
+                temp = N[j + 1] / (Uright - Uleft)
+                N[j] = saved + (Uright - knot) * temp
+                saved = (knot - Uleft) * temp
+
+    return N[0]
+
