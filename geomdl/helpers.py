@@ -280,7 +280,9 @@ def find_multiplicity(knot, knot_vector, **kwargs):
     return mult
 
 def basis_function_one(degree, knot_vector, span, knot):
-    """Computes the value of a basis function for a knot
+    """ Computes the value of a basis function for a knot.
+
+    Implementation of Algorithm 2.4 from The NURBS Book by Piegl & Tiller.
 
     :param degree: degree
     :type degree: int
@@ -331,4 +333,3 @@ def basis_function_one(degree, knot_vector, span, knot):
                 saved = (knot - Uleft) * temp
 
     return N[0]
-
