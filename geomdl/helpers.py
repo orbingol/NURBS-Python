@@ -300,20 +300,20 @@ def basis_function_one(degree, knot_vector, span, knot):
        (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector - 1)]:
         return 1.0;
 
-    #Knot is outside of span range
+    # Knot is outside of span range
     if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
         return 0.0;
 
     N = [None for _ in range(degree + span + 1)]
 
-    #Initialize the zeroth degree basis functions
+    # Initialize the zeroth degree basis functions
     for j in range(0, degree + 1):
         if knot >= knot_vector[span + j] and knot < knot_vector[span + j + 1]:
             N[j] = 1.0
         else:
             N[j] = 0.0
 
-    #Computing triangular table of basis functions
+    # Computing triangular table of basis functions
     for k in range(1, degree + 1):
         if N[0] == 0.0:
             saved = 0.0
