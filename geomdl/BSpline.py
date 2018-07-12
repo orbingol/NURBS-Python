@@ -93,6 +93,7 @@ class Curve(Abstract.Curve):
         # Estimate dimension by checking the size of the first element
         self._dimension = len(ctrlpts[0])
 
+        ctrlpts_float = []
         for idx, cpt in enumerate(ctrlpts):
             if not isinstance(cpt, (list, tuple)):
                 raise ValueError("Element number " + str(idx) + " is not a list")
@@ -100,8 +101,10 @@ class Curve(Abstract.Curve):
                 raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
                                  " is not a valid control point")
             # Convert to list of floats
-            coord_float = [float(coord) for coord in cpt]
-            self._control_points.append(coord_float)
+            pt_float = [float(coord) for coord in cpt]
+            ctrlpts_float.append(pt_float)
+
+        self._control_points = ctrlpts_float
 
     @property
     def knotvector(self):
