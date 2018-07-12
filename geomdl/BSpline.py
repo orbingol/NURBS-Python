@@ -41,17 +41,6 @@ class Curve(Abstract.Curve):
         self._bounding_box = []
         self._evaluator = evaluators.CurveEvaluator()
 
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
-    def __call__(self, degree, ctrlpts, knotvector):
-        self.reset(ctrlpts=True, evalpts=True)
-        self.degree = degree
-        self.ctrlpts = ctrlpts
-        self.knotvector = knotvector
-
     @property
     def curvepts(self):
         """ Evaluated points (deprecated).

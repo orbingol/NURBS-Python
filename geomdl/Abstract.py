@@ -31,6 +31,37 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._evaluator = None  # evaluator instance
         self._cache = {}  # cache dictionary
 
+    def __str__(self):
+        return self.name
+
+    __repr__ = __str__
+
+    def __call__(self, degree, ctrlpts, knotvector, **kwargs):
+        """ Calls self as a function.
+
+        Keyword Arguments (optional):
+            * ``sample_size``: number of evaluated points to generate
+            * ``evaluator``: evaluation algorithm
+
+        :param degree: degree of the curve
+        :type degree: int
+        :param ctrlpts: control points
+        :type ctrlpts: list, tuple
+        :param knotvector: knot vector
+        :type knotvector: list, tuple
+        :return: evaluated points
+        :rtype: list
+        """
+        opt_num_samples = kwargs.get('sample_size', self.sample_size)
+        opt_algorithm = kwargs.get('evaluator', self.evaluator)
+        self.reset(ctrlpts=True, evalpts=True)
+        self.degree = degree
+        self.ctrlpts = ctrlpts
+        self.knotvector = knotvector
+        self.delta = opt_num_samples
+        self.evaluator = opt_algorithm
+        return self.evalpts
+
     @property
     def name(self):
         """ Curve descriptor (as a string or a number).
