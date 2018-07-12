@@ -315,16 +315,17 @@ def basis_function_one(degree, knot_vector, span, knot):
 
     # Computing triangular table of basis functions
     for k in range(1, degree + 1):
-        if N[0] == 0.0:
+        if N[0] == 0.0:  # Detecting zeros saves computations
             saved = 0.0
         else:
-            saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
+            saved = ((knot - knot_vector[span]) * N[0]) / \
+                    (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
             Uleft = knot_vector[span + j + 1]
             Uright = knot_vector[span + j + degree + 1]
 
-            if N[j + 1] == 0.0:
+            if N[j + 1] == 0.0:  # Zero detection
                 N[j] = saved
                 saved = 0.0
             else:
@@ -333,3 +334,93 @@ def basis_function_one(degree, knot_vector, span, knot):
                 saved = (knot - Uleft) * temp
 
     return N[0]
+
+def basis_function_ders_one(degree, knot_vector, span, knot, order):
+    """ Finds the derivative of one basis functions for a signel knot.
+
+    Implementation of Algorithm A2.5 from The NURBS Book by Piegl & Tiller.
+
+    :param degree: degree
+    :type degree: int
+    :param knot_vector: knot_vector
+    :type knot_vector: list, tuple
+    :param span: span of the knot
+    :type span: int
+    :param knot: knot
+    :type knot: float
+    :param order: order of the derivative
+    :type order: int
+    :return: basis function derivatives values
+    :rtype: list
+    """
+
+    ders = [None for _ in range(0, order + 1)]
+
+    # Knot is outside of span range
+    if (knot < knot_vector[span]) or (knot >= knot_vector[span + degree + 1]):
+        for k in range(0, order + 1):
+            ders[k] = 0.0
+
+        return
+
+    N = [[None for _ in range(0, order + 1)] for _ in range(0, degree + 1)]
+
+    # Initializing the zeroth degree basis functions
+    for j in range(0, degree + 1):
+        if knot >= knot_vector[span + j] and knot < knot_vector[span + j + 1]:
+            N[j][0] = 1.0
+        else:
+            N[j][0] = 0.0
+
+    # Computing all basis functions values for all degrees inside the span
+    for k in range(1, degree + 1):
+        if N[0][k - 1] == 0.0:  # Detecting zeros saves computations
+            saved = 0.0
+        else:
+            saved = ((knot - knot_vector[span]) * N[0][k - 1]) \
+                     / (knot_vector[span + k] - knot_vector[span])
+
+        for j in range(0, degree - k + 1):
+            Uleft = knot_vector[span + j + 1]
+            Uright = knot_vector[span + j + k + 1]
+
+            if N[j + 1][k - 1] == 0.0:  # Zero detection
+                N[j][k] = saved
+                saved = 0.0
+            else:
+                temp = N[j + 1][k - 1] / (Uright - Uleft)
+                N[j][k] = saved + (Uright - knot) * temp
+                saved = (knot - Uleft) * temp
+
+    
+    ders[0] = N[0][degree]  # The basis function value is the zeroth derivative
+
+    # Computing the basis functions derivatives
+    for k in range(1, order + 1):
+        ND = [None for _ in range(0, k + 1)]  # Buffer for computing the kth derivative
+
+        for j in range(0, k + 1):  # Basis functions values used for the derivative
+            ND[j] = N[j][degree - k]
+
+        # Computing derivatives used for the kth basis function derivative
+        for jj in range(1, k + 1):  # Derivative order for the kth basis function derivative
+            if ND[0] == 0.0:
+                saved = 0.0
+            else:
+                saved = ND[0] / (knot_vector[span + degree - k + jj] - knot_vector[span])
+
+            for j in range(0, k - jj + 1):  # Index of the Basis function derivatives
+                Uleft = knot_vector[span + j + 1]
+                Uright = knot_vector[span + j + degree + jj + 1]
+
+                if ND[j + 1] == 0.0:
+                    ND[j] = (degree - k + jj) * saved
+                    saved = 0.0
+                else:
+                    temp = ND[j + 1] / (Uright - Uleft)
+                    ND[j] = (degree - k + jj) * (saved - temp)
+                    saved = temp
+
+        ders[k] = ND[0]
+
+    return ders
