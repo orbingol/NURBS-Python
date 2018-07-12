@@ -36,7 +36,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     __repr__ = __str__
 
-    def __call__(self, degree, ctrlpts, knotvector, **kwargs):
+    def __call__(self, degree, ctrlpts, kv, **kwargs):
         """ Calls self as a function.
 
         Keyword Arguments (optional):
@@ -47,9 +47,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :type degree: int
         :param ctrlpts: control points
         :type ctrlpts: list, tuple
-        :param knotvector: knot vector
-        :type knotvector: list, tuple
-        :return: evaluated points
+        :param kv: knot vector
+        :type kv: list, tuple
+        :return: evaluated curve points
         :rtype: list
         """
         opt_num_samples = kwargs.get('sample_size', self.sample_size)
@@ -57,7 +57,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(ctrlpts=True, evalpts=True)
         self.degree = degree
         self.ctrlpts = ctrlpts
-        self.knotvector = knotvector
+        self.knotvector = kv
         self.delta = opt_num_samples
         self.evaluator = opt_algorithm
         return self.evalpts
