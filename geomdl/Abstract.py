@@ -17,16 +17,23 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all curves. """
 
     def __init__(self):
+        # If the array type has been set, then use it. Otherwise, use None
+        try:
+            self._array_type
+        except NameError:
+            self._array_type = None
+
+        # Initialize class variables
         self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
         self._degree = 0  # degree
-        self._knot_vector = None  # knot vector
-        self._control_points = None  # control points
+        self._knot_vector = utilities.init_var(self._array_type)  # knot vector
+        self._control_points = utilities.init_var(self._array_type)  # control points
         self._delta = 0.1  # evaluation delta
-        self._curve_points = None  # evaluated points
+        self._curve_points = utilities.init_var(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
-        self._bounding_box = None  # bounding box
+        self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
         self._cache = {}  # cache dictionary
@@ -215,7 +222,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         .. math::
 
-            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 
@@ -356,25 +363,31 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all surfaces. """
 
     def __init__(self):
+        # If the array type has been set, then use it. Otherwise, use None
+        try:
+            self._array_type
+        except NameError:
+            self._array_type = None
+
         # Define u-direction variables
         self._degree_u = 0  # degree
-        self._knot_vector_u = None  # knot vector
+        self._knot_vector_u = utilities.init_var(self._array_type)  # knot vector
         self._control_points_size_u = 0  # control points array length
         self._delta_u = 0.1  # evaluation delta
         # Define v-direction variables
         self._degree_v = 0  # degree
-        self._knot_vector_v = None  # knot vector
+        self._knot_vector_v = utilities.init_var(self._array_type)  # knot vector
         self._control_points_size_v = 0  # control points array length
         self._delta_v = 0.1  # evaluation delta
         # Define common variables
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
-        self._control_points = None  # control points, 1-D array (v-order)
-        self._control_points2D = None  # control points, 2-D array [u][v]
-        self._surface_points = None  # evaluated points
+        self._control_points = utilities.init_var(self._array_type)  # control points, 1-D array (v-order)
+        self._control_points2D = utilities.init_var(self._array_type)  # control points, 2-D array [u][v]
+        self._surface_points = utilities.init_var(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
-        self._bounding_box = None  # bounding box
+        self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
         self._cache = {}  # cache dictionary
@@ -796,7 +809,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         .. math::
 
-            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 

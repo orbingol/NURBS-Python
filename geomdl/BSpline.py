@@ -33,12 +33,9 @@ class Curve(Abstract.Curve):
     """
 
     def __init__(self):
+        self._array_type = list  # Sets the array type
         super(Curve, self).__init__()
         self._name = "B-Spline Curve"
-        self._knot_vector = []
-        self._control_points = []
-        self._curve_points = []
-        self._bounding_box = []
         self._evaluator = evaluators.CurveEvaluator()
 
     def __str__(self):
@@ -93,6 +90,7 @@ class Curve(Abstract.Curve):
         # Estimate dimension by checking the size of the first element
         self._dimension = len(ctrlpts[0])
 
+        ctrlpts_float = []
         for idx, cpt in enumerate(ctrlpts):
             if not isinstance(cpt, (list, tuple)):
                 raise ValueError("Element number " + str(idx) + " is not a list")
@@ -100,8 +98,10 @@ class Curve(Abstract.Curve):
                 raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
                                  " is not a valid control point")
             # Convert to list of floats
-            coord_float = [float(coord) for coord in cpt]
-            self._control_points.append(coord_float)
+            pt_float = [float(coord) for coord in cpt]
+            ctrlpts_float.append(pt_float)
+
+        self._control_points = ctrlpts_float
 
     @property
     def knotvector(self):
@@ -623,14 +623,9 @@ class Surface(Abstract.Surface):
     """
 
     def __init__(self):
+        self._array_type = list  # Sets the array type
         super(Surface, self).__init__()
         self._name = "B-Spline Surface"
-        self._knot_vector_u = []
-        self._knot_vector_v = []
-        self._control_points = []
-        self._control_points2D = []  # in [u][v] format
-        self._surface_points = []
-        self._bounding_box = []
         self._evaluator = evaluators.SurfaceEvaluator()
 
     def __str__(self):
@@ -758,7 +753,7 @@ class Surface(Abstract.Surface):
         self._dimension = len(value[0][0])
 
         # Make sure that all numbers are float type
-        ctrlpts2d = [[None for _ in range(0, self._control_points_size_v)]
+        ctrlpts2d = [[[] for _ in range(0, self._control_points_size_v)]
                      for _ in range(0, self._control_points_size_u)]
         for u in range(0, self._control_points_size_u):
             for v in range(0, self._control_points_size_v):
