@@ -83,7 +83,7 @@ def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
         size_u = len(ctrlpts2d)
         size_v = len(ctrlpts2d[0])
 
-    new_ctrlpts2d = [[None for _ in range(size_u)] for _ in range(size_v)]
+    new_ctrlpts2d = [[[] for _ in range(size_u)] for _ in range(size_v)]
     for i in range(size_v):
         for j in range(size_u):
             new_ctrlpts2d[i][j] = [float(c) for c in ctrlpts2d[j][i]]

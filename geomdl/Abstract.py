@@ -215,7 +215,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         .. math::
 
-            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 
@@ -796,7 +796,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         .. math::
 
-            \\left[ {{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
         .. note:: The delta value is 0.1 by default.
 

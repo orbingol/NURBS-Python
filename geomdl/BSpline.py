@@ -761,7 +761,7 @@ class Surface(Abstract.Surface):
         self._dimension = len(value[0][0])
 
         # Make sure that all numbers are float type
-        ctrlpts2d = [[None for _ in range(0, self._control_points_size_v)]
+        ctrlpts2d = [[[] for _ in range(0, self._control_points_size_v)]
                      for _ in range(0, self._control_points_size_u)]
         for u in range(0, self._control_points_size_u):
             for v in range(0, self._control_points_size_v):

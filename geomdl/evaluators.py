@@ -136,11 +136,11 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         nq = np + r
 
         # Initialize new knot vector array
-        UQ = [None for _ in range(mp + r)]
+        UQ = [0.0 for _ in range(mp + r)]
         # Initialize new control points array (control points may be weighted or not)
-        Q = [None for _ in range(nq)]
+        Q = [[] for _ in range(nq)]
         # Initialize a local array of length p + 1
-        R = [None for _ in range(degree + 1)]
+        R = [[] for _ in range(degree + 1)]
 
         # Load new knot vector
         for i in range(0, k + 1):
@@ -340,7 +340,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         degree_v = kwargs.get('degree_v')
         knot_vector_u = kwargs.get('knotvector_u')
         knot_vector_v = kwargs.get('knotvector_v')
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
         dimension = kwargs.get('dimension')
@@ -359,7 +359,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
             temp = [0.0 for _ in range(dimension)]
             idx_v = span_v - degree_v + l
             for k in range(0, degree_u + 1):
-                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, control_points2D[idx_u + k][idx_v])]
+                temp[:] = [tmp + (basis_u[k] * cp) for tmp, cp in zip(temp, control_points2d[idx_u + k][idx_v])]
             spt[:] = [pt + (basis_v[l] * tmp) for pt, tmp in zip(spt, temp)]
 
         return spt
@@ -378,7 +378,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         degree_v = kwargs.get('degree_v')
         knot_vector_u = kwargs.get('knotvector_u')
         knot_vector_v = kwargs.get('knotvector_v')
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
         dimension = kwargs.get('dimension')
@@ -404,7 +404,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
                     idx_v = spans_v[j] - degree_v + l
                     for k in range(0, degree_u + 1):
                         temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
-                                   zip(temp, control_points2D[idx_u + k][idx_v])]
+                                   zip(temp, control_points2d[idx_u + k][idx_v])]
                     spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
 
                 eval_points.append(spt)
@@ -423,7 +423,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         degree_v = kwargs.get('degree_v')
         knot_vector_u = kwargs.get('knotvector_u')
         knot_vector_v = kwargs.get('knotvector_v')
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
         dimension = kwargs.get('dimension')
@@ -447,7 +447,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
                     cu = span_u - degree_u + r
                     cv = span_v - degree_v + s
                     temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
-                                  zip(temp[s], control_points2D[cu][cv])]
+                                  zip(temp[s], control_points2d[cu][cv])]
 
             dd = min(deriv_order - k, dv)
             for l in range(0, dd + 1):
@@ -474,7 +474,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         s = kwargs.get('s')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
 
@@ -482,11 +482,11 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         span = helpers.find_span(knot_vector, ctrlpts_size_u, u)
 
         # Initialize new knot vector array
-        UQ = [None for _ in range(len(knot_vector) + r)]
+        UQ = [0.0 for _ in range(len(knot_vector) + r)]
         # Initialize new control points array (control points can be weighted or not)
-        Q = [[None for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u + r)]
+        Q = [[[] for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u + r)]
         # Initialize a local array of length p + 1
-        R = [None for _ in range(degree + 1)]
+        R = [[] for _ in range(degree + 1)]
 
         # Load new knot vector
         for i in range(0, span + 1):
@@ -506,12 +506,12 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Update control points
         for row in range(0, ctrlpts_size_v):
             for i in range(0, span - degree + 1):
-                Q[i][row] = control_points2D[i][row]
+                Q[i][row] = control_points2d[i][row]
             for i in range(span - s, ctrlpts_size_u):
-                Q[i + r][row] = control_points2D[i][row]
+                Q[i + r][row] = control_points2d[i][row]
             # Load auxiliary control points
             for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(control_points2D[span - degree + i][row])
+                R[i] = copy.deepcopy(control_points2d[span - degree + i][row])
             # Insert the knot r times
             for j in range(1, r + 1):
                 L = span - degree + j
@@ -537,7 +537,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         s = kwargs.get('s')
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
 
@@ -545,11 +545,11 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         span = helpers.find_span(knot_vector, ctrlpts_size_v, v)
 
         # Initialize new knot vector array
-        VQ = [None for _ in range(len(knot_vector) + r)]
+        VQ = [0.0 for _ in range(len(knot_vector) + r)]
         # Initialize new control points array (control points can be weighted or not)
-        Q = [[None for _ in range(ctrlpts_size_v + r)] for _ in range(ctrlpts_size_u)]
+        Q = [[[] for _ in range(ctrlpts_size_v + r)] for _ in range(ctrlpts_size_u)]
         # Initialize a local array of length q + 1
-        R = [None for _ in range(degree + 1)]
+        R = [[] for _ in range(degree + 1)]
 
         # Load new knot vector
         for i in range(0, span + 1):
@@ -569,18 +569,18 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Update control points
         for col in range(0, ctrlpts_size_u):
             for i in range(0, span - degree + 1):
-                Q[col][i] = control_points2D[col][i]
+                Q[col][i] = control_points2d[col][i]
             for i in range(span - s, ctrlpts_size_v):
-                Q[col][i + r] = control_points2D[col][i]
+                Q[col][i + r] = control_points2d[col][i]
             # Load auxiliary control points
             for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(control_points2D[col][span - degree + i])
+                R[i] = copy.deepcopy(control_points2d[col][span - degree + i])
             # Insert the knot r times
             for j in range(1, r + 1):
                 L = span - degree + j
                 for i in range(0, degree - j - s + 1):
-                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1 for elem1, elem2 in
-                               zip(R[i], R[i + 1])]
+                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1
+                               for elem1, elem2 in zip(R[i], R[i + 1])]
                 Q[col][L] = copy.deepcopy(R[0])
                 Q[col][span + r - j - s] = copy.deepcopy(R[degree - j - s])
             # Load the remaining control points

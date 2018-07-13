@@ -129,7 +129,7 @@ class Vertex(AbstractElement):
 
     @property
     def data_full(self):
-        self._value.tolist()
+        return self._value.tolist()
 
 
 # Triangle class
