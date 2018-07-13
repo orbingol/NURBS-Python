@@ -590,6 +590,56 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
         return VQ, Q
 
+class SurfaceEvaluator2(CurveEvaluator):
+    """ Sequential B-Spline surface evaluation algorithms.
+
+    This evaluator implements the following algorithms from **The NURBS Book**:
+
+    * Algorithm A3.5: SurfacePoint
+    * Algorithm A3.7: SurfaceDerivCpts
+    * Algorithm A3.8: SurfaceDerivsAlg2
+    * Algorithm A5.3: SurfaceKnotIns
+
+    """
+
+    def __init__(self, **kwargs):
+        super(CurveEvaluator2, self).__init__(**kwargs)
+
+    # Computes the control points of all derivative surfaces up to and including the d-th derivative
+    def _derivatives_ctlpts(self, **kwargs):
+        """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
+
+        Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times with respect to u and l times with respecto to v.
+        """
+        r1 = kwards.get('r1')  # minimum span on U
+        r2 = kwards.get('r2')  # maximum span on U
+        s1 = kwargs.get('s1')  # minimum span on V
+        s2 = kwargs.get('s2')  # maximum span on V
+
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        degree_u = kwargs.get('degree_u')
+        knot_vector_u = kwargs.get('knotvector_u')
+        
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        degree_v = kwargs.get('degree_v')
+        knot_vector_v = kwargs.get('knotvector_v')
+        
+        control_points2D = kwargs.get('ctrlpts')
+        deriv_order = kwargs.get('deriv_order')
+
+        dimension = kwargs.get('dimension')
+
+        PKL = [[[[[0.0 for _ in range(dimension)]for_ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        
+        du = min(degree_u, deriv_order)        
+        dv = min(degree_v, deriv_order)
+
+        r = r2 - r1
+        s = s2 - s1
+
+        for j in range(s1, s2 + 1):
+            
+
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """ Sequential NURBS surface evaluation algorithms.
