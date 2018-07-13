@@ -33,12 +33,9 @@ class Curve(Abstract.Curve):
     """
 
     def __init__(self):
+        self._array_type = list  # Sets the array type
         super(Curve, self).__init__()
         self._name = "B-Spline Curve"
-        self._knot_vector = []
-        self._control_points = []
-        self._curve_points = []
-        self._bounding_box = []
         self._evaluator = evaluators.CurveEvaluator()
 
     def __str__(self):
@@ -626,14 +623,9 @@ class Surface(Abstract.Surface):
     """
 
     def __init__(self):
+        self._array_type = list  # Sets the array type
         super(Surface, self).__init__()
         self._name = "B-Spline Surface"
-        self._knot_vector_u = []
-        self._knot_vector_v = []
-        self._control_points = []
-        self._control_points2D = []  # in [u][v] format
-        self._surface_points = []
-        self._bounding_box = []
         self._evaluator = evaluators.SurfaceEvaluator()
 
     def __str__(self):

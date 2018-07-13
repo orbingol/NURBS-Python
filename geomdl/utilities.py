@@ -527,3 +527,10 @@ def color_generator(seed=None):
         random.seed(seed)
     color_string = '#%02X%02X%02X'
     return [color_string % (r_int(), r_int(), r_int()), color_string % (r_int(), r_int(), r_int())]
+
+
+def init_var(instance):
+    if callable(instance):
+        return instance()
+    else:
+        return None
