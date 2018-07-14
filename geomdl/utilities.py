@@ -216,6 +216,7 @@ def check_uv(u=None, v=None):
     :type u: float
     :param v: v parameter
     :type v: float
+    :raises ValueError: u and/or v is not in the interval [0, 1]
     """
     # Check u value
     if u is not None:
