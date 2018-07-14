@@ -38,17 +38,6 @@ class Curve(Abstract.Curve):
         self._name = "B-Spline Curve"
         self._evaluator = evaluators.CurveEvaluator()
 
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
-    def __call__(self, degree, ctrlpts, knotvector):
-        self.reset(ctrlpts=True, evalpts=True)
-        self.degree = degree
-        self.ctrlpts = ctrlpts
-        self.knotvector = knotvector
-
     @property
     def curvepts(self):
         """ Evaluated points (deprecated).
@@ -627,19 +616,6 @@ class Surface(Abstract.Surface):
         super(Surface, self).__init__()
         self._name = "B-Spline Surface"
         self._evaluator = evaluators.SurfaceEvaluator()
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
-    def __call__(self, degree_u, degree_v, ctrlpts_size_u, ctrlpts_size_v, ctrlpts, knotvector_u, knotvector_v):
-        self.reset(evalpts=True, ctrlpts=True)
-        self.degree_u = degree_u
-        self.degree_v = degree_v
-        self.set_ctrlpts(ctrlpts, ctrlpts_size_u, ctrlpts_size_v)
-        self.knotvector_u = knotvector_u
-        self.knotvector_v = knotvector_v
 
     @property
     def surfpts(self):

@@ -40,6 +40,15 @@ def test_generate_knot_vector4():
     assert autogen_kv == result
 
 
+def test_generate_knot_vector5():
+    # testing auto-generated unclamped knot vector
+    degree = 3
+    num_ctrlpts = 5
+    result = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
+    autogen_kv = utilities.generate_knot_vector(degree, num_ctrlpts, clamped=False)
+    assert autogen_kv == result
+
+
 def test_check_knot_vector1():
     with pytest.raises(ValueError):
         utilities.check_knot_vector(4, tuple(), 12)
