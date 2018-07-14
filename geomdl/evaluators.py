@@ -590,7 +590,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
         return VQ, Q
 
-class SurfaceEvaluator2(CurveEvaluator):
+class SurfaceEvaluator2(SurfaceEvaluator):
     """ Sequential B-Spline surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -603,10 +603,10 @@ class SurfaceEvaluator2(CurveEvaluator):
     """
 
     def __init__(self, **kwargs):
-        super(CurveEvaluator2, self).__init__(**kwargs)
+        super(SurfaceEvaluator2, self).__init__(**kwargs)
 
-    # Computes the control points of all derivative surfaces up to and including the d-th derivative
-    def _derivatives_ctlpts(self, **kwargs):
+    # Computes the control points of all derivative surfaces up to and including the {degree}-th derivative using "SurfacederivCpts"
+    def _derivatives_ctrlpts(self, **kwargs):
         """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
 
         Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times with respect to u and l times with respecto to v.
@@ -629,7 +629,7 @@ class SurfaceEvaluator2(CurveEvaluator):
 
         dimension = kwargs.get('dimension')
 
-        PKL = [[[[[0.0 for _ in range(dimension)]for_ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        PKL = [[[[[0.0 for _ in range(dimension)]for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
         
         du = min(degree_u, deriv_order)        
         dv = min(degree_v, deriv_order)
@@ -637,9 +637,37 @@ class SurfaceEvaluator2(CurveEvaluator):
         r = r2 - r1
         s = s2 - s1
 
-        for j in range(s1, s2 + 1):
-            
+        curve_eval2 = CurveEvaluator2()  # Instanciating CurveEvaluator2 to access _derivatives_ctrlpts
 
+        # Control points of the U derivatives of every U-curve
+        for j in range(s1, s2 + 1):
+            PKu = curve_eval2._derivatives_ctrlpts(r1 = r1, r2 = r2,
+                                            order = du, degree = degree_u,
+                                            knot_vector = knot_vector_u,
+                                            control_points = [control_points2D[_][j] for _ in range(0, len(control_points2D))],
+                                            dimension = dimension)
+
+            # Copy into output as the U partial derivatives
+            for k in range(0, du + 1):
+                for i in range(0, r - k + 1):
+                    PKL[k][0][i][j - s1] = PKu[k][i]
+
+        # Control points of the V derivatives of every U derivated V-curve
+        for k in range(0, du):
+            for i in range(0, r - k + 1):
+                dd = min(deriv_order - k, dv)
+                PKuv = curve_eval2._derivatives_ctrlpts(r1 = s1, r2 = s2,
+                                            order = dd, degree = degree_v,
+                                            knot_vector = knot_vector_v,
+                                            control_points = [PKL[k][0][i]],
+                                            dimension = dimension)
+
+                # Copy into output
+                for l in range(1, dd + 1):
+                    for j in range(0, s - l + 1):
+                        PKL[k][l][i][j] = PKuv[l][j]
+
+        return PKL
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """ Sequential NURBS surface evaluation algorithms.
