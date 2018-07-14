@@ -292,3 +292,13 @@ def test_color_generator():
     result = utilities.color_generator(seed)
     to_check = utilities.color_generator(seed)
     assert to_check == result
+
+
+def test_init_var1():
+    test_var_type = list
+    assert test_var_type() == utilities.init_var(test_var_type)
+
+
+def test_init_var2():
+    test_var_type = None
+    assert test_var_type == utilities.init_var(test_var_type)

@@ -521,8 +521,16 @@ def color_generator(seed=None):
     :return: list of color strings in hex format
     :rtype: list
     """
+    def r_int():
+        return random.randint(0, 255)
     if seed is not None:
         random.seed(seed)
-    r = lambda: random.randint(0, 255)
     color_string = '#%02X%02X%02X'
-    return [color_string % (r(), r(), r()), color_string % (r(), r(), r())]
+    return [color_string % (r_int(), r_int(), r_int()), color_string % (r_int(), r_int(), r_int())]
+
+
+def init_var(instance):
+    if callable(instance):
+        return instance()
+    else:
+        return None

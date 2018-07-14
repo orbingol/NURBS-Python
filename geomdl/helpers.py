@@ -140,6 +140,7 @@ def basis_functions(degree, knot_vector, spans, knots):
     :rtype: list
     """
     basis = []
+
     for span, knot in zip(spans, knots):
         basis.append(basis_function(degree, knot_vector, span, knot))
     return basis
@@ -318,12 +319,11 @@ def basis_function_one(degree, knot_vector, span, knot):
         if N[0] == 0.0:  # Detecting zeros saves computations
             saved = 0.0
         else:
-            saved = ((knot - knot_vector[span]) * N[0]) / \
-                    (knot_vector[span + k] - knot_vector[span])
+            saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
             Uleft = knot_vector[span + j + 1]
-            Uright = knot_vector[span + j + degree + 1]
+            Uright = knot_vector[span + j + k + 1]
 
             if N[j + 1] == 0.0:  # Zero detection
                 N[j] = saved
@@ -361,9 +361,9 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
         for k in range(0, order + 1):
             ders[k] = 0.0
 
-        return
+        return ders
 
-    N = [[None for _ in range(0, order + 1)] for _ in range(0, degree + 1)]
+    N = [[None for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
 
     # Initializing the zeroth degree basis functions
     for j in range(0, degree + 1):
@@ -378,7 +378,7 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
             saved = 0.0
         else:
             saved = ((knot - knot_vector[span]) * N[0][k - 1]) \
-                     / (knot_vector[span + k] - knot_vector[span])
+                    / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
             Uleft = knot_vector[span + j + 1]
@@ -392,7 +392,6 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
                 N[j][k] = saved + (Uright - knot) * temp
                 saved = (knot - Uleft) * temp
 
-    
     ders[0] = N[0][degree]  # The basis function value is the zeroth derivative
 
     # Computing the basis functions derivatives
@@ -411,13 +410,14 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
             for j in range(0, k - jj + 1):  # Index of the Basis function derivatives
                 Uleft = knot_vector[span + j + 1]
-                Uright = knot_vector[span + j + degree + jj + 1]
+                Uright = knot_vector[span + j + degree - k + jj + 1]  # Wrong in The Nurbs Book: -k is missing. The right expression is the same as for saved with the added j offset
 
                 if ND[j + 1] == 0.0:
                     ND[j] = (degree - k + jj) * saved
                     saved = 0.0
                 else:
                     temp = ND[j + 1] / (Uright - Uleft)
+
                     ND[j] = (degree - k + jj) * (saved - temp)
                     saved = temp
 
