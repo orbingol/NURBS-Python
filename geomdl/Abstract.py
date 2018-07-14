@@ -1203,7 +1203,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
 class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     """ Visualization abstract class for surfaces
 
-    Implements ``VisABstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
+    Implements ``VisAbstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
     for **surface** visualization options in NURBS-Python package.
     """
 
