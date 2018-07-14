@@ -210,7 +210,7 @@ def binomial_coefficient(k, i):
 
 
 def check_uv(u=None, v=None):
-    """ Checks if the parameter values are valid, i.e. between 0 and 1.
+    """ Checks if the parameter values are valid.
 
     :param u: u parameter
     :type u: float
