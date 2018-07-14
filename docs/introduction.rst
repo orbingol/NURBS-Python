@@ -28,6 +28,8 @@ NURBS-Python implements the following algorithms from **The NURBS Book (2nd Edit
 * A2.1 FindSpan *(page 68)*
 * A2.2 BasisFuns *(page 70)*
 * A2.3 DersBasisFuns *(pages 72,73)*
+* A2.4 OneBasisFun *(pages 74,75)*
+* A2.5 DersOneBasisFun *(pages 76-78)*
 * A3.1 CurvePoint *(page 82)*
 * A3.2 CurveDerivsAlg1 *(page 93)*
 * A3.3 CurveDerivCpts *(page 98)*
