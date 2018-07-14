@@ -100,13 +100,3 @@ def test_basis_function_ders_one():
 	result = [list(_) for _ in zip(*interm)]
 
 	assert to_check == result
-
-test_find_span_binsearch()
-test_basis_function()
-test_basis_functions()
-test_basis_function_all()
-
-test_basis_function_ders()
-test_find_multiplicity()
-test_basis_function_one()
-test_basis_function_ders_one()
