@@ -9,6 +9,7 @@ NURBS-Python_ project.
 * Jan Heczko (`@heczis <https://github.com/heczis>`_)
 * Pavel Vlasanek (`@tucna <https://github.com/tucna>`_)
 * Xuefeng Zhao
+* Hugo Rambure (`@Nodli <https://github.com/Nodli>`_)
 
 
 .. _NURBS-Python: https://github.com/orbingol/NURBS-Python
