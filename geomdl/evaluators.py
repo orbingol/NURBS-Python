@@ -606,7 +606,8 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         super(SurfaceEvaluator2, self).__init__(**kwargs)
 
     # Computes the control points of all derivative surfaces up to and including the {degree}-th derivative using "SurfacederivCpts"
-    def _derivatives_ctrlpts(self, **kwargs):
+    @staticmethod
+    def derivatives_ctrlpts(self, **kwargs):
         """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
 
         Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times with respect to u and l times with respecto to v.
@@ -637,11 +638,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         r = r2 - r1
         s = s2 - s1
 
-        curve_eval2 = CurveEvaluator2()  # Instanciating CurveEvaluator2 to access _derivatives_ctrlpts
-
         # Control points of the U derivatives of every U-curve
         for j in range(s1, s2 + 1):
-            PKu = curve_eval2._derivatives_ctrlpts(r1 = r1, r2 = r2,
+            PKu = curve_eval2.derivatives_ctrlpts(r1 = r1, r2 = r2,
                                             order = du, degree = degree_u,
                                             knot_vector = knot_vector_u,
                                             control_points = [control_points2D[_][j] for _ in range(0, len(control_points2D))],
@@ -668,6 +667,55 @@ class SurfaceEvaluator2(SurfaceEvaluator):
                         PKL[k][l][i][j] = PKuv[l][j]
 
         return PKL
+
+    # Evaluates the surface derivatives using "SurfaceDerivsAlg2"
+    def derivatives_single(self, **kwargs):
+        """ Evaluates the n-th order surface derivatives at (u, v) parameters.
+
+        Output is SKL[k][l], derivative of the surface k times with respect to U and l times with respect to V
+        """
+
+        deriv_order = kwargs.get('deriv_order')
+        knot_u = kwargs.get('knot_u')
+        knot_v = kwargs.get('knot_v')
+        degree_u = kwargs.get('degree_u')
+        degree_v = kwargs.get('degree_v')
+        knot_vector_u = kwargs.get('knotvector_u')
+        knot_vector_v = kwargs.get('knotvector_v')
+        control_points2d = kwargs.get('ctrlpts')
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        dimension = kwargs.get('dimension')
+
+        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+
+        du = min(degree_u, deriv_order)
+        dv = min(degree_v, deriv_order)
+
+        # Null derivatives on U when deriv_order > degreeU
+        for k in range(degree_u + 1, deriv_order + 1):
+            for l in range(0, deriv_order - k + 1):
+                SKL[k][l] = 0.0
+
+        # Null derivatives on V when deriv_order > degreeV
+        for l in range(degree_v + 1, deriv_order + 1):
+            for k in range(0, deriv_order - l + 1):
+                SKL[k][l] = 0.0
+
+        span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
+        bfuns_u = helpers.basis_function_all(degree_u, knot_vector_u, span_u, knot_u)
+        span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
+        bfuns_v = helpers.basis_function_all(degree_v, knot_vector_v, span_v, knot_v)
+
+        PKL = self._derivatives_ctrlpts()
+
+
+
+
+
+
+            
+
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """ Sequential NURBS surface evaluation algorithms.
