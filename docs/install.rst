@@ -82,6 +82,6 @@ The package includes ``tests/`` directory which contains all the automated testi
 These scripts require `pytest <https://pytest.readthedocs.io/en/latest>`_ installed on your Python distribution.
 After installing the required packages, you may execute the following from your favorite IDE or from the command line:
 
-``pytest``
+``pytest`` or ``py.test``
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
