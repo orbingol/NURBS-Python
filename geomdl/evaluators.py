@@ -609,13 +609,13 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
     # Computes the control points of all derivative surfaces up to and including the {degree}-th derivative using "SurfacederivCpts"
     @staticmethod
-    def derivatives_ctrlpts(self, **kwargs):
+    def derivatives_ctrlpts(**kwargs):
         """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
 
         Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times with respect to u and l times with respecto to v.
         """
-        r1 = kwards.get('r1')  # minimum span on U
-        r2 = kwards.get('r2')  # maximum span on U
+        r1 = kwargs.get('r1')  # minimum span on U
+        r2 = kwargs.get('r2')  # maximum span on U
         s1 = kwargs.get('s1')  # minimum span on V
         s2 = kwargs.get('s2')  # maximum span on V
 
@@ -632,7 +632,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         dimension = kwargs.get('dimension')
 
-        PKL = [[[[[0.0 for _ in range(dimension)]for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        PKL = [[[[[0.0 for _ in range(dimension)]
+                    for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)]
+                    for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
         
         du = min(degree_u, deriv_order)        
         dv = min(degree_v, deriv_order)
@@ -709,10 +711,11 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
         bfuns_v = helpers.basis_function_all(degree_v, knot_vector_v, span_v, knot_v)
 
-        PKL = self.derivatives_ctrlpts(r1 = uspan - degree_u, r2 = uspan,
-                                        s1 = vspan - degree_v, s2 = vspan,
+        PKL = self.derivatives_ctrlpts(r1 = span_u - degree_u, r2 = span_u,
+                                        s1 = span_v - degree_v, s2 = span_v,
                                         **kwargs)
 
+        # Evaluating the derivative at parameters (u, v) using its control points
         for k in range(0, du + 1):
             dd = min(deriv_order - k, dv)
 

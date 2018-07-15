@@ -407,6 +407,14 @@ def test_bspline_surface_eval12():
     assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
 
 
+def test_bspline_surface_deriv():
+    # Create a surface instance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    
+
+
 def test_bspline_surface_bbox():
     # Create a surface instance
     surf = OBJECT_INSTANCE()
