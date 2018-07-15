@@ -642,7 +642,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         # Control points of the U derivatives of every U-curve
         for j in range(s1, s2 + 1):
-            PKu = curve_eval2.derivatives_ctrlpts(r1 = r1, r2 = r2,
+            PKu = CurveEvaluator2.derivatives_ctrlpts(r1 = r1, r2 = r2,
                                             order = du, degree = degree_u,
                                             knot_vector = knot_vector_u,
                                             control_points = [control_points2D[_][j] for _ in range(0, len(control_points2D))],
@@ -657,7 +657,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         for k in range(0, du):
             for i in range(0, r - k + 1):
                 dd = min(deriv_order - k, dv)
-                PKuv = curve_eval2._derivatives_ctrlpts(r1 = s1, r2 = s2,
+                PKuv = CurveEvaluator2.derivatives_ctrlpts(r1 = s1, r2 = s2,
                                             order = dd, degree = degree_v,
                                             knot_vector = knot_vector_v,
                                             control_points = [PKL[k][0][i]],
@@ -709,15 +709,25 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
         bfuns_v = helpers.basis_function_all(degree_v, knot_vector_v, span_v, knot_v)
 
-        PKL = self._derivatives_ctrlpts()
+        PKL = self.derivatives_ctrlpts(r1 = uspan - degree_u, r2 = uspan,
+                                        s1 = vspan - degree_v, s2 = vspan,
+                                        **kwargs)
 
+        for k in range(0, du + 1):
+            dd = min(deriv_order - k, dv)
 
+            for l in range(0, dd):
+                SKL[k][l] = 0.0
 
+                for i in range(0, degree_v - l):
+                    temp = 0.0
 
+                    for j in range(0, degree_u - k):
+                        temp += bfuns_u[j][degree_u - k] * PKL[k][l][j][i]
 
+                    SKL[k][l] += bfuns_v[i][degree_v - l] * temp
 
-            
-
+        return SKL
 
 class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """ Sequential NURBS surface evaluation algorithms.
