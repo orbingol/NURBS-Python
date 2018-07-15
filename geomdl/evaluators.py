@@ -694,12 +694,12 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         du = min(degree_u, deriv_order)
         dv = min(degree_v, deriv_order)
 
-        # Null derivatives on U when deriv_order > degreeU
+        # Derivatives on U are null when deriv_order > degreeU
         for k in range(degree_u + 1, deriv_order + 1):
             for l in range(0, deriv_order - k + 1):
                 SKL[k][l] = 0.0
 
-        # Null derivatives on V when deriv_order > degreeV
+        # Derivatives on V are null when deriv_order > degreeV
         for l in range(degree_v + 1, deriv_order + 1):
             for k in range(0, deriv_order - l + 1):
                 SKL[k][l] = 0.0
@@ -716,13 +716,13 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         for k in range(0, du + 1):
             dd = min(deriv_order - k, dv)
 
-            for l in range(0, dd):
+            for l in range(0, dd + 1):
                 SKL[k][l] = 0.0
 
-                for i in range(0, degree_v - l):
+                for i in range(0, degree_v - l + 1):
                     temp = 0.0
 
-                    for j in range(0, degree_u - k):
+                    for j in range(0, degree_u - k + 1):
                         temp += bfuns_u[j][degree_u - k] * PKL[k][l][j][i]
 
                     SKL[k][l] += bfuns_v[i][degree_v - l] * temp
