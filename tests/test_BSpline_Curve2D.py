@@ -177,6 +177,44 @@ def test_bspline_curve2d_eval5():
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
+def test_bspline_curve2d_deriv_ctrlpts():
+    test_degree = 3
+    test_knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    test_u = 0.35
+    test_order = 2
+
+    # Create a curve instance
+    curve = OBJECT_INSTANCE()
+
+    # Set curve degree
+    curve.degree = test_degree
+
+    # Set control points
+    curve.ctrlpts = CONTROL_POINTS
+
+    # Set knot vector
+    curve.knotvector = test_knotvector
+
+    # Take the derivative
+    der1 = curve.derivatives(u=test_u, order=test_order)
+
+    # Compute control points of the derivative
+    deriv_ctrlpts = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0, r2=len(curve.ctrlpts) - 1,
+                                                                deriv_order=2, degree=curve.degree,
+                                                                knotvector=curve.knotvector,
+                                                                ctrlpts=curve.ctrlpts,
+                                                                dimension=curve.dimension)
+
+    for k in range(1, test_order):
+        curvek = OBJECT_INSTANCE()
+        curvek.degree = test_degree - k
+        curvek.ctrlpts = deriv_ctrlpts[k][:-k]
+        curvek.knotvector = test_knotvector[k:-k]
+
+        assert abs(curvek.curvept(test_u)[0] - der1[k][0]) < GEOMDL_DELTA
+        assert abs(curvek.curvept(test_u)[1] - der1[k][1]) < GEOMDL_DELTA
+
+
 def test_bspline_curve2d_deriv1():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
