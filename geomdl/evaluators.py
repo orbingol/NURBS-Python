@@ -254,6 +254,8 @@ class CurveEvaluator2(CurveEvaluator):
         return CK
 
 
+
+
 class NURBSCurveEvaluator(CurveEvaluator):
     """ Sequential NURBS curve evaluation algorithms.
 
@@ -627,12 +629,12 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         degree_v = kwargs.get('degree_v')
         knot_vector_v = kwargs.get('knotvector_v')
         
-        control_points2D = kwargs.get('ctrlpts')
+        control_points2d = kwargs.get('ctrlpts')
         deriv_order = kwargs.get('deriv_order')
 
         dimension = kwargs.get('dimension')
 
-        PKL = [[[[[0.0 for _ in range(dimension)]
+        PKL = [[[[[None for _ in range(dimension)]
                     for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)]
                     for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
         
@@ -645,9 +647,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         # Control points of the U derivatives of every U-curve
         for j in range(s1, s2 + 1):
             PKu = CurveEvaluator2.derivatives_ctrlpts(r1 = r1, r2 = r2,
-                                            order = du, degree = degree_u,
-                                            knot_vector = knot_vector_u,
-                                            control_points = [control_points2D[_][j] for _ in range(0, len(control_points2D))],
+                                            deriv_order = du, degree = degree_u,
+                                            knotvector = knot_vector_u,
+                                            ctrlpts = [control_points2d[_][j] for _ in range(0, len(control_points2d))],
                                             dimension = dimension)
 
             # Copy into output as the U partial derivatives
@@ -659,10 +661,11 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         for k in range(0, du):
             for i in range(0, r - k + 1):
                 dd = min(deriv_order - k, dv)
-                PKuv = CurveEvaluator2.derivatives_ctrlpts(r1 = s1, r2 = s2,
-                                            order = dd, degree = degree_v,
-                                            knot_vector = knot_vector_v,
-                                            control_points = [PKL[k][0][i]],
+
+                PKuv = CurveEvaluator2.derivatives_ctrlpts(r1 = 0, r2 = s,
+                                            deriv_order = dd, degree = degree_v,
+                                            knotvector = knot_vector_v[s1:],
+                                            ctrlpts = PKL[k][0][i],
                                             dimension = dimension)
 
                 # Copy into output
@@ -696,20 +699,10 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         du = min(degree_u, deriv_order)
         dv = min(degree_v, deriv_order)
 
-        # Derivatives on U are null when deriv_order > degreeU
-        for k in range(degree_u + 1, deriv_order + 1):
-            for l in range(0, deriv_order - k + 1):
-                SKL[k][l] = 0.0
-
-        # Derivatives on V are null when deriv_order > degreeV
-        for l in range(degree_v + 1, deriv_order + 1):
-            for k in range(0, deriv_order - l + 1):
-                SKL[k][l] = 0.0
-
         span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
-        bfuns_u = helpers.basis_function_all(degree_u, knot_vector_u, span_u, knot_u)
+        bfuns_u = helpers.basis_function_all(degree_u, tuple(knot_vector_u), span_u, knot_u)
         span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
-        bfuns_v = helpers.basis_function_all(degree_v, knot_vector_v, span_v, knot_v)
+        bfuns_v = helpers.basis_function_all(degree_v, tuple(knot_vector_v), span_v, knot_v)
 
         PKL = self.derivatives_ctrlpts(r1 = span_u - degree_u, r2 = span_u,
                                         s1 = span_v - degree_v, s2 = span_v,
@@ -720,15 +713,17 @@ class SurfaceEvaluator2(SurfaceEvaluator):
             dd = min(deriv_order - k, dv)
 
             for l in range(0, dd + 1):
-                SKL[k][l] = 0.0
+                SKL[k][l] = [0.0 for _ in range(dimension)]
 
                 for i in range(0, degree_v - l + 1):
-                    temp = 0.0
+                    temp = [0.0 for _ in range(dimension)]
 
                     for j in range(0, degree_u - k + 1):
-                        temp += bfuns_u[j][degree_u - k] * PKL[k][l][j][i]
+                        temp[:] = [elem + (bfuns_u[j][degree_u - k] * drv_ctl_p) for elem, drv_ctl_p in
+                                zip(temp, PKL[k][l][j][i])]
 
-                    SKL[k][l] += bfuns_v[i][degree_v - l] * temp
+                    SKL[k][l][:] = [elem + (bfuns_v[i][degree_v - l] * drv_ctl_p) for elem, drv_ctl_p in
+                                    zip(SKL[k][l], temp)]
 
         return SKL
 
