@@ -24,23 +24,23 @@ Branch Information
 Citing NURBS-Python
 -------------------
 
-Please see the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section in the documentation
+Please see the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation
 for more details.
 
-Installation and Testing
-========================
-
-Please see the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
-in the documentation.
-
 Using NURBS-Python
-------------------
+==================
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
 * **Documentation**: http://nurbs-python.readthedocs.io/
 
-Issues and Reporting
---------------------
+Installation and Testing
+------------------------
+
+Please see the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
+of the documentation.
+
+Contributions and Issues
+------------------------
 
 Please see the `documentation <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_
 for details.

@@ -280,6 +280,7 @@ def find_multiplicity(knot, knot_vector, **kwargs):
 
     return mult
 
+
 def basis_function_one(degree, knot_vector, span, knot):
     """ Computes the value of a basis function for a knot.
 
@@ -299,33 +300,32 @@ def basis_function_one(degree, knot_vector, span, knot):
     # Special case at boundaries
     if (span == 0 and knot == knot_vector[0]) or \
        (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector - 1)]:
-        return 1.0;
+        return 1.0
 
     # Knot is outside of span range
     if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
-        return 0.0;
+        return 0.0
 
-    N = [None for _ in range(degree + span + 1)]
+    N = [0.0 for _ in range(degree + span + 1)]
 
     # Initialize the zeroth degree basis functions
     for j in range(0, degree + 1):
-        if knot >= knot_vector[span + j] and knot < knot_vector[span + j + 1]:
+        if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
             N[j] = 1.0
-        else:
-            N[j] = 0.0
 
     # Computing triangular table of basis functions
     for k in range(1, degree + 1):
-        if N[0] == 0.0:  # Detecting zeros saves computations
-            saved = 0.0
-        else:
+        # Detecting zeros saves computations
+        saved = 0.0
+        if N[0] != 0.0:
             saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
             Uleft = knot_vector[span + j + 1]
             Uright = knot_vector[span + j + k + 1]
 
-            if N[j + 1] == 0.0:  # Zero detection
+            # Zero detection
+            if N[j + 1] == 0.0:
                 N[j] = saved
                 saved = 0.0
             else:
@@ -335,8 +335,9 @@ def basis_function_one(degree, knot_vector, span, knot):
 
     return N[0]
 
+
 def basis_function_ders_one(degree, knot_vector, span, knot, order):
-    """ Finds the derivative of one basis functions for a signel knot.
+    """ Finds the derivative of one basis functions for a single knot.
 
     Implementation of Algorithm A2.5 from The NURBS Book by Piegl & Tiller.
 
@@ -354,7 +355,7 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     :rtype: list
     """
 
-    ders = [None for _ in range(0, order + 1)]
+    ders = [0.0 for _ in range(0, order + 1)]
 
     # Knot is outside of span range
     if (knot < knot_vector[span]) or (knot >= knot_vector[span + degree + 1]):
@@ -363,28 +364,26 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
         return ders
 
-    N = [[None for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
+    N = [[0.0 for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
 
     # Initializing the zeroth degree basis functions
     for j in range(0, degree + 1):
-        if knot >= knot_vector[span + j] and knot < knot_vector[span + j + 1]:
+        if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
             N[j][0] = 1.0
-        else:
-            N[j][0] = 0.0
 
     # Computing all basis functions values for all degrees inside the span
     for k in range(1, degree + 1):
-        if N[0][k - 1] == 0.0:  # Detecting zeros saves computations
-            saved = 0.0
-        else:
-            saved = ((knot - knot_vector[span]) * N[0][k - 1]) \
-                    / (knot_vector[span + k] - knot_vector[span])
+        saved = 0.0
+        # Detecting zeros saves computations
+        if N[0][k - 1] != 0.0:
+            saved = ((knot - knot_vector[span]) * N[0][k - 1]) / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
             Uleft = knot_vector[span + j + 1]
             Uright = knot_vector[span + j + k + 1]
 
-            if N[j + 1][k - 1] == 0.0:  # Zero detection
+            # Zero detection
+            if N[j + 1][k - 1] == 0.0:
                 N[j][k] = saved
                 saved = 0.0
             else:
@@ -392,25 +391,33 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
                 N[j][k] = saved + (Uright - knot) * temp
                 saved = (knot - Uleft) * temp
 
-    ders[0] = N[0][degree]  # The basis function value is the zeroth derivative
+    # The basis function value is the zeroth derivative
+    ders[0] = N[0][degree]
 
     # Computing the basis functions derivatives
     for k in range(1, order + 1):
-        ND = [None for _ in range(0, k + 1)]  # Buffer for computing the kth derivative
+        # Buffer for computing the kth derivative
+        ND = [0.0 for _ in range(0, k + 1)]
 
-        for j in range(0, k + 1):  # Basis functions values used for the derivative
+        # Basis functions values used for the derivative
+        for j in range(0, k + 1):
             ND[j] = N[j][degree - k]
 
         # Computing derivatives used for the kth basis function derivative
-        for jj in range(1, k + 1):  # Derivative order for the kth basis function derivative
+
+        # Derivative order for the k-th basis function derivative
+        for jj in range(1, k + 1):
             if ND[0] == 0.0:
                 saved = 0.0
             else:
                 saved = ND[0] / (knot_vector[span + degree - k + jj] - knot_vector[span])
 
-            for j in range(0, k - jj + 1):  # Index of the Basis function derivatives
+            # Index of the Basis function derivatives
+            for j in range(0, k - jj + 1):
                 Uleft = knot_vector[span + j + 1]
-                Uright = knot_vector[span + j + degree - k + jj + 1]  # Wrong in The Nurbs Book: -k is missing. The right expression is the same as for saved with the added j offset
+                # Wrong in The Nurbs Book: -k is missing.
+                # The right expression is the same as for saved with the added j offset
+                Uright = knot_vector[span + j + degree - k + jj + 1]
 
                 if ND[j + 1] == 0.0:
                     ND[j] = (degree - k + jj) * saved

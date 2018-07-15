@@ -13,7 +13,16 @@ OBJECT_INSTANCE = BSpline.Curve
 CONTROL_POINTS = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
 
 
-def test_bspline_curve2d_degree():
+def test_bspline_curve_name():
+    # Create a Curve instance
+    curve = OBJECT_INSTANCE()
+
+    curve.name = "Testing"
+
+    assert curve.name == "Testing"
+
+
+def test_bspline_curve_degree():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
 
@@ -23,7 +32,7 @@ def test_bspline_curve2d_degree():
     assert curve.degree == 3
 
 
-def test_bspline_curve2d_ctrlpts():
+def test_bspline_curve_ctrlpts():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
 
@@ -37,7 +46,7 @@ def test_bspline_curve2d_ctrlpts():
     assert curve.dimension == 2
 
 
-def test_bspline_curve2d_knot_vector():
+def test_bspline_curve_knot_vector():
     # Create a curve instance
     curve = OBJECT_INSTANCE()
 

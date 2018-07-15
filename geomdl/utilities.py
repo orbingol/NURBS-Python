@@ -210,12 +210,13 @@ def binomial_coefficient(k, i):
 
 
 def check_uv(u=None, v=None):
-    """ Checks if the parameter values are valid, i.e. between 0 and 1.
+    """ Checks if the parameter values are valid.
 
     :param u: u parameter
     :type u: float
     :param v: v parameter
     :type v: float
+    :raises ValueError: u and/or v is not in the interval [0, 1]
     """
     # Check u value
     if u is not None:
@@ -436,7 +437,7 @@ def normalize_knot_vector(knot_vector, decimals=4):
 
 
 # Generates a uniform knot vector using the given degree and the number of control points
-def generate_knot_vector(degree, num_ctrlpts):
+def generate_knot_vector(degree, num_ctrlpts, **kwargs):
     """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
 
     It uses the following equation to generate knot vector:
@@ -446,6 +447,10 @@ def generate_knot_vector(degree, num_ctrlpts):
     where;
 
     p: degree, n+1: number of control points, m+1: number of knots
+
+    Keyword Arguments:
+
+        * ``clamped``: flag to choose from clamped or unclamped knot vector options. *Default: True*
 
     :param degree: degree
     :type degree: integer
@@ -457,17 +462,29 @@ def generate_knot_vector(degree, num_ctrlpts):
     if degree == 0 or num_ctrlpts == 0:
         raise ValueError("Input values should be different than zero.")
 
-    # First knots
-    knot_vector = [0.0 for _ in range(0, degree)]
+    # Get keyword arguments
+    clamped = kwargs.get('clamped', True)
+
+    # Number of repetitions at the start and end of the array
+    num_repeat = degree
 
     # Number of knots in the middle
     num_segments = num_ctrlpts - (degree + 1)
+
+    if not clamped:
+        # No repetitions at the start and end
+        num_repeat = 0
+        # Should conform the rule: m = n + p + 1
+        num_segments = degree + num_ctrlpts - 1
+
+    # First knots
+    knot_vector = [0.0 for _ in range(0, num_repeat)]
 
     # Middle knots
     knot_vector += linspace(0.0, 1.0, num_segments + 2)
 
     # Last knots
-    knot_vector += [1.0 for _ in range(0, degree)]
+    knot_vector += [1.0 for _ in range(0, num_repeat)]
 
     # Return auto-generated knot vector
     return knot_vector

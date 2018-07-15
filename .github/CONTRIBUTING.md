@@ -34,7 +34,7 @@ In summary, it would be good to remember these before you post to the issue trac
 The following will **NOT** be tolerated in any way:
 
 * Any sort of offensive comment
-* Contempt in explicit and/or implicit ways
+* Expressing contempt, anger and hate in explicit and/or implicit ways
 * Any sort of accusation directed to the authors and/or contributors (that's why we have the LICENSE file)
 * Complaints about implementation choices (instead, please ask about the reason nicely or fix it and create a PR)
 * "Bad" tone in writing (i.e. please triple-check how you say what you would like to say)
@@ -54,22 +54,28 @@ In case of any confusions or problems, please follow [this link](http://lmgtfy.c
 * Please try to explain the problem as much as possible. I would be glad if you could write the steps to reproduce the
 issue.
 * If you have used `pip` to install the package, please indicate the version that you are using.
-* Did I say details are very important?
+* Did I say details are very important? :-)
 
 ## Coding Standards
 
-You must follow the standards below when developing for the [the core library](http://nurbs-python.readthedocs.io/en/latest/modules.html) without any exceptions.
+You must follow the standards below when developing for the
+[Core Library](http://nurbs-python.readthedocs.io/en/latest/modules.html) without any exceptions.
 
-* Pure python code, i.e. no compilable code, including C/C++ code using Python's C API, Cython, etc.
-* Using the modules that come with Python's standard library. Please note that NumPy, SciPy, etc. **are not** included in the standard library.
-* Compatible (at least) with Python 2.7.x and 3.5.x together.
+* Implement using pure python code, i.e. no compilable code, including C/C++ code using Python's C API, Cython, etc.
+* For the core library (e.g. algorithms, geometrical operations), only use the modules that come with Python's standard library. Please note that NumPy, SciPy, etc. **are not** included in the standard library.
+* The code should be compatible with Python versions 2.7.x, 3.3.5+ and above all together.
 * It is acceptable to use very well-known backporting and helper modules like [functools32](https://pypi.org/project/functools32/) only if critically necessary. These modules must be installable via `pip` on all platforms without any issues or additional requirements.
 * Soft dependencies are acceptable; e.g. if some module is installed, then use the functionality. Otherwise, use a custom or simplified implementation of it.
 * Please don't mix the data types (lists, tuples, arrays, etc.)
+* The Python 2 and 3 compatibility library [six](https://pypi.org/project/six/) is added as a project dependency and will be installed during the package installation. You may use it freely, if it is required.
+* All new code should come with the proper tests and they should be executable with `pytest`. If you are implementing alternative evaluation algorithms, then you should also include tests which compare the new algorithm(s) with the existing ones.
 
-Since all visualization components are considered as experimental, using external libraries (and even NumPy) are 
-acceptable when developing new visualization components or improving the existing ones. 
-You don't need to add them to `setup.py` as dependencies.
+For new [Visualization](http://nurbs-python.readthedocs.io/en/latest/modules_visualization.html) modules or improvements
+to the existing ones, the above list is still valid _with one exception_: You are free to use external libraries,
+including NumPy. You don't need to add them to `setup.py` as direct install requirements but you may add them under 
+`visualization` package list in `extras_require` argument. Please note that all new Visualization modules should extend
+the [Visualization Base](http://nurbs-python.readthedocs.io/en/latest/module_vis_abstract.html) classes and should
+include classes capable of visualization of surfaces and 2- and 3-dimensional curves.
 
 I would be glad if you could follow these standards while developing for NURBS-Python. Failure to follow may cause
 rejection of your contributions (as pull requests or other methods).
@@ -88,18 +94,30 @@ Please [create pull requests](https://help.github.com/articles/creating-a-pull-r
 * For NURBS-Python v3.x, PR against `3.x`
 * For NURBS-Python v2.x, PR against `2.x`
 
-CI tools are set to test every pull request, and I would appreciate if you could add tests for your changes and test
-your code with a Python linter utility, e.g. `pylint` and/or `prospector`.
+CI tools are set to test every pull request. The test results will become accessible in a short while under the 
+pull request page. If your code does not follow the standards as described under **Coding Standards** section, your PR
+will not be considered for review at all.
+
+I would appreciate if you could run a Python linter utility, e.g. `prospector`, and clean the warnings in the code
+before opening the pull request.
  
 All your changes will be reviewed and if they are accepted, they will be merged to the `master` branch in the next 
-subsequent release of NURBS-Python and your name will be added to the [CONTRIBUTORS](../README.rst) file.
+subsequent release of NURBS-Python and your name will be added to the [CONTRIBUTORS](../CONTRIBUTORS.rst) file.
 
 Feel free to open an issue on the project issue tracker, if you have any questions.
 
 ## Tests
 
-The project includes automated tests under `'tests/` directory and all tests are designed to run with `pytest`.
-I would appreciate if you could contribute more tests to increase their code coverage.
+The `tests/` directory includes all automated tests. Implementing more tests that could validate the algorithms and
+increase the code coverage are appreciated. All included tests are designed to run with [pytest](https://pypi.org/project/pytest/).
+
+## Improvements to the Documentation
+
+I would be glad if you could do anything to improve [the documentation](http://nurbs-python.readthedocs.io/en/latest/).
+The documentation may be compiled using [Sphinx](https://pypi.org/project/Sphinx/). You may need to check the Sphinx
+version that Read the Docs (RtD) service is using since some of the latest Sphinx features may not be available on the
+RtD system. Please refer to the [configuration file](https://github.com/orbingol/NURBS-Python/blob/master/.readthedocs.yml)
+in the project repository and the RtD documentation for details.
 
 -----
 

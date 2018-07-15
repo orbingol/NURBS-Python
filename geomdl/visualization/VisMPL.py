@@ -66,7 +66,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     def set_axes_equal(ax):
         """ Sets equal aspect ratio across the three axes of a 3D plot.
 
-        This function is contributed by Dr. Xuefeng Zhao.
+        Contributed by Xuefeng Zhao.
 
         :param ax: a Matplotlib axis, e.g., as output from plt.gca().
         """

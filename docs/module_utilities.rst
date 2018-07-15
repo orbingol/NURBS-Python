@@ -8,7 +8,7 @@ Utilities
 
 .. automodule:: geomdl.utilities
     :members:
-    :exclude-members: check_uv, check_knot_vector
+    :exclude-members: init_var
     :undoc-members:
 
 

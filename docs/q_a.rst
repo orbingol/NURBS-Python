@@ -33,8 +33,9 @@ approach also allows users to debug and extend the library in a convenient way.
 Minimum Requirements
 ====================
 
-NURBS-Python is tested on Python versions 2.7.13 and 3.5.3+. The core library doesn't depend on any additional packages,
-so that you can run it on a plain python installation as well as on a scientific distribution, such as Anaconda.
+NURBS-Python is tested on Python versions 2.7.x and 3.3.5+. The core library does not depend on any additional packages
+or require any compilation steps, therefore you can run it on a plain python installation as well as on a distribution,
+such as Anaconda (or Miniconda).
 
 Issues and Reporting
 ====================
@@ -42,7 +43,7 @@ Issues and Reporting
 Contributions to NURBS-Python
 -----------------------------
 
-All contributions to NURBS-Python are welcomed. I have posted some
+All contributions to NURBS-Python are welcomed and I appreciate your time and efforts in advance. I have posted some
 `guidelines for contributing <https://github.com/orbingol/NURBS-Python/blob/master/.github/CONTRIBUTING.md>`_ and
 I would be really happy if you could follow these guidelines if you would like to contribute to NURBS-Python.
 
@@ -53,18 +54,19 @@ Please use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Pytho
 for reporting bugs and other related issues.
 
 I would be glad if you could provide as much detail as you can for pinpointing the problem. You don't have to provide
-a solution for the issue but it would be good if you could provide steps to reproduce the issue. If required,
-you can privately share your data by sending me an email or directly upload to the issue tracker.
+a solution for the problem that you encountered but it would be good if you would provide steps (preferably, as a list)
+to reproduce it. You may directly upload any data files required for testing to the issue tracker or email me if you
+feel that is more convenient for you.
 
-Please note that the issue tracker is public and all written text and uploaded data will be visible to everybody.
+Please note that the issue tracker is public and all written text and all uploaded files will be visible to everybody.
 
 Comments, Questions and Feature Requests
 ----------------------------------------
 
-You can use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_ for your questions and
-comments. I would be glad if you could use the appropriate label (``comment``, ``question`` or ``feature request``) to
-label your question or comment for convenience.
+You are encouraged to use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_
+for your questions and comments. I would be glad if you could use the appropriate label
+(``comment``, ``question`` or ``feature request``) to label your questions or comments on the issue tracker.
 
-I also would like to leave the email communication open for NURBS-Python users. The issue tracker is still the primary
-method for communication but I know some users don't feel confident asking questions or commenting on a public system.
-I will try my best to reply back to your emails as soon as possible.
+I also would like to leave the email communication open for NURBS-Python users. The issue tracker will stay as the
+preferred method for communication but I know some users don't feel confident asking questions
+or commenting on a public system. I will try my best to reply back to your emails as soon as possible.

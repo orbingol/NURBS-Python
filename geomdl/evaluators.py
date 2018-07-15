@@ -193,14 +193,16 @@ class CurveEvaluator2(CurveEvaluator):
     def __init__(self, **kwargs):
         super(CurveEvaluator2, self).__init__(**kwargs)
 
-    # Computes the control points of all derivative curves up to and including the d-th derivative
-    def _derivatives_ctrlpts(self, **kwargs):
+    # Computes the control points of all derivative curves up to and including the {degree}-th derivative
+    @staticmethod
+    def derivatives_ctrlpts(**kwargs):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
 
         Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k
         """
-        r1 = kwargs.get('r1', 0)  # minimum span
-        r2 = kwargs.get('r2', 0)  # maximum span
+        # r1 - minimum span, r2 - maximum span
+        r1 = kwargs.get('r1', 0)
+        r2 = kwargs.get('r2', 0)
         deriv_order = kwargs.get('deriv_order', 0)
         degree = kwargs.get('degree')
         knot_vector = kwargs.get('knotvector')
@@ -240,7 +242,7 @@ class CurveEvaluator2(CurveEvaluator):
 
         span = helpers.find_span(knot_vector, len(control_points), knot)
         bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
-        PK = self._derivatives_ctrlpts(order=du, r1=(span - degree), r2=span, **kwargs)
+        PK = self.derivatives_ctrlpts(order=du, r1=(span - degree), r2=span, **kwargs)
 
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(dimension)]

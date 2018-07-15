@@ -23,6 +23,13 @@ CONTROL_POINTS = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0
                   [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
 
 
+def test_bspline_curve_name():
+    surf = OBJECT_INSTANCE()
+    surf.name = "Testing"
+
+    assert surf.name == "Testing"
+
+
 def test_bspline_surface_degree_u():
     surf = OBJECT_INSTANCE()
     surf.degree_u = 5
