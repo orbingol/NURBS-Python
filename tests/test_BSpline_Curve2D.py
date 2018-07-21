@@ -181,7 +181,7 @@ def test_bspline_curve2d_deriv_ctrlpts():
     test_degree = 3
     test_knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     test_u = 0.35
-    test_order = 3
+    test_order = test_degree
 
     # Create a curve instance
     curve = OBJECT_INSTANCE()
