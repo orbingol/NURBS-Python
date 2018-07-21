@@ -136,14 +136,6 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         control_points = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
 
-        print('r1', r1)
-        print('r2', r2)
-        print('deriv_order', deriv_order)
-        print('degree', degree)
-        print('knot_vector', knot_vector)
-        print('control_points', control_points)
-        print('dimension', dimension)
-
         # Algorithm A3.3
         r = r2 - r1
         PK = [[[None for _ in range(dimension)] for _ in range(r + 1)] for _ in range(deriv_order + 1)]
@@ -255,8 +247,8 @@ class CurveEvaluator2(CurveEvaluator):
 
         span = helpers.find_span(knot_vector, len(control_points), knot)
         bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
-        PK = self.derivatives_ctrlpts(r1=0, r2=len(control_points) - 1,
-                                    deriv_order=deriv_order,
+        PK = self.derivatives_ctrlpts(r1=(span - degree), r2=span,
+                                    deriv_order=du,
                                     degree=degree,
                                     knotvector=knot_vector,
                                     ctrlpts=control_points,
@@ -491,6 +483,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
         Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times with respect to u and l times with respecto to v.
         """
+        # Call parent method
+        super(SurfaceEvaluator, self).derivatives_ctrlpts(**kwargs)
+
         r1 = kwargs.get('r1')  # minimum span on U
         r2 = kwargs.get('r2')  # maximum span on U
         s1 = kwargs.get('s1')  # minimum span on V
@@ -519,15 +514,15 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         r = r2 - r1
         s = s2 - s1
 
-        curve_eval2 = CurveEvaluator2();
+        curve_evaluator = CurveEvaluator();
 
         # Control points of the U derivatives of every U-curve
         for j in range(s1, s2 + 1):
-            PKu = curve_eval2.derivatives_ctrlpts(r1 = r1, r2 = r2,
-                                            deriv_order = du, degree = degree_u,
-                                            knotvector = knot_vector_u,
-                                            ctrlpts = [control_points2d[_][j] for _ in range(0, len(control_points2d))],
-                                            dimension = dimension)
+            PKu = curve_evaluator.derivatives_ctrlpts(r1=r1, r2=r2,
+                                                    deriv_order=du, degree=degree_u,
+                                                    knotvector=knot_vector_u,
+                                                    ctrlpts=[control_points2d[_][j] for _ in range(0, len(control_points2d))],
+                                                    dimension=dimension)
 
             # Copy into output as the U partial derivatives
             for k in range(0, du + 1):
@@ -539,11 +534,11 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
             for i in range(0, r - k + 1):
                 dd = min(deriv_order - k, dv)
 
-                PKuv = curve_eval2.derivatives_ctrlpts(r1 = 0, r2 = s,
-                                            deriv_order = dd, degree = degree_v,
-                                            knotvector = knot_vector_v[s1:],
-                                            ctrlpts = PKL[k][0][i],
-                                            dimension = dimension)
+                PKuv = curve_evaluator.derivatives_ctrlpts(r1 = 0, r2 = s,
+                                                            deriv_order=dd, degree=degree_v,
+                                                            knotvector=knot_vector_v[s1:],
+                                                            ctrlpts=PKL[k][0][i],
+                                                            dimension=dimension)
 
                 # Copy into output
                 for l in range(1, dd + 1):

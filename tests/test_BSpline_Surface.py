@@ -435,14 +435,7 @@ def test_bspline_surface_deriv_ctrlpts():
     CONTROL_POINTS2D = [list(_) for _ in surf.ctrlpts2d]
 
     # Compute the control points of the derivative
-    deriv_ctrlpts = evaluators.SurfaceEvaluator2.derivatives_ctrlpts(r1=0, r2=5,
-                                                                    s1=0, s2=5,
-                                                                    ctrlpts_size_u=6, ctrlpts_size_v=6,
-                                                                    degree_u=test_degree, degree_v=test_degree,
-                                                                    knotvector_u=test_knotvector, knotvector_v=test_knotvector,
-                                                                    ctrlpts=CONTROL_POINTS2D,
-                                                                    deriv_order=test_order - 1,
-                                                                    dimension=3)
+    deriv_ctrlpts = surf.derivatives_ctrlpts(order=test_order - 1)
 
     for k in range(0, test_order):
         for l in range(0, test_order - k):

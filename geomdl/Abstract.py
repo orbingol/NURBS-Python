@@ -1184,7 +1184,7 @@ class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def derivatives_ctrlpts(self, **kwargs):
         """ Abstract method for implementation of the control points derivative algorithm. """
-
+        pass
 
 class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Surface customizations for the Evaluator abstract base class. """
@@ -1205,7 +1205,7 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def derivatives_ctrlpts(self, **kwargs):
         """ Abstract method for implementation of the control points derivative algorith. """
-
+        pass
 
 class SurfaceTessellator(six.with_metaclass(abc.ABCMeta, object)):
     """ Tessellator abstract base for the surface evaluator classes. """

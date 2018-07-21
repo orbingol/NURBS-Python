@@ -1086,11 +1086,11 @@ class Surface(Abstract.Surface):
 
     # Evaluates the curve derivative control points
     def derivatives_ctrlpts(self, **kwargs):
-        """ Evaluates the n-th order curve derivatives control points.
+        """ Evaluates the n-th order surface derivatives control points.
 
         :param order: derivative order
         :type order: integer
-        :return: a list containing the control points of up to {order}-th derivative of the curve
+        :return: a list PKL, where PKL[k][l][i][j] is the {i, j}-th control point of the derivative of the surface S(u, v) w.r.t u k times and v l times
         :rtype: list
         """
 
@@ -1100,7 +1100,7 @@ class Surface(Abstract.Surface):
         s2 = kwargs.get('s2', self.ctrlpts_size_v - 1)
         order = kwargs.get('order', 0)
 
-        return self._evaluator.derivatives_ctrlpts(r1=r1, r2=r1,
+        return self._evaluator.derivatives_ctrlpts(r1=r1, r2=r2,
                                                     s1=s1, s2=s2,
                                                     degree_u=self.degree_u, degree_v=self.degree_v,
                                                     knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,

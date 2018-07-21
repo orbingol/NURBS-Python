@@ -200,7 +200,7 @@ def test_bspline_curve2d_deriv_ctrlpts():
 
     # Compute control points of the derivative
     deriv_ctrlpts = curve.derivatives_ctrlpts(order=test_order - 1)
-    
+
     for k in range(0, test_order):
         curvek = OBJECT_INSTANCE()
         curvek.degree = test_degree - k
@@ -233,6 +233,7 @@ def test_bspline_curve2d_deriv1():
     # Take the derivative
     der1 = curve.derivatives(u=0.35, order=2)
     curve.evaluator = evaluators.CurveEvaluator2()
+
     der2 = curve.derivatives(u=0.35, order=2)
 
     assert abs(der1[0][0] - der2[0][0]) < GEOMDL_DELTA
