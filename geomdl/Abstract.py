@@ -1181,6 +1181,10 @@ class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         """ Abstract method for implementation of knot insertion algorithm. """
         pass
 
+    @abc.abstractmethod
+    def derivatives_ctrlpts(self, **kwargs):
+        """ Abstract method for implementation of the control points derivative algorithm. """
+
 
 class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Surface customizations for the Evaluator abstract base class. """
@@ -1197,6 +1201,10 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     def insert_knot_v(self, **kwargs):
         """ Abstract method for implementation of knot insertion algorithm on the v-direction. """
         pass
+
+    @abc.abstractmethod
+    def derivatives_ctrlpts(self, **kwargs):
+        """ Abstract method for implementation of the control points derivative algorith. """
 
 
 class SurfaceTessellator(six.with_metaclass(abc.ABCMeta, object)):

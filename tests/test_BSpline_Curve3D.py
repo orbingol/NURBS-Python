@@ -183,11 +183,7 @@ def test_bspline_curve3d_deriv_ctrlpts():
     der1 = curve.derivatives(u=test_u, order=test_order)
 
     # Compute control points of the derivative
-    deriv_ctrlpts = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0, r2=len(curve.ctrlpts) - 1,
-                                                                deriv_order=test_order - 1, degree=curve.degree,
-                                                                knotvector=curve.knotvector,
-                                                                ctrlpts=curve.ctrlpts,
-                                                                dimension=curve.dimension)
+    deriv_ctrlpts = curve.derivatives_ctrlpts(order=test_order - 1)
 
     for k in range(0, test_order):
         curvek = OBJECT_INSTANCE()
