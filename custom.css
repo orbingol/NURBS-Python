@@ -18,11 +18,19 @@ html {
   html {
     font-size: 18px;
   }
+
+  .carousel-size {
+    width: 90%;
+  }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   html {
     font-size: 20px;
+  }
+
+  .carousel-size {
+    width: 90%;
   }
 }
 
@@ -30,9 +38,17 @@ html {
   html {
     font-size: 25px;
   }
+
+  .carousel-size {
+    width: 70%;
+  }
 }
 
 .jumbotron {
   /*background-color:#D4E5F5 !important;*/
   background-color:#FFFFFF !important;
+}
+
+.carousel-caption-p {
+  background-color: rgba(100, 100, 100, 0.7);
 }
