@@ -18,29 +18,17 @@ html {
   html {
     font-size: 18px;
   }
-
-  .carousel-size {
-    width: 90%;
-  }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   html {
     font-size: 20px;
   }
-
-  .carousel-size {
-    width: 90%;
-  }
 }
 
 @media (min-width: 1200px) { 
   html {
     font-size: 25px;
-  }
-
-  .carousel-size {
-    width: 70%;
   }
 }
 
