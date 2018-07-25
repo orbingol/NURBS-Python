@@ -298,8 +298,8 @@ def basis_function_one(degree, knot_vector, span, knot):
     :rtype: float
     """
     # Special case at boundaries
-    if (span == 0 and knot == knot_vector[0]) or \
-       (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector - 1)]:
+    if (span == 0 and knot == knot_vector[0]) or (span == len(knot_vector) - degree - 2) \
+            and knot == knot_vector[len(knot_vector) - 1]:
         return 1.0
 
     # Knot is outside of span range
@@ -354,7 +354,6 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     :return: basis function derivatives values
     :rtype: list
     """
-
     ders = [0.0 for _ in range(0, order + 1)]
 
     # Knot is outside of span range
