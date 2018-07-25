@@ -8,7 +8,7 @@
 """
 
 
-def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, tol=0.001):
+def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     """ Finds the span of the knot over the input knot vector using binary search.
 
     Implementation of Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
@@ -25,16 +25,14 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, tol=0.001):
     :param knot: knot
     :param knot: knot
     :type knot: float
-    :param tol: tolerance value for equality checking
-    :type tol: float
     :return: span of the knot over the knot vector
     :rtype: int
     """
-    # Number of knots; m + 1
-    # Number of control points; n + 1
-    # n = m - p - 1; where p = degree
-    # m = len(knot_vector) - 1
-    # n = m - degree - 1
+    # Get tolerance value
+    tol = kwargs.get('tol', 0.001)
+
+    # In The NURBS Book; number of knots = m + 1, number of control points = n + 1, p = degree
+    # All knot vectors should follow the rule: m = p + n + 1
     n = num_ctrlpts - 1
     if abs(knot_vector[n + 1] - knot) <= tol:
         return n
@@ -270,6 +268,7 @@ def find_multiplicity(knot, knot_vector, **kwargs):
     :return: multiplicity of the knot
     :rtype: int
     """
+    # Get tolerance value
     tol = kwargs.get('tol', 0.001)
 
     mult = 0  # initial multiplicity
@@ -298,8 +297,8 @@ def basis_function_one(degree, knot_vector, span, knot):
     :rtype: float
     """
     # Special case at boundaries
-    if (span == 0 and knot == knot_vector[0]) or (span == len(knot_vector) - degree - 2) \
-            and knot == knot_vector[len(knot_vector) - 1]:
+    if (span == 0 and knot == knot_vector[0]) or \
+            (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector) - 1]:
         return 1.0
 
     # Knot is outside of span range
