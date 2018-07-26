@@ -25,7 +25,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot on the figure
     * ``legend`` (True or False): Enables/Disables legend on the figure
     * ``axes`` (True or False): Enables/Disables axes and grid on the figure
-    * ``figure_size`` (list, *default: [800, 800]*): Size of the figure in (x, y)
+    * ``figure_size`` (list, *default: [800, 600]*): Size of the figure in (x, y)
     * ``linewidth`` (int, *default: 2*): thickness of the lines on the figure
 
     The following example illustrates the usage of the configuration class.
@@ -53,14 +53,28 @@ class VisConfig(Abstract.VisConfigAbstract):
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
+        # Set Plotly custom variables
+        self.figure_image_filename = "temp-figure"
+        self.figure_image_format = "png"
+        self.figure_filename = "temp-plot.html"
+
+        # Detect jupyter and/or ipython environment
+        try:
+            get_ipython
+            from plotly.offline import download_plotlyjs, init_notebook_mode
+            init_notebook_mode(connected=True)
+            self.plotfn = plotly.offline.iplot
+            self.no_ipython = False
+        except NameError:
+            self.plotfn = plotly.offline.plot
+            self.no_ipython = True
+
+        # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
-        self.figure_size = kwargs.get('figure_size', [800, 800])
+        self.figure_size = kwargs.get('figure_size', [800, 600])
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.line_width = kwargs.get('linewidth', 2)
-        self.figure_image_filename = "temp-figure"
-        self.figure_image_format = "png"
-        self.figure_filename = "temp-plot.html"  # name of the offline plot file
 
 
 class VisCurve2D(Abstract.VisAbstract):
@@ -135,13 +149,22 @@ class VisCurve2D(Abstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
+        # Prepare plot configuration
+        plotfn_dict = {
+            'show_link': False,
+            'filename': self._config.figure_filename,
+            'image': None if fig_display else self._config.figure_image_format,
+        }
+        if self._config.no_ipython:
+            plotfn_dict_extra = {
+                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'auto_open': fig_display,
+            }
+            # Python < 3.5 does not support starred expressions inside dicts
+            plotfn_dict.update(plotfn_dict_extra)
+
         # Display the plot
-        plotly.offline.plot(fig,
-                            show_link=False,
-                            filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_image_format,
-                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=fig_display)
+        self._config.plotfn(fig, **plotfn_dict)
 
 
 class VisCurve3D(Abstract.VisAbstract):
@@ -233,13 +256,22 @@ class VisCurve3D(Abstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
+        # Prepare plot configuration
+        plotfn_dict = {
+            'show_link': False,
+            'filename': self._config.figure_filename,
+            'image': None if fig_display else self._config.figure_image_format,
+        }
+        if self._config.no_ipython:
+            plotfn_dict_extra = {
+                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'auto_open': fig_display,
+            }
+            # Python < 3.5 does not support starred expressions inside dicts
+            plotfn_dict.update(plotfn_dict_extra)
+
         # Display the plot
-        plotly.offline.plot(fig,
-                            show_link=False,
-                            filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_image_format,
-                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=fig_display)
+        self._config.plotfn(fig, **plotfn_dict)
 
 
 class VisSurface(Abstract.VisAbstractSurf):
@@ -335,10 +367,19 @@ class VisSurface(Abstract.VisAbstractSurf):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
+        # Prepare plot configuration
+        plotfn_dict = {
+            'show_link': False,
+            'filename': self._config.figure_filename,
+            'image': None if fig_display else self._config.figure_image_format,
+        }
+        if self._config.no_ipython:
+            plotfn_dict_extra = {
+                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'auto_open': fig_display,
+            }
+            # Python < 3.5 does not support starred expressions inside dicts
+            plotfn_dict.update(plotfn_dict_extra)
+
         # Display the plot
-        plotly.offline.plot(fig,
-                            show_link=False,
-                            filename=self._config.figure_filename,
-                            image=None if fig_display else self._config.figure_image_format,
-                            image_filename=self._config.figure_image_filename if fig_filename is None else fig_filename,
-                            auto_open=fig_display)
+        self._config.plotfn(fig, **plotfn_dict)
