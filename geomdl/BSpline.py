@@ -566,8 +566,7 @@ class Curve(Abstract.Curve):
 
         Useful when converting a 2-D curve to a 3-D curve.
 
-        :return: curve object
-        :rtype: Curve
+        :return: Curve with updated dimension
         """
         dim = self._dimension
         if self._rational:
