@@ -74,7 +74,7 @@ class PyTest(TestCommand):
 setup(
     name='geomdl',
     version=get_property('__version__', 'geomdl'),
-    description='NURBS curve and surface evaluation library in pure python',
+    description='Object-oriented B-Spline and NURBS curve and surface evaluation library',
     long_description=read('DESCRIPTION.rst'),
     license='MIT',
     author='Onur Rauf Bingol',
