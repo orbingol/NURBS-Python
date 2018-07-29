@@ -257,7 +257,7 @@ class Curve(Abstract.Curve):
         # Check u parameters are correct
         utilities.check_uv(u)
 
-        # Evaluate derivative at knot u
+        # Evaluate and return the derivative at knot u
         return self._evaluator.derivatives_single(knot=u,
                                                   deriv_order=order,
                                                   degree=self.degree,
@@ -266,8 +266,8 @@ class Curve(Abstract.Curve):
                                                   dimension=self._dimension)
 
     # Evaluates the curve derivative control points
-    def derivatives_ctrlpts(self, **kwargs):
-        """ Evaluates the n-th order curve derivatives control points.
+    def derivatives_ctrlpts(self, order=0, **kwargs):
+        """ Evaluates the n-th order curve derivative control points.
 
         :param order: derivative order
         :type order: integer
@@ -277,16 +277,17 @@ class Curve(Abstract.Curve):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
 
+        # Get keyword arguments
         r1 = kwargs.get('r1', 0)
         r2 = kwargs.get('r2', len(self._control_points) - 1)
-        order = kwargs.get('order', 0)
 
+        # Evaluate and return the derivative control points
         return self._evaluator.derivatives_ctrlpts(r1=r1, r2=r2,
-                                                    deriv_order=order,
-                                                    degree=self.degree,
-                                                    knotvector=self.knotvector,
-                                                    ctrlpts=self._control_points,
-                                                    dimension=self._dimension)
+                                                   deriv_order=order,
+                                                   degree=self.degree,
+                                                   knotvector=self.knotvector,
+                                                   ctrlpts=self._control_points,
+                                                   dimension=self._dimension)
 
     # Evaluates the curve tangent at the given u parameter
     def tangent(self, u=-1, normalize=False):
@@ -1072,41 +1073,46 @@ class Surface(Abstract.Surface):
         # Check u and v parameters are correct
         utilities.check_uv(u, v)
 
-        SKL = self._evaluator.derivatives_single(knot_u=u, knot_v=v, deriv_order=order,
-                                                 degree_u=self.degree_u, degree_v=self.degree_v,
-                                                 knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                                 ctrlpts_size_u=self.ctrlpts_size_u,
-                                                 ctrlpts_size_v=self.ctrlpts_size_v,
-                                                 ctrlpts=self._control_points2D,
-                                                 dimension=self._dimension)
-
-        # Return the derivatives
-        return SKL
+        # Evaluate and return the derivatives
+        return self._evaluator.derivatives_single(knot_u=u, knot_v=v, deriv_order=order,
+                                                  degree_u=self.degree_u, degree_v=self.degree_v,
+                                                  knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                                  ctrlpts_size_u=self.ctrlpts_size_u,
+                                                  ctrlpts_size_v=self.ctrlpts_size_v,
+                                                  ctrlpts=self._control_points2D,
+                                                  dimension=self._dimension)
 
     # Evaluates the curve derivative control points
-    def derivatives_ctrlpts(self, **kwargs):
-        """ Evaluates the n-th order surface derivatives control points.
+    def derivatives_ctrlpts(self, order=0, **kwargs):
+        """ Evaluates the n-th order surface derivative control points.
+
+        Returns a list PKL, where PKL[k][l][i][j] is the {i,j}-th control point of the derivative of the surface S(u,v)
+        w.r.t u k times and v l times
 
         :param order: derivative order
         :type order: integer
-        :return: a list PKL, where PKL[k][l][i][j] is the {i, j}-th control point of the derivative of the surface S(u, v) w.r.t u k times and v l times
+        :return: the list PKL (as defined in the description)
         :rtype: list
         """
+        # Check all parameters are set before the surface evaluation
+        self._check_variables()
 
+        # Get keyword arguments
         r1 = kwargs.get('r1', 0)
         r2 = kwargs.get('r2', self.ctrlpts_size_u - 1)
         s1 = kwargs.get('s1', 0)
         s2 = kwargs.get('s2', self.ctrlpts_size_v - 1)
-        order = kwargs.get('order', 0)
 
+        # Evaluate and return the derivative control points
         return self._evaluator.derivatives_ctrlpts(r1=r1, r2=r2,
-                                                    s1=s1, s2=s2,
-                                                    degree_u=self.degree_u, degree_v=self.degree_v,
-                                                    knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                                    ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
-                                                    ctrlpts=self._control_points2D,
-                                                    dimension=self._dimension,
-                                                    deriv_order=order)
+                                                   s1=s1, s2=s2,
+                                                   degree_u=self.degree_u, degree_v=self.degree_v,
+                                                   knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                                   ctrlpts_size_u=self.ctrlpts_size_u,
+                                                   ctrlpts_size_v=self.ctrlpts_size_v,
+                                                   ctrlpts=self._control_points2D,
+                                                   dimension=self._dimension,
+                                                   deriv_order=order)
 
     # Evaluates the surface tangent vectors at the given (u, v) parameter
     def tangent(self, u=-1, v=-1, normalize=False):
