@@ -6,6 +6,7 @@
     Tests geomdl.BSpline.Surface module. Requires "pytest" to run.
 """
 from geomdl import BSpline
+from geomdl import evaluators
 
 GEOMDL_DELTA = 0.001
 OBJECT_INSTANCE = BSpline.Surface
@@ -146,7 +147,7 @@ def test_bspline_surface_eval1():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.0, v=0.0)
 
     assert abs(evalpt[0] - RESULT_LIST[0][0]) < GEOMDL_DELTA
@@ -169,7 +170,7 @@ def test_bspline_surface_eval2():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.0, v=0.2)
 
     assert abs(evalpt[0] - RESULT_LIST[1][0]) < GEOMDL_DELTA
@@ -215,7 +216,7 @@ def test_bspline_surface_eval4():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=0.0)
 
     assert abs(evalpt[0] - RESULT_LIST[3][0]) < GEOMDL_DELTA
@@ -238,7 +239,7 @@ def test_bspline_surface_eval5():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=0.4)
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
@@ -261,7 +262,7 @@ def test_bspline_surface_eval6():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=1.0)
 
     assert abs(evalpt[0] - RESULT_LIST[5][0]) < GEOMDL_DELTA
@@ -284,7 +285,7 @@ def test_bspline_surface_eval7():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.6, v=0.0)
 
     assert abs(evalpt[0] - RESULT_LIST[6][0]) < GEOMDL_DELTA
@@ -307,7 +308,7 @@ def test_bspline_surface_eval8():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.6, v=0.6)
 
     assert abs(evalpt[0] - RESULT_LIST[7][0]) < GEOMDL_DELTA
@@ -330,7 +331,7 @@ def test_bspline_surface_eval9():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.6, v=1.0)
 
     assert abs(evalpt[0] - RESULT_LIST[8][0]) < GEOMDL_DELTA
@@ -353,7 +354,7 @@ def test_bspline_surface_eval10():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=1.0, v=0.0)
 
     assert abs(evalpt[0] - RESULT_LIST[9][0]) < GEOMDL_DELTA
@@ -376,7 +377,7 @@ def test_bspline_surface_eval11():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=1.0, v=0.8)
 
     assert abs(evalpt[0] - RESULT_LIST[10][0]) < GEOMDL_DELTA
@@ -399,12 +400,115 @@ def test_bspline_surface_eval12():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=1.0, v=1.0)
 
     assert abs(evalpt[0] - RESULT_LIST[11][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[11][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
+
+
+def test_bspline_surface_deriv_ctrlpts():
+    test_degree = 3
+    test_knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    test_u = 0.35
+    test_v = 0.35
+    test_order = 3
+
+    # Create a surface isntance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = test_degree
+    surf.degree_v = test_degree
+
+    # Set control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = test_knotvector
+    surf.knotvector_v = test_knotvector
+
+    # Take the derivatives
+    der1 = surf.derivatives(u=test_v, v=test_u, order=test_order)
+
+    CONTROL_POINTS2D = [list(_) for _ in surf.ctrlpts2d]
+
+    # Compute the control points of the derivative
+    deriv_ctrlpts = surf.derivatives_ctrlpts(order=test_order - 1)
+
+    for k in range(0, test_order):
+        for l in range(0, test_order - k):
+            surfacek = OBJECT_INSTANCE()
+            surfacek.degree_u = test_degree - k
+            surfacek.degree_v = test_degree - l
+
+            # Cutting out None values in deriv_ctrlpts[k][l] and excess clamping values in u and v knot vector
+            if k == 0:
+                
+                if l == 0:
+                    kctrlpts2d = [_ for _ in deriv_ctrlpts[k][l]]
+                    kctrlpts = [p for _ in kctrlpts2d for p in _]
+                    surfacek.set_ctrlpts(kctrlpts, 6 - k, 6 - l)
+
+                    surfacek.knotvector_u = test_knotvector
+                    surfacek.knotvector_v = test_knotvector
+
+                else:
+                    kctrlpts2d = [_[:-l] for _ in deriv_ctrlpts[k][l]]
+                    kctrlpts = [p for _ in kctrlpts2d for p in _]
+                    surfacek.set_ctrlpts(kctrlpts, 6 - k, 6 - l)
+
+                    surfacek.knotvector_u = test_knotvector
+                    surfacek.knotvector_v = test_knotvector[l:-l]
+
+            else:
+                if l == 0:
+                    kctrlpts2d = [_ for _ in deriv_ctrlpts[k][l]][:-k]
+                    kctrlpts = [p for _ in kctrlpts2d for p in _]
+                    surfacek.set_ctrlpts(kctrlpts, 6 - k, 6 - l)
+
+                    surfacek.knotvector_v = test_knotvector
+                    surfacek.knotvector_u = test_knotvector[k:-k]
+                    
+                else:
+                    kctrlpts2d = [_[:-l] for _ in deriv_ctrlpts[k][l]][:-k]
+                    kctrlpts = [p for _ in kctrlpts2d for p in _]
+                    surfacek.set_ctrlpts(kctrlpts, 6 - k, 6 - l)
+
+                    surfacek.knotvector_v = test_knotvector[l:-l]
+                    surfacek.knotvector_u = test_knotvector[k:-k]
+
+            assert abs(surfacek.surfpt(test_u, test_v)[0] - der1[k][l][0]) < GEOMDL_DELTA
+            assert abs(surfacek.surfpt(test_u, test_v)[1] - der1[k][l][1]) < GEOMDL_DELTA
+            assert abs(surfacek.surfpt(test_u, test_v)[2] - der1[k][l][2]) < GEOMDL_DELTA
+
+
+def test_bspline_surface_deriv():
+    # Create a surface isntance
+    surf = OBJECT_INSTANCE()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Set control points
+    surf.set_ctrlpts(CONTROL_POINTS, 6, 6)
+
+    # Set knot vectors
+    surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    surf.knotvector_v = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+
+    # Take the derivative
+    der1 = surf.derivatives(u=0.35, v=0.35, order=2)
+    surf.evaluator = evaluators.SurfaceEvaluator2()
+    der2 = surf.derivatives(u=0.35, v=0.35, order=2)
+
+    for k in range(0, 3):
+        for l in range(0, 3 - k):
+            assert abs(der1[k][l][0] - der2[k][l][0]) < GEOMDL_DELTA
+            assert abs(der1[k][l][1] - der2[k][l][1]) < GEOMDL_DELTA
+            assert abs(der1[k][l][2] - der2[k][l][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_bbox():
@@ -454,7 +558,7 @@ def test_bspline_surface_insert_knot1():
     # Insert knot
     surf.insert_knot(u=0.3, v=0.4)
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=0.4)
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
@@ -480,7 +584,7 @@ def test_bspline_surface_insert_knot2():
     # Insert knot
     surf.insert_knot(u=0.3, ru=2)
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=0.4)
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
@@ -506,7 +610,7 @@ def test_bspline_surface_insert_knot3():
     # Insert knot
     surf.insert_knot(v=0.3, rv=2)
 
-    # Evaluate curve
+    # Evaluate surface
     evalpt = surf.surfpt(u=0.3, v=0.4)
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
