@@ -456,8 +456,8 @@ def derivatives_ctrlpts(r1, r2, degree, knot_vector, control_points, dimension, 
     for k in range(1, order + 1):
         tmp = degree - k + 1
         for i in range(0, r - k + 1):
-            PK[k][i][:] = [tmp * (elem1 - elem2) / (
-                knot_vector[r1 + i + degree + 1] - knot_vector[r1 + i + k]) for elem1, elem2
+            PK[k][i][:] = [tmp * (elem1 - elem2) /
+                           (knot_vector[r1 + i + degree + 1] - knot_vector[r1 + i + k]) for elem1, elem2
                            in zip(PK[k - 1][i + 1], PK[k - 1][i])]
 
     # Return a 2-dimensional list of control points
