@@ -10,9 +10,16 @@ NURBS-Python (geomdl)
 Introduction
 ============
 
-NURBS-Python (geomdl) provides fully object-oriented Non-Uniform Rational B-Spline (NURBS) surface and curve data
-structures and extensible advanced computation algorithms in pure python. It allows users to directly visualize the
-computed curves and surfaces using various visualization libraries. Additionally, it comes with a surface generator.
+NURBS-Python is an object-oriented B-Spline and NURBS surface and curve library for Python with implementations of
+advanced computation algorithms in an extensible way. It comes with on-the-fly shape visualization options,
+knot vector and surface grid generators, and more.
+
+NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
+steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2 and 3
+compatibility library ``six`` will be automatically installed during NURBS-Python setup.
+
+Please see the `Examples Repository <https://github.com/orbingol/NURBS-Python_Examples>`_ for details on library usage
+and integration scenarios.
 
 Features
 ========
@@ -33,16 +40,21 @@ It provides an abstraction layer for easy extensibility (``geomdl.Abstract``), a
 helper functionality, such as surface (``geomdl.CPGen`` module) and uniform knot vector
 (``geomdl.utilities.generate_knot_vector``) generators.
 
+The Core Library module of NURBS-Python is self-contained. It implements all the necessary maths and linear algebra
+operations without needing any other external modules.
+
 Exchange Module
 ---------------
 
-``geomdl.exchange`` module can export control points and evaluated points of the ``Curve`` and ``Surface`` objects
-in common formats such as CSV, VTK, OBJ, OFF and STL.
+``geomdl.exchange`` module can export control points and evaluated points of the ``Curve``, ``Surface`` and ``Multi``
+objects in common formats such as CSV, VTK, OBJ, OFF and STL.
 
 Visualization Component
 -----------------------
 
-``geomdl.visualization`` component contains customizable classes for plotting curves and surfaces directly.
+``geomdl.visualization`` component contains extensible and customizable classes for plotting curves and surfaces
+on-the-fly. The users have options to use Matplotlib and/or Plotly visualization libraries. These libraries are not
+automatically installed during NURBS-Python setup and left for users' discretion.
 
 Shapes Component
 ----------------

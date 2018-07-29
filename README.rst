@@ -10,9 +10,13 @@ NURBS-Python (geomdl)
 Introduction
 ============
 
-This project aims to implement Non-Uniform Rational B-Spline (NURBS) curve and surface computation algorithms in pure
-Python with minimum possible dependencies. The library is fully object-oriented and does **not** depend on any external
-libraries.
+NURBS-Python (geomdl) is an object-oriented B-Spline and NURBS surface and curve library for Python with
+implementations of advanced computation algorithms in an extensible way.
+It comes with on-the-fly shape visualization options, knot vector and surface grid generators, and more.
+
+NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
+steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2 and 3
+compatibility library ``six`` will be automatically installed during NURBS-Python setup.
 
 Branch Information
 ------------------
@@ -42,8 +46,10 @@ of the documentation.
 Contributions and Issues
 ------------------------
 
-Please see the `documentation <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_
-for details.
+All contributions (new algorithms, examples, tests, improving documentation, PR a task from the issue tracker, ...)
+are welcomed. For details, please see the
+`Issues and Reporting <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_ section of the
+documentation.
 
 Author
 ======
