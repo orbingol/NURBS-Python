@@ -269,6 +269,10 @@ class Curve(Abstract.Curve):
     def derivatives_ctrlpts(self, order=0, **kwargs):
         """ Evaluates the n-th order curve derivative control points.
 
+        Keyword arguments:
+            * ``r1``: minimum span
+            * ``r2``: maximum span
+
         :param order: derivative order
         :type order: integer
         :return: a list containing the control points of up to {order}-th derivative of the curve
@@ -1087,7 +1091,13 @@ class Surface(Abstract.Surface):
         """ Evaluates the n-th order surface derivative control points.
 
         Returns a list PKL, where PKL[k][l][i][j] is the {i,j}-th control point of the derivative of the surface S(u,v)
-        w.r.t u k times and v l times
+        w.r.t u k times and v l times.
+
+        Keyword arguments:
+            * ``r1``: minimum span on the u-direction
+            * ``r2``: maximum span on the u-direction
+            * ``s1``: minimum span on the v-direction
+            * ``s2``: maximum span on the v-direction
 
         :param order: derivative order
         :type order: integer
@@ -1114,11 +1124,11 @@ class Surface(Abstract.Surface):
                                                    dimension=self._dimension,
                                                    deriv_order=order)
 
-    # Evaluates the surface tangent vectors at the given (u, v) parameter
+    # Evaluates the surface tangent vectors at the given (u,v) parameter
     def tangent(self, u=-1, v=-1, normalize=False):
-        """ Evaluates the surface tangent vector at the given (u, v) parameter pair.
+        """ Evaluates the surface tangent vector at the given (u,v) parameter pair.
 
-        The output returns a list containing the starting point (i.e. origin) of the vector and the vectors themselves.
+        The output returns a list containing the starting point (i.e., origin) of the vector and the vectors themselves.
 
         :param u: parameter on the u-direction
         :type u: float
@@ -1145,11 +1155,12 @@ class Surface(Abstract.Surface):
         # Return the list of tangents w.r.t. u and v
         return tuple(point), der_u, der_v
 
-    # Evaluates the surface tangent at all (u, v) values in the input list
+    # Evaluates the surface tangent at all (u,v) values in the input list
     def tangents(self, uv_list=(), normalize=False):
-        """ Evaluates the surface tangent vectors at all (u, v) parameter pairs in the input list.
+        """ Evaluates the surface tangent vectors at all (u,v) parameter pairs in the input list.
 
-        The input list should be arranged as [[u1, v1], [u2, v2], ...]
+        This method takes a list of (u,v) values arranged in the order of [[u1,v1], [u2,v2], ...] and the output
+        (i.e., computed values) will be in the same exact order.
 
         :param uv_list: list of (u, v) parameter pairs
         :type uv_list: tuple, list
@@ -1165,7 +1176,7 @@ class Surface(Abstract.Surface):
             if not isinstance(uv, (tuple, list)):
                 raise ValueError("The list member " + str(uv) + " is not a tuple or a list")
             if len(uv) is not 2:
-                raise ValueError("The list member " + str(uv) + " does not correspond to a (u, v) value")
+                raise ValueError("The list member " + str(uv) + " does not correspond to a (u,v) value")
 
         ret_list = []
         for u, v in uv_list:
@@ -1213,7 +1224,8 @@ class Surface(Abstract.Surface):
     def normals(self, uv_list=(), normalize=False):
         """ Evaluates the surface normal at all (u, v) parameter pairs in the input list.
 
-        The input list should be arranged as [[u1, v1], [u2, v2], ...]
+        This method takes a list of (u,v) values arranged in the order of [[u1,v1], [u2,v2], ...] and the output
+        (i.e., computed values) will be in the same exact order.
 
         :param uv_list: list of (u, v) parameter pairs
         :type uv_list: tuple, list
@@ -1229,7 +1241,7 @@ class Surface(Abstract.Surface):
             if not isinstance(uv, (tuple, list)):
                 raise ValueError("The list member " + str(uv) + " is not a tuple or a list")
             if len(uv) is not 2:
-                raise ValueError("The list member " + str(uv) + " does not correspond to a (u, v) value")
+                raise ValueError("The list member " + str(uv) + " does not correspond to a (u,v) value")
 
         ret_list = []
         for u, v in uv_list:
@@ -1240,7 +1252,7 @@ class Surface(Abstract.Surface):
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates
     def insert_knot(self, u=None, v=None, ru=1, rv=1, check_r=True):
-        """ Inserts the knot in single (single u or v) or multi-dimensions ((u,v) pair).
+        """ Inserts the knot in single dimension, with only u or v input, or multi-dimensions, with a (u,v) pair input.
 
         :param u: Knot to be inserted on the u-direction
         :type u: float

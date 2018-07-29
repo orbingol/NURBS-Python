@@ -465,10 +465,10 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Call parent method
         super(SurfaceEvaluator, self).derivatives_ctrlpts(**kwargs)
 
-        r1 = kwargs.get('r1')  # minimum span on U
-        r2 = kwargs.get('r2')  # maximum span on U
-        s1 = kwargs.get('s1')  # minimum span on V
-        s2 = kwargs.get('s2')  # maximum span on V
+        r1 = kwargs.get('r1')  # minimum span on the u-direction
+        r2 = kwargs.get('r2')  # maximum span on the u-direction
+        s1 = kwargs.get('s1')  # minimum span on the v-direction
+        s2 = kwargs.get('s2')  # maximum span on the v-direction
 
         ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
         degree_u = kwargs.get('degree_u')
