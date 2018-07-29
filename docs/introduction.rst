@@ -36,6 +36,8 @@ NURBS-Python implements the following algorithms from **The NURBS Book (2nd Edit
 * A3.4 CurveDerivsAlg2 *(pages 99,100)*
 * A3.5 SurfacePoint *(page 103)*
 * A3.6 SurfaceDerivsAlg1 *(pages 111,112)*
+* A3.7 SurfaceDerivCpts *(pages 114,115)*
+* A3.8 SurfaceDerivsAlg2 *(page 115)*
 * A4.1 CurvePoint *(page 124)*
 * A4.2 RatCurveDerivs *(page 127)*
 * A4.3 SurfacePoint *(page 134)*
