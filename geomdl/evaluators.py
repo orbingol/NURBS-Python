@@ -20,7 +20,6 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
     * Algorithm A3.1: CurvePoint
     * Algorithm A3.2: CurveDerivsAlg1
-    * Algorithm A3.3: CurveDerivCpts
     * Algorithm A5.1: CurveKnotIns
 
     """
@@ -118,20 +117,6 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         # Not implemented, yet...
         raise NotImplementedError("This functionality is not implemented at the moment")
 
-    # Computes the control points of all derivative curves up to and including the {degree}-th derivative
-    def derivatives_ctrlpts(self, **kwargs):
-        """ Computes the control points of all derivative curves up to and including the {degree}-th derivative. """
-        # r1 - minimum span, r2 - maximum span
-        r1 = kwargs.get('r1')
-        r2 = kwargs.get('r2')
-        deriv_order = kwargs.get('deriv_order')
-        degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-
-        return helpers.derivatives_ctrlpts(r1, r2, degree, knot_vector, control_points, dimension, order=deriv_order)
-
     def insert_knot(self, **kwargs):
         """ Insert knot multiple times at a single parameter. """
         # Call parent method
@@ -207,6 +192,40 @@ class CurveEvaluator2(CurveEvaluator):
     def __init__(self, **kwargs):
         super(CurveEvaluator2, self).__init__(**kwargs)
 
+    # Computes the control points of all derivative curves up to and including the {degree}-th derivative
+    @staticmethod
+    def derivatives_ctrlpts(**kwargs):
+        """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
+
+        Implementation of Algorithm A3.3 from The NURBS Book by Piegl & Tiller.
+
+        Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k.
+        """
+        # r1 - minimum span, r2 - maximum span
+        r1 = kwargs.get('r1')
+        r2 = kwargs.get('r2')
+        deriv_order = kwargs.get('deriv_order')
+        degree = kwargs.get('degree')
+        knot_vector = kwargs.get('knotvector')
+        control_points = kwargs.get('ctrlpts')
+        dimension = kwargs.get('dimension')
+
+        # Algorithm A3.3
+        r = r2 - r1
+        PK = [[[None for _ in range(dimension)] for _ in range(r + 1)] for _ in range(deriv_order + 1)]
+        for i in range(0, r + 1):
+            PK[0][i][:] = [elem for elem in control_points[r1 + i]]
+
+        for k in range(1, deriv_order + 1):
+            tmp = degree - k + 1
+            for i in range(0, r - k + 1):
+                PK[k][i][:] = [tmp * (elem1 - elem2) /
+                               (knot_vector[r1 + i + degree + 1] - knot_vector[r1 + i + k]) for elem1, elem2
+                               in zip(PK[k - 1][i + 1], PK[k - 1][i])]
+
+        # Return a 2-dimensional list of control points
+        return PK
+
     # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives_single(self, **kwargs):
         """ Evaluates n-th order curve derivatives at a single parameter. """
@@ -227,12 +246,14 @@ class CurveEvaluator2(CurveEvaluator):
 
         span = helpers.find_span(knot_vector, len(control_points), knot)
         bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
-        PK = helpers.derivatives_ctrlpts(r1=(span - degree), r2=span,
-                                         degree=degree,
-                                         knot_vector=knot_vector,
-                                         control_points=control_points,
-                                         dimension=dimension,
-                                         order=du)
+
+        # "derivatives_ctrlpts" is a static method that could be called like below
+        PK = CurveEvaluator2.derivatives_ctrlpts(r1=(span - degree), r2=span,
+                                                 degree=degree,
+                                                 knotvector=knot_vector,
+                                                 ctrlpts=control_points,
+                                                 dimension=dimension,
+                                                 deriv_order=du)
 
         for k in range(0, du + 1):
             CK[k] = [0.0 for _ in range(dimension)]
@@ -313,7 +334,6 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
     * Algorithm A3.5: SurfacePoint
     * Algorithm A3.6: SurfaceDerivsAlg1
-    * Algorithm A3.7: SurfaceDerivCpts
     * Algorithm A5.3: SurfaceKnotIns
 
     """
@@ -456,76 +476,6 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Not implemented, yet
         raise NotImplementedError("This functionality is not implemented at the moment")
 
-    def derivatives_ctrlpts(self, **kwargs):
-        """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
-
-        Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times w.r.t to u and
-        l times w.r.t v.
-        """
-        # Call parent method
-        super(SurfaceEvaluator, self).derivatives_ctrlpts(**kwargs)
-
-        r1 = kwargs.get('r1')  # minimum span on the u-direction
-        r2 = kwargs.get('r2')  # maximum span on the u-direction
-        s1 = kwargs.get('s1')  # minimum span on the v-direction
-        s2 = kwargs.get('s2')  # maximum span on the v-direction
-
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        degree_u = kwargs.get('degree_u')
-        knot_vector_u = kwargs.get('knotvector_u')
-        
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_v = kwargs.get('knotvector_v')
-        
-        ctrlpts2d = kwargs.get('ctrlpts')
-        deriv_order = kwargs.get('deriv_order')
-
-        dimension = kwargs.get('dimension')
-
-        PKL = [[[[[None for _ in range(dimension)]
-                  for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)]
-                for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
-        
-        du = min(degree_u, deriv_order)        
-        dv = min(degree_v, deriv_order)
-
-        r = r2 - r1
-        s = s2 - s1
-
-        # Control points of the U derivatives of every U-curve
-        for j in range(s1, s2 + 1):
-            PKu = helpers.derivatives_ctrlpts(r1=r1, r2=r2,
-                                              degree=degree_u,
-                                              knot_vector=knot_vector_u,
-                                              control_points=[ctrlpts2d[_][j] for _ in range(len(ctrlpts2d))],
-                                              dimension=dimension,
-                                              order=du)
-
-            # Copy into output as the U partial derivatives
-            for k in range(0, du + 1):
-                for i in range(0, r - k + 1):
-                    PKL[k][0][i][j - s1] = PKu[k][i]
-
-        # Control points of the V derivatives of every U-differentiated V-curve
-        for k in range(0, du):
-            for i in range(0, r - k + 1):
-                dd = min(deriv_order - k, dv)
-
-                PKuv = helpers.derivatives_ctrlpts(r1=0, r2=s,
-                                                   degree=degree_v,
-                                                   knot_vector=knot_vector_v[s1:],
-                                                   control_points=PKL[k][0][i],
-                                                   dimension=dimension,
-                                                   order=dd)
-
-                # Copy into output
-                for l in range(1, dd + 1):
-                    for j in range(0, s - l + 1):
-                        PKL[k][l][i][j] = PKuv[l][j]
-
-        return PKL
-
     def insert_knot_u(self, **kwargs):
         """ Inserts knot(s) in u-direction. """
         # Call parent method
@@ -667,6 +617,74 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
     def __init__(self, **kwargs):
         super(SurfaceEvaluator2, self).__init__(**kwargs)
+
+    @staticmethod
+    def derivatives_ctrlpts(**kwargs):
+        """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
+
+        Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times w.r.t to u and
+        l times w.r.t v.
+        """
+        r1 = kwargs.get('r1')  # minimum span on the u-direction
+        r2 = kwargs.get('r2')  # maximum span on the u-direction
+        s1 = kwargs.get('s1')  # minimum span on the v-direction
+        s2 = kwargs.get('s2')  # maximum span on the v-direction
+
+        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
+        degree_u = kwargs.get('degree_u')
+        knot_vector_u = kwargs.get('knotvector_u')
+
+        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        degree_v = kwargs.get('degree_v')
+        knot_vector_v = kwargs.get('knotvector_v')
+
+        ctrlpts2d = kwargs.get('ctrlpts')
+        deriv_order = kwargs.get('deriv_order')
+
+        dimension = kwargs.get('dimension')
+
+        PKL = [[[[[None for _ in range(dimension)]
+                  for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)]
+                for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+
+        du = min(degree_u, deriv_order)
+        dv = min(degree_v, deriv_order)
+
+        r = r2 - r1
+        s = s2 - s1
+
+        # Control points of the U derivatives of every U-curve
+        for j in range(s1, s2 + 1):
+            PKu = CurveEvaluator2.derivatives_ctrlpts(r1=r1, r2=r2,
+                                                      degree=degree_u,
+                                                      knotvector=knot_vector_u,
+                                                      ctrlpts=[ctrlpts2d[_][j] for _ in range(len(ctrlpts2d))],
+                                                      dimension=dimension,
+                                                      deriv_order=du)
+
+            # Copy into output as the U partial derivatives
+            for k in range(0, du + 1):
+                for i in range(0, r - k + 1):
+                    PKL[k][0][i][j - s1] = PKu[k][i]
+
+        # Control points of the V derivatives of every U-differentiated V-curve
+        for k in range(0, du):
+            for i in range(0, r - k + 1):
+                dd = min(deriv_order - k, dv)
+
+                PKuv = CurveEvaluator2.derivatives_ctrlpts(r1=0, r2=s,
+                                                           degree=degree_v,
+                                                           knotvector=knot_vector_v[s1:],
+                                                           ctrlpts=PKL[k][0][i],
+                                                           dimension=dimension,
+                                                           deriv_order=dd)
+
+                # Copy into output
+                for l in range(1, dd + 1):
+                    for j in range(0, s - l + 1):
+                        PKL[k][l][i][j] = PKuv[l][j]
+
+        return PKL
 
     # Evaluates the surface derivatives using "SurfaceDerivsAlg2"
     def derivatives_single(self, **kwargs):

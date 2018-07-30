@@ -429,36 +429,3 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
         ders[k] = ND[0]
 
     return ders
-
-
-def derivatives_ctrlpts(r1, r2, degree, knot_vector, control_points, dimension, order=0):
-    """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
-
-    Implementation of Algorithm A3.3 from The NURBS Book by Piegl & Tiller.
-
-    Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k.
-
-    :param r1: minimum span
-    :param r2: maximum span
-    :param degree: degree
-    :param knot_vector: knot vector
-    :param control_points: control points
-    :param dimension: dimensionality
-    :param order: derivative order
-    :return: the list PK
-    """
-    # Algorithm A3.3
-    r = r2 - r1
-    PK = [[[None for _ in range(dimension)] for _ in range(r + 1)] for _ in range(order + 1)]
-    for i in range(0, r + 1):
-        PK[0][i][:] = [elem for elem in control_points[r1 + i]]
-
-    for k in range(1, order + 1):
-        tmp = degree - k + 1
-        for i in range(0, r - k + 1):
-            PK[k][i][:] = [tmp * (elem1 - elem2) /
-                           (knot_vector[r1 + i + degree + 1] - knot_vector[r1 + i + k]) for elem1, elem2
-                           in zip(PK[k - 1][i + 1], PK[k - 1][i])]
-
-    # Return a 2-dimensional list of control points
-    return PK
