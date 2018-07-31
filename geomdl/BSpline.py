@@ -1,7 +1,7 @@
 """
 .. module:: BSpline
     :platform: Unix, Windows
-    :synopsis: A data storage and evaluation module for B-spline curves and surfaces
+    :synopsis: Provides data storage and evaluation functionality for B-spline curves and surfaces
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

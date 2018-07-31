@@ -1,7 +1,7 @@
 """
 .. module:: VisPlotly
     :platform: Unix, Windows
-    :synopsis: Plotly visualization component for NURBS-Python (experimental)
+    :synopsis: Plotly visualization component for NURBS-Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

@@ -1,7 +1,7 @@
 """
 .. module:: CPGen
     :platform: Unix, Windows
-    :synopsis: A simple control points generator to use with the B-Spline and NURBS surfaces
+    :synopsis: A simple control points grid generator for B-Spline and NURBS surfaces
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

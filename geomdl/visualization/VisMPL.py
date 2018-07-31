@@ -1,7 +1,7 @@
 """
 .. module:: VisMPL
     :platform: Unix, Windows
-    :synopsis: Matplotlib visualization component for NURBS-Python (experimental)
+    :synopsis: Matplotlib visualization component for NURBS-Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

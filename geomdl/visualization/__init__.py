@@ -1,4 +1,4 @@
-""" NURBS-Python Visualization Component
+""" Visualization Modules for NURBS-Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

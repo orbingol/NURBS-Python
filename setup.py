@@ -14,7 +14,7 @@
 
     Then, you may install "setuptools" package using the following command:
 
-    pip install setuptools
+        pip install setuptools
 
     "setuptools" is a collection of enhancements to the Python's "distutils" package. You may check its documentation
     from the following link:
@@ -24,16 +24,16 @@
     It also comes installed by default with the official Python.org distribution and in all "conda" environments.
     On the other hand, it might require an update. You may update your "setuptools" package using the following command:
 
-    pip install setuptools --upgrade
+        pip install setuptools --upgrade
 
     or
 
-    conda update setuptools
+        conda update setuptools
 
     depending on the package manager that you are using.
 
     After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl" or
-    alternatively, you may use "conda": https://anaconda.org/orbingol/geomdl
+    alternatively, you may use "conda" package on https://anaconda.org/orbingol/geomdl
 """
 
 from setuptools import setup
@@ -74,7 +74,7 @@ class PyTest(TestCommand):
 setup(
     name='geomdl',
     version=get_property('__version__', 'geomdl'),
-    description='Object-oriented B-Spline and NURBS curve and surface evaluation library',
+    description='Object-oriented B-Spline and NURBS evaluation library',
     long_description=read('DESCRIPTION.rst'),
     license='MIT',
     author='Onur Rauf Bingol',

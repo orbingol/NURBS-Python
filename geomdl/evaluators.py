@@ -1,7 +1,7 @@
 """
 .. module:: evaluators
     :platform: Unix, Windows
-    :synopsis: NURBS & B-Spline evaluation algorithms
+    :synopsis: Provides NURBS & B-Spline evaluation algorithms
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

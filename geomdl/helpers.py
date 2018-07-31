@@ -1,7 +1,7 @@
 """
 .. module:: helpers
     :platform: Unix, Windows
-    :synopsis: Evaluation utility functions
+    :synopsis: Evaluation helper functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

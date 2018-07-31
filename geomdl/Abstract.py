@@ -1,7 +1,7 @@
 """
 .. module:: Abstract
     :platform: Unix, Windows
-    :synopsis: Provides abstract classes for all BSpline / NURBS curves and surfaces using Python's ABC module
+    :synopsis: Provides abstract base classes for evaluation and visualization modules
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

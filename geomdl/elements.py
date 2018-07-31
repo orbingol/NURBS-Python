@@ -1,7 +1,7 @@
 """
 .. module:: elements
     :platform: Unix, Windows
-    :synopsis: Classes representing geometry and topology elements
+    :synopsis: Provides classes representing geometry and topology elements
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

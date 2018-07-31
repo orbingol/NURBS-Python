@@ -1,4 +1,4 @@
-""" NURBS & B-Spline 2D/3D curve and surface evaluation library in pure Python
+""" Object-oriented B-Spline and NURBS evaluation library in pure Python
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
