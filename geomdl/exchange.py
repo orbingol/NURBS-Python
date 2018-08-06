@@ -17,7 +17,7 @@ from . import compatibility
 from .elements import Vertex, Triangle
 
 
-def import_txt(file_name, two_dimensional=False):
+def import_txt(file_name, two_dimensional=False, **kwargs):
     """ Reads control points from a text file and generates a 1-D list of control points.
 
     The following code examples illustrate importing different types of text files for curves and surfaces:
@@ -33,6 +33,28 @@ def import_txt(file_name, two_dimensional=False):
         # Import surface control points from a text file (2-dimensional file)
         surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
 
+    You may set the file delimiters using the keyword arguments ``separator`` and ``col_separator``, respectively.
+    ``separator`` is the delimiter between the coordinates of the control points. It could be comma
+    ``1, 2, 3`` or space ``1 2 3`` or something else. ``col_separator`` is the delimiter between the control
+    points and is only valid when ``two_dimensional`` is ``True``. Assuming that ``separator`` is set to space, then
+    ``col_operator`` could be semi-colon ``1 2 3; 4 5 6`` or pipe ``1 2 3| 4 5 6`` or comma ``1 2 3, 4 5 6`` or
+    something else.
+
+    The defaults for ``separator`` and ``col_separator`` are *comma (,)* and *semi-colon (;)*, respectively.
+
+    The following code examples illustrate the usage of the keyword arguments discussed above.
+
+    .. code-block:: python
+
+        # Import curve control points from a text file delimited with space
+        curve_ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
+
+        # Import surface control points from a text file (2-dimensional file) w/ space and comma delimiters
+        surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True,
+                                                           separator=" ", col_separator=",")
+
+    Please note that this function does not check whether the user set delimiters to the same value or not.
+
     :param file_name: file name of the text file
     :type file_name: str
     :param two_dimensional: type of the text file
@@ -41,6 +63,11 @@ def import_txt(file_name, two_dimensional=False):
     :rtype: list
     :raises IOError: an error occurred reading the file
     """
+    # File delimiters
+    col_sep = kwargs.get('col_separator', ";")
+    sep = kwargs.get('separator', ",")
+
+    # Initialize an empty list to store control points
     ctrlpts = []
 
     # Try opening the file for reading
@@ -54,11 +81,11 @@ def import_txt(file_name, two_dimensional=False):
                         # Remove whitespace
                         line = line.strip()
                         # Convert the string containing the coordinates into a list
-                        control_point_row = line.split(';')
+                        control_point_row = line.split(col_sep)
                         # Clean and convert the values
                         size_v = 0
                         for cpr in control_point_row:
-                            ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
+                            ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
                             size_v += 1
                         size_u += 1
 
@@ -70,7 +97,7 @@ def import_txt(file_name, two_dimensional=False):
                         # Remove whitespace
                         line = line.strip()
                         # Clean and convert the values
-                        ctrlpts.append([float(c.strip()) for c in line.split(',')])
+                        ctrlpts.append([float(c.strip()) for c in line.split(sep)])
 
                     # Return control points
                     return ctrlpts
@@ -81,12 +108,14 @@ def import_txt(file_name, two_dimensional=False):
         raise
 
 
-def export_txt(obj, file_name, two_dimensional=False):
+def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     """ Saves control points to a text file.
 
     For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
     point output file using ``two_dimensional`` flag. Please see the supported file formats for more details on the
     text file format.
+
+    Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
 
     :param obj: a curve or a surface object
     :type obj: Abstract.Curve, Abstract.Surface
@@ -106,6 +135,10 @@ def export_txt(obj, file_name, two_dimensional=False):
         warnings.warn("Ignoring two_dimensional flag since it only makes difference with surface objects...")
         two_dimensional = False
 
+    # File delimiters
+    col_sep = kwargs.get('col_separator', ";")
+    sep = kwargs.get('separator', ",")
+
     # Try opening the file for writing
     try:
         with open(file_name, 'w') as fp:
@@ -114,18 +147,17 @@ def export_txt(obj, file_name, two_dimensional=False):
                     line = ""
                     for j in range(0, obj.ctrlpts_size_v):
                         for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
-                            if idx:  # Add comma if we are not on the first element
-                                line += ","
+                            if idx:  # check for the first element
+                                line += sep
                             line += str(coord)
                         if j != obj.ctrlpts_size_v - 1:
-                            line += ";"
+                            line += col_sep
                         else:
                             line += "\n"
                     fp.write(line)
             else:
                 for pt in obj.ctrlpts:
-                    # Fill coordinates
-                    line = ",".join(str(c) for c in pt) + "\n"
+                    line = col_sep.join(str(c) for c in pt) + "\n"
                     fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
