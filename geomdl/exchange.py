@@ -157,7 +157,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
                     fp.write(line)
             else:
                 for pt in obj.ctrlpts:
-                    line = col_sep.join(str(c) for c in pt) + "\n"
+                    line = sep.join(str(c) for c in pt) + "\n"
                     fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
