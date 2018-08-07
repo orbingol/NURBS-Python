@@ -16,7 +16,7 @@ from . import utilities
 class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all curves. """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         # If the array type has been set, then use it. Otherwise, use None
         try:
             self._array_type
@@ -36,6 +36,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
+        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
 
     def __str__(self):
@@ -101,6 +102,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def evaluator(self, value):
         if not isinstance(value, Evaluator):
             raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        value._span_func = self._span_func
         self._evaluator = value
 
     @property
@@ -393,7 +395,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for all surfaces. """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         # If the array type has been set, then use it. Otherwise, use None
         try:
             self._array_type
@@ -421,6 +423,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
+        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
 
     def __str__(self):
@@ -498,6 +501,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def evaluator(self, value):
         if not isinstance(value, Evaluator):
             raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        value._span_func = self._span_func
         self._evaluator = value
 
     @property
@@ -1135,10 +1139,14 @@ class Evaluator(six.with_metaclass(abc.ABCMeta, object)):
 
     The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
     The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
+
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
         self._name = kwargs.get('name', self.__class__.__name__)
+        self._span_func = kwargs.get('find_span_func', None)
 
     @property
     def name(self):
@@ -1174,7 +1182,7 @@ class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Curve customizations for Evaluator abstract base class. """
 
     def __init__(self, **kwargs):
-        pass
+        self._span_func = kwargs.get('find_span_func', None)
 
     @abc.abstractmethod
     def insert_knot(self, **kwargs):
@@ -1186,7 +1194,7 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Surface customizations for the Evaluator abstract base class. """
 
     def __init__(self, **kwargs):
-        pass
+        self._span_func = kwargs.get('find_span_func', None)
 
     @abc.abstractmethod
     def insert_knot_u(self, **kwargs):

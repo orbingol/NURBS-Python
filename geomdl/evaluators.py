@@ -22,6 +22,8 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
     * Algorithm A3.2: CurveDerivsAlg1
     * Algorithm A5.1: CurveKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -39,7 +41,7 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.1
-        span = helpers.find_span(knot_vector, len(control_points), knot)
+        span = self._span_func(degree, knot_vector, len(control_points), knot)
         basis = helpers.basis_function(degree, knot_vector, span, knot)
 
         crvpt = [0.0 for _ in range(dimension)]
@@ -65,7 +67,7 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
         # Algorithm A3.1
         knots = utilities.linspace(start_u, stop_u, sample_size, decimals=precision)
-        spans = helpers.find_spans(knot_vector, len(control_points), knots)
+        spans = helpers.find_spans(degree, knot_vector, len(control_points), knots, self._span_func)
         basis = helpers.basis_functions(degree, knot_vector, spans, knots)
 
         eval_points = []
@@ -97,7 +99,7 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
         CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = helpers.find_span(knot_vector, len(control_points), knot)
+        span = self._span_func(degree, knot_vector, len(control_points), knot)
         bfunsders = helpers.basis_function_ders(degree, tuple(knot_vector), span, knot, du)
 
         for k in range(0, du + 1):
@@ -130,7 +132,7 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         control_points = kwargs.get('ctrlpts')
 
         # Algorithm A5.1
-        k = helpers.find_span(knot_vector, len(control_points), knot)
+        k = self._span_func(degree, knot_vector, len(control_points), knot)
         mp = len(knot_vector)
         np = len(control_points)
         nq = np + r
@@ -187,6 +189,8 @@ class CurveEvaluator2(CurveEvaluator):
     * Algorithm A3.4: CurveDerivsAlg2
     * Algorithm A5.1: CurveKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -244,7 +248,7 @@ class CurveEvaluator2(CurveEvaluator):
 
         CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = helpers.find_span(knot_vector, len(control_points), knot)
+        span = self._span_func(degree, knot_vector, len(control_points), knot)
         bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
 
         # "derivatives_ctrlpts" is a static method that could be called like below
@@ -274,6 +278,8 @@ class NURBSCurveEvaluator(CurveEvaluator):
     * Algorithm A4.2: RatCurveDerivs
     * Algorithm A5.1: CurveKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -336,6 +342,8 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
     * Algorithm A3.6: SurfaceDerivsAlg1
     * Algorithm A5.3: SurfaceKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -358,8 +366,8 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.5
-        span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
-        span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
+        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
+        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
 
         basis_u = helpers.basis_function(degree_u, knot_vector_u, span_u, knot_u)
         basis_v = helpers.basis_function(degree_v, knot_vector_v, span_v, knot_v)
@@ -400,8 +408,8 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         knots_u = utilities.linspace(start_u, stop_u, sample_size[0], decimals=precision)
         knots_v = utilities.linspace(start_v, stop_v, sample_size[1], decimals=precision)
 
-        spans_u = helpers.find_spans(knot_vector_u, ctrlpts_size_u, knots_u)
-        spans_v = helpers.find_spans(knot_vector_v, ctrlpts_size_v, knots_v)
+        spans_u = helpers.find_spans(degree_u, knot_vector_u, ctrlpts_size_u, knots_u, self._span_func)
+        spans_v = helpers.find_spans(degree_v, knot_vector_v, ctrlpts_size_v, knots_v, self._span_func)
 
         basis_u = helpers.basis_functions(degree_u, knot_vector_u, spans_u, knots_u)
         basis_v = helpers.basis_functions(degree_v, knot_vector_v, spans_v, knots_v)
@@ -446,9 +454,9 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
+        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
         bfunsders_u = helpers.basis_function_ders(degree_u, knot_vector_u, span_u, knot_u, du)
-        span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
+        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
         bfunsders_v = helpers.basis_function_ders(degree_v, knot_vector_v, span_v, knot_v, dv)
 
         for k in range(0, du + 1):
@@ -491,7 +499,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
 
         # Algorithm A5.3
-        span = helpers.find_span(knot_vector, ctrlpts_size_u, u)
+        span = self._span_func(degree, knot_vector, ctrlpts_size_u, u)
 
         # Initialize new knot vector array
         UQ = [0.0 for _ in range(len(knot_vector) + r)]
@@ -554,7 +562,7 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
 
         # Algorithm A5.3
-        span = helpers.find_span(knot_vector, ctrlpts_size_v, v)
+        span = self._span_func(degree, knot_vector, ctrlpts_size_v, v)
 
         # Initialize new knot vector array
         VQ = [0.0 for _ in range(len(knot_vector) + r)]
@@ -613,6 +621,8 @@ class SurfaceEvaluator2(SurfaceEvaluator):
     * Algorithm A3.8: SurfaceDerivsAlg2
     * Algorithm A5.3: SurfaceKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -709,9 +719,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         du = min(degree_u, deriv_order)
         dv = min(degree_v, deriv_order)
 
-        span_u = helpers.find_span(knot_vector_u, ctrlpts_size_u, knot_u)
+        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
         bfuns_u = helpers.basis_function_all(degree_u, tuple(knot_vector_u), span_u, knot_u)
-        span_v = helpers.find_span(knot_vector_v, ctrlpts_size_v, knot_v)
+        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
         bfuns_v = helpers.basis_function_all(degree_v, tuple(knot_vector_v), span_v, knot_v)
 
         PKL = self.derivatives_ctrlpts(r1=span_u - degree_u, r2=span_u,
@@ -747,6 +757,8 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
     * Algorithm A4.4: RatSurfaceDerivs
     * Algorithm A5.3: SurfaceKnotIns
 
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):

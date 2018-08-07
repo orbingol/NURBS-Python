@@ -32,11 +32,12 @@ class Curve(Abstract.Curve):
 
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._array_type = list  # Sets the array type
-        super(Curve, self).__init__()
+        super(Curve, self).__init__(**kwargs)
         self._name = "B-Spline Curve"
-        self._evaluator = evaluators.CurveEvaluator()
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+        self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
     @property
     def curvepts(self):
@@ -473,7 +474,7 @@ class Curve(Abstract.Curve):
         original_cpts = copy.deepcopy(self._control_points)
 
         # Find multiplicity of the knot
-        ks = helpers.find_span(self.knotvector, len(self._control_points), u) - self._degree + 1
+        ks = self._span_func(self.degree, self.knotvector, len(self._control_points), u) - self._degree + 1
         s = helpers.find_multiplicity(u, self._knot_vector)
         r = self._degree - s
 
@@ -481,7 +482,7 @@ class Curve(Abstract.Curve):
         self.insert_knot(u, r, check_r=False)
 
         # Knot vectors
-        knot_span = helpers.find_span(self.knotvector, len(self._control_points), u) + 1
+        knot_span = self._span_func(self.degree, self.knotvector, len(self._control_points), u) + 1
         curve1_kv = self._knot_vector[0:knot_span]
         curve1_kv.append(u)
         curve2_kv = self._knot_vector[knot_span:]
@@ -610,11 +611,12 @@ class Surface(Abstract.Surface):
 
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._array_type = list  # Sets the array type
-        super(Surface, self).__init__()
+        super(Surface, self).__init__(**kwargs)
         self._name = "B-Spline Surface"
-        self._evaluator = evaluators.SurfaceEvaluator()
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+        self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
 
     @property
     def surfpts(self):
@@ -1292,7 +1294,7 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
+        ks = self._span_func(self.degree_u, self.knotvector_u, self.ctrlpts_size_u, t) - self._degree_u + 1
         s = helpers.find_multiplicity(t, self._knot_vector_u)
         r = self._degree_u - s
 
@@ -1300,7 +1302,7 @@ class Surface(Abstract.Surface):
         self.insert_knot(u=t, ru=r, check_r=False)
 
         # Knot vectors
-        knot_span = helpers.find_span(self.knotvector_u, self.ctrlpts_size_u, t) + 1
+        knot_span = self._span_func(self.degree_u, self.knotvector_u, self.ctrlpts_size_u, t) + 1
         surf1_kv = self._knot_vector_u[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_u[knot_span:]
@@ -1364,7 +1366,7 @@ class Surface(Abstract.Surface):
         original_cpts_size_v = copy.deepcopy(self.ctrlpts_size_v)
 
         # Find multiplicity of the knot
-        ks = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
+        ks = self._span_func(self.degree_v, self.knotvector_v, self.ctrlpts_size_v, t) - self._degree_v + 1
         s = helpers.find_multiplicity(t, self._knot_vector_v)
         r = self._degree_v - s
 
@@ -1372,7 +1374,7 @@ class Surface(Abstract.Surface):
         self.insert_knot(v=t, rv=r, check_r=False)
 
         # Knot vectors
-        knot_span = helpers.find_span(self.knotvector_v, self.ctrlpts_size_v, t) + 1
+        knot_span = self._span_func(self.degree_v, self.knotvector_v, self.ctrlpts_size_v, t) + 1
         surf1_kv = self._knot_vector_v[0:knot_span]
         surf1_kv.append(t)
         surf2_kv = self._knot_vector_v[knot_span:]
