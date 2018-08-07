@@ -29,7 +29,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     :rtype: int
     """
     # Get tolerance value
-    tol = kwargs.get('tol', 0.001)
+    tol = kwargs.get('tol', 10e-6)
 
     # In The NURBS Book; number of knots = m + 1, number of control points = n + 1, p = degree
     # All knot vectors should follow the rule: m = p + n + 1
@@ -37,10 +37,19 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     if abs(knot_vector[n + 1] - knot) <= tol:
         return n
 
+    # Set max and min positions of the array to be searched
     low = degree
-    high = n + 1
-    mid = int((low + high) / 2)
+    high = num_ctrlpts
 
+    # The division could return a float value which makes it impossible to use as an array index
+    mid = (low + high) / 2
+    # Direct int casting would cause numerical errors due to discarding the significand figures (digits after the dot)
+    # The round function could return unexpected results, so we add the floating point with some small number
+    # This addition would solve the issues caused by the division operation and how Python stores float numbers.
+    # E.g. round(13/2) = 6 (expected to see 7)
+    mid = int(round(mid + tol))
+
+    # Search for the span
     while (knot < knot_vector[mid]) or (knot >= knot_vector[mid + 1]):
         if knot < knot_vector[mid]:
             high = mid
