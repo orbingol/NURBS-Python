@@ -81,7 +81,7 @@ class CythonClean(clean):
         clean.run(self)
 
         # Find list of files with .c extension
-        file_list = read_files("geomdl", ".c")
+        file_list = read_files("geomdl_core", ".c")
 
         # Clean files with .c extensions
         if file_list:
@@ -118,7 +118,7 @@ else:
     USE_CYTHON = False
 
 file_ext = '.py' if USE_CYTHON else '.c'
-optional_extensions = [Extension('geomdl', sources=read_files("geomdl", file_ext))]
+optional_extensions = [Extension('geomdl_core', sources=read_files("geomdl_core", file_ext))]
 
 # We don't want to include any compiled files with the distribution
 extensions = []
