@@ -12,3 +12,5 @@ docs/_static
 *.csv
 *.c
 *.cpp
+*.so
+*.pyd
