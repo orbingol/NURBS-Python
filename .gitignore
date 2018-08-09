@@ -10,4 +10,5 @@ docs/_static
 *.out
 *.txt
 *.csv
-geomdl/*.c
+*.c
+*.cpp

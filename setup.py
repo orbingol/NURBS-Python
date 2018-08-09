@@ -43,6 +43,7 @@ from distutils.command.clean import clean
 import sys
 import os
 import re
+import shutil
 
 
 def read(file_name):
@@ -81,12 +82,12 @@ class CythonClean(clean):
         clean.run(self)
 
         # Find list of files with .c extension
-        file_list = read_files("geomdl_core", ".c")
+        flist, flist_path = read_files("cython/core", ".c")
 
         # Clean files with .c extensions
-        if file_list:
+        if flist_path:
             print("Removing Cython-generated source files")
-            for f in file_list:
+            for f in flist_path:
                 f_path = os.path.join(os.path.dirname(__file__), f)
                 os.unlink(f_path)
 
@@ -95,42 +96,69 @@ def read_files(project, ext):
     """ Reads files inside the input project directory. """
     project_path = os.path.join(os.path.dirname(__file__), project)
     file_list = os.listdir(project_path)
-    list_with_path = []
+    flist = []
+    flist_path = []
     for f in file_list:
         f_path = os.path.join(project_path, f)
         if os.path.isfile(f_path) and f.endswith(ext):
-            list_with_path.append(f_path)
-    return list_with_path
+            flist.append(f.split('.')[0])
+            flist_path.append(f_path)
+    return flist, flist_path
+
+
+def make_dir(project):
+    """ Creates the project directory for compiled modules. """
+    project_path = os.path.join(os.path.dirname(__file__), project)
+    # Delete the directory and the files inside it
+    if os.path.exists(project_path):
+        shutil.rmtree(project_path)
+    # Create the directory
+    os.mkdir(project_path)
+    # We need a __init__.py file inside the directory
+    with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
+        fp.write('__version__ = ' + str(get_property('__version__', 'geomdl')) + '\n')
+        fp.write('__license__ = "MIT"\n')
 
 
 # Cython and compiled C module options
 # Ref: https://gist.github.com/ctokheim/6c34dc1d672afca0676a
-if '--with-c-module' in sys.argv:
-    USE_C_MODULE = True
-    sys.argv.remove('--with-c-module')
+if '--use-source' in sys.argv:
+    USE_SOURCE = True
+    sys.argv.remove('--use-source')
 else:
-    USE_C_MODULE = False
+    USE_SOURCE = False
 
-if '--with-cython' in sys.argv:
+if '--use-cython' in sys.argv:
     USE_CYTHON = True
-    sys.argv.remove('--with-cython')
+    sys.argv.remove('--use-cython')
 else:
     USE_CYTHON = False
-
-file_ext = '.py' if USE_CYTHON else '.c'
-optional_extensions = [Extension('geomdl_core', sources=read_files("geomdl_core", file_ext))]
 
 # We don't want to include any compiled files with the distribution
 extensions = []
 
-# Call Cython when "python setup.py build_ext --with-cython" is executed
-if USE_CYTHON:
-    from Cython.Build import cythonize
-    extensions = cythonize(optional_extensions)
+if USE_CYTHON or USE_SOURCE:
+    # Choose the file extension
+    file_ext = '.pyx' if USE_CYTHON else '.c'
 
-# Compile from C source when "python setup.py build_ext --with-c-module" is executed
-if USE_C_MODULE:
-    extensions = optional_extensions
+    # Create extensions
+    optional_extensions = []
+    fnames, fnames_path = read_files('cython/core', file_ext)
+    for fname, fpath in zip(fnames, fnames_path):
+        temp = Extension('geomdl_core.' + str(fname), sources=[fpath])
+        optional_extensions.append(temp)
+
+    # Call Cython when "python setup.py build_ext --use-cython" is executed
+    if USE_CYTHON:
+        from Cython.Build import cythonize
+        extensions = cythonize(optional_extensions)
+        make_dir('geomdl_core')
+
+    # Compile from C source when "python setup.py build_ext --use-source" is executed
+    if USE_SOURCE:
+        extensions = optional_extensions
+        make_dir('geomdl_core')
+
 
 setup(
     name='geomdl',
