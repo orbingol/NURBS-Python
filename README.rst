@@ -59,7 +59,7 @@ Author
 License
 =======
 
-NURBS-Python is licensed under the `MIT License <LICENSE>`_.
+NURBS-Python is a free and open-source project and it is licensed under the `MIT License <LICENSE>`_.
 
 Acknowledgments
 ===============
