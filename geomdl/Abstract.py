@@ -7,6 +7,7 @@
 
 """
 
+from . import copy
 from . import abc
 from . import six
 from . import warnings
@@ -38,6 +39,24 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._precision = 6  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __str__(self):
         return self.name
@@ -425,6 +444,24 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._precision = 6  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __str__(self):
         return self.name
