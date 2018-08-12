@@ -21,15 +21,13 @@ compatibility library ``six`` will be automatically installed during NURBS-Pytho
 Branch Information
 ------------------
 
-* ``master`` branch contains code for NURBS-Python (geomdl) v4.x series
-* ``3.x`` branch contains code for NURBS-Python v3.x series
-* ``2.x`` branch contains code for NURBS-Python v2.x series
+The latest branch information can be found on the `wiki page <https://github.com/orbingol/NURBS-Python/wiki>`_.
 
 Citing NURBS-Python
 -------------------
 
-Please see the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation
-for more details.
+The citation options (BiBTeX entry, DOI name and others) can be found on the
+`Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation.
 
 Using NURBS-Python
 ==================
