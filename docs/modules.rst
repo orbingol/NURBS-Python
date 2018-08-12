@@ -14,6 +14,7 @@ Following modules are included in this library:
     module_bspline
     module_nurbs
     module_evaluators
+    module_operations
     module_utilities
     module_convert
     module_compatibility
