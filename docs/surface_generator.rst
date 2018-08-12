@@ -13,8 +13,8 @@ The following example illustrates a sample usage of the B-Spline surface generat
 
 .. code-block:: python
 
-    from geomdl import BSpline
     from geomdl import CPGen
+    from geomdl import BSpline
     from geomdl import utilities
     from geomdl.visualization import VisPlotly
 
@@ -41,21 +41,18 @@ The following example illustrates a sample usage of the B-Spline surface generat
     surf.knotvector_u = utilities.generate_knot_vector(surf.degree_u, surf.ctrlpts_size_u)
     surf.knotvector_v = utilities.generate_knot_vector(surf.degree_v, surf.ctrlpts_size_v)
 
-    # Split the surface at v = 0.35
-    split_surf = surf.split_v(0.35)
-
-    # Set sample size of the split surface
-    split_surf.sample_size = 25
+    # Set sample size
+    surf.sample_size = 25
 
     # Generate the visualization component and its configuration
     vis_config = VisPlotly.VisConfig(ctrlpts=False, legend=False)
     vis_comp = VisPlotly.VisSurface(vis_config)
 
-    # Set visualization component of the split surface
-    split_surf.vis = vis_comp
+    # Set visualization component
+    surf.vis = vis_comp
 
-    # Plot the split surface
-    split_surf.render()
+    # Plot the surface
+    surf.render()
 
 :py:meth:`.CPGen.Grid.bumps()` method takes the following keyword arguments:
 
