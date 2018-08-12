@@ -33,14 +33,6 @@ class Curve(Abstract.Curve):
         self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
     @property
-    def curvepts(self):
-        """ Evaluated points (deprecated).
-
-        This property is deprecated. Please use :py:attr:`~evalpts` instead.
-        """
-        return self.evalpts
-
-    @property
     def ctrlpts(self):
         """ Control points.
 
@@ -461,14 +453,6 @@ class Surface(Abstract.Surface):
         self._name = "B-Spline Surface"
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
-
-    @property
-    def surfpts(self):
-        """ Evaluated points (deprecated).
-
-        This property is deprecated. Please use :py:attr:`~evalpts` instead.
-        """
-        return self.evalpts
 
     @property
     def ctrlpts(self):
