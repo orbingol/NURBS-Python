@@ -15,7 +15,22 @@ from . import utilities
 
 
 class Curve(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for all curves. """
+    """ Abstract base class (ABC) for all n-variate curves.
+
+    The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
+
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Curve ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func`` keyword
+    as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the FindSpan
+    function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+    """
 
     def __init__(self, **kwargs):
         # If the array type has been set, then use it. Otherwise, use None
@@ -336,12 +351,11 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
-        Possible keyword arguments are
-
-        * ``cpcolor``: sets the color of the control points polygon
-        * ``evalcolor``: sets the color of the curve
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+        Keyword Arguments:
+            * ``cpcolor``: sets the color of the control points polygon
+            * ``evalcolor``: sets the color of the curve
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -374,7 +388,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         """ Resets control points and/or evaluated points.
 
         Keyword Arguments:
-
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
@@ -412,7 +425,22 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class Surface(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for all surfaces. """
+    """ Abstract base class (ABC) for all surfaces.
+
+    The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
+
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Surface ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func``
+    keyword as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the
+    FindSpan function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+    """
 
     def __init__(self, **kwargs):
         # If the array type has been set, then use it. Otherwise, use None
@@ -986,11 +1014,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
         Keyword Arguments:
-
-        * ``cpcolor``: sets the color of the control points grid
-        * ``evalcolor``: sets the color of the surface
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``cpcolor``: sets the color of the control points grid
+            * ``evalcolor``: sets the color of the surface
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -1027,7 +1054,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         """ Resets control points and/or evaluated points.
 
         Keyword Arguments:
-
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 

@@ -13,19 +13,21 @@ from . import evaluators
 
 
 class Curve(BSpline.Curve):
-    """ Data storage and evaluation class for NURBS curves.
+    """ Data storage and evaluation class for n-variate NURBS (rational) curves.
 
-    The following properties are present in this class:
+    The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
+    with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
+    a different set of properties (i.e. getters and setters):
 
-    * dimension
-    * order
-    * degree
-    * knotvector
-    * delta
-    * ctrlpts
-    * weights
-    * evalpts
+        * ``ctrlptsw``: 1-dimensional array of weighted control points
+        * ``ctrlpts``: 1-dimensional array of control points
+        * ``weights``: 1-dimensional array of weights
 
+    You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
     def __init__(self, **kwargs):
@@ -132,50 +134,24 @@ class Curve(BSpline.Curve):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
-    def translate(self, vec=()):
-        """ Translates the curve by the input vector.
-
-        The input vector list/tuple must have
-
-        * 2 elements for 2D curves
-        * 3 elements for 3D curves
-
-        :param vec: translation vector
-        :type vec: list, tuple
-        """
-        if not vec or not isinstance(vec, (tuple, list)):
-            raise ValueError("The input must be a list or a tuple")
-
-        if len(vec) != self._dimension - 1:
-            raise ValueError("The input must have " + str(self._dimension - 1) + " elements")
-
-        new_ctrlpts = []
-        for point, w in zip(self.ctrlpts, self.weights):
-            temp = [(v + vec[i]) * w for i, v in enumerate(point[0:self._dimension - 1])]
-            temp.append(w)
-            new_ctrlpts.append(temp)
-
-        self.ctrlpts = new_ctrlpts
-
 
 class Surface(BSpline.Surface):
-    """ Data storage and evaluation class for NURBS surfaces.
+    """ Data storage and evaluation class for NURBS (rational) surfaces.
 
-    The following properties are present in this class:
+    The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
+    with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
+    a different set of properties (i.e. getters and setters):
 
-    * dimension
-    * order_u
-    * order_v
-    * degree_u
-    * degree_v
-    * knotvector_u
-    * knotvector_v
-    * delta
-    * ctrlpts
-    * ctrlpts2d
-    * weights
-    * evalpts
+        * ``ctrlptsw``: 1-dimensional array of weighted control points
+        * ``ctrlpts2d``: 2-dimensional array of weighted control points
+        * ``ctrlpts``: 1-dimensional array of control points
+        * ``weights``: 1-dimensional array of weights
 
+    You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
     def __init__(self, **kwargs):

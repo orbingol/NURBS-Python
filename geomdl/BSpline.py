@@ -18,18 +18,11 @@ from . import evaluators
 
 
 class Curve(Abstract.Curve):
-    """ Data storage and evaluation class for B-Spline (NUBS) curves.
+    """ Data storage and evaluation class for n-variate B-Spline (non-rational) curves.
 
-    The following properties are present in this class:
-
-    * dimension
-    * order
-    * degree
-    * knotvector
-    * delta
-    * ctrlpts
-    * evalpts
-
+    Notes:
+        * Please see the :py:class:`.Abstract.Curve()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
     def __init__(self, **kwargs):
@@ -455,22 +448,11 @@ class Curve(Abstract.Curve):
 
 
 class Surface(Abstract.Surface):
-    """ Data storage and evaluation class for B-Spline (NUBS) surfaces.
+    """ Data storage and evaluation class for B-Spline (non-rational) surfaces.
 
-    The following properties are present in this class:
-
-    * dimension
-    * order_u
-    * order_v
-    * degree_u
-    * degree_v
-    * knotvector_u
-    * knotvector_v
-    * delta
-    * ctrlpts
-    * ctrlpts2d
-    * evalpts
-
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
     def __init__(self, **kwargs):
