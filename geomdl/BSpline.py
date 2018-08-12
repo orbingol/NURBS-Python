@@ -1302,25 +1302,6 @@ class Surface(Abstract.Surface):
 
         return multi_surf
 
-    def translate(self, vec=()):
-        """ Translates the surface by the input vector.
-
-        :param vec: translation vector in 3D
-        :type vec: list, tuple
-        """
-        if not vec or not isinstance(vec, (tuple, list)):
-            raise ValueError("The input must be a list or a tuple")
-
-        if len(vec) != self._dimension:
-            raise ValueError("The input must have " + str(self._dimension) + " elements")
-
-        new_ctrlpts = []
-        for point in self.ctrlpts:
-            temp = [v + vec[i] for i, v in enumerate(point)]
-            new_ctrlpts.append(temp)
-
-        self.ctrlpts = new_ctrlpts
-
 
 def save_pickle(data_dict, file_name):
     """ Saves the contents of the data dictionary as a pickled file.

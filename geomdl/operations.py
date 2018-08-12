@@ -142,15 +142,19 @@ def add_dimension(obj, **kwargs):
 
 
 def translate(obj, vec, **kwargs):
-    """ Translates the shape by the input vector.
+    """ Translates a single curve or a surface by the input vector.
 
     :param obj: Curve or surface to be translated
     :type obj: Abstract.Curve or Abstract.Surface
     :param vec: translation vector
     :type vec: list, tuple
     """
+    # Input validity checks
+    if not isinstance(obj, (BSpline.Curve, BSpline.Surface)):
+        raise TypeError("The input shape must be a single curve or a surface")
+
     if not vec or not isinstance(vec, (tuple, list)):
-        raise ValueError("The input must be a list or a tuple")
+        raise TypeError("The input must be a list or a tuple")
 
     if len(vec) != obj.dimension:
         raise ValueError("The input must have " + str(obj.dimension) + " elements")

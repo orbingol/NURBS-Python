@@ -268,23 +268,3 @@ class Surface(BSpline.Surface):
             # Delete the caches
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
-
-    def translate(self, vec=()):
-        """ Translates the surface by the input vector.
-
-        :param vec: translation vector in 3D
-        :type vec: list, tuple
-        """
-        if not vec or not isinstance(vec, (tuple, list)):
-            raise ValueError("The input must be a list or a tuple")
-
-        if len(vec) != self._dimension - 1:
-            raise ValueError("The input must have " + str(self._dimension - 1) + " elements")
-
-        new_ctrlpts = []
-        for point, w in zip(self.ctrlpts, self.weights):
-            temp = [(v + vec[i]) * w for i, v in enumerate(point[0:self._dimension - 1])]
-            temp.append(w)
-            new_ctrlpts.append(temp)
-
-        self.ctrlpts = new_ctrlpts
