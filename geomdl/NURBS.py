@@ -36,13 +36,17 @@ class Curve(BSpline.Curve):
         self._rational = True
         self._evaluator = evaluators.NURBSCurveEvaluator(find_span_func=self._span_func)
         # Variables for caching
+        self.init_cache()
+
+    def __deepcopy__(self, memo):
+        # Call parent method
+        result = super(Curve, self).__deepcopy__(memo)
+        result.init_cache()
+        return result
+
+    def init_cache(self):
         self._cache['ctrlpts'] = self._array_type()
         self._cache['weights'] = self._array_type()
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
 
     @property
     def ctrlptsw(self):
@@ -160,13 +164,17 @@ class Surface(BSpline.Surface):
         self._rational = True
         self._evaluator = evaluators.NURBSSurfaceEvaluator(find_span_func=self._span_func)
         # Variables for caching
+        self.init_cache()
+
+    def __deepcopy__(self, memo):
+        # Call parent method
+        result = super(Surface, self).__deepcopy__(memo)
+        result.init_cache()
+        return result
+
+    def init_cache(self):
         self._cache['ctrlpts'] = self._array_type()
         self._cache['weights'] = self._array_type()
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
 
     @property
     def ctrlptsw(self):
