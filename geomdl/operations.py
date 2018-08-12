@@ -53,24 +53,24 @@ def split_curve(obj, u, **kwargs):
     knot_span = span_func(temp_obj.degree, temp_obj.knotvector, len(temp_obj.ctrlpts), u) + 1
     curve1_kv = list(temp_obj.knotvector[0:knot_span])
     curve1_kv.append(u)
-    curve2_kv = temp_obj.knotvector[knot_span:]
+    curve2_kv = list(temp_obj.knotvector[knot_span:])
     for _ in range(0, temp_obj.degree + 1):
         curve2_kv.insert(0, u)
 
-    # Control points
-    curve1_ctrlpts = temp_obj.ctrlpts[0:ks + r]
-    curve2_ctrlpts = temp_obj.ctrlpts[ks + r - 1:]
+    # Control points (use private variable due to differences between rational and non-rational curve)
+    curve1_ctrlpts = temp_obj._control_points[0:ks + r]
+    curve2_ctrlpts = temp_obj._control_points[ks + r - 1:]
 
     # Create a new curve for the first half
     curve1 = temp_obj.__class__()
     curve1.degree = temp_obj.degree
-    curve1.ctrlpts = curve1_ctrlpts
+    curve1.set_ctrlpts(curve1_ctrlpts)
     curve1.knotvector = curve1_kv
 
     # Create another curve fot the second half
     curve2 = temp_obj.__class__()
     curve2.degree = temp_obj.degree
-    curve2.ctrlpts = curve2_ctrlpts
+    curve2.set_ctrlpts(curve2_ctrlpts)
     curve2.knotvector = curve2_kv
 
     # Create a MultiCurve
