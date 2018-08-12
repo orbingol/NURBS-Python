@@ -79,7 +79,7 @@ class MultiCurve(Abstract.Multi):
                                     name="Control Points " + str(idx + 1),
                                     color=cpcolor if cpcolor is not None else color[0],
                                     plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.curvepts,
+            self._vis_component.add(ptsarr=elem.evalpts,
                                     name="Curve " + str(idx + 1),
                                     color=evalcolor if evalcolor is not None else color[1],
                                     plot_type='evalpts')
@@ -191,7 +191,7 @@ class MultiSurface(Abstract.Multi):
                                     name="Control Points " + str(idx + 1),
                                     color=cpcolor if cpcolor is not None else color[0],
                                     plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.surfpts,
+            self._vis_component.add(ptsarr=elem.evalpts,
                                     size=[elem.sample_size_u, elem.sample_size_v],
                                     name="Surface " + str(idx + 1),
                                     color=evalcolor if evalcolor is not None else color[1],
