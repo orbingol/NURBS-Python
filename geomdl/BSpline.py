@@ -48,35 +48,6 @@ class Curve(Abstract.Curve):
     def ctrlpts(self, value):
         self.set_ctrlpts(value)
 
-    def set_ctrlpts(self, ctrlpts):
-        """ Sets control points and checks if the data is consistent.
-
-        :param ctrlpts: input control points as a list of coordinates
-        :type ctrlpts: list
-        :return: None
-        """
-        if len(ctrlpts) < self._degree + 1:
-            raise ValueError("Number of control points should be at least degree + 1")
-
-        # Clean up the curve and control points lists
-        self.reset(ctrlpts=True, evalpts=True)
-
-        # Estimate dimension by checking the size of the first element
-        self._dimension = len(ctrlpts[0])
-
-        ctrlpts_float = []
-        for idx, cpt in enumerate(ctrlpts):
-            if not isinstance(cpt, (list, tuple)):
-                raise ValueError("Element number " + str(idx) + " is not a list")
-            if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                 " is not a valid control point")
-            # Convert to list of floats
-            pt_float = [float(coord) for coord in cpt]
-            ctrlpts_float.append(pt_float)
-
-        self._control_points = ctrlpts_float
-
     @property
     def knotvector(self):
         """ Knot vector.
@@ -423,69 +394,6 @@ class Surface(Abstract.Surface):
         for u in self._control_points2D:
             for v in u:
                 self._control_points.append(v)
-
-    def set_ctrlpts(self, ctrlpts, size_u, size_v):
-        """ Sets 1D control points.
-
-        This function expects a list coordinates which is also a list. For instance, if you are working in 3D space,
-        then your coordinates will be a list of 3 elements representing *(x, y, z)* coordinates.
-
-        This function also generates 2D control points in *[u][v]* format which can be accessed via
-        :py:attr:`~ctrlpts2d` property.
-
-        .. note::
-
-            The v index varies first. That is, a row of v control points for the first u value is found first.
-            Then, the row of v control points for the next u value.
-
-        :param ctrlpts: input control points as a list of coordinates
-        :type ctrlpts: list
-        :param size_u: size of the control points grid on the u-direction
-        :type size_u: int
-        :param size_v: size of the control points grid on the v-direction
-        :type size_v: int
-        :return: None
-        """
-        # Clean up the surface and control points
-        self.reset(evalpts=True, ctrlpts=True)
-
-        # Degree must be set before setting the control points
-        if self._degree_u == 0 or self._degree_v == 0:
-            raise ValueError("First, set the degrees!")
-
-        # Check array size validity
-        if size_u < self._degree_u + 1:
-            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if size_v < self._degree_v + 1:
-            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
-
-        # Estimate dimension by checking the size of the first element
-        self._dimension = len(ctrlpts[0])
-
-        # Check the dimensions of the input control points array and type cast to float
-        ctrlpts_float = []
-        for idx, cpt in enumerate(ctrlpts):
-            if not isinstance(cpt, (list, tuple)):
-                raise ValueError("Element number " + str(idx) + " is not a list")
-            if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                 " is not a valid control point")
-            pt_float = [float(coord) for coord in cpt]
-            ctrlpts_float.append(pt_float)
-
-        # Set the new control points
-        self._control_points = ctrlpts_float
-
-        # Set u and v sizes
-        self._control_points_size_u = size_u
-        self._control_points_size_v = size_v
-
-        # Generate a 2D list of control points
-        for i in range(0, self._control_points_size_u):
-            ctrlpts_v = []
-            for j in range(0, self._control_points_size_v):
-                ctrlpts_v.append(self._control_points[j + (i * self._control_points_size_v)])
-            self._control_points2D.append(ctrlpts_v)
 
     @property
     def knotvector_u(self):

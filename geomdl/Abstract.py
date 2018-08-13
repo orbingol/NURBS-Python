@@ -315,6 +315,58 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         return tuple(self._bounding_box)
 
+    def set_ctrlpts(self, ctrlpts, **kwargs):
+        """ Sets control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        It accepts a keyword argument ``array_init`` which defaults to a ``list`` of size ``len(ctrlpts)``
+        where ``ctrlpts`` is the input list of control points. ``array_init`` keyword argument may be used to input
+        other types of arrays to this method.
+
+        The following example illustrates a way to use a NumPy array with this method.
+
+        .. code-block:: python
+            # Import numpy
+            import numpy as np
+
+            # Assuming that "ctrlpts" is a NumPy array of a shape (x,y) where x == len(ctrlpts) and y == len(ctrlpts[0])
+            curve.set_ctrlpts(ctrlpts, array_init=np.zeros(ctrlpts.shape, dtype=np.float32))
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        """
+        # Degree must be set before setting the control points
+        if self._degree == 0:
+            raise ValueError("Set the degree first")
+
+        if len(ctrlpts) < self._degree + 1:
+            raise ValueError("Number of control points should be at least degree + 1")
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+
+        # Clean up the curve and control points lists
+        self.reset(ctrlpts=True, evalpts=True)
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
+
+        ctrlpts_float = array_init
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                 " is not a valid control point")
+            # Convert to list of floats
+            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+
+        self._control_points = ctrlpts_float
+
     # Runs visualization component to render the surface
     def render(self, **kwargs):
         """ Renders the curve using the loaded visualization component
@@ -956,6 +1008,76 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
+
+    def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
+        """ Sets 1-dimensional control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        This method also generates 2D control points in *[u][v]* format which can be accessed via :py:attr:`~ctrlpts2d`.
+
+        You may initialize the 1-dimensional and 2-dimensional arrays via ``array_init`` and ``array_init2d`` keyword
+        arguments. Please see :py:meth:`.Curve.set_ctrlpts()` for details.
+
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        :param size_u: size of the control points grid on the u-direction
+        :type size_u: int
+        :param size_v: size of the control points grid on the v-direction
+        :type size_v: int
+        :return: None
+        """
+        # Degrees must be set before setting the control points
+        if self._degree_u == 0 or self._degree_v == 0:
+            raise ValueError("Set the degrees first")
+
+        # Check array size validity
+        if size_u < self._degree_u + 1:
+            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
+        if size_v < self._degree_v + 1:
+            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(size_v)] for _ in range(size_u)])
+
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
+
+        # Check the dimensions of the input control points array and type cast to float
+        ctrlpts_float = array_init
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                 " is not a valid control point")
+            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+
+        # Generate a 2-dimensional list of control points
+        ctrlpts_float2d = array_init2d
+        for i in range(0, size_u):
+            for j in range(0, size_v):
+                ctrlpts_float2d[i][j] = ctrlpts_float[j + (i * size_v)]
+
+        # Set the new control points
+        self._control_points = ctrlpts_float
+        self._control_points2D = ctrlpts_float2d
+
+        # Set u and v sizes
+        self._control_points_size_u = size_u
+        self._control_points_size_v = size_v
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
