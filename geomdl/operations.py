@@ -333,39 +333,3 @@ def decompose_surface(obj, **kwargs):
         multi_surf.add(surf)
 
     return multi_surf
-
-
-def translate(obj, vec, **kwargs):
-    """ Translates a single curve or a surface by the input vector.
-
-    :param obj: Curve or surface to be translated
-    :type obj: Abstract.Curve or Abstract.Surface
-    :param vec: translation vector
-    :type vec: list, tuple
-    """
-    # Input validity checks
-    if not isinstance(obj, (BSpline.Curve, BSpline.Surface)):
-        raise TypeError("The input shape must be a single curve or a surface")
-
-    if not vec or not isinstance(vec, (tuple, list)):
-        raise TypeError("The input must be a list or a tuple")
-
-    if len(vec) != obj.dimension:
-        raise ValueError("The input must have " + str(obj.dimension) + " elements")
-
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    # Translate control points
-    new_ctrlpts = []
-    for point in obj.ctrlpts:
-        temp = [v + vec[i] for i, v in enumerate(point)]
-        new_ctrlpts.append(temp)
-
-    if inplace:
-        obj.ctrlpts = new_ctrlpts
-        return obj
-    else:
-        ret = copy.deepcopy(obj)
-        ret.ctrlpts = new_ctrlpts
-        return ret
