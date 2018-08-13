@@ -78,32 +78,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     __repr__ = __str__
 
-    def __call__(self, degree, ctrlpts, kv, **kwargs):
-        """ Calls self as a function.
-
-        Keyword Arguments (optional):
-            * ``sample_size``: number of evaluated points to generate
-            * ``evaluator``: evaluation algorithm
-
-        :param degree: degree of the curve
-        :type degree: int
-        :param ctrlpts: control points
-        :type ctrlpts: list, tuple
-        :param kv: knot vector
-        :type kv: list, tuple
-        :return: evaluated curve points
-        :rtype: list
-        """
-        opt_num_samples = kwargs.get('sample_size', self.sample_size)
-        opt_algorithm = kwargs.get('evaluator', self.evaluator)
-        self.reset(ctrlpts=True, evalpts=True)
-        self.degree = degree
-        self.ctrlpts = ctrlpts
-        self.knotvector = kv
-        self.delta = opt_num_samples
-        self.evaluator = opt_algorithm
-        return self.evalpts
-
     @property
     def name(self):
         """ Curve descriptor (as a string or a number).
@@ -517,44 +491,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         return self.name
 
     __repr__ = __str__
-
-    def __call__(self, degree_u, degree_v, num_ctrlpts_u, num_ctrlpts_v, ctrlpts, kv_u, kv_v, **kwargs):
-        """ Calls self as a function.
-
-        Keyword Arguments (optional):
-            * ``sample_size``: number of evaluated points to generate on both directions
-            * ``evaluator``: evaluation algorithm
-
-        :param degree_u: degree of the surface on the u-direction
-        :type degree_u: int
-        :param degree_v: degree of the surface on the v-direction
-        :type degree_v: int
-        :param num_ctrlpts_u: number of control points on the u-direction
-        :type num_ctrlpts_u: int
-        :param num_ctrlpts_v: number of control points on the v-direction
-        :type num_ctrlpts_v: int
-        :param ctrlpts: control points (1-dimensional)
-        :type ctrlpts: list, tuple
-        :param kv_u: knot vector on the u-direction
-        :type kv_u: list, tuple
-        :param kv_v: knot vector on the v-direction
-        :type kv_v: list, tuple
-        :return: evaluated surface points
-        :rtype: list
-        """
-        opt_num_samples = kwargs.get('sample_size', self.sample_size)
-        opt_algorithm = kwargs.get('evaluator', self.evaluator)
-        self.reset(evalpts=True, ctrlpts=True)
-        self.degree_u = degree_u
-        self.degree_v = degree_v
-        self.ctrlpts_size_u = num_ctrlpts_u
-        self.ctrlpts_size_v = num_ctrlpts_v
-        self.ctrlpts = ctrlpts
-        self.knotvector_u = kv_u
-        self.knotvector_v = kv_v
-        self.delta = opt_num_samples
-        self.evaluator = opt_algorithm
-        return self.evalpts
 
     @property
     def name(self):
