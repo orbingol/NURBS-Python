@@ -124,13 +124,14 @@ def add_dimension(obj, **kwargs):
 
     # Keyword arguments
     inplace = kwargs.get('inplace', False)
+    array_init = kwargs.get('array_init', [[] for _ in range(len(obj.ctrlpts))])
 
     # Update control points
-    new_ctrlpts = []
-    for point in obj.ctrlpts:
+    new_ctrlpts = array_init
+    for idx, point in enumerate(obj.ctrlpts):
         temp = [float(p) for p in point[0:obj.dimension]]
         temp.append(0.0)
-        new_ctrlpts.append(temp)
+        new_ctrlpts[idx] = temp
 
     if inplace:
         obj.ctrlpts = new_ctrlpts
