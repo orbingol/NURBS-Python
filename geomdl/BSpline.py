@@ -26,7 +26,6 @@ class Curve(Abstract.Curve):
     """
 
     def __init__(self, **kwargs):
-        self._array_type = list  # Sets the array type
         super(Curve, self).__init__(**kwargs)
         self._name = "B-Spline Curve"
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
@@ -302,7 +301,6 @@ class Surface(Abstract.Surface):
     """
 
     def __init__(self, **kwargs):
-        self._array_type = list  # Sets the array type
         super(Surface, self).__init__(**kwargs)
         self._name = "B-Spline Surface"
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)

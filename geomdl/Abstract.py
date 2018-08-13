@@ -33,12 +33,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        # If the array type has been set, then use it. Otherwise, use None
-        try:
-            self._array_type
-        except NameError:
-            self._array_type = None
-
+        # Set default array type
+        self._array_type = list
         # Initialize class variables
         self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
@@ -439,12 +435,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        # If the array type has been set, then use it. Otherwise, use None
-        try:
-            self._array_type
-        except NameError:
-            self._array_type = None
-
+        # Set default array type
+        self._array_type = list
         # Define u-direction variables
         self._degree_u = 0  # degree
         self._knot_vector_u = utilities.init_var(self._array_type)  # knot vector
