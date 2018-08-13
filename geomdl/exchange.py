@@ -14,6 +14,7 @@ from . import Abstract
 from . import NURBS
 from . import Multi
 from . import compatibility
+from . import operations
 from .elements import Vertex, Triangle
 
 
@@ -460,7 +461,7 @@ def _export_obj_single(surface, **kwargs):
             # Write vertex normals
             for vert_row in vertices:
                 for vert in vert_row:
-                    sn = surface.normal(vert.uv[0], vert.uv[1], True)
+                    sn = operations.normal(surface, vert.uv)
                     line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
                     fp.write(line)
 
@@ -534,7 +535,7 @@ def _export_obj_multi(surface_list, **kwargs):
                 # Collect vertex normals
                 for vert_row in vertices:
                     for vert in vert_row:
-                        sn = surface.normal(vert.uv[0], vert.uv[1], True)
+                        sn = operations.normal(surface, vert.uv)
                         line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
                         str_vn.append(line)
 
