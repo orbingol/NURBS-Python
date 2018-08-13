@@ -202,8 +202,8 @@ class Curve(Abstract.Curve):
             curve_points = curve.evalpts
 
         """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
+        # Call parent method
+        super(Curve, self).evaluate(**kwargs)
 
         # Find evaluation start and stop parameter values
         start = kwargs.get('start', self.knotvector[self.degree])
@@ -228,20 +228,18 @@ class Curve(Abstract.Curve):
         self._curve_points = cpts
 
     # Evaluates the curve derivative
-    def derivatives(self, u=-1, order=0):
+    def derivatives(self, u, order=0, **kwargs):
         """ Evaluates n-th order curve derivatives at the given parameter value.
 
-        :param u: knot value
+        :param u: parameter value
         :type u: float
         :param order: derivative order
-        :type order: integer
+        :type order: int
         :return: a list containing up to {order}-th derivative of the curve
         :rtype: list
         """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-        # Check u parameters are correct
-        utilities.check_uv(u)
+        # Call parent method
+        super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
         return self._evaluator.derivatives_single(knot=u,
@@ -264,6 +262,7 @@ class Curve(Abstract.Curve):
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
+
         # Check u parameters are correct
         utilities.check_uv(u)
 
@@ -684,8 +683,8 @@ class Surface(Abstract.Surface):
             surface_points = surf.evalpts
 
         """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
+        # Call parent method
+        super(Surface, self).evaluate(**kwargs)
 
         # Find evaluation start and stop parameter values
         start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
@@ -713,7 +712,7 @@ class Surface(Abstract.Surface):
         self._surface_points = spts
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
-    def derivatives(self, u=-1, v=-1, order=0):
+    def derivatives(self, u, v, order, **kwargs):
         """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
 
         * SKL[0][0] will be the surface point itself
@@ -729,10 +728,8 @@ class Surface(Abstract.Surface):
         :return: A list SKL, where SKL[k][l] is the derivative of the surface S(u,v) w.r.t. u k times and v l times
         :rtype: list
         """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
-        # Check u and v parameters are correct
-        utilities.check_uv(u, v)
+        # Call parent method
+        super(Surface, self).derivatives(u=u, v=v, order=order, **kwargs)
 
         # Evaluate and return the derivatives
         return self._evaluator.derivatives_single(knot_u=u, knot_v=v, deriv_order=order,

@@ -421,6 +421,28 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, u, order, **kwargs):
+        """ Evaluates the derivatives of the curve at parameter u.
+
+        :param u: parameter value
+        :type u: float
+        :param order: derivative order
+        :type order: int
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Check u parameters are correct
+        utilities.check_uv(u)
+
+        # Should implement the derivatives functionality
         pass
 
 
@@ -1096,6 +1118,30 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, u, v, order, **kwargs):
+        """ Evaluates the derivatives of the surface at parameter (u,v).
+
+        :param u: parameter on the u-direction
+        :type u: float
+        :param v: parameter on the v-direction
+        :type v: float
+        :param order: derivative order
+        :type order: int
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Check u and v parameters are correct
+        utilities.check_uv(u, v)
+
+        # Should implement the derivatives functionality here
         pass
 
 
