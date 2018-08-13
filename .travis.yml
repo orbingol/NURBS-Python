@@ -4,8 +4,11 @@ language: python
 
 python:
   - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
   - "3.6"
-#  - "pypy"
+  - "pypy3.5"
 
 # branch safelist
 branches:
@@ -13,6 +16,7 @@ branches:
     - master
     - 3.x
     - 2.x
+    - devmaster
 
 # define environment variables
 env:
