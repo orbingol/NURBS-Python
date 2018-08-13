@@ -5,10 +5,10 @@
 #   https://github.com/ogrisel/python-appveyor-demo
 #   https://www.appveyor.com/docs/appveyor-yml/
 
-build: false
+version: 1.0.{build}
 
 # Build tags only
-#skip_non_tags: true
+skip_non_tags: true
 
 # Fetch repository as a zip archive
 shallow_clone: true
@@ -18,10 +18,14 @@ branches:
   # whitelist
   only:
     - master
+    - 3.x
+    - devmaster
 
   # blacklist
   except:
     - gh-pages
+    - 2.x
+    - 2.x-json
 
 environment:
   global:
@@ -29,12 +33,28 @@ environment:
 
   matrix:
     - PYTHON: "C:\\Python27-x64"
-      PYTHON_VERSION: "2.7.14"
+      PYTHON_VERSION: "2.7.15"
       PYTHON_ARCH: "64"
 
     - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6.3"
+      PYTHON_VERSION: "3.3.5"
       PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.4"
+      PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.3"
+      PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.6"
+      PYTHON_ARCH: "64"
+
+# PR settings
+pull_requests:
+  do_not_increment_build_number: true
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -72,13 +92,13 @@ install:
 #  # Install wheel
 #  - "python -m pip install wheel"
 
+# Install the python module
 build_script:
-  # Install the python module
-  - "%CMD_IN_ENV% python setup.py develop"
+  - cmd: '%CMD_IN_ENV% python setup.py develop'
 
+# Run the project tests
 test_script:
-  # Run the project tests
-  - "%CMD_IN_ENV% python setup.py test"
+  - cmd: '%CMD_IN_ENV% python setup.py test'
 
 #after_test:
 #  # If tests are successful, create binary packages for the project.
@@ -95,3 +115,5 @@ test_script:
 #on_success:
   # Upload the content of dist/*.whl to a public wheelhouse
   # - "do uploading operations here"
+
+deploy: off
