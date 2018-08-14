@@ -116,7 +116,7 @@ def make_dir(project):
     os.mkdir(project_path)
     # We need a __init__.py file inside the directory
     with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
-        fp.write('__version__ = ' + str(get_property('__version__', 'geomdl')) + '\n')
+        fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
         fp.write('__license__ = "MIT"\n')
 
 
