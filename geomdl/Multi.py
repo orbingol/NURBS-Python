@@ -74,14 +74,17 @@ class MultiCurve(Abstract.Multi):
             if self._sample_size != 0:
                 elem.sample_size = self._sample_size
             elem.evaluate()
-            color = utilities.color_generator()
+
+            # Color selection
+            color = select_color(cpcolor, evalcolor, idx=idx)
+
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     name="Control Points " + str(idx + 1),
-                                    color=cpcolor if cpcolor is not None else color[0],
+                                    color=color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts,
                                     name="Curve " + str(idx + 1),
-                                    color=evalcolor if evalcolor is not None else color[1],
+                                    color=color[1],
                                     plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
@@ -185,15 +188,52 @@ class MultiSurface(Abstract.Multi):
             if self._sample_size_v != 0:
                 elem.sample_size_v = self.sample_size_v
             elem.evaluate()
-            color = utilities.color_generator()
+
+            # Color selection
+            color = select_color(cpcolor, evalcolor, idx=idx)
+
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
                                     name="Control Points " + str(idx + 1),
-                                    color=cpcolor if cpcolor is not None else color[0],
+                                    color=color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts,
                                     size=[elem.sample_size_u, elem.sample_size_v],
                                     name="Surface " + str(idx + 1),
-                                    color=evalcolor if evalcolor is not None else color[1],
+                                    color=color[1],
                                     plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+
+
+def select_color(cpcolor, evalcolor, idx=0):
+    """ Selects item color for plotting.
+
+    :param cpcolor: color for control points grid item
+    :type cpcolor, str, list, tuple
+    :param evalcolor: color for evaluated points grid item
+    :type evalcolor, str, list, tuple
+    :param idx: index of the current shape
+    :type idx: int
+    :return: a list of color values
+    :rtype: list
+    """
+    # Random colors by default
+    color = utilities.color_generator()
+
+    # Constant color for control points grid
+    if isinstance(cpcolor, str):
+        color[0] = cpcolor
+
+    # User-defined color for control points grid
+    if isinstance(cpcolor, (list, tuple)):
+        color[0] = cpcolor[idx]
+
+    # Constant color for evaluated points grid
+    if isinstance(cpcolor, str):
+        color[1] = evalcolor
+
+    # User-defined color for evaluated points grid
+    if isinstance(cpcolor, (list, tuple)):
+        color[1] = evalcolor[idx]
+
+    return color
