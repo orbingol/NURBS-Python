@@ -229,11 +229,11 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[0] = cpcolor[idx]
 
     # Constant color for evaluated points grid
-    if isinstance(cpcolor, str):
+    if isinstance(evalcolor, str):
         color[1] = evalcolor
 
     # User-defined color for evaluated points grid
-    if isinstance(cpcolor, (list, tuple)):
+    if isinstance(evalcolor, (list, tuple)):
         color[1] = evalcolor[idx]
 
     return color
