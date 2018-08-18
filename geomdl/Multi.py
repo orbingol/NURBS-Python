@@ -53,6 +53,11 @@ class MultiCurve(Abstract.Multi):
         * ``filename``: saves the plot with the input name
         * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
+        values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
+        a list or  a tuple, or vice versa. A single string value sets the color to the same value. List input allows
+        customization over the color values. If none provided, a random color will be selected.
+
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
@@ -67,6 +72,17 @@ class MultiCurve(Abstract.Multi):
         evalcolor = kwargs.get('evalcolor')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+
+        # Check if the input list sizes are equal
+        if isinstance(cpcolor, (list, tuple)):
+            if len(cpcolor) < len(self._elements):
+                raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
+                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
+
+        if isinstance(evalcolor, (list, tuple)):
+            if len(evalcolor) < len(self._elements):
+                raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
+                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
 
         # Run the visualization component
         self._vis_component.clear()
@@ -160,10 +176,15 @@ class MultiSurface(Abstract.Multi):
 
         Keyword Arguments:
 
-        * ``cpcolor``: sets the color of the control points grid
+        * ``cpcolor``: sets the color of the control points grids
         * ``evalcolor``: sets the color of the surface
         * ``filename``: saves the plot with the input name
         * ``plot``: a flag to control displaying the plot window. Default is True.
+
+        The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
+        values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
+        a list or  a tuple, or vice versa. A single string value sets the color to the same value. List input allows
+        customization over the color values. If none provided, a random color will be selected.
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -179,6 +200,17 @@ class MultiSurface(Abstract.Multi):
         evalcolor = kwargs.get('evalcolor')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+
+        # Check if the input list sizes are equal
+        if isinstance(cpcolor, (list, tuple)):
+            if len(cpcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
+                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
+
+        if isinstance(evalcolor, (list, tuple)):
+            if len(evalcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
+                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
 
         # Run the visualization component
         self._vis_component.clear()
