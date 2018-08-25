@@ -680,7 +680,7 @@ class Surface(Abstract.Surface):
         self._surface_points = spts
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
-    def derivatives(self, u, v, order, **kwargs):
+    def derivatives(self, u, v, order=0, **kwargs):
         """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
 
         * SKL[0][0] will be the surface point itself
