@@ -110,9 +110,12 @@ def decompose_curve(obj, **kwargs):
 
 
 def add_dimension(obj, **kwargs):
-    """ Converts x-D curve to a (x+1)-D curve.
+    """ Converts x-dimensional curve to a (x+1)-dimensional curve.
 
-    Useful when converting a 2-D curve to a 3-D curve.
+    If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
+    change the input shape but returns the updated shape.
+
+    Useful when converting a 2-dimensional curve to a 3-dimensional curve.
 
     :param obj: Curve
     :type obj: BSpline.Curve or NURBS.Curve
@@ -339,6 +342,9 @@ def decompose_surface(obj, **kwargs):
 def translate(obj, vec, **kwargs):
     """ Translates a single curve or a surface by the input vector.
 
+    If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
+    change the input shape but returns the updated shape.
+
     :param obj: Curve or surface to be translated
     :type obj: Abstract.Curve or Abstract.Surface
     :param vec: translation vector
@@ -376,7 +382,7 @@ def tangent(obj, params, **kwargs):
     """ Evaluates the tangent vector of the curves or surfaces at the input parameter values.
 
     This function is designed to evaluate tangent vectors of the B-Spline and NURBS shapes at single or
-    multiple parameter values.
+    multiple parameter positions.
 
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
@@ -402,7 +408,7 @@ def normal(obj, params, **kwargs):
     """ Evaluates the normal vector of the curves or surfaces at the input parameter values.
 
     This function is designed to evaluate normal vectors of the B-Spline and NURBS shapes at single or
-    multiple parameter values.
+    multiple parameter positions.
 
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
@@ -428,7 +434,7 @@ def binormal(obj, params, **kwargs):
     """ Evaluates the binormal vector of the curves or surfaces at the input parameter values.
 
     This function is designed to evaluate binormal vectors of the B-Spline and NURBS shapes at single or
-    multiple parameter values.
+    multiple parameter positions.
 
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
