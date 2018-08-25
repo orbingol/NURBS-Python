@@ -24,8 +24,9 @@ Following modules are included in this library:
 
 
 NURBS-Python takes *The NURBS Book 2nd Edition by Piegl & Tiller* as the main reference for the evaluation algorithms.
-The users may want to use different algorithms and therefore, **Evaluator** module allows users to switch evaluation
-algorithms (i.e. evaluation strategy) at runtime.
+The users may want to use different algorithms and **Evaluators** serve directly to this purpose by allowing users
+to switch evaluation algorithms (i.e. evaluation strategy) at runtime. Please see ``evaluator`` property documentation
+for more details.
 
 The **Operations** module contains specialized geometrical operations that can be directly applied to the B-Spline and
 NURBS shapes.
