@@ -392,10 +392,10 @@ def tangent(obj, params, **kwargs):
         else:
             return _tangent_curve_single(obj, params, normalize)
     if isinstance(obj, Abstract.Surface):
-        if isinstance(params, (list, tuple)):
-            return _tangent_surface_single_list(obj, params, normalize)
-        else:
+        if isinstance(params[0], float):
             return _tangent_surface_single(obj, params, normalize)
+        else:
+            return _tangent_surface_single_list(obj, params, normalize)
 
 
 def normal(obj, params, **kwargs):
@@ -418,10 +418,10 @@ def normal(obj, params, **kwargs):
         else:
             return _normal_curve_single(obj, params, normalize)
     if isinstance(obj, Abstract.Surface):
-        if isinstance(params, (list, tuple)):
-            return _normal_surface_single_list(obj, params, normalize)
-        else:
+        if isinstance(params[0], float):
             return _normal_surface_single(obj, params, normalize)
+        else:
+            return _normal_surface_single_list(obj, params, normalize)
 
 
 def binormal(obj, params, **kwargs):
@@ -439,11 +439,10 @@ def binormal(obj, params, **kwargs):
     """
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, Abstract.Curve):
-        if isinstance(obj, Abstract.Curve):
-            if isinstance(params, (list, tuple)):
-                return _binormal_curve_single_list(obj, params, normalize)
-            else:
-                return _binormal_curve_single(obj, params, normalize)
+        if isinstance(params, (list, tuple)):
+            return _binormal_curve_single_list(obj, params, normalize)
+        else:
+            return _binormal_curve_single(obj, params, normalize)
     if isinstance(obj, Abstract.Surface):
         raise NotImplementedError("Binormal vector evaluation for the surfaces is not implemented!")
 
