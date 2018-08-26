@@ -409,6 +409,69 @@ def _prepare_cfg_export_surface(obj):
 
 
 def import_cfg(file_name):
+    """ Imports curves and surfaces from files in libconfig format.
+
+    :param file_name: name of the input file
+    :type file_name: str
+    :return: a list of NURBS curve(s) or surface(s)
+    :rtype: list
+    :raises ImportError: cannot find 'libconf' module
+    :raises IOError: an error occurred writing the file
+    """
+    # Check if it is possible to import 'libconf'
+    try:
+        import libconf
+    except ImportError as e:
+        print("Please install 'libconf' module to import from libconfig format: pip install libconf")
+        raise e
+
+    type_map = {'curve': _prepare_cfg_import_curve, 'surface': _prepare_cfg_import_surface}
+
+    # Try to read the input file
+    try:
+        with open(file_name, 'r') as fp:
+            # Get all shapes
+            imported_data = libconf.load(fp)
+
+            # Process imported data
+            ret_list = []
+            for data in imported_data.shapes:
+                temp = type_map[data.type](data)
+                ret_list.append(temp)
+
+            # Return processed data
+            return ret_list
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def _prepare_cfg_import_curve(data):
+    shape = NURBS.Curve()
+    shape.degree = data.degree
+    shape.ctrlpts = data.control_points
+    if isinstance(data.weights, (list, tuple)):
+        shape.weights = data.weights
+    shape.knotvector = data.knotvector
+    return shape
+
+
+def _prepare_cfg_import_surface(data):
+    shape = NURBS.Surface()
+    shape.degree_u = data.degree_u
+    shape.degree_v = data.degree_v
+    shape.ctrlpts_size_u = data.control_points_size_u
+    shape.ctrlpts_size_v = data.control_points_size_v
+    shape.ctrlpts = data.control_points
+    if isinstance(data.weights, (list, tuple)):
+        shape.weights = data.weights
+    shape.knotvector_u = data.knotvector_u
+    shape.knotvector_v = data.knotvector_v
+    return shape
+
+
 def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
