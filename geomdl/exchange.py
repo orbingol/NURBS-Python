@@ -272,13 +272,13 @@ def export_cfg(obj, file_name):
     """
 
     if isinstance(obj, Abstract.Curve):
-        _export_cfg_single(obj, file_name, _prepare_cfg_curve)
+        _export_cfg_single(obj, file_name, _prepare_cfg_export_curve)
     elif isinstance(obj, Abstract.Surface):
-        _export_cfg_single(obj, file_name, _prepare_cfg_surface)
+        _export_cfg_single(obj, file_name, _prepare_cfg_export_surface)
     elif isinstance(obj, Multi.MultiCurve):
-        _export_cfg_multi(obj, file_name, _prepare_cfg_curve)
+        _export_cfg_multi(obj, file_name, _prepare_cfg_export_curve)
     elif isinstance(obj, Multi.MultiSurface):
-        _export_cfg_multi(obj, file_name, _prepare_cfg_surface)
+        _export_cfg_multi(obj, file_name, _prepare_cfg_export_surface)
     else:
         raise NotImplementedError("Cannot export " + obj.__class__.__name__ + " type in libconfig format")
 
@@ -339,7 +339,7 @@ def _export_cfg_multi(obj, file_name, func):
         raise
 
 
-def _prepare_cfg_curve(obj):
+def _prepare_cfg_export_curve(obj):
     """ Prepares curve object for libconfig-type export.
 
     :param obj: curve object
@@ -371,7 +371,7 @@ def _prepare_cfg_curve(obj):
     return line
 
 
-def _prepare_cfg_surface(obj):
+def _prepare_cfg_export_surface(obj):
     """ Prepares surface object for libconfig-type export.
 
     :param obj: surface object
