@@ -325,10 +325,12 @@ def _prepare_cfg_curve(obj, idx=0):
     line += "\ttype = \"curve\";\n"
     line += "\tdegree = " + str(obj.degree) + ";\n"
     line += "\tknotvector = [" + ", ".join(str(kv) for kv in obj.knotvector) + "];\n"
-    line += "\tcontrol_points = (\n"
-    for pt in obj.ctrlpts:
-        line += "\t\t(" + ", ".join(str(p) for p in pt) + "),\n"
-    line += "\t);\n"
+    line += "\tcontrol_points = ("
+    ctrlpts_size = len(obj.ctrlpts)
+    for idx, pt in enumerate(obj.ctrlpts):
+        line += " (" + ", ".join(str(p) for p in pt) + ")"
+        line += " " if idx == ctrlpts_size - 1 else ", "
+    line += ");\n"
     try:
         line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
     except AttributeError:
@@ -362,10 +364,12 @@ def _prepare_cfg_surface(obj, idx=0):
     line += "\tdegree_v = " + str(obj.degree_v) + ";\n"
     line += "\tknotvector_u = [" + ", ".join(str(kv) for kv in obj.knotvector_u) + "];\n"
     line += "\tknotvector_v = [" + ", ".join(str(kv) for kv in obj.knotvector_v) + "];\n"
-    line += "\tcontrol_points = (\n"
-    for pt in obj.ctrlpts:
-        line += "\t\t(" + ", ".join(str(p) for p in pt) + "),\n"
-    line += "\t);\n"
+    line += "\tcontrol_points = ("
+    ctrlpts_size = len(obj.ctrlpts)
+    for idx, pt in enumerate(obj.ctrlpts):
+        line += " (" + ", ".join(str(p) for p in pt) + ")"
+        line += " " if idx == ctrlpts_size - 1 else ", "
+    line += ");\n"
     try:
         line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
     except AttributeError:
