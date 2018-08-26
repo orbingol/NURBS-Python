@@ -408,7 +408,7 @@ def _prepare_cfg_export_surface(obj):
     return line
 
 
-# Saves surface(s) as a .obj file
+def import_cfg(file_name):
 def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
@@ -429,7 +429,6 @@ def export_obj(surf_in, file_name, **kwargs):
         _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves surface(s) as a .stl file
 def export_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
@@ -458,7 +457,6 @@ def export_stl(surf_in, file_name, **kwargs):
             _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves surface(s) as a .off file
 def export_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
@@ -506,7 +504,6 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
-# Generates triangles
 def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
     points2d = []
     for i in range(0, col_size):
