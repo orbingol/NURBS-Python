@@ -329,7 +329,7 @@ def _prepare_cfg_curve(obj, idx=0):
     ctrlpts_size = len(obj.ctrlpts)
     for idx, pt in enumerate(obj.ctrlpts):
         line += " (" + ", ".join(str(p) for p in pt) + ")"
-        line += " " if idx == ctrlpts_size - 1 else ", "
+        line += " " if idx == ctrlpts_size - 1 else ","
     line += ");\n"
     try:
         line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
@@ -370,7 +370,7 @@ def _prepare_cfg_surface(obj, idx=0):
     ctrlpts_size = len(obj.ctrlpts)
     for idx, pt in enumerate(obj.ctrlpts):
         line += " (" + ", ".join(str(p) for p in pt) + ")"
-        line += " " if idx == ctrlpts_size - 1 else ", "
+        line += " " if idx == ctrlpts_size - 1 else ","
     line += ");\n"
     try:
         line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
