@@ -364,6 +364,8 @@ def _prepare_cfg_surface(obj, idx=0):
     line += "\tdegree_v = " + str(obj.degree_v) + ";\n"
     line += "\tknotvector_u = [" + ", ".join(str(kv) for kv in obj.knotvector_u) + "];\n"
     line += "\tknotvector_v = [" + ", ".join(str(kv) for kv in obj.knotvector_v) + "];\n"
+    line += "\tcontrol_points_size_u = " + str(obj.ctrlpts_size_u) + ";\n"
+    line += "\tcontrol_points_size_v = " + str(obj.ctrlpts_size_v) + ";\n"
     line += "\tcontrol_points = ("
     ctrlpts_size = len(obj.ctrlpts)
     for idx, pt in enumerate(obj.ctrlpts):
