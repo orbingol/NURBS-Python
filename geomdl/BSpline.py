@@ -341,7 +341,7 @@ class Surface(Abstract.Surface):
 
     @property
     def ctrlpts(self):
-        """ 1D Control points.
+        """ 1-dimensional array of control points.
 
         .. note::
 
@@ -367,7 +367,7 @@ class Surface(Abstract.Surface):
 
     @property
     def ctrlpts2d(self):
-        """ 2D control points.
+        """ 2-dimensional array of control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
         The rows of the returned tuple correspond to v-direction and the columns correspond to u-direction.

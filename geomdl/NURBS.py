@@ -178,7 +178,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlptsw(self):
-        """ Weighted control points (Pw).
+        """ 1-dimensional array of weighted control points (Pw).
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
@@ -201,7 +201,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ Control points (P).
+        """ 1-dimensional array of control points (P).
 
         This property sets and gets the control points in 1-D.
 
