@@ -276,7 +276,7 @@ def make_zigzag(points, num_cols):
     :param points: list of points to be ordered
     :type points: list
     :param num_cols: number of elements in a row which the zig-zag is generated
-    :param num_cols: int
+    :type num_cols: int
     :return: re-ordered points
     :rtype: list
     """
@@ -299,28 +299,28 @@ def make_zigzag(points, num_cols):
     return new_points
 
 
-def make_quad(points, row_size, col_size):
+def make_quad_mesh(points, size_u, size_v):
     """ Generates a quad mesh from linearly ordered list of points.
 
     :param points: list of points to be ordered
     :type points: list, tuple
-    :param row_size: number of elements in a row
-    :param row_size: int
-    :param col_size: number of elements in a column
-    :param col_size: int
+    :param size_v: number of elements in a row
+    :type size_v: int
+    :param size_u: number of elements in a column
+    :type size_u: int
     :return: re-ordered points
     :rtype: list
     """
     # Start with generating a zig-zag shape in row direction and then take its reverse
-    new_points = make_zigzag(points, row_size)
+    new_points = make_zigzag(points, size_v)
     new_points.reverse()
 
     # Start generating a zig-zag shape in col direction
     forward = True
-    for row in range(0, row_size):
+    for row in range(0, size_v):
         temp = []
-        for col in range(0, col_size):
-            temp.append(points[row + (col * row_size)])
+        for col in range(0, size_u):
+            temp.append(points[row + (col * size_v)])
         if forward:
             forward = False
         else:
@@ -331,7 +331,7 @@ def make_quad(points, row_size, col_size):
     return new_points
 
 
-def make_triangle(points, row_size, col_size, **kwargs):
+def make_triangle_mesh(points, size_u, size_v, **kwargs):
     """ Generates a triangular mesh from an array of points.
 
     This function simply generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
@@ -347,10 +347,10 @@ def make_triangle(points, row_size, col_size, **kwargs):
 
     :param points: input points
     :type points: list, tuple
-    :param row_size: number of elements in the row
-    :param row_size: int
-    :param col_size: number of elements in the column
-    :param col_size: int
+    :param size_u: number of elements on the u-direction
+    :type size_u: int
+    :param size_v: number of elements on the v-direction
+    :type size_v: int
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
@@ -358,21 +358,21 @@ def make_triangle(points, row_size, col_size, **kwargs):
     internal_vis_enabled = kwargs.get('internal_vis_enabled', False)
 
     points2d = []
-    for i in range(0, col_size):
+    for i in range(0, size_u):
         row_list = []
-        for j in range(0, row_size):
-            row_list.append(points[j + (i * row_size)])
+        for j in range(0, size_v):
+            row_list.append(points[j + (i * size_v)])
         points2d.append(row_list)
 
-    u_range = 1.0 / float(col_size - 1)
-    v_range = 1.0 / float(row_size - 1)
+    u_range = 1.0 / float(size_u - 1)
+    v_range = 1.0 / float(size_v - 1)
     vertices = []
     vert_id = 1
     u = 0.0
-    for col_idx in range(0, col_size, vertex_spacing):
+    for col_idx in range(0, size_u, vertex_spacing):
         vert_list = []
         v = 0.0
-        for row_idx in range(0, row_size, vertex_spacing):
+        for row_idx in range(0, size_v, vertex_spacing):
             temp = Vertex()
             temp.data = points2d[col_idx][row_idx]
             temp.id = vert_id
