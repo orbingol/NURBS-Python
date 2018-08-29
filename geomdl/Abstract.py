@@ -330,6 +330,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         The following example illustrates a way to use a NumPy array with this method.
 
         .. code-block:: python
+
             # Import numpy
             import numpy as np
 

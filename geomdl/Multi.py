@@ -241,9 +241,9 @@ def select_color(cpcolor, evalcolor, idx=0):
     """ Selects item color for plotting.
 
     :param cpcolor: color for control points grid item
-    :type cpcolor, str, list, tuple
+    :type cpcolor: str, list, tuple
     :param evalcolor: color for evaluated points grid item
-    :type evalcolor, str, list, tuple
+    :type evalcolor: str, list, tuple
     :param idx: index of the current shape
     :type idx: int
     :return: a list of color values
