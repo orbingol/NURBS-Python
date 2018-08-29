@@ -223,22 +223,22 @@ class VisCurve3D(Abstract.VisAbstract):
             height=self._config.figure_size[1],
             autosize=False,
             showlegend=self._config.display_legend,
-            scene=graph_objs.Scene(
-                xaxis=graph_objs.XAxis(
+            scene=dict(
+                xaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                yaxis=graph_objs.YAxis(
+                yaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                zaxis=graph_objs.ZAxis(
+                zaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
@@ -339,22 +339,22 @@ class VisSurface(Abstract.VisAbstractSurf):
             height=self._config.figure_size[1],
             autosize=False,
             showlegend=self._config.display_legend,
-            scene=graph_objs.Scene(
-                xaxis=graph_objs.XAxis(
+            scene=dict(
+                xaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                yaxis=graph_objs.YAxis(
+                yaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                zaxis=graph_objs.ZAxis(
+                zaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
