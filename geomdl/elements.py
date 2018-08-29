@@ -10,8 +10,9 @@
 from . import array
 
 
-# Abstract class for geometry and topology elements
+# Abstract class for geometry and topology elements (entities)
 class AbstractElement(object):
+    """ Abstract base class for all geometric entities. """
     def __init__(self):
         self._id = 0
 
@@ -28,6 +29,7 @@ class AbstractElement(object):
 
 # Vertex class
 class Vertex(AbstractElement):
+    """ Representation of a 3-dimensional vertex entity with its parametric position. """
     def __init__(self):
         super(Vertex, self).__init__()
         self._value = array('f', [0.0, 0.0, 0.0, 1.0])  # x, y, z, 1.0 if inside is True
@@ -133,6 +135,7 @@ class Vertex(AbstractElement):
 
 # Triangle class
 class Triangle(AbstractElement):
+    """ Representation of a triangular geometric entity composed of vertices. """
     def __init__(self):
         super(Triangle, self).__init__()
         self._vertices = []
@@ -154,16 +157,6 @@ class Triangle(AbstractElement):
     def __reversed__(self):
         return reversed(self._vertices)
 
-    def add_vertex(self, element, check=True):
-        if len(self._vertices) > 2 and check:
-            raise ValueError("Cannot add more vertices")
-        if isinstance(element, Vertex):
-            self._vertices.append(element)
-        elif isinstance(element, list):
-            self._vertices += element
-        else:
-            raise TypeError("Input must be a Vertex object")
-
     @property
     def vertices(self):
         return self._vertices
@@ -179,9 +172,20 @@ class Triangle(AbstractElement):
     def vertex_ids(self):
         return [self._vertices[0].id, self._vertices[1].id, self._vertices[2].id]
 
+    def add_vertex(self, element, check=True):
+        if len(self._vertices) > 2 and check:
+            raise ValueError("Cannot add more vertices")
+        if isinstance(element, Vertex):
+            self._vertices.append(element)
+        elif isinstance(element, list):
+            self._vertices += element
+        else:
+            raise TypeError("Input must be a Vertex object")
+
 
 # Face class
 class Face(AbstractElement):
+    """ Representation of a face geometric entity composed of triangles. """
     def __init__(self):
         super(Face, self).__init__()
         self._triangles = []
@@ -218,6 +222,7 @@ class Face(AbstractElement):
 
 # Body class
 class Body(AbstractElement):
+    """ Representation of a geometric body composed of faces. """
     def __init__(self):
         super(Body, self).__init__()
         self._faces = []
