@@ -5,7 +5,7 @@ The NURBS-Python library is more than a simple NURBS library. It includes n-vari
 provide a convenient data structure implemented with Python properties as well as the evaluation, and export/exchange
 functionality.
 
-Following modules are included in this library:
+Following modules are included in the library:
 
 .. toctree::
     :maxdepth: 1
@@ -22,6 +22,12 @@ Following modules are included in this library:
     module_container
     module_exchange
 
+Additionally, the following modules provide data structures for several operations contained in the library:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_elements
 
 NURBS-Python takes *The NURBS Book 2nd Edition by Piegl & Tiller* as the main reference for the evaluation algorithms.
 The users may want to use different algorithms and **Evaluators** serve directly to this purpose by allowing users
