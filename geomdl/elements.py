@@ -8,7 +8,6 @@
 """
 
 from . import array
-from . import utilities
 
 
 # Abstract class for geometry and topology elements
