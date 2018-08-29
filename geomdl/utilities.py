@@ -342,13 +342,16 @@ def make_triangle(points, row_size, col_size, **kwargs):
     Please see the documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
     point ordering for the surfaces.
 
+    This function returns a tuple containing two lists. First one is the list of vertices and the second one is the list
+    of triangles.
+
     :param points: input points
     :type points: list, tuple
     :param row_size: number of elements in the row
     :param row_size: int
     :param col_size: number of elements in the column
     :param col_size: int
-    :return: a tuple containing lists of vertices and triangles in the format (vertex_list, triangle_list)
+    :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
     vertex_spacing = kwargs.get('vertex_spacing', 1)
