@@ -9,6 +9,7 @@
 
 from . import random
 from . import math
+from .elements import Vertex, Triangle
 
 
 def linspace(start, stop, num, decimals=6):
@@ -330,18 +331,29 @@ def make_quad(points, row_size, col_size):
     return new_points
 
 
-def make_triangle(points, row_size, col_size):
-    """ Generates a triangular mesh from  linearly ordered list of points.
+def make_triangle(points, row_size, col_size, **kwargs):
+    """ Generates a triangular mesh from an array of points.
 
-    :param points: list of points to be ordered
+    This function simply generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
+    The input is the surface points and the number of points on the parametric dimensions u and v,
+    indicated as row and column sizes in the function signature. This function should operate correctly if row and
+    column sizes are input correctly, no matter what the points are v-ordered or u-ordered.
+
+    Please see the documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
+    point ordering for the surfaces.
+
+    :param points: input points
     :type points: list, tuple
-    :param row_size: number of elements in a row
+    :param row_size: number of elements in the row
     :param row_size: int
-    :param col_size: number of elements in a column
+    :param col_size: number of elements in the column
     :param col_size: int
-    :return: re-ordered points
-    :rtype: list
+    :return: a tuple containing lists of vertices and triangles in the format (vertex_list, triangle_list)
+    :rtype: tuple
     """
+    vertex_spacing = kwargs.get('vertex_spacing', 1)
+    internal_vis_enabled = kwargs.get('internal_vis_enabled', False)
+
     points2d = []
     for i in range(0, col_size):
         row_list = []
@@ -349,25 +361,54 @@ def make_triangle(points, row_size, col_size):
             row_list.append(points[j + (i * row_size)])
         points2d.append(row_list)
 
+    u_range = 1.0 / float(col_size - 1)
+    v_range = 1.0 / float(row_size - 1)
+    vertices = []
+    vert_id = 1
+    u = 0.0
+    for col_idx in range(0, col_size, vertex_spacing):
+        vert_list = []
+        v = 0.0
+        for row_idx in range(0, row_size, vertex_spacing):
+            temp = Vertex()
+            temp.data = points2d[col_idx][row_idx]
+            temp.id = vert_id
+            temp.uv = [u, v]
+            vert_list.append(temp)
+            vert_id += 1
+            v += v_range
+        vertices.append(vert_list)
+        u += u_range
+
+    v_col_size = len(vertices)
+    v_row_size = len(vert_list)
+
+    tri_id = 1
     forward = True
     triangles = []
-    for col_idx in range(0, col_size - 1):
+    for col_idx in range(0, v_col_size - 1):
         row_idx = 0
         left_half = True
         tri_list = []
-        while row_idx < row_size - 1:
+        while row_idx < v_row_size - 1:
+            tri = Triangle()
             if left_half:
-                tri_list.append(points2d[col_idx + 1][row_idx])
-                tri_list.append(points2d[col_idx][row_idx])
-                tri_list.append(points2d[col_idx][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices[col_idx + 1][row_idx])
+                tri.add_vertex(vertices[col_idx][row_idx])
+                tri.add_vertex(vertices[col_idx][row_idx + 1])
+                # Add the midline for VIsSurface visualization class
+                if internal_vis_enabled:
+                    tri.add_vertex(vertices[col_idx+1][row_idx], check=False)
                 left_half = False
             else:
-                tri_list.append(points2d[col_idx][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices[col_idx][row_idx + 1])
+                tri.add_vertex(vertices[col_idx + 1][row_idx + 1])
+                tri.add_vertex(vertices[col_idx + 1][row_idx])
                 left_half = True
                 row_idx += 1
+            tri.id = tri_id
+            tri_list.append(tri)
+            tri_id += 1
         if forward:
             forward = False
         else:
@@ -375,7 +416,20 @@ def make_triangle(points, row_size, col_size):
             tri_list.reverse()
         triangles += tri_list
 
-    return triangles
+    return vertices, triangles
+
+
+def triangle_normal(tri):
+    """ Computes the normal vector of the triangle.
+
+    :param tri: triangle object
+    :type tri: elements.Triangle
+    :return: normal vector of the triangle
+    :rtype: list
+    """
+    vec1 = vector_generate(tri.vertices[0].data, tri.vertices[1].data)
+    vec2 = vector_generate(tri.vertices[1].data, tri.vertices[2].data)
+    return vector_cross(vec1, vec2)
 
 
 # A float range function, implementation of https://stackoverflow.com/a/47877721

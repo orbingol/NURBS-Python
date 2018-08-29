@@ -137,7 +137,6 @@ class Triangle(AbstractElement):
     def __init__(self):
         super(Triangle, self).__init__()
         self._vertices = []
-        self._normal = None
 
     def __str__(self):
         return "Triangle " + str(self._id)
@@ -156,30 +155,26 @@ class Triangle(AbstractElement):
     def __reversed__(self):
         return reversed(self._vertices)
 
-    @property
-    def normal(self):
-        if not self._normal:
-            vec1 = utilities.vector_generate(self._vertices[0].data, self._vertices[1].data)
-            vec2 = utilities.vector_generate(self._vertices[1].data, self._vertices[2].data)
-            # self._normal = utilities.vector_normalize(utilities.vector_cross(vec1, vec2))
-            self._normal = utilities.vector_cross(vec1, vec2)
-        return self._normal
-
-    def add_vertex(self, element=None):
-        if len(self._vertices) > 2:
-            print("Cannot add more vertices")
-            return
+    def add_vertex(self, element, check=True):
+        if len(self._vertices) > 2 and check:
+            raise ValueError("Cannot add more vertices")
         if isinstance(element, Vertex):
             self._vertices.append(element)
         elif isinstance(element, list):
             self._vertices += element
         else:
-            print("Input must be a Vertex object")
-            return
+            raise TypeError("Input must be a Vertex object")
 
     @property
     def vertices(self):
         return self._vertices
+
+    @property
+    def vertices_raw(self):
+        v_raw = []
+        for v in self._vertices:
+            v_raw.append(v.data)
+        return v_raw
 
     @property
     def vertex_ids(self):
@@ -219,8 +214,7 @@ class Face(AbstractElement):
         elif isinstance(element, list):
             self._triangles += element
         else:
-            print("Input must be a Triangle object")
-            return
+            raise TypeError("Input must be a Triangle object")
 
 
 # Body class
@@ -256,5 +250,4 @@ class Body(AbstractElement):
         elif isinstance(element, list):
             self._faces += element
         else:
-            print("Input must be a Face object")
-            return
+            raise TypeError("Input must be a Face object")

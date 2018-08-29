@@ -315,7 +315,12 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                pts = np.array(utilities.make_triangle(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                vertices, triangles = utilities.make_triangle(plot['ptsarr'], plot['size'][1], plot['size'][0],
+                                                              internal_vis_enabled=True)
+                pts = []
+                for tri in triangles:
+                    pts += tri.vertices_raw
+                pts = np.array(pts)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
