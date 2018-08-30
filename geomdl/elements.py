@@ -179,6 +179,17 @@ class Triangle(AbstractElement):
             v_idx.append(v.id)
         return v_idx
 
+    @property
+    def vertex_ids_zero(self):
+        """ Gets zero-indexed vertex number list.
+
+        Vertex numbering starts from 0.
+        """
+        v_idx = []
+        for v in self._vertices:
+            v_idx.append(v.id - 1)
+        return v_idx
+
     def add_vertex(self, vertex, check=True):
         if len(self._vertices) > 2 and check:
             raise ValueError("Cannot add more vertices")

@@ -954,8 +954,8 @@ def _export_off_single(surface, **kwargs):
 
             # Write faces (zero-indexed)
             for t in triangles:
-                vl = t.vertex_ids
-                line = "3 " + str(vl[0] - 1) + " " + str(vl[1] - 1) + " " + str(vl[2] - 1) + "\n"
+                vl = t.vertex_ids_zero
+                line = "3 " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
                 fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
