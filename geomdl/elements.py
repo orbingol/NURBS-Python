@@ -170,7 +170,14 @@ class Triangle(AbstractElement):
 
     @property
     def vertex_ids(self):
-        return [self._vertices[0].id, self._vertices[1].id, self._vertices[2].id]
+        """ Gets vertex number list.
+
+        Vertex numbering starts from 1.
+        """
+        v_idx = []
+        for v in self._vertices:
+            v_idx.append(v.id)
+        return v_idx
 
     def add_vertex(self, vertex, check=True):
         if len(self._vertices) > 2 and check:
