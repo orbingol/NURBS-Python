@@ -597,17 +597,15 @@ def _export_obj_single(surface, **kwargs):
                                                                vertex_spacing=vertex_spacing)
 
             # Write vertices
-            for vert_row in vertices:
-                for vert in vert_row:
-                    line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                fp.write(line)
 
             # Write vertex normals
-            for vert_row in vertices:
-                for vert in vert_row:
-                    sn = operations.normal(surface, vert.uv)
-                    line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                sn = operations.normal(surface, vert.uv)
+                line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
+                fp.write(line)
 
             # Write faces
             for t in triangles:
@@ -671,17 +669,15 @@ def _export_obj_multi(surface_list, **kwargs):
                                                                    vertex_spacing=vertex_spacing)
 
                 # Collect vertices
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                        str_v.append(line)
+                for vert in vertices:
+                    line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                    str_v.append(line)
 
                 # Collect vertex normals
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        sn = operations.normal(surface, vert.uv)
-                        line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                        str_vn.append(line)
+                for vert in vertices:
+                    sn = operations.normal(surface, vert.uv)
+                    line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
+                    str_vn.append(line)
 
                 # Collect faces
                 for t in triangles:
@@ -950,11 +946,11 @@ def _export_off_single(surface, **kwargs):
 
             line = str(len(vertices) * len(vertices[0])) + " " + str(len(triangles)) + " 0\n"
             fp.write(line)
+
             # Write vertices
-            for vert_row in vertices:
-                for vert in vert_row:
-                    line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                fp.write(line)
 
             # Write faces (zero-indexed)
             for t in triangles:
@@ -1016,12 +1012,11 @@ def _export_off_multi(surface_list, **kwargs):
                                                                    vertex_spacing=vertex_spacing)
 
                 # Collect vertices
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                        str_v.append(line)
+                for vert in vertices:
+                    line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                    str_v.append(line)
 
-                # Collect faces (zero0indexed)
+                # Collect faces (zero-indexed)
                 for t in triangles:
                     vl = t.vertex_ids
                     line = "3 " + \

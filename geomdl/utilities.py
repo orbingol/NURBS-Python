@@ -366,7 +366,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
     u_range = 1.0 / float(size_u - 1)
     v_range = 1.0 / float(size_v - 1)
-    vertices = []
+    vertices2d = []
     vert_id = 1
     u = 0.0
     for col_idx in range(0, size_u, vertex_spacing):
@@ -380,10 +380,10 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             vert_list.append(temp)
             vert_id += 1
             v += v_range
-        vertices.append(vert_list)
+        vertices2d.append(vert_list)
         u += u_range
 
-    v_col_size = len(vertices)
+    v_col_size = len(vertices2d)
     v_row_size = len(vert_list)
 
     tri_id = 1
@@ -396,17 +396,17 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         while row_idx < v_row_size - 1:
             tri = Triangle()
             if left_half:
-                tri.add_vertex(vertices[col_idx + 1][row_idx])
-                tri.add_vertex(vertices[col_idx][row_idx])
-                tri.add_vertex(vertices[col_idx][row_idx + 1])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
                 # Add the midline for VIsSurface visualization class
                 if internal_vis_enabled:
-                    tri.add_vertex(vertices[col_idx+1][row_idx], check=False)
+                    tri.add_vertex(vertices2d[col_idx+1][row_idx], check=False)
                 left_half = False
             else:
-                tri.add_vertex(vertices[col_idx][row_idx + 1])
-                tri.add_vertex(vertices[col_idx + 1][row_idx + 1])
-                tri.add_vertex(vertices[col_idx + 1][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx + 1])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
                 left_half = True
                 row_idx += 1
             tri.id = tri_id
@@ -418,6 +418,12 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             forward = True
             tri_list.reverse()
         triangles += tri_list
+
+    # Convert to 1-dimensional list
+    vertices = []
+    for u in range(v_col_size):
+        for v in range(v_row_size):
+            vertices.append(vertices2d[u][v])
 
     return vertices, triangles
 
