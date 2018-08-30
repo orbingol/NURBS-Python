@@ -12,6 +12,7 @@ from . import utilities
 
 from . import numpy as np
 import matplotlib as mpl
+import matplotlib.tri as mpltri
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
@@ -383,8 +384,17 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                pts = np.array(plot['ptsarr'])
-                ax.plot_trisurf(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                # Use internal triangulation algorithm instead of Qhull (MPL default)
+                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
+                # Extract zero-indexed vertex number list
+                tris = [tri.vertex_ids_zero for tri in triangles]
+                # Extract vertex coordinates
+                verts = [vert.data for vert in vertices]
+                pts = np.array(verts)
+                # Create MPL Triangulation object
+                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tris)
+                # Use custom Triangulation object to plot the surface
+                ax.plot_trisurf(triangulation, pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot2_proxy)
                 legend_names.append(plot['name'])
