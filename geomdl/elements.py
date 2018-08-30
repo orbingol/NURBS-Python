@@ -172,13 +172,13 @@ class Triangle(AbstractElement):
     def vertex_ids(self):
         return [self._vertices[0].id, self._vertices[1].id, self._vertices[2].id]
 
-    def add_vertex(self, element, check=True):
+    def add_vertex(self, vertex, check=True):
         if len(self._vertices) > 2 and check:
             raise ValueError("Cannot add more vertices")
-        if isinstance(element, Vertex):
-            self._vertices.append(element)
-        elif isinstance(element, list):
-            self._vertices += element
+        if isinstance(vertex, Vertex):
+            self._vertices.append(vertex)
+        elif isinstance(vertex, list):
+            self._vertices += vertex
         else:
             raise TypeError("Input must be a Vertex object")
 
@@ -211,11 +211,11 @@ class Face(AbstractElement):
     def triangles(self):
         return self._triangles
 
-    def add_triangle(self, element):
-        if isinstance(element, Triangle):
-            self._triangles.append(element)
-        elif isinstance(element, list):
-            self._triangles += element
+    def add_triangle(self, triangle):
+        if isinstance(triangle, Triangle):
+            self._triangles.append(triangle)
+        elif isinstance(triangle, list):
+            self._triangles += triangle
         else:
             raise TypeError("Input must be a Triangle object")
 
@@ -248,10 +248,10 @@ class Body(AbstractElement):
     def faces(self):
         return self._faces
 
-    def add_face(self, element):
-        if isinstance(element, Face):
-            self._faces.append(element)
-        elif isinstance(element, list):
-            self._faces += element
+    def add_face(self, face):
+        if isinstance(face, Face):
+            self._faces.append(face)
+        elif isinstance(face, list):
+            self._faces += face
         else:
             raise TypeError("Input must be a Face object")
