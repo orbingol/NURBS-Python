@@ -354,6 +354,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
+    The surface is triangulated externally using :py:func:`.utilities.make_triangle_mesh()` function.
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfTriangle, self).__init__(config=config)
