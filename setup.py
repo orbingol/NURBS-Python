@@ -167,7 +167,7 @@ setup(
     long_description=read('DESCRIPTION.rst'),
     license='MIT',
     author='Onur Rauf Bingol',
-    author_email='contact@onurbingol.net',
+    author_email='nurbs-python@googlegroups.com',
     url='https://github.com/orbingol/NURBS-Python',
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
