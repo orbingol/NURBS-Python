@@ -364,6 +364,9 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         # Calling parent function
         super(VisSurfTriangle, self).render(**kwargs)
 
+        # Colormaps
+        surf_cmaps = kwargs.get('colormap', None)
+
         # Initialize variables
         legend_proxy = []
         legend_names = []
@@ -372,6 +375,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         ax = Axes3D(fig)
 
+        surf_count = 0
         # Start plotting
         for plot in self._plots:
             # Plot control points
@@ -394,8 +398,20 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                 pts = np.array(verts)
                 # Create MPL Triangulation object
                 triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tris)
-                # Use custom Triangulation object to plot the surface
-                ax.plot_trisurf(triangulation, pts[:, 2], color=plot['color'])
+
+                # Determine the color or the colormap of the triangulated plot
+                trisurf_params = {}
+                if surf_cmaps:
+                    try:
+                        trisurf_params['cmap'] = surf_cmaps[surf_count]
+                        surf_count += 1
+                    except IndexError:
+                        trisurf_params['color'] = plot['color']
+                else:
+                    trisurf_params['color'] = plot['color']
+
+                # Use custom Triangulation object and the choice of color/colormap to plot the surface
+                ax.plot_trisurf(triangulation, pts[:, 2], **trisurf_params)
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot2_proxy)
                 legend_names.append(plot['name'])

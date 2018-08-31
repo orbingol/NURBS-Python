@@ -212,6 +212,9 @@ class MultiSurface(Abstract.Multi):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
 
+        # Get colormaps as a list
+        surf_cmaps = kwargs.get('colormap', None)
+
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
@@ -234,7 +237,7 @@ class MultiSurface(Abstract.Multi):
                                     name="Surface " + str(idx + 1),
                                     color=color[1],
                                     plot_type='evalpts')
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
 def select_color(cpcolor, evalcolor, idx=0):
