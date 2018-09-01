@@ -213,7 +213,10 @@ class MultiSurface(Abstract.Multi):
                                  ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
 
         # Get colormaps as a list
-        surf_cmaps = kwargs.get('colormap', None)
+        surf_cmaps = kwargs.get('colormap', [])
+        if not isinstance(surf_cmaps, (list, tuple)):
+            warnings.warn("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
+            surf_cmaps = []
 
         # Run the visualization component
         self._vis_component.clear()
