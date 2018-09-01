@@ -1091,11 +1091,16 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the surface
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``colormap``: sets the colormap of the surface
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
+        example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects a single
+        colormap input.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")

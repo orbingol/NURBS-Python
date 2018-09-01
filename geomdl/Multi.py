@@ -175,11 +175,11 @@ class MultiSurface(Abstract.Multi):
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
         Keyword Arguments:
-
-        * ``cpcolor``: sets the color of the control points grids
-        * ``evalcolor``: sets the color of the surface
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``cpcolor``: sets the color of the control points grids
+            * ``evalcolor``: sets the color of the surface
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``colormap``: sets the colormap of the surfaces
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -190,6 +190,12 @@ class MultiSurface(Abstract.Multi):
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
+        example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects multiple
+        colormap inputs as a list or tuple, preferable the input list size is the same as the number of surfaces
+        contained in the class. In the case of number of surfaces is bigger than number of input colormaps, this method
+        will automatically assign a random color for the remaining surfaces.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")

@@ -360,7 +360,17 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         super(VisSurfTriangle, self).__init__(config=config)
 
     def render(self, **kwargs):
-        """ Plots the surface and the control points grid. """
+        """ Plots the surface and the control points grid.
+
+        Keyword arguments:
+            * ``colormap``: applies colormap to the surface
+
+        Colormaps are a visualization feature of Matplotlib. They can be used for several types of surface plots via
+        the following import statement: ``from matplotlib import cm``
+
+        The following link displays the list of Matplolib colormaps and some examples on colormaps:
+        https://matplotlib.org/tutorials/colors/colormaps.html
+        """
         # Calling parent function
         super(VisSurfTriangle, self).render(**kwargs)
 
