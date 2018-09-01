@@ -1108,7 +1108,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Get colormap and convert to a list
         surf_cmap = kwargs.get('colormap', None)
-        surf_cmap = [surf_cmap]
+        surf_cmap = [surf_cmap] if surf_cmap else []
 
         # Check all parameters are set
         self._check_variables()
