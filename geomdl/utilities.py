@@ -441,6 +441,21 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
+def make_quadtree(ctrlpts, size_u, size_v):
+    """ Generates a quadtree from input control points.
+
+    :param ctrlpts: 1-dimensional array of control points
+    :type ctrlpts: list, tuple
+    :param size_u: number of control points on the u-direction
+    :type size_u: int
+    :param size_v: number of control points on the v-direction
+    :type size_v: int
+    :return: control points organized as a quadtree
+    :rtype: list
+    """
+    pass
+
+
 # A float range function, implementation of https://stackoverflow.com/a/47877721
 def frange(start, stop, step=1.0):
     """ Implementation of Python's ``range()`` function which works with floats.
