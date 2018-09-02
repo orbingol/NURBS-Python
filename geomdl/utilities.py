@@ -441,19 +441,53 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
-def make_quadtree(ctrlpts, size_u, size_v):
-    """ Generates a quadtree from input control points.
+def make_quadtree(points, size_u, size_v):
+    """ Generates a quadtree-like structure from input control points.
 
-    :param ctrlpts: 1-dimensional array of control points
-    :type ctrlpts: list, tuple
+    This function generates a 2-dimensional list of control point coordinates. Considering the object-oriented
+    representation of a quadtree data structure, first dimension of the generated list corresponds to a list of
+    *QuadTree* classes. Second dimension of the generated list corresponds to a *QuadTree* data structure. The first
+    element of the 2nd dimension is the mid-point of the bounding box and the remaining elements are corner points of
+    the bounding box organized in counter-clockwise order.
+
+    Please note that this function's intention is not generating a real quadtree structure but reorganizing the
+    control points in a very similar fashion to make them available for various geometric operations.
+
+    :param points: 1-dimensional array of control points
+    :type points: list, tuple
     :param size_u: number of control points on the u-direction
     :type size_u: int
     :param size_v: number of control points on the v-direction
     :type size_v: int
-    :return: control points organized as a quadtree
-    :rtype: list
+    :return: control points organized in a quadtree-like structure
+    :rtype: tuple
     """
-    pass
+    # Convert control points array into 2-dimensional form
+    points2d = []
+    for i in range(0, size_u):
+        row_list = []
+        for j in range(0, size_v):
+            row_list.append(points[j + (i * size_v)])
+        points2d.append(row_list)
+
+    # Traverse 2-dimensional control points to find neighbors
+    qtree = []
+    for u in range(size_u):
+        for v in range(size_v):
+            temp = [points2d[u][v]]
+            # Note: negative indexing actually works in Python, so we need explicit checking
+            if u + 1 < size_u:
+                temp.append(points2d[u+1][v])
+            if v + 1 < size_v:
+                temp.append(points2d[u][v+1])
+            if u - 1 >= 0:
+                temp.append(points2d[u-1][v])
+            if v - 1 >= 0:
+                temp.append(points2d[u][v-1])
+            qtree.append(tuple(temp))
+
+    # Return the array generated.
+    return tuple(qtree)
 
 
 # A float range function, implementation of https://stackoverflow.com/a/47877721
