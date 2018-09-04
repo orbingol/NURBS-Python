@@ -441,8 +441,8 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
-def make_quadtree(points, size_u, size_v):
-    """ Generates a quadtree-like structure from input control points.
+def make_quadtree(points, size_u, size_v, **kwargs):
+    """ Generates a quadtree-like structure from surface control points.
 
     This function generates a 2-dimensional list of control point coordinates. Considering the object-oriented
     representation of a quadtree data structure, first dimension of the generated list corresponds to a list of
@@ -450,10 +450,15 @@ def make_quadtree(points, size_u, size_v):
     element of the 2nd dimension is the mid-point of the bounding box and the remaining elements are corner points of
     the bounding box organized in counter-clockwise order.
 
+    To maintain stability for the data structure on the edges and corners, the function accepts ``extrapolate``
+    keyword argument. If it is *True*, then the function extrapolates the surface on the corners and edges to complete
+    the quad-like structure for each control point. If it is *False*, no extrapolation will be applied.
+    By default, ``extrapolate`` is set to *True*.
+
     Please note that this function's intention is not generating a real quadtree structure but reorganizing the
     control points in a very similar fashion to make them available for various geometric operations.
 
-    :param points: 1-dimensional array of control points
+    :param points: 1-dimensional array of surface control points
     :type points: list, tuple
     :param size_u: number of control points on the u-direction
     :type size_u: int
@@ -462,6 +467,9 @@ def make_quadtree(points, size_u, size_v):
     :return: control points organized in a quadtree-like structure
     :rtype: tuple
     """
+    # Get keyword arguments
+    extrapolate = kwargs.get('extrapolate', True)
+
     # Convert control points array into 2-dimensional form
     points2d = []
     for i in range(0, size_u):
@@ -478,12 +486,32 @@ def make_quadtree(points, size_u, size_v):
             # Note: negative indexing actually works in Python, so we need explicit checking
             if u + 1 < size_u:
                 temp.append(points2d[u+1][v])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u-1][v], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
             if v + 1 < size_v:
                 temp.append(points2d[u][v+1])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u][v-1], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
             if u - 1 >= 0:
                 temp.append(points2d[u-1][v])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u+1][v], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
             if v - 1 >= 0:
                 temp.append(points2d[u][v-1])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u][v+1], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
             qtree.append(tuple(temp))
 
     # Return the array generated.
