@@ -163,6 +163,34 @@ def vector_generate(start_pt, end_pt, normalize=False):
     return ret_vec
 
 
+def vector_mean(*args):
+    """ Computes the mean (average) of a list of vectors.
+
+    The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
+    integers or floating point numbers.
+
+    .. code-block:: python
+
+        # Import geomdl.utilities module
+        from geomdl import utilities
+
+        # Create a list of vectors as an example
+        vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+        # Compute mean vector
+        mean_vector = utilities.vector_mean(*vector_list)
+
+        # Alternative usage example (same as above):
+        mean_vector = utilities.vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
+    """
+    sz = len(args)
+    mean_vector = [0.0 for _ in range(len(args[0]))]
+    for input_vector in args:
+        mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
+    mean_vector = [a / sz for a in mean_vector]
+    return mean_vector
+
+
 def point_translate(point_in, vector_in):
     """ Translates the input points using the input vector.
 
