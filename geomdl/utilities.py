@@ -104,6 +104,7 @@ def vector_multiply(vector_in, scalar):
     :param vector_in: vector
     :type vector_in: list, tuple
     :param scalar: scalar value
+    :type scalar: int, float
     :return: updated vector
     :rtype: tuple
     """
