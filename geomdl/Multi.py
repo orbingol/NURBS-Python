@@ -15,6 +15,9 @@ from . import utilities
 class MultiCurve(Abstract.Multi):
     """ Container class for storing multiple curves.
 
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+
     Rendering depends on the visualization instance, e.g. if you are using ``VisMPL`` module,
     you can visualize a 3D curve using a ``VisCurve2D`` instance
     but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
@@ -106,7 +109,11 @@ class MultiCurve(Abstract.Multi):
 
 
 class MultiSurface(Abstract.Multi):
-    """ Container class for storing multiple surfaces. """
+    """ Container class for storing multiple surfaces.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+    """
 
     def __init__(self):
         super(MultiSurface, self).__init__()

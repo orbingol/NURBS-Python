@@ -1206,7 +1206,11 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class Multi(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for curve and surface containers. """
+    """ Abstract class for curve and surface containers.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+    """
 
     def __init__(self):
         self._elements = []  # elements contained
@@ -1286,15 +1290,6 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
         for element in elements:
             self.add(element)
-
-    def translate(self, vec=()):
-        """ Translates the elements in the container by the input vector.
-
-        :param vec: translation vector
-        :type vec: list, tuple
-        """
-        for elem in self._elements:
-            elem.translate(vec)
 
     # Runs visualization component to render the surface
     @abc.abstractmethod

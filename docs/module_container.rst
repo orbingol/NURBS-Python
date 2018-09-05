@@ -16,7 +16,6 @@ This module works with ``BSpline`` and ``NURBS`` modules and it contains the fol
 
 .. autoclass:: geomdl.Abstract.Multi
     :members:
-    :undoc-members:
     :inherited-members:
     :show-inheritance:
 
