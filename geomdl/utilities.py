@@ -219,6 +219,30 @@ def vector_magnitude(vector_in):
     return math.sqrt(sq_sum)
 
 
+def vector_angle_between(vector1, vector2, **kwargs):
+    """ Computes the angle between the two input vectors.
+
+    If the keyword argument ``degrees`` is set to *True*, then the angle will be in degrees. Otherwise, it will be
+    in radians. By default, ``degrees`` is set to *True*.
+
+    :param vector1: vector
+    :type vector1: list, tuple
+    :param vector2: vector
+    :type vector2: list, tuple
+    :return: angle between the vectors
+    :rtype: float
+    """
+    degrees = kwargs.get('degrees', True)
+    magn1 = vector_magnitude(vector1)
+    magn2 = vector_magnitude(vector2)
+    acos_val = vector_dot(vector1, vector2) / (magn1 * magn2)
+    angle_radians = math.acos(acos_val)
+    if degrees:
+        return math.degrees(angle_radians)
+    else:
+        return angle_radians
+
+
 def point_translate(point_in, vector_in):
     """ Translates the input points using the input vector.
 
