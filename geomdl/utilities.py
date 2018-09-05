@@ -95,6 +95,22 @@ def vector_dot(vector1, vector2):
     return prod
 
 
+# Multiplies the input vector with a scalar value
+def vector_multiply(vector_in, scalar):
+    """ Multiplies the vector with a scalar value.
+
+    This operation is also called *vector scaling*.
+
+    :param vector_in: vector
+    :type vector_in: list, tuple
+    :param scalar: scalar value
+    :return: updated vector
+    :rtype: tuple
+    """
+    scaled_vector = [v * scalar for v in vector_in]
+    return tuple(scaled_vector)
+
+
 # Normalizes the input vector
 def vector_normalize(vector_in, decimals=6):
     """ Generates a unit vector from the input.
