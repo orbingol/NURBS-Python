@@ -261,6 +261,24 @@ def point_distance(pt1, pt2):
     return distance
 
 
+def point_mid(pt1, pt2):
+    """ Computes the midpoint of the two points.
+
+    :param pt1: point 1
+    :type pt1: list, tuple
+    :param pt2: point 2
+    :type pt2: list, tuple
+    :return: midpoint
+    :rtype: tuple
+    """
+    if len(pt1) != len(pt2):
+        raise ValueError("The input points should have the same dimension")
+
+    dist_vector = vector_generate(pt1, pt2, normalize=False)
+    half_dist_vector = vector_multiply(dist_vector, 0.5)
+    return point_translate(pt1, half_dist_vector)
+
+
 def binomial_coefficient(k, i):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
