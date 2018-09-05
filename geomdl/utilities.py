@@ -75,7 +75,7 @@ def vector_dot(vector1, vector2):
     :param vector2: input vector 2
     :type vector2: list, tuple
     :return: result of the dot product
-    :rtype: list
+    :rtype: float
     """
     try:
         if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
