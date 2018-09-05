@@ -387,7 +387,7 @@ def tangent(obj, params, **kwargs):
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
     :param params: parameters
-    :type: float, list or tuple
+    :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
@@ -413,7 +413,7 @@ def normal(obj, params, **kwargs):
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
     :param params: parameters
-    :type: float, list or tuple
+    :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
@@ -439,7 +439,7 @@ def binormal(obj, params, **kwargs):
     :param obj: input shape
     :type obj: Abstract.Curve or Abstract.Surface
     :param params: parameters
-    :type: float, list or tuple
+    :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
