@@ -92,7 +92,7 @@ class MultiCurve(Abstract.Multi):
             elem.evaluate()
 
             # Color selection
-            color = select_color(cpcolor, evalcolor, idx=idx)
+            color = _select_color(cpcolor, evalcolor, idx=idx)
 
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     name="Control Points " + str(idx + 1),
@@ -234,7 +234,7 @@ class MultiSurface(Abstract.Multi):
             elem.evaluate()
 
             # Color selection
-            color = select_color(cpcolor, evalcolor, idx=idx)
+            color = _select_color(cpcolor, evalcolor, idx=idx)
 
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
@@ -249,7 +249,7 @@ class MultiSurface(Abstract.Multi):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
-def select_color(cpcolor, evalcolor, idx=0):
+def _select_color(cpcolor, evalcolor, idx=0):
     """ Selects item color for plotting.
 
     :param cpcolor: color for control points grid item
