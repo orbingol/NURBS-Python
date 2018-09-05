@@ -1244,11 +1244,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError("Cannot add non-matching types of Multi containers")
-        ret = self.__class__()
-        new_elems = self._elements + other._elements
-        ret.add_list(new_elems)
-        return ret
+            raise TypeError("Cannot add non-matching container types")
+        self._elements += other._elements
+        return self
 
     @property
     def vis(self):
@@ -1268,28 +1266,21 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = value
 
     def add(self, element):
-        """ Abstract method for adding surface or curve objects to the container.
+        """ Adds shapes to the container.
 
-        :param element: the curve or surface object to be added
-        :type element:
+        The input can be a single shape, a list of shapes or a container object.
+
+        :param element: shape to be added
         """
-        if not isinstance(element, self._instance):
-            warnings.warn("Cannot add, incompatible type.")
-            return
-        self._elements.append(element)
-
-    def add_list(self, elements):
-        """ Adds curve objects to the container.
-
-        :param elements: curve objects to be added
-        :type elements: list, tuple
-        """
-        if not isinstance(elements, (list, tuple)):
-            warnings.warn("Input must be a list or a tuple")
-            return
-
-        for element in elements:
-            self.add(element)
+        if isinstance(element, self._instance):
+            self._elements.append(element)
+        elif isinstance(element, self.__class__):
+            self + element
+        elif isinstance(element, (list, tuple)):
+            for elem in element:
+                self.add(elem)
+        else:
+            raise TypeError("Cannot add the element to the container")
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
