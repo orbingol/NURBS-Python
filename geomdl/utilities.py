@@ -227,6 +227,24 @@ def point_translate(point_in, vector_in):
     return point_out
 
 
+def point_distance(pt1, pt2):
+    """ Computes distance between two points.
+
+    :param pt1: point 1
+    :type pt1: list, tuple
+    :param pt2: point 2
+    :type pt2: list, tuple
+    :return: distance between input points
+    :rtype: float
+    """
+    if len(pt1) != len(pt2):
+        raise ValueError("The input points should have the same dimension")
+
+    dist_vector = vector_generate(pt1, pt2, normalize=False)
+    distance = vector_magnitude(dist_vector)
+    return distance
+
+
 def binomial_coefficient(k, i):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
