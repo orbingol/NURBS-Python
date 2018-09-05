@@ -23,7 +23,6 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     :param num_ctrlpts: number of control points
     :type num_ctrlpts: int
     :param knot: knot
-    :param knot: knot
     :type knot: float
     :return: span of the knot over the knot vector
     :rtype: int
