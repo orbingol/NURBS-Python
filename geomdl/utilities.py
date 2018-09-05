@@ -116,10 +116,7 @@ def vector_normalize(vector_in, decimals=6):
         raise
 
     # Calculate magnitude of the vector
-    sq_sum = 0
-    for vin in vector_in:
-        sq_sum += vin**2
-    magnitude = math.sqrt(sq_sum)
+    magnitude = vector_magnitude(vector_in)
 
     # Normalize the vector
     if magnitude > 0:
@@ -189,6 +186,20 @@ def vector_mean(*args):
         mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
     mean_vector = [a / sz for a in mean_vector]
     return mean_vector
+
+
+def vector_magnitude(vector_in):
+    """ Computes the magnitude of the input vector.
+
+    :param vector_in: input vector
+    :type vector_in: list, tuple
+    :return: magnitude of the vector
+    :rtype: float
+    """
+    sq_sum = 0
+    for vin in vector_in:
+        sq_sum += vin**2
+    return math.sqrt(sq_sum)
 
 
 def point_translate(point_in, vector_in):
