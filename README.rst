@@ -15,8 +15,7 @@ implementations of advanced computation algorithms in an extensible way.
 It comes with on-the-fly shape visualization options, knot vector and surface grid generators, and more.
 
 NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
-steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2 and 3
-compatibility library ``six`` will be automatically installed during NURBS-Python setup.
+steps during installation. It is tested with Python v2.7.x, Python v3.4.x and later versions.
 
 Branch Information
 ------------------
@@ -29,11 +28,14 @@ Citing NURBS-Python
 The citation options (BiBTeX entry, DOI name and others) can be found on the
 `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation.
 
-Using NURBS-Python
-==================
+NURBS-Python Usage Examples and Documentation
+---------------------------------------------
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
 * **Documentation**: http://nurbs-python.readthedocs.io/
+
+Using NURBS-Python
+==================
 
 Installation and Testing
 ------------------------
