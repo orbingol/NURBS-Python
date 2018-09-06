@@ -22,12 +22,14 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
     * Algorithm A3.2: CurveDerivsAlg1
     * Algorithm A5.1: CurveKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(CurveEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single curve point. """
@@ -189,12 +191,14 @@ class CurveEvaluator2(CurveEvaluator):
     * Algorithm A3.4: CurveDerivsAlg2
     * Algorithm A5.1: CurveKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(CurveEvaluator2, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     # Computes the control points of all derivative curves up to and including the {degree}-th derivative
     @staticmethod
@@ -278,12 +282,14 @@ class NURBSCurveEvaluator(CurveEvaluator):
     * Algorithm A4.2: RatCurveDerivs
     * Algorithm A5.1: CurveKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(NURBSCurveEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single curve point. """
@@ -342,12 +348,14 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
     * Algorithm A3.6: SurfaceDerivsAlg1
     * Algorithm A5.3: SurfaceKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(SurfaceEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single surface point. """
@@ -621,12 +629,14 @@ class SurfaceEvaluator2(SurfaceEvaluator):
     * Algorithm A3.8: SurfaceDerivsAlg2
     * Algorithm A5.3: SurfaceKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(SurfaceEvaluator2, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     @staticmethod
     def derivatives_ctrlpts(**kwargs):
@@ -757,12 +767,14 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
     * Algorithm A4.4: RatSurfaceDerivs
     * Algorithm A5.3: SurfaceKnotIns
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
     """
 
     def __init__(self, **kwargs):
         super(NURBSSurfaceEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate_single(self, **kwargs):
         """ Evaluates a single surface point. """
