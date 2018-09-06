@@ -9,6 +9,7 @@
 
 from . import random
 from . import math
+from .elements import Vertex, Triangle
 
 
 def linspace(start, stop, num, decimals=6):
@@ -43,7 +44,7 @@ def vector_cross(vector1, vector2):
     :param vector2: input vector 2
     :type vector2: list, tuple
     :return: result of the cross product
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
@@ -63,7 +64,7 @@ def vector_cross(vector1, vector2):
                   (vector1[0] * vector2[1]) - (vector1[1] * vector2[0])]
 
     # Return the cross product of the input vectors
-    return vector_out
+    return tuple(vector_out)
 
 
 def vector_dot(vector1, vector2):
@@ -74,7 +75,7 @@ def vector_dot(vector1, vector2):
     :param vector2: input vector 2
     :type vector2: list, tuple
     :return: result of the dot product
-    :rtype: list
+    :rtype: float
     """
     try:
         if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
@@ -94,6 +95,23 @@ def vector_dot(vector1, vector2):
     return prod
 
 
+# Multiplies the input vector with a scalar value
+def vector_multiply(vector_in, scalar):
+    """ Multiplies the vector with a scalar value.
+
+    This operation is also called *vector scaling*.
+
+    :param vector_in: vector
+    :type vector_in: list, tuple
+    :param scalar: scalar value
+    :type scalar: int, float
+    :return: updated vector
+    :rtype: tuple
+    """
+    scaled_vector = [v * scalar for v in vector_in]
+    return tuple(scaled_vector)
+
+
 # Normalizes the input vector
 def vector_normalize(vector_in, decimals=6):
     """ Generates a unit vector from the input.
@@ -103,7 +121,7 @@ def vector_normalize(vector_in, decimals=6):
     :param decimals: number of significands
     :type decimals: int
     :return: the normalized vector (i.e. the unit vector)
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if vector_in is None or len(vector_in) == 0:
@@ -115,10 +133,7 @@ def vector_normalize(vector_in, decimals=6):
         raise
 
     # Calculate magnitude of the vector
-    sq_sum = 0
-    for vin in vector_in:
-        sq_sum += vin**2
-    magnitude = math.sqrt(sq_sum)
+    magnitude = vector_magnitude(vector_in)
 
     # Normalize the vector
     if magnitude > 0:
@@ -127,7 +142,7 @@ def vector_normalize(vector_in, decimals=6):
             vector_out.append(vin / magnitude)
 
         # Return the normalized vector and consider the number of significands
-        return [float(("%0." + str(decimals) + "f") % vout) for vout in vector_out]
+        return tuple([float(("%0." + str(decimals) + "f") % vout) for vout in vector_out])
     else:
         raise ValueError("The magnitude of the vector is zero")
 
@@ -142,7 +157,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
     :param normalize: if True, the generated vector is normalized
     :type normalize: bool
     :return: a vector from start_pt to end_pt
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
@@ -159,7 +174,78 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
     if normalize:
         ret_vec = vector_normalize(ret_vec)
-    return ret_vec
+    return tuple(ret_vec)
+
+
+def vector_mean(*args):
+    """ Computes the mean (average) of a list of vectors.
+
+    The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
+    integers or floating point numbers.
+
+    .. code-block:: python
+
+        # Import geomdl.utilities module
+        from geomdl import utilities
+
+        # Create a list of vectors as an example
+        vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+        # Compute mean vector
+        mean_vector = utilities.vector_mean(*vector_list)
+
+        # Alternative usage example (same as above):
+        mean_vector = utilities.vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
+
+    :param args: list of vectors
+    :type args: list, tuple
+    :return: mean vector
+    :rtype: tuple
+    """
+    sz = len(args)
+    mean_vector = [0.0 for _ in range(len(args[0]))]
+    for input_vector in args:
+        mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
+    mean_vector = [a / sz for a in mean_vector]
+    return tuple(mean_vector)
+
+
+def vector_magnitude(vector_in):
+    """ Computes the magnitude of the input vector.
+
+    :param vector_in: input vector
+    :type vector_in: list, tuple
+    :return: magnitude of the vector
+    :rtype: float
+    """
+    sq_sum = 0
+    for vin in vector_in:
+        sq_sum += vin**2
+    return math.sqrt(sq_sum)
+
+
+def vector_angle_between(vector1, vector2, **kwargs):
+    """ Computes the angle between the two input vectors.
+
+    If the keyword argument ``degrees`` is set to *True*, then the angle will be in degrees. Otherwise, it will be
+    in radians. By default, ``degrees`` is set to *True*.
+
+    :param vector1: vector
+    :type vector1: list, tuple
+    :param vector2: vector
+    :type vector2: list, tuple
+    :return: angle between the vectors
+    :rtype: float
+    """
+    degrees = kwargs.get('degrees', True)
+    magn1 = vector_magnitude(vector1)
+    magn2 = vector_magnitude(vector2)
+    acos_val = vector_dot(vector1, vector2) / (magn1 * magn2)
+    angle_radians = math.acos(acos_val)
+    if degrees:
+        return math.degrees(angle_radians)
+    else:
+        return angle_radians
 
 
 def point_translate(point_in, vector_in):
@@ -170,7 +256,7 @@ def point_translate(point_in, vector_in):
     :param vector_in: input vector
     :type vector_in: list, tuple
     :return: translated point
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
@@ -184,7 +270,43 @@ def point_translate(point_in, vector_in):
     # Translate the point using the input vector
     point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
 
-    return point_out
+    return tuple(point_out)
+
+
+def point_distance(pt1, pt2):
+    """ Computes distance between two points.
+
+    :param pt1: point 1
+    :type pt1: list, tuple
+    :param pt2: point 2
+    :type pt2: list, tuple
+    :return: distance between input points
+    :rtype: float
+    """
+    if len(pt1) != len(pt2):
+        raise ValueError("The input points should have the same dimension")
+
+    dist_vector = vector_generate(pt1, pt2, normalize=False)
+    distance = vector_magnitude(dist_vector)
+    return distance
+
+
+def point_mid(pt1, pt2):
+    """ Computes the midpoint of the two points.
+
+    :param pt1: point 1
+    :type pt1: list, tuple
+    :param pt2: point 2
+    :type pt2: list, tuple
+    :return: midpoint
+    :rtype: tuple
+    """
+    if len(pt1) != len(pt2):
+        raise ValueError("The input points should have the same dimension")
+
+    dist_vector = vector_generate(pt1, pt2, normalize=False)
+    half_dist_vector = vector_multiply(dist_vector, 0.5)
+    return point_translate(pt1, half_dist_vector)
 
 
 def binomial_coefficient(k, i):
@@ -275,7 +397,7 @@ def make_zigzag(points, num_cols):
     :param points: list of points to be ordered
     :type points: list
     :param num_cols: number of elements in a row which the zig-zag is generated
-    :param num_cols: int
+    :type num_cols: int
     :return: re-ordered points
     :rtype: list
     """
@@ -298,28 +420,28 @@ def make_zigzag(points, num_cols):
     return new_points
 
 
-def make_quad(points, row_size, col_size):
+def make_quad_mesh(points, size_u, size_v):
     """ Generates a quad mesh from linearly ordered list of points.
 
     :param points: list of points to be ordered
     :type points: list, tuple
-    :param row_size: number of elements in a row
-    :param row_size: int
-    :param col_size: number of elements in a column
-    :param col_size: int
+    :param size_v: number of elements in a row
+    :type size_v: int
+    :param size_u: number of elements in a column
+    :type size_u: int
     :return: re-ordered points
     :rtype: list
     """
     # Start with generating a zig-zag shape in row direction and then take its reverse
-    new_points = make_zigzag(points, row_size)
+    new_points = make_zigzag(points, size_v)
     new_points.reverse()
 
     # Start generating a zig-zag shape in col direction
     forward = True
-    for row in range(0, row_size):
+    for row in range(0, size_v):
         temp = []
-        for col in range(0, col_size):
-            temp.append(points[row + (col * row_size)])
+        for col in range(0, size_u):
+            temp.append(points[row + (col * size_v)])
         if forward:
             forward = False
         else:
@@ -330,44 +452,87 @@ def make_quad(points, row_size, col_size):
     return new_points
 
 
-def make_triangle(points, row_size, col_size):
-    """ Generates a triangular mesh from  linearly ordered list of points.
+def make_triangle_mesh(points, size_u, size_v, **kwargs):
+    """ Generates a triangular mesh from an array of points.
 
-    :param points: list of points to be ordered
+    This function simply generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
+    The input is the surface points and the number of points on the parametric dimensions u and v,
+    indicated as row and column sizes in the function signature. This function should operate correctly if row and
+    column sizes are input correctly, no matter what the points are v-ordered or u-ordered.
+
+    Please see the documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
+    point ordering for the surfaces.
+
+    This function returns a tuple containing two lists. First one is the list of vertices and the second one is the list
+    of triangles.
+
+    :param points: input points
     :type points: list, tuple
-    :param row_size: number of elements in a row
-    :param row_size: int
-    :param col_size: number of elements in a column
-    :param col_size: int
-    :return: re-ordered points
-    :rtype: list
+    :param size_u: number of elements on the u-direction
+    :type size_u: int
+    :param size_v: number of elements on the v-direction
+    :type size_v: int
+    :return: a tuple containing lists of vertices and triangles
+    :rtype: tuple
     """
+    vertex_spacing = kwargs.get('vertex_spacing', 1)
+    internal_vis_enabled = kwargs.get('internal_vis_enabled', False)
+
     points2d = []
-    for i in range(0, col_size):
+    for i in range(0, size_u):
         row_list = []
-        for j in range(0, row_size):
-            row_list.append(points[j + (i * row_size)])
+        for j in range(0, size_v):
+            row_list.append(points[j + (i * size_v)])
         points2d.append(row_list)
 
+    u_range = 1.0 / float(size_u - 1)
+    v_range = 1.0 / float(size_v - 1)
+    vertices2d = []
+    vert_id = 1
+    u = 0.0
+    for col_idx in range(0, size_u, vertex_spacing):
+        vert_list = []
+        v = 0.0
+        for row_idx in range(0, size_v, vertex_spacing):
+            temp = Vertex()
+            temp.data = points2d[col_idx][row_idx]
+            temp.id = vert_id
+            temp.uv = [u, v]
+            vert_list.append(temp)
+            vert_id += 1
+            v += v_range
+        vertices2d.append(vert_list)
+        u += u_range
+
+    v_col_size = len(vertices2d)
+    v_row_size = len(vert_list)
+
+    tri_id = 1
     forward = True
     triangles = []
-    for col_idx in range(0, col_size - 1):
+    for col_idx in range(0, v_col_size - 1):
         row_idx = 0
         left_half = True
         tri_list = []
-        while row_idx < row_size - 1:
+        while row_idx < v_row_size - 1:
+            tri = Triangle()
             if left_half:
-                tri_list.append(points2d[col_idx + 1][row_idx])
-                tri_list.append(points2d[col_idx][row_idx])
-                tri_list.append(points2d[col_idx][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
+                # Add the midline for VIsSurface visualization class
+                if internal_vis_enabled:
+                    tri.add_vertex(vertices2d[col_idx+1][row_idx], check=False)
                 left_half = False
             else:
-                tri_list.append(points2d[col_idx][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx + 1])
-                tri_list.append(points2d[col_idx + 1][row_idx])
+                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx + 1])
+                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
                 left_half = True
                 row_idx += 1
+            tri.id = tri_id
+            tri_list.append(tri)
+            tri_id += 1
         if forward:
             forward = False
         else:
@@ -375,7 +540,103 @@ def make_triangle(points, row_size, col_size):
             tri_list.reverse()
         triangles += tri_list
 
-    return triangles
+    # Convert to 1-dimensional list
+    vertices = []
+    for u in range(v_col_size):
+        for v in range(v_row_size):
+            vertices.append(vertices2d[u][v])
+
+    return vertices, triangles
+
+
+def triangle_normal(tri):
+    """ Computes the normal vector of the triangle.
+
+    :param tri: triangle object
+    :type tri: elements.Triangle
+    :return: normal vector of the triangle
+    :rtype: list
+    """
+    vec1 = vector_generate(tri.vertices[0].data, tri.vertices[1].data)
+    vec2 = vector_generate(tri.vertices[1].data, tri.vertices[2].data)
+    return vector_cross(vec1, vec2)
+
+
+def make_quadtree(points, size_u, size_v, **kwargs):
+    """ Generates a quadtree-like structure from surface control points.
+
+    This function generates a 2-dimensional list of control point coordinates. Considering the object-oriented
+    representation of a quadtree data structure, first dimension of the generated list corresponds to a list of
+    *QuadTree* classes. Second dimension of the generated list corresponds to a *QuadTree* data structure. The first
+    element of the 2nd dimension is the mid-point of the bounding box and the remaining elements are corner points of
+    the bounding box organized in counter-clockwise order.
+
+    To maintain stability for the data structure on the edges and corners, the function accepts ``extrapolate``
+    keyword argument. If it is *True*, then the function extrapolates the surface on the corners and edges to complete
+    the quad-like structure for each control point. If it is *False*, no extrapolation will be applied.
+    By default, ``extrapolate`` is set to *True*.
+
+    Please note that this function's intention is not generating a real quadtree structure but reorganizing the
+    control points in a very similar fashion to make them available for various geometric operations.
+
+    :param points: 1-dimensional array of surface control points
+    :type points: list, tuple
+    :param size_u: number of control points on the u-direction
+    :type size_u: int
+    :param size_v: number of control points on the v-direction
+    :type size_v: int
+    :return: control points organized in a quadtree-like structure
+    :rtype: tuple
+    """
+    # Get keyword arguments
+    extrapolate = kwargs.get('extrapolate', True)
+
+    # Convert control points array into 2-dimensional form
+    points2d = []
+    for i in range(0, size_u):
+        row_list = []
+        for j in range(0, size_v):
+            row_list.append(points[j + (i * size_v)])
+        points2d.append(row_list)
+
+    # Traverse 2-dimensional control points to find neighbors
+    qtree = []
+    for u in range(size_u):
+        for v in range(size_v):
+            temp = [points2d[u][v]]
+            # Note: negative indexing actually works in Python, so we need explicit checking
+            if u + 1 < size_u:
+                temp.append(points2d[u+1][v])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u-1][v], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
+            if v + 1 < size_v:
+                temp.append(points2d[u][v+1])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u][v-1], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
+            if u - 1 >= 0:
+                temp.append(points2d[u-1][v])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u+1][v], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
+            if v - 1 >= 0:
+                temp.append(points2d[u][v-1])
+            else:
+                if extrapolate:
+                    extrapolated_edge = vector_generate(points2d[u][v+1], points2d[u][v])
+                    translated_point = point_translate(points2d[u][v], extrapolated_edge)
+                    temp.append(translated_point)
+            qtree.append(tuple(temp))
+
+    # Return the array generated.
+    return tuple(qtree)
 
 
 # A float range function, implementation of https://stackoverflow.com/a/47877721

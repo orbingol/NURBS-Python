@@ -23,13 +23,12 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     :param num_ctrlpts: number of control points
     :type num_ctrlpts: int
     :param knot: knot
-    :param knot: knot
     :type knot: float
     :return: span of the knot over the knot vector
     :rtype: int
     """
     # Get tolerance value
-    tol = kwargs.get('tol', 0.001)
+    tol = kwargs.get('tol', 10e-6)
 
     # In The NURBS Book; number of knots = m + 1, number of control points = n + 1, p = degree
     # All knot vectors should follow the rule: m = p + n + 1
@@ -37,10 +36,19 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     if abs(knot_vector[n + 1] - knot) <= tol:
         return n
 
+    # Set max and min positions of the array to be searched
     low = degree
-    high = n + 1
-    mid = int((low + high) / 2)
+    high = num_ctrlpts
 
+    # The division could return a float value which makes it impossible to use as an array index
+    mid = (low + high) / 2
+    # Direct int casting would cause numerical errors due to discarding the significand figures (digits after the dot)
+    # The round function could return unexpected results, so we add the floating point with some small number
+    # This addition would solve the issues caused by the division operation and how Python stores float numbers.
+    # E.g. round(13/2) = 6 (expected to see 7)
+    mid = int(round(mid + tol))
+
+    # Search for the span
     while (knot < knot_vector[mid]) or (knot >= knot_vector[mid + 1]):
         if knot < knot_vector[mid]:
             high = mid
@@ -51,11 +59,13 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     return mid
 
 
-def find_span(knot_vector, num_ctrlpts, knot):
+def find_span_linear(degree, knot_vector, num_ctrlpts, knot):
     """ Finds the span of a single knot over the knot vector using linear search.
 
     Alternative implementation for the Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
+    :param degree: degree
+    :type degree: int
     :param knot_vector: knot vector
     :type knot_vector: list, tuple
     :param num_ctrlpts: number of control points
@@ -72,21 +82,24 @@ def find_span(knot_vector, num_ctrlpts, knot):
     return span - 1
 
 
-def find_spans(knot_vector, num_ctrlpts, knots):
+def find_spans(degree, knot_vector, num_ctrlpts, knots, func=find_span_linear):
     """ Finds spans of a list of knots over the knot vector.
 
+    :param degree: degree
+    :type degree: int
     :param knot_vector: knot vector
     :type knot_vector: list, tuple
     :param num_ctrlpts: number of control points
     :type num_ctrlpts: int
     :param knots: list of knots
     :type knots: list, tuple
+    :param func: function to evaluate span finding operation
     :return: list of spans
     :rtype: list
     """
     spans = []
     for knot in knots:
-        spans.append(find_span(knot_vector, num_ctrlpts, knot))
+        spans.append(func(degree, knot_vector, num_ctrlpts, knot))
     return spans
 
 

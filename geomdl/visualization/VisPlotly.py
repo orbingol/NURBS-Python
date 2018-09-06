@@ -223,22 +223,22 @@ class VisCurve3D(Abstract.VisAbstract):
             height=self._config.figure_size[1],
             autosize=False,
             showlegend=self._config.display_legend,
-            scene=graph_objs.Scene(
-                xaxis=graph_objs.XAxis(
+            scene=dict(
+                xaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                yaxis=graph_objs.YAxis(
+                yaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                zaxis=graph_objs.ZAxis(
+                zaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
@@ -293,7 +293,7 @@ class VisSurface(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(utilities.make_quad(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
@@ -315,7 +315,12 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                pts = np.array(utilities.make_triangle(plot['ptsarr'], plot['size'][1], plot['size'][0]))
+                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
+                                                                   internal_vis_enabled=True)
+                pts = []
+                for tri in triangles:
+                    pts += tri.vertices_raw
+                pts = np.array(pts)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -334,22 +339,22 @@ class VisSurface(Abstract.VisAbstractSurf):
             height=self._config.figure_size[1],
             autosize=False,
             showlegend=self._config.display_legend,
-            scene=graph_objs.Scene(
-                xaxis=graph_objs.XAxis(
+            scene=dict(
+                xaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                yaxis=graph_objs.YAxis(
+                yaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                zaxis=graph_objs.ZAxis(
+                zaxis=dict(
                     showgrid=self._config.display_axes,
                     showline=self._config.display_axes,
                     zeroline=self._config.display_axes,

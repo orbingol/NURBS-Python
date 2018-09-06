@@ -8,6 +8,7 @@
 import os
 import pytest
 from geomdl import BSpline
+from geomdl import operations
 from geomdl.visualization import VisMPL
 
 SAMPLE_SIZE = 25
@@ -135,7 +136,7 @@ def test_curve2d_multi_fig_nowindow(bspline_curve2d):
 
     fname = conf.figure_image_filename
 
-    multi = bspline_curve2d.decompose()
+    multi = operations.decompose_curve(bspline_curve2d)
     multi.vis = vis
     multi.render(plot=False)
 
@@ -154,7 +155,7 @@ def test_curve2d_multi_fig_save(bspline_curve2d):
 
     fname = "test-multi_curve.png"
 
-    multi = bspline_curve2d.decompose()
+    multi = operations.decompose_curve(bspline_curve2d)
     multi.vis = vis
     multi.render(filename=fname, plot=False)
 
@@ -207,7 +208,7 @@ def test_curve3d_multi_fig_nowindow(bspline_curve3d):
     conf = VisMPL.VisConfig()
     vis = VisMPL.VisCurve3D(config=conf)
 
-    multi = bspline_curve3d.decompose()
+    multi = operations.decompose_curve(bspline_curve3d)
     multi.vis = vis
     multi.render(plot=False)
 
@@ -226,7 +227,7 @@ def test_curve3d_multi_fig_save(bspline_curve3d):
 
     fname = "test-multi_curve.png"
 
-    multi = bspline_curve3d.decompose()
+    multi = operations.decompose_curve(bspline_curve3d)
     multi.vis = vis
     multi.render(filename=fname, plot=False)
 
@@ -302,7 +303,7 @@ def test_surf_multi_fig_nowindow(bspline_surface):
 
     fname = conf.figure_image_filename
 
-    multi = bspline_surface.decompose()
+    multi = operations.decompose_surface(bspline_surface)
     multi.vis = vis
     multi.render(plot=False)
 
@@ -321,7 +322,7 @@ def test_surf_multi_fig_save(bspline_surface):
 
     fname = "test-multi_surface.png"
 
-    multi = bspline_surface.decompose()
+    multi = operations.decompose_surface(bspline_surface)
     multi.vis = vis
     multi.render(filename=fname, plot=False)
 

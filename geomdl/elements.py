@@ -8,11 +8,11 @@
 """
 
 from . import array
-from . import utilities
 
 
-# Abstract class for geometry and topology elements
+# Abstract class for geometry and topology elements (entities)
 class AbstractElement(object):
+    """ Abstract base class for all geometric entities. """
     def __init__(self):
         self._id = 0
 
@@ -29,6 +29,7 @@ class AbstractElement(object):
 
 # Vertex class
 class Vertex(AbstractElement):
+    """ Representation of a 3-dimensional vertex entity with its parametric position. """
     def __init__(self):
         super(Vertex, self).__init__()
         self._value = array('f', [0.0, 0.0, 0.0, 1.0])  # x, y, z, 1.0 if inside is True
@@ -134,10 +135,10 @@ class Vertex(AbstractElement):
 
 # Triangle class
 class Triangle(AbstractElement):
+    """ Representation of a triangular geometric entity composed of vertices. """
     def __init__(self):
         super(Triangle, self).__init__()
         self._vertices = []
-        self._normal = None
 
     def __str__(self):
         return "Triangle " + str(self._id)
@@ -157,37 +158,52 @@ class Triangle(AbstractElement):
         return reversed(self._vertices)
 
     @property
-    def normal(self):
-        if not self._normal:
-            vec1 = utilities.vector_generate(self._vertices[0].data, self._vertices[1].data)
-            vec2 = utilities.vector_generate(self._vertices[1].data, self._vertices[2].data)
-            # self._normal = utilities.vector_normalize(utilities.vector_cross(vec1, vec2))
-            self._normal = utilities.vector_cross(vec1, vec2)
-        return self._normal
-
-    def add_vertex(self, element=None):
-        if len(self._vertices) > 2:
-            print("Cannot add more vertices")
-            return
-        if isinstance(element, Vertex):
-            self._vertices.append(element)
-        elif isinstance(element, list):
-            self._vertices += element
-        else:
-            print("Input must be a Vertex object")
-            return
-
-    @property
     def vertices(self):
         return self._vertices
 
     @property
+    def vertices_raw(self):
+        v_raw = []
+        for v in self._vertices:
+            v_raw.append(v.data)
+        return v_raw
+
+    @property
     def vertex_ids(self):
-        return [self._vertices[0].id, self._vertices[1].id, self._vertices[2].id]
+        """ Gets vertex number list.
+
+        Vertex numbering starts from 1.
+        """
+        v_idx = []
+        for v in self._vertices:
+            v_idx.append(v.id)
+        return v_idx
+
+    @property
+    def vertex_ids_zero(self):
+        """ Gets zero-indexed vertex number list.
+
+        Vertex numbering starts from 0.
+        """
+        v_idx = []
+        for v in self._vertices:
+            v_idx.append(v.id - 1)
+        return v_idx
+
+    def add_vertex(self, vertex, check=True):
+        if len(self._vertices) > 2 and check:
+            raise ValueError("Cannot add more vertices")
+        if isinstance(vertex, Vertex):
+            self._vertices.append(vertex)
+        elif isinstance(vertex, list):
+            self._vertices += vertex
+        else:
+            raise TypeError("Input must be a Vertex object")
 
 
 # Face class
 class Face(AbstractElement):
+    """ Representation of a face geometric entity composed of triangles. """
     def __init__(self):
         super(Face, self).__init__()
         self._triangles = []
@@ -213,18 +229,18 @@ class Face(AbstractElement):
     def triangles(self):
         return self._triangles
 
-    def add_triangle(self, element):
-        if isinstance(element, Triangle):
-            self._triangles.append(element)
-        elif isinstance(element, list):
-            self._triangles += element
+    def add_triangle(self, triangle):
+        if isinstance(triangle, Triangle):
+            self._triangles.append(triangle)
+        elif isinstance(triangle, list):
+            self._triangles += triangle
         else:
-            print("Input must be a Triangle object")
-            return
+            raise TypeError("Input must be a Triangle object")
 
 
 # Body class
 class Body(AbstractElement):
+    """ Representation of a geometric body composed of faces. """
     def __init__(self):
         super(Body, self).__init__()
         self._faces = []
@@ -250,11 +266,10 @@ class Body(AbstractElement):
     def faces(self):
         return self._faces
 
-    def add_face(self, element):
-        if isinstance(element, Face):
-            self._faces.append(element)
-        elif isinstance(element, list):
-            self._faces += element
+    def add_face(self, face):
+        if isinstance(face, Face):
+            self._faces.append(face)
+        elif isinstance(face, list):
+            self._faces += face
         else:
-            print("Input must be a Face object")
-            return
+            raise TypeError("Input must be a Face object")

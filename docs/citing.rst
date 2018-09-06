@@ -19,16 +19,15 @@ BibTeX
 License
 =======
 
-NURBS-Python is released under the terms of the **MIT License** as a free and open-source software package and published
-on a public domain. You can use it freely in the limits of the issued license. Please check the LICENSE_ file for
-details. This file is included in all packaged versions of NURBS-Python and can also be viewed online on GitHub.
+NURBS-Python is a free and open-source project released under the terms of the **MIT License**.
+Please see the LICENSE_ file for details.
 
 DOI Name
 ========
 
-The authors provide a **Digital Object Identifier**, i.e. DOI_ name obtained from Zenodo.org. The DOI name can be seen
-as a badge at the top of this page. By clicking on the badge, you will access to a page which has all the
-bibliographic information you might require for citing NURBS-Python.
+The authors provide a **Digital Object Identifier**, i.e. DOI_ name obtained from Zenodo.org. The DOI name for
+NURBS-Python is ``10.5281/zenodo.815010`` and can also be found as a badge at the top, which links to NURBS-Python's
+Zenodo page.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg

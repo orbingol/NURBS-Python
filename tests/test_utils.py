@@ -171,7 +171,7 @@ def test_vector_cross2():
 
 
 def test_vector_cross3():
-    result = [-1.0, -4.0, 3.0]
+    result = (-1.0, -4.0, 3.0)
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
     to_check = utilities.vector_cross(vec1, vec2)
@@ -202,14 +202,14 @@ def test_vector_normalize3():
 
 def test_vector3_normalize():
     vec = (5, 2.5, 5)
-    result = [0.667, 0.333, 0.667]
+    result = (0.667, 0.333, 0.667)
     to_check = utilities.vector_normalize(vec, decimals=3)
     assert to_check == result
 
 
 def test_vector4_normalize():
     vec = (5, 2.5, 5, 10)
-    result = [0.4, 0.2, 0.4, 0.8]
+    result = (0.4, 0.2, 0.4, 0.8)
     to_check = utilities.vector_normalize(vec)
     assert to_check == result
 
@@ -224,8 +224,8 @@ def test_vector_generate1():
 def test_vector_generate2():
     pt1 = (0, 0, 0)
     pt2 = (5, 3, 4)
-    result = [5, 3, 4]
-    result_normalized = [0.707107, 0.424264, 0.565685]
+    result = (5, 3, 4)
+    result_normalized = (0.707107, 0.424264, 0.565685)
     to_check = utilities.vector_generate(pt1, pt2)
     to_check_normalized = utilities.vector_generate(pt1, pt2, normalize=True)
     assert to_check == result
@@ -247,7 +247,7 @@ def test_point_translate1():
 def test_point_translate2():
     pt = (1, 0, 0)
     vec = (5, 5, 5)
-    result = [6, 5, 5]
+    result = (6, 5, 5)
     to_check = utilities.point_translate(pt, vec)
     assert to_check == result
 
@@ -311,3 +311,37 @@ def test_init_var1():
 def test_init_var2():
     test_var_type = None
     assert test_var_type == utilities.init_var(test_var_type)
+
+
+def test_vector_multiply():
+    result = (2, 4, 6)
+    computed = utilities.vector_multiply((1, 2, 3), 2)
+    assert result == computed
+
+
+def test_vector_mean():
+    vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    result = (4, 5, 6)
+    computed = utilities.vector_mean(*vector_list)
+    assert result == computed
+
+
+def test_vector_angle_between():
+    computed_deg = utilities.vector_angle_between((1, 2, 3), (3, 2, 1), degrees=True)
+    computed_rad = utilities.vector_angle_between((1, 2, 3), (3, 2, 1), degrees=False)
+    result_deg = 44.415308597193
+    result_rad = 0.775193373310361
+    assert abs(computed_deg - result_deg) < GEOMDL_DELTA
+    assert abs(computed_rad - result_rad) < GEOMDL_DELTA
+
+
+def test_point_distance():
+    result = 17.691806
+    computed = utilities.point_distance((5, 7, 9), (-7, -5, 4))
+    assert abs(result - computed) < GEOMDL_DELTA
+
+
+def test_point_mid():
+    result = (2.5, 3.5, 4.5)
+    computed = utilities.point_mid((1, 2, 3), (4, 5, 6))
+    assert result == computed

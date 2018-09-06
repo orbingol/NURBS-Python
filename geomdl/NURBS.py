@@ -13,34 +13,40 @@ from . import evaluators
 
 
 class Curve(BSpline.Curve):
-    """ Data storage and evaluation class for NURBS curves.
+    """ Data storage and evaluation class for n-variate NURBS (rational) curves.
 
-    The following properties are present in this class:
+    The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
+    with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
+    a different set of properties (i.e. getters and setters):
 
-    * dimension
-    * order
-    * degree
-    * knotvector
-    * delta
-    * ctrlpts
-    * weights
-    * evalpts
+        * ``ctrlptsw``: 1-dimensional array of weighted control points
+        * ``ctrlpts``: 1-dimensional array of control points
+        * ``weights``: 1-dimensional array of weights
 
+    You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
-    def __init__(self):
-        super(Curve, self).__init__()
+    def __init__(self, **kwargs):
+        super(Curve, self).__init__(**kwargs)
         self._name = "NURBS Curve"
         self._rational = True
-        self._evaluator = evaluators.NURBSCurveEvaluator()
+        self._evaluator = evaluators.NURBSCurveEvaluator(find_span_func=self._span_func)
         # Variables for caching
+        self.init_cache()
+
+    def __deepcopy__(self, memo):
+        # Call parent method
+        result = super(Curve, self).__deepcopy__(memo)
+        result.init_cache()
+        return result
+
+    def init_cache(self):
         self._cache['ctrlpts'] = self._array_type()
         self._cache['weights'] = self._array_type()
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
 
     @property
     def ctrlptsw(self):
@@ -132,69 +138,47 @@ class Curve(BSpline.Curve):
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
 
-    def translate(self, vec=()):
-        """ Translates the curve by the input vector.
-
-        The input vector list/tuple must have
-
-        * 2 elements for 2D curves
-        * 3 elements for 3D curves
-
-        :param vec: translation vector
-        :type vec: list, tuple
-        """
-        if not vec or not isinstance(vec, (tuple, list)):
-            raise ValueError("The input must be a list or a tuple")
-
-        if len(vec) != self._dimension - 1:
-            raise ValueError("The input must have " + str(self._dimension - 1) + " elements")
-
-        new_ctrlpts = []
-        for point, w in zip(self.ctrlpts, self.weights):
-            temp = [(v + vec[i]) * w for i, v in enumerate(point[0:self._dimension - 1])]
-            temp.append(w)
-            new_ctrlpts.append(temp)
-
-        self.ctrlpts = new_ctrlpts
-
 
 class Surface(BSpline.Surface):
-    """ Data storage and evaluation class for NURBS surfaces.
+    """ Data storage and evaluation class for NURBS (rational) surfaces.
 
-    The following properties are present in this class:
+    The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
+    with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
+    a different set of properties (i.e. getters and setters):
 
-    * dimension
-    * order_u
-    * order_v
-    * degree_u
-    * degree_v
-    * knotvector_u
-    * knotvector_v
-    * delta
-    * ctrlpts
-    * ctrlpts2d
-    * weights
-    * evalpts
+        * ``ctrlptsw``: 1-dimensional array of weighted control points
+        * ``ctrlpts2d``: 2-dimensional array of weighted control points
+        * ``ctrlpts``: 1-dimensional array of control points
+        * ``weights``: 1-dimensional array of weights
 
+    You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
-    def __init__(self):
-        super(Surface, self).__init__()
+    def __init__(self, **kwargs):
+        super(Surface, self).__init__(**kwargs)
         self._name = "NURBS Surface"
         self._rational = True
-        self._evaluator = evaluators.NURBSSurfaceEvaluator()
+        self._evaluator = evaluators.NURBSSurfaceEvaluator(find_span_func=self._span_func)
         # Variables for caching
+        self.init_cache()
+
+    def __deepcopy__(self, memo):
+        # Call parent method
+        result = super(Surface, self).__deepcopy__(memo)
+        result.init_cache()
+        return result
+
+    def init_cache(self):
         self._cache['ctrlpts'] = self._array_type()
         self._cache['weights'] = self._array_type()
 
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
     @property
     def ctrlptsw(self):
-        """ Weighted control points (Pw).
+        """ 1-dimensional array of weighted control points (Pw).
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
@@ -217,7 +201,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ Control points (P).
+        """ 1-dimensional array of control points (P).
 
         This property sets and gets the control points in 1-D.
 
@@ -292,23 +276,3 @@ class Surface(BSpline.Surface):
             # Delete the caches
             del self._cache['ctrlpts'][:]
             del self._cache['weights'][:]
-
-    def translate(self, vec=()):
-        """ Translates the surface by the input vector.
-
-        :param vec: translation vector in 3D
-        :type vec: list, tuple
-        """
-        if not vec or not isinstance(vec, (tuple, list)):
-            raise ValueError("The input must be a list or a tuple")
-
-        if len(vec) != self._dimension - 1:
-            raise ValueError("The input must have " + str(self._dimension - 1) + " elements")
-
-        new_ctrlpts = []
-        for point, w in zip(self.ctrlpts, self.weights):
-            temp = [(v + vec[i]) * w for i, v in enumerate(point[0:self._dimension - 1])]
-            temp.append(w)
-            new_ctrlpts.append(temp)
-
-        self.ctrlpts = new_ctrlpts

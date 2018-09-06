@@ -15,6 +15,9 @@ from . import utilities
 class MultiCurve(Abstract.Multi):
     """ Container class for storing multiple curves.
 
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+
     Rendering depends on the visualization instance, e.g. if you are using ``VisMPL`` module,
     you can visualize a 3D curve using a ``VisCurve2D`` instance
     but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
@@ -53,6 +56,11 @@ class MultiCurve(Abstract.Multi):
         * ``filename``: saves the plot with the input name
         * ``plot``: a flag to control displaying the plot window. Default is True.
 
+        The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
+        values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
+        a list or  a tuple, or vice versa. A single string value sets the color to the same value. List input allows
+        customization over the color values. If none provided, a random color will be selected.
+
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
@@ -68,26 +76,44 @@ class MultiCurve(Abstract.Multi):
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
+        # Check if the input list sizes are equal
+        if isinstance(cpcolor, (list, tuple)):
+            if len(cpcolor) < len(self._elements):
+                raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
+                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
+
+        if isinstance(evalcolor, (list, tuple)):
+            if len(evalcolor) < len(self._elements):
+                raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
+                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
+
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
             if self._sample_size != 0:
                 elem.sample_size = self._sample_size
             elem.evaluate()
-            color = utilities.color_generator()
+
+            # Color selection
+            color = _select_color(cpcolor, evalcolor, idx=idx)
+
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     name="Control Points " + str(idx + 1),
-                                    color=cpcolor if cpcolor is not None else color[0],
+                                    color=color[0],
                                     plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.curvepts,
+            self._vis_component.add(ptsarr=elem.evalpts,
                                     name="Curve " + str(idx + 1),
-                                    color=evalcolor if evalcolor is not None else color[1],
+                                    color=color[1],
                                     plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
 class MultiSurface(Abstract.Multi):
-    """ Container class for storing multiple surfaces. """
+    """ Container class for storing multiple surfaces.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+    """
 
     def __init__(self):
         super(MultiSurface, self).__init__()
@@ -156,16 +182,27 @@ class MultiSurface(Abstract.Multi):
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
         Keyword Arguments:
+            * ``cpcolor``: sets the color of the control points grids
+            * ``evalcolor``: sets the color of the surface
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``colormap``: sets the colormap of the surfaces
 
-        * ``cpcolor``: sets the color of the control points grid
-        * ``evalcolor``: sets the color of the surface
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+        The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
+        values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
+        a list or  a tuple, or vice versa. A single string value sets the color to the same value. List input allows
+        customization over the color values. If none provided, a random color will be selected.
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
+        example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects multiple
+        colormap inputs as a list or tuple, preferable the input list size is the same as the number of surfaces
+        contained in the class. In the case of number of surfaces is bigger than number of input colormaps, this method
+        will automatically assign a random color for the remaining surfaces.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has set")
@@ -177,6 +214,23 @@ class MultiSurface(Abstract.Multi):
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
+        # Check if the input list sizes are equal
+        if isinstance(cpcolor, (list, tuple)):
+            if len(cpcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
+                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
+
+        if isinstance(evalcolor, (list, tuple)):
+            if len(evalcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
+                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
+
+        # Get colormaps as a list
+        surf_cmaps = kwargs.get('colormap', [])
+        if not isinstance(surf_cmaps, (list, tuple)):
+            warnings.warn("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
+            surf_cmaps = []
+
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
@@ -185,15 +239,52 @@ class MultiSurface(Abstract.Multi):
             if self._sample_size_v != 0:
                 elem.sample_size_v = self.sample_size_v
             elem.evaluate()
-            color = utilities.color_generator()
+
+            # Color selection
+            color = _select_color(cpcolor, evalcolor, idx=idx)
+
             self._vis_component.add(ptsarr=elem.ctrlpts,
                                     size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
                                     name="Control Points " + str(idx + 1),
-                                    color=cpcolor if cpcolor is not None else color[0],
+                                    color=color[0],
                                     plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.surfpts,
+            self._vis_component.add(ptsarr=elem.evalpts,
                                     size=[elem.sample_size_u, elem.sample_size_v],
                                     name="Surface " + str(idx + 1),
-                                    color=evalcolor if evalcolor is not None else color[1],
+                                    color=color[1],
                                     plot_type='evalpts')
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
+
+
+def _select_color(cpcolor, evalcolor, idx=0):
+    """ Selects item color for plotting.
+
+    :param cpcolor: color for control points grid item
+    :type cpcolor: str, list, tuple
+    :param evalcolor: color for evaluated points grid item
+    :type evalcolor: str, list, tuple
+    :param idx: index of the current shape
+    :type idx: int
+    :return: a list of color values
+    :rtype: list
+    """
+    # Random colors by default
+    color = utilities.color_generator()
+
+    # Constant color for control points grid
+    if isinstance(cpcolor, str):
+        color[0] = cpcolor
+
+    # User-defined color for control points grid
+    if isinstance(cpcolor, (list, tuple)):
+        color[0] = cpcolor[idx]
+
+    # Constant color for evaluated points grid
+    if isinstance(evalcolor, str):
+        color[1] = evalcolor
+
+    # User-defined color for evaluated points grid
+    if isinstance(evalcolor, (list, tuple)):
+        color[1] = evalcolor[idx]
+
+    return color

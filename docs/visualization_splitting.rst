@@ -2,17 +2,21 @@ Splitting and Decomposition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 NURBS-Python is also capable of splitting the curves and the surfaces, as well as applying Bézier decomposition.
-Splitting of 2D/3D curves can be achieved via ``split()`` method. For the surfaces, there are 2 different splitting
-methods, ``split_u()`` for splitting the surface in U-direction and ``split_v()`` for V-direction. Bézier decomposition
-can be applied via ``decompose()`` method for all curve and surface classes. Please refer to the documentation for more
-details.
+
+Splitting of curves can be achieved via :py:func:`.operations.split_curve()` method.
+For the surfaces, there are 2 different splitting methods, :py:func:`.operations.split_surface_u()` for splitting
+the surface on the u-direction and :py:func:`.operations.split_surface_v()` for splitting on the v-direction.
+
+Bézier decomposition can be applied via :py:func:`.operations.decompose_curve()` and
+:py:func:`.operations.decompose_surface()` methods for curves and surfaces, respectively.
 
 The following figures are generated from the examples provided in the Examples_ repository.
 
 Splitting
 =========
 
-The following 2D curve is split at ``u = 0.6`` and applied translation by the tangent vector via ``translate()`` method.
+The following 2D curve is split at ``u = 0.6`` and applied translation by the tangent vector using
+:py:func:`.operations.translate()` method.
 
 .. image:: images/split_curve2d_translate.png
     :alt: 3D curve splitting example with translation

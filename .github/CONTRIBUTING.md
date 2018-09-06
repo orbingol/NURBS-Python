@@ -11,6 +11,7 @@ Before you post, I would like to recommend some resources for starters:
 
 * [Code of Conduct](CODE_OF_CONDUCT.md)
 * [README file](../README.rst)
+* [LICENSE file](../LICENSE)
 * [Official Documentation](http://nurbs-python.readthedocs.io/en/latest/)
 * [The NURBS Book](http://www.springer.com/gp/book/9783642973857)
 
@@ -18,43 +19,25 @@ Before you post, I would like to recommend some resources for starters:
 ## Before you post, please read!
 
 We have a nice [Code of Conduct](CODE_OF_CONDUCT.md) document and it describes pretty much everything you need to know
-in the most appropriate way. Please see [Code of Conduct](CODE_OF_CONDUCT.md) for details.
+in the most appropriate way.
 
-In summary, it would be good to remember these before you post to the issue tracker or email the author:
+In addition, it would be good to remember the following:
 
-* Remember that you are talking to humans
-* Adhere to the same standards of behavior that you follow in your real life as you are talking to complete strangers
-* Please be kind and respectful in your posts
-* Please and please don't use stingy words or phrases
-* Double-check your attitude in your posts
-* Be reasonable
-* Feel free to explain the problem as long as or as detailed as you would like to
-* Simply, __be nice__!
+* Please be kind, respectful and reasonable in your posts
+* Long posts are always appreciated and will be carefully read as long as they are related to the topic
+* Horrible grammar, bad English, etc. are all okay, you will not be judged for these
 
 The following will **NOT** be tolerated in any way:
 
-* Any sort of offensive comment
-* Expressing contempt, anger and hate in explicit and/or implicit ways
-* Any sort of accusation directed to the authors and/or contributors (that's why we have the LICENSE file)
-* Complaints about implementation choices (instead, please ask about the reason nicely or fix it and create a PR)
-* "Bad" tone in writing (i.e. please triple-check how you say what you would like to say)
-* A strange thought that people who read the issue tracker have ability to read your mind (happens all the time)
-
-I would like to remind that all authors and contributors spend their free time to put some effort on development of 
-this package. Their free time is as valuable as your free time, the time you spend outside of your regular work doing 
-non-work and completely unrelated things. Therefore, please show some respect in your messages. Horrible grammar, 
-bad English, long explanations, etc. are all okay, no worries :-)
-
-In case of any confusions or problems, please follow [this link](http://lmgtfy.com/?q=netiquette).
+* Any sort of offensive and harmful behavior or tone in writing, including, but not limited to, contempt, anger, hate, sarcasm in explicit and/or implicit ways
+* Improperly opened tickets on the issue tracker (e.g. no body, no title, unrelated talk)
+* Any kind of behavior against [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## What happens when you found a bug
 
-* Please read __Before You Post__ rules (right above)
-* Please make sure that you are using the latest version on the `master` branch.
-* Please try to explain the problem as much as possible. I would be glad if you could write the steps to reproduce the
-issue.
-* If you have used `pip` to install the package, please indicate the version that you are using.
-* Did I say details are very important? :-)
+* Read __Before You Post__ rules (right above)
+* Make sure that you are using the latest version on the `master` (or `devmaster` if exists) branch
+* Include all details and steps to reproduce the problem
 
 ## Coding Standards
 
@@ -88,11 +71,12 @@ instead of asking me to implement them** :)
 
 ## Pull requests
 
-Please [create pull requests](https://help.github.com/articles/creating-a-pull-request/) against relevant branch.
+It would be suggested to [create pull requests](https://help.github.com/articles/creating-a-pull-request/)
+against relevant branch as descibed below:
 
-* For NURBS-Python v4.x, PR against `master`
-* For NURBS-Python v3.x, PR against `3.x`
-* For NURBS-Python v2.x, PR against `2.x`
+* NURBS-Python v4.x, PR against `devmaster` (`master`, if it does not exist)
+* NURBS-Python v3.x, PR against `3.x-dev` (`3.x`, if it does not exist)
+* NURBS-Python v2.x is not maintained anymore
 
 CI tools are set to test every pull request. The test results will become accessible in a short while under the 
 pull request page. If your code does not follow the standards as described under **Coding Standards** section, your PR
@@ -104,23 +88,25 @@ before opening the pull request.
 All your changes will be reviewed and if they are accepted, they will be merged to the `master` branch in the next 
 subsequent release of NURBS-Python and your name will be added to the [CONTRIBUTORS](../CONTRIBUTORS.rst) file.
 
-Feel free to open an issue on the project issue tracker, if you have any questions.
+Feel free to open a ticket on the project issue tracker, if you have any questions.
 
 ## Tests
 
 The `tests/` directory includes all automated tests. Implementing more tests that could validate the algorithms and
-increase the code coverage are appreciated. All included tests are designed to run with [pytest](https://pypi.org/project/pytest/).
+increase the code coverage are appreciated. All included tests are designed to run with 
+[pytest](https://pypi.org/project/pytest/).
 
 ## Improvements to the Documentation
 
 I would be glad if you could do anything to improve [the documentation](http://nurbs-python.readthedocs.io/en/latest/).
 The documentation may be compiled using [Sphinx](https://pypi.org/project/Sphinx/). You may need to check the Sphinx
 version that Read the Docs (RtD) service is using since some of the latest Sphinx features may not be available on the
-RtD system. Please refer to the [configuration file](https://github.com/orbingol/NURBS-Python/blob/master/.readthedocs.yml)
+RtD system.
+Please refer to the [configuration file](https://github.com/orbingol/NURBS-Python/blob/master/.readthedocs.yml)
 in the project repository and the RtD documentation for details.
 
 -----
 
-As always, all contributions, such as constructive comments, ideas, code improvements and tests are much appreciated.
+As always, all contributions, including constructive comments, ideas, code improvements and tests are much appreciated.
 
 Thanks in advance!

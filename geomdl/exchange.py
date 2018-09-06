@@ -14,10 +14,11 @@ from . import Abstract
 from . import NURBS
 from . import Multi
 from . import compatibility
-from .elements import Vertex, Triangle
+from . import operations
+from . import utilities
 
 
-def import_txt(file_name, two_dimensional=False):
+def import_txt(file_name, two_dimensional=False, **kwargs):
     """ Reads control points from a text file and generates a 1-D list of control points.
 
     The following code examples illustrate importing different types of text files for curves and surfaces:
@@ -33,6 +34,28 @@ def import_txt(file_name, two_dimensional=False):
         # Import surface control points from a text file (2-dimensional file)
         surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
 
+    You may set the file delimiters using the keyword arguments ``separator`` and ``col_separator``, respectively.
+    ``separator`` is the delimiter between the coordinates of the control points. It could be comma
+    ``1, 2, 3`` or space ``1 2 3`` or something else. ``col_separator`` is the delimiter between the control
+    points and is only valid when ``two_dimensional`` is ``True``. Assuming that ``separator`` is set to space, then
+    ``col_operator`` could be semi-colon ``1 2 3; 4 5 6`` or pipe ``1 2 3| 4 5 6`` or comma ``1 2 3, 4 5 6`` or
+    something else.
+
+    The defaults for ``separator`` and ``col_separator`` are *comma (,)* and *semi-colon (;)*, respectively.
+
+    The following code examples illustrate the usage of the keyword arguments discussed above.
+
+    .. code-block:: python
+
+        # Import curve control points from a text file delimited with space
+        curve_ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
+
+        # Import surface control points from a text file (2-dimensional file) w/ space and comma delimiters
+        surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True,
+                                                           separator=" ", col_separator=",")
+
+    Please note that this function does not check whether the user set delimiters to the same value or not.
+
     :param file_name: file name of the text file
     :type file_name: str
     :param two_dimensional: type of the text file
@@ -41,6 +64,11 @@ def import_txt(file_name, two_dimensional=False):
     :rtype: list
     :raises IOError: an error occurred reading the file
     """
+    # File delimiters
+    col_sep = kwargs.get('col_separator', ";")
+    sep = kwargs.get('separator', ",")
+
+    # Initialize an empty list to store control points
     ctrlpts = []
 
     # Try opening the file for reading
@@ -54,11 +82,11 @@ def import_txt(file_name, two_dimensional=False):
                         # Remove whitespace
                         line = line.strip()
                         # Convert the string containing the coordinates into a list
-                        control_point_row = line.split(';')
+                        control_point_row = line.split(col_sep)
                         # Clean and convert the values
                         size_v = 0
                         for cpr in control_point_row:
-                            ctrlpts.append([float(c.strip()) for c in cpr.split(',')])
+                            ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
                             size_v += 1
                         size_u += 1
 
@@ -70,7 +98,7 @@ def import_txt(file_name, two_dimensional=False):
                         # Remove whitespace
                         line = line.strip()
                         # Clean and convert the values
-                        ctrlpts.append([float(c.strip()) for c in line.split(',')])
+                        ctrlpts.append([float(c.strip()) for c in line.split(sep)])
 
                     # Return control points
                     return ctrlpts
@@ -81,12 +109,14 @@ def import_txt(file_name, two_dimensional=False):
         raise
 
 
-def export_txt(obj, file_name, two_dimensional=False):
+def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     """ Saves control points to a text file.
 
     For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
     point output file using ``two_dimensional`` flag. Please see the supported file formats for more details on the
     text file format.
+
+    Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
 
     :param obj: a curve or a surface object
     :type obj: Abstract.Curve, Abstract.Surface
@@ -106,6 +136,10 @@ def export_txt(obj, file_name, two_dimensional=False):
         warnings.warn("Ignoring two_dimensional flag since it only makes difference with surface objects...")
         two_dimensional = False
 
+    # File delimiters
+    col_sep = kwargs.get('col_separator', ";")
+    sep = kwargs.get('separator', ",")
+
     # Try opening the file for writing
     try:
         with open(file_name, 'w') as fp:
@@ -114,18 +148,17 @@ def export_txt(obj, file_name, two_dimensional=False):
                     line = ""
                     for j in range(0, obj.ctrlpts_size_v):
                         for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
-                            if idx:  # Add comma if we are not on the first element
-                                line += ","
+                            if idx:  # check for the first element
+                                line += sep
                             line += str(coord)
                         if j != obj.ctrlpts_size_v - 1:
-                            line += ";"
+                            line += col_sep
                         else:
                             line += "\n"
                     fp.write(line)
             else:
                 for pt in obj.ctrlpts:
-                    # Fill coordinates
-                    line = ",".join(str(c) for c in pt) + "\n"
+                    line = sep.join(str(c) for c in pt) + "\n"
                     fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
@@ -228,7 +261,217 @@ def export_vtk(obj, file_name, point_type='evalpts'):
         raise
 
 
-# Saves surface(s) as a .obj file
+def export_cfg(obj, file_name):
+    """ Exports curves and surfaces in libconfig format.
+
+    :param obj: input curve or surface
+    :type obj: Abstract.Curve or Abstract.Surface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
+    """
+
+    if isinstance(obj, Abstract.Curve):
+        _export_cfg_single(obj, file_name, _prepare_cfg_export_curve)
+    elif isinstance(obj, Abstract.Surface):
+        _export_cfg_single(obj, file_name, _prepare_cfg_export_surface)
+    elif isinstance(obj, Multi.MultiCurve):
+        _export_cfg_multi(obj, file_name, _prepare_cfg_export_curve)
+    elif isinstance(obj, Multi.MultiSurface):
+        _export_cfg_multi(obj, file_name, _prepare_cfg_export_surface)
+    else:
+        raise NotImplementedError("Cannot export " + obj.__class__.__name__ + " type in libconfig format")
+
+
+def _export_cfg_single(obj, file_name, func):
+    try:
+        with open(file_name, 'w') as fp:
+            # File header
+            fp.write("# Generated by NURBS-Python\n")
+            fp.write("# file: " + file_name + "\n\n")
+
+            # Number of shapes is always 1 in this case
+            fp.write("count: 1;\n\n")
+
+            # Start listing
+            fp.write("shapes: \n(\n\n")
+            fp.write("{\n")
+
+            # Write object properties
+            fp.write(func(obj))
+
+            # End listing
+            fp.write("}\n\n")
+            fp.write(");\n")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def _export_cfg_multi(obj, file_name, func):
+    try:
+        with open(file_name, 'w') as fp:
+            # File header
+            fp.write("# Generated by NURBS-Python\n")
+            fp.write("# file: " + file_name + "\n\n")
+
+            # Number of shapes in the container
+            cont_sz = len(obj)
+            fp.write("count: " + str(cont_sz) + ";\n\n")
+
+            # Start listing
+            fp.write("shapes: \n(\n\n")
+
+            # Write object properties
+            for idx, shp in enumerate(obj):
+                fp.write("{\n")
+                fp.write(func(shp))
+                fp.write("}" + ("" if idx == cont_sz - 1 else ",") + "\n\n")
+
+            # End listing
+            fp.write(");\n")
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def _prepare_cfg_export_curve(obj):
+    """ Prepares curve object for libconfig-type export.
+
+    :param obj: curve object
+    :return: curve data as a string
+    """
+    line = ""
+
+    # Start exporting object
+    line += "\ttype = \"curve\";\n"
+    line += "\tdegree = " + str(obj.degree) + ";\n"
+    line += "\tknotvector = [" + ", ".join(str(kv) for kv in obj.knotvector) + "];\n"
+    line += "\tcontrol_points = ("
+    ctrlpts_size = len(obj.ctrlpts)
+    for idx, pt in enumerate(obj.ctrlpts):
+        line += " (" + ", ".join(str(p) for p in pt) + ")"
+        line += " " if idx == ctrlpts_size - 1 else ","
+    line += ");\n"
+    try:
+        line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
+    except AttributeError:
+        line += "\tweights = 0;\n"
+
+    # Export misc info
+    line += "\tmisc: \n\t{\n"
+    line += "\t\tname = \"" + obj.name + "\";\n"
+    line += "\t\tsample_size = " + str(obj.sample_size) + ";\n"
+    line += "\t};\n"
+
+    return line
+
+
+def _prepare_cfg_export_surface(obj):
+    """ Prepares surface object for libconfig-type export.
+
+    :param obj: surface object
+    :return: surface data as a string
+    """
+    line = ""
+
+    # Start exporting object
+    line += "\ttype = \"surface\";\n"
+    line += "\tdegree_u = " + str(obj.degree_u) + ";\n"
+    line += "\tdegree_v = " + str(obj.degree_v) + ";\n"
+    line += "\tknotvector_u = [" + ", ".join(str(kv) for kv in obj.knotvector_u) + "];\n"
+    line += "\tknotvector_v = [" + ", ".join(str(kv) for kv in obj.knotvector_v) + "];\n"
+    line += "\tcontrol_points_size_u = " + str(obj.ctrlpts_size_u) + ";\n"
+    line += "\tcontrol_points_size_v = " + str(obj.ctrlpts_size_v) + ";\n"
+    line += "\tcontrol_points = ("
+    ctrlpts_size = len(obj.ctrlpts)
+    for idx, pt in enumerate(obj.ctrlpts):
+        line += " (" + ", ".join(str(p) for p in pt) + ")"
+        line += " " if idx == ctrlpts_size - 1 else ","
+    line += ");\n"
+    try:
+        line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
+    except AttributeError:
+        line += "\tweights = 0;\n"
+
+    # Export misc info
+    line += "\tmisc: \n\t{\n"
+    line += "\t\tname = \"" + obj.name + "\";\n"
+    line += "\t\tsample_size_u = " + str(obj.sample_size_u) + ";\n"
+    line += "\t\tsample_size_v = " + str(obj.sample_size_v) + ";\n"
+    line += "\t};\n"
+
+    return line
+
+
+def import_cfg(file_name):
+    """ Imports curves and surfaces from files in libconfig format.
+
+    :param file_name: name of the input file
+    :type file_name: str
+    :return: a list of NURBS curve(s) or surface(s)
+    :rtype: list
+    :raises ImportError: cannot find 'libconf' module
+    :raises IOError: an error occurred writing the file
+    """
+    # Check if it is possible to import 'libconf'
+    try:
+        import libconf
+    except ImportError as e:
+        print("Please install 'libconf' module to import from libconfig format: pip install libconf")
+        raise e
+
+    type_map = {'curve': _prepare_cfg_import_curve, 'surface': _prepare_cfg_import_surface}
+
+    # Try to read the input file
+    try:
+        with open(file_name, 'r') as fp:
+            # Get all shapes
+            imported_data = libconf.load(fp)
+
+            # Process imported data
+            ret_list = []
+            for data in imported_data.shapes:
+                temp = type_map[data.type](data)
+                ret_list.append(temp)
+
+            # Return processed data
+            return ret_list
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def _prepare_cfg_import_curve(data):
+    shape = NURBS.Curve()
+    shape.degree = data.degree
+    shape.ctrlpts = data.control_points
+    if isinstance(data.weights, (list, tuple)):
+        shape.weights = data.weights
+    shape.knotvector = data.knotvector
+    return shape
+
+
+def _prepare_cfg_import_surface(data):
+    shape = NURBS.Surface()
+    shape.degree_u = data.degree_u
+    shape.degree_v = data.degree_v
+    shape.ctrlpts_size_u = data.control_points_size_u
+    shape.ctrlpts_size_v = data.control_points_size_v
+    shape.ctrlpts = data.control_points
+    if isinstance(data.weights, (list, tuple)):
+        shape.weights = data.weights
+    shape.knotvector_u = data.knotvector_u
+    shape.knotvector_v = data.knotvector_v
+    return shape
+
+
 def export_obj(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
@@ -249,7 +492,6 @@ def export_obj(surf_in, file_name, **kwargs):
         _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves surface(s) as a .stl file
 def export_stl(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
@@ -278,7 +520,6 @@ def export_stl(surf_in, file_name, **kwargs):
             _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
 
 
-# Saves surface(s) as a .off file
 def export_off(surf_in, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
@@ -326,70 +567,6 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
-# Generates triangles
-def _gen_triangles_vertices(points, row_size, col_size, vertex_spacing):
-    points2d = []
-    for i in range(0, col_size):
-        row_list = []
-        for j in range(0, row_size):
-            row_list.append(points[j + (i * row_size)])
-        points2d.append(row_list)
-
-    u_range = 1.0 / float(col_size - 1)
-    v_range = 1.0 / float(row_size - 1)
-    vertices = []
-    vert_id = 1
-    u = 0.0
-    for col_idx in range(0, col_size, vertex_spacing):
-        vert_list = []
-        v = 0.0
-        for row_idx in range(0, row_size, vertex_spacing):
-            temp = Vertex()
-            temp.data = points2d[col_idx][row_idx]
-            temp.id = vert_id
-            temp.uv = [u, v]
-            vert_list.append(temp)
-            vert_id += 1
-            v += v_range
-        vertices.append(vert_list)
-        u += u_range
-
-    v_col_size = len(vertices)
-    v_row_size = len(vert_list)
-
-    tri_id = 1
-    forward = True
-    triangles = []
-    for col_idx in range(0, v_col_size - 1):
-        row_idx = 0
-        left_half = True
-        tri_list = []
-        while row_idx < v_row_size - 1:
-            tri = Triangle()
-            if left_half:
-                tri.add_vertex(vertices[col_idx + 1][row_idx])
-                tri.add_vertex(vertices[col_idx][row_idx])
-                tri.add_vertex(vertices[col_idx][row_idx + 1])
-                left_half = False
-            else:
-                tri.add_vertex(vertices[col_idx][row_idx + 1])
-                tri.add_vertex(vertices[col_idx + 1][row_idx + 1])
-                tri.add_vertex(vertices[col_idx + 1][row_idx])
-                left_half = True
-                row_idx += 1
-            tri.id = tri_id
-            tri_list.append(tri)
-            tri_id += 1
-        if forward:
-            forward = False
-        else:
-            forward = True
-            tri_list.reverse()
-        triangles += tri_list
-
-    return vertices, triangles
-
-
 def _export_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
@@ -415,22 +592,20 @@ def _export_obj_single(surface, **kwargs):
     try:
         with open(file_name, 'w') as fp:
             fp.write("# Generated by NURBS-Python\n")
-            vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                          surface.sample_size_u, surface.sample_size_v,
-                                                          vertex_spacing)
+            vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                               surface.sample_size_u, surface.sample_size_v,
+                                                               vertex_spacing=vertex_spacing)
 
             # Write vertices
-            for vert_row in vertices:
-                for vert in vert_row:
-                    line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                fp.write(line)
 
             # Write vertex normals
-            for vert_row in vertices:
-                for vert in vert_row:
-                    sn = surface.normal(vert.uv[0], vert.uv[1], True)
-                    line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                sn = operations.normal(surface, vert.uv)
+                line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
+                fp.write(line)
 
             # Write faces
             for t in triangles:
@@ -489,22 +664,20 @@ def _export_obj_multi(surface_list, **kwargs):
                     surface.sample_size_v = surface_list.sample_size_v
 
                 # Generate triangles
-                vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                              surface.sample_size_u, surface.sample_size_v,
-                                                              vertex_spacing)
+                vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                                   surface.sample_size_u, surface.sample_size_v,
+                                                                   vertex_spacing=vertex_spacing)
 
                 # Collect vertices
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                        str_v.append(line)
+                for vert in vertices:
+                    line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                    str_v.append(line)
 
                 # Collect vertex normals
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        sn = surface.normal(vert.uv[0], vert.uv[1], True)
-                        line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                        str_vn.append(line)
+                for vert in vertices:
+                    sn = operations.normal(surface, vert.uv)
+                    line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
+                    str_vn.append(line)
 
                 # Collect faces
                 for t in triangles:
@@ -556,13 +729,14 @@ def _export_stl_ascii_single(surface, **kwargs):
     # Create the file and start saving triangulated surface points
     try:
         with open(file_name, 'w') as fp:
-            vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                          surface.sample_size_u, surface.sample_size_v,
-                                                          vertex_spacing)
+            vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                               surface.sample_size_u, surface.sample_size_v,
+                                                               vertex_spacing=vertex_spacing)
 
             fp.write("solid Surface\n")
             for t in triangles:
-                line = "\tfacet normal " + str(t.normal[0]) + " " + str(t.normal[1]) + " " + str(t.normal[2]) + "\n"
+                nvec = utilities.triangle_normal(t)
+                line = "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
                 fp.write(line)
                 fp.write("\t\touter loop\n")
                 for v in t.vertices:
@@ -616,12 +790,13 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
                 if surface_list.sample_size_v != 0:
                     surface.sample_size_v = surface_list.sample_size_v
 
-                vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                              surface.sample_size_u, surface.sample_size_v,
-                                                              vertex_spacing)
+                vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                                   surface.sample_size_u, surface.sample_size_v,
+                                                                   vertex_spacing=vertex_spacing)
 
                 for t in triangles:
-                    line = "\tfacet normal " + str(t.normal[0]) + " " + str(t.normal[1]) + " " + str(t.normal[2]) + "\n"
+                    nvec = utilities.triangle_normal(t)
+                    line = "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
                     fp.write(line)
                     fp.write("\t\touter loop\n")
                     for v in t.vertices:
@@ -664,15 +839,15 @@ def _export_stl_binary_single(surface, **kwargs):
     # Create the file and start saving triangulated surface points
     try:
         with open(file_name, 'wb') as fp:
-            vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                          surface.sample_size_u, surface.sample_size_v,
-                                                          vertex_spacing)
+            vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                               surface.sample_size_u, surface.sample_size_v,
+                                                               vertex_spacing=vertex_spacing)
 
             # Write triangle list to the binary STL file
             fp.write(b'\0' * 80)  # header
             fp.write(struct.pack('<i', len(triangles)))  # number of triangles
             for t in triangles:
-                fp.write(struct.pack('<3f', *t.normal))  # normal
+                fp.write(struct.pack('<3f', *utilities.triangle_normal(t)))  # normal
                 for v in t.vertices:
                     fp.write(struct.pack('<3f', *v.data))  # vertices
                 fp.write(b'\0\0')  # attribute byte count
@@ -720,16 +895,16 @@ def _export_stl_binary_multi(surface_list, **kwargs):
                 if surface_list.sample_size_v != 0:
                     surface.sample_size_v = surface_list.sample_size_v
 
-                vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                              surface.sample_size_u, surface.sample_size_v,
-                                                              vertex_spacing)
+                vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                                   surface.sample_size_u, surface.sample_size_v,
+                                                                   vertex_spacing=vertex_spacing)
                 triangles_list += triangles
 
             # Write triangle list to the binary STL file
             fp.write(b'\0' * 80)  # header
             fp.write(struct.pack('<i', len(triangles_list)))  # number of triangles
             for t in triangles_list:
-                fp.write(struct.pack('<3f', *t.normal))  # normal
+                fp.write(struct.pack('<3f', *utilities.triangle_normal(t)))  # normal
                 for v in t.vertices:
                     fp.write(struct.pack('<3f', *v.data))  # vertices
                 fp.write(b'\0\0')  # attribute byte count
@@ -765,22 +940,22 @@ def _export_off_single(surface, **kwargs):
     try:
         with open(file_name, 'w') as fp:
             fp.write("OFF\n")
-            vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                          surface.sample_size_u, surface.sample_size_v,
-                                                          vertex_spacing)
+            vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                               surface.sample_size_u, surface.sample_size_v,
+                                                               vertex_spacing=vertex_spacing)
 
             line = str(len(vertices) * len(vertices[0])) + " " + str(len(triangles)) + " 0\n"
             fp.write(line)
+
             # Write vertices
-            for vert_row in vertices:
-                for vert in vert_row:
-                    line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    fp.write(line)
+            for vert in vertices:
+                line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                fp.write(line)
 
             # Write faces (zero-indexed)
             for t in triangles:
-                vl = t.vertex_ids
-                line = "3 " + str(vl[0] - 1) + " " + str(vl[1] - 1) + " " + str(vl[2] - 1) + "\n"
+                vl = t.vertex_ids_zero
+                line = "3 " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
                 fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
@@ -832,17 +1007,16 @@ def _export_off_multi(surface_list, **kwargs):
                     surface.sample_size_v = surface_list.sample_size_v
 
                 # Generate triangles
-                vertices, triangles = _gen_triangles_vertices(surface.evalpts,
-                                                              surface.sample_size_u, surface.sample_size_v,
-                                                              vertex_spacing)
+                vertices, triangles = utilities.make_triangle_mesh(surface.evalpts,
+                                                                   surface.sample_size_u, surface.sample_size_v,
+                                                                   vertex_spacing=vertex_spacing)
 
                 # Collect vertices
-                for vert_row in vertices:
-                    for vert in vert_row:
-                        line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                        str_v.append(line)
+                for vert in vertices:
+                    line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+                    str_v.append(line)
 
-                # Collect faces (zero0indexed)
+                # Collect faces (zero-indexed)
                 for t in triangles:
                     vl = t.vertex_ids
                     line = "3 " + \

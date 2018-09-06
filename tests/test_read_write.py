@@ -11,6 +11,7 @@ import pytest
 from geomdl import BSpline, NURBS
 from geomdl import exchange
 from geomdl import compatibility
+from geomdl import operations
 
 FILE_NAME = 'testing'
 SAMPLE_SIZE = 25
@@ -194,7 +195,7 @@ def test_export_stl_ascii_single(nurbs_surface):
 def test_export_obj_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".obj"
 
-    nurbs_multi = nurbs_surface_decompose.decompose()
+    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_obj(nurbs_multi, fname)
@@ -211,7 +212,7 @@ def test_export_obj_multi(nurbs_surface_decompose):
 def test_export_off_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".off"
 
-    nurbs_multi = nurbs_surface_decompose.decompose()
+    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_off(nurbs_multi, fname)
@@ -228,7 +229,7 @@ def test_export_off_multi(nurbs_surface_decompose):
 def test_export_stl_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".stl"
 
-    nurbs_multi = nurbs_surface_decompose.decompose()
+    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_stl(nurbs_multi, fname)
@@ -245,7 +246,7 @@ def test_export_stl_multi(nurbs_surface_decompose):
 def test_export_stl_ascii_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".stl"
 
-    nurbs_multi = nurbs_surface_decompose.decompose()
+    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_stl(nurbs_multi, fname, binary=False)

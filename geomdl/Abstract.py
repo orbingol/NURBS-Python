@@ -7,6 +7,7 @@
 
 """
 
+from . import copy
 from . import abc
 from . import six
 from . import warnings
@@ -14,15 +15,26 @@ from . import utilities
 
 
 class Curve(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for all curves. """
+    """ Abstract base class (ABC) for all n-variate curves.
 
-    def __init__(self):
-        # If the array type has been set, then use it. Otherwise, use None
-        try:
-            self._array_type
-        except NameError:
-            self._array_type = None
+    The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
 
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Curve ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func`` keyword
+    as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the FindSpan
+    function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+    """
+
+    def __init__(self, **kwargs):
+        # Set default array type
+        self._array_type = list
         # Initialize class variables
         self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
@@ -36,38 +48,31 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
+        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __str__(self):
         return self.name
 
     __repr__ = __str__
-
-    def __call__(self, degree, ctrlpts, kv, **kwargs):
-        """ Calls self as a function.
-
-        Keyword Arguments (optional):
-            * ``sample_size``: number of evaluated points to generate
-            * ``evaluator``: evaluation algorithm
-
-        :param degree: degree of the curve
-        :type degree: int
-        :param ctrlpts: control points
-        :type ctrlpts: list, tuple
-        :param kv: knot vector
-        :type kv: list, tuple
-        :return: evaluated curve points
-        :rtype: list
-        """
-        opt_num_samples = kwargs.get('sample_size', self.sample_size)
-        opt_algorithm = kwargs.get('evaluator', self.evaluator)
-        self.reset(ctrlpts=True, evalpts=True)
-        self.degree = degree
-        self.ctrlpts = ctrlpts
-        self.knotvector = kv
-        self.delta = opt_num_samples
-        self.evaluator = opt_algorithm
-        return self.evalpts
 
     @property
     def name(self):
@@ -101,6 +106,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def evaluator(self, value):
         if not isinstance(value, Evaluator):
             raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        value._span_func = self._span_func
         self._evaluator = value
 
     @property
@@ -309,18 +315,70 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         return tuple(self._bounding_box)
 
+    def set_ctrlpts(self, ctrlpts, **kwargs):
+        """ Sets control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        It accepts a keyword argument ``array_init`` which defaults to a ``list`` of size ``len(ctrlpts)``
+        where ``ctrlpts`` is the input list of control points. ``array_init`` keyword argument may be used to input
+        other types of arrays to this method.
+
+        The following example illustrates a way to use a NumPy array with this method.
+
+        .. code-block:: python
+
+            # Import numpy
+            import numpy as np
+
+            # Assuming that "ctrlpts" is a NumPy array of a shape (x,y) where x == len(ctrlpts) and y == len(ctrlpts[0])
+            curve.set_ctrlpts(ctrlpts, array_init=np.zeros(ctrlpts.shape, dtype=np.float32))
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        """
+        # Degree must be set before setting the control points
+        if self._degree == 0:
+            raise ValueError("Set the degree first")
+
+        if len(ctrlpts) < self._degree + 1:
+            raise ValueError("Number of control points should be at least degree + 1")
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+
+        # Clean up the curve and control points lists
+        self.reset(ctrlpts=True, evalpts=True)
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
+
+        ctrlpts_float = array_init
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                 " is not a valid control point")
+            # Convert to list of floats
+            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+
+        self._control_points = ctrlpts_float
+
     # Runs visualization component to render the surface
     def render(self, **kwargs):
         """ Renders the curve using the loaded visualization component
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
-        Possible keyword arguments are
-
-        * ``cpcolor``: sets the color of the control points polygon
-        * ``evalcolor``: sets the color of the curve
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+        Keyword Arguments:
+            * ``cpcolor``: sets the color of the control points polygon
+            * ``evalcolor``: sets the color of the curve
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -353,7 +411,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         """ Resets control points and/or evaluated points.
 
         Keyword Arguments:
-
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
@@ -387,19 +444,52 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, u, order, **kwargs):
+        """ Evaluates the derivatives of the curve at parameter u.
+
+        :param u: parameter value
+        :type u: float
+        :param order: derivative order
+        :type order: int
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Check u parameters are correct
+        utilities.check_uv(u)
+
+        # Should implement the derivatives functionality
         pass
 
 
 class Surface(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for all surfaces. """
+    """ Abstract base class (ABC) for all surfaces.
 
-    def __init__(self):
-        # If the array type has been set, then use it. Otherwise, use None
-        try:
-            self._array_type
-        except NameError:
-            self._array_type = None
+    The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
 
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Surface ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func``
+    keyword as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the
+    FindSpan function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+    """
+
+    def __init__(self, **kwargs):
+        # Set default array type
+        self._array_type = list
         # Define u-direction variables
         self._degree_u = 0  # degree
         self._knot_vector_u = utilities.init_var(self._array_type)  # knot vector
@@ -421,50 +511,31 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
+        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __str__(self):
         return self.name
 
     __repr__ = __str__
-
-    def __call__(self, degree_u, degree_v, num_ctrlpts_u, num_ctrlpts_v, ctrlpts, kv_u, kv_v, **kwargs):
-        """ Calls self as a function.
-
-        Keyword Arguments (optional):
-            * ``sample_size``: number of evaluated points to generate on both directions
-            * ``evaluator``: evaluation algorithm
-
-        :param degree_u: degree of the surface on the u-direction
-        :type degree_u: int
-        :param degree_v: degree of the surface on the v-direction
-        :type degree_v: int
-        :param num_ctrlpts_u: number of control points on the u-direction
-        :type num_ctrlpts_u: int
-        :param num_ctrlpts_v: number of control points on the v-direction
-        :type num_ctrlpts_v: int
-        :param ctrlpts: control points (1-dimensional)
-        :type ctrlpts: list, tuple
-        :param kv_u: knot vector on the u-direction
-        :type kv_u: list, tuple
-        :param kv_v: knot vector on the v-direction
-        :type kv_v: list, tuple
-        :return: evaluated surface points
-        :rtype: list
-        """
-        opt_num_samples = kwargs.get('sample_size', self.sample_size)
-        opt_algorithm = kwargs.get('evaluator', self.evaluator)
-        self.reset(evalpts=True, ctrlpts=True)
-        self.degree_u = degree_u
-        self.degree_v = degree_v
-        self.ctrlpts_size_u = num_ctrlpts_u
-        self.ctrlpts_size_v = num_ctrlpts_v
-        self.ctrlpts = ctrlpts
-        self.knotvector_u = kv_u
-        self.knotvector_v = kv_v
-        self.delta = opt_num_samples
-        self.evaluator = opt_algorithm
-        return self.evalpts
 
     @property
     def name(self):
@@ -498,6 +569,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def evaluator(self, value):
         if not isinstance(value, Evaluator):
             raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        value._span_func = self._span_func
         self._evaluator = value
 
     @property
@@ -938,6 +1010,76 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         return tuple(self._bounding_box)
 
+    def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
+        """ Sets 1-dimensional control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        This method also generates 2D control points in *[u][v]* format which can be accessed via :py:attr:`~ctrlpts2d`.
+
+        You may initialize the 1-dimensional and 2-dimensional arrays via ``array_init`` and ``array_init2d`` keyword
+        arguments. Please see :py:meth:`.Curve.set_ctrlpts()` for details.
+
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        :param size_u: size of the control points grid on the u-direction
+        :type size_u: int
+        :param size_v: size of the control points grid on the v-direction
+        :type size_v: int
+        :return: None
+        """
+        # Degrees must be set before setting the control points
+        if self._degree_u == 0 or self._degree_v == 0:
+            raise ValueError("Set the degrees first")
+
+        # Check array size validity
+        if size_u < self._degree_u + 1:
+            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
+        if size_v < self._degree_v + 1:
+            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(size_v)] for _ in range(size_u)])
+
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
+
+        # Check the dimensions of the input control points array and type cast to float
+        ctrlpts_float = array_init
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                 " is not a valid control point")
+            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+
+        # Generate a 2-dimensional list of control points
+        ctrlpts_float2d = array_init2d
+        for i in range(0, size_u):
+            for j in range(0, size_v):
+                ctrlpts_float2d[i][j] = ctrlpts_float[j + (i * size_v)]
+
+        # Set the new control points
+        self._control_points = ctrlpts_float
+        self._control_points2D = ctrlpts_float2d
+
+        # Set u and v sizes
+        self._control_points_size_u = size_u
+        self._control_points_size_v = size_v
+
     # Runs visualization component to render the surface
     def render(self, **kwargs):
         """ Renders the surface using the loaded visualization component.
@@ -945,16 +1087,20 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
         Keyword Arguments:
-
-        * ``cpcolor``: sets the color of the control points grid
-        * ``evalcolor``: sets the color of the surface
-        * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``cpcolor``: sets the color of the control points grid
+            * ``evalcolor``: sets the color of the surface
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``colormap``: sets the colormap of the surface
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
+        example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects a single
+        colormap input.
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -964,6 +1110,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         surfcolor = kwargs.get('evalcolor', 'green')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+
+        # Get colormap and convert to a list
+        surf_cmap = kwargs.get('colormap', None)
+        surf_cmap = [surf_cmap] if surf_cmap else []
 
         # Check all parameters are set
         self._check_variables()
@@ -980,13 +1130,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size_u, self.sample_size_v],
                                 name="Surface", color=surfcolor, plot_type='evalpts')
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
 
         Keyword Arguments:
-
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
@@ -1029,11 +1178,39 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, u, v, order, **kwargs):
+        """ Evaluates the derivatives of the surface at parameter (u,v).
+
+        :param u: parameter on the u-direction
+        :type u: float
+        :param v: parameter on the v-direction
+        :type v: float
+        :param order: derivative order
+        :type order: int
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Check u and v parameters are correct
+        utilities.check_uv(u, v)
+
+        # Should implement the derivatives functionality here
         pass
 
 
 class Multi(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract class for curve and surface containers. """
+    """ Abstract class for curve and surface containers.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+    """
 
     def __init__(self):
         self._elements = []  # elements contained
@@ -1067,11 +1244,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError("Cannot add non-matching types of Multi containers")
-        ret = self.__class__()
-        new_elems = self._elements + other._elements
-        ret.add_list(new_elems)
-        return ret
+            raise TypeError("Cannot add non-matching container types")
+        self._elements += other._elements
+        return self
 
     @property
     def vis(self):
@@ -1091,37 +1266,21 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = value
 
     def add(self, element):
-        """ Abstract method for adding surface or curve objects to the container.
+        """ Adds shapes to the container.
 
-        :param element: the curve or surface object to be added
-        :type element:
+        The input can be a single shape, a list of shapes or a container object.
+
+        :param element: shape to be added
         """
-        if not isinstance(element, self._instance):
-            warnings.warn("Cannot add, incompatible type.")
-            return
-        self._elements.append(element)
-
-    def add_list(self, elements):
-        """ Adds curve objects to the container.
-
-        :param elements: curve objects to be added
-        :type elements: list, tuple
-        """
-        if not isinstance(elements, (list, tuple)):
-            warnings.warn("Input must be a list or a tuple")
-            return
-
-        for element in elements:
-            self.add(element)
-
-    def translate(self, vec=()):
-        """ Translates the elements in the container by the input vector.
-
-        :param vec: translation vector
-        :type vec: list, tuple
-        """
-        for elem in self._elements:
-            elem.translate(vec)
+        if isinstance(element, self._instance):
+            self._elements.append(element)
+        elif isinstance(element, self.__class__):
+            self + element
+        elif isinstance(element, (list, tuple)):
+            for elem in element:
+                self.add(elem)
+        else:
+            raise TypeError("Cannot add the element to the container")
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
@@ -1135,10 +1294,14 @@ class Evaluator(six.with_metaclass(abc.ABCMeta, object)):
 
     The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
     The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
+
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
     """
 
     def __init__(self, **kwargs):
         self._name = kwargs.get('name', self.__class__.__name__)
+        self._span_func = kwargs.get('find_span_func', None)
 
     @property
     def name(self):
@@ -1174,7 +1337,7 @@ class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Curve customizations for Evaluator abstract base class. """
 
     def __init__(self, **kwargs):
-        pass
+        self._span_func = kwargs.get('find_span_func', None)
 
     @abc.abstractmethod
     def insert_knot(self, **kwargs):
@@ -1186,7 +1349,7 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
     """ Surface customizations for the Evaluator abstract base class. """
 
     def __init__(self, **kwargs):
-        pass
+        self._span_func = kwargs.get('find_span_func', None)
 
     @abc.abstractmethod
     def insert_knot_u(self, **kwargs):

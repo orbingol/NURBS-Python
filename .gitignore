@@ -10,3 +10,7 @@ docs/_static
 *.out
 *.txt
 *.csv
+*.c
+*.cpp
+*.so
+*.pyd
