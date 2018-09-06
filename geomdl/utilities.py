@@ -44,7 +44,7 @@ def vector_cross(vector1, vector2):
     :param vector2: input vector 2
     :type vector2: list, tuple
     :return: result of the cross product
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
@@ -64,7 +64,7 @@ def vector_cross(vector1, vector2):
                   (vector1[0] * vector2[1]) - (vector1[1] * vector2[0])]
 
     # Return the cross product of the input vectors
-    return vector_out
+    return tuple(vector_out)
 
 
 def vector_dot(vector1, vector2):
@@ -121,7 +121,7 @@ def vector_normalize(vector_in, decimals=6):
     :param decimals: number of significands
     :type decimals: int
     :return: the normalized vector (i.e. the unit vector)
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if vector_in is None or len(vector_in) == 0:
@@ -142,7 +142,7 @@ def vector_normalize(vector_in, decimals=6):
             vector_out.append(vin / magnitude)
 
         # Return the normalized vector and consider the number of significands
-        return [float(("%0." + str(decimals) + "f") % vout) for vout in vector_out]
+        return tuple([float(("%0." + str(decimals) + "f") % vout) for vout in vector_out])
     else:
         raise ValueError("The magnitude of the vector is zero")
 
@@ -157,7 +157,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
     :param normalize: if True, the generated vector is normalized
     :type normalize: bool
     :return: a vector from start_pt to end_pt
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
@@ -174,7 +174,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
     if normalize:
         ret_vec = vector_normalize(ret_vec)
-    return ret_vec
+    return tuple(ret_vec)
 
 
 def vector_mean(*args):

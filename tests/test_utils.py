@@ -171,7 +171,7 @@ def test_vector_cross2():
 
 
 def test_vector_cross3():
-    result = [-1.0, -4.0, 3.0]
+    result = (-1.0, -4.0, 3.0)
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
     to_check = utilities.vector_cross(vec1, vec2)
@@ -202,14 +202,14 @@ def test_vector_normalize3():
 
 def test_vector3_normalize():
     vec = (5, 2.5, 5)
-    result = [0.667, 0.333, 0.667]
+    result = (0.667, 0.333, 0.667)
     to_check = utilities.vector_normalize(vec, decimals=3)
     assert to_check == result
 
 
 def test_vector4_normalize():
     vec = (5, 2.5, 5, 10)
-    result = [0.4, 0.2, 0.4, 0.8]
+    result = (0.4, 0.2, 0.4, 0.8)
     to_check = utilities.vector_normalize(vec)
     assert to_check == result
 
@@ -224,8 +224,8 @@ def test_vector_generate1():
 def test_vector_generate2():
     pt1 = (0, 0, 0)
     pt2 = (5, 3, 4)
-    result = [5, 3, 4]
-    result_normalized = [0.707107, 0.424264, 0.565685]
+    result = (5, 3, 4)
+    result_normalized = (0.707107, 0.424264, 0.565685)
     to_check = utilities.vector_generate(pt1, pt2)
     to_check_normalized = utilities.vector_generate(pt1, pt2, normalize=True)
     assert to_check == result
