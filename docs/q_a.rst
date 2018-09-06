@@ -70,3 +70,12 @@ for your questions and comments. I would be glad if you could use the appropriat
 I also would like to leave the email communication open for NURBS-Python users. The issue tracker will stay as the
 preferred method for communication but I know some users don't feel confident asking questions
 or commenting on a public system. I will try my best to reply back to your emails as soon as possible.
+
+API Changes
+===========
+
+I try to keep the API (name and location of the functions, class fields and member functions) backward-compatible
+during minor version upgrades. During major version upgrades, the API change might not be backward-compatible.
+However, these changes will be kept minor and therefore, the users can update their code to the new version without
+much hassle. All of these changes, regardless of minor or major version upgrades, will be announced on the CHANGELOG
+file.
