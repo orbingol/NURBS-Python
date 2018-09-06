@@ -196,13 +196,18 @@ def vector_mean(*args):
 
         # Alternative usage example (same as above):
         mean_vector = utilities.vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
+
+    :param args: list of vectors
+    :type args: list, tuple
+    :return: mean vector
+    :rtype: tuple
     """
     sz = len(args)
     mean_vector = [0.0 for _ in range(len(args[0]))]
     for input_vector in args:
         mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
     mean_vector = [a / sz for a in mean_vector]
-    return mean_vector
+    return tuple(mean_vector)
 
 
 def vector_magnitude(vector_in):
@@ -251,7 +256,7 @@ def point_translate(point_in, vector_in):
     :param vector_in: input vector
     :type vector_in: list, tuple
     :return: translated point
-    :rtype: list
+    :rtype: tuple
     """
     try:
         if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
@@ -265,7 +270,7 @@ def point_translate(point_in, vector_in):
     # Translate the point using the input vector
     point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
 
-    return point_out
+    return tuple(point_out)
 
 
 def point_distance(pt1, pt2):
