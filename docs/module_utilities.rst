@@ -11,7 +11,7 @@ geometry operations.
 
 Although most of the functions are designed for internal usage, the users can still use some of the functions for their
 advantage, especially the point and vector manipulation and generation functions. Functions related to point
-manipulation have ``point_`` prefix and the ones related to vectors have ``vector_``.
+manipulation have ``point_`` prefix and the ones related to vectors have ``vector_`` prefix.
 
 .. automodule:: geomdl.utilities
     :members:
