@@ -1,5 +1,26 @@
 # NURBS-Python Changelog
 
+## v4.2.0 released on 2018-09-07
+
+This release moves some of the features from `BSpline` module to other modules since it is getting bigger and it has a lot of responsibilities which can be "globalized" to ease extensibility.
+
+* Code reorganization and cleanup for Curve and Surface classes
+* Removed plural-named methods, such as `tangents`, `normals`, etc and moved the functionality to singular methods (`normal`, `tangent`, etc.)
+* Moved `translate`, `split` and `decompose` methods to `operations` module
+* `derivatives` method is added as an abstract method to `Abstract.Curve` and `Abstract.Surface` since it is also a requirement for all `Evaluator` implementations. 
+
+The following new and updated features are added with this release:
+
+* New module: `operations`, it contains geometric operations that can be applied to curves and surfaces
+* Added libconfig-type file export feature to `exchange` module
+* Updated triangulation functions
+* Updated `elements` module
+* Updated `VisMPL.VisSurfTriangle()` class to use `utilities.make_triangle_mesh()` for triangulation
+* Added colormap input to `VisMPL.VisSurfTriangle()` class
+* Fixed deprecation errors for Plotly >= 3.0.0
+* Added new vector and point operations to `utilities` module
+
+
 ## v4.1.0 released on 2018-07-31
 
 * Added algorithms A2.4, A2.5, A3.7 and A3.8
@@ -96,7 +117,6 @@ This is the first **beta version** of NURBS-Python v4.x series.
 * Added more tests
 * Updated examples
 * Evaluation algorithms speed improvements
-
 
 * Added [Plotly](https://plot.ly/python/) visualization module
 * Updated documentation and added more details
