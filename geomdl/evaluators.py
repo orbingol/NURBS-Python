@@ -426,14 +426,14 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         for i in range(len(knots_u)):
             idx_u = spans_u[i] - degree_u
             for j in range(len(knots_v)):
+                idx_v = spans_v[j] - degree_v
                 spt = [0.0 for _ in range(dimension)]
-                for l in range(0, degree_v + 1):
+                for k in range(0, degree_u + 1):
                     temp = [0.0 for _ in range(dimension)]
-                    idx_v = spans_v[j] - degree_v + l
-                    for k in range(0, degree_u + 1):
-                        temp[:] = [tmp + (basis_u[i][k] * cp) for tmp, cp in
-                                   zip(temp, control_points2d[idx_u + k][idx_v])]
-                    spt[:] = [pt + (basis_v[j][l] * tmp) for pt, tmp in zip(spt, temp)]
+                    for l in range(0, degree_v + 1):
+                        temp[:] = [tmp + (basis_v[j][l] * cp) for tmp, cp in
+                                   zip(temp, control_points2d[idx_u + k][idx_v + l])]
+                    spt[:] = [pt + (basis_u[i][k] * tmp) for pt, tmp in zip(spt, temp)]
 
                 eval_points.append(spt)
 
