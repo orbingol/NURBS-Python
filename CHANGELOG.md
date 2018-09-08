@@ -1,5 +1,13 @@
 # NURBS-Python Changelog
 
+## v4.2.1 released on 2018-09-08
+
+This release adds the functionality of finding control points involved in the evaluation of a curve/surface at the
+specified parameter(s) using `operations.find_ctrlpts()`.
+
+* Added `operations.find_ctrlpts()` function
+* Minor improvements in the surface evaluation algorithm
+
 ## v4.2.0 released on 2018-09-07
 
 This release moves some of the features from `BSpline` module to other modules since it is getting bigger and it has a lot of responsibilities which can be "globalized" to ease extensibility.
