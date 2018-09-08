@@ -105,6 +105,28 @@ def find_spans(degree, knot_vector, num_ctrlpts, knots, func=find_span_linear):
     return spans
 
 
+def find_multiplicity(knot, knot_vector, **kwargs):
+    """ Finds knot multiplicity over the knot vector.
+
+    :param knot: knot
+    :type knot: float
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :return: multiplicity of the knot
+    :rtype: int
+    """
+    # Get tolerance value
+    tol = kwargs.get('tol', 0.001)
+
+    mult = 0  # initial multiplicity
+
+    for kv in knot_vector:
+        if abs(knot - kv) <= tol:
+            mult += 1
+
+    return mult
+
+
 def basis_function(degree, knot_vector, span, knot):
     """ Computes the non-vanishing basis functions for a single knot.
 
@@ -271,28 +293,6 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
 
     # Return the basis function derivatives list
     return ders
-
-
-def find_multiplicity(knot, knot_vector, **kwargs):
-    """ Finds knot multiplicity over the knot vector.
-
-    :param knot: knot
-    :type knot: float
-    :param knot_vector: knot vector
-    :type knot_vector: list, tuple
-    :return: multiplicity of the knot
-    :rtype: int
-    """
-    # Get tolerance value
-    tol = kwargs.get('tol', 0.001)
-
-    mult = 0  # initial multiplicity
-
-    for kv in knot_vector:
-        if abs(knot - kv) <= tol:
-            mult += 1
-
-    return mult
 
 
 def basis_function_one(degree, knot_vector, span, knot):
