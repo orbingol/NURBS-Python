@@ -23,10 +23,12 @@ class MultiCurve(Abstract.Multi):
     but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super(MultiCurve, self).__init__()
         self._instance = Abstract.Curve
         self._sample_size = 0  # sample size
+        for arg in args:
+            self.add(arg)
 
     @property
     def sample_size(self):
@@ -115,11 +117,13 @@ class MultiSurface(Abstract.Multi):
     a for loop.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super(MultiSurface, self).__init__()
         self._instance = Abstract.Surface
         self._sample_size_u = 0
         self._sample_size_v = 0
+        for arg in args:
+            self.add(arg)
 
     @property
     def sample_size_u(self):

@@ -1212,7 +1212,7 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
     a for loop.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self._elements = []  # elements contained
         self._vis_component = None  # visualization component
         self._iter_index = 0  # iterator index
