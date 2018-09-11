@@ -24,7 +24,7 @@ def grid():
 def grid2():
     """ Generates a 6x6 control points grid """
     surfgrid = CPGen.Grid(7, 13)
-    surfgrid.generate(10, 10)
+    surfgrid.generate(16, 16)
     return surfgrid
 
 
@@ -228,8 +228,8 @@ def test_bumps1_all_positive_heights(grid2):
 
 def test_bumps2(grid2):
     with pytest.raises(RuntimeError):
-        # impossible to add 10 bumps on this specific grid
-        grid2.bumps(num_bumps=10, bump_height=5, base_extent=2)
+        # impossible to add 100 bumps on this specific grid
+        grid2.bumps(num_bumps=100, bump_height=5, base_extent=2)
 
 
 def test_bumps4():
@@ -248,7 +248,7 @@ def test_bumps5(grid2):
 def test_bumps8(grid2):
     with pytest.raises(ValueError):
         # large base_extent
-        grid2.bumps(num_bumps=1, bump_height=5, base_extent=7)
+        grid2.bumps(num_bumps=1, bump_height=5, base_extent=20)
 
 
 def test_bumps9(grid2):
