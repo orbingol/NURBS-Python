@@ -59,4 +59,4 @@ The following example illustrates a sample usage of the B-Spline surface generat
 * ``num_bumps``: Number of hills to be generated
 * ``bump_height``: Defines the peak height of the generated hills
 * ``base_extent``: Due to the structure of the grid, the hill base can be defined as a square with the edge length of *a*. ``base_extent`` is defined by the value of *a/2*.
-* ``padding``: Defines the padding of the area where the hills are generated. It accepts positive and negative values. A negative value means a padding to the inside of the grid and a positive value means padding to the outside of the grid.
+* ``base_adjust``: Defines the padding of the area where the hills are generated. It accepts positive and negative values. A negative value means a padding to the inside of the grid and a positive value means padding to the outside of the grid.

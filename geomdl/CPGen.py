@@ -291,14 +291,14 @@ class Grid(object):
 
         * ``bump_height``: z-value of the generated bumps on the grid. *Default: 5.0*
         * ``base_extent``: extension of the hill base from its center in terms of grid points. *Default: 2*
-        * ``padding``: minimum space between the hills. *Default: 0*
+        * ``base_adjust``: padding between the bases of the hills. *Default: 0*
 
         :param num_bumps: number of bumps (i.e. hills) to be generated on the 2D grid
         :type num_bumps: int
         """
         bump_height = kwargs.get("bump_height", 5.0)
         base_extent = kwargs.get("base_extent", 2)
-        padding = kwargs.get('padding', 0)
+        padding = kwargs.get('base_adjust', 0)
         max_trials = kwargs.get("max_trials", 25)
 
         # Check if the grid points are generated
@@ -322,8 +322,8 @@ class Grid(object):
         if base_extent < 1:
             raise ValueError("Base size must be bigger than 1 grid point")
 
-        if (2 * base_extent) > self._size_u \
-                or (2 * base_extent) > self._size_v:
+        if (2 * base_extent) + padding > self._size_u \
+                or (2 * base_extent) + padding > self._size_v:
             raise ValueError("The area of the base must be less than the area of the grid")
 
         # Initialize a list to store bumps
