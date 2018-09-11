@@ -404,7 +404,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         # Run the visualization component
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self.evalpts, name="Curve", color=curvecolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=curvecolor, plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
@@ -1129,7 +1129,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                                 name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size_u, self.sample_size_v],
-                                name="Surface", color=surfcolor, plot_type='evalpts')
+                                name=self.name, color=surfcolor, plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def reset(self, **kwargs):

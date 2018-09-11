@@ -104,7 +104,7 @@ class MultiCurve(Abstract.Multi):
                                     color=color[0],
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts,
-                                    name="Curve " + str(idx + 1),
+                                    name=elem.name + " " + str(idx + 1),
                                     color=color[1],
                                     plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
@@ -254,7 +254,7 @@ class MultiSurface(Abstract.Multi):
                                     plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts,
                                     size=[elem.sample_size_u, elem.sample_size_v],
-                                    name="Surface " + str(idx + 1),
+                                    name=elem.name + " " + str(idx + 1),
                                     color=color[1],
                                     plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
