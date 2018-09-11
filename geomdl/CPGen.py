@@ -358,10 +358,11 @@ class Grid(object):
         idx = 0
         # Update the grid with the bumps
         for u, v in bump_list:
-            height = bump_height[idx] / base_extent
+            h_increment = bump_height[idx] / base_extent
+            height = h_increment
             for j in range(base_extent - 1, -1, -1):
                 self._create_bump(u, v, j, height)
-                height += height
+                height += h_increment
             if bump_height_is_array:
                 idx += 1
 
