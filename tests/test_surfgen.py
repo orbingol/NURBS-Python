@@ -11,6 +11,7 @@ from geomdl import CPGen
 
 GRID_TOL = 10e-8
 
+
 @pytest.fixture
 def grid():
     """ Generates a 3x4 control points grid """
@@ -200,21 +201,20 @@ def test_grid_save4(grid):
 
 
 def test_bumps1(grid2):
-    grid2.bumps(num_bumps=2, all_positive=False, bump_height=5, base_extent=2)
+    grid2.bumps(num_bumps=2, bump_height=[5, 7], base_extent=2)
     check_vals = grid2.grid
 
     check = False
     for rows in check_vals:
         for val in rows:
-            # should consider negative values too
-            if abs(val[2]) == 5.0:
+            if abs(val[2]) == 5.0 or abs(val[2]) == 7.0:
                 check = True
 
     assert check
 
 
 def test_bumps1_all_positive_heights(grid2):
-    grid2.bumps(num_bumps=2, all_positive=True, bump_height=5, base_extent=2)
+    grid2.bumps(num_bumps=2, bump_height=5, base_extent=2)
     check_vals = grid2.grid
 
     check = False
@@ -229,7 +229,7 @@ def test_bumps1_all_positive_heights(grid2):
 def test_bumps2(grid2):
     with pytest.raises(RuntimeError):
         # impossible to add 10 bumps on this specific grid
-        grid2.bumps(num_bumps=10, all_positive=False, bump_height=5, base_extent=2)
+        grid2.bumps(num_bumps=10, bump_height=5, base_extent=2)
 
 
 def test_bumps4():
@@ -242,43 +242,19 @@ def test_bumps4():
 def test_bumps5(grid2):
     with pytest.warns(UserWarning):
         # non-integer num_bumps
-        grid2.bumps(num_bumps=1.1, all_positive=False, bump_height=5, base_extent=2)
-
-
-def test_bumps6(grid2):
-    with pytest.raises(ValueError):
-        # negative bump_height
-        grid2.bumps(num_bumps=1, all_positive=False, bump_height=-5, base_extent=2)
-
-
-def test_bumps7(grid2):
-    with pytest.raises(ValueError):
-        # non-bool all_positive argument
-        grid2.bumps(num_bumps=1, all_positive=15, bump_height=5, base_extent=2)
+        grid2.bumps(num_bumps=1.1, bump_height=5, base_extent=2)
 
 
 def test_bumps8(grid2):
     with pytest.raises(ValueError):
         # large base_extent
-        grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=7)
+        grid2.bumps(num_bumps=1, bump_height=5, base_extent=7)
 
 
 def test_bumps9(grid2):
     with pytest.raises(ValueError):
         # small base_extent
-        grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=0)
-
-
-def test_bumps10(grid2):
-    with pytest.raises(ValueError):
-        # large base_adjust
-        grid2.bumps(num_bumps=1, all_positive=False, bump_height=5, base_extent=2, base_adjust=2)
-
-
-def test_bumps11(grid2):
-    with pytest.warns(UserWarning):
-        # num_bumps <= 0
-        grid2.bumps(num_bumps=0)
+        grid2.bumps(num_bumps=1, bump_height=5, base_extent=0)
 
 
 def test_grid_translate1(grid):
