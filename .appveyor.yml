@@ -7,8 +7,8 @@
 
 version: 1.0.{build}
 
-# Build tags only
-skip_non_tags: true
+## Build tags only
+#skip_non_tags: true
 
 # Fetch repository as a zip archive
 shallow_clone: true
