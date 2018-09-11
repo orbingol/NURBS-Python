@@ -24,7 +24,7 @@ def grid():
 def grid2():
     """ Generates a 6x6 control points grid """
     surfgrid = CPGen.Grid(7, 13)
-    surfgrid.generate(9, 9)
+    surfgrid.generate(10, 10)
     return surfgrid
 
 
@@ -201,13 +201,13 @@ def test_grid_save4(grid):
 
 
 def test_bumps1(grid2):
-    grid2.bumps(num_bumps=2, bump_height=[5, 5], base_extent=2)
+    grid2.bumps(num_bumps=2, bump_height=[5.0, 7.0], base_extent=2)
     check_vals = grid2.grid
 
     check = False
     for rows in check_vals:
         for val in rows:
-            if abs(val[2]) == 5.0:
+            if val[2] == 5.0 or val[2] == 7.0:
                 check = True
 
     assert check
