@@ -291,7 +291,7 @@ def test_nurbs_surface_knot_vector_v():
 
 
 def test_nurbs_surface_name_property(nurbs_surface):
-    default_name = "NURBS Surface"
+    default_name = "Surface"
     assert nurbs_surface.name == default_name
     assert str(nurbs_surface) == default_name
 

@@ -50,7 +50,7 @@ def nurbs_curve2():
 
 
 def test_nurbs_curve2d_name_property(nurbs_curve):
-    default_name = "NURBS Curve"
+    default_name = "Curve"
     assert nurbs_curve.name == default_name
     assert str(nurbs_curve) == default_name
 
