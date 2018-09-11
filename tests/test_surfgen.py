@@ -201,13 +201,13 @@ def test_grid_save4(grid):
 
 
 def test_bumps1(grid2):
-    grid2.bumps(num_bumps=2, bump_height=[5, 7], base_extent=2)
+    grid2.bumps(num_bumps=2, bump_height=[5, 5], base_extent=2)
     check_vals = grid2.grid
 
     check = False
     for rows in check_vals:
         for val in rows:
-            if abs(val[2]) == 5.0 or abs(val[2]) == 7.0:
+            if abs(val[2]) == 5.0:
                 check = True
 
     assert check
