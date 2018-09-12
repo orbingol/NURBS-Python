@@ -1,5 +1,12 @@
 # NURBS-Python Changelog
 
+## v4.2.2 released on 2018-09-11
+
+* Fixed a bug causing incorrect alignment of control points that generate the hills in the surface generator module
+* Surface generator now generates more smooth hills
+* Added an option to change the label on the visualization legend by setting the ``name`` property
+* Updated ``Multi.MultiCurve`` and ``Multi.MultiSurface`` constructors to allow easy addition of the shapes to the container object
+
 ## v4.2.1 released on 2018-09-08
 
 This release adds the functionality of finding control points involved in the evaluation of a curve/surface at the
@@ -27,7 +34,6 @@ The following new and updated features are added with this release:
 * Added colormap input to `VisMPL.VisSurfTriangle()` class
 * Fixed deprecation errors for Plotly >= 3.0.0
 * Added new vector and point operations to `utilities` module
-
 
 ## v4.1.0 released on 2018-07-31
 
