@@ -163,9 +163,16 @@ class Triangle(AbstractElement):
 
     @property
     def vertices_raw(self):
+        """ Returns the list of vertices that generates a closed triangle.
+
+        :getter: List of vertices
+        """
         v_raw = []
         for v in self._vertices:
             v_raw.append(v.data)
+        # Add the first vertex data as a last element (for plotting modules)
+        if len(self._vertices) > 0:
+            v_raw.append(self._vertices[0].data)
         return v_raw
 
     @property
@@ -190,8 +197,8 @@ class Triangle(AbstractElement):
             v_idx.append(v.id - 1)
         return v_idx
 
-    def add_vertex(self, vertex, check=True):
-        if len(self._vertices) > 2 and check:
+    def add_vertex(self, vertex):
+        if len(self._vertices) > 2:
             raise ValueError("Cannot add more vertices")
         if isinstance(vertex, Vertex):
             self._vertices.append(vertex)

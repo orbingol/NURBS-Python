@@ -476,7 +476,6 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :rtype: tuple
     """
     vertex_spacing = kwargs.get('vertex_spacing', 1)
-    internal_vis_enabled = kwargs.get('internal_vis_enabled', False)
 
     points2d = []
     for i in range(0, size_u):
@@ -520,9 +519,6 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
                 tri.add_vertex(vertices2d[col_idx + 1][row_idx])
                 tri.add_vertex(vertices2d[col_idx][row_idx])
                 tri.add_vertex(vertices2d[col_idx][row_idx + 1])
-                # Add the mid-line for VisSurface visualization class
-                if internal_vis_enabled:
-                    tri.add_vertex(vertices2d[col_idx+1][row_idx], check=False)
                 left_half = False
             else:
                 tri.add_vertex(vertices2d[col_idx][row_idx + 1])

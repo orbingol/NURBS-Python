@@ -315,8 +315,7 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
-                                                                   internal_vis_enabled=True)
+                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
                 pts = []
                 for tri in triangles:
                     pts += tri.vertices_raw
