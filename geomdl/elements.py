@@ -58,6 +58,14 @@ class Vertex(AbstractElement):
     def __reversed__(self):
         return reversed(self._value)
 
+    def __nonzero__(self):
+        # For Python 2 compatibility
+        return self.__bool__()
+
+    def __bool__(self):
+        # For Python 3 compatibility
+        return self.inside
+
     @property
     def x(self):
         return self._value[0]
