@@ -202,8 +202,9 @@ class Triangle(AbstractElement):
             raise ValueError("Cannot add more vertices")
         if isinstance(vertex, Vertex):
             self._vertices.append(vertex)
-        elif isinstance(vertex, list):
-            self._vertices += vertex
+        elif isinstance(vertex, (list, tuple)):
+            for elem in vertex:
+                self.add_vertex(elem)
         else:
             raise TypeError("Input must be a Vertex object")
 
@@ -239,8 +240,9 @@ class Face(AbstractElement):
     def add_triangle(self, triangle):
         if isinstance(triangle, Triangle):
             self._triangles.append(triangle)
-        elif isinstance(triangle, list):
-            self._triangles += triangle
+        elif isinstance(triangle, (list, tuple)):
+            for elem in triangle:
+                self.add_triangle(elem)
         else:
             raise TypeError("Input must be a Triangle object")
 
@@ -276,7 +278,8 @@ class Body(AbstractElement):
     def add_face(self, face):
         if isinstance(face, Face):
             self._faces.append(face)
-        elif isinstance(face, list):
-            self._faces += face
+        elif isinstance(face, (list, tuple)):
+            for elem in face:
+                self.add_face(elem)
         else:
             raise TypeError("Input must be a Face object")
