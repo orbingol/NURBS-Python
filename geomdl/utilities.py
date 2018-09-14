@@ -458,13 +458,22 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     This function simply generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
     The input is the surface points and the number of points on the parametric dimensions u and v,
     indicated as row and column sizes in the function signature. This function should operate correctly if row and
-    column sizes are input correctly, no matter what the points are v-ordered or u-ordered.
-
-    Please see the documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
+    column sizes are input correctly, no matter what the points are v-ordered or u-ordered. Please see the
+    documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
     point ordering for the surfaces.
 
-    This function returns a tuple containing two lists. First one is the list of vertices and the second one is the list
-    of triangles.
+    This function accepts the following keyword arguments
+        * ``vertex_spacing``: defines the size of the triangles via setting the jump value between points
+        * ``vertex_postprocessor``: function called after generating the vertex list
+        * ``triangle_postprocessor``: function called after generating the triangle list
+
+    Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
+    triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
+    vertices and triangles. Prototypes of the post-processing functions can be found in the source code of this
+    function.
+
+    The return value of this function is a tuple containing two lists. First one is the list of vertices and the second
+    one is the list of triangles.
 
     :param points: input points
     :type points: list, tuple
@@ -479,20 +488,31 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Returns True if all input vertices have inside flag True, otherwise returns False
         return all(args)
 
-    vertex_spacing = kwargs.get('vertex_spacing', 1)
+    def process_vertices(vertex_list):
+        # Default function for vertex post-processing
+        return vertex_list
+
+    def process_triangles(triangle_list):
+        # Default function for triangle post-processing
+        return triangle_list
+
+    # Get keyword arguments
+    vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
+    vertex_postprocess_func = kwargs.get('vertex_postprocessor', process_vertices)  # vertex post-processing
+    triangle_postprocess_func = kwargs.get('triangle_postprocessor', process_triangles)  # triangle post-processing
 
     # Variable initialization
-    vrt_idx = 0  # vertex array index numbering
-    tri_id = 1  # triangle ID start number
+    vrt_idx = 0  # vertex array index numbering start
+    tri_id = 1  # triangle ID numbering start
     u_range = 1.0 / float(size_u - 1)  # for computing vertex parametric u value
     v_range = 1.0 / float(size_v - 1)  # for computing vertex parametric v value
 
-    # Size for triangulation loop traversal
-    tri_cols = int(round((size_u / vertex_spacing) + 10e-8) + (size_u % vertex_spacing))
-    tri_rows = int(round((size_v / vertex_spacing) + 10e-8) + (size_v % vertex_spacing))
+    # Vertex array size (also used for traversing triangulation loop)
+    varr_size_u = int(round((size_u / vertex_spacing) + 10e-8) + (size_u % vertex_spacing))
+    varr_size_v = int(round((size_v / vertex_spacing) + 10e-8) + (size_v % vertex_spacing))
 
-    # Prepare vertices
-    vertices = [Vertex() for _ in range(tri_rows * tri_cols)]
+    # Start vertex generation loop
+    vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
     u = 0.0
     for i in range(0, size_u, vertex_spacing):
         v = 0.0
@@ -505,23 +525,26 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             v += (v_range * vertex_spacing)
         u += (u_range * vertex_spacing)
 
+    # Execute vertex post-processing function
+    vertices = vertex_postprocess_func(vertices)
+
     # Start triangulation loop
     forward = True
     triangles = []
-    for i in range(0, tri_cols - 1):
+    for i in range(0, varr_size_u - 1):
         j = 0
         left_half = True
         tri_list = []
-        while j < tri_rows - 1:
+        while j < varr_size_v - 1:
             if left_half:
-                vertex1 = vertices[((i + 1) * tri_rows) + j]
-                vertex2 = vertices[(i * tri_rows) + j]
-                vertex3 = vertices[(i * tri_rows) + j + 1]
+                vertex1 = vertices[((i + 1) * varr_size_v) + j]
+                vertex2 = vertices[(i * varr_size_v) + j]
+                vertex3 = vertices[(i * varr_size_v) + j + 1]
                 left_half = False
             else:
-                vertex1 = vertices[(i * tri_rows) + j + 1]
-                vertex2 = vertices[((i + 1) * tri_rows) + j + 1]
-                vertex3 = vertices[((i + 1) * tri_rows) + j]
+                vertex1 = vertices[(i * varr_size_v) + j + 1]
+                vertex2 = vertices[((i + 1) * varr_size_v) + j + 1]
+                vertex3 = vertices[((i + 1) * varr_size_v) + j]
                 left_half = True
                 j += 1
 
@@ -537,6 +560,9 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             forward = True
             tri_list.reverse()
         triangles += tri_list
+
+    # Execute triangle post-processing function
+    triangles = triangle_postprocess_func(triangles)
 
     return vertices, triangles
 
