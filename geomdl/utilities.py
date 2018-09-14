@@ -505,7 +505,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         u += u_range
 
     v_col_size = len(vertices2d)
-    v_row_size = len(vert_list)
+    v_row_size = len(vertices2d[0])
 
     tri_id = 1
     forward = True
@@ -520,7 +520,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
                 tri.add_vertex(vertices2d[col_idx + 1][row_idx])
                 tri.add_vertex(vertices2d[col_idx][row_idx])
                 tri.add_vertex(vertices2d[col_idx][row_idx + 1])
-                # Add the midline for VIsSurface visualization class
+                # Add the mid-line for VisSurface visualization class
                 if internal_vis_enabled:
                     tri.add_vertex(vertices2d[col_idx+1][row_idx], check=False)
                 left_half = False
