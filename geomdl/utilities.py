@@ -462,10 +462,11 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
     point ordering for the surfaces.
 
-    This function accepts the following keyword arguments
-        * ``vertex_spacing``: defines the size of the triangles via setting the jump value between points
-        * ``vertex_postprocessor``: function called after generating the vertex list
-        * ``triangle_postprocessor``: function called after generating the triangle list
+    This function accepts the following keyword arguments:
+
+    * ``vertex_spacing``: defines the size of the triangles via setting the jump value between points
+    * ``vertex_postprocessor``: function called after generating the vertex list
+    * ``triangle_postprocessor``: function called after generating the triangle list
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
