@@ -475,72 +475,68 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
+    def check_inside(*args):
+        # Returns True if all input vertices have inside flag True, otherwise returns False
+        return all(args)
+
     vertex_spacing = kwargs.get('vertex_spacing', 1)
 
-    points2d = []
-    for i in range(0, size_u):
-        row_list = []
-        for j in range(0, size_v):
-            row_list.append(points[j + (i * size_v)])
-        points2d.append(row_list)
+    # Variable initialization
+    vert_id = 1  # vertex ID start number
+    tri_id = 1  # triangle ID start number
+    u_range = 1.0 / float(size_u - 1)  # for computing vertex parametric u value
+    v_range = 1.0 / float(size_v - 1)  # for computing vertex parametric v value
 
-    u_range = 1.0 / float(size_u - 1)
-    v_range = 1.0 / float(size_v - 1)
-    vertices2d = []
-    vert_id = 1
+    # Size for triangulation loop traversal
+    tri_cols = int(math.floor(size_u / vertex_spacing) + (size_u % vertex_spacing))
+    tri_rows = int(math.floor(size_v / vertex_spacing) + (size_v % vertex_spacing))
+
+    # Prepare vertices
+    vertices = [Vertex() for _ in range(tri_rows * tri_cols)]
     u = 0.0
-    for col_idx in range(0, size_u, vertex_spacing):
-        vert_list = []
+    for i in range(0, size_u, vertex_spacing):
         v = 0.0
-        for row_idx in range(0, size_v, vertex_spacing):
-            temp = Vertex()
-            temp.data = points2d[col_idx][row_idx]
-            temp.id = vert_id
-            temp.uv = [u, v]
-            vert_list.append(temp)
+        for j in range(0, size_v, vertex_spacing):
+            idx = j + (i * size_v)
+            vertices[idx].data = points[idx]
+            vertices[idx].id = vert_id
+            vertices[idx].uv = [u, v]
             vert_id += 1
             v += v_range
-        vertices2d.append(vert_list)
         u += u_range
 
-    v_col_size = len(vertices2d)
-    v_row_size = len(vertices2d[0])
-
-    tri_id = 1
+    # Start triangulation loop
     forward = True
     triangles = []
-    for col_idx in range(0, v_col_size - 1):
-        row_idx = 0
+    for i in range(0, tri_cols - 1):
+        j = 0
         left_half = True
         tri_list = []
-        while row_idx < v_row_size - 1:
-            tri = Triangle()
+        while j < tri_rows - 1:
             if left_half:
-                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
-                tri.add_vertex(vertices2d[col_idx][row_idx])
-                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
+                vertex1 = vertices[((i + 1) * tri_rows) + j]
+                vertex2 = vertices[(i * tri_rows) + j]
+                vertex3 = vertices[(i * tri_rows) + j + 1]
                 left_half = False
             else:
-                tri.add_vertex(vertices2d[col_idx][row_idx + 1])
-                tri.add_vertex(vertices2d[col_idx + 1][row_idx + 1])
-                tri.add_vertex(vertices2d[col_idx + 1][row_idx])
+                vertex1 = vertices[(i * tri_rows) + j + 1]
+                vertex2 = vertices[((i + 1) * tri_rows) + j + 1]
+                vertex3 = vertices[((i + 1) * tri_rows) + j]
                 left_half = True
-                row_idx += 1
-            tri.id = tri_id
-            tri_list.append(tri)
-            tri_id += 1
+                j += 1
+
+            if check_inside(vertex1, vertex2, vertex3):
+                tri = Triangle()
+                tri.add_vertex((vertex1, vertex2, vertex3))
+                tri.id = tri_id
+                tri_list.append(tri)
+                tri_id += 1
         if forward:
             forward = False
         else:
             forward = True
             tri_list.reverse()
         triangles += tri_list
-
-    # Convert to 1-dimensional list
-    vertices = []
-    for u in range(v_col_size):
-        for v in range(v_row_size):
-            vertices.append(vertices2d[u][v])
 
     return vertices, triangles
 
