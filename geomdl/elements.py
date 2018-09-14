@@ -111,11 +111,11 @@ class Vertex(AbstractElement):
 
     @property
     def inside(self):
-        return self._value[3]
+        return bool(self._value[3])
 
     @inside.setter
     def inside(self, value):
-        self._value = value
+        self._value = bool(value)
 
     @property
     def data(self):
