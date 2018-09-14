@@ -482,14 +482,14 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 1)
 
     # Variable initialization
-    vert_id = 1  # vertex ID start number
+    vrt_idx = 0  # vertex array index numbering
     tri_id = 1  # triangle ID start number
     u_range = 1.0 / float(size_u - 1)  # for computing vertex parametric u value
     v_range = 1.0 / float(size_v - 1)  # for computing vertex parametric v value
 
     # Size for triangulation loop traversal
-    tri_cols = int(math.floor(size_u / vertex_spacing) + (size_u % vertex_spacing))
-    tri_rows = int(math.floor(size_v / vertex_spacing) + (size_v % vertex_spacing))
+    tri_cols = int(round((size_u / vertex_spacing) + 10e-8) + (size_u % vertex_spacing))
+    tri_rows = int(round((size_v / vertex_spacing) + 10e-8) + (size_v % vertex_spacing))
 
     # Prepare vertices
     vertices = [Vertex() for _ in range(tri_rows * tri_cols)]
@@ -498,12 +498,12 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         v = 0.0
         for j in range(0, size_v, vertex_spacing):
             idx = j + (i * size_v)
-            vertices[idx].data = points[idx]
-            vertices[idx].id = vert_id
-            vertices[idx].uv = [u, v]
-            vert_id += 1
-            v += v_range
-        u += u_range
+            vertices[vrt_idx].data = points[idx]
+            vertices[vrt_idx].id = vrt_idx + 1
+            vertices[vrt_idx].uv = [u, v]
+            vrt_idx += 1
+            v += (v_range * vertex_spacing)
+        u += (u_range * vertex_spacing)
 
     # Start triangulation loop
     forward = True
