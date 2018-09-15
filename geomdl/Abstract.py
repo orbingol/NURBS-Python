@@ -41,7 +41,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._degree = 0  # degree
         self._knot_vector = utilities.init_var(self._array_type)  # knot vector
         self._control_points = utilities.init_var(self._array_type)  # control points
-        self._delta = 0.1  # evaluation delta
+        self._delta = 0.01  # evaluation delta
         self._curve_points = utilities.init_var(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
@@ -260,8 +260,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         .. math::
 
             \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
-
-        .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value
         :setter: Sets the delta value
@@ -494,12 +492,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._degree_u = 0  # degree
         self._knot_vector_u = utilities.init_var(self._array_type)  # knot vector
         self._control_points_size_u = 0  # control points array length
-        self._delta_u = 0.1  # evaluation delta
+        self._delta_u = 0.01  # evaluation delta
         # Define v-direction variables
         self._degree_v = 0  # degree
         self._knot_vector_v = utilities.init_var(self._array_type)  # knot vector
         self._control_points_size_v = 0  # control points array length
-        self._delta_v = 0.1  # evaluation delta
+        self._delta_v = 0.01  # evaluation delta
         # Define common variables
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
@@ -889,8 +887,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
 
-        .. note:: The delta value is 0.1 by default.
-
         :getter: Gets the delta value for the u-direction
         :setter: Sets the delta value for the u-direction
         :type: float
@@ -919,8 +915,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
-
-        .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta value for the v-direction
         :setter: Sets the delta value for the v-direction
@@ -956,8 +950,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         .. math::
 
             \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
-
-        .. note:: The delta value is 0.1 by default.
 
         :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same delta value for both u- and v-directions
