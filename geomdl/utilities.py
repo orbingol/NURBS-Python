@@ -465,8 +465,10 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     This function accepts the following keyword arguments:
 
     * ``vertex_spacing``: defines the size of the triangles via setting the jump value between points
-    * ``vertex_postprocessor``: function called after generating the vertex list
-    * ``triangle_postprocessor``: function called after generating the triangle list
+    * ``vertex_postprocess_func``: function called after generating the vertex list
+    * ``vertex_postprocess_args``: arguments passed to the vertex post-processing function
+    * ``triangle_postprocess_func``: function called after generating the triangle list
+    * ``triangle_postprocess_args``: arguments passed to the triangle post-processing function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
@@ -489,18 +491,22 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Returns True if all input vertices have inside flag True, otherwise returns False
         return all(args)
 
-    def process_vertices(vertex_list):
+    def process_vertices(vertex_list, postprocess_args):
         # Default function for vertex post-processing
         return vertex_list
 
-    def process_triangles(triangle_list):
+    def process_triangles(triangle_list, postprocess_args):
         # Default function for triangle post-processing
         return triangle_list
 
     # Get keyword arguments
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
-    vertex_postprocess_func = kwargs.get('vertex_postprocessor', process_vertices)  # vertex post-processing
-    triangle_postprocess_func = kwargs.get('triangle_postprocessor', process_triangles)  # triangle post-processing
+    # Vertex and triangle post-processing functions
+    vertex_postprocess_func = kwargs.get('vertex_postprocess_func', process_vertices)
+    triangle_postprocess_func = kwargs.get('triangle_postprocess_func', process_triangles)
+    # Vertex and triangle post-processing function arguments
+    vertex_postprocess_args = kwargs.get('vertex_postprocess_args', None)
+    triangle_postprocess_args = kwargs.get('triangle_postprocess_args', None)
 
     # Variable initialization
     vrt_idx = 0  # vertex array index numbering start
@@ -527,7 +533,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         u += (u_range * vertex_spacing)
 
     # Execute vertex post-processing function
-    vertices = vertex_postprocess_func(vertices)
+    vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
 
     # Start triangulation loop
     forward = True
@@ -563,7 +569,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         triangles += tri_list
 
     # Execute triangle post-processing function
-    triangles = triangle_postprocess_func(triangles)
+    triangles = triangle_postprocess_func(triangles, triangle_postprocess_args)
 
     return vertices, triangles
 
