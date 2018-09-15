@@ -18,12 +18,19 @@ class AbstractElement(object):
 
     @property
     def id(self):
+        """ Identifier for the geometric entity.
+
+        It must be an integer number, otherwise the setter will raise a *ValueError*.
+
+        :getter: Gets the identifier
+        :setter: Sets the identifier
+        """
         return self._id
 
     @id.setter
     def id(self, value):
         if not isinstance(value, int):
-            raise ValueError("ID value must be an integer")
+            raise ValueError("Identifier value must be an integer")
         self._id = value
 
 
@@ -68,6 +75,7 @@ class Vertex(AbstractElement):
 
     @property
     def x(self):
+        """ x-component of the vertex """
         return self._value[0]
 
     @x.setter
@@ -76,6 +84,7 @@ class Vertex(AbstractElement):
 
     @property
     def y(self):
+        """ y-component of the vertex """
         return self._value[1]
 
     @y.setter
@@ -84,6 +93,7 @@ class Vertex(AbstractElement):
 
     @property
     def z(self):
+        """ z-component of the vertex """
         return self._value[2]
 
     @z.setter
@@ -92,6 +102,7 @@ class Vertex(AbstractElement):
 
     @property
     def u(self):
+        """ Parametric u-component of the vertex """
         return self._uv[0]
 
     @u.setter
@@ -100,6 +111,7 @@ class Vertex(AbstractElement):
 
     @property
     def v(self):
+        """ Parametric v-component of the vertex """
         return self._uv[1]
 
     @v.setter
@@ -108,6 +120,7 @@ class Vertex(AbstractElement):
 
     @property
     def uv(self):
+        """ Parametric (u,v) pair of the vertex """
         return self._uv.tolist()
 
     @uv.setter
@@ -119,6 +132,7 @@ class Vertex(AbstractElement):
 
     @property
     def inside(self):
+        """ Inside-outside flag """
         return bool(self._value[3])
 
     @inside.setter
@@ -127,6 +141,11 @@ class Vertex(AbstractElement):
 
     @property
     def data(self):
+        """ (x,y,z) components of the vertex.
+
+        :getter: Gets the 3-dimensional components
+        :setter: Sets the 3-dimensional components
+        """
         return self._value.tolist()[0:-1]
 
     @data.setter
@@ -138,6 +157,12 @@ class Vertex(AbstractElement):
 
     @property
     def data_full(self):
+        """ (x,y,z,i) components of the vertex.
+
+        (x,y,z) corresponds to 3-dimensional coordinate of the vertex. (i) value corresponds to inside-outside flag.
+
+        :getter: Gets (x,y,z,i) components
+        """
         return self._value.tolist()
 
 
