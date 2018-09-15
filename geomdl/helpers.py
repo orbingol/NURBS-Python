@@ -14,7 +14,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     Implementation of Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
     The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
-    if FindSpan returns 1, then the knot is between the internal [0, 1).
+    if FindSpan returns 1, then the knot is between the interval [0, 1).
 
     :param degree: degree
     :type degree: int
@@ -59,7 +59,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     return mid
 
 
-def find_span_linear(degree, knot_vector, num_ctrlpts, knot):
+def find_span_linear(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     """ Finds the span of a single knot over the knot vector using linear search.
 
     Alternative implementation for the Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
