@@ -533,7 +533,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         u += (u_range * vertex_spacing)
 
     # Execute vertex post-processing function
-    vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
+    if vertex_postprocess_func is not None:
+        vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
 
     # Start triangulation loop
     forward = True
@@ -569,7 +570,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         triangles += tri_list
 
     # Execute triangle post-processing function
-    triangles = triangle_postprocess_func(triangles, triangle_postprocess_args)
+    if triangle_postprocess_func is not None:
+        triangles = triangle_postprocess_func(triangles, triangle_postprocess_args)
 
     return vertices, triangles
 
