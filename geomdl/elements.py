@@ -209,6 +209,37 @@ class Triangle(AbstractElement):
         return v_raw
 
     @property
+    def vertices_uv(self):
+        data = self.vertices
+        res = [data[idx].uv for idx in range(3)]
+        return res
+
+    @property
+    def edges(self):
+        data = self.vertices
+        data.append(self.vertices[0])
+        res = [[] for _ in range(3)]
+        for idx in range(3):
+            res[idx] = [data[idx], data[idx + 1]]
+        return res
+
+    @property
+    def edges_raw(self):
+        data = self.vertices_raw
+        res = [[] for _ in range(3)]
+        for idx in range(3):
+            res[idx] = [data[idx], data[idx + 1]]
+        return res
+
+    @property
+    def edges_uv(self):
+        data = self.edges
+        res = [[] for _ in range(3)]
+        for idx in range(3):
+            res[idx] = [data[idx][0].uv, data[idx][1].uv]
+        return res
+
+    @property
     def vertex_ids(self):
         """ Gets vertex number list.
 
@@ -229,6 +260,13 @@ class Triangle(AbstractElement):
         for v in self._vertices:
             v_idx.append(v.id - 1)
         return v_idx
+
+    @property
+    def inside(self):
+        res = [[] for _ in range(3)]
+        for idx in range(3):
+            res[idx] = self._vertices[idx].inside
+        return all(res)
 
     def add_vertex(self, vertex):
         if len(self._vertices) > 2:
