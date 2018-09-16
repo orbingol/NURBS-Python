@@ -589,6 +589,21 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
+def triangle_center(tri):
+    """ Computes the center of mass of the input triangle.
+
+    :param tri: triangle object
+    :type tri: elements.Triangle
+    :return: center of mass of the triangle
+    :rtype: tuple
+    """
+    mid = [0.0, 0.0, 0.0]
+    for idx, vert in enumerate(tri):
+        mid = [m + v for m, v in zip(mid, vert)]
+    mid = [m / 3.0 for m in mid]
+    return tuple(mid)
+
+
 def make_quadtree(points, size_u, size_v, **kwargs):
     """ Generates a quadtree-like structure from surface control points.
 
