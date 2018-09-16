@@ -250,11 +250,9 @@ class VisSurface(Abstract.VisAbstractSurf):
             # Plot evaluated points
             if plot['type'] == 'evalpts':
                 vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
-                pts = []
                 for tri in triangles:
-                    pts += tri.vertices_raw
-                pts = np.array(pts)
-                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                    pts = np.array(tri.vertices_raw)
+                    ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
                 legend_names.append(plot['name'])
