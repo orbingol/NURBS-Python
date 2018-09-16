@@ -11,7 +11,7 @@ from geomdl import BSpline
 from geomdl import operations
 from geomdl.visualization import VisMPL
 
-SAMPLE_SIZE = 25
+SAMPLE_SIZE = 5
 
 
 @pytest.fixture
@@ -299,7 +299,7 @@ def test_surf_ctrlpts_offset(bspline_surface):
 # Test if plotting a multi-surface without a window is possible
 def test_surf_multi_fig_nowindow(bspline_surface):
     conf = VisMPL.VisConfig()
-    vis = VisMPL.VisSurface(config=conf)
+    vis = VisMPL.VisSurfTriangle(config=conf)
 
     fname = conf.figure_image_filename
 
@@ -318,7 +318,7 @@ def test_surf_multi_fig_nowindow(bspline_surface):
 # Test if using a different file name is possible
 def test_surf_multi_fig_save(bspline_surface):
     conf = VisMPL.VisConfig()
-    vis = VisMPL.VisSurface(config=conf)
+    vis = VisMPL.VisSurfTriangle(config=conf)
 
     fname = "test-multi_surface.png"
 
