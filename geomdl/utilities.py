@@ -577,12 +577,12 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
 
 def triangle_normal(tri):
-    """ Computes the normal vector of the triangle.
+    """ Computes the (approximate) normal vector of the input triangle.
 
     :param tri: triangle object
     :type tri: elements.Triangle
     :return: normal vector of the triangle
-    :rtype: list
+    :rtype: tuple
     """
     vec1 = vector_generate(tri.vertices[0].data, tri.vertices[1].data)
     vec2 = vector_generate(tri.vertices[1].data, tri.vertices[2].data)
