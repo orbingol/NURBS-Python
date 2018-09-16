@@ -60,7 +60,7 @@ class Vertex(AbstractElement):
         del self._value[key]
 
     def __iter__(self):
-        return iter(self._value)
+        return iter(self.data)
 
     def __reversed__(self):
         return reversed(self._value)
