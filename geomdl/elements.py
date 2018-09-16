@@ -39,7 +39,7 @@ class Vertex(AbstractElement):
     """ Representation of a 3-dimensional vertex entity with its parametric position. """
     def __init__(self):
         super(Vertex, self).__init__()
-        self._value = array('f', [0.0, 0.0, 0.0, 1.0])  # x, y, z, 1.0 if inside is True
+        self._value = array('f', [0.0, 0.0, 0.0, 0.0])  # x, y, z, 1.0 if inside is True
         self._uv = array('f', [0.0, 0.0])
 
     def __str__(self):
