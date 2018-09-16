@@ -585,18 +585,27 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
-def triangle_center(tri):
+def triangle_center(tri, uv=False):
     """ Computes the center of mass of the input triangle.
 
     :param tri: triangle object
     :type tri: elements.Triangle
+    :param uv: if True, then finds parametric position of the center of mass
+    :type uv: bool
     :return: center of mass of the triangle
     :rtype: tuple
     """
-    mid = [0.0, 0.0, 0.0]
-    for idx, vert in enumerate(tri):
+    if uv:
+        data = tri.vertices_uv
+        mid = [0.0, 0.0]
+        sz = 2
+    else:
+        data = tri.vertices
+        mid = [0.0, 0.0, 0.0]
+        sz = 3
+    for idx, vert in enumerate(data):
         mid = [m + v for m, v in zip(mid, vert)]
-    mid = [m / 3.0 for m in mid]
+    mid = [m / sz for m in mid]
     return tuple(mid)
 
 
