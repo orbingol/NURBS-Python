@@ -487,10 +487,6 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
-    def check_inside(*args):
-        # Returns True if all input vertices have inside flag True, otherwise returns False
-        return all(args)
-
     def process_vertices(vertex_list, postprocess_args):
         # Default function for vertex post-processing
         return vertex_list
@@ -556,12 +552,12 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
                 left_half = True
                 j += 1
 
-            if check_inside(vertex1, vertex2, vertex3):
-                tri = Triangle()
-                tri.add_vertex((vertex1, vertex2, vertex3))
-                tri.id = tri_id
-                tri_list.append(tri)
-                tri_id += 1
+            # Generate triangle
+            tri = Triangle()
+            tri.add_vertex((vertex1, vertex2, vertex3))
+            tri.id = tri_id
+            tri_list.append(tri)
+            tri_id += 1
         if forward:
             forward = False
         else:
