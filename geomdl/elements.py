@@ -137,7 +137,7 @@ class Vertex(AbstractElement):
 
     @inside.setter
     def inside(self, value):
-        self._value = bool(value)
+        self._value[3] = value
 
     @property
     def data(self):
