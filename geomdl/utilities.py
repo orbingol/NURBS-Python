@@ -464,11 +464,11 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
     This function accepts the following keyword arguments:
 
-    * ``vertex_spacing``: defines the size of the triangles via setting the jump value between points
-    * ``vertex_postprocess_func``: function called after generating the vertex list
-    * ``vertex_postprocess_args``: arguments passed to the vertex post-processing function
-    * ``triangle_postprocess_func``: function called after generating the triangle list
-    * ``triangle_postprocess_args``: arguments passed to the triangle post-processing function
+    * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
+    * ``vertex_postprocess_func``: Function called after generating the vertex list
+    * ``vertex_postprocess_args``: Arguments passed to the vertex post-processing function
+    * ``triangle_postprocess_func``: Function called after generating the triangle list
+    * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of

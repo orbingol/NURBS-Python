@@ -51,6 +51,14 @@ class VisConfig(Abstract.VisConfigAbstract):
         # Plot the curve
         curve.render()
 
+    The following keyword arguments can be used to control tessellation in modules which use the tessellation function
+    :py:func:`.make_triangular_mesh()`:
+
+    * ``tessellate_vertex_func``: Sets the function called after generating the vertex list
+    * ``tessellate_vertex_args``: Sets the arguments passed to the vertex post-processing function
+    * ``tessellate_triangle_func``: Sets the function called after generating the triangle list
+    * ``tessellate_triangle_args``: Sets the arguments passed to the triangle post-processing function
+
     Please refer to the **Examples Repository** for more details.
     """
 
@@ -62,6 +70,11 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.figure_image_filename = "temp-figure.png"
+        # Tessellation post-processing configuration
+        self.tslpp_vertex_func = kwargs.get('tessellate_vertex_func', None)
+        self.tslpp_vertex_args = kwargs.get('tessellate_vertex_args', None)
+        self.tslpp_triangle_func = kwargs.get('tessellate_triangle_func', None)
+        self.tslpp_triangle_args = kwargs.get('tessellate_triangle_args', None)
 
     @staticmethod
     def set_axes_equal(ax):
@@ -249,8 +262,12 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
-                for tri in triangles:
+                verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
+                                                           vertex_postprocess_func=self._config.tslpp_vertex_func,
+                                                           vertex_postprocess_args=self._config.tslpp_vertex_args,
+                                                           triangle_postprocess_func=self._config.tslpp_triangle_func,
+                                                           triangle_postprocess_args=self._config.tslpp_triangle_args)
+                for tri in tris:
                     pts = np.array(tri.vertices_raw)
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
@@ -397,14 +414,18 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
             # Plot evaluated points
             if plot['type'] == 'evalpts':
                 # Use internal triangulation algorithm instead of Qhull (MPL default)
-                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
+                verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
+                                                           vertex_postprocess_func=self._config.tslpp_vertex_func,
+                                                           vertex_postprocess_args=self._config.tslpp_vertex_args,
+                                                           triangle_postprocess_func=self._config.tslpp_triangle_func,
+                                                           triangle_postprocess_args=self._config.tslpp_triangle_args)
                 # Extract zero-indexed vertex number list
-                tris = [tri.vertex_ids_zero for tri in triangles]
+                tri_idxs = [tri.vertex_ids_zero for tri in tris]
                 # Extract vertex coordinates
-                verts = [vert.data for vert in vertices]
-                pts = np.array(verts)
+                vert_coords = [vert.data for vert in verts]
+                pts = np.array(vert_coords)
                 # Create MPL Triangulation object
-                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tris)
+                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
 
                 # Determine the color or the colormap of the triangulated plot
                 trisurf_params = {}
