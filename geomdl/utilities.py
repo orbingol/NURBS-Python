@@ -488,6 +488,12 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
+    def _generate_triangle_object(vertex1, vertex2, vertex3, tri_idx):
+        res = Triangle()
+        res.add_vertex((vertex1, vertex2, vertex3))
+        res.id = tri_idx
+        return res
+
     def process_vertices(vertex_list, postprocess_args):
         # Default function for vertex post-processing
         return vertex_list
@@ -534,37 +540,31 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
 
     # Start triangulation loop
-    forward = True
     triangles = []
     for i in range(0, varr_size_u - 1):
-        j = 0
-        left_half = True
-        tri_list = []
-        while j < varr_size_v - 1:
-            if left_half:
-                vertex1 = vertices[((i + 1) * varr_size_v) + j]
-                vertex2 = vertices[(i * varr_size_v) + j]
-                vertex3 = vertices[(i * varr_size_v) + j + 1]
-                left_half = False
-            else:
-                vertex1 = vertices[(i * varr_size_v) + j + 1]
-                vertex2 = vertices[((i + 1) * varr_size_v) + j + 1]
-                vertex3 = vertices[((i + 1) * varr_size_v) + j]
-                left_half = True
-                j += 1
+        tri_list_left = []
+        tri_list_right = []
+        for j in range(0, varr_size_v - 1):
+            # Process left triangle
+            vertex1_left = vertices[((i + 1) * varr_size_v) + j]
+            vertex2_left = vertices[(i * varr_size_v) + j]
+            vertex3_left = vertices[(i * varr_size_v) + j + 1]
+            tri_left = _generate_triangle_object(vertex1_left, vertex2_left, vertex3_left, tri_id)
+            tri_list_left.append(tri_left)
 
-            # Generate triangle
-            tri = Triangle()
-            tri.add_vertex((vertex1, vertex2, vertex3))
-            tri.id = tri_id
-            tri_list.append(tri)
-            tri_id += 1
-        if forward:
-            forward = False
-        else:
-            forward = True
-            tri_list.reverse()
-        triangles += tri_list
+            # Process right triangle
+            vertex1_right = vertices[(i * varr_size_v) + j + 1]
+            vertex2_right = vertices[((i + 1) * varr_size_v) + j + 1]
+            vertex3_right = vertices[((i + 1) * varr_size_v) + j]
+            tri_right = _generate_triangle_object(vertex1_right, vertex2_right, vertex3_right, tri_id + 1)
+            tri_list_right.append(tri_right)
+
+            # Increment triangle index
+            tri_id += 2
+
+        tri_list_right.reverse()
+        triangles += tri_list_left
+        triangles += tri_list_right
 
     # Execute triangle post-processing function
     if triangle_postprocess_func is not None:
