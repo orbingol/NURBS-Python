@@ -7,7 +7,7 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-  - "pypy3.5"
+#  - "pypy3.5"
 
 # branch safelist
 branches:
@@ -29,7 +29,7 @@ install:
   - pip install codecov
 
 # install package and run tests
-#script: "python setup.py develop && pytest --cov=./"
+# script: "python setup.py develop && pytest --cov=./"
 script: 'python setup.py develop && python setup.py test -a "--cov=./"'
 
 # call at the end of CI build

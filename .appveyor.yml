@@ -19,7 +19,7 @@ branches:
   only:
     - master
     - 3.x
-    - devmaster
+#    - devmaster
 
   # blacklist
   except:
