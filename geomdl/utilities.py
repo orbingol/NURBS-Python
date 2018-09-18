@@ -340,14 +340,15 @@ def check_uv(u=None, v=None):
     :type v: float
     :raises ValueError: u and/or v is not in the interval [0, 1]
     """
+    tol = 10e-8
     # Check u value
     if u is not None:
-        if u < 0.0 or u > 1.0:
+        if not (0.0 - tol) <= u <= (1.0 + tol):
             raise ValueError('"u" value should be between 0 and 1.')
 
     # Check v value, if necessary
     if v is not None:
-        if v < 0.0 or v > 1.0:
+        if not (0.0 - tol) <= v <= (1.0 + tol):
             raise ValueError('"v" value should be between 0 and 1.')
 
 
