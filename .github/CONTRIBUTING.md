@@ -96,14 +96,16 @@ The `tests/` directory includes all automated tests. Implementing more tests tha
 increase the code coverage are appreciated. All included tests are designed to run with 
 [pytest](https://pypi.org/project/pytest/).
 
-## Improvements to the Documentation
+## Documentation
 
-I would be glad if you could do anything to improve [the documentation](http://nurbs-python.readthedocs.io/en/latest/).
-The documentation may be compiled using [Sphinx](https://pypi.org/project/Sphinx/). You may need to check the Sphinx
-version that Read the Docs (RtD) service is using since some of the latest Sphinx features may not be available on the
-RtD system.
+Any contribution would be great, including the ones for the [NURBS-Python documentation](http://nurbs-python.readthedocs.io/en/latest/).
+The latest development version of the documentation can be found [here](https://nurbs-python.readthedocs.io/en/devmaster/). 
+The documentation can be compiled using [Sphinx](https://pypi.org/project/Sphinx/). Please refer to the Sphinx 
+documentation for more details.
+
+The repository is connected to [Read the Docs](https://readthedocs.org/) service.
 Please refer to the [configuration file](https://github.com/orbingol/NURBS-Python/blob/master/.readthedocs.yml)
-in the project repository and the RtD documentation for details.
+in the project repository and [Read the Docs documentation](https://docs.readthedocs.io/en/latest/) for details.
 
 -----
 
