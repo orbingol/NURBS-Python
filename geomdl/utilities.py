@@ -470,11 +470,17 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``vertex_postprocess_args``: Arguments passed to the vertex post-processing function
     * ``triangle_postprocess_func``: Function called after generating the triangle list
     * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
+    * ``triangle_generate_func``: Function called for generating the triangles
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
-    vertices and triangles. Prototypes of the post-processing functions can be found in the source code of this
-    function.
+    vertices and triangles. Prototypes for implementation of the post-processing functions can be found in the source
+    code of this function.
+
+    The triangle generation function is designed to change the triangulation behavior. It takes 4 :py:class:`.Vertex`
+    objects and an index value for setting the triangle number as its function arguments. It returns a list of
+    :py:class:`.Triangle` objects generated from the input vertices. A default triangle generator is provided as a
+    prototype for implementation and it can be found in the source of this function.
 
     The return value of this function is a tuple containing two lists. First one is the list of vertices and the second
     one is the list of triangles.
@@ -488,25 +494,31 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
-    def _generate_triangle_object(vertex1, vertex2, vertex3, tri_idx):
-        res = Triangle()
-        res.add_vertex((vertex1, vertex2, vertex3))
-        res.id = tri_idx
-        return res
-
-    def process_vertices(vertex_list, postprocess_args):
+    def postprocess_vertices(vertex_list, postprocess_args):
         # Default function for vertex post-processing
         return vertex_list
 
-    def process_triangles(triangle_list, postprocess_args):
+    def postprocess_triangles(triangle_list, postprocess_args):
         # Default function for triangle post-processing
         return triangle_list
 
+    def generate_triangles(vertex1, vertex2, vertex3, vertex4, tri_idx):
+        # Default triangulation function
+        left_tri = Triangle()
+        left_tri.add_vertex((vertex1, vertex2, vertex3))
+        left_tri.id = tri_idx
+        right_tri = Triangle()
+        right_tri.add_vertex((vertex2, vertex3, vertex4))
+        right_tri.id = tri_idx + 1
+        return [left_tri, right_tri]
+
     # Get keyword arguments
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
+    # Triangulation function
+    triangle_generate_func = kwargs.get('triangle_generate_func', generate_triangles)
     # Vertex and triangle post-processing functions
-    vertex_postprocess_func = kwargs.get('vertex_postprocess_func', process_vertices)
-    triangle_postprocess_func = kwargs.get('triangle_postprocess_func', process_triangles)
+    vertex_postprocess_func = kwargs.get('vertex_postprocess_func', postprocess_vertices)
+    triangle_postprocess_func = kwargs.get('triangle_postprocess_func', postprocess_triangles)
     # Vertex and triangle post-processing function arguments
     vertex_postprocess_args = kwargs.get('vertex_postprocess_args', None)
     triangle_postprocess_args = kwargs.get('triangle_postprocess_args', None)
@@ -542,29 +554,19 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     # Start triangulation loop
     triangles = []
     for i in range(0, varr_size_u - 1):
-        tri_list_left = []
-        tri_list_right = []
         for j in range(0, varr_size_v - 1):
-            # Process left triangle
-            vertex1_left = vertices[((i + 1) * varr_size_v) + j]
-            vertex2_left = vertices[(i * varr_size_v) + j]
-            vertex3_left = vertices[(i * varr_size_v) + j + 1]
-            tri_left = _generate_triangle_object(vertex1_left, vertex2_left, vertex3_left, tri_id)
-            tri_list_left.append(tri_left)
+            # Extract 4 points from the vertex list
+            vert_t1 = vertices[(i * varr_size_v) + j]
+            vert_t2 = vertices[(i * varr_size_v) + j + 1]
+            vert_t3 = vertices[((i + 1) * varr_size_v) + j]
+            vert_t4 = vertices[((i + 1) * varr_size_v) + j + 1]
 
-            # Process right triangle
-            vertex1_right = vertices[(i * varr_size_v) + j + 1]
-            vertex2_right = vertices[((i + 1) * varr_size_v) + j + 1]
-            vertex3_right = vertices[((i + 1) * varr_size_v) + j]
-            tri_right = _generate_triangle_object(vertex1_right, vertex2_right, vertex3_right, tri_id + 1)
-            tri_list_right.append(tri_right)
+            # Generate triangles
+            gen_tris = triangle_generate_func(vert_t1, vert_t2, vert_t3, vert_t4, tri_id)
+            triangles += gen_tris
 
             # Increment triangle index
-            tri_id += 2
-
-        tri_list_right.reverse()
-        triangles += tri_list_left
-        triangles += tri_list_right
+            tri_id += len(gen_tris)
 
     # Execute triangle post-processing function
     if triangle_postprocess_func is not None:
