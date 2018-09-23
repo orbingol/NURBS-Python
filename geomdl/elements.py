@@ -151,7 +151,7 @@ class Vertex(AbstractElement):
     @data.setter
     def data(self, value):
         if len(value) == 3:
-            self._value = array('f', value + [0.0])
+            self._value = array('f', list(value) + [0.0])
         else:
             raise ValueError("Vertex can only store 3 components")
 
