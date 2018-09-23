@@ -1366,26 +1366,16 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
         """ Vertex objects for tessellation.
 
         :getter: Gets the vertices
-        :setter: Sets the vertices
         """
         return self._vertices
-
-    @vertices.setter
-    def vertices(self, value):
-        self._vertices = value
 
     @property
     def triangles(self):
         """ Triangle objects for tessellation.
 
         :getter: Gets the triangles
-        :setter: Sets the triangles
         """
         return self._triangles
-
-    @triangles.setter
-    def triangles(self, value):
-        self._triangles = value
 
     def reset(self):
         """ Resets stored vertices and triangles. """
@@ -1393,7 +1383,7 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
         self._triangles = None
 
     @abc.abstractmethod
-    def tessellate(self, **kwargs):
+    def tessellate(self, points, size_u, size_v, **kwargs):
         """ Abstract method for implementation of the tessellation algorithm. """
         pass
 
