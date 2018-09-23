@@ -1354,15 +1354,47 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class SurfaceTessellator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Tessellator abstract base for the surface evaluator classes. """
+class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class for tessellation. """
 
     def __init__(self, **kwargs):
-        pass
+        self._vertices = None
+        self._triangles = None
+
+    @property
+    def vertices(self):
+        """ Vertex objects for tessellation.
+
+        :getter: Gets the vertices
+        :setter: Sets the vertices
+        """
+        return self._vertices
+
+    @vertices.setter
+    def vertices(self, value):
+        self._vertices = value
+
+    @property
+    def triangles(self):
+        """ Triangle objects for tessellation.
+
+        :getter: Gets the triangles
+        :setter: Sets the triangles
+        """
+        return self._triangles
+
+    @triangles.setter
+    def triangles(self, value):
+        self._triangles = value
+
+    def reset(self):
+        """ Resets stored vertices and triangles. """
+        self._vertices = None
+        self._triangles = None
 
     @abc.abstractmethod
     def tessellate(self, **kwargs):
-        """ Abstract method for implementation of the surface tessellation algorithm. """
+        """ Abstract method for implementation of the tessellation algorithm. """
         pass
 
 
