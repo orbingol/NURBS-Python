@@ -506,6 +506,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._surface_points = utilities.init_var(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
+        self._tsl_component = None  # tessellation component
         self._bounding_box = utilities.init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
@@ -989,6 +990,23 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = value
 
     @property
+    def tessellator(self):
+        """ Tessellation component.
+
+        :getter: Gets the tessellation component
+        :setter: Sets the tessellation component
+        """
+        return self._tsl_component
+
+    @tessellator.setter
+    def tessellator(self, value):
+        if not isinstance(value, Tessellate):
+            warnings.warn("Tessellation component must be an instance of Abstract.Tessellate class")
+            return
+
+        self._tsl_component = value
+
+    @property
     def bbox(self):
         """ Bounding box.
 
@@ -1123,6 +1141,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                                 size=[self.sample_size_u, self.sample_size_v],
                                 name=self.name, color=surfcolor, plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+
+    def tessellate(self, **kwargs):
+        """ Tessellates the surface.
+
+        Keyword arguments are directly passed to the tessellation component.
+        """
+        self._tsl_component.tessellate(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_u, **kwargs)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
