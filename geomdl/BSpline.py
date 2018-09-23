@@ -14,6 +14,7 @@ from . import utilities
 from . import helpers
 from . import evaluators
 from . import operations
+from . import tessellate
 
 
 class Curve(Abstract.Curve):
@@ -338,6 +339,7 @@ class Surface(Abstract.Surface):
         # self._name = "B-Spline Surface"
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
+        self._tsl_component = tessellate.TriangularTessellate()
 
     @property
     def ctrlpts(self):
