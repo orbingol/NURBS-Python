@@ -471,6 +471,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``triangle_postprocess_func``: Function called after generating the triangle list
     * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
     * ``triangle_generate_func``: Function called for generating the triangles
+    * ``triangle_generate_args``: Arguments passed to the triangle generation function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
@@ -502,7 +503,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Default function for triangle post-processing
         return triangle_list
 
-    def generate_triangles(vertex1, vertex2, vertex3, vertex4, tri_idx):
+    def generate_triangles(vertex1, vertex2, vertex3, vertex4, tri_idx, generate_args):
         # Default triangulation function
         left_tri = Triangle()
         left_tri.add_vertex((vertex1, vertex2, vertex3))
@@ -518,6 +519,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     triangle_generate_func = kwargs.get('triangle_generate_func')
     if triangle_generate_func is None:
         triangle_generate_func = generate_triangles
+    # Triangulation arguments
+    triangle_generate_args = kwargs.get('triangle_generate_args', None)
     # Vertex and triangle post-processing functions
     vertex_postprocess_func = kwargs.get('vertex_postprocess_func')
     if vertex_postprocess_func is None:
@@ -568,7 +571,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             vert_t4 = vertices[((i + 1) * varr_size_v) + j + 1]
 
             # Generate triangles
-            gen_tris = triangle_generate_func(vert_t1, vert_t2, vert_t3, vert_t4, tri_id)
+            gen_tris = triangle_generate_func(vert_t1, vert_t2, vert_t3, vert_t4, tri_id, triangle_generate_args)
             triangles += gen_tris
 
             # Increment triangle index
