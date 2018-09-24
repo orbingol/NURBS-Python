@@ -248,6 +248,26 @@ def vector_angle_between(vector1, vector2, **kwargs):
         return angle_radians
 
 
+def vector_is_zero(vector_in, tol=10e-8):
+    """ Checks if the input vector is a zero vector.
+
+    :param vector_in: input vector
+    :type vector_in: list, tuple
+    :param tol: tolerance value
+    :type tol: float
+    :return: True if the input vector is zero, False otherwise
+    :rtype: bool
+    """
+    if not isinstance(vector_in, (list, tuple)):
+        raise TypeError("Input vector must be a list or a tuple")
+
+    res = [False for _ in range(len(vector_in))]
+    for idx in range(len(vector_in)):
+        if abs(vector_in[idx]) < tol:
+            res[idx] = True
+    return all(res)
+
+
 def point_translate(point_in, vector_in):
     """ Translates the input points using the input vector.
 
