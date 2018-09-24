@@ -31,4 +31,4 @@ class TriangularTessellate(Abstract.Tessellate):
         super(TriangularTessellate, self).tessellate(points, size_u, size_v, **kwargs)
 
         # Apply default triangular mesh generator function
-        self._vertices, self._triangles = utilities.make_triangle_mesh(points, size_u, size_v)
+        self._vertices, self._triangles = utilities.make_triangle_mesh(points, size_u, size_v, **kwargs)
