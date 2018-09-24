@@ -508,7 +508,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         left_tri.add_vertex((vertex1, vertex2, vertex3))
         left_tri.id = tri_idx
         right_tri = Triangle()
-        right_tri.add_vertex((vertex2, vertex3, vertex4))
+        right_tri.add_vertex((vertex3, vertex2, vertex4))
         right_tri.id = tri_idx + 1
         return [left_tri, right_tri]
 
