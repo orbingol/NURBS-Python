@@ -159,8 +159,13 @@ if USE_CYTHON or USE_SOURCE:
         extensions = optional_extensions
         make_dir('geomdl_core')
 
+# Add Enum type support for Python versions < 3.4
+if sys.version_info[:2] < (3, 4):
+    required = ['enum34']
+else:
+    required = []
 
-setup(
+data = dict(
     name='geomdl',
     version=get_property('__version__', 'geomdl'),
     description='Object-oriented B-Spline and NURBS evaluation library',
@@ -171,7 +176,7 @@ setup(
     url='https://github.com/orbingol/NURBS-Python',
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
-    install_requires=['six>=1.9.0'],
+    install_requires=['six>=1.9.0'] + required,
     extras_require={
         'visualization': ['matplotlib', 'plotly'],
     },
@@ -199,3 +204,7 @@ setup(
         'Tracker': 'https://github.com/orbingol/NURBS-Python/issues',
     },
 )
+
+
+if __name__ == '__main__':
+    setup(**data)
