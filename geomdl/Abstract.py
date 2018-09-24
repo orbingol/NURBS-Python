@@ -1147,7 +1147,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Keyword arguments are directly passed to the tessellation component.
         """
-        self._tsl_component.tessellate(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_u, **kwargs)
+        self._tsl_component.tessellate(self.evalpts, self.sample_size_u, self.sample_size_v, **kwargs)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
