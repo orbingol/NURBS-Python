@@ -515,10 +515,16 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     # Get keyword arguments
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
     # Triangulation function
-    triangle_generate_func = kwargs.get('triangle_generate_func', generate_triangles)
+    triangle_generate_func = kwargs.get('triangle_generate_func')
+    if triangle_generate_func is None:
+        triangle_generate_func = generate_triangles
     # Vertex and triangle post-processing functions
-    vertex_postprocess_func = kwargs.get('vertex_postprocess_func', postprocess_vertices)
-    triangle_postprocess_func = kwargs.get('triangle_postprocess_func', postprocess_triangles)
+    vertex_postprocess_func = kwargs.get('vertex_postprocess_func')
+    if vertex_postprocess_func is None:
+        vertex_postprocess_func = postprocess_vertices
+    triangle_postprocess_func = kwargs.get('triangle_postprocess_func')
+    if triangle_postprocess_func is None:
+        triangle_postprocess_func = postprocess_triangles
     # Vertex and triangle post-processing function arguments
     vertex_postprocess_args = kwargs.get('vertex_postprocess_args', None)
     triangle_postprocess_args = kwargs.get('triangle_postprocess_args', None)
