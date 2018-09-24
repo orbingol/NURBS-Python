@@ -530,8 +530,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     v_range = 1.0 / float(size_v - 1)  # for computing vertex parametric v value
 
     # Vertex array size (also used for traversing triangulation loop)
-    varr_size_u = int(round((size_u / vertex_spacing) + 10e-8) + (size_u % vertex_spacing))
-    varr_size_v = int(round((size_v / vertex_spacing) + 10e-8) + (size_v % vertex_spacing))
+    varr_size_u = int(round((size_u / vertex_spacing) + 10e-8))
+    varr_size_v = int(round((size_v / vertex_spacing) + 10e-8))
 
     # Start vertex generation loop
     vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
