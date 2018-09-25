@@ -298,11 +298,15 @@ class Triangle(AbstractElement):
         return v_idx
 
     @property
-    def inside(self):
+    def vertex_inside(self):
         res = [[] for _ in range(3)]
         for idx in range(3):
             res[idx] = self._vertices[idx].inside
-        return all(res)
+        return res
+
+    @property
+    def inside(self):
+        return all(self.vertex_inside)
 
     def add_vertex(self, vertex):
         if len(self._vertices) > 2:
