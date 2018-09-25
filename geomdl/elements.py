@@ -77,21 +77,29 @@ class Vertex(AbstractElement):
     def __add__(self, other):
         if not isinstance(other, self.__class__):
             raise TypeError("Can only add Vertex objects")
-        res = [0.0 for _ in range(3)]
+        res_data = [0.0 for _ in range(3)]
         for idx in range(3):
-            res[idx] = self.data[idx] + other.data[idx]
+            res_data[idx] = self.data[idx] + other.data[idx]
+        res_uv = [0.0 for _ in range(2)]
+        for idx in range(2):
+            res_uv[idx] = self.uv[idx] + other.uv[idx]
         res_val = self.__class__()
-        res_val.data = res
+        res_val.data = res_data
+        res_val.uv = res_uv
         return res_val
 
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
             raise TypeError("Can only subtract Vertex objects")
-        res = [0.0 for _ in range(3)]
+        res_data = [0.0 for _ in range(3)]
         for idx in range(3):
-            res[idx] = self.data[idx] - other.data[idx]
+            res_data[idx] = self.data[idx] - other.data[idx]
+        res_uv = [0.0 for _ in range(2)]
+        for idx in range(2):
+            res_uv[idx] = self.uv[idx] - other.uv[idx]
         res_val = self.__class__()
-        res_val.data = res
+        res_val.data = res_data
+        res_val.uv = res_uv
         return res_val
 
     def __div__(self, other):
@@ -100,11 +108,15 @@ class Vertex(AbstractElement):
     def __truediv__(self, other):
         if not isinstance(other, (float, int)):
             raise TypeError("Can only divide by a float or an integer")
-        res = [0.0 for _ in range(3)]
+        res_data = [0.0 for _ in range(3)]
         for idx in range(3):
-            res[idx] = self.data[idx] / float(other)
+            res_data[idx] = self.data[idx] / float(other)
+        res_uv = [0.0 for _ in range(2)]
+        for idx in range(2):
+            res_uv[idx] = self.uv[idx] / float(other)
         res_val = self.__class__()
-        res_val.data = res
+        res_val.data = res_data
+        res_val.uv = res_uv
         return res_val
 
     @property
