@@ -74,6 +74,16 @@ class Vertex(AbstractElement):
         # For Python 3 compatibility
         return self.inside
 
+    def __add__(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError("Can only add Vertex objects")
+        res = [0.0 for _ in range(3)]
+        for idx in range(3):
+            res[idx] = self.data[idx] + other.data[idx]
+        res_val = self.__class__()
+        res_val.data = res
+        return res_val
+
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
             raise TypeError("Can only subtract Vertex objects")
