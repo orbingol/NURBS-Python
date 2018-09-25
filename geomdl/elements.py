@@ -39,8 +39,9 @@ class Vertex(AbstractElement):
     """ Representation of a 3-dimensional vertex entity with its parametric position. """
     def __init__(self):
         super(Vertex, self).__init__()
-        self._value = array('f', [0.0, 0.0, 0.0, 0.0])  # x, y, z, 1.0 if inside is True
+        self._value = array('f', [0.0, 0.0, 0.0])  # x, y, z
         self._uv = array('f', [0.0, 0.0])
+        self._inside = False
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._value.tolist())
@@ -133,11 +134,11 @@ class Vertex(AbstractElement):
     @property
     def inside(self):
         """ Inside-outside flag """
-        return bool(self._value[3])
+        return self._inside
 
     @inside.setter
     def inside(self, value):
-        self._value[3] = value
+        self._inside = bool(value)
 
     @property
     def data(self):
@@ -146,24 +147,14 @@ class Vertex(AbstractElement):
         :getter: Gets the 3-dimensional components
         :setter: Sets the 3-dimensional components
         """
-        return self._value.tolist()[0:-1]
+        return self._value.tolist()
 
     @data.setter
     def data(self, value):
         if len(value) == 3:
-            self._value = array('f', list(value) + [0.0])
+            self._value = array('f', list(value))
         else:
             raise ValueError("Vertex can only store 3 components")
-
-    @property
-    def data_full(self):
-        """ (x,y,z,i) components of the vertex.
-
-        (x,y,z) corresponds to 3-dimensional coordinate of the vertex. (i) value corresponds to inside-outside flag.
-
-        :getter: Gets (x,y,z,i) components
-        """
-        return self._value.tolist()
 
 
 # Triangle class
