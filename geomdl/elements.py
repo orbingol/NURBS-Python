@@ -80,7 +80,9 @@ class Vertex(AbstractElement):
         res = [0.0 for _ in range(3)]
         for idx in range(3):
             res[idx] = self.data[idx] - other.data[idx]
-        return res
+        res_val = self.__class__()
+        res_val.data = res
+        return res_val
 
     @property
     def x(self):
