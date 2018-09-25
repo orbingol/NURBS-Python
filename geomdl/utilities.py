@@ -630,14 +630,12 @@ def triangle_center(tri, uv=False):
     if uv:
         data = tri.vertices_uv
         mid = [0.0, 0.0]
-        sz = 2
     else:
         data = tri.vertices
         mid = [0.0, 0.0, 0.0]
-        sz = 3
     for idx, vert in enumerate(data):
         mid = [m + v for m, v in zip(mid, vert)]
-    mid = [m / sz for m in mid]
+    mid = [float(m) / 3.0 for m in mid]
     return tuple(mid)
 
 
