@@ -94,6 +94,19 @@ class Vertex(AbstractElement):
         res_val.data = res
         return res_val
 
+    def __div__(self, other):
+        return self.__truediv__(other)
+
+    def __truediv__(self, other):
+        if not isinstance(other, (float, int)):
+            raise TypeError("Can only divide by a float or an integer")
+        res = [0.0 for _ in range(3)]
+        for idx in range(3):
+            res[idx] = self.data[idx] / float(other)
+        res_val = self.__class__()
+        res_val.data = res
+        return res_val
+
     @property
     def x(self):
         """ x-component of the vertex """
