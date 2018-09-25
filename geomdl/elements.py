@@ -13,8 +13,8 @@ from . import array
 # Abstract class for geometry and topology elements (entities)
 class AbstractElement(object):
     """ Abstract base class for all geometric entities. """
-    def __init__(self, **kwargs):
-        self._id = kwargs.get('id', 0)
+    def __init__(self):
+        self._id = 0
 
     @property
     def id(self):
@@ -37,17 +37,10 @@ class AbstractElement(object):
 # Vertex class
 class Vertex(AbstractElement):
     """ Representation of a 3-dimensional vertex entity with its parametric position. """
-    def __init__(self, **kwargs):
-        super(Vertex, self).__init__(**kwargs)
-        x = kwargs.get('x', 0.0)
-        y = kwargs.get('y', 0.0)
-        z = kwargs.get('z', 0.0)
-        xyz = kwargs.get('xyz', [x, y, z])
-        u = kwargs.get('u', 0.0)
-        v = kwargs.get('v', 0.0)
-        uv = kwargs.get('uv', [u, v])
-        self._value = array('f', xyz + [0.0])  # x, y, z, 1.0 if inside is True
-        self._uv = array('f', uv)
+    def __init__(self):
+        super(Vertex, self).__init__()
+        self._value = array('f', [0.0, 0.0, 0.0, 0.0])  # x, y, z, 1.0 if inside is True
+        self._uv = array('f', [0.0, 0.0])
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._value.tolist())
@@ -176,8 +169,8 @@ class Vertex(AbstractElement):
 # Triangle class
 class Triangle(AbstractElement):
     """ Representation of a triangular geometric entity composed of vertices. """
-    def __init__(self, **kwargs):
-        super(Triangle, self).__init__(**kwargs)
+    def __init__(self):
+        super(Triangle, self).__init__()
         self._vertices = []
 
     def __str__(self):
@@ -290,8 +283,8 @@ class Triangle(AbstractElement):
 # Face class
 class Face(AbstractElement):
     """ Representation of a face geometric entity composed of triangles. """
-    def __init__(self, **kwargs):
-        super(Face, self).__init__(**kwargs)
+    def __init__(self):
+        super(Face, self).__init__()
         self._triangles = []
 
     def __str__(self):
@@ -328,8 +321,8 @@ class Face(AbstractElement):
 # Body class
 class Body(AbstractElement):
     """ Representation of a geometric body composed of faces. """
-    def __init__(self, **kwargs):
-        super(Body, self).__init__(**kwargs)
+    def __init__(self):
+        super(Body, self).__init__()
         self._faces = []
 
     def __str__(self):
