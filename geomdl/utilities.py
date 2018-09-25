@@ -490,8 +490,6 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``vertex_postprocess_args``: Arguments passed to the vertex post-processing function
     * ``triangle_postprocess_func``: Function called after generating the triangle list
     * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
-    * ``triangle_generate_func``: Function called for generating the triangles
-    * ``triangle_generate_args``: Arguments passed to the triangle generation function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
@@ -523,24 +521,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Default function for triangle post-processing
         return triangle_list
 
-    def generate_triangles(vertex1, vertex2, vertex3, vertex4, tri_idx, generate_args):
-        # Default triangulation function
-        left_tri = Triangle()
-        left_tri.add_vertex((vertex1, vertex2, vertex3))
-        left_tri.id = tri_idx
-        right_tri = Triangle()
-        right_tri.add_vertex((vertex3, vertex2, vertex4))
-        right_tri.id = tri_idx + 1
-        return [left_tri, right_tri]
-
     # Get keyword arguments
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
-    # Triangulation function
-    triangle_generate_func = kwargs.get('triangle_generate_func')
-    if triangle_generate_func is None:
-        triangle_generate_func = generate_triangles
-    # Triangulation arguments
-    triangle_generate_args = kwargs.get('triangle_generate_args', None)
     # Vertex and triangle post-processing functions
     vertex_postprocess_func = kwargs.get('vertex_postprocess_func')
     if vertex_postprocess_func is None:
@@ -576,26 +558,73 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             v += (v_range * vertex_spacing)
         u += (u_range * vertex_spacing)
 
+    #
+    # Organization of vertices in a quad element:
+    #
+    # v2      v3
+    # o-------o
+    # |       |
+    # |       |
+    # |       |
+    # o-------o
+    # v1      v4
+    #
+
+    # Find mid-vertices of the quad elements
+    mid_vertices = []
+    for i in range(0, varr_size_u - 1):
+        for j in range(0, varr_size_v - 1):
+            # Extract bbox of a quad from the vertex list
+            vert_t1 = vertices[(i * varr_size_v) + j]
+            vert_t3 = vertices[((i + 1) * varr_size_v) + j + 1]
+
+            # Find mid-point of the vertices
+            vert_mid = (vert_t1 + vert_t3) / 2
+            vert_mid.id = vrt_idx + 1
+            vrt_idx += 1
+            mid_vertices.append(vert_mid)
+
+    # Add mid vertices to the vertex list
+    vertices += mid_vertices
+
     # Execute vertex post-processing function
     if vertex_postprocess_func is not None:
         vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
 
     # Start triangulation loop
+    mvidx = 0
     triangles = []
     for i in range(0, varr_size_u - 1):
         for j in range(0, varr_size_v - 1):
-            # Extract 4 points from the vertex list
+            # Extract 4 points (a quad) from the vertex list
             vert_t1 = vertices[(i * varr_size_v) + j]
             vert_t2 = vertices[(i * varr_size_v) + j + 1]
-            vert_t3 = vertices[((i + 1) * varr_size_v) + j]
-            vert_t4 = vertices[((i + 1) * varr_size_v) + j + 1]
+            vert_t3 = vertices[((i + 1) * varr_size_v) + j + 1]
+            vert_t4 = vertices[((i + 1) * varr_size_v) + j]
+
+            # Retrieve mid-vertex of the quad element
+            vert_mid = mid_vertices[mvidx]
+            mvidx += 1
 
             # Generate triangles
-            gen_tris = triangle_generate_func(vert_t1, vert_t2, vert_t3, vert_t4, tri_id, triangle_generate_args)
-            triangles += gen_tris
+            tri1 = Triangle()
+            tri1.id = tri_id
+            tri1.add_vertex([vert_t1, vert_mid, vert_t2])
+            tri2 = Triangle()
+            tri2.id = tri_id + 1
+            tri2.add_vertex([vert_t2, vert_mid, vert_t3])
+            tri3 = Triangle()
+            tri3.id = tri_id + 2
+            tri3.add_vertex([vert_t3, vert_t4, vert_mid])
+            tri4 = Triangle()
+            tri4.id = tri_id + 3
+            tri4.add_vertex([vert_t4, vert_t1, vert_mid])
+
+            # Add generated triangles to the list
+            triangles += [tri1, tri2, tri3, tri4]
 
             # Increment triangle index
-            tri_id += len(gen_tris)
+            tri_id += 4
 
     # Execute triangle post-processing function
     if triangle_postprocess_func is not None:

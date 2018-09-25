@@ -75,8 +75,6 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.tslpp_vertex_args = kwargs.get('tessellate_vertex_args', None)
         self.tslpp_triangle_func = kwargs.get('tessellate_triangle_func', None)
         self.tslpp_triangle_args = kwargs.get('tessellate_triangle_args', None)
-        self.tsl_triangle_gen_func = kwargs.get('tessellate_generate_func', None)
-        self.tsl_triangle_gen_args = kwargs.get('tessellate_generate_args', None)
 
     @staticmethod
     def set_axes_equal(ax):
@@ -268,9 +266,7 @@ class VisSurface(Abstract.VisAbstractSurf):
                                                            vertex_postprocess_func=self._config.tslpp_vertex_func,
                                                            vertex_postprocess_args=self._config.tslpp_vertex_args,
                                                            triangle_postprocess_func=self._config.tslpp_triangle_func,
-                                                           triangle_postprocess_args=self._config.tslpp_triangle_args,
-                                                           triangle_generate_func=self._config.tsl_triangle_gen_func,
-                                                           triangle_generate_args=self._config.tsl_triangle_gen_args)
+                                                           triangle_postprocess_args=self._config.tslpp_triangle_args)
                 for tri in tris:
                     pts = np.array(tri.vertices_raw)
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
@@ -422,9 +418,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                                                            vertex_postprocess_func=self._config.tslpp_vertex_func,
                                                            vertex_postprocess_args=self._config.tslpp_vertex_args,
                                                            triangle_postprocess_func=self._config.tslpp_triangle_func,
-                                                           triangle_postprocess_args=self._config.tslpp_triangle_args,
-                                                           triangle_generate_func=self._config.tsl_triangle_gen_func,
-                                                           triangle_generate_args=self._config.tsl_triangle_gen_args)
+                                                           triangle_postprocess_args=self._config.tslpp_triangle_args)
                 # Extract zero-indexed vertex number list
                 tri_idxs = [tri.vertex_ids_zero for tri in tris]
                 # Extract vertex coordinates
