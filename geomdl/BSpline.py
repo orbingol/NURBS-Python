@@ -702,10 +702,14 @@ class Surface(Abstract.Surface):
         # Call parent method
         super(Surface, self).evaluate_list(uv_list)
 
+        # Tolerance value
+        tol = 10e-8
+
         # Evaluate (u,v) list
-        res = [[] for _ in range(len(uv_list))]
+        res = []
         for idx, uv in enumerate(uv_list):
-            res[idx] = self.evaluate_single(uv)
+            if 0.0 + tol < uv[0] < 1.0 - tol and 0.0 + tol < uv[1] < 1.0 - tol:
+                res.append(self.evaluate_single(uv))
         return tuple(res)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
