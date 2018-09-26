@@ -490,16 +490,18 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``vertex_postprocess_args``: Arguments passed to the vertex post-processing function
     * ``triangle_postprocess_func``: Function called after generating the triangle list
     * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
+    * ``tessellate_func``: Function called for tessellation (default is triangular tessellation)
+    * ``tessellate_args``: Arguments passed to the tessellation function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
     triangles as instances of :py:class:`.Vertex` and  :py:class:`.Triangle` classes. They should return a list of
     vertices and triangles. Prototypes for implementation of the post-processing functions can be found in the source
     code of this function.
 
-    The triangle generation function is designed to change the triangulation behavior. It takes 4 :py:class:`.Vertex`
-    objects and an index value for setting the triangle number as its function arguments. It returns a list of
-    :py:class:`.Triangle` objects generated from the input vertices. A default triangle generator is provided as a
-    prototype for implementation and it can be found in the source of this function.
+    The tessellation function is designed to generate triangles from 4 vertices. It takes 4 :py:class:`.Vertex` objects,
+    an index value for setting the triangle number and additional parameters as its function arguments.
+    It returns a list of :py:class:`.Triangle` objects generated from the input vertices. A default triangle generator
+    is provided as a prototype for implementation and it can be found in the source of this function.
 
     The return value of this function is a tuple containing two lists. First one is the list of vertices and the second
     one is the list of triangles.
@@ -521,17 +523,34 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Default function for triangle post-processing
         return triangle_list
 
-    # Get keyword arguments
+    def triangular_tessellation(v1, v2, v3, v4, tidx, tessellate_args):
+        tri1 = Triangle()
+        tri1.id = tidx
+        tri1.add_vertex(v1, v2, v3)
+        tri2 = Triangle()
+        tri2.id = tidx + 1
+        tri2.add_vertex(v3, v4, v1)
+        return [tri1, tri2]
+
+    # Vertex spacing for triangulation
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
-    # Vertex and triangle post-processing functions
+
+    # Tessellation algorithm
+    tessellate_func = kwargs.get('tessellate_func')
+    if tessellate_func is None:
+        tessellate_func = triangular_tessellation
+    tessellate_args = kwargs.get('tessellate_args', None)
+
+    # Vertex post-processing function and arguments
     vertex_postprocess_func = kwargs.get('vertex_postprocess_func')
     if vertex_postprocess_func is None:
         vertex_postprocess_func = postprocess_vertices
+    vertex_postprocess_args = kwargs.get('vertex_postprocess_args', None)
+
+    # Triangle post-processing function and arguments
     triangle_postprocess_func = kwargs.get('triangle_postprocess_func')
     if triangle_postprocess_func is None:
         triangle_postprocess_func = postprocess_triangles
-    # Vertex and triangle post-processing function arguments
-    vertex_postprocess_args = kwargs.get('vertex_postprocess_args', None)
     triangle_postprocess_args = kwargs.get('triangle_postprocess_args', None)
 
     # Variable initialization
@@ -558,6 +577,10 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             v += (v_range * vertex_spacing)
         u += (u_range * vertex_spacing)
 
+    # Execute vertex post-processing function
+    if vertex_postprocess_func is not None:
+        vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
+
     #
     # Organization of vertices in a quad element:
     #
@@ -570,61 +593,24 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     # v1      v4
     #
 
-    # Find mid-vertices of the quad elements
-    mid_vertices = []
-    for i in range(0, varr_size_u - 1):
-        for j in range(0, varr_size_v - 1):
-            # Extract bbox of a quad from the vertex list
-            vert_t1 = vertices[(i * varr_size_v) + j]
-            vert_t3 = vertices[((i + 1) * varr_size_v) + j + 1]
-
-            # Find mid-point of the vertices
-            vert_mid = (vert_t1 + vert_t3) / 2
-            vert_mid.id = vrt_idx + 1
-            vrt_idx += 1
-            mid_vertices.append(vert_mid)
-
-    # Add mid vertices to the vertex list
-    vertices += mid_vertices
-
-    # Execute vertex post-processing function
-    if vertex_postprocess_func is not None:
-        vertices = vertex_postprocess_func(vertices, vertex_postprocess_args)
-
     # Start triangulation loop
-    mvidx = 0
     triangles = []
     for i in range(0, varr_size_u - 1):
         for j in range(0, varr_size_v - 1):
             # Extract 4 points (a quad) from the vertex list
-            vert_t1 = vertices[(i * varr_size_v) + j]
-            vert_t2 = vertices[(i * varr_size_v) + j + 1]
-            vert_t3 = vertices[((i + 1) * varr_size_v) + j + 1]
-            vert_t4 = vertices[((i + 1) * varr_size_v) + j]
-
-            # Retrieve mid-vertex of the quad element
-            vert_mid = mid_vertices[mvidx]
-            mvidx += 1
+            v1 = vertices[(i * varr_size_v) + j]
+            v2 = vertices[(i * varr_size_v) + j + 1]
+            v3 = vertices[((i + 1) * varr_size_v) + j + 1]
+            v4 = vertices[((i + 1) * varr_size_v) + j]
 
             # Generate triangles
-            tri1 = Triangle()
-            tri1.id = tri_id
-            tri1.add_vertex(vert_t1, vert_mid, vert_t2)
-            tri2 = Triangle()
-            tri2.id = tri_id + 1
-            tri2.add_vertex(vert_t2, vert_mid, vert_t3)
-            tri3 = Triangle()
-            tri3.id = tri_id + 2
-            tri3.add_vertex(vert_t3, vert_mid, vert_t4)
-            tri4 = Triangle()
-            tri4.id = tri_id + 3
-            tri4.add_vertex(vert_t1, vert_mid, vert_t4)
+            tri_list = tessellate_func(v1, v2, v3, v4, tri_id, tessellate_args)
 
             # Add generated triangles to the list
-            triangles += [tri1, tri2, tri3, tri4]
+            triangles += tri_list
 
             # Increment triangle index
-            tri_id += len(triangles)
+            tri_id += len(tri_list)
 
     # Execute triangle post-processing function
     if triangle_postprocess_func is not None:
