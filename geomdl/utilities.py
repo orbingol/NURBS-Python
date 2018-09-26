@@ -476,7 +476,7 @@ def make_quad_mesh(points, size_u, size_v):
 def make_triangle_mesh(points, size_u, size_v, **kwargs):
     """ Generates a triangular mesh from an array of points.
 
-    This function simply generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
+    This function generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
     The input is the surface points and the number of points on the parametric dimensions u and v,
     indicated as row and column sizes in the function signature. This function should operate correctly if row and
     column sizes are input correctly, no matter what the points are v-ordered or u-ordered. Please see the
@@ -490,7 +490,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``vertex_postprocess_args``: Arguments passed to the vertex post-processing function
     * ``triangle_postprocess_func``: Function called after generating the triangle list
     * ``triangle_postprocess_args``: Arguments passed to the triangle post-processing function
-    * ``tessellate_func``: Function called for tessellation (default is triangular tessellation)
+    * ``tessellate_func``: Function called for tessellation (default is ``triangular_tessellation``)
     * ``tessellate_args``: Arguments passed to the tessellation function
 
     Post-processing functions are designed to modify the vertices and triangles. They take a list of vertices and
