@@ -624,7 +624,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             triangles += [tri1, tri2, tri3, tri4]
 
             # Increment triangle index
-            tri_id += 4
+            tri_id += len(triangles)
 
     # Execute triangle post-processing function
     if triangle_postprocess_func is not None:
