@@ -253,10 +253,13 @@ class Triangle(AbstractElement):
     @property
     def edges(self):
         data = self.vertices
-        data.append(self.vertices[0])
         res = [[] for _ in range(3)]
         for idx in range(3):
-            res[idx] = [data[idx], data[idx + 1]]
+            if idx == 2:
+                lv = 0
+            else:
+                lv = idx + 1
+            res[idx] = [data[idx], data[lv]]
         return res
 
     @property
