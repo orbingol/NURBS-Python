@@ -609,16 +609,16 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             # Generate triangles
             tri1 = Triangle()
             tri1.id = tri_id
-            tri1.add_vertex([vert_t1, vert_mid, vert_t2])
+            tri1.add_vertex(vert_t1, vert_mid, vert_t2)
             tri2 = Triangle()
             tri2.id = tri_id + 1
-            tri2.add_vertex([vert_t2, vert_mid, vert_t3])
+            tri2.add_vertex(vert_t2, vert_mid, vert_t3)
             tri3 = Triangle()
             tri3.id = tri_id + 2
-            tri3.add_vertex([vert_t3, vert_t4, vert_mid])
+            tri3.add_vertex(vert_t3, vert_mid, vert_t4)
             tri4 = Triangle()
             tri4.id = tri_id + 3
-            tri4.add_vertex([vert_t4, vert_t1, vert_mid])
+            tri4.add_vertex(vert_t1, vert_mid, vert_t4)
 
             # Add generated triangles to the list
             triangles += [tri1, tri2, tri3, tri4]
