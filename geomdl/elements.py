@@ -311,16 +311,16 @@ class Triangle(AbstractElement):
     def inside(self):
         return all(self.vertex_inside)
 
-    def add_vertex(self, vertex):
+    def add_vertex(self, *args):
         if len(self._vertices) > 2:
             raise ValueError("Cannot add more vertices")
-        if isinstance(vertex, Vertex):
-            self._vertices.append(vertex)
-        elif isinstance(vertex, (list, tuple)):
-            for elem in vertex:
-                self.add_vertex(elem)
-        else:
-            raise TypeError("Input must be a Vertex object")
+        res = []
+        for arg in args:
+            if isinstance(arg, Vertex):
+                res.append(arg)
+            else:
+                raise TypeError("Input must be a Vertex object")
+        self._vertices = res
 
 
 # Face class
