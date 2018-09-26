@@ -599,30 +599,16 @@ class Surface(Abstract.Surface):
         self._control_points2D = ctrlpts2d_new
 
     def surfpt(self, u, v):
-        """ Evaluates the surface at the given (u,v) parameter.
+        """ Evaluates the surface at the given (u,v) parameter pair.
 
         :param u: parameter on the u-direction
         :type u: float
         :param v: parameter on the v-direction
         :type v: float
-        :return: evaluated surface point at the given knot values
+        :return: evaluated surface point at the given parameter pair
         :rtype: list
         """
-        # Check all parameters are set before the surface evaluation
-        self._check_variables()
-
-        # Check u and v parameters are correct
-        utilities.check_uv(u, v)
-
-        # Evaluate the surface
-        spt = self._evaluator.evaluate_single(knot_u=u, knot_v=v,
-                                              degree_u=self.degree_u, degree_v=self.degree_v,
-                                              knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                              ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
-                                              ctrlpts=self._control_points2D,
-                                              dimension=self._dimension)
-
-        return spt
+        return self.evaluate_single([u, v])
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
@@ -680,6 +666,47 @@ class Surface(Abstract.Surface):
                                         precision=self._precision)
 
         self._surface_points = spts
+
+    def evaluate_single(self, uv):
+        """ Evaluates the surface at the given (u,v) parameter pair.
+
+        :param uv: parameter pair (u, v)
+        :type uv: list, tuple
+        :return: evaluated surface point at the given parameter pair
+        :rtype: list
+        """
+        # Call parent method
+        super(Surface, self).evaluate_single(uv)
+
+        # Check u and v parameters are correct
+        utilities.check_uv(uv[0], uv[1])
+
+        # Evaluate the surface
+        spt = self._evaluator.evaluate_single(knot_u=uv[0], knot_v=uv[1],
+                                              degree_u=self.degree_u, degree_v=self.degree_v,
+                                              knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
+                                              ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
+                                              ctrlpts=self._control_points2D,
+                                              dimension=self._dimension)
+
+        return spt
+
+    def evaluate_list(self, uv_list):
+        """ Evaluates the surface for a given list of (u,v) parameters.
+
+        :param uv_list: list of parameter pairs (u, v)
+        :type uv_list: list, tuple
+        :return: evaluated surface point at the given knot values
+        :rtype: tuple
+        """
+        # Call parent method
+        super(Surface, self).evaluate_list(uv_list)
+
+        # Evaluate (u,v) list
+        res = [[] for _ in range(len(uv_list))]
+        for idx, uv in enumerate(uv_list):
+            res[idx] = self.evaluate_single(uv)
+        return tuple(res)
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u, v, order=0, **kwargs):

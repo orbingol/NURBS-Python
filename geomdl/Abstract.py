@@ -1202,6 +1202,30 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
+    def evaluate_single(self, uv):
+        """ Evaluates the surface at the given (u,v) parameter.
+
+        :param uv: parameter pair (u, v)
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def evaluate_list(self, uv_list):
+        """ Evaluates the surface for a given (u,v) array.
+
+        :param uv_list: array of parameter pairs (u, v)
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
         """ Evaluates the derivatives of the surface at parameter (u,v).
 
