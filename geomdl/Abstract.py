@@ -512,6 +512,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._precision = 6  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+        # Advanced functionality
+        self._trims = utilities.init_var(self._array_type)  # trim curves
 
     def __copy__(self):
         cls = self.__class__
@@ -1013,12 +1015,27 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
 
         :getter: Gets bounding box
-        :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
             self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
 
         return tuple(self._bounding_box)
+
+    @property
+    def trims(self):
+        """ Trim curves.
+
+        Trim curves are introduced to the surfaces on the parametric space. It should be an array (or list, tuple, etc.)
+        and they are integrated to the existing visualization system.
+
+        :getter: Gets the array of trim curves
+        :setter: Sets the array of trim curves
+        """
+        return self._trims
+
+    @trims.setter
+    def trims(self, value):
+        self._trims = value
 
     def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
         """ Sets 1-dimensional control points and checks if the data is consistent.
