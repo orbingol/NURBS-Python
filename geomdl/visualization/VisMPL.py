@@ -274,6 +274,14 @@ class VisSurface(Abstract.VisAbstractSurf):
                 legend_proxy.append(plot2_proxy)
                 legend_names.append(plot['name'])
 
+            # Plot trim curves
+            if plot['type'] == 'trimcurve':
+                pts = np.array(plot['ptsarr'])
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
+                plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot3_proxy)
+                legend_names.append(plot['name'])
+
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -337,6 +345,14 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot trim curves
+            if plot['type'] == 'trimcurve':
+                pts = np.array(plot['ptsarr'])
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
+                plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot3_proxy)
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
@@ -444,6 +460,14 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                 legend_proxy.append(plot2_proxy)
                 legend_names.append(plot['name'])
 
+            # Plot trim curves
+            if plot['type'] == 'trimcurve':
+                pts = np.array(plot['ptsarr'])
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
+                plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot3_proxy)
+                legend_names.append(plot['name'])
+
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -507,6 +531,14 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot2_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot trim curves
+            if plot['type'] == 'trimcurve':
+                pts = np.array(plot['ptsarr'])
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
+                plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot3_proxy)
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
