@@ -1116,6 +1116,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Keyword Arguments:
             * ``cpcolor``: sets the color of the control points grid
             * ``evalcolor``: sets the color of the surface
+            * ``trimcolor``: sets the color of the trim curves
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. Default is True.
             * ``colormap``: sets the colormap of the surface
