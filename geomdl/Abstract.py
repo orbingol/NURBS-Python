@@ -1135,6 +1135,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         cpcolor = kwargs.get('cpcolor', 'blue')
         surfcolor = kwargs.get('evalcolor', 'green')
+        trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
@@ -1157,6 +1158,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.add(ptsarr=self.evalpts,
                                 size=[self.sample_size_u, self.sample_size_v],
                                 name=self.name, color=surfcolor, plot_type='evalpts')
+
+        # Visualize the trim curve
+        for idx, trim in enumerate(self._trims):
+            self._vis_component.add(ptsarr=self.evaluate_list(trim.evalpts),
+                                    name="Trim Curve " + str(idx + 1), color=trimcolor, plot_type='trimcurve')
+
+        # Plot the surface
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def tessellate(self, **kwargs):
