@@ -54,10 +54,8 @@ class VisConfig(Abstract.VisConfigAbstract):
     The following keyword arguments can be used to control tessellation in modules which use the tessellation function
     :py:func:`.make_triangular_mesh()`:
 
-    * ``tessellate_vertex_func``: Sets the function called after generating the vertex list
-    * ``tessellate_vertex_args``: Sets the arguments passed to the vertex post-processing function
-    * ``tessellate_triangle_func``: Sets the function called after generating the triangle list
-    * ``tessellate_triangle_args``: Sets the arguments passed to the triangle post-processing function
+    * ``tessellate_func``: Sets the tessellation function
+    * ``tessellate_args``: Sets the arguments passed to the tessellation function
 
     Please refer to the **Examples Repository** for more details.
     """
@@ -71,11 +69,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.figure_image_filename = "temp-figure.png"
         # Tessellation configuration
-        self.tslpp_vertex_func = kwargs.get('tessellate_vertex_func', None)
-        self.tslpp_vertex_args = kwargs.get('tessellate_vertex_args', None)
-        self.tslpp_triangle_func = kwargs.get('tessellate_triangle_func', None)
-        self.tslpp_triangle_args = kwargs.get('tessellate_triangle_args', None)
-        self.tsl_func = kwargs.get('tessellate_algo', None)
+        self.tsl_func = kwargs.get('tessellate_func', None)
         self.tsl_args = kwargs.get('tessellate_args', None)
 
     @staticmethod
@@ -265,10 +259,6 @@ class VisSurface(Abstract.VisAbstractSurf):
             # Plot evaluated points
             if plot['type'] == 'evalpts':
                 verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
-                                                           vertex_postprocess_func=self._config.tslpp_vertex_func,
-                                                           vertex_postprocess_args=self._config.tslpp_vertex_args,
-                                                           triangle_postprocess_func=self._config.tslpp_triangle_func,
-                                                           triangle_postprocess_args=self._config.tslpp_triangle_args,
                                                            tessellate_func=self._config.tsl_func,
                                                            tessellate_args=self._config.tsl_args)
                 for tri in tris:
@@ -435,10 +425,6 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
             if plot['type'] == 'evalpts':
                 # Use internal triangulation algorithm instead of Qhull (MPL default)
                 verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
-                                                           vertex_postprocess_func=self._config.tslpp_vertex_func,
-                                                           vertex_postprocess_args=self._config.tslpp_vertex_args,
-                                                           triangle_postprocess_func=self._config.tslpp_triangle_func,
-                                                           triangle_postprocess_args=self._config.tslpp_triangle_args,
                                                            tessellate_func=self._config.tsl_func,
                                                            tessellate_args=self._config.tsl_args)
                 # Extract zero-indexed vertex number list
