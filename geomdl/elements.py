@@ -66,6 +66,27 @@ class Vertex(AbstractElement):
     def __reversed__(self):
         return reversed(self._value)
 
+    def __cmp__(self, other):
+        return (self.id > other.id) - (self.id < other.id)
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __ne__(self, other):
+        return self.id != other.id
+
+    def __lt__(self, other):
+        return self.id < other.id
+
+    def __le__(self, other):
+        return self.id <= other.id
+
+    def __gt__(self, other):
+        return self.id > other.id
+
+    def __ge__(self, other):
+        return self.id >= other.id
+
     def __nonzero__(self):
         # For Python 2 compatibility
         return self.__bool__()
