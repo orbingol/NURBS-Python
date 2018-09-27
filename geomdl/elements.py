@@ -7,6 +7,7 @@
 
 """
 
+from . import copy
 from . import array
 
 
@@ -47,6 +48,22 @@ class Vertex(AbstractElement):
         return "Vertex " + str(self._id) + " " + str(self._value.tolist())
 
     __repr__ = __str__
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __len__(self):
         return len(self._value)
@@ -235,6 +252,22 @@ class Triangle(AbstractElement):
 
     __repr__ = __str__
 
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
+
     def __len__(self):
         return len(self._vertices)
 
@@ -356,6 +389,22 @@ class Face(AbstractElement):
 
     __repr__ = __str__
 
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
+
     def __len__(self):
         return len(self._triangles)
 
@@ -393,6 +442,22 @@ class Body(AbstractElement):
         return "Body " + str(self._id)
 
     __repr__ = __str__
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
 
     def __len__(self):
         return len(self._faces)
