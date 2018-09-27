@@ -636,17 +636,15 @@ def polygon_triangulate(tri_idx, *args):
     :return: list of Triangle objects
     :rtype: list
     """
-    # Add first element to the end of the list (just to make list traversal easier)
-    vertices = list(args)
-    vertices.append(args[0])
-
-    # Generate triangles
+    # Initialize variables
     tidx = 0
     triangles = []
-    for idx in range(0, len(args), 2):
+
+    # Generate triangles
+    for idx in range(1, len(args) - 1):
         tri = Triangle()
         tri.id = tri_idx + tidx
-        tri.add_vertex(vertices[idx], vertices[idx + 1], vertices[idx + 2])
+        tri.add_vertex(args[0], args[idx], args[idx + 1])
         triangles.append(tri)
         tidx += 1
 
