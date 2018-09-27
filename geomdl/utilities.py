@@ -591,15 +591,15 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         u += u_jump
 
     #
-    # Organization of vertices in a quad element:
+    # Organization of vertices in a quad element on the parametric space:
     #
-    # v2      v3
-    # o-------o
-    # |       |
-    # |       |
-    # |       |
-    # o-------o
-    # v1      v4
+    # v4      v3
+    # o-------o         i
+    # |       |          |
+    # |       |          |
+    # |       |          |_ _ _
+    # o-------o                 j
+    # v1      v2
     #
 
     # Generate triangles and final vertices
