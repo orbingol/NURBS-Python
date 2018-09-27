@@ -372,14 +372,14 @@ class Face(AbstractElement):
     def triangles(self):
         return self._triangles
 
-    def add_triangle(self, triangle):
-        if isinstance(triangle, Triangle):
-            self._triangles.append(triangle)
-        elif isinstance(triangle, (list, tuple)):
-            for elem in triangle:
-                self.add_triangle(elem)
-        else:
-            raise TypeError("Input must be a Triangle object")
+    def add_triangle(self, *args):
+        res = []
+        for arg in args:
+            if isinstance(arg, Triangle):
+                res.append(arg)
+            else:
+                raise TypeError("Input must be a Triangle object")
+        self._triangles = res
 
 
 # Body class
@@ -410,11 +410,11 @@ class Body(AbstractElement):
     def faces(self):
         return self._faces
 
-    def add_face(self, face):
-        if isinstance(face, Face):
-            self._faces.append(face)
-        elif isinstance(face, (list, tuple)):
-            for elem in face:
-                self.add_face(elem)
-        else:
-            raise TypeError("Input must be a Face object")
+    def add_face(self, *args):
+        res = []
+        for arg in args:
+            if isinstance(arg, Face):
+                res.append(arg)
+            else:
+                raise TypeError("Input must be a Face object")
+        self._faces = res
