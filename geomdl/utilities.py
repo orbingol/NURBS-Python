@@ -526,12 +526,6 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
         :type: tuple
         """
-        # Update vertex ID values
-        v1.id = vidx
-        v2.id = vidx + 1
-        v3.id = vidx + 2
-        v4.id = vidx + 3
-
         # Generate triangles
         tri1 = Triangle()
         tri1.id = tidx
@@ -541,7 +535,29 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         tri2.add_vertex(v3, v4, v1)
 
         # Return vertex and triangle lists
-        return [v1, v2, v3, v4], [tri1, tri2]
+        return [], [tri1, tri2]
+
+    def fix_numbering(vertex_list, triangle_list):
+        # Initialize variables
+        final_vertices = []
+
+        # Get all vertices inside the triangle list
+        tri_vertex_ids = []
+        for tri in triangle_list:
+            tri_vertex_ids += tri.vertex_ids
+
+        # Find vertices used in triangles
+        for vertex in vertex_list:
+            if vertex.id in tri_vertex_ids:
+                final_vertices.append(vertex)
+
+        # Fix vertex numbering (automatically fixes triangle vertex numbering)
+        vert_new_id = 1
+        for vertex in final_vertices:
+            vertex.id = vert_new_id
+            vert_new_id += 1
+
+        return final_vertices, triangle_list
 
     # Vertex spacing for triangulation
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
@@ -561,17 +577,16 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     varr_size_v = int(round((float(size_v) / float(vertex_spacing)) + 10e-8))  # vertex array size on the v-direction
 
     # Generate vertices directly from input points (preliminary evaluation)
-    initial_vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
-    iv_idx = 0
+    vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
     u = 0.0
     for i in range(0, size_u, vertex_spacing):
         v = 0.0
         for j in range(0, size_v, vertex_spacing):
             idx = j + (i * size_v)
-            # No vertex ID assignment here, it should be assigned inside the tessellation function
-            initial_vertices[iv_idx].data = points[idx]
-            initial_vertices[iv_idx].uv = [u, v]
-            iv_idx += 1
+            vertices[vrt_idx - 1].id = vrt_idx
+            vertices[vrt_idx - 1].data = points[idx]
+            vertices[vrt_idx - 1].uv = [u, v]
+            vrt_idx += 1
             v += v_jump
         u += u_jump
 
@@ -588,15 +603,14 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     #
 
     # Generate triangles and final vertices
-    vertices = []
     triangles = []
     for i in range(varr_size_u - 1):
         for j in range(varr_size_v - 1):
             # Find vertex indices for a quad element
-            vertex1 = initial_vertices[j + (i * varr_size_v)]
-            vertex2 = initial_vertices[j + 1 + (i * varr_size_v)]
-            vertex3 = initial_vertices[j + 1 + ((i + 1) * varr_size_v)]
-            vertex4 = initial_vertices[j + ((i + 1) * varr_size_v)]
+            vertex1 = vertices[j + (i * varr_size_v)]
+            vertex2 = vertices[j + 1 + (i * varr_size_v)]
+            vertex3 = vertices[j + 1 + ((i + 1) * varr_size_v)]
+            vertex4 = vertices[j + ((i + 1) * varr_size_v)]
 
             # Call tessellation function
             vert_list, tri_list = tessellate_func(vertex1, vertex2, vertex3, vertex4, vrt_idx, tri_idx, tessellate_args)
@@ -608,6 +622,9 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             # Increment index values
             vrt_idx += len(vert_list)
             tri_idx += len(tri_list)
+
+    # Fix vertex and triangle numbering (ID values)
+    vertices, triangles = fix_numbering(vertices, triangles)
 
     return vertices, triangles
 
