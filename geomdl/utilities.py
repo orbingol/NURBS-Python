@@ -526,16 +526,11 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
         :type: tuple
         """
-        # Generate triangles
-        tri1 = Triangle()
-        tri1.id = tidx
-        tri1.add_vertex(v1, v2, v3)
-        tri2 = Triangle()
-        tri2.id = tidx + 1
-        tri2.add_vertex(v3, v4, v1)
+        # Triangulate vertices
+        tris = polygon_triangulate(tidx, v1, v2, v3, v4)
 
         # Return vertex and triangle lists
-        return [], [tri1, tri2]
+        return [], tris
 
     def fix_numbering(vertex_list, triangle_list):
         # Initialize variables
@@ -627,6 +622,36 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     vertices, triangles = fix_numbering(vertices, triangles)
 
     return vertices, triangles
+
+
+def polygon_triangulate(tri_idx, *args):
+    """ Triangulates the input vertices.
+
+    The vertices must be arranged in counter-clockwise order.
+
+    :param tri_idx: triangle numbering start value
+    :type tri_idx: int
+    :param args: list of Vertex objects
+    :type args: tuple
+    :return: list of Triangle objects
+    :rtype: list
+    """
+    # Add first element to the end of the list (just to make list traversal easier)
+    vertices = list(args)
+    vertices.append(args[0])
+
+    # Generate triangles
+    tidx = 0
+    triangles = []
+    for idx in range(0, len(args), 2):
+        tri = Triangle()
+        tri.id = tri_idx + tidx
+        tri.add_vertex(vertices[idx], vertices[idx + 1], vertices[idx + 2])
+        triangles.append(tri)
+        tidx += 1
+
+    # Return generated triangles
+    return triangles
 
 
 def triangle_normal(tri):
