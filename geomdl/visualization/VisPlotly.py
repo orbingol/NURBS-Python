@@ -8,7 +8,6 @@
 """
 
 from . import Abstract
-from . import utilities
 
 from . import numpy as np
 import plotly
