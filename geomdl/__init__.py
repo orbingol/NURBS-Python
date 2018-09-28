@@ -13,7 +13,6 @@ import os
 import sys
 import abc
 import math
-from array import array
 import random
 import copy
 import warnings
