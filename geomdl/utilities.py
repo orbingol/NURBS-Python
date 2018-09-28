@@ -486,6 +486,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     This function accepts the following keyword arguments:
 
     * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
+    * ``trims``: List of trim curves passed to the tessellation function
     * ``tessellate_func``: Function called for tessellation (default is ``triangular_tessellation``)
     * ``tessellate_args``: Arguments passed to the tessellation function
 
@@ -506,7 +507,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
-    def triangular_tessellation(v1, v2, v3, v4, vidx, tidx, tessellate_args):
+    def triangular_tessellation(v1, v2, v3, v4, vidx, tidx, trim_curves, tessellate_args):
         """ Default tessellation algorithm (triangular tessellation).
 
         :param v1: vertex 1
@@ -521,6 +522,8 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         :type vidx: int
         :param tidx: triangle numbering start value
         :type tidx: int
+        :param trim_curves: trim curves
+        :type: list, tuple
         :param tessellate_args: tessellation arguments
         :type tessellate_args: list, tuple
         :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
@@ -556,12 +559,13 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
     # Vertex spacing for triangulation
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
+    trim_curves = kwargs.get('trims', [])
 
     # Tessellation algorithm
-    tessellate_func = kwargs.get('tessellate_func')
-    if tessellate_func is None:
-        tessellate_func = triangular_tessellation
-    tessellate_args = kwargs.get('tessellate_args', None)
+    tsl_func = kwargs.get('tessellate_func')
+    if tsl_func is None:
+        tsl_func = triangular_tessellation
+    tsl_args = kwargs.get('tessellate_args', None)
 
     # Variable initialization
     vrt_idx = 1  # vertex index numbering start
@@ -608,15 +612,15 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
             vertex4 = vertices[j + ((i + 1) * varr_size_v)]
 
             # Call tessellation function
-            vert_list, tri_list = tessellate_func(vertex1, vertex2, vertex3, vertex4, vrt_idx, tri_idx, tessellate_args)
+            vlst, tlst = tsl_func(vertex1, vertex2, vertex3, vertex4, vrt_idx, tri_idx, trim_curves, tsl_args)
 
             # Add tessellation results to the return lists
-            vertices += vert_list
-            triangles += tri_list
+            vertices += vlst
+            triangles += tlst
 
             # Increment index values
-            vrt_idx += len(vert_list)
-            tri_idx += len(tri_list)
+            vrt_idx += len(vlst)
+            tri_idx += len(tlst)
 
     # Fix vertex and triangle numbering (ID values)
     vertices, triangles = fix_numbering(vertices, triangles)
