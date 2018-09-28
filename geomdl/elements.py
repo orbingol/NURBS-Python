@@ -210,8 +210,7 @@ class Vertex(AbstractElement):
     @uv.setter
     def uv(self, value):
         if not isinstance(value, (list, tuple)) or len(value) != 2:
-            print("UV must have 2 components")
-            return
+            raise ValueError("UV must have 2 components")
         self._uv = array("d", list(value))
 
     @property
