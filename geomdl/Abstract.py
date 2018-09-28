@@ -1182,7 +1182,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Add surface points as vertices and triangles
         if self._vis_component.plot_types['evalpts'] == 'triangles':
-            self.tessellate(evaluate_vertices=True, trims=self.trims)
+            self.tessellate()
             self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.triangles],
                                     size=[self.sample_size_u, self.sample_size_v],
                                     name=self.name, color=evalcolor, plot_type='evalpts')
@@ -1204,7 +1204,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         update_vertex_coords = kwargs.get('evaluate_vertices', True)
 
         # Call tessellation component
-        self._tsl_component.tessellate(self.evalpts, self.sample_size_u, self.sample_size_v, **kwargs)
+        self._tsl_component.tessellate(self.evalpts, self.sample_size_u, self.sample_size_v, trims=self.trims, **kwargs)
 
         # Evaluate vertex coordinates
         if update_vertex_coords:
