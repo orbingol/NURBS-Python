@@ -62,6 +62,7 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
+        self.dtype = np.float
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
@@ -121,7 +122,7 @@ class VisCurve2D(Abstract.VisAbstract):
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'])
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
                 cpplot, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
@@ -179,7 +180,7 @@ class VisCurve3D(Abstract.VisAbstract):
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'])
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
 
             # Try not to fail if the input is 2D
             if pts.shape[1] == 2:
@@ -231,6 +232,7 @@ class VisSurface(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -249,7 +251,7 @@ class VisSurface(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -258,11 +260,9 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
-                                                           tessellate_func=self._config.tsl_func,
-                                                           tessellate_args=self._config.tsl_args)
+                tris = plot['ptsarr'][1]
                 for tri in tris:
-                    pts = np.array(tri.vertices_raw)
+                    pts = np.array(tri.vertices_raw, dtype=self._config.dtype)
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
@@ -270,7 +270,7 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot trim curves
             if plot['type'] == 'trimcurve':
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
                 plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot3_proxy)
@@ -308,6 +308,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -326,7 +327,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
                 plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -335,7 +336,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
@@ -343,7 +344,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
 
             # Plot trim curves
             if plot['type'] == 'trimcurve':
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
                 plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot3_proxy)
@@ -382,6 +383,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfTriangle, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -414,7 +416,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -424,14 +426,13 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
             # Plot evaluated points
             if plot['type'] == 'evalpts':
                 # Use internal triangulation algorithm instead of Qhull (MPL default)
-                verts, tris = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1],
-                                                           tessellate_func=self._config.tsl_func,
-                                                           tessellate_args=self._config.tsl_args)
+                verts = plot['ptsarr'][0]
+                tris = plot['ptsarr'][1]
                 # Extract zero-indexed vertex number list
                 tri_idxs = [tri.vertex_ids_zero for tri in tris]
                 # Extract vertex coordinates
                 vert_coords = [vert.data for vert in verts]
-                pts = np.array(vert_coords)
+                pts = np.array(vert_coords, dtype=self._config.dtype)
                 # Create MPL Triangulation object
                 triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
 
@@ -454,7 +455,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
             # Plot trim curves
             if plot['type'] == 'trimcurve':
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
                 plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot3_proxy)
@@ -492,6 +493,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfScatter, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'points'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -510,7 +512,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -519,7 +521,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot2_proxy)
@@ -527,7 +529,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
 
             # Plot trim curves
             if plot['type'] == 'trimcurve':
-                pts = np.array(plot['ptsarr'])
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=25, depthshade=False)
                 plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot3_proxy)

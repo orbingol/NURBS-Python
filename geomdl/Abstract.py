@@ -388,7 +388,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
-        curvecolor = kwargs.get('evalcolor', 'black')
+        evalcolor = kwargs.get('evalcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
@@ -402,7 +402,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         # Run the visualization component
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=curvecolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
@@ -1135,7 +1135,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             return
 
         cpcolor = kwargs.get('cpcolor', 'blue')
-        surfcolor = kwargs.get('evalcolor', 'green')
+        evalcolor = kwargs.get('evalcolor', 'green')
         trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
@@ -1151,14 +1151,41 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         if self._surface_points is None or len(self._surface_points) == 0:
             self.evaluate()
 
-        # Run the visualization component
+        # Clear the visualization component
         self._vis_component.clear()
-        self._vis_component.add(ptsarr=self.ctrlpts,
-                                size=[self._control_points_size_u, self._control_points_size_v],
-                                name="Control Points", color=cpcolor, plot_type='ctrlpts')
-        self._vis_component.add(ptsarr=self.evalpts,
-                                size=[self.sample_size_u, self.sample_size_v],
-                                name=self.name, color=surfcolor, plot_type='evalpts')
+
+        # Add control points
+        if self._vis_component.plot_types['ctrlpts'] == 'points':
+            self._vis_component.add(ptsarr=self.ctrlpts,
+                                    size=[self.ctrlpts_size_u, self.ctrlpts_size_v],
+                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+
+        # Add control points as quads
+        if self._vis_component.plot_types['ctrlpts'] == 'quads':
+            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            self._vis_component.add(ptsarr=ctrlpts_quads,
+                                    size=[self.ctrlpts_size_u, self.ctrlpts_size_v],
+                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+
+        # Add surface points
+        if self._vis_component.plot_types['evalpts'] == 'points':
+            self._vis_component.add(ptsarr=self.evalpts,
+                                    size=[self.sample_size_u, self.sample_size_v],
+                                    name=self.name, color=evalcolor, plot_type='evalpts')
+
+        # Add surface points as quads
+        if self._vis_component.plot_types['evalpts'] == 'quads':
+            evalpts_quads = utilities.make_quad_mesh(self.evalpts, self.sample_size_u, self.sample_size_v)
+            self._vis_component.add(ptsarr=evalpts_quads,
+                                    size=[self.sample_size_u, self.sample_size_v],
+                                    name=self.name, color=evalcolor, plot_type='evalpts')
+
+        # Add surface points as vertices and triangles
+        if self._vis_component.plot_types['evalpts'] == 'triangles':
+            self.tessellate(evaluate_vertices=True, trims=self.trims)
+            self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.triangles],
+                                    size=[self.sample_size_u, self.sample_size_v],
+                                    name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Visualize the trim curve
         for idx, trim in enumerate(self._trims):
@@ -1444,6 +1471,7 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
     def __init__(self, **kwargs):
         self._vertices = None
         self._triangles = None
+        self._arguments = None
 
     @property
     def vertices(self):
@@ -1558,6 +1586,16 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     def __init__(self, config=None):
         super(VisAbstractSurf, self).__init__(config=config)
         self._ctrlpts_offset = 0.0
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+
+    @property
+    def plot_types(self):
+        """ Plot types
+
+        :getter: Gets the plot types
+        :type: tuple
+        """
+        return self._plot_types
 
     def set_ctrlpts_offset(self, offset_value):
         """ Sets an offset for the control points grid plot.

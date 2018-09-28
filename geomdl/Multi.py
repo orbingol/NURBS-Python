@@ -215,6 +215,7 @@ class MultiSurface(Abstract.Multi):
         # Get the color values from keyword arguments
         cpcolor = kwargs.get('cpcolor')
         evalcolor = kwargs.get('evalcolor')
+        trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
@@ -247,16 +248,50 @@ class MultiSurface(Abstract.Multi):
             # Color selection
             color = _select_color(cpcolor, evalcolor, idx=idx)
 
-            self._vis_component.add(ptsarr=elem.ctrlpts,
-                                    size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
-                                    name="Control Points " + str(idx + 1),
-                                    color=color[0],
-                                    plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.evalpts,
-                                    size=[elem.sample_size_u, elem.sample_size_v],
-                                    name=elem.name + " " + str(idx + 1),
-                                    color=color[1],
-                                    plot_type='evalpts')
+            # Add control points
+            if self._vis_component.plot_types['ctrlpts'] == 'points':
+                self._vis_component.add(ptsarr=elem.ctrlpts,
+                                        size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
+                                        name="Control Points " + str(idx + 1),
+                                        color=color[0], plot_type='ctrlpts')
+
+            # Add control points as quads
+            if self._vis_component.plot_types['ctrlpts'] == 'quads':
+                ctrlpts_quads = utilities.make_quad_mesh(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
+                self._vis_component.add(ptsarr=ctrlpts_quads,
+                                        size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
+                                        name="Control Points " + str(idx + 1),
+                                        color=color[0], plot_type='ctrlpts')
+
+            # Add surface points
+            if self._vis_component.plot_types['evalpts'] == 'points':
+                self._vis_component.add(ptsarr=elem.evalpts,
+                                        size=[elem.sample_size_u, elem.sample_size_v],
+                                        name=elem.name + " " + str(idx + 1),
+                                        color=color[1], plot_type='evalpts')
+
+            # Add surface points as quads
+            if self._vis_component.plot_types['evalpts'] == 'quads':
+                evalpts_quads = utilities.make_quad_mesh(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
+                self._vis_component.add(ptsarr=evalpts_quads,
+                                        size=[elem.sample_size_u, elem.sample_size_v],
+                                        name=elem.name + " " + str(idx + 1),
+                                        color=color[1], plot_type='evalpts')
+
+            # Add surface points as vertices and triangles
+            if self._vis_component.plot_types['evalpts'] == 'triangles':
+                elem.tessellate(evaluate_vertices=True, trims=elem.trims)
+                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.triangles],
+                                        size=[elem.sample_size_u, elem.sample_size_v],
+                                        name=elem.name + " " + str(idx + 1),
+                                        color=color[1], plot_type='evalpts')
+
+            # Visualize the trim curve
+            for idx, trim in enumerate(elem.trims):
+                self._vis_component.add(ptsarr=elem.evaluate_list(trim.evalpts),
+                                        name="Trim Curve " + str(idx + 1),
+                                        color=trimcolor, plot_type='trimcurve')
+
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 

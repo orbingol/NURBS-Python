@@ -53,6 +53,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
+        self.dtype = np.float
         # Set Plotly custom variables
         self.figure_image_filename = "temp-figure"
         self.figure_image_format = "png"
@@ -91,7 +92,7 @@ class VisCurve2D(Abstract.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'])
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
 
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
@@ -181,7 +182,7 @@ class VisCurve3D(Abstract.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'])
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
 
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
@@ -281,6 +282,7 @@ class VisSurface(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -293,7 +295,7 @@ class VisSurface(Abstract.VisAbstractSurf):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(utilities.make_quad_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1]))
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
@@ -315,11 +317,11 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                vertices, triangles = utilities.make_triangle_mesh(plot['ptsarr'], plot['size'][0], plot['size'][1])
+                triangles = plot['ptsarr'][1]
                 pts = []
                 for tri in triangles:
                     pts += tri.vertices_raw
-                pts = np.array(pts)
+                pts = np.array(pts, dtype=self._config.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
