@@ -50,12 +50,6 @@ class VisConfig(Abstract.VisConfigAbstract):
         # Plot the curve
         curve.render()
 
-    The following keyword arguments can be used to control tessellation in modules which use the tessellation function
-    :py:func:`.make_triangular_mesh()`:
-
-    * ``tessellate_func``: Sets the tessellation function
-    * ``tessellate_args``: Sets the arguments passed to the tessellation function
-
     Please refer to the **Examples Repository** for more details.
     """
 
@@ -68,9 +62,6 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.figure_image_filename = "temp-figure.png"
-        # Tessellation configuration
-        self.tsl_func = kwargs.get('tessellate_func', None)
-        self.tsl_args = kwargs.get('tessellate_args', None)
 
     @staticmethod
     def set_axes_equal(ax):
