@@ -1461,6 +1461,19 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
         """
         return self._triangles
 
+    @property
+    def arguments(self):
+        """ Arguments passed to the tessellation function.
+
+        :getter: Gets the tessellation arguments
+        :setter: Sets the tessellation arguments
+        """
+        return self._arguments
+
+    @arguments.setter
+    def arguments(self, value):
+        self._arguments = value
+
     def reset(self):
         """ Resets stored vertices and triangles. """
         self._vertices = None
