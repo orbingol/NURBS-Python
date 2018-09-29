@@ -106,7 +106,20 @@ def read_files(project, ext):
     return flist, flist_path
 
 
-def make_dir(project):
+def copy_files(src, ext, dst):
+    """  Copies files with extensions "ext" from "src" to "dst" directory. """
+    src_path = os.path.join(os.path.dirname(__file__), src)
+    dst_path = os.path.join(os.path.dirname(__file__), dst)
+    file_list = os.listdir(src_path)
+    for f in file_list:
+        if f == '__init__.py':
+            continue
+        f_path = os.path.join(src_path, f)
+        if os.path.isfile(f_path) and f.endswith(ext):
+            shutil.copy(f_path, dst_path)
+
+
+def make_dir(project, gen_init_py=True):
     """ Creates the project directory for compiled modules. """
     project_path = os.path.join(os.path.dirname(__file__), project)
     # Delete the directory and the files inside it
@@ -115,9 +128,10 @@ def make_dir(project):
     # Create the directory
     os.mkdir(project_path)
     # We need a __init__.py file inside the directory
-    with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
-        fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
-        fp.write('__license__ = "MIT"\n')
+    if gen_init_py:
+        with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
+            fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
+            fp.write('__license__ = "MIT"\n')
 
 
 # Cython and compiled C module options
@@ -131,6 +145,9 @@ else:
 if '--use-cython' in sys.argv:
     USE_CYTHON = True
     sys.argv.remove('--use-cython')
+    # Prepare files for compilation
+    make_dir('cython_temp', gen_init_py=False)
+    copy_files('geomdl', 'py', 'cython_temp')
 else:
     USE_CYTHON = False
 
@@ -139,11 +156,14 @@ extensions = []
 
 if USE_CYTHON or USE_SOURCE:
     # Choose the file extension
-    file_ext = '.pyx' if USE_CYTHON else '.c'
+    file_ext = '.py' if USE_CYTHON else '.c'
+
+    # Create Cython-compiled module directory
+    make_dir('geomdl_core')
 
     # Create extensions
     optional_extensions = []
-    fnames, fnames_path = read_files('cython/core', file_ext)
+    fnames, fnames_path = read_files('cython_temp', file_ext)
     for fname, fpath in zip(fnames, fnames_path):
         temp = Extension('geomdl_core.' + str(fname), sources=[fpath])
         optional_extensions.append(temp)
@@ -152,12 +172,10 @@ if USE_CYTHON or USE_SOURCE:
     if USE_CYTHON:
         from Cython.Build import cythonize
         extensions = cythonize(optional_extensions)
-        make_dir('geomdl_core')
 
     # Compile from C source when "python setup.py build_ext --use-source" is executed
     if USE_SOURCE:
         extensions = optional_extensions
-        make_dir('geomdl_core')
 
 # Add Enum type support for Python versions < 3.4
 if sys.version_info[:2] < (3, 4):

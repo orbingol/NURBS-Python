@@ -6,6 +6,8 @@ dist/
 geomdl.egg-info/*
 docs/_build
 docs/_static
+geomdl_core/*
+cython_temp/*
 *.pyc
 *.out
 *.txt
