@@ -71,9 +71,11 @@ class VisConfig(Abstract.VisConfigAbstract):
 
         # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
-        self.figure_size = kwargs.get('figure_size', [800, 600])
+        self.display_trims = kwargs.get('trims', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
+        self.figure_size = kwargs.get('figure_size', [800, 600])
+        self.trim_size = kwargs.get('trim_size', 20)
         self.line_width = kwargs.get('linewidth', 2)
 
 
