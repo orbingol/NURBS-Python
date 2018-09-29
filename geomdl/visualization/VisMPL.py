@@ -26,8 +26,10 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot in the figure
     * ``legend`` (True or False): Enables/Disables legend in the figure
     * ``axes`` (True or False): Enables/Disables axes and grid in the figure
+    * ``trims`` (True or False): Enables/Disables trim curves display in the figure
     * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
     * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
+    * ``trim_size`` (int, *default: 20*): Size of the trim curves
 
     The following example illustrates the usage of the configuration class.
 
