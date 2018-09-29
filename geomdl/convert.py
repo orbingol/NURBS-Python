@@ -9,7 +9,6 @@
 
 from . import BSpline
 from . import NURBS
-from . import compatibility
 
 
 def bspline_to_nurbs(obj):

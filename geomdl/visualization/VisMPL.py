@@ -7,9 +7,9 @@
 
 """
 
-from . import Abstract
+from geomdl import Abstract
 
-from . import numpy as np
+import numpy as np
 import matplotlib as mpl
 import matplotlib.tri as mpltri
 from mpl_toolkits.mplot3d import Axes3D

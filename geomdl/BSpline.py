@@ -7,8 +7,8 @@
 
 """
 
-from . import warnings
-from . import pickle
+import warnings
+import pickle
 from . import Abstract
 from . import utilities
 from . import helpers

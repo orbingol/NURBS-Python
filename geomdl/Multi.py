@@ -7,7 +7,7 @@
 
 """
 
-from . import warnings
+import warnings
 from . import Abstract
 from . import utilities
 

@@ -7,7 +7,7 @@
 
 """
 
-from . import copy
+import copy
 
 
 # Abstract class for geometry and topology elements (entities)

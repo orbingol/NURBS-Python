@@ -7,10 +7,10 @@
 
 """
 
-from . import copy
-from . import abc
-from . import six
-from . import warnings
+import copy
+import abc
+import six
+import warnings
 from . import utilities
 
 

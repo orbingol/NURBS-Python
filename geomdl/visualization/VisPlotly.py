@@ -7,9 +7,9 @@
 
 """
 
-from . import Abstract
+from geomdl import Abstract
 
-from . import numpy as np
+import numpy as np
 import plotly
 from plotly import graph_objs
 

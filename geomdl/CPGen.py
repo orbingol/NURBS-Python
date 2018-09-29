@@ -7,9 +7,9 @@
 
 """
 
-from . import math
-from . import random
-from . import warnings
+import math
+import random
+import warnings
 
 
 class Grid(object):

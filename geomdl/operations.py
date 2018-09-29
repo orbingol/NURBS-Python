@@ -7,7 +7,7 @@
 
 """
 
-from . import copy
+import copy
 from . import Abstract
 from . import Multi
 from . import helpers

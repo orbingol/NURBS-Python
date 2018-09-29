@@ -7,8 +7,8 @@
 
 """
 
-from . import random
-from . import math
+import random
+import math
 from .elements import Vertex, Triangle
 
 

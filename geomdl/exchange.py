@@ -7,9 +7,9 @@
 
 """
 
-from . import os
-from . import warnings
-from . import struct
+import os
+import warnings
+import struct
 from . import Abstract
 from . import NURBS
 from . import Multi
