@@ -1200,16 +1200,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Keyword arguments are directly passed to the tessellation component.
         """
-        # Keyword arguments
-        update_vertex_coords = kwargs.get('evaluate_vertices', True)
-
-        # Call tessellation component
+        # Call tessellation component for vertex and triangle generation
         self._tsl_component.tessellate(self.evalpts, self.sample_size_u, self.sample_size_v, trims=self.trims, **kwargs)
 
-        # Evaluate vertex coordinates
-        if update_vertex_coords:
-            for idx in range(len(self._tsl_component.vertices)):
-                self._tsl_component.vertices[idx].data = self.evaluate_single(self._tsl_component.vertices[idx].uv)
+        # Re-evaluate vertex coordinates
+        for idx in range(len(self._tsl_component.vertices)):
+            self._tsl_component.vertices[idx].data = self.evaluate_single(self._tsl_component.vertices[idx].uv)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.

@@ -280,7 +280,7 @@ class MultiSurface(Abstract.Multi):
 
             # Add surface points as vertices and triangles
             if self._vis_component.plot_types['evalpts'] == 'triangles':
-                elem.tessellate(evaluate_vertices=True, trims=elem.trims)
+                elem.tessellate()
                 self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.triangles],
                                         size=[elem.sample_size_u, elem.sample_size_v],
                                         name=elem.name + " " + str(idx + 1),
