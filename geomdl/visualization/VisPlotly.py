@@ -77,7 +77,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.figure_size = kwargs.get('figure_size', [800, 600])
-        self.trim_size = kwargs.get('trim_size', 20)
+        self.trim_size = kwargs.get('trim_size', 1)
         self.line_width = kwargs.get('linewidth', 2)
 
 
@@ -337,6 +337,23 @@ class VisSurface(Abstract.VisAbstractSurf):
                     ),
                 )
                 plot_data.append(figure)
+
+            # Plot trim curves
+            if self._config.display_trims:
+                if plot['type'] == 'trimcurve':
+                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    figure = graph_objs.Scatter3d(
+                        x=pts[:, 0],
+                        y=pts[:, 1],
+                        z=pts[:, 2],
+                        name=plot['name'],
+                        mode='markers',
+                        marker=dict(
+                            color=plot['color'],
+                            size=self._config.trim_size * 2,
+                        ),
+                    )
+                    plot_data.append(figure)
 
         plot_layout = dict(
             width=self._config.figure_size[0],
