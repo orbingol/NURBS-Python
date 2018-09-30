@@ -1297,7 +1297,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_list(self, uv_list):
-        """ Evaluates the surface for a given (u,v) array.
+        """ Evaluates the surface for an input range of (u,v) parameter pairs.
 
         :param uv_list: array of parameter pairs (u, v)
         """

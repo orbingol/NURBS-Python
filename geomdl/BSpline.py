@@ -727,7 +727,7 @@ class Surface(Abstract.Surface):
 
         :param uv_list: list of parameter pairs (u, v)
         :type uv_list: list, tuple
-        :return: evaluated surface point at the given knot values
+        :return: evaluated surface point at the input parameter pairs
         :rtype: tuple
         """
         # Call parent method
@@ -738,7 +738,7 @@ class Surface(Abstract.Surface):
 
         # Evaluate (u,v) list
         res = []
-        for idx, uv in enumerate(uv_list):
+        for uv in uv_list:
             if 0.0 + tol < uv[0] < 1.0 - tol and 0.0 + tol < uv[1] < 1.0 - tol:
                 res.append(self.evaluate_single(uv))
         return tuple(res)
