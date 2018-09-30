@@ -53,6 +53,7 @@ class AbstractElement(object):
 
         :getter: Gets the identifier
         :setter: Sets the identifier
+        :type: int
         """
         return self._id
 
@@ -335,9 +336,12 @@ class Triangle(AbstractElement):
 
     @property
     def vertex_ids(self):
-        """ Gets vertex number list.
+        """ Vertex indices
 
         Vertex numbering starts from 1.
+
+        :getter: Gets the vertex indices
+        :type: list
         """
         v_idx = []
         for v in self._data:
@@ -346,9 +350,12 @@ class Triangle(AbstractElement):
 
     @property
     def vertex_ids_zero(self):
-        """ Gets zero-indexed vertex number list.
+        """ Zero-indexed vertex indices
 
         Vertex numbering starts from 0.
+
+        :getter: Gets the vertex indices
+        :type: list
         """
         v_idx = []
         for v in self._data:
