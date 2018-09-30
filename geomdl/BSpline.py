@@ -103,25 +103,6 @@ class Curve(Abstract.Curve):
         self._dimension = impdata['dimension']
         self._control_points = impdata['ctrlpts']
 
-    def reset(self, **kwargs):
-        """ Resets control or evaluated points.
-
-        Keyword Arguments:
-
-            * ``evalpts``: if True, then resets evaluated points
-            * ``ctrlpts`` if True, then resets control points
-
-        """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
-
-        if reset_ctrlpts:
-            del self._control_points[:]
-            del self._bounding_box[:]
-
-        if reset_evalpts:
-            del self._curve_points[:]
-
     def curvept(self, u):
         """ Evaluates the curve at the given parameter.
 
@@ -571,28 +552,6 @@ class Surface(Abstract.Surface):
         self._control_points_size_v = impdata['ctrlpts_size_v']
         self._dimension = impdata['dimension']
         self._control_points = impdata['ctrlpts']
-
-    def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
-
-        Keyword Arguments:
-
-            * ``evalpts``: if True, then resets evaluated points
-            * ``ctrlpts`` if True, then resets control points
-
-        """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
-
-        if reset_ctrlpts:
-            del self._control_points[:]
-            del self._control_points2D[:]
-            self._control_points_size_u = 0
-            self._control_points_size_v = 0
-            del self._bounding_box[:]
-
-        if reset_evalpts:
-            del self._surface_points[:]
 
     def transpose(self):
         """ Transposes the surface by swapping u- and v-directions. """
