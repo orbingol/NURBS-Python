@@ -303,16 +303,6 @@ def test_color_generator():
     assert to_check == result
 
 
-def test_init_var1():
-    test_var_type = list
-    assert test_var_type() == utilities.init_var(test_var_type)
-
-
-def test_init_var2():
-    test_var_type = None
-    assert test_var_type == utilities.init_var(test_var_type)
-
-
 def test_vector_multiply():
     result = (2, 4, 6)
     computed = utilities.vector_multiply((1, 2, 3), 2)
