@@ -449,6 +449,30 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
+    def evaluate_single(self, u):
+        """ Evaluates the curve at the given parameter.
+
+        :param u: parameter
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def evaluate_list(self, u_list):
+        """ Evaluates the curve for an input range of parameters.
+
+        :param u_list: array of parameters
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
         """ Evaluates the derivatives of the curve at parameter u.
 

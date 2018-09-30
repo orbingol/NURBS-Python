@@ -130,18 +130,7 @@ class Curve(Abstract.Curve):
         :return: evaluated curve point
         :rtype: list
         """
-        # Check all parameters are set before the curve evaluation
-        self._check_variables()
-
-        # Check u parameters are correct
-        utilities.check_uv(u)
-
-        # Evaluate
-        return self._evaluator.evaluate_single(knot=u,
-                                               degree=self.degree,
-                                               knotvector=self.knotvector,
-                                               ctrlpts=self._control_points,
-                                               dimension=self._dimension)
+        return self.evaluate_single(u)
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -196,6 +185,48 @@ class Curve(Abstract.Curve):
                                         precision=self._precision)
 
         self._curve_points = cpts
+
+    def evaluate_single(self, u):
+        """ Evaluates the curve at the given parameter.
+
+        :param u: parameter
+        :type u: float
+        :return: evaluated surface point at the given parameter
+        :rtype: list
+        """
+        # Call parent method
+        super(Curve, self).evaluate_single(u)
+
+        # Check u parameters are correct
+        utilities.check_uv(u)
+
+        # Evaluate
+        return self._evaluator.evaluate_single(knot=u,
+                                               degree=self.degree,
+                                               knotvector=self.knotvector,
+                                               ctrlpts=self._control_points,
+                                               dimension=self._dimension)
+
+    def evaluate_list(self, u_list):
+        """ Evaluates the curve for an input range of parameters.
+
+        :param u_list: list of parameters
+        :type u_list: list, tuple
+        :return: evaluated surface points at the input parameters
+        :rtype: tuple
+        """
+        # Call parent method
+        super(Curve, self).evaluate_list(u_list)
+
+        # Tolerance value
+        tol = 10e-8
+
+        # Evaluate (u,v) list
+        res = []
+        for u in u_list:
+            if 0.0 + tol < u < 1.0 - tol:
+                res.append(self.evaluate_single(u))
+        return tuple(res)
 
     # Evaluates the curve derivative
     def derivatives(self, u, order=0, **kwargs):
