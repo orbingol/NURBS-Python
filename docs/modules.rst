@@ -21,6 +21,7 @@ Following modules are included in the library:
     module_cpgen
     module_container
     module_exchange
+    module_tessellate
     module_elements
 
 NURBS-Python takes *The NURBS Book 2nd Edition by Piegl & Tiller* as the main reference for the evaluation algorithms.
