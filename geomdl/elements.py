@@ -10,12 +10,40 @@
 import copy
 
 
-# Abstract class for geometry and topology elements (entities)
+# Abstract class for geometric entities
 class AbstractElement(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self):
         self._id = 0  # element ID
         self._data = []  # data storage array
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
+
+    def __len__(self):
+        return len(self._data)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __reversed__(self):
+        return reversed(self._data)
 
     @property
     def id(self):
@@ -48,40 +76,6 @@ class Vertex(AbstractElement):
         return "Vertex " + str(self._id) + " " + str(self._data)
 
     __repr__ = __str__
-
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __setitem__(self, key, value):
-        self._data[key] = value
-
-    def __delitem__(self, key):
-        del self._data[key]
-
-    def __iter__(self):
-        return iter(self.data)
-
-    def __reversed__(self):
-        return reversed(self._data)
 
     def __cmp__(self, other):
         return (self.id > other.id) - (self.id < other.id)
@@ -159,7 +153,12 @@ class Vertex(AbstractElement):
 
     @property
     def x(self):
-        """ x-component of the vertex """
+        """ x-component of the vertex
+
+        :getter: Gets the x-component of the vertex
+        :setter: Sets the x-component of the vertex
+        :type: float
+        """
         return self._data[0]
 
     @x.setter
@@ -168,7 +167,12 @@ class Vertex(AbstractElement):
 
     @property
     def y(self):
-        """ y-component of the vertex """
+        """ y-component of the vertex
+
+        :getter: Gets the y-component of the vertex
+        :setter: Sets the y-component of the vertex
+        :type: float
+        """
         return self._data[1]
 
     @y.setter
@@ -177,7 +181,12 @@ class Vertex(AbstractElement):
 
     @property
     def z(self):
-        """ z-component of the vertex """
+        """ z-component of the vertex
+
+        :getter: Gets the z-component of the vertex
+        :setter: Sets the z-component of the vertex
+        :type: float
+        """
         return self._data[2]
 
     @z.setter
@@ -186,7 +195,12 @@ class Vertex(AbstractElement):
 
     @property
     def u(self):
-        """ Parametric u-component of the vertex """
+        """ Parametric u-component of the vertex
+
+        :getter: Gets the u-component of the vertex
+        :setter: Sets the u-component of the vertex
+        :type: float
+        """
         return self._uv[0]
 
     @u.setter
@@ -195,7 +209,12 @@ class Vertex(AbstractElement):
 
     @property
     def v(self):
-        """ Parametric v-component of the vertex """
+        """ Parametric v-component of the vertex
+
+        :getter: Gets the v-component of the vertex
+        :setter: Sets the v-component of the vertex
+        :type: float
+        """
         return self._uv[1]
 
     @v.setter
@@ -204,7 +223,12 @@ class Vertex(AbstractElement):
 
     @property
     def uv(self):
-        """ Parametric (u,v) pair of the vertex """
+        """ Parametric (u,v) pair of the vertex
+
+        :getter: Gets the uv-component of the vertex
+        :setter: Sets the uv-component of the vertex
+        :type: list, tuple
+        """
         return tuple(self._uv)
 
     @uv.setter
@@ -217,7 +241,12 @@ class Vertex(AbstractElement):
 
     @property
     def inside(self):
-        """ Inside-outside flag """
+        """ Inside-outside flag
+
+        :getter: Gets the flag
+        :setter: Sets the flag
+        :type: bool
+        """
         return self._inside
 
     @inside.setter
@@ -254,43 +283,23 @@ class Triangle(AbstractElement):
 
     __repr__ = __str__
 
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __reversed__(self):
-        return reversed(self._data)
-
     @property
     def vertices(self):
+        """ Vertices of the triangle
+
+        :getter: Gets the list of vertices
+        :type: tuple
+        """
         return tuple(self._data)
 
     @property
     def vertices_raw(self):
-        """ Returns the list of vertices that generates a closed triangle.
+        """ Vertices which generates a closed triangle
 
-        :getter: List of vertices
+        Adds the first vertex as a last element of the return value (good for plotting)
+
+        :getter: Gets the list of vertices
+        :type: list
         """
         v_raw = []
         for v in self._data:
@@ -302,36 +311,26 @@ class Triangle(AbstractElement):
 
     @property
     def vertices_uv(self):
+        """ Parametric coordinates of the triangle vertices
+
+        :getter: Gets the parametric coordinates of the vertices
+        :type: list
+        """
         data = self.vertices
         res = [data[idx].uv for idx in range(3)]
         return res
 
     @property
     def edges(self):
-        data = self.vertices
-        res = [[] for _ in range(3)]
-        for idx in range(3):
-            if idx == 2:
-                lv = 0
-            else:
-                lv = idx + 1
-            res[idx] = [data[idx], data[lv]]
-        return res
+        """ Edges of the triangle
 
-    @property
-    def edges_raw(self):
+        :getter: Gets the list of vertices that generates the edges of the triangle
+        :type: list
+        """
         data = self.vertices_raw
         res = [[] for _ in range(3)]
         for idx in range(3):
             res[idx] = [data[idx], data[idx + 1]]
-        return res
-
-    @property
-    def edges_uv(self):
-        data = self.edges
-        res = [[] for _ in range(3)]
-        for idx in range(3):
-            res[idx] = [data[idx][0].uv, data[idx][1].uv]
         return res
 
     @property
@@ -358,6 +357,12 @@ class Triangle(AbstractElement):
 
     @property
     def inside(self):
+        """ Inside-outside flag
+
+        :getter: Gets the flag
+        :setter: Sets the flag
+        :type: bool
+        """
         return self._inside
 
     @inside.setter
@@ -365,6 +370,7 @@ class Triangle(AbstractElement):
         self._inside = bool(value)
 
     def add_vertex(self, *args):
+        """ Adds vertices to the Triangle object. """
         if len(self._data) > 2:
             raise ValueError("Cannot add more vertices")
         res = []
@@ -387,39 +393,17 @@ class Face(AbstractElement):
 
     __repr__ = __str__
 
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __reversed__(self):
-        return reversed(self._data)
-
     @property
     def triangles(self):
+        """ Triangles of the face
+
+        :getter: Gets the list of triangles
+        :type: tuple
+        """
         return tuple(self._data)
 
     def add_triangle(self, *args):
+        """ Adds triangles to the Face object. """
         res = []
         for arg in args:
             if isinstance(arg, Triangle):
@@ -440,39 +424,17 @@ class Body(AbstractElement):
 
     __repr__ = __str__
 
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __reversed__(self):
-        return reversed(self._data)
-
     @property
     def faces(self):
+        """ Faces of the body
+
+        :getter: Gets the list of faces
+        :type: tuple
+        """
         return tuple(self._data)
 
     def add_face(self, *args):
+        """ Adds faces to the Body object. """
         res = []
         for arg in args:
             if isinstance(arg, Face):
