@@ -1,7 +1,7 @@
 """
 .. module:: elements
     :platform: Unix, Windows
-    :synopsis: Provides classes representing geometry and topology elements
+    :synopsis: Provides classes representing geometry and topology entities
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -10,11 +10,11 @@
 import copy
 
 
-# Abstract class for geometric entities
-class AbstractElement(object):
+# Abstract base class for geometric entities
+class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self):
-        self._id = 0  # element ID
+        self._id = 0  # element identifier
         self._data = []  # data storage array
 
     def __copy__(self):
@@ -64,9 +64,9 @@ class AbstractElement(object):
         self._id = value
 
 
-# Vertex class
-class Vertex(AbstractElement):
-    """ Representation of a 3-dimensional vertex entity with its parametric position. """
+# Vertex entity
+class Vertex(AbstractEntity):
+    """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self):
         super(Vertex, self).__init__()
         self._data = [0.0, 0.0, 0.0]  # spatial coordinates
@@ -272,9 +272,9 @@ class Vertex(AbstractElement):
         self._data = list(value)
 
 
-# Triangle class
-class Triangle(AbstractElement):
-    """ Representation of a triangular geometric entity composed of vertices. """
+# Triangle entity
+class Triangle(AbstractEntity):
+    """ Triangle entity which represents a triangle composed from vertices. """
     def __init__(self):
         super(Triangle, self).__init__()
         self._inside = False  # flag for trimming
@@ -377,7 +377,10 @@ class Triangle(AbstractElement):
         self._inside = bool(value)
 
     def add_vertex(self, *args):
-        """ Adds vertices to the Triangle object. """
+        """ Adds vertices to the Triangle object.
+
+        This method takes a single or a list of vertices as its function arguments.
+        """
         if len(self._data) > 2:
             raise ValueError("Cannot add more vertices")
         res = []
@@ -389,9 +392,9 @@ class Triangle(AbstractElement):
         self._data = res
 
 
-# Face class
-class Face(AbstractElement):
-    """ Representation of a face geometric entity composed of triangles. """
+# Face entity
+class Face(AbstractEntity):
+    """ Representation of Face entity which is composed from triangles. """
     def __init__(self):
         super(Face, self).__init__()
 
@@ -410,7 +413,10 @@ class Face(AbstractElement):
         return tuple(self._data)
 
     def add_triangle(self, *args):
-        """ Adds triangles to the Face object. """
+        """ Adds triangles to the Face object.
+
+        This method takes a single or a list of triangles as its function arguments.
+        """
         res = []
         for arg in args:
             if isinstance(arg, Triangle):
@@ -420,9 +426,9 @@ class Face(AbstractElement):
         self._data = res
 
 
-# Body class
-class Body(AbstractElement):
-    """ Representation of a geometric body composed of faces. """
+# Body entity
+class Body(AbstractEntity):
+    """ Representation of Body entity which is composed of faces. """
     def __init__(self):
         super(Body, self).__init__()
 
@@ -441,7 +447,10 @@ class Body(AbstractElement):
         return tuple(self._data)
 
     def add_face(self, *args):
-        """ Adds faces to the Body object. """
+        """ Adds faces to the Body object.
+
+        This method takes a single or a list of faces as its function arguments.
+        """
         res = []
         for arg in args:
             if isinstance(arg, Face):
