@@ -12,7 +12,10 @@ from . import utilities
 
 
 class TriangularTessellate(Abstract.Tessellate):
-    """  Triangular tessellation """
+    """  Triangular tessellation algorithm for surfaces.
+
+    This class provides the default triangular tessellation algorithm for surfaces.
+    """
 
     def __init__(self, **kwargs):
         super(TriangularTessellate, self).__init__(**kwargs)

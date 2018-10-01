@@ -1513,7 +1513,7 @@ class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for tessellation. """
+    """ Abstract base class for tessellation algorithms. """
 
     def __init__(self, **kwargs):
         self._vertices = None
@@ -1522,7 +1522,7 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def vertices(self):
-        """ Vertex objects for tessellation.
+        """ Vertex objects generated after tessellation.
 
         :getter: Gets the vertices
         """
@@ -1530,7 +1530,7 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def triangles(self):
-        """ Triangle objects for tessellation.
+        """ Triangle objects generated after tessellation.
 
         :getter: Gets the triangles
         """
@@ -1539,6 +1539,10 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def arguments(self):
         """ Arguments passed to the tessellation function.
+
+        This property allows customization of the tessellation algorithm, and mainly designed to allow users to pass
+        additional arguments to the tessellation function or change the behavior of the algorithm at runtime. This
+        property can be thought as a way to input and store extra data for the tessellation functionality.
 
         :getter: Gets the tessellation arguments
         :setter: Sets the tessellation arguments
@@ -1550,13 +1554,20 @@ class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
         self._arguments = value
 
     def reset(self):
-        """ Resets stored vertices and triangles. """
+        """ Clears stored vertices and triangles. """
         self._vertices = None
         self._triangles = None
 
     @abc.abstractmethod
     def tessellate(self, points, size_u, size_v, **kwargs):
-        """ Abstract method for implementation of the tessellation algorithm. """
+        """ Abstract method for the implementation of the tessellation algorithm.
+
+        This algorithm should update :py:attr:`~vertices` and :py:attr:`~triangles` properties.
+
+        :param points: 1-dimensional array of surface points
+        :param size_u: number of surface points on the u-direction
+        :param size_v: number of surface points on the v-direction
+        """
         pass
 
 
