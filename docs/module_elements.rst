@@ -6,10 +6,10 @@ provides the abstract base for all geometric and topological entities.
 
 This module provides the following geometric and topological entities:
 
-* :py:class`.Vertex`
-* :py:class`.Triangle`
-* :py:class`.Face`
-* :py:class`.Body`
+* :py:class:`.Vertex`
+* :py:class:`.Triangle`
+* :py:class:`.Face`
+* :py:class:`.Body`
 
 .. automodule:: geomdl.elements
     :members:
