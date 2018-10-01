@@ -1,5 +1,15 @@
 # NURBS-Python Changelog
 
+## 4.3.0 released on 2018-10-01
+
+* Added `Tessellate` class for customization of the surface tessellation algorithms
+* Basic trimmed surface support (still work in progress)
+* Updated `elements` module
+* Visualization module improvements and added support for displaying trim curves for surfaces
+* Added `evaluate_single` and `evaluate_list` methods
+* Updated default evaluation delta to 0.01
+* Minor bug fixes, algorithm and performance improvements
+
 ## v4.2.2 released on 2018-09-11
 
 * Fixed a bug causing incorrect alignment of control points that generate the hills in the surface generator module
