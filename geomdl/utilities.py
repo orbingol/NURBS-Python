@@ -629,9 +629,9 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
 
 def polygon_triangulate(tri_idx, *args):
-    """ Triangulates the input vertices.
+    """ Triangulates a monotone polygon defined by a list of vertices.
 
-    The vertices must be arranged in counter-clockwise order.
+    The input vertices must form a convex polygon and must be arranged in counter-clockwise order.
 
     :param tri_idx: triangle numbering start value
     :type tri_idx: int
