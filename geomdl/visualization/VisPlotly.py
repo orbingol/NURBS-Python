@@ -320,21 +320,22 @@ class VisSurface(Abstract.VisAbstractSurf):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
+                vertices = plot['ptsarr'][0]
                 triangles = plot['ptsarr'][1]
-                pts = []
-                for tri in triangles:
-                    pts += tri.vertices_raw
+                pts = [v.data for v in vertices]
+                tri = [t.vertex_ids_zero for t in triangles]
                 pts = np.array(pts, dtype=self._config.dtype)
-                figure = graph_objs.Scatter3d(
+                tri = np.array(tri, dtype=self._config.dtype)
+                figure = graph_objs.Mesh3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
                     name=plot['name'],
-                    mode='lines',
-                    line=dict(
-                        color=plot['color'],
-                        width=self._config.line_width
-                    ),
+                    i=tri[:, 0],
+                    j=tri[:, 1],
+                    k=tri[:, 2],
+                    color=plot['color'],
+                    opacity=0.75,
                 )
                 plot_data.append(figure)
 
