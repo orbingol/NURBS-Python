@@ -11,11 +11,13 @@ import os
 import warnings
 import struct
 from . import Abstract
+from . import BSpline
 from . import NURBS
 from . import Multi
 from . import compatibility
 from . import operations
 from . import utilities
+from . import convert
 
 
 def import_txt(file_name, two_dimensional=False, **kwargs):
@@ -573,6 +575,23 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
+def export_smesh(surf_in, file_name, **kwargs):
+    """ Exports surface(s) as .smesh files.
+
+    :param surf_in: surface or surfaces to be saved
+    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
+    """
+    if isinstance(surf_in, Abstract.Surface):
+        _export_smesh_single(surf_in, file_name, **kwargs)
+    elif isinstance(surf_in, Multi.MultiSurface):
+        _export_smesh_multi(surf_in, file_name)
+    else:
+        raise NotImplementedError("Cannot export input surface - unknown type")
+
+
 def _export_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
@@ -1124,3 +1143,53 @@ def _import_smesh_multi(file_path):
     for f in files:
         surf.add(_import_smesh_single(f))
     return surf
+
+
+def _export_smesh_single(surface, file_name, **kwargs):
+    """ Saves a single surface as a .smesh file.
+
+    :param surface: surface to be saved
+    :type surface: Abstract.Surface
+    :param file_name: file name
+    :type file_name: str
+    """
+    le = kwargs.get('line_ending', "\n")
+    idx_val = kwargs.get('idx', 1)
+    try:
+        with open(file_name, 'w') as fp:
+            if isinstance(surface, BSpline.Surface):
+                surf = convert.bspline_to_nurbs(surface)
+            else:
+                surf = surface
+            fp.write(str(surf.dimension) + le)
+            fp.write(str(surf.degree_u) + " " + str(surf.degree_v) + le)
+            fp.write(str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + le)
+            fp.write(" ".join([str(v) for v in surf.knotvector_u]) + le)
+            fp.write(" ".join([str(v) for v in surf.knotvector_v]) + le)
+            # Convert control points into (x, y, z, w)
+            ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
+            for ptw in ctrlptsw:
+                fp.write(" ".join([str(p) for p in ptw]) + le)
+            fp.write(str(idx_val) + le)
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def _export_smesh_multi(surface_list, file_name, **kwargs):
+    """ Saves a list of surfaces as .idx.smesh files.
+
+    :param surface_list: list of surfaces to be saved
+    :type surface_list: Multi.MultiSurface
+    :param file_name: file name
+    :type file_name: str
+    """
+    fname_arr = file_name.strip().split(".")
+    if len(fname_arr) > 2 or len(fname_arr) < 0:
+        raise ValueError("The input file name should be in 'file_name.smesh' format. Please do not use dots.")
+
+    for idx, surf in enumerate(surface_list):
+        fname = fname_arr[0] + "." + str(idx + 1) + "." + fname_arr[1]
+        _export_smesh_single(surf, fname, idx=idx, **kwargs)
