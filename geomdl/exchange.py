@@ -486,10 +486,12 @@ def export_obj(surf_in, file_name, **kwargs):
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
-    if isinstance(surf_in, Multi.MultiSurface):
+    if isinstance(surf_in, Abstract.Surface):
+        _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+    elif isinstance(surf_in, Multi.MultiSurface):
         _export_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        raise NotImplementedError("Cannot export input surface - unknown type")
 
 
 def export_stl(surf_in, file_name, **kwargs):
@@ -508,16 +510,18 @@ def export_stl(surf_in, file_name, **kwargs):
     binary = kwargs.get('binary', True)
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
-    if isinstance(surf_in, Multi.MultiSurface):
+    if isinstance(surf_in, Abstract.Surface):
+        if binary:
+            _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        else:
+            _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+    elif isinstance(surf_in, Multi.MultiSurface):
         if binary:
             _export_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
             _export_stl_ascii_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        if binary:
-            _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
-        else:
-            _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        raise NotImplementedError("Cannot export input surface - unknown type")
 
 
 def export_off(surf_in, file_name, **kwargs):
@@ -534,10 +538,12 @@ def export_off(surf_in, file_name, **kwargs):
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
-    if isinstance(surf_in, Multi.MultiSurface):
+    if isinstance(surf_in, Abstract.Surface):
+        _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+    elif isinstance(surf_in, Multi.MultiSurface):
         _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
     else:
-        _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        raise NotImplementedError("Cannot export input surface - unknown type")
 
 
 def import_smesh(file):
