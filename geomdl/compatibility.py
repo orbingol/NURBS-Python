@@ -9,10 +9,11 @@
 
 
 def flip_ctrlpts_u(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points in u-row order to v-row order.
+    """ Flips a list of 1-dimensional control points from u-row order to v-row order.
 
-    **u-row order**: each row corresponds to a list of u values (in 2-dimensions, an array of [v][u])
-    **v-row order**: each row corresponds to a list of v values (in 2-dimensions, an array of [u][v])
+    **u-row order**: each row corresponds to a list of u values
+
+    **v-row order**: each row corresponds to a list of v values
 
     :param ctrlpts: control points in u-row order
     :type ctrlpts: list, tuple
@@ -33,10 +34,11 @@ def flip_ctrlpts_u(ctrlpts, size_u, size_v):
 
 
 def flip_ctrlpts(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points in v-row order to u-row order.
+    """ Flips a list of 1-dimensional control points from v-row order to u-row order.
 
-    **u-row order**: each row corresponds to a list of u values (in 2-dimensions, an array of [v][u])
-    **v-row order**: each row corresponds to a list of v values (in 2-dimensions, an array of [u][v])
+    **u-row order**: each row corresponds to a list of u values
+
+    **v-row order**: each row corresponds to a list of v values
 
     :param ctrlpts: control points in v-row order
     :type ctrlpts: list, tuple
@@ -65,9 +67,7 @@ def flip_ctrlpts(ctrlpts, size_u, size_v):
 
 
 def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
-    """ Flips a list of surface 2-D control points in *[u][v]* order.
-
-    The resulting control points list will be in *[v][u]* order.
+    """ Flips a list of surface 2-D control points from *[u][v]* to *[v][u]* order.
 
     :param ctrlpts2d: 2-D control points
     :type ctrlpts2d: list, tuple
