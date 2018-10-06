@@ -1,5 +1,11 @@
 # NURBS-Python Changelog
 
+## 4.3.1 released on 2018-10-06
+
+* Fixed a bug causing Plotly surface visualization module to show extra lines
+* Added `exchange.export_smesh()` function
+* Minor bug fixes and documentation updates
+
 ## 4.3.0 released on 2018-10-01
 
 * Added `Tessellate` class for customization of the surface tessellation algorithms
