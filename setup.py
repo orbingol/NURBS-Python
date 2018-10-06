@@ -82,7 +82,7 @@ class CythonClean(clean):
         clean.run(self)
 
         # Find list of files with .c extension
-        flist, flist_path = read_files("cython/core", ".c")
+        flist, flist_path = read_files("cython_temp", ".c")
 
         # Clean files with .c extensions
         if flist_path:
