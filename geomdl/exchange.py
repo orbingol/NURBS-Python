@@ -1192,4 +1192,4 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
 
     for idx, surf in enumerate(surface_list):
         fname = fname_arr[0] + "." + str(idx + 1) + "." + fname_arr[1]
-        _export_smesh_single(surf, fname, idx=idx, **kwargs)
+        _export_smesh_single(surf, fname, idx=idx+1, **kwargs)
