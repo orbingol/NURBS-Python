@@ -51,14 +51,22 @@ Visualization Component
 
 ``geomdl.visualization`` component contains extensible and customizable classes for plotting curves and surfaces
 on-the-fly. The users have options to use Matplotlib and/or Plotly visualization libraries. These libraries are not
-automatically installed during NURBS-Python setup and left for users' discretion.
+automatically installed during NURBS-Python setup and they are left for users' discretion.
+
+More Features
+-------------
+
+NURBS-Python (geomdl) is more than a simple NURBS library. It has many features and they are customizable for your
+needs. Please see the `Modules <https://nurbs-python.readthedocs.io/en/latest/modules.html>`_ documentation page
+for the list of modules and features.
 
 Further Reading
 ===============
 
-* Github repository: https://github.com/orbingol/NURBS-Python
-* Examples: https://github.com/orbingol/NURBS-Python_Examples
 * Documentation: http://nurbs-python.readthedocs.io/
+* Examples: https://github.com/orbingol/NURBS-Python_Examples
+* Wiki: https://github.com/orbingol/NURBS-Python/wiki
+* Development: https://github.com/orbingol/NURBS-Python
 
 License
 =======
