@@ -351,6 +351,78 @@ def binomial_coefficient(k, i):
     return float(k_fact / (k_i_fact * i_fact))
 
 
+def lu_decomposition(matrix_in, q=0):
+    """ Applies LU-Factorization to the input matrix using Doolittle's Method.
+
+    The input matrix is represented by a list or a tuple. If the input matrix is 1-dimensional, i.e. a list or tuple of
+    integers and/or floats, then the second function argument ``q`` must be bigger than zero. If the input matrix is
+    2-dimensional, i.e. list of lists of integers and/or floats, then there is no need to input ``q`` as it will be
+    automatically computed.
+
+    :param matrix_in: Input matrix (must be a square matrix)
+    :type matrix_in: list, tuple
+    :param q: matrix size (not used if the input matrix is 2-dimensional)
+    :type q: int
+    :return: a tuple containing matrices (L,U)
+    :rtype: tuple
+    """
+    if not isinstance(q, int):
+        raise TypeError("Matrix size must be an integer")
+
+    if q < 0:
+        raise ValueError("Matrix size should be bigger than zero")
+
+    # Flag for converting return values into 1-dimensional list
+    convert_res = False
+    if q > 0:
+        # Check if the 1-dimensional input matrix is a square matrix
+        if len(matrix_in) != q ** 2:
+            raise ValueError("The input matrix must be a square matrix")
+
+        # Convert 1-dimensional matrix to 2-dimensional
+        matrix_a = [[0.0 for _ in range(q)] for _ in range(q)]
+        for i in range(0, q):
+            for j in range(0, q):
+                matrix_a[i][j] = matrix_in[j + (q * i)]
+
+        # The input is 1-dimensional, so the return values should be
+        convert_res = True
+    else:
+        matrix_a = matrix_in
+        # Check if the 2-dimensional input matrix is a square matrix
+        q = len(matrix_a)
+        for idx, m_a in enumerate(matrix_a):
+            if len(m_a) != q:
+                raise ValueError("The input must be a square matrix. " +
+                                 "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
+
+    # Initialize L and U matrices
+    matrix_u = [[0.0 for _ in range(q)] for _ in range(q)]
+    matrix_l = [[0.0 for _ in range(q)] for _ in range(q)]
+
+    # Doolittle Method
+    for i in range(0, q):
+        for k in range(i, q):
+            # Upper triangular (U) matrix
+            matrix_u[i][k] = float(matrix_a[i][k] - sum([matrix_l[i][j] * matrix_u[j][k] for j in range(0, i)]))
+            # Lower triangular (L) matrix
+            if i == k:
+                matrix_l[i][i] = 1.0
+            else:
+                matrix_l[k][i] = float(matrix_a[k][i] - sum([matrix_l[k][j] * matrix_u[j][i] for j in range(0, i)]))
+                matrix_l[k][i] /= float(matrix_u[i][i])
+
+    # Prepare and return the L and U matrices
+    if convert_res:
+        m_u = []
+        m_l = []
+        for upper, lower in zip(matrix_u, matrix_l):
+            m_u.extend(upper)
+            m_l.extend(lower)
+        return m_l, m_u
+    return matrix_l, matrix_u
+
+
 def check_uv(u=None, v=None):
     """ Checks if the parameter values are valid.
 
