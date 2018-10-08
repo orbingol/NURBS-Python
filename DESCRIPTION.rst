@@ -10,26 +10,23 @@ NURBS-Python (geomdl)
 Introduction
 ============
 
-NURBS-Python is an object-oriented B-Spline and NURBS surface and curve library for Python with implementations of
-advanced computation algorithms in an extensible way. It comes with on-the-fly shape visualization options,
+NURBS-Python (geomdl) is an object-oriented B-Spline and NURBS surface and curve library for Python with implementations
+of advanced computation algorithms in an extensible way. It comes with on-the-fly shape visualization options,
 knot vector and surface grid generators, and more.
 
-NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
-steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2 and 3
-compatibility library ``six`` will be automatically installed during NURBS-Python setup.
+NURBS-Python (geomdl) is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any
+compilation steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2
+and 3 compatibility library ``six`` will be automatically installed during NURBS-Python setup.
 
 Please see the `Examples Repository <https://github.com/orbingol/NURBS-Python_Examples>`_ for details on library usage
 and integration scenarios.
 
+**Note:** This package replaces the old `NURBS-Python <https://pypi.org/project/NURBS-Python/>`_ with new and improved
+features. Please see the `Installation <https://nurbs-python.readthedocs.io/en/latest/install.html>`_ documentation
+page on removing the old package and installing the new package.
+
 Features
 ========
-
-NURBS-Python consists of the following modules and components:
-
-* Core library
-* Exchange module
-* Visualization component
-* Shapes component
 
 Core Library
 ------------
@@ -55,12 +52,6 @@ Visualization Component
 ``geomdl.visualization`` component contains extensible and customizable classes for plotting curves and surfaces
 on-the-fly. The users have options to use Matplotlib and/or Plotly visualization libraries. These libraries are not
 automatically installed during NURBS-Python setup and left for users' discretion.
-
-Shapes Component
-----------------
-
-``geomdl.shapes`` component provides an easy way to generate the most common curves and surfaces, such as circles and
-cylinders.
 
 Further Reading
 ===============
