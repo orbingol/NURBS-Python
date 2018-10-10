@@ -423,6 +423,50 @@ def lu_decomposition(matrix_in, q=0):
     return matrix_l, matrix_u
 
 
+def forward_substitution(matrix_l, matrix_b):
+    """ Forward substitution method for solution of linear systems.
+
+    Solves the equation :math:`Ly = b` using forward substitution method
+    where :math:`L` is a lower triangular matrix and :math:`b` is a column matrix.
+
+    :param matrix_l: L, lower triangular matrix
+    :type matrix_l: list, tuple
+    :param matrix_b: b, column matrix
+    :type matrix_b: list, tuple
+    :return: y, column matrix
+    :rtype: list
+    """
+    q = len(matrix_b)
+    matrix_y = [0.0 for _ in range(q)]
+    matrix_y[0] = float(matrix_b[0]) / float(matrix_l[0][0])
+    for i in range(1, q):
+        matrix_y[i] = float(matrix_b[i]) - sum([matrix_l[i][j] * matrix_y[j] for j in range(0, i)])
+        matrix_y[i] /= float(matrix_l[i][i])
+    return matrix_y
+
+
+def backward_substitution(matrix_u, matrix_y):
+    """ Backward substitution method for solution of linear systems.
+
+    Solves the equation :math:`Ux = y` using backward substitution method
+    where :math:`U` is a upper triangular matrix and :math:`y` is a column matrix.
+
+    :param matrix_u: U, upper triangular matrix
+    :type matrix_u: list, tuple
+    :param matrix_y: y, column matrix
+    :type matrix_y: list, tuple
+    :return: x, column matrix
+    :rtype: list
+    """
+    q = len(matrix_y)
+    matrix_x = [0.0 for _ in range(q)]
+    matrix_x[q - 1] = float(matrix_y[q - 1]) / float(matrix_u[q - 1][q - 1])
+    for i in range(q - 2, -1, -1):
+        matrix_x[i] = float(matrix_y[i]) - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
+        matrix_x[i] /= float(matrix_u[i][i])
+    return matrix_x
+
+
 def check_uv(u=None, v=None):
     """ Checks if the parameter values are valid.
 
