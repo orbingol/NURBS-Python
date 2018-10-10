@@ -352,7 +352,9 @@ def binomial_coefficient(k, i):
 
 
 def lu_decomposition(matrix_in, q=0):
-    """ Applies LU-Factorization to the input matrix using Doolittle's Method.
+    """ LU-Factorization method using Doolittle's Method for solution of linear systems.
+
+    Decomposes the matrix :math:`A` such that :math:`A = LU`.
 
     The input matrix is represented by a list or a tuple. If the input matrix is 1-dimensional, i.e. a list or tuple of
     integers and/or floats, then the second function argument ``q`` must be bigger than zero. If the input matrix is
