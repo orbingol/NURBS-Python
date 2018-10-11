@@ -143,6 +143,12 @@ else:
     USE_SOURCE = False
 
 if '--use-cython' in sys.argv:
+    # Try to import Cython
+    try:
+        from Cython.Build import cythonize
+    except ImportError:
+        raise ImportError("Cython is required for this step. Please install it via 'pip install cython'")
+
     USE_CYTHON = True
     sys.argv.remove('--use-cython')
     # Prepare files for compilation
@@ -170,7 +176,6 @@ if USE_CYTHON or USE_SOURCE:
 
     # Call Cython when "python setup.py build_ext --use-cython" is executed
     if USE_CYTHON:
-        from Cython.Build import cythonize
         extensions = cythonize(optional_extensions)
 
     # Compile from C source when "python setup.py build_ext --use-source" is executed
