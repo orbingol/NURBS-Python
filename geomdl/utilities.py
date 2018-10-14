@@ -946,7 +946,7 @@ def normalize_knot_vector(knot_vector, decimals=4):
 
 # Generates a uniform knot vector using the given degree and the number of control points
 def generate_knot_vector(degree, num_ctrlpts, **kwargs):
-    """ Generates a uniformly-spaced knot vector using the degree and the number of control points.
+    """ Generates an equally spaced knot vector.
 
     It uses the following equation to generate knot vector:
 
@@ -958,13 +958,13 @@ def generate_knot_vector(degree, num_ctrlpts, **kwargs):
 
     Keyword Arguments:
 
-        * ``clamped``: flag to choose from clamped or unclamped knot vector options. *Default: True*
+        * ``clamped``: Flag to choose from clamped or unclamped knot vector options. *Default: True*
 
     :param degree: degree
-    :type degree: integer
+    :type degree: int
     :param num_ctrlpts: number of control points
-    :type num_ctrlpts: integer
-    :return: uniform knot vector
+    :type num_ctrlpts: int
+    :return: knot vector
     :rtype: list
     """
     if degree == 0 or num_ctrlpts == 0:
