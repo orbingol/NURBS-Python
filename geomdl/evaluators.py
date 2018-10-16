@@ -105,7 +105,6 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         bfunsders = helpers.basis_function_ders(degree, tuple(knot_vector), span, knot, du)
 
         for k in range(0, du + 1):
-            CK[k] = [0.0 for _ in range(dimension)]
             for j in range(0, degree + 1):
                 CK[k][:] = [drv + (bfunsders[k][j] * ctl_pt) for drv, ctl_pt in
                             zip(CK[k], control_points[span - degree + j])]
@@ -264,7 +263,6 @@ class CurveEvaluator2(CurveEvaluator):
                                                  deriv_order=du)
 
         for k in range(0, du + 1):
-            CK[k] = [0.0 for _ in range(dimension)]
             for j in range(0, degree - k + 1):
                 CK[k][:] = [elem + (bfuns[j][degree - k] * drv_ctl_p) for elem, drv_ctl_p in
                             zip(CK[k], PK[k][j])]
@@ -468,9 +466,8 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         bfunsders_v = helpers.basis_function_ders(degree_v, knot_vector_v, span_v, knot_v, dv)
 
         for k in range(0, du + 1):
-            temp = [[] for _ in range(degree_v + 1)]
+            temp = [[0.0 for _ in range(dimension)] for _ in range(degree_v + 1)]
             for s in range(0, degree_v + 1):
-                temp[s] = [0.0 for _ in range(dimension)]
                 for r in range(0, degree_u + 1):
                     cu = span_u - degree_u + r
                     cv = span_v - degree_v + s
