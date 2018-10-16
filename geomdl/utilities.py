@@ -55,13 +55,26 @@ def vector_cross(vector1, vector2):
     except Exception:
         raise
 
-    if len(vector1) != 3 or len(vector2) != 3:
-        raise ValueError("Input should contain 3 elements")
+    if not 1 < len(vector1) <= 3 or not 1 < len(vector2) <= 3:
+        raise ValueError("The input vectors should contain 2 or 3 elements")
+
+    # Convert 2-D to 3-D, if necessary
+    if len(vector1) == 2:
+        v1 = list(vector1)
+        v1.append(0.0)
+    else:
+        v1 = vector1
+
+    if len(vector2) == 2:
+        v2 = list(vector2)
+        v2.append(0.0)
+    else:
+        v2 = vector2
 
     # Compute cross product
-    vector_out = [(vector1[1] * vector2[2]) - (vector1[2] * vector2[1]),
-                  (vector1[2] * vector2[0]) - (vector1[0] * vector2[2]),
-                  (vector1[0] * vector2[1]) - (vector1[1] * vector2[0])]
+    vector_out = [(v1[1] * v2[2]) - (v1[2] * v2[1]),
+                  (v1[2] * v2[0]) - (v1[0] * v2[2]),
+                  (v1[0] * v2[1]) - (v1[1] * v2[0])]
 
     # Return the cross product of the input vectors
     return tuple(vector_out)
