@@ -85,3 +85,30 @@ After installing the required packages, you may execute the following from your 
 ``pytest`` or ``py.test``
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
+
+Compile with Cython
+===================
+
+**This is an advanced and an optional feature. It is not available on pip and conda packages.**
+
+The :doc:`Core Library <modules>` of NURBS-Python can be compiled using the following command:
+
+``python setup.py build_ext --use-cython --inplace``
+
+This command will copy .py files into a temporary directory, generate .c files (i.e. cythonize) and finally compile the
+.c files into binary Python modules.
+
+The following command can be used to directly compile the generated .c files skipping the copy and the cythonization
+steps:
+
+``python setup.py build_ext --use-source --inplace``
+
+You may prefer to skip the copy and the cythonization steps if the compilation fails for some reason. To update the
+compiled module with the latest changes, you have to re-cythonize and compile the code.
+
+After the successful execution of the command, ``geomdl_core`` directory containing the binary versions of the
+NURBS-Python Core Library will be generated. The compiled version will not include the visualization module or other
+submodules.
+
+Before executing the command, please make sure that you have `Cython <https://cython.org/>`_ module and a valid compiler
+installed for your operating system.
