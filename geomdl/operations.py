@@ -496,11 +496,10 @@ def _tangent_curve_single_list(obj, param_list, normalize):
     return tuple(ret_vector)
 
 
-# Evaluates the curve normal at the given u parameter
 def _normal_curve_single(obj, u, normalize):
-    """ Evaluates the curve normal vector at the given parameter value.
+    """ Evaluates the curve normal vector at the input parameter, u.
 
-    Curve normal is basically the second derivative of the curve.
+    Curve normal is calculated from the 2nd derivative of the curve at the input parameter, u.
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
