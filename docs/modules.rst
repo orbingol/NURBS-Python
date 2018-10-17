@@ -23,6 +23,7 @@ Following modules are included in the library:
     module_exchange
     module_tessellate
     module_elements
+    module_ray
 
 NURBS-Python takes *The NURBS Book 2nd Edition by Piegl & Tiller* as the main reference for the evaluation algorithms.
 The users may want to use different algorithms and **Evaluators** serve directly to this purpose by allowing users
