@@ -169,7 +169,7 @@ def derivative_curve(obj):
 
     # Find the control points of the derivative curve
     pkl = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0,
-                                                         r2=len(obj.ctrlpts) - 1,  # n + 1 = num of ctrlpts
+                                                         r2=len(obj.ctrlpts) - 1,  # n + 1 = num of control points
                                                          degree=obj.degree,
                                                          knotvector=obj.knotvector,
                                                          ctrlpts=obj.ctrlpts,
@@ -182,6 +182,7 @@ def derivative_curve(obj):
     curve.ctrlpts = pkl[1][0:-1]
     curve.knotvector = obj.knotvector[1:-1]
     curve.delta = obj.delta
+
     return curve
 
 
