@@ -12,6 +12,7 @@ from . import Abstract
 from . import Multi
 from . import helpers
 from . import utilities
+from . import evaluators
 
 
 def split_curve(obj, u, **kwargs):
@@ -143,6 +144,43 @@ def add_dimension(obj, **kwargs):
         ret = copy.deepcopy(obj)
         ret.ctrlpts = new_ctrlpts
         return ret
+
+
+def derivative_curve(obj):
+    """ Computes the first derivative curve of the input curve
+
+    This function constructs the first derivative curve from the input curve by computing the degrees, knot vectors and
+    the control points of the derivative curve.
+
+    :param obj: Input curve
+    :type obj: Abstract.Curve
+    :return: Derivative curve
+    :rtype: Abstract.Curve
+    """
+    if not isinstance(obj, Abstract.Curve):
+        raise TypeError("Input shape must be an instance of Abstract.Curve class")
+
+    # TO-DO: Need to figure out how to find weights for a NURBS derivative curve
+    if obj.rational:
+        raise RuntimeError("Computation of NURBS derivative curves is not implemented")
+
+    # Find the control points of the derivative curve
+    pkl = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0,
+                                                         r2=len(obj.ctrlpts) - 1,  # n + 1 = num of ctrlpts
+                                                         degree=obj.degree,
+                                                         knotvector=obj.knotvector,
+                                                         ctrlpts=obj.ctrlpts,
+                                                         dimension=obj.dimension,
+                                                         deriv_order=1)
+
+    # Generate the derivative curve
+    curve = obj.__class__()
+    curve.degree = obj.degree - 1
+    curve.ctrlpts = pkl[1][0:-1]
+    curve.knotvector = obj.knotvector[1:-1]
+    curve.delta = obj.delta
+
+    return curve
 
 
 def split_surface_u(obj, t, **kwargs):
