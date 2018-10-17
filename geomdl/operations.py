@@ -8,6 +8,7 @@
 """
 
 import copy
+import warnings
 from . import Abstract
 from . import Multi
 from . import helpers
@@ -147,10 +148,10 @@ def add_dimension(obj, **kwargs):
 
 
 def derivative_curve(obj):
-    """ Computes the first derivative curve of the input curve
+    """ Computes the hodograph (first derivative) curve of the input curve
 
-    This function constructs the first derivative curve from the input curve by computing the degrees, knot vectors and
-    the control points of the derivative curve.
+    This function constructs the hodograph (first derivative) curve from the input curve by computing the degrees,
+    knot vectors and the control points of the derivative curve.
 
     :param obj: Input curve
     :type obj: Abstract.Curve
@@ -160,9 +161,11 @@ def derivative_curve(obj):
     if not isinstance(obj, Abstract.Curve):
         raise TypeError("Input shape must be an instance of Abstract.Curve class")
 
-    # TO-DO: Need to figure out how to find weights for a NURBS derivative curve
+    # Unfortunately, rational curves do not have this property
+    # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
     if obj.rational:
-        raise RuntimeError("Computation of NURBS derivative curves is not implemented")
+        warnings.warn("Cannot compute hodograph curve for a rational curve")
+        return obj
 
     # Find the control points of the derivative curve
     pkl = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0,
@@ -179,7 +182,6 @@ def derivative_curve(obj):
     curve.ctrlpts = pkl[1][0:-1]
     curve.knotvector = obj.knotvector[1:-1]
     curve.delta = obj.delta
-
     return curve
 
 
