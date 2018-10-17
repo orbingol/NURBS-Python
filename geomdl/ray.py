@@ -7,7 +7,7 @@
 
 """
 
-from enum import Enum, auto
+from enum import Enum
 from geomdl import utilities
 
 
@@ -84,9 +84,9 @@ class Ray(object):
 
 class RayIntersection(Enum):
     """ The status of the ray intersection operation """
-    INTERSECT = auto()  # only one solution
-    COLINEAR = auto()  # no solution (parallel) or infinitely many solutions (coincident)
-    SKEW = auto()  # neither parallel nor intersecting
+    INTERSECT = 1  # only one solution
+    COLINEAR = 2  # no solution (parallel) or infinitely many solutions (coincident)
+    SKEW = 3  # neither parallel nor intersecting
 
 
 def intersect(ray1, ray2, **kwargs):
