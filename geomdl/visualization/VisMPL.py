@@ -19,15 +19,17 @@ import matplotlib.pyplot as plt
 class VisConfig(Abstract.VisConfigAbstract):
     """ Configuration class for Matplotlib visualization module.
 
-    This class is only required when you prefer to change the default plotting behavior, such as hiding control points
-    plot or legend. By default, the following variables and their default values are used in all ``VisMPL``
-    visualization classes.
+    This class is only required when you would like to change the visual defaults of the plots and the figure,
+    such as hiding control points plot or legend.
 
-    * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot in the figure
-    * ``legend`` (True or False): Enables/Disables legend in the figure
-    * ``axes`` (True or False): Enables/Disables axes and grid in the figure
-    * ``trims`` (True or False): Enables/Disables trim curves display in the figure
-    * ``axes_equal`` (True or False): Enables/Disables equal aspect ratio for the axes
+    The ``VisMPL`` module has the following configuration variables:
+
+    * ``ctrlpts`` (True or False): Control points polygon/grid visibility
+    * ``evalpts`` (True or False): Curve/surface points visibility
+    * ``legend`` (True or False): Figure legend visibility
+    * ``axes`` (True or False): Axes and figure grid visibility
+    * ``trims`` (True or False): Trim curves visibility
+    * ``axes_equal`` (True or False): Enables or disables equal aspect ratio for the axes
     * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
     * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
     * ``trim_size`` (int, *default: 20*): Size of the trim curves
@@ -60,6 +62,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         super(VisConfig, self).__init__(**kwargs)
         self.dtype = np.float
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
+        self.display_evalpts = kwargs.get('evalpts', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.display_trims = kwargs.get('trims', True)
@@ -126,7 +129,7 @@ class VisCurve2D(Abstract.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
@@ -191,7 +194,7 @@ class VisCurve3D(Abstract.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot2_proxy)
@@ -257,7 +260,7 @@ class VisSurface(Abstract.VisAbstractSurf):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 tris = plot['ptsarr'][1]
                 for tri in tris:
                     pts = np.array(tri.vertices_raw, dtype=self._config.dtype)
@@ -336,7 +339,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
@@ -428,7 +431,7 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 # Use internal triangulation algorithm instead of Qhull (MPL default)
                 verts = plot['ptsarr'][0]
                 tris = plot['ptsarr'][1]
@@ -527,7 +530,7 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
                 plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')

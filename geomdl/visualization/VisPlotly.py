@@ -17,15 +17,17 @@ from plotly import graph_objs
 class VisConfig(Abstract.VisConfigAbstract):
     """ Configuration class for Plotly visualization module.
 
-    This class is only required when you prefer to change the default plotting behavior, such as hiding control points
-    plot or legend. By default, the following variables and their default values are used in all ``VisPlotly``
-    visualization classes.
+    This class is only required when you would like to change the visual defaults of the plots and the figure,
+    such as hiding control points plot or legend.
 
-    * ``ctrlpts`` (True or False, *default: True*): Enables/Disables control points polygon/grid plot on the figure
-    * ``legend`` (True or False): Enables/Disables legend on the figure
-    * ``axes`` (True or False): Enables/Disables axes and grid on the figure
-    * ``trims`` (True or False): Enables/Disables trim curves display in the figure
-    * ``axes_equal`` (True or False): Enables/Disables equal aspect ratio for the axes
+    The ``VisPlotly`` module has the following configuration variables:
+
+    * ``ctrlpts`` (True or False): Control points polygon/grid visibility
+    * ``evalpts`` (True or False): Curve/surface points visibility
+    * ``legend`` (True or False): Figure legend visibility
+    * ``axes`` (True or False): Axes and figure grid visibility
+    * ``trims`` (True or False): Trim curves visibility
+    * ``axes_equal`` (True or False): Enables or disables equal aspect ratio for the axes
     * ``figure_size`` (list, *default: [800, 600]*): Size of the figure in (x, y)
     * ``trim_size`` (int, *default: 20*): Size of the trim curves
     * ``linewidth`` (int, *default: 2*): thickness of the lines on the figure
@@ -74,6 +76,7 @@ class VisConfig(Abstract.VisConfigAbstract):
 
         # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
+        self.display_evalpts = kwargs.get('evalpts', True)
         self.display_trims = kwargs.get('trims', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
@@ -115,7 +118,7 @@ class VisCurve2D(Abstract.VisAbstract):
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -210,7 +213,7 @@ class VisCurve3D(Abstract.VisAbstract):
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -324,7 +327,7 @@ class VisSurface(Abstract.VisAbstractSurf):
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts':
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 vertices = plot['ptsarr'][0]
                 triangles = plot['ptsarr'][1]
                 pts = [v.data for v in vertices]
