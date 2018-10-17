@@ -15,7 +15,7 @@ class Ray(object):
     """ Representation of a n-dimensional ray generated from 2 points.
 
     A ray is defined by :math:`r(t)=p_{1}+t\\times\\vec{d}` where :math`t` is the parameter value,
-    :math:`\vec{d} = p_{2}-p_{1}` is the vector component of the ray, :math:`p_{1}` is the origin point and
+    :math:`\\vec{d} = p_{2}-p_{1}` is the vector component of the ray, :math:`p_{1}` is the origin point and
     :math:`p_{2}` is the second point which is required to define a line segment
 
     :param point1: 1st point of the line segment
