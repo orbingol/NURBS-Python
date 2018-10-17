@@ -27,6 +27,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``legend`` (True or False): Enables/Disables legend in the figure
     * ``axes`` (True or False): Enables/Disables axes and grid in the figure
     * ``trims`` (True or False): Enables/Disables trim curves display in the figure
+    * ``axes_equal`` (True or False): Enables/Disables equal aspect ratio for the axes
     * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
     * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
     * ``trim_size`` (int, *default: 20*): Size of the trim curves
@@ -62,6 +63,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.display_trims = kwargs.get('trims', True)
+        self.axes_equal = kwargs.get('axes_equal', True)
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.trim_size = kwargs.get('trim_size', 20)
@@ -138,7 +140,8 @@ class VisCurve2D(Abstract.VisAbstract):
             plt.axis('off')
 
         # Set aspect ratio
-        ax.set_aspect('equal')
+        if self._config.axes_equal:
+            ax.set_aspect('equal')
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -203,7 +206,8 @@ class VisCurve3D(Abstract.VisAbstract):
             plt.axis('off')
 
         # Set axes equal
-        self._config.set_axes_equal(ax)
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -281,7 +285,8 @@ class VisSurface(Abstract.VisAbstractSurf):
             plt.axis('off')
 
         # Set axes equal
-        self._config.set_axes_equal(ax)
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -357,7 +362,8 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
             plt.axis('off')
 
         # Set axes equal
-        self._config.set_axes_equal(ax)
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -470,7 +476,8 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
             plt.axis('off')
 
         # Set axes equal
-        self._config.set_axes_equal(ax)
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -546,7 +553,8 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
             plt.axis('off')
 
         # Set axes equal
-        self._config.set_axes_equal(ax)
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)

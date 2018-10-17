@@ -25,6 +25,7 @@ class VisConfig(Abstract.VisConfigAbstract):
     * ``legend`` (True or False): Enables/Disables legend on the figure
     * ``axes`` (True or False): Enables/Disables axes and grid on the figure
     * ``trims`` (True or False): Enables/Disables trim curves display in the figure
+    * ``axes_equal`` (True or False): Enables/Disables equal aspect ratio for the axes
     * ``figure_size`` (list, *default: [800, 600]*): Size of the figure in (x, y)
     * ``trim_size`` (int, *default: 20*): Size of the trim curves
     * ``linewidth`` (int, *default: 2*): thickness of the lines on the figure
@@ -76,6 +77,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.display_trims = kwargs.get('trims', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
+        self.axes_equal = kwargs.get('axes_equal', True)
         self.figure_size = kwargs.get('figure_size', [800, 600])
         self.trim_size = kwargs.get('trim_size', 1)
         self.line_width = kwargs.get('linewidth', 2)
@@ -249,9 +251,12 @@ class VisCurve3D(Abstract.VisAbstract):
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                aspectmode='data',
             ),
         )
+
+        # Set aspect ratio
+        if self._config.axes_equal:
+            plot_layout['scene']['aspectmode'] = 'data'
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
@@ -383,9 +388,12 @@ class VisSurface(Abstract.VisAbstractSurf):
                     showticklabels=self._config.display_axes,
                     title='',
                 ),
-                aspectmode='data',
             ),
         )
+
+        # Set aspect ratio
+        if self._config.axes_equal:
+            plot_layout['scene']['aspectmode'] = 'data'
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
