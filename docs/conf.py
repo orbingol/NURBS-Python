@@ -39,7 +39,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary']
 
 # List of modules to be mocked up
-autodoc_mock_imports = ['numpy', 'matplotlib', 'mpl_toolkits', 'plotly']
+autodoc_mock_imports = ['numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'enum']
 
 # # Order of functions in the documentation; default is 'alphabetical'
 # autodoc_member_order = 'bysource'
