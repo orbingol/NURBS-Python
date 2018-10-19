@@ -1655,6 +1655,31 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
         """
         return self._plot_types
 
+    def set_plot_type(self, plot_type, type_value):
+        """ Sets the plot type.
+
+        By default, the following plot types are possible: *ctrlpts*, *evalpts*
+
+        By default, the following plot type values are possible:
+
+        * For control points (*ctrlpts*): points, quads
+        * For surface points (*evalpts*): points, quads, triangles
+
+        :param plot_type: plot type
+        :type plot_type: str
+        :param type_value: type value
+        :type type_value: str
+        :return:
+        """
+        if not isinstance(plot_type, str) or not isinstance(type_value, str):
+            raise TypeError("Plot type and its value should be string type")
+
+        if plot_type not in self._plot_types.keys():
+            raise KeyError(plot_type + " is not a type. Possible types: " +
+                           ", ".join([k for k in self._plot_types.keys()]))
+
+        self._plot_types[plot_type] = type_value
+
     def set_ctrlpts_offset(self, offset_value):
         """ Sets an offset for the control points grid plot.
 
