@@ -1,5 +1,15 @@
 # NURBS-Python Changelog
 
+## 4.3.2 released on 2018-10-19
+
+* Hodograph curve and surface computation: `operations.derivative_curve()` and `operations.derivative_surface()`
+* LU-Factorization and Forward-Backward Substitution functions in `utilities` module
+* Documentation update for compiling the package with Cython
+* Added `axes_equal` and `evalpts` keyword arguments to visualization config class
+* Added `set_plot_type` method to surface visualization classes
+* Documentation updates
+* Minor code improvements
+
 ## 4.3.1 released on 2018-10-06
 
 * Fixed a bug causing Plotly surface visualization module to show extra lines
