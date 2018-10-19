@@ -380,6 +380,78 @@ def decompose_surface(obj, **kwargs):
     return multi_surf
 
 
+def derivative_surface(obj):
+    """ Computes the hodograph (first derivative) surface of the input surface
+
+    This function constructs the hodograph (first derivative) surface from the input surface by computing the degrees,
+    knot vectors and the control points of the derivative surface.
+
+    The return value of this function is a tuple containing the following derivative surfaces in the given order:
+
+    * U-derivative surface (derivative taken only on the u-direction)
+    * V-derivative surface (derivative taken only on the v-direction)
+    * UV-derivative surface (derivative taken on both the u- and the v-direction)
+
+    :param obj: input surface
+    :type obj: Abstract.Surface
+    :return: derivative surfaces w.r.t. u, v and both u-v
+    :rtype: tuple
+    """
+    if not isinstance(obj, Abstract.Surface):
+        raise TypeError("Input shape must be an instance of Abstract.Surface class")
+
+    if obj.rational:
+        warnings.warn("Cannot compute hodograph surface for a rational surface")
+        return obj
+
+    # Find the control points of the derivative surface
+    d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
+    pkl = evaluators.SurfaceEvaluator2.derivatives_ctrlpts(r1=0, r2=obj.ctrlpts_size_u - 1,
+                                                           s1=0, s2=obj.ctrlpts_size_v - 1,
+                                                           degree_u=obj.degree_u, degree_v=obj.degree_v,
+                                                           ctrlpts_size_u=obj.ctrlpts_size_u,
+                                                           ctrlpts_size_v=obj.ctrlpts_size_v,
+                                                           knotvector_u=obj.knotvector_u, knotvector_v=obj.knotvector_v,
+                                                           ctrlpts=obj.ctrlpts2d,
+                                                           dimension=obj.dimension,
+                                                           deriv_order=d)
+
+    ctrlpts2d_u = []
+    for i in range(0, len(pkl[1][0]) - 1):
+        ctrlpts2d_u.append(pkl[1][0][i])
+
+    surf_u = copy.deepcopy(obj)
+    surf_u.degree_u = obj.degree_u - 1
+    surf_u.ctrlpts2d = ctrlpts2d_u
+    surf_u.knotvector_u = obj.knotvector_u[1:-1]
+    surf_u.delta = obj.delta
+
+    ctrlpts2d_v = []
+    for i in range(0, len(pkl[0][1])):
+        ctrlpts2d_v.append(pkl[0][1][i][0:-1])
+
+    surf_v = copy.deepcopy(obj)
+    surf_v.degree_v = obj.degree_v - 1
+    surf_v.ctrlpts2d = ctrlpts2d_v
+    surf_v.knotvector_v = obj.knotvector_v[1:-1]
+    surf_v.delta = obj.delta
+
+    ctrlpts2d_uv = []
+    for i in range(0, len(pkl[1][1]) - 1):
+        ctrlpts2d_uv.append(pkl[1][1][i][0:-1])
+
+    # Generate the derivative curve
+    surf_uv = obj.__class__()
+    surf_uv.degree_u = obj.degree_u - 1
+    surf_uv.degree_v = obj.degree_v - 1
+    surf_uv.ctrlpts2d = ctrlpts2d_uv
+    surf_uv.knotvector_u = obj.knotvector_u[1:-1]
+    surf_uv.knotvector_v = obj.knotvector_v[1:-1]
+    surf_uv.delta = obj.delta
+
+    return surf_u, surf_v, surf_uv
+
+
 def translate(obj, vec, **kwargs):
     """ Translates a single curve or a surface by the input vector.
 
