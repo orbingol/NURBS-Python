@@ -153,9 +153,9 @@ def derivative_curve(obj):
     This function constructs the hodograph (first derivative) curve from the input curve by computing the degrees,
     knot vectors and the control points of the derivative curve.
 
-    :param obj: Input curve
+    :param obj: input curve
     :type obj: Abstract.Curve
-    :return: Derivative curve
+    :return: derivative curve
     :rtype: Abstract.Curve
     """
     if not isinstance(obj, Abstract.Curve):
@@ -192,7 +192,7 @@ def split_surface_u(obj, t, **kwargs):
     This method splits the surface into two pieces at the given parametric coordinate on the u-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
 
-    :param obj: Surface
+    :param obj: surface
     :type obj: BSpline.Surface or NURBS.Surface
     :param t: parametric coordinate on the u-direction
     :type t: float
@@ -264,7 +264,7 @@ def split_surface_v(obj, t, **kwargs):
     This method splits the surface into two pieces at the given parametric coordinate on the v-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
 
-    :param obj: Surface
+    :param obj: surface
     :type obj: BSpline.Surface or NURBS.Surface
     :param t: parametric coordinate on the v-direction
     :type t: float
@@ -341,7 +341,7 @@ def decompose_surface(obj, **kwargs):
 
     This operation does not modify the input surface, instead it returns the surface patches.
 
-    :param obj: Surface
+    :param obj: surface
     :type obj: BSpline.Surface or NURBS.Surface
     :return: a list of surface objects arranged as Bezier surface patches
     :rtype: Multi.MultiSurface
