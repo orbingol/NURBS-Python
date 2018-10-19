@@ -148,7 +148,7 @@ def add_dimension(obj, **kwargs):
 
 
 def derivative_curve(obj):
-    """ Computes the hodograph (first derivative) curve of the input curve
+    """ Computes the hodograph (first derivative) curve of the input curve.
 
     This function constructs the hodograph (first derivative) curve from the input curve by computing the degrees,
     knot vectors and the control points of the derivative curve.
@@ -381,7 +381,7 @@ def decompose_surface(obj, **kwargs):
 
 
 def derivative_surface(obj):
-    """ Computes the hodograph (first derivative) surface of the input surface
+    """ Computes the hodograph (first derivative) surface of the input surface.
 
     This function constructs the hodograph (first derivative) surface from the input surface by computing the degrees,
     knot vectors and the control points of the derivative surface.
