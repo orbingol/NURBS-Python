@@ -52,6 +52,8 @@ class Curve(Abstract.Curve):
     def knotvector(self):
         """ Knot vector.
 
+        The knot vector is always normalized to [0,1] domain.
+
         :getter: Gets the knot vector
         :setter: Sets the knot vector
         :type: list
@@ -168,7 +170,7 @@ class Curve(Abstract.Curve):
         self._curve_points = cpts
 
     def evaluate_single(self, u):
-        """ Evaluates the curve at the given parameter.
+        """ Evaluates the curve at the input parameter.
 
         :param u: parameter
         :type u: float
@@ -475,6 +477,8 @@ class Surface(Abstract.Surface):
     def knotvector_u(self):
         """ Knot vector for u-direction.
 
+        The knot vector is always normalized to [0,1] domain.
+
         :getter: Gets the knot vector for u-direction
         :setter: Sets the knot vector for u-direction
         :type: list
@@ -492,6 +496,8 @@ class Surface(Abstract.Surface):
     @property
     def knotvector_v(self):
         """ Knot vector for v-direction.
+
+        The knot vector is always normalized to [0,1] domain.
 
         :getter: Gets the knot vector for v-direction
         :setter: Sets the knot vector for v-direction
@@ -658,7 +664,7 @@ class Surface(Abstract.Surface):
         self._surface_points = spts
 
     def evaluate_single(self, uv):
-        """ Evaluates the surface at the given (u,v) parameter pair.
+        """ Evaluates the surface at the input (u,v) parameter pair.
 
         :param uv: parameter pair (u, v)
         :type uv: list, tuple
