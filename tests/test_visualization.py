@@ -9,6 +9,9 @@ import os
 import pytest
 from geomdl import BSpline
 from geomdl import operations
+
+import matplotlib
+matplotlib.use('agg')
 from geomdl.visualization import VisMPL
 
 SAMPLE_SIZE = 5
