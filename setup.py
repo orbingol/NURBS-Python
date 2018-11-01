@@ -39,7 +39,7 @@
 from setuptools import setup
 from setuptools import Extension
 from setuptools.command.test import test as TestCommand
-from distutils.command.clean import clean
+from distutils.command.clean import clean as CleanCommand
 import sys
 import os
 import re
@@ -75,11 +75,11 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-class CythonClean(clean):
+class CythonClean(CleanCommand):
     """ Adds cleaning option for Cython generated .c files inside the module directory. """
     def run(self):
         # Call parent method
-        clean.run(self)
+        CleanCommand.run(self)
 
         # Find list of files with .c extension
         flist, flist_path = read_files("cython_temp", ".c")
@@ -136,33 +136,33 @@ def make_dir(project, gen_init_py=True):
 
 # Cython and compiled C module options
 # Ref: https://gist.github.com/ctokheim/6c34dc1d672afca0676a
-if '--use-source' in sys.argv:
-    USE_SOURCE = True
+if 'build_ext' in sys.argv and '--use-source' in sys.argv:
+    BUILD_FROM_SOURCE = True
     sys.argv.remove('--use-source')
 else:
-    USE_SOURCE = False
+    BUILD_FROM_SOURCE = False
 
-if '--use-cython' in sys.argv:
+if 'build_ext' in sys.argv and '--use-cython' in sys.argv:
     # Try to import Cython
     try:
         from Cython.Build import cythonize
     except ImportError:
         raise ImportError("Cython is required for this step. Please install it via 'pip install cython'")
 
-    USE_CYTHON = True
+    BUILD_FROM_CYTHON = True
     sys.argv.remove('--use-cython')
     # Prepare files for compilation
     make_dir('cython_temp', gen_init_py=False)
     copy_files('geomdl', 'py', 'cython_temp')
 else:
-    USE_CYTHON = False
+    BUILD_FROM_CYTHON = False
 
 # We don't want to include any compiled files with the distribution
 extensions = []
 
-if USE_CYTHON or USE_SOURCE:
+if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
     # Choose the file extension
-    file_ext = '.py' if USE_CYTHON else '.c'
+    file_ext = '.py' if BUILD_FROM_CYTHON else '.c'
 
     # Create Cython-compiled module directory
     make_dir('geomdl_core')
@@ -175,11 +175,11 @@ if USE_CYTHON or USE_SOURCE:
         optional_extensions.append(temp)
 
     # Call Cython when "python setup.py build_ext --use-cython" is executed
-    if USE_CYTHON:
-        extensions = cythonize(optional_extensions)
+    if BUILD_FROM_CYTHON:
+        extensions = cythonize(optional_extensions, compiler_directives={'language_level': sys.version_info[0]})
 
     # Compile from C source when "python setup.py build_ext --use-source" is executed
-    if USE_SOURCE:
+    if BUILD_FROM_SOURCE:
         extensions = optional_extensions
 
 # Add Enum type support for Python versions < 3.4
