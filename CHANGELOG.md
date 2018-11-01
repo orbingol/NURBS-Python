@@ -1,5 +1,10 @@
 # NURBS-Python Changelog
 
+## 4.3.3 released on 2018-10-31
+
+* Fix a typo in evaluated points definition of `VisMPL.VisSurfWireframe()` class
+* Documentation updates
+
 ## 4.3.2 released on 2018-10-19
 
 * Hodograph curve and surface computation: `operations.derivative_curve()` and `operations.derivative_surface()`
