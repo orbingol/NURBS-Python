@@ -312,7 +312,7 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'triangles'}
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'quads'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
