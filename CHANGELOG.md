@@ -1,8 +1,13 @@
 # NURBS-Python Changelog
 
+## 4.3.4 released on 2018-11-01
+
+* Updated `operations.translate()` function to make it compatible with multi curves and surfaces
+* Added conda-build recipe
+
 ## 4.3.3 released on 2018-10-31
 
-* Fix a typo in evaluated points definition of `VisMPL.VisSurfWireframe()` class
+* Fixed a typo in evaluated points definition of `VisMPL.VisSurfWireframe()` class
 * Documentation updates
 
 ## 4.3.2 released on 2018-10-19
