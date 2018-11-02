@@ -12,12 +12,7 @@ build:
   noarch: python
   string: {{ GIT_DESCRIBE_HASH[1:] }}
   script:
-    # The following install commands do not pack version-specific egg directory with the conda package
-    # However, they pack "dist-info" directory as an extra
-    - python setup.py sdist
-    - pip install dist/geomdl-{{ setup_data['version'] }}.tar.gz --no-dependencies --no-compile
-    # For some reason, conda-build does not call tests under "test" section
-    - pytest
+    - python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
   host:
@@ -25,21 +20,23 @@ requirements:
     - setuptools
     - six
     #- enum34  # required for py27
-    - numpy
-    - matplotlib
-    - pytest
   run:
     - python
-    - setuptools
     - six
     #- enum34  # required for py27
     - numpy
     - matplotlib
-    - plotly
 
 test:
   imports:
     - geomdl
+  source_files:
+    - tests/
+  requires:
+    - pytest
+  commands:
+    - python -c "import geomdl; print(geomdl.__version__)"
+    - pytest
 
 about:
   home: https://onurraufbingol.com/NURBS-Python/
@@ -47,8 +44,8 @@ about:
   license_file: ../../LICENSE
   summary: Object-oriented NURBS curve and surface evaluation library
   description: "Self-contained, object-oriented, pure Python B-Spline and NURBS evaluation library with knot vector and surface grid generators."
-  doc_url: 'http://nurbs-python.readthedocs.io/'
-  dev_url: 'https://github.com/orbingol/NURBS-Python'
+  doc_url: "http://nurbs-python.readthedocs.io/"
+  dev_url: "https://github.com/orbingol/NURBS-Python"
 
 extra:
   recipe-maintainers:
