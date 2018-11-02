@@ -453,23 +453,30 @@ def derivative_surface(obj):
 
 
 def translate(obj, vec, **kwargs):
-    """ Translates a single curve or a surface by the input vector.
+    """ Translates single or multi curves and surface by the input vector.
 
     If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
     change the input shape but returns the updated shape.
 
-    :param obj: Curve or surface to be translated
-    :type obj: Abstract.Curve or Abstract.Surface
+    :param obj: Curve(s) or surface(s) to be translated
+    :type obj: Abstract.Curve, Abstract.Surface or Abstract.Multi
     :param vec: translation vector
     :type vec: list, tuple
     """
     # Input validity checks
-    if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
-        raise TypeError("The input shape must be a single curve or a surface")
-
     if not vec or not isinstance(vec, (tuple, list)):
         raise TypeError("The input must be a list or a tuple")
 
+    if isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+        return _translate_single(obj, vec, **kwargs)
+    elif isinstance(obj, Abstract.Multi):
+        return _translate_multi(obj, vec, **kwargs)
+    else:
+        raise TypeError("The input shape must be a curve or a surface (single or multi)")
+
+
+def _translate_single(obj, vec, **kwargs):
+    # Input validity checks
     if len(vec) != obj.dimension:
         raise ValueError("The input must have " + str(obj.dimension) + " elements")
 
@@ -488,6 +495,21 @@ def translate(obj, vec, **kwargs):
     else:
         ret = copy.deepcopy(obj)
         ret.ctrlpts = new_ctrlpts
+        return ret
+
+
+def _translate_multi(obj, vec, **kwargs):
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    ret = obj.__class__()
+    for o in obj:
+        temp = _translate_single(o, vec, **kwargs)
+        ret.add(temp)
+
+    if inplace:
+        return obj
+    else:
         return ret
 
 
