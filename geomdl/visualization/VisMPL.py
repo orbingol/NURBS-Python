@@ -24,15 +24,15 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     The ``VisMPL`` module has the following configuration variables:
 
-    * ``ctrlpts`` (True or False): Control points polygon/grid visibility
-    * ``evalpts`` (True or False): Curve/surface points visibility
-    * ``legend`` (True or False): Figure legend visibility
-    * ``axes`` (True or False): Axes and figure grid visibility
-    * ``trims`` (True or False): Trim curves visibility
-    * ``axes_equal`` (True or False): Enables or disables equal aspect ratio for the axes
-    * ``figure_size`` (list, *default: [10.67, 8]*): Size of the figure in (x, y)
-    * ``figure_dpi`` (int, *default: 96*): Resolution of the figure in DPI
-    * ``trim_size`` (int, *default: 20*): Size of the trim curves
+    * ``ctrlpts`` (True or False): Control points polygon/grid visibility. *Default: True*
+    * ``evalpts`` (True or False): Curve/surface points visibility. *Default: True*
+    * ``legend`` (True or False): Figure legend visibility. *Default: True*
+    * ``axes`` (True or False): Axes and figure grid visibility. *Default: True*
+    * ``trims`` (True or False): Trim curves visibility. *Default: True*
+    * ``axes_equal`` (True or False): Enables or disables equal aspect ratio for the axes. *Default: True*
+    * ``figure_size`` (list): Size of the figure in (x, y). *Default: [10.67, 8]*
+    * ``figure_dpi`` (int): Resolution of the figure in DPI. *Default: 96*
+    * ``trim_size`` (int): Size of the trim curves. *Default: 20*
 
     The following example illustrates the usage of the configuration class.
 
