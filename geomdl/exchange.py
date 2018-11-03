@@ -609,7 +609,6 @@ def _export_stl_ascii_single(surface, **kwargs):
         with open(file_name, 'w') as fp:
             # Tessellate surface
             surface.tessellate(vertex_spacing=vertex_spacing)
-            vertices = surface.tessellator.vertices
             triangles = surface.tessellator.triangles
 
             fp.write("solid Surface\n")
