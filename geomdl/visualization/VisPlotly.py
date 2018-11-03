@@ -22,12 +22,12 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     The ``VisPlotly`` module has the following configuration variables:
 
-    * ``ctrlpts`` (True or False): Control points polygon/grid visibility. *Default: True*
-    * ``evalpts`` (True or False): Curve/surface points visibility. *Default: True*
-    * ``legend`` (True or False): Figure legend visibility. *Default: True*
-    * ``axes`` (True or False): Axes and figure grid visibility. *Default: True*
-    * ``trims`` (True or False): Trim curves visibility. *Default: True*
-    * ``axes_equal`` (True or False): Enables or disables equal aspect ratio for the axes. *Default: True*
+    * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
+    * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
+    * ``legend`` (bool): Figure legend visibility. *Default: True*
+    * ``axes`` (bool): Axes and figure grid visibility. *Default: True*
+    * ``trims`` (bool): Trim curves visibility. *Default: True*
+    * ``axes_equal`` (bool): Enables or disables equal aspect ratio for the axes. *Default: True*
     * ``linewidth`` (int): Thickness of the lines on the figure. *Default: 2*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: [800, 600]*
     * ``trim_size`` (int): Size of the trim curves. *Default: 20*
