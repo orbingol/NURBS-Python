@@ -1364,6 +1364,7 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     def __init__(self, *args, **kwargs):
         self._elements = []  # elements contained
+        self._delta = None  # evaluation delta
         self._vis_component = None  # visualization component
         self._iter_index = 0  # iterator index
         self._instance = None  # type of the initial element
@@ -1407,6 +1408,15 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         if self._elements:
             return self._elements[0].dimension
         return 0
+
+    @property
+    def evalpts(self):
+        ret = []
+        for elem in self._elements:
+            elem.delta = self._delta
+            evalpts = elem.evalpts
+            ret.append(evalpts)
+        return ret
 
     @property
     def vis(self):
