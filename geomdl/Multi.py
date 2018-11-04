@@ -154,8 +154,7 @@ class MultiSurface(Abstract.Multi):
     def __init__(self, *args, **kwargs):
         super(MultiSurface, self).__init__()
         self._instance = Abstract.Surface
-        self._delta_u = 0.01  # evaluation delta on the u-direction
-        self._delta_v = 0.01  # evaluation delta on the v-direction
+        self._delta = [0.01, 0.01]  # evaluation delta
         for arg in args:
             self.add(arg)
 
@@ -235,13 +234,13 @@ class MultiSurface(Abstract.Multi):
         :setter: Sets the delta value for the u-direction
         :type: float
         """
-        return self._delta_u
+        return self._delta[0]
 
     @delta_u.setter
     def delta_u(self, value):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta (u-direction) must be between 0.0 and 1.0")
-        self._delta_u = float(value)
+        self._delta[0] = float(value)
 
     @property
     def delta_v(self):
@@ -258,13 +257,13 @@ class MultiSurface(Abstract.Multi):
         :setter: Sets the delta value for the v-direction
         :type: float
         """
-        return self._delta_v
+        return self._delta[1]
 
     @delta_v.setter
     def delta_v(self, value):
         if float(value) <= 0 or float(value) >= 1:
             raise ValueError("Surface evaluation delta (v-direction) should be between 0.0 and 1.0")
-        self._delta_v = float(value)
+        self._delta[1] = float(value)
 
     @property
     def delta(self):
@@ -287,7 +286,7 @@ class MultiSurface(Abstract.Multi):
         :setter: Sets the same delta value for both u- and v-directions
         :type: float
         """
-        return self.delta_u, self.delta_v
+        return tuple(self._delta)
 
     @delta.setter
     def delta(self, value):
