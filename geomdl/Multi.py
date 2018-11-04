@@ -26,25 +26,60 @@ class MultiCurve(Abstract.Multi):
     def __init__(self, *args, **kwargs):
         super(MultiCurve, self).__init__()
         self._instance = Abstract.Curve
-        self._sample_size = 0  # sample size
+        self._delta = 0.01  # evaluation delta
         for arg in args:
             self.add(arg)
+
+    @property
+    def delta(self):
+        """ Evaluation delta.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
+        generate curve points. Decreasing step size results in generation of more curve points.
+        Therefore; smaller the delta value, smoother the curve.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        :type: float
+        """
+        return self._delta
+
+    @delta.setter
+    def delta(self, value):
+        # Delta value for surface evaluation should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
+        self._delta = float(value)
 
     @property
     def sample_size(self):
         """ Sample size.
 
-        Sample size defines the number of evaluated points to generate. It sets the ``delta`` property.
+        Sample size defines the number of curve points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
         :getter: Gets sample size
         :setter: Sets sample size
         :type: int
         """
-        return self._sample_size
+        return int(1 / self.delta) + 1
 
     @sample_size.setter
     def sample_size(self, value):
-        self._sample_size = value
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+        self.delta = 1.0 / float(value - 1)
 
     def render(self, **kwargs):
         """ Renders the curve the using the visualization component.
@@ -92,8 +127,7 @@ class MultiCurve(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            if self._sample_size != 0:
-                elem.sample_size = self._sample_size
+            elem.sample_size = self.sample_size
             elem.evaluate()
 
             # Color selection
@@ -120,8 +154,8 @@ class MultiSurface(Abstract.Multi):
     def __init__(self, *args, **kwargs):
         super(MultiSurface, self).__init__()
         self._instance = Abstract.Surface
-        self._sample_size_u = 0
-        self._sample_size_v = 0
+        self._delta_u = 0.01  # evaluation delta on the u-direction
+        self._delta_v = 0.01  # evaluation delta on the v-direction
         for arg in args:
             self.add(arg)
 
@@ -129,56 +163,145 @@ class MultiSurface(Abstract.Multi):
     def sample_size_u(self):
         """ Sample size for the u-direction.
 
-        Sample size defines the number of evaluated points to generate on the defined direction.
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
-        :getter: Gets sample size
-        :setter: Sets sample size
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
         :type: int
         """
-        return self._sample_size_v
+        return int(1.0 / self.delta_u) + 1
 
     @sample_size_u.setter
     def sample_size_u(self, value):
         if not isinstance(value, int):
             raise ValueError("Sample size must be an integer value")
-
-        self._sample_size_u = value
+        self.delta_u = 1.0 / float(value - 1)
 
     @property
     def sample_size_v(self):
         """ Sample size for the v-direction.
 
-        Sample size defines the number of evaluated points to generate on the defined direction.
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
-        :getter: Gets sample size
-        :setter: Sets sample size
+        :getter: Gets sample size for the v-direction
+        :setter: Sets sample size for the v-direction
         :type: int
         """
-        return self._sample_size_v
+        return int(1.0 / self.delta_v) + 1
 
     @sample_size_v.setter
     def sample_size_v(self, value):
         if not isinstance(value, int):
             raise ValueError("Sample size must be an integer value")
-
-        self._sample_size_v = value
+        self.delta_v = 1.0 / float(value - 1)
 
     @property
     def sample_size(self):
-        """ Sample size.
+        """ Sample size for both u- and v-directions.
 
-        Sample size defines the number of evaluated points to generate on u- and v-direction.
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
-        :getter: Gets sample size
-        :setter: Sets sample size
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
+        :setter: Sets the same sample size value for both u- and v-directions
         :type: int
         """
-        return self.sample_size_u, self.sample_size_v
+        sample_size_u = int(1.0 / self.delta_u) + 1
+        sample_size_v = int(1.0 / self.delta_v) + 1
+        return sample_size_u, sample_size_v
 
     @sample_size.setter
     def sample_size(self, value):
-        self.sample_size_u = value
-        self.sample_size_v = value
+        self.delta_u = 1.0 / float(value - 1)
+        self.delta_v = 1.0 / float(value - 1)
+
+    @property
+    def delta_u(self):
+        """ Evaluation delta for the u-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
+
+        :getter: Gets the delta value for the u-direction
+        :setter: Sets the delta value for the u-direction
+        :type: float
+        """
+        return self._delta_u
+
+    @delta_u.setter
+    def delta_u(self, value):
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Surface evaluation delta (u-direction) must be between 0.0 and 1.0")
+        self._delta_u = float(value)
+
+    @property
+    def delta_v(self):
+        """ Evaluation delta for the v-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
+        :getter: Gets the delta value for the v-direction
+        :setter: Sets the delta value for the v-direction
+        :type: float
+        """
+        return self._delta_v
+
+    @delta_v.setter
+    def delta_v(self, value):
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Surface evaluation delta (v-direction) should be between 0.0 and 1.0")
+        self._delta_v = float(value)
+
+    @property
+    def delta(self):
+        """ Evaluation delta for both u- and v-directions.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
+        :setter: Sets the same delta value for both u- and v-directions
+        :type: float
+        """
+        return self.delta_u, self.delta_v
+
+    @delta.setter
+    def delta(self, value):
+        if isinstance(value, (int, float)):
+            self.delta_u = value
+            self.delta_v = value
+        elif isinstance(value, (list, tuple)):
+            if len(value) == 2:
+                self.delta_u = value[0]
+                self.delta_v = value[1]
+            else:
+                raise ValueError("Surface requires 2 delta values")
+        else:
+            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 2 numeric values")
 
     def render(self, **kwargs):
         """ Renders the surface the using the visualization component.
