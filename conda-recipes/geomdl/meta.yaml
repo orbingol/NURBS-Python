@@ -1,5 +1,6 @@
 # conda-build recipe for NURBS-Python (geomdl) package
 {% set setup_data = load_setup_py_data() %}
+{% set build_number = 0 %}
 
 package:
   name: geomdl
@@ -10,9 +11,11 @@ source:
 
 build:
   noarch: python
-  string: {{ GIT_DESCRIBE_HASH[1:] }}
+  string: {{ GIT_DESCRIBE_HASH[1:] }}_{{ build_number }}
   script:
-    - python setup.py install --single-version-externally-managed --record=record.txt
+    - python setup.py sdist
+    - pip install dist/geomdl-{{ setup_data['version'] }}.tar.gz --no-deps
+    #- python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
   host:
