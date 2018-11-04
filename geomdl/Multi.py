@@ -362,10 +362,7 @@ class MultiSurface(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            if self._sample_size_u != 0:
-                elem.sample_size_u = self.sample_size_u
-            if self._sample_size_v != 0:
-                elem.sample_size_v = self.sample_size_v
+            elem.sample_size = self.sample_size
             elem.evaluate()
 
             # Color selection
