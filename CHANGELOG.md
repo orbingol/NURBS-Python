@@ -1,5 +1,13 @@
 # NURBS-Python Changelog
 
+## 4.3.5 released on 2018-11-03
+
+* Updated `delta` and `sample_size` properties of `MultiCurve` and `MultiSurface` classes. They are now compatible with `Curve` and `Surface` classes.
+* Added `exchange.export_yaml` function (experimental, designed to be used with [geomdl_cli](https://github.com/orbingol/geomdl-cli))
+* Updated conda-build recipe
+* Minor bug fixes
+* Documentation updates
+
 ## 4.3.4 released on 2018-11-01
 
 * Updated `operations.translate()` function to make it compatible with multi curves and surfaces
