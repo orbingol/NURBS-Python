@@ -127,7 +127,7 @@ class MultiCurve(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.sample_size = self.sample_size
+            elem.delta = self.delta
             elem.evaluate()
 
             # Color selection
@@ -362,7 +362,7 @@ class MultiSurface(Abstract.Multi):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.sample_size = self.sample_size
+            elem.delta = self.delta
             elem.evaluate()
 
             # Color selection
