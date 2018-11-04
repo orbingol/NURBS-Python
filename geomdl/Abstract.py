@@ -239,7 +239,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets sample size
         :type: int
         """
-        return int(1 / self.delta) + 1
+        return int(1.0 / self.delta) + 1
 
     @sample_size.setter
     def sample_size(self, value):
@@ -840,7 +840,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets sample size for the u-direction
         :type: int
         """
-        return int(1 / self.delta_u) + 1
+        return int(1.0 / self.delta_u) + 1
 
     @sample_size_u.setter
     def sample_size_u(self, value):
@@ -868,7 +868,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets sample size for the v-direction
         :type: int
         """
-        return int(1 / self.delta_v) + 1
+        return int(1.0 / self.delta_v) + 1
 
     @sample_size_v.setter
     def sample_size_v(self, value):
@@ -902,8 +902,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the same sample size value for both u- and v-directions
         :type: int
         """
-        sample_size_u = int(1 / self.delta_u) + 1
-        sample_size_v = int(1 / self.delta_v) + 1
+        sample_size_u = int(1.0 / self.delta_u) + 1
+        sample_size_v = int(1.0 / self.delta_v) + 1
         return sample_size_u, sample_size_v
 
     @sample_size.setter
