@@ -1,5 +1,10 @@
 # NURBS-Python Changelog
 
+## 4.3.6 released on 2018-11-04
+
+* Added `evalpts` property to `Multi` type of classes
+* Updated conda-build recipe
+
 ## 4.3.5 released on 2018-11-03
 
 * Updated `delta` and `sample_size` properties of `MultiCurve` and `MultiSurface` classes. They are now compatible with `Curve` and `Surface` classes.
