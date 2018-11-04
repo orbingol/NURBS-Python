@@ -1399,6 +1399,16 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         return self
 
     @property
+    def dimension(self):
+        """ Shape dimension.
+
+        :getter: Gets the dimension of the shape
+        """
+        if self._elements:
+            return self._elements[0].dimension
+        return 0
+
+    @property
     def vis(self):
         """ Visualization component.
 
