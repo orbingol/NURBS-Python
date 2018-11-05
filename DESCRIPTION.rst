@@ -1,7 +1,7 @@
 NURBS-Python (geomdl)
 ^^^^^^^^^^^^^^^^^^^^^
 
-|DOI|_ |ANACONDA|_
+|DOI|_ |PYPIDL|_ |ANACONDA|_
 
 |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CODECOV|_
 
@@ -88,6 +88,9 @@ NURBS-Python is licensed under the MIT License.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
+.. |PYPIDL| image:: https://img.shields.io/pypi/dm/geomdl.svg
+.. _PYPIDL: https://pypi.org/project/geomdl/
 
 .. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
 .. _ANACONDA: https://anaconda.org/orbingol/geomdl
