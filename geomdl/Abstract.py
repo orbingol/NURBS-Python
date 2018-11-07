@@ -1411,6 +1411,26 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def evalpts(self):
+        """ Evaluated points.
+
+        Since there are multiple shapes contained in the Multi objects, the evaluated points will be returned in the
+        format of list of individual evaluated points which is also a list of Cartesian coordinates.
+
+        The following code example illustrates these details:
+
+        .. code-block:: python
+
+            multi_obj = Multi.MultiSurface()  # it can be Multi.MultiCurve() too
+            # Add shapes to multi_obj via multi_obj.add() method
+            # Then, the following loop will print all the evaluated points of the Multi object
+            for idx, mpt in enumerate(multi_obj.evalpts):
+                print("Shape", idx+1, "contains", len(mpt), "points. These points are:")
+                for pt in mpt:
+                    line = ", ".join([str(p) for p in pt])
+                    print(line)
+
+        :getter: Gets the evaluated points of all contained shapes
+        """
         ret = []
         for elem in self._elements:
             elem.delta = self._delta
