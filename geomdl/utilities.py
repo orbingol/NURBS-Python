@@ -516,7 +516,7 @@ def evaluate_bounding_box(ctrlpts):
 
     # Evaluate bounding box
     bbmin = [float('inf') for _ in range(0, dimension)]
-    bbmax = [0.0 for _ in range(0, dimension)]
+    bbmax = [float('-inf') for _ in range(0, dimension)]
     for cpt in ctrlpts:
         for i, arr in enumerate(zip(cpt, bbmin)):
             if arr[0] < arr[1]:
