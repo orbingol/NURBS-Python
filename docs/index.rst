@@ -1,9 +1,14 @@
-NURBS-Python Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+NURBS-Python v3.x Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+
+    This documentation is for an unsupported version of NURBS-Python. Please remove the old versions and install the
+    latest version via ``pip install geomdl``.
 
 |DOI|_
 
-Welcome to the NURBS-Python Library documentation! NURBS-Python Library contains native Python implementations of several
+Welcome to the NURBS-Python v3.x documentation! NURBS-Python contains native Python implementations of several
 `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
 Non-Uniform Rational B-Spline (NURBS) curves and surfaces.
 

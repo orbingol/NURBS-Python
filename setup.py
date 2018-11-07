@@ -19,18 +19,18 @@ def get_property(prop, project):
 
 setup(
     name='NURBS-Python',
-    # name='geomdl',
-    version=get_property('__version__', 'geomdl'),
+    version='3.9.0',
     description='NURBS curve and surface evaluation library in pure python',
     author='Onur Rauf Bingol',
-    author_email='contact@onurbingol.net',
+    author_email='nurbs-python@googlegroups.com',
     license='MIT',
     url='https://github.com/orbingol/NURBS-Python',
-    packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
+    packages=[],
+    install_requires=['geomdl'],
     long_description=read('DESCRIPTION.rst'),
     keywords='NURBS B-Spline curve surface CAD modeling visualization',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 6 - Mature',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Mathematics',
@@ -39,7 +39,7 @@ setup(
         'Programming Language :: Python :: 3'
     ],
     project_urls={
-        'Documentation': 'http://nurbs-python.rtfd.org/',
+        'Documentation': 'https://nurbs-python.readthedocs.io/',
         'Source': 'https://github.com/orbingol/NURBS-Python',
         'Tracker': 'https://github.com/orbingol/NURBS-Python/issues',
     },
