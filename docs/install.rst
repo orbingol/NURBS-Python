@@ -1,13 +1,6 @@
 Installation and Testing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note::
-
-    **You should remove NURBS-Python v2.x and v3.x before installing any version of v4.x.**
-    Uninstalling packages via pip is as easy as executing ``pip uninstall NURBS-Python``.
-    However, installation via ``setup.py`` requires manual removal of the packages from Python's ``site-packages``
-    directory. Directories to delete: *nurbs* and/or *geomdl*.
-
 **Installation via pip or conda is the recommended method for all users.**
 Manual method is only recommended for advanced users. Please note that if you have used any of these methods to install
 NURBS-Python, please use the same method to upgrade to the latest version.

@@ -1,18 +1,7 @@
-NURBS-Python Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+NURBS-Python v4.x Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |DOI|_ |PYPI|_ |ANACONDA|_
-
-.. note::
-
-    The version of the documentation that you are currently reading belongs to **NURBS-Python v4.x** series.
-    Please see the following links, if you are using a different version of NURBS-Python:
-
-    * `NURBS-Python v3.x <http://nurbs-python.readthedocs.io/en/3.x/>`_
-    * `NURBS-Python v2.x <http://nurbs-python.readthedocs.io/en/2.x/>`_
-
-    Please note that there might be small API changes between the versions listed above.
-
 
 Welcome to the **NURBS-Python (geomdl)** documentation! NURBS-Python contains native Python implementations of several
 `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
