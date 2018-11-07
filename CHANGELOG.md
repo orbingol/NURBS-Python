@@ -1,5 +1,10 @@
 # NURBS-Python Changelog
 
+## 4.3.7 released on 2018-11-07
+
+* Added `bbox` property to `Multi`-type classes
+* Documentation updates
+
 ## 4.3.6 released on 2018-11-04
 
 * Added `evalpts` property to `Multi` type of classes

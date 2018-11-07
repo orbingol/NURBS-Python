@@ -5,5 +5,5 @@
 """
 
 __author__ = "Onur Rauf Bingol"
-__version__ = "4.3.6"
+__version__ = "4.3.7"
 __license__ = "MIT"
