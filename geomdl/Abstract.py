@@ -1439,6 +1439,17 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         return ret
 
     @property
+    def bbox(self):
+        """ Bounding box.
+
+        :getter: Gets the bounding box of all contained shapes
+        """
+        all_box = []
+        for elem in self._elements:
+            all_box += list(elem.bbox)
+        return utilities.evaluate_bounding_box(all_box)
+
+    @property
     def vis(self):
         """ Visualization component.
 
