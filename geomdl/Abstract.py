@@ -1360,6 +1360,13 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
+
+    This class provides the following properties:
+
+    * dimension
+    * evalpts
+    * bbox
+    * vis
     """
 
     def __init__(self, *args, **kwargs):

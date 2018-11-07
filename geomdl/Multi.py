@@ -21,6 +21,31 @@ class MultiCurve(Abstract.Multi):
     Rendering depends on the visualization instance, e.g. if you are using ``VisMPL`` module,
     you can visualize a 3D curve using a ``VisCurve2D`` instance
     but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
+
+    This class provides the following properties:
+
+    * dimension
+    * evalpts
+    * bbox
+    * vis
+    * delta
+    * sample_size
+
+    The following code example illustrates the usage of the Python properties:
+
+    .. code-block:: python
+
+        # Create a multi-curve container instance
+        mcrv = Multi.MultiCurve()
+
+        # Add single or multi curves to the multi container using mcrv.add() command
+        # Addition operator, e.g. mcrv1 + mcrv2, also works
+
+        # Set the evaluation delta of the multi-curve
+        mcrv.delta = 0.05
+
+        # Get the evaluated points
+        curve_points = mcrv.evalpts
     """
 
     def __init__(self, *args, **kwargs):
@@ -149,6 +174,35 @@ class MultiSurface(Abstract.Multi):
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
+
+    This class provides the following properties:
+
+    * dimension
+    * evalpts
+    * bbox
+    * vis
+    * delta
+    * delta_u
+    * delta_v
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+
+    The following code example illustrates the usage of these Python properties:
+
+    .. code-block:: python
+
+        # Create a multi-surface container instance
+        msurf = Multi.MultiSurface()
+
+        # Add single or multi surfaces to the multi container using msurf.add() command
+        # Addition operator, e.g. msurf1 + msurf2, also works
+
+        # Set the evaluation delta of the multi-surface
+        msurf.delta = 0.05
+
+        # Get the evaluated points
+        surface_points = msurf.evalpts
     """
 
     def __init__(self, *args, **kwargs):
