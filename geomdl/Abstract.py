@@ -385,6 +385,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         Keyword Arguments:
             * ``cpcolor``: sets the color of the control points polygon
             * ``evalcolor``: sets the color of the curve
+            * ``bboxcolor``: sets the color of the bounding box
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. Default is True.
 
@@ -399,6 +400,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         cpcolor = kwargs.get('cpcolor', 'blue')
         evalcolor = kwargs.get('evalcolor', 'black')
+        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
 
@@ -413,6 +415,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.clear()
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
         self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
@@ -1180,6 +1183,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         cpcolor = kwargs.get('cpcolor', 'blue')
         evalcolor = kwargs.get('evalcolor', 'green')
+        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
@@ -1235,6 +1239,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         for idx, trim in enumerate(self._trims):
             self._vis_component.add(ptsarr=self.evaluate_list(trim.evalpts),
                                     name="Trim Curve " + str(idx + 1), color=trimcolor, plot_type='trimcurve')
+
+        # Bounding box
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
         # Plot the surface
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)

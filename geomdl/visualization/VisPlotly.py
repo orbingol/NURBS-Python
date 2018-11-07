@@ -24,6 +24,7 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
     * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
+    * ``bbox`` (bool): Bounding box visibility. *Default: False*
     * ``legend`` (bool): Figure legend visibility. *Default: True*
     * ``axes`` (bool): Axes and figure grid visibility. *Default: True*
     * ``trims`` (bool): Trim curves visibility. *Default: True*
@@ -77,6 +78,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
+        self.display_bbox = kwargs.get('bbox', False)
         self.display_trims = kwargs.get('trims', True)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
@@ -112,7 +114,7 @@ class VisCurve2D(Abstract.VisAbstract):
                     line=dict(
                         color=plot['color'],
                         width=self._config.line_width,
-                        dash='dashdot'
+                        dash='dash'
                     )
                 )
                 plot_data.append(figure)
@@ -127,6 +129,20 @@ class VisCurve2D(Abstract.VisAbstract):
                     line=dict(
                         color=plot['color'],
                         width=self._config.line_width
+                    )
+                )
+                plot_data.append(figure)
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                figure = graph_objs.Scatter(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    name=plot['name'],
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width,
+                        dash='dashdot',
                     )
                 )
                 plot_data.append(figure)
@@ -203,7 +219,7 @@ class VisCurve3D(Abstract.VisAbstract):
                     line=dict(
                         color=plot['color'],
                         width=self._config.line_width,
-                        dash='dashdot'
+                        dash='dash'
                     ),
                     marker=dict(
                         color=plot['color'],
@@ -223,6 +239,22 @@ class VisCurve3D(Abstract.VisAbstract):
                     line=dict(
                         color=plot['color'],
                         width=self._config.line_width
+                    ),
+                )
+                plot_data.append(figure)
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='lines',
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width,
+                        dash='dashdot',
                     ),
                 )
                 plot_data.append(figure)
@@ -344,6 +376,23 @@ class VisSurface(Abstract.VisAbstractSurf):
                     k=tri[:, 2],
                     color=plot['color'],
                     opacity=0.75,
+                )
+                plot_data.append(figure)
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='lines',
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width,
+                        dash='dashdot',
+                    ),
                 )
                 plot_data.append(figure)
 

@@ -26,6 +26,7 @@ class VisConfig(Abstract.VisConfigAbstract):
 
     * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
     * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
+    * ``bbox`` (bool): Bounding box visibility. *Default: False*
     * ``legend`` (bool): Figure legend visibility. *Default: True*
     * ``axes`` (bool): Axes and figure grid visibility. *Default: True*
     * ``trims`` (bool): Trim curves visibility. *Default: True*
@@ -63,6 +64,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.dtype = np.float
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
+        self.display_bbox = kwargs.get('bbox', False)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.display_trims = kwargs.get('trims', True)
@@ -134,6 +136,12 @@ class VisCurve2D(Abstract.VisAbstract):
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
 
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                bboxplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='--')
+                legend_proxy.append(bboxplt)
+                legend_names.append(plot['name'])
+
         # Add legend
         if self._config.display_legend:
             plt.legend(legend_proxy, legend_names)
@@ -189,15 +197,22 @@ class VisCurve3D(Abstract.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
-                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                legend_proxy.append(plot1_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
-                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
-                legend_proxy.append(plot2_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
@@ -255,8 +270,8 @@ class VisSurface(Abstract.VisAbstractSurf):
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                legend_proxy.append(plot1_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
@@ -265,8 +280,16 @@ class VisSurface(Abstract.VisAbstractSurf):
                 for tri in tris:
                     pts = np.array(tri.vertices_raw, dtype=self._config.dtype)
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
-                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
-                legend_proxy.append(plot2_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
@@ -275,8 +298,8 @@ class VisSurface(Abstract.VisAbstractSurf):
                     pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
                                s=self._config.trim_size, depthshade=False)
-                    plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
-                    legend_proxy.append(plot3_proxy)
+                    plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                    legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
@@ -334,16 +357,24 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
-                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                legend_proxy.append(plot1_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
-                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
-                legend_proxy.append(plot2_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
@@ -352,8 +383,8 @@ class VisSurfWireframe(Abstract.VisAbstractSurf):
                     pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
                                s=self._config.trim_size, depthshade=False)
-                    plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
-                    legend_proxy.append(plot3_proxy)
+                    plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                    legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
@@ -426,8 +457,8 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                legend_proxy.append(plot1_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
@@ -456,8 +487,16 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
 
                 # Use custom Triangulation object and the choice of color/colormap to plot the surface
                 ax.plot_trisurf(triangulation, pts[:, 2], **trisurf_params)
-                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
-                legend_proxy.append(plot2_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
@@ -466,8 +505,8 @@ class VisSurfTriangle(Abstract.VisAbstractSurf):
                     pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
                                s=self._config.trim_size, depthshade=False)
-                    plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
-                    legend_proxy.append(plot3_proxy)
+                    plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                    legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
@@ -525,16 +564,24 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
-                plot1_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
-                legend_proxy.append(plot1_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
-                plot2_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
-                legend_proxy.append(plot2_proxy)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
@@ -543,8 +590,8 @@ class VisSurfScatter(Abstract.VisAbstractSurf):
                     pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
                                s=self._config.trim_size, depthshade=False)
-                    plot3_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
-                    legend_proxy.append(plot3_proxy)
+                    plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                    legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
