@@ -21,7 +21,7 @@ from . import convert
 
 
 def import_txt(file_name, two_dimensional=False, **kwargs):
-    """ Reads control points from a text file and generates a 1-D list of control points.
+    """ Reads control points from a text file and generates a 1-dimensional list of control points.
 
     The following code examples illustrate importing different types of text files for curves and surfaces:
 
@@ -70,40 +70,40 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    # Initialize an empty list to store control points
-    ctrlpts = []
-
     # Try opening the file for reading
     try:
         with open(file_name, 'r') as fp:
-                if two_dimensional:
-                    # Start reading file
-                    size_u = 0
+            # Initialize an empty list to store control points
+            ctrlpts = []
+
+            if two_dimensional:
+                # Start reading file
+                size_u = 0
+                size_v = 0
+                for line in fp:
+                    # Remove whitespace
+                    line = line.strip()
+                    # Convert the string containing the coordinates into a list
+                    control_point_row = line.split(col_sep)
+                    # Clean and convert the values
                     size_v = 0
-                    for line in fp:
-                        # Remove whitespace
-                        line = line.strip()
-                        # Convert the string containing the coordinates into a list
-                        control_point_row = line.split(col_sep)
-                        # Clean and convert the values
-                        size_v = 0
-                        for cpr in control_point_row:
-                            ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
-                            size_v += 1
-                        size_u += 1
+                    for cpr in control_point_row:
+                        ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
+                        size_v += 1
+                    size_u += 1
 
-                    # Return control points, size in u- and v-directions
-                    return ctrlpts, size_u, size_v
-                else:
-                    # Start reading file
-                    for line in fp:
-                        # Remove whitespace
-                        line = line.strip()
-                        # Clean and convert the values
-                        ctrlpts.append([float(c.strip()) for c in line.split(sep)])
+                # Return control points, size in u- and v-directions
+                return ctrlpts, size_u, size_v
+            else:
+                # Start reading file
+                for line in fp:
+                    # Remove whitespace
+                    line = line.strip()
+                    # Clean and convert the values
+                    ctrlpts.append([float(c.strip()) for c in line.split(sep)])
 
-                    # Return control points
-                    return ctrlpts
+                # Return control points
+                return ctrlpts
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -112,7 +112,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
 
 
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
-    """ Saves control points to a text file.
+    """ Exports control points as a text file.
 
     For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
     point output file using ``two_dimensional`` flag. Please see the supported file formats for more details on the
@@ -219,7 +219,7 @@ def export_csv(obj, file_name, point_type='evalpts'):
 
 
 def export_vtk(obj, file_name, point_type='evalpts'):
-    """ Exports control points or evaluated points as a VTK file (legacy format).
+    """ Exports control points or evaluated points in legacy VTK format.
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
