@@ -181,7 +181,7 @@ def import_csv(file_name, **kwargs):
         ctrlpts = exchange.import_csv("control_points.csv")
 
         # Alternatively, it is possible to import a file containing tab-separated values
-        ctrlpts = exchange.import_csv("control_points.csv", separator="\t")
+        ctrlpts = exchange.import_csv("control_points.csv", separator="\\t")
 
     The only difference of this function from :py:func:`.exchange.import_txt()` is skipping the first line of the input
     file which generally contains the column headings.
