@@ -3,7 +3,7 @@
 ## 4.3.8 released on 2018-11-08
 
 * Fixed a bug in bounding box computation
-* Added an option to plot bounding box to the visualization module (still WIP)
+* Added bounding box plotting option to the visualization module (still WIP)
 
 ## 4.3.7 released on 2018-11-07
 
