@@ -1136,25 +1136,35 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
 
 def _prepare_cfg_import_curve(data):
     shape = NURBS.Curve()
-    shape.degree = data.degree
-    shape.ctrlpts = data.control_points
-    if isinstance(data.weights, (list, tuple)):
-        shape.weights = data.weights
-    shape.knotvector = data.knotvector
+    shape.degree = data['degree']
+    shape.ctrlpts = data['control_points']
+    if 'weights' in data:
+        shape.weights = data['weights']
+    shape.knotvector = data['knotvector']
+    if 'delta' in data:
+        shape.delta = data['delta']
+    if 'name' in data:
+        shape.name = data['name']
     return shape
 
 
 def _prepare_cfg_import_surface(data):
     shape = NURBS.Surface()
-    shape.degree_u = data.degree_u
-    shape.degree_v = data.degree_v
-    shape.ctrlpts_size_u = data.control_points_size_u
-    shape.ctrlpts_size_v = data.control_points_size_v
-    shape.ctrlpts = data.control_points
-    if isinstance(data.weights, (list, tuple)):
-        shape.weights = data.weights
-    shape.knotvector_u = data.knotvector_u
-    shape.knotvector_v = data.knotvector_v
+    shape.degree_u = data['degree_u']
+    shape.degree_v = data['degree_v']
+    shape.ctrlpts_size_u = data['size_u']
+    shape.ctrlpts_size_v = data['size_v']
+    shape.ctrlpts = data['control_points']
+    if 'weights' in data:
+        shape.weights = data['weights']
+    shape.knotvector_u = data['knotvector_u']
+    shape.knotvector_v = data['knotvector_v']
+    if 'delta_u' in data:
+        shape.delta_u = data['delta_u']
+    if 'delta_v' in data:
+        shape.delta_u = data['delta_v']
+    if 'name' in data:
+        shape.name = data['name']
     return shape
 
 
@@ -1179,13 +1189,11 @@ def _prepare_cfg_export_curve(obj):
     try:
         line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
     except AttributeError:
-        line += "\tweights = 0;\n"
+        # Don't add weights
+        pass
 
-    # Export misc info
-    line += "\tmisc: \n\t{\n"
-    line += "\t\tname = \"" + obj.name + "\";\n"
-    line += "\t\tsample_size = " + str(obj.sample_size) + ";\n"
-    line += "\t};\n"
+    # Export evaluation delta
+    line += "\tdelta = " + str(obj.delta) + ";\n"
 
     return line
 
@@ -1204,8 +1212,8 @@ def _prepare_cfg_export_surface(obj):
     line += "\tdegree_v = " + str(obj.degree_v) + ";\n"
     line += "\tknotvector_u = [" + ", ".join(str(kv) for kv in obj.knotvector_u) + "];\n"
     line += "\tknotvector_v = [" + ", ".join(str(kv) for kv in obj.knotvector_v) + "];\n"
-    line += "\tcontrol_points_size_u = " + str(obj.ctrlpts_size_u) + ";\n"
-    line += "\tcontrol_points_size_v = " + str(obj.ctrlpts_size_v) + ";\n"
+    line += "\tsize_u = " + str(obj.ctrlpts_size_u) + ";\n"
+    line += "\tsize_v = " + str(obj.ctrlpts_size_v) + ";\n"
     line += "\tcontrol_points = ("
     ctrlpts_size = len(obj.ctrlpts)
     for idx, pt in enumerate(obj.ctrlpts):
@@ -1217,12 +1225,9 @@ def _prepare_cfg_export_surface(obj):
     except AttributeError:
         line += "\tweights = 0;\n"
 
-    # Export misc info
-    line += "\tmisc: \n\t{\n"
-    line += "\t\tname = \"" + obj.name + "\";\n"
-    line += "\t\tsample_size_u = " + str(obj.sample_size_u) + ";\n"
-    line += "\t\tsample_size_v = " + str(obj.sample_size_v) + ";\n"
-    line += "\t};\n"
+    # Export evaluation delta
+    line += "\tdelta_u = " + str(obj.delta_u) + ";\n"
+    line += "\tdelta_v = " + str(obj.delta_v) + ";\n"
 
     return line
 
