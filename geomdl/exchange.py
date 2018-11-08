@@ -169,6 +169,57 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
         raise
 
 
+def import_csv(file_name, **kwargs):
+    """ Reads control points from a CSV file and generates a 1-dimensional list of control points.
+
+    It is possible to use a different value separator via ``separator`` keyword argument. The following code segment
+    illustrates the usage of ``separator`` keyword argument.
+
+    .. code-block:: python
+
+        # By default, import_csv uses 'comma' as the value separator
+        ctrlpts = exchange.import_csv("control_points.csv")
+
+        # Alternatively, it is possible to import a file containing tab-separated values
+        ctrlpts = exchange.import_csv("control_points.csv", separator="\t")
+
+    The only difference of this function from :py:func:`.exchange.import_txt()` is skipping the first line of the input
+    file which generally contains the column headings.
+
+    :param file_name: file name of the text file
+    :type file_name: str
+    :return: list of control points
+    :rtype: list
+    :raises IOError: an error occurred reading the file
+    """
+    # File delimiters
+    sep = kwargs.get('separator', ",")
+
+    # Try opening the file for reading
+    try:
+        with open(file_name, 'r') as fp:
+            # Initialize an empty list to store control points
+            ctrlpts = []
+
+            # Skip header row
+            next(fp)
+
+            # Start reading file
+            for line in fp:
+                # Remove whitespace
+                line = line.strip()
+                # Clean and convert the values
+                ctrlpts.append([float(c.strip()) for c in line.split(sep)])
+
+            # Return control points
+            return ctrlpts
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
 def export_csv(obj, file_name, point_type='evalpts'):
     """ Exports control points or evaluated points as a CSV file.
 
