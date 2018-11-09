@@ -255,11 +255,14 @@ def export_vtk(obj, file_name, point_type='evalpts'):
 def import_cfg(file_name):
     """ Imports curves and surfaces from files in libconfig format.
 
+    .. note::
+
+        Requires `libconf <https://pypi.org/project/libconf/>`_ package.
+
     :param file_name: name of the input file
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
     def callback(fp):
@@ -268,9 +271,9 @@ def import_cfg(file_name):
     # Check if it is possible to import 'libconf'
     try:
         import libconf
-    except ImportError as e:
+    except ImportError:
         print("Please install 'libconf' module to use libconfig format: pip install libconf")
-        raise e
+        return
 
     # Import data
     return _import_dict_all(file_name, callback)
@@ -279,11 +282,14 @@ def import_cfg(file_name):
 def export_cfg(obj, file_name):
     """ Exports curves and surfaces in libconfig format.
 
+    .. note::
+
+        Requires `libconf <https://pypi.org/project/libconf/>`_ package.
+
     :param obj: input curve(s) or surface(s)
     :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
-    :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
 
@@ -293,9 +299,9 @@ def export_cfg(obj, file_name):
     # Check if it is possible to import 'libconf'
     try:
         import libconf
-    except ImportError as e:
+    except ImportError:
         print("Please install 'libconf' module to use libconfig format: pip install libconf")
-        raise e
+        return
 
     # Export data as a file
     _export_dict_all(obj, file_name, callback)
@@ -304,11 +310,14 @@ def export_cfg(obj, file_name):
 def import_yaml(file_name):
     """ Imports curves and surfaces from files in YAML format.
 
+    .. note::
+
+        Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
+
     :param file_name: name of the input file
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises ImportError: cannot import 'ruamel.yaml' module
     :raises IOError: an error occurred reading the file
     """
     def callback(fp):
@@ -318,9 +327,9 @@ def import_yaml(file_name):
     # Check if it is possible to import 'ruamel.yaml'
     try:
         from ruamel.yaml import YAML
-    except ImportError as e:
+    except ImportError:
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
-        raise e
+        return
 
     # Import data
     return _import_dict_all(file_name, callback)
@@ -329,6 +338,10 @@ def import_yaml(file_name):
 def export_yaml(obj, file_name):
     """ Exports curves and surfaces in YAML format.
 
+    .. note::
+
+        Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
+
     The YAML format is mainly used by the `geomdl command line app lication<https://github.com/orbingol/geomdl-cli>`_
     as a way to input data from the command line.
 
@@ -336,7 +349,6 @@ def export_yaml(obj, file_name):
     :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
-    :raises ImportError: cannot import 'ruamel.yaml' module
     :raises IOError: an error occurred writing the file
     """
     def callback(fp, data):
@@ -346,9 +358,9 @@ def export_yaml(obj, file_name):
     # Check if it is possible to import 'ruamel.yaml'
     try:
         from ruamel.yaml import YAML
-    except ImportError as e:
+    except ImportError:
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
-        raise e
+        return
 
     # Export data as a file
     _export_dict_all(obj, file_name, callback)
