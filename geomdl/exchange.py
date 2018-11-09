@@ -327,7 +327,7 @@ def export_cfg(obj, file_name):
                 shape=dict(
                     type=export_type,
                     count=count,
-                    data=data
+                    data=tuple(data)
                 )
             )
 
@@ -1213,9 +1213,9 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
 def _import_dict_curve(data):
     shape = NURBS.Curve()
     shape.degree = data['degree']
-    shape.ctrlpts = data['control_points']
+    shape.ctrlpts = data['control_points']['points']
     if 'weights' in data:
-        shape.weights = data['weights']
+        shape.weights = data['control_points']['weights']
     shape.knotvector = data['knotvector']
     if 'delta' in data:
         shape.delta = data['delta']
@@ -1227,14 +1227,14 @@ def _import_dict_curve(data):
 def _export_dict_curve(obj):
     data = dict(
         degree=obj.degree,
-        knotvector=obj.knotvector,
+        knotvector=list(obj.knotvector),
         control_points=dict(
             points=obj.ctrlpts
         ),
         delta=obj.delta
     )
     try:
-        data['control_points']['weights'] = obj.weights
+        data['control_points']['weights'] = list(obj.weights)
     except AttributeError:
         # Not a NURBS curve
         pass
@@ -1247,9 +1247,9 @@ def _import_dict_surface(data):
     shape.degree_v = data['degree_v']
     shape.ctrlpts_size_u = data['size_u']
     shape.ctrlpts_size_v = data['size_v']
-    shape.ctrlpts = data['control_points']
+    shape.ctrlpts = data['control_points']['points']
     if 'weights' in data:
-        shape.weights = data['weights']
+        shape.weights = data['control_points']['weights']
     shape.knotvector_u = data['knotvector_u']
     shape.knotvector_v = data['knotvector_v']
     if 'delta' in data:
@@ -1263,8 +1263,8 @@ def _export_dict_surface(obj):
     data = dict(
         degree_u=obj.degree_u,
         degree_v=obj.degree_v,
-        knotvector_u=obj.knotvector_u,
-        knotvector_v=obj.knotvector_v,
+        knotvector_u=list(obj.knotvector_u),
+        knotvector_v=list(obj.knotvector_v),
         size_u=obj.ctrlpts_size_u,
         size_v=obj.ctrlpts_size_v,
         control_points=dict(
@@ -1273,7 +1273,7 @@ def _export_dict_surface(obj):
         delta=obj.delta
     )
     try:
-        data['control_points']['weights'] = obj.weights
+        data['control_points']['weights'] = list(obj.weights)
     except AttributeError:
         # Not a NURBS curve
         pass
