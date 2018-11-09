@@ -255,28 +255,6 @@ def export_vtk(obj, file_name, point_type='evalpts'):
         raise
 
 
-def export_cfg(obj, file_name):
-    """ Exports curves and surfaces in libconfig format.
-
-    :param obj: input curve or surface
-    :type obj: Abstract.Curve or Abstract.Surface
-    :param file_name: name of the output file
-    :type file_name: str
-    :raises IOError: an error occurred writing the file
-    """
-
-    if isinstance(obj, Abstract.Curve):
-        _export_cfg_single(obj, file_name, _prepare_cfg_export_curve)
-    elif isinstance(obj, Abstract.Surface):
-        _export_cfg_single(obj, file_name, _prepare_cfg_export_surface)
-    elif isinstance(obj, Multi.MultiCurve):
-        _export_cfg_multi(obj, file_name, _prepare_cfg_export_curve)
-    elif isinstance(obj, Multi.MultiSurface):
-        _export_cfg_multi(obj, file_name, _prepare_cfg_export_surface)
-    else:
-        raise NotImplementedError("Cannot export " + obj.__class__.__name__ + " type in libconfig format")
-
-
 def import_cfg(file_name):
     """ Imports curves and surfaces from files in libconfig format.
 
@@ -291,10 +269,10 @@ def import_cfg(file_name):
     try:
         import libconf
     except ImportError as e:
-        print("Please install 'libconf' module to import from libconfig format: pip install libconf")
+        print("Please install 'libconf' module to use libconfig format: pip install libconf")
         raise e
 
-    type_map = {'curve': _prepare_cfg_import_curve, 'surface': _prepare_cfg_import_surface}
+    type_map = {'curve': _import_dict_curve, 'surface': _import_dict_surface}
 
     # Try to read the input file
     try:
@@ -304,12 +282,56 @@ def import_cfg(file_name):
 
             # Process imported data
             ret_list = []
-            for data in imported_data.shapes:
-                temp = type_map[data.type](data)
+            for data in imported_data['shape']['data']:
+                temp = type_map[data['shape']['type']](data['data'])
                 ret_list.append(temp)
 
             # Return processed data
             return ret_list
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def export_cfg(obj, file_name):
+    """ Exports curves and surfaces in libconfig format.
+
+    :param obj: input curve or surface
+    :type obj: Abstract.Curve or Abstract.Surface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
+    """
+    # Check if it is possible to import 'libconf'
+    try:
+        import libconf
+    except ImportError as e:
+        print("Please install 'libconf' module to use libconfig format: pip install libconf")
+        raise e
+
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'w') as fp:
+            if isinstance(obj, (Abstract.Curve, Multi.MultiCurve)):
+                export_type = "curve"
+                data, count = _export_cfg_curve(obj)
+            else:
+                export_type = "surface"
+                data, count = _export_cfg_surface(obj)
+
+            # Create the dictionary
+            data = dict(
+                shape=dict(
+                    type=export_type,
+                    count=count,
+                    data=data
+                )
+            )
+
+            # Generate libconfig file
+            fp.write(libconf.dumps(data))
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -1135,7 +1157,7 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
         _export_smesh_single(surf, fname, idx=idx+1, **kwargs)
 
 
-def _prepare_cfg_import_curve(data):
+def _import_dict_curve(data):
     shape = NURBS.Curve()
     shape.degree = data['degree']
     shape.ctrlpts = data['control_points']
@@ -1149,7 +1171,24 @@ def _prepare_cfg_import_curve(data):
     return shape
 
 
-def _prepare_cfg_import_surface(data):
+def _export_dict_curve(obj):
+    data = dict(
+        degree=obj.degree,
+        knotvector=obj.knotvector,
+        control_points=dict(
+            points=obj.ctrlpts
+        ),
+        delta=obj.delta
+    )
+    try:
+        data['control_points']['weights'] = obj.weights
+    except AttributeError:
+        # Not a NURBS curve
+        pass
+    return data
+
+
+def _import_dict_surface(data):
     shape = NURBS.Surface()
     shape.degree_u = data['degree_u']
     shape.degree_v = data['degree_v']
@@ -1160,133 +1199,56 @@ def _prepare_cfg_import_surface(data):
         shape.weights = data['weights']
     shape.knotvector_u = data['knotvector_u']
     shape.knotvector_v = data['knotvector_v']
-    if 'delta_u' in data:
-        shape.delta_u = data['delta_u']
-    if 'delta_v' in data:
-        shape.delta_u = data['delta_v']
+    if 'delta' in data:
+        shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
     return shape
 
 
-def _prepare_cfg_export_curve(obj):
-    """ Prepares curve object for libconfig-type export.
-
-    :param obj: curve object
-    :return: curve data as a string
-    """
-    line = ""
-
-    # Start exporting curve
-    line += "\ttype = \"curve\";\n"
-    line += "\tdegree = " + str(obj.degree) + ";\n"
-    line += "\tknotvector = [" + ", ".join(str(kv) for kv in obj.knotvector) + "];\n"
-    line += "\tcontrol_points = ("
-    ctrlpts_size = len(obj.ctrlpts)
-    for idx, pt in enumerate(obj.ctrlpts):
-        line += " (" + ", ".join(str(p) for p in pt) + ")"
-        line += " " if idx == ctrlpts_size - 1 else ","
-    line += ");\n"
+def _export_dict_surface(obj):
+    data = dict(
+        degree_u=obj.degree_u,
+        degree_v=obj.degree_v,
+        knotvector_u=obj.knotvector_u,
+        knotvector_v=obj.knotvector_v,
+        size_u=obj.ctrlpts_size_u,
+        size_v=obj.ctrlpts_size_v,
+        control_points=dict(
+            points=obj.ctrlpts
+        ),
+        delta=obj.delta
+    )
     try:
-        line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
+        data['control_points']['weights'] = obj.weights
     except AttributeError:
-        # Don't add weights
+        # Not a NURBS curve
         pass
-
-    # Export evaluation delta
-    line += "\tdelta = " + str(obj.delta) + ";\n"
-
-    return line
+    return data
 
 
-def _prepare_cfg_export_surface(obj):
-    """ Prepares surface object for libconfig-type export.
-
-    :param obj: surface object
-    :return: surface data as a string
-    """
-    line = ""
-
-    # Start exporting surface
-    line += "\ttype = \"surface\";\n"
-    line += "\tdegree_u = " + str(obj.degree_u) + ";\n"
-    line += "\tdegree_v = " + str(obj.degree_v) + ";\n"
-    line += "\tknotvector_u = [" + ", ".join(str(kv) for kv in obj.knotvector_u) + "];\n"
-    line += "\tknotvector_v = [" + ", ".join(str(kv) for kv in obj.knotvector_v) + "];\n"
-    line += "\tsize_u = " + str(obj.ctrlpts_size_u) + ";\n"
-    line += "\tsize_v = " + str(obj.ctrlpts_size_v) + ";\n"
-    line += "\tcontrol_points = ("
-    ctrlpts_size = len(obj.ctrlpts)
-    for idx, pt in enumerate(obj.ctrlpts):
-        line += " (" + ", ".join(str(p) for p in pt) + ")"
-        line += " " if idx == ctrlpts_size - 1 else ","
-    line += ");\n"
-    try:
-        line += "\tweights = [" + ", ".join(str(w) for w in obj.weights) + "];\n"
-    except AttributeError:
-        line += "\tweights = 0;\n"
-
-    # Export evaluation delta
-    line += "\tdelta_u = " + str(obj.delta_u) + ";\n"
-    line += "\tdelta_v = " + str(obj.delta_v) + ";\n"
-
-    return line
+def _export_cfg_curve(obj):
+    if isinstance(obj, Abstract.Curve):
+        return [_export_dict_curve(obj)], 1
+    elif isinstance(obj, Multi.MultiCurve):
+        data = []
+        for o in obj:
+            data.append(_export_dict_curve(o))
+        return data, len(obj)
+    else:
+        raise NotADirectoryError("Not defined")
 
 
-def _export_cfg_single(obj, file_name, func):
-    try:
-        with open(file_name, 'w') as fp:
-            # File header
-            fp.write("# Generated by geomdl\n")
-            fp.write("# file: " + file_name + "\n\n")
-
-            # Number of shapes is always 1 in this case
-            fp.write("count: 1;\n\n")
-
-            # Start listing
-            fp.write("shapes: \n(\n\n")
-            fp.write("{\n")
-
-            # Write object properties
-            fp.write(func(obj))
-
-            # End listing
-            fp.write("}\n\n")
-            fp.write(");\n")
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
-
-
-def _export_cfg_multi(obj, file_name, func):
-    try:
-        with open(file_name, 'w') as fp:
-            # File header
-            fp.write("# Generated by geomdl\n")
-            fp.write("# file: " + file_name + "\n\n")
-
-            # Number of shapes in the container
-            cont_sz = len(obj)
-            fp.write("count: " + str(cont_sz) + ";\n\n")
-
-            # Start listing
-            fp.write("shapes: \n(\n\n")
-
-            # Write object properties
-            for idx, shp in enumerate(obj):
-                fp.write("{\n")
-                fp.write(func(shp))
-                fp.write("}" + ("" if idx == cont_sz - 1 else ",") + "\n\n")
-
-            # End listing
-            fp.write(");\n")
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+def _export_cfg_surface(obj):
+    if isinstance(obj, Abstract.Surface):
+        return [_export_dict_surface(obj)], 1
+    elif isinstance(obj, Multi.MultiSurface):
+        data = []
+        for o in obj:
+            data.append(_export_dict_surface(o))
+        return data, len(obj)
+    else:
+        raise NotADirectoryError("Not defined")
 
 
 def _prepare_export_yaml_curve(obj):
