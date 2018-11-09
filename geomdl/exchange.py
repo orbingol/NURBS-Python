@@ -265,6 +265,9 @@ def import_cfg(file_name):
     :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
+    def callback(fp):
+        return libconf.load(fp)
+
     # Check if it is possible to import 'libconf'
     try:
         import libconf
@@ -272,27 +275,8 @@ def import_cfg(file_name):
         print("Please install 'libconf' module to use libconfig format: pip install libconf")
         raise e
 
-    type_map = {'curve': _import_dict_curve, 'surface': _import_dict_surface}
-
-    # Try to read the input file
-    try:
-        with open(file_name, 'r') as fp:
-            # Get all shapes
-            imported_data = libconf.load(fp)
-
-            # Process imported data
-            ret_list = []
-            for data in imported_data['shape']['data']:
-                temp = type_map[imported_data['shape']['type']](data)
-                ret_list.append(temp)
-
-            # Return processed data
-            return ret_list
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Import data
+    return _import_dict_all(file_name, callback)
 
 
 def export_cfg(obj, file_name):
@@ -305,6 +289,10 @@ def export_cfg(obj, file_name):
     :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
+
+    def callback(fp, data):
+        fp.write(libconf.dumps(data))
+
     # Check if it is possible to import 'libconf'
     try:
         import libconf
@@ -312,32 +300,8 @@ def export_cfg(obj, file_name):
         print("Please install 'libconf' module to use libconfig format: pip install libconf")
         raise e
 
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            if isinstance(obj, (Abstract.Curve, Multi.MultiCurve)):
-                export_type = "curve"
-                data, count = _export_cfg_curve(obj)
-            else:
-                export_type = "surface"
-                data, count = _export_cfg_surface(obj)
-
-            # Create the dictionary
-            data = dict(
-                shape=dict(
-                    type=export_type,
-                    count=count,
-                    data=tuple(data)
-                )
-            )
-
-            # Generate libconfig file
-            fp.write(libconf.dumps(data))
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Export data as a file
+    _export_dict_all(obj, file_name, callback)
 
 
 def import_yaml(file_name):
@@ -350,6 +314,10 @@ def import_yaml(file_name):
     :raises ImportError: cannot import 'ruamel.yaml' module
     :raises IOError: an error occurred reading the file
     """
+    def callback(fp):
+        yaml = YAML()
+        return yaml.load(fp)
+
     # Check if it is possible to import 'ruamel.yaml'
     try:
         from ruamel.yaml import YAML
@@ -357,28 +325,8 @@ def import_yaml(file_name):
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
         raise e
 
-    type_map = {'curve': _import_dict_curve, 'surface': _import_dict_surface}
-
-    # Try to read the input file
-    try:
-        with open(file_name, 'r') as fp:
-            # Get all shapes
-            yaml = YAML()
-            imported_data = yaml.load(fp)
-
-            # Process imported data
-            ret_list = []
-            for data in imported_data['shape']['data']:
-                temp = type_map[imported_data['shape']['type']](data)
-                ret_list.append(temp)
-
-            # Return processed data
-            return ret_list
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Import data
+    return _import_dict_all(file_name, callback)
 
 
 def export_yaml(obj, file_name):
@@ -394,6 +342,10 @@ def export_yaml(obj, file_name):
     :raises ImportError: cannot import 'ruamel.yaml' module
     :raises IOError: an error occurred writing the file
     """
+    def callback(fp, data):
+        yaml = YAML()
+        yaml.dump(data, fp)
+
     # Check if it is possible to import 'ruamel.yaml'
     try:
         from ruamel.yaml import YAML
@@ -401,33 +353,8 @@ def export_yaml(obj, file_name):
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
         raise e
 
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            if isinstance(obj, (Abstract.Curve, Multi.MultiCurve)):
-                export_type = "curve"
-                data, count = _export_cfg_curve(obj)
-            else:
-                export_type = "surface"
-                data, count = _export_cfg_surface(obj)
-
-            # Create the dictionary
-            data = dict(
-                shape=dict(
-                    type=export_type,
-                    count=count,
-                    data=data
-                )
-            )
-
-            # Generate YAML file
-            yaml = YAML()
-            yaml.dump(data, fp)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Export data as a file
+    _export_dict_all(obj, file_name, callback)
 
 
 def export_obj(surf_in, file_name, **kwargs):
@@ -1210,7 +1137,7 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
         _export_smesh_single(surf, fname, idx=idx+1, **kwargs)
 
 
-def _import_dict_curve(data):
+def _prepare_import_dict_curve(data):
     shape = NURBS.Curve()
     shape.degree = data['degree']
     shape.ctrlpts = data['control_points']['points']
@@ -1224,7 +1151,7 @@ def _import_dict_curve(data):
     return shape
 
 
-def _export_dict_curve(obj):
+def _prepare_export_dict_curve(obj):
     data = dict(
         degree=obj.degree,
         knotvector=list(obj.knotvector),
@@ -1241,7 +1168,7 @@ def _export_dict_curve(obj):
     return data
 
 
-def _import_dict_surface(data):
+def _prepare_import_dict_surface(data):
     shape = NURBS.Surface()
     shape.degree_u = data['degree_u']
     shape.degree_v = data['degree_v']
@@ -1259,7 +1186,7 @@ def _import_dict_surface(data):
     return shape
 
 
-def _export_dict_surface(obj):
+def _prepare_export_dict_surface(obj):
     data = dict(
         degree_u=obj.degree_u,
         degree_v=obj.degree_v,
@@ -1280,25 +1207,65 @@ def _export_dict_surface(obj):
     return data
 
 
-def _export_cfg_curve(obj):
-    if isinstance(obj, Abstract.Curve):
-        return [_export_dict_curve(obj)], 1
-    elif isinstance(obj, Multi.MultiCurve):
-        data = []
-        for o in obj:
-            data.append(_export_dict_curve(o))
-        return data, len(obj)
-    else:
-        raise NotADirectoryError("Not defined")
+def _import_dict_all(file_name, callback):
+    type_map = {'curve': _prepare_import_dict_curve, 'surface': _prepare_import_dict_surface}
+
+    # Try to read the input file
+    try:
+        with open(file_name, 'r') as fp:
+            # Callback function
+            imported_data = callback(fp)
+
+            # Process imported data
+            ret_list = []
+            for data in imported_data['shape']['data']:
+                temp = type_map[imported_data['shape']['type']](data)
+                ret_list.append(temp)
+
+            # Return imported data
+            return ret_list
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
-def _export_cfg_surface(obj):
-    if isinstance(obj, Abstract.Surface):
-        return [_export_dict_surface(obj)], 1
-    elif isinstance(obj, Multi.MultiSurface):
-        data = []
-        for o in obj:
-            data.append(_export_dict_surface(o))
-        return data, len(obj)
-    else:
-        raise NotADirectoryError("Not defined")
+def _export_dict_all(obj, file_name, callback):
+    # Try opening the file for writing
+    try:
+        with open(file_name, 'w') as fp:
+            count = 1
+            if isinstance(obj, Abstract.Curve):
+                export_type = "curve"
+                data = [_prepare_export_dict_curve(obj)]
+            elif isinstance(obj, Abstract.Surface):
+                export_type = "surface"
+                data = [_prepare_export_dict_surface(obj)]
+            elif isinstance(obj, Multi.MultiCurve):
+                export_type = "curve"
+                data = [_prepare_export_dict_curve(o) for o in obj]
+                count = len(obj)
+            elif isinstance(obj, Multi.MultiSurface):
+                export_type = "surface"
+                data = [_prepare_export_dict_surface(o) for o in obj]
+                count = len(obj)
+            else:
+                raise NotADirectoryError("Object type is not defined for dict export")
+
+            # Create the dictionary
+            data = dict(
+                shape=dict(
+                    type=export_type,
+                    count=count,
+                    data=tuple(data)
+                )
+            )
+
+            # Callback function
+            callback(fp, data)
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
