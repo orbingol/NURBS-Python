@@ -8,7 +8,6 @@
 """
 
 import os
-import warnings
 import struct
 import json
 from . import Abstract
@@ -101,12 +100,11 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     """
     # Check if the user has set any control points
     if obj.ctrlpts is None or len(obj.ctrlpts) == 0:
-        warnings.warn("There are no control points to save!")
-        return
+        raise ValueError("There are no control points to save!")
 
     # Check the usage of two_dimensional flag
     if isinstance(obj, Abstract.Curve) and two_dimensional:
-        warnings.warn("Ignoring two_dimensional flag since it only makes difference with surface objects...")
+        # Silently ignore two_dimensional flag
         two_dimensional = False
 
     # File delimiters
@@ -184,8 +182,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
         points = obj.evalpts
     else:
-        warnings.warn("Please choose a valid point type option")
-        return
+        raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
     # File delimiters
     sep = kwargs.get('separator', ",")
@@ -233,8 +230,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
     elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
         points = obj.evalpts
     else:
-        warnings.warn("Please choose a valid point type option")
-        return
+        raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
     # Try opening the file for writing
     try:
@@ -657,7 +653,7 @@ def _export_obj_multi(surface_list, **kwargs):
             # Loop through MultiSurface object
             for surface in surface_list:
                 if not isinstance(surface, Abstract.Surface):
-                    warnings.warn("Encountered a non-surface object")
+                    # Skip non-surface objects
                     continue
 
                 # Set surface evaluation delta
@@ -784,7 +780,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
             # Loop through MultiSurface object
             for surface in surface_list:
                 if not isinstance(surface, Abstract.Surface):
-                    warnings.warn("Encountered a non-surface object")
+                    # Skip non-surface objects
                     continue
 
                 # Set surface evaluation delta
@@ -889,7 +885,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
             triangles_list = []
             for surface in surface_list:
                 if not isinstance(surface, Abstract.Surface):
-                    warnings.warn("Encountered a non-surface object")
+                    # Skip non-surface objects
                     continue
 
                 # Set surface evaluation delta
@@ -1003,7 +999,7 @@ def _export_off_multi(surface_list, **kwargs):
             # Loop through MultiSurface object
             for surface in surface_list:
                 if not isinstance(surface, Abstract.Surface):
-                    warnings.warn("Encountered a non-surface object")
+                    # Skip non-surface objects
                     continue
 
                 # Set surface evaluation delta
@@ -1070,8 +1066,7 @@ def _import_smesh_single(file_name):
 
     # 1st line defines the dimension and it must be 3
     if int(content[0][0]) != 3:
-        warnings.warn("Input smesh file" + str(file_name) + " is not a surface", UserWarning)
-        return
+        raise TypeError("Input smesh file" + str(file_name) + " is not a surface")
 
     # Create a NURBS surface instance and fill with the data read from smesh file
     surf = NURBS.Surface()
