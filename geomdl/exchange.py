@@ -262,7 +262,7 @@ def import_cfg(file_name):
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises ImportError: cannot find 'libconf' module
+    :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
     # Check if it is possible to import 'libconf'
@@ -283,7 +283,7 @@ def import_cfg(file_name):
             # Process imported data
             ret_list = []
             for data in imported_data['shape']['data']:
-                temp = type_map[data['shape']['type']](data['data'])
+                temp = type_map[imported_data['shape']['type']](data)
                 ret_list.append(temp)
 
             # Return processed data
@@ -298,10 +298,11 @@ def import_cfg(file_name):
 def export_cfg(obj, file_name):
     """ Exports curves and surfaces in libconfig format.
 
-    :param obj: input curve or surface
-    :type obj: Abstract.Curve or Abstract.Surface
+    :param obj: input curve(s) or surface(s)
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
+    :raises ImportError: cannot import 'libconf' module
     :raises IOError: an error occurred writing the file
     """
     # Check if it is possible to import 'libconf'
