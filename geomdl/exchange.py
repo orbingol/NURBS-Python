@@ -73,37 +73,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     # Try opening the file for reading
     try:
         with open(file_name, 'r') as fp:
-            # Initialize an empty list to store control points
-            ctrlpts = []
-
-            if two_dimensional:
-                # Start reading file
-                size_u = 0
-                size_v = 0
-                for line in fp:
-                    # Remove whitespace
-                    line = line.strip()
-                    # Convert the string containing the coordinates into a list
-                    control_point_row = line.split(col_sep)
-                    # Clean and convert the values
-                    size_v = 0
-                    for cpr in control_point_row:
-                        ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
-                        size_v += 1
-                    size_u += 1
-
-                # Return control points, size in u- and v-directions
-                return ctrlpts, size_u, size_v
-            else:
-                # Start reading file
-                for line in fp:
-                    # Remove whitespace
-                    line = line.strip()
-                    # Clean and convert the values
-                    ctrlpts.append([float(c.strip()) for c in line.split(sep)])
-
-                # Return control points
-                return ctrlpts
+            return _import_txt(fp, sep, col_sep, two_dimensional)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -145,23 +115,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     # Try opening the file for writing
     try:
         with open(file_name, 'w') as fp:
-            if two_dimensional:
-                for i in range(0, obj.ctrlpts_size_u):
-                    line = ""
-                    for j in range(0, obj.ctrlpts_size_v):
-                        for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
-                            if idx:  # check for the first element
-                                line += sep
-                            line += str(coord)
-                        if j != obj.ctrlpts_size_v - 1:
-                            line += col_sep
-                        else:
-                            line += "\n"
-                    fp.write(line)
-            else:
-                for pt in obj.ctrlpts:
-                    line = sep.join(str(c) for c in pt) + "\n"
-                    fp.write(line)
+            _export_txt(fp, obj, sep, col_sep, two_dimensional)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -198,21 +152,10 @@ def import_csv(file_name, **kwargs):
     # Try opening the file for reading
     try:
         with open(file_name, 'r') as fp:
-            # Initialize an empty list to store control points
-            ctrlpts = []
-
             # Skip header row
             next(fp)
-
-            # Start reading file
-            for line in fp:
-                # Remove whitespace
-                line = line.strip()
-                # Clean and convert the values
-                ctrlpts.append([float(c.strip()) for c in line.split(sep)])
-
-            # Return control points
-            return ctrlpts
+            # After skipping the header row, the file format becomes the same as the txt format
+            return _import_txt(fp, sep)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -220,7 +163,7 @@ def import_csv(file_name, **kwargs):
         raise
 
 
-def export_csv(obj, file_name, point_type='evalpts'):
+def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     """ Exports control points or evaluated points as a CSV file.
 
     :param obj: a curve or a surface object
@@ -243,6 +186,9 @@ def export_csv(obj, file_name, point_type='evalpts'):
         warnings.warn("Please choose a valid point type option")
         return
 
+    # File delimiters
+    sep = kwargs.get('separator', ",")
+
     # Prepare CSV header
     dim = len(points[0])
     header = "dim "
@@ -255,13 +201,8 @@ def export_csv(obj, file_name, point_type='evalpts'):
         with open(file_name, 'w') as fp:
             # Write header to the file
             fp.write(header)
-
-            # Loop through points
-            for pt in points:
-                # Fill coordinates
-                line = ", ".join(str(c) for c in pt) + "\n"
-                # Write line to file
-                fp.write(line)
+            # Write points
+            _export_txt(fp, obj, sep)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
@@ -530,6 +471,66 @@ def export_smesh(surf_in, file_name, **kwargs):
         _export_smesh_multi(surf_in, file_name)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
+
+
+def _import_txt(fp, sep, col_sep=";", two_dimensional=False):
+    # Initialize an empty list to store control points
+    ctrlpts = []
+
+    if two_dimensional:
+        # Start reading file
+        size_u = 0
+        size_v = 0
+        for line in fp:
+            # Remove whitespace
+            line = line.strip()
+            # Convert the string containing the coordinates into a list
+            control_point_row = line.split(col_sep)
+            # Clean and convert the values
+            size_v = 0
+            for cpr in control_point_row:
+                ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
+                size_v += 1
+            size_u += 1
+
+        # Return control points, size in u- and v-directions
+        return ctrlpts, size_u, size_v
+    else:
+        # Start reading file
+        for line in fp:
+            # Remove whitespace
+            line = line.strip()
+            # Clean and convert the values
+            ctrlpts.append([float(c.strip()) for c in line.split(sep)])
+
+        # Return control points
+        return ctrlpts
+
+
+def _export_txt(fp, obj, sep, col_sep=";", two_dimensional=False):
+    if two_dimensional:
+        for i in range(0, obj.ctrlpts_size_u):
+            line = ""
+            for j in range(0, obj.ctrlpts_size_v):
+                for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
+                    if idx:  # check for the first element
+                        line += sep
+                    line += str(coord)
+                if j != obj.ctrlpts_size_v - 1:
+                    line += col_sep
+                else:
+                    line += "\n"
+            fp.write(line)
+    else:
+        # B-spline or NURBS?
+        try:
+            ctrlpts = obj.ctrlptsw
+        except AttributeError:
+            ctrlpts = obj.ctrlpts
+        # Loop through points
+        for pt in ctrlpts:
+            line = sep.join(str(c) for c in pt) + "\n"
+            fp.write(line)
 
 
 def _export_obj_single(surface, **kwargs):
