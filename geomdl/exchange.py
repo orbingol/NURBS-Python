@@ -10,6 +10,7 @@
 import os
 import warnings
 import struct
+import json
 from . import Abstract
 from . import BSpline
 from . import NURBS
@@ -352,6 +353,38 @@ def export_yaml(obj, file_name):
     except ImportError as e:
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
         raise e
+
+    # Export data as a file
+    _export_dict_all(obj, file_name, callback)
+
+
+def import_json(file_name):
+    """ Imports curves and surfaces from files in JSON format.
+
+    :param file_name: name of the input file
+    :type file_name: str
+    :return: a list of NURBS curve(s) or surface(s)
+    :rtype: list
+    :raises IOError: an error occurred reading the file
+    """
+    def callback(fp):
+        return json.load(fp)
+
+    # Import data
+    return _import_dict_all(file_name, callback)
+
+
+def export_json(obj, file_name):
+    """ Exports curves and surfaces in JSON format.
+
+    :param obj: input curve(s) or surface(s)
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
+    """
+    def callback(fp, data):
+        fp.write(json.dumps(data))
 
     # Export data as a file
     _export_dict_all(obj, file_name, callback)
