@@ -15,27 +15,24 @@ implementations of advanced computation algorithms in an extensible way.
 It comes with on-the-fly shape visualization options, knot vector and surface grid generators, and more.
 
 NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
-steps during installation. It is tested with Python v2.7.x, Python v3.4.x and later versions.
+steps during installation. It is tested with Python v2.7.x, Python v3.4.x and later.
 
-Branch Information
-------------------
-
-The latest branch information can be found on the `wiki page <https://github.com/orbingol/NURBS-Python/wiki>`_.
-
-Citing NURBS-Python
--------------------
+Citing
+------
 
 The citation options (BiBTeX entry, DOI name and others) can be found on the
 `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation.
 
-NURBS-Python Usage Examples and Documentation
----------------------------------------------
+Examples, Documentation and Extras
+----------------------------------
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
 * **Documentation**: http://nurbs-python.readthedocs.io/
+* **Wiki**: https://github.com/orbingol/NURBS-Python/wiki
+* **Command line application**: https://github.com/orbingol/geomdl-cli
 
-Using NURBS-Python
-==================
+Using NURBS-Python (geomdl)
+===========================
 
 Installation and Testing
 ------------------------
@@ -59,7 +56,7 @@ Author
 License
 =======
 
-NURBS-Python is a free and open-source project and it is licensed under the `MIT License <LICENSE>`_.
+NURBS-Python (geomdl) is a free and open-source software and it is licensed under the `MIT License <LICENSE>`_.
 
 Acknowledgments
 ===============
