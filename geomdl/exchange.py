@@ -401,7 +401,7 @@ def export_json(obj, file_name):
     :raises IOError: an error occurred writing the file
     """
     def callback(fp, data):
-        fp.write(json.dumps(data))
+        fp.write(json.dumps(data, indent=4))
 
     # Export data as a file
     _export_dict_all(obj, file_name, callback)
