@@ -1181,7 +1181,7 @@ def _prepare_import_dict_curve(data):
     shape = NURBS.Curve()
     shape.degree = data['degree']
     shape.ctrlpts = data['control_points']['points']
-    if 'weights' in data:
+    if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
     shape.knotvector = data['knotvector']
     if 'delta' in data:
@@ -1215,7 +1215,7 @@ def _prepare_import_dict_surface(data):
     shape.ctrlpts_size_u = data['size_u']
     shape.ctrlpts_size_v = data['size_v']
     shape.ctrlpts = data['control_points']['points']
-    if 'weights' in data:
+    if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
     shape.knotvector_u = data['knotvector_u']
     shape.knotvector_v = data['knotvector_v']
