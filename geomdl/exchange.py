@@ -252,7 +252,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
         raise
 
 
-def import_cfg(file_name):
+def import_cfg(file_name, **kwargs):
     """ Imports curves and surfaces from files in libconfig format.
 
     .. note::
@@ -275,8 +275,11 @@ def import_cfg(file_name):
         print("Please install 'libconf' module to use libconfig format: pip install libconf")
         return
 
+    # Get keyword arguments
+    delta = kwargs.get('delta', -1.0)
+
     # Import data
-    return _import_dict_all(file_name, callback)
+    return _import_dict_all(file_name, delta, callback)
 
 
 def export_cfg(obj, file_name):
@@ -307,7 +310,7 @@ def export_cfg(obj, file_name):
     _export_dict_all(obj, file_name, callback)
 
 
-def import_yaml(file_name):
+def import_yaml(file_name, **kwargs):
     """ Imports curves and surfaces from files in YAML format.
 
     .. note::
@@ -331,8 +334,11 @@ def import_yaml(file_name):
         print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
         return
 
+    # Get keyword arguments
+    delta = kwargs.get('delta', -1.0)
+
     # Import data
-    return _import_dict_all(file_name, callback)
+    return _import_dict_all(file_name, delta, callback)
 
 
 def export_yaml(obj, file_name):
@@ -366,7 +372,7 @@ def export_yaml(obj, file_name):
     _export_dict_all(obj, file_name, callback)
 
 
-def import_json(file_name):
+def import_json(file_name, **kwargs):
     """ Imports curves and surfaces from files in JSON format.
 
     :param file_name: name of the input file
@@ -378,8 +384,11 @@ def import_json(file_name):
     def callback(fp):
         return json.load(fp)
 
+    # Get keyword arguments
+    delta = kwargs.get('delta', -1.0)
+
     # Import data
-    return _import_dict_all(file_name, callback)
+    return _import_dict_all(file_name, delta, callback)
 
 
 def export_json(obj, file_name):
@@ -1247,7 +1256,7 @@ def _prepare_export_dict_surface(obj):
     return data
 
 
-def _import_dict_all(file_name, callback):
+def _import_dict_all(file_name, delta, callback):
     type_map = {'curve': _prepare_import_dict_curve, 'surface': _prepare_import_dict_surface}
 
     # Try to read the input file
@@ -1260,6 +1269,8 @@ def _import_dict_all(file_name, callback):
             ret_list = []
             for data in imported_data['shape']['data']:
                 temp = type_map[imported_data['shape']['type']](data)
+                if 0.0 < delta < 1.0:
+                    temp.delta = delta
                 ret_list.append(temp)
 
             # Return imported data
