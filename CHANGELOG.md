@@ -1,5 +1,13 @@
 # NURBS-Python Changelog
 
+## 4.4.0 released on 2018-11-10
+
+* Added and updated import and export methods. Unfortunately, this update breaks .cfg exports prior to v4.4.x; therefore, you might need to re-export your .cfg exports.
+  * `export_cfg`, `import_cfg`
+  * `export_yaml`, `import_yaml`
+  * `export_json`, `import_json`
+* `exchange` module code optimizations
+
 ## 4.3.8 released on 2018-11-08
 
 * Fixed a bug in bounding box computation
