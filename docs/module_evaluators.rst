@@ -6,8 +6,8 @@ i.e. the algorithms that are used to evaluate the curve & surface, take derivati
 Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
 or improve existing ones.
 
-Abstract Evaluators
-===================
+Abstract Base Class
+=============
 
 This class provides an abstract base for all evaluator classes.
 
@@ -16,6 +16,9 @@ This class provides an abstract base for all evaluator classes.
     :undoc-members:
     :inherited-members:
     :show-inheritance:
+
+Abstract Custom Classes
+=======================
 
 The following classes provide curve and surface customizations for the abstract base.
 

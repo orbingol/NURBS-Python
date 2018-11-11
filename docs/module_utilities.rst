@@ -15,7 +15,6 @@ manipulation have ``point_`` prefix and the ones related to vectors have ``vecto
 
 .. automodule:: geomdl.utilities
     :members:
-    :exclude-members: init_var
     :undoc-members:
 
 

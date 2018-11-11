@@ -11,6 +11,9 @@ This module provides the following geometric and topological entities:
 * :py:class:`.Face`
 * :py:class:`.Body`
 
+Class Reference
+===============
+
 .. automodule:: geomdl.elements
     :members:
     :undoc-members:

@@ -8,6 +8,9 @@ This module provides common geometric operations for curves and surfaces. It inc
 * Hodograph curve and surface computations
 * Translation
 
+Function Reference
+==================
+
 .. automodule:: geomdl.operations
     :members:
     :undoc-members:
