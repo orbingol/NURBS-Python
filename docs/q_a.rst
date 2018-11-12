@@ -55,6 +55,12 @@ NURBS-Python is tested on Python versions 2.7.x and 3.4.x+. The core library doe
 or require any compilation steps; therefore, you can run it on a plain python installation as well as on a distribution,
 such as Anaconda (or Miniconda).
 
+Help and Support
+================
+
+Please join the `email list <https://groups.google.com/forum/#!forum/nurbs-python>`_ on Google Groups. It is open for
+NURBS-Python users to ask questions, request new features and submit any other comments you may have.
+
 Issues and Reporting
 ====================
 
