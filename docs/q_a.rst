@@ -30,6 +30,24 @@ in Python natively with no external dependencies, it is possible to use this lib
 programming language is supported or integrate into embedded systems/distributions. Using native implementation
 approach also allows users to debug and extend the library in a convenient way.
 
+Who uses NURBS-Python?
+======================
+
+Please `e-mail me <https://onurraufbingol.com/#contact>`_ your project or research group name and website and I will
+add you to the list.
+
+Why two packages on PyPI?
+=========================
+
+Prior to NURBS-Python v4.0.0, the PyPI project name was `NURBS-Python <https://pypi.org/project/NURBS-Python/>`_. The
+latest version of this package is v3.9.0 which is an alias for the `geomdl <https://pypi.org/project/geomdl/>`_ package.
+To get the latest features and bug fixes, please use `geomdl <https://pypi.org/project/geomdl/>`_ package and update
+whenever a new version is released. The simplest way to check if you are using the latest version is
+
+.. code-block:: console
+
+    $ pip list --outdated
+
 Minimum Requirements
 ====================
 
