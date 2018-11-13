@@ -46,15 +46,15 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
                 # Implement this function
                 pass
 
-            def evaluate_single(self, u):
+            def evaluate_single(self, uv):
                 # Implement this function
                 pass
 
-            def evaluate_list(self, u_list):
+            def evaluate_list(self, uv_list):
                 # Implement this function
                 pass
 
-            def derivatives(self, u, order, **kwargs):
+            def derivatives(self, u, v, order, **kwargs):
                 # Implement this function
                 pass
 
@@ -558,7 +558,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         class MySurfaceClass(Abstract.Surface):
             def __init__(self, **kwargs):
-            super(MyCurveClass, self).__init__(**kwargs)
+            super(MySurfaceClass, self).__init__(**kwargs)
             # Add your constructor code here
 
             def evaluate(self, **kwargs):
