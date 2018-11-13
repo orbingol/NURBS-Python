@@ -18,8 +18,8 @@ text files. The details of the file format for curves and surfaces is described 
 Comma-Separated (CSV)
 =====================
 
-You may use :py:func:`.export_csv()` function to save control points and/or evaluated points as a CSV file. This
-function works with both curves and surfaces.
+You may use :py:func:`.export_csv()` and :py:func:`.import_csv()` functions to save/load control points and/or evaluated
+points as a CSV file. This function works with both curves and surfaces.
 
 VTK (Legacy) Format
 ===================
