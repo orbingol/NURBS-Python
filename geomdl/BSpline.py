@@ -23,6 +23,30 @@ class Curve(Abstract.Curve):
     Notes:
         * Please see the :py:class:`.Abstract.Curve()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
+
+    The following code segment illustrates the usage of Curve class:
+
+    .. code-block:: python
+
+        from geomdl import BSpline
+
+        # Create a 3-dimensional B-spline Curve
+        curve = BSpline.Curve()
+
+        # Set degree
+        curve.degree = 3
+
+        # Set knot points
+        curve.ctrlpts = [[10, 5, 10], [10, 20, -30], [40, 10, 25], [-10, 5, 0]]
+
+        # Set knot vector
+        curve.knotvector = [0, 0, 0, 0, 1, 1, 1, 1]
+
+        # Set evaluation delta (control the number of curve points)
+        curve.delta = 0.05
+
+        # Get curve points (the curve will be automatically evaluated)
+        curve_points = curve.evalpts
     """
 
     def __init__(self, **kwargs):
@@ -346,6 +370,36 @@ class Surface(Abstract.Surface):
     Notes:
         * Please see the :py:class:`.Abstract.Surface()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
+
+    The following code segment illustrates the usage of Surface class:
+
+    .. code-block:: python
+
+        from geomdl import BSpline
+
+        # Create a BSpline surface instance (Bezier surface)
+        surf = BSpline.Surface()
+
+        # Set degrees
+        surf.degree_u = 3
+        surf.degree_v = 2
+
+        # Set control points
+        control_points = [[0, 0, 0], [0, 4, 0], [0, 8, -3],
+                          [2, 0, 6], [2, 4, 0], [2, 8, 0],
+                          [4, 0, 0], [4, 4, 0], [4, 8, 3],
+                          [6, 0, 0], [6, 4, -3], [6, 8, 0]]
+        surf.set_ctrlpts(control_points, 4, 3)
+
+        # Set knot vectors
+        surf.knotvector_u = [0, 0, 0, 0, 1, 1, 1, 1]
+        surf.knotvector_v = [0, 0, 0, 1, 1, 1]
+
+        # Set evaluation delta (control the number of surface points)
+        surf.delta = 0.05
+
+        # Get surface points (the surface will be automatically evaluated)
+        surface_points = surf.evalpts
     """
 
     def __init__(self, **kwargs):
