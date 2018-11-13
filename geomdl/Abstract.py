@@ -23,13 +23,42 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     The abstract base classes in this module are implemented using a feature called Python Properties. This feature
     allows users to use some of the functions as if they are class fields. You can also consider properties as a
-    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
     these properties.
 
     The Curve ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func`` keyword
     as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the FindSpan
     function in the ``helpers`` module.
     You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+
+    Code segment below illustrates a possible implementation of Curve abstract base class:
+
+    .. code-block:: python
+
+        from geomdl import Abstract
+
+        class MyCurveClass(Abstract.Curve):
+            def __init__(self, **kwargs):
+            super(MyCurveClass, self).__init__(**kwargs)
+            # Add your constructor code here
+
+            def evaluate(self, **kwargs):
+                # Implement this function
+                pass
+
+            def evaluate_single(self, u):
+                # Implement this function
+                pass
+
+            def evaluate_list(self, u_list):
+                # Implement this function
+                pass
+
+            def derivatives(self, u, order, **kwargs):
+                # Implement this function
+                pass
+
+    The properties and functions defined in the abstract base class will be automatically available in the subclasses.
     """
 
     def __init__(self, **kwargs):
@@ -513,13 +542,42 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     The abstract base classes in this module are implemented using a feature called Python Properties. This feature
     allows users to use some of the functions as if they are class fields. You can also consider properties as a
-    Pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
     these properties.
 
     The Surface ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func``
     keyword as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the
     FindSpan function in the ``helpers`` module.
     You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+
+    Code segment below illustrates a possible implementation of Surface abstract base class:
+
+    .. code-block:: python
+
+        from geomdl import Abstract
+
+        class MySurfaceClass(Abstract.Surface):
+            def __init__(self, **kwargs):
+            super(MyCurveClass, self).__init__(**kwargs)
+            # Add your constructor code here
+
+            def evaluate(self, **kwargs):
+                # Implement this function
+                pass
+
+            def evaluate_single(self, u):
+                # Implement this function
+                pass
+
+            def evaluate_list(self, u_list):
+                # Implement this function
+                pass
+
+            def derivatives(self, u, order, **kwargs):
+                # Implement this function
+                pass
+
+    The properties and functions defined in the abstract base class will be automatically available in the subclasses.
     """
 
     def __init__(self, **kwargs):
