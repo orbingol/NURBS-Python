@@ -69,6 +69,9 @@ class MultiCurve(Abstract.Multi):
 
             \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the delta value
         :setter: Sets the delta value
         :type: float
@@ -93,6 +96,9 @@ class MultiCurve(Abstract.Multi):
         .. math::
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -218,6 +224,9 @@ class MultiSurface(Abstract.Multi):
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets sample size for the u-direction
         :setter: Sets sample size for the u-direction
         :type: int
@@ -235,6 +244,9 @@ class MultiSurface(Abstract.Multi):
         """ Sample size for the v-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size for the v-direction
         :setter: Sets sample size for the v-direction
@@ -260,6 +272,9 @@ class MultiSurface(Abstract.Multi):
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same sample size value for both u- and v-directions
         :type: int
@@ -284,6 +299,9 @@ class MultiSurface(Abstract.Multi):
         Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the delta value for the u-direction
         :setter: Sets the delta value for the u-direction
         :type: float
@@ -306,6 +324,9 @@ class MultiSurface(Abstract.Multi):
 
         Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the delta value for the v-direction
         :setter: Sets the delta value for the v-direction
@@ -335,6 +356,9 @@ class MultiSurface(Abstract.Multi):
         .. math::
 
             \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same delta value for both u- and v-directions

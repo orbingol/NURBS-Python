@@ -1631,6 +1631,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
     def dimension(self):
         """ Shape dimension.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the dimension of the shape
         """
         if self._elements:
@@ -1657,6 +1660,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
                     line = ", ".join([str(p) for p in pt])
                     print(line)
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the evaluated points of all contained shapes
         """
         ret = []
@@ -1670,6 +1676,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
     def bbox(self):
         """ Bounding box.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the bounding box of all contained shapes
         """
         all_box = []
@@ -1680,6 +1689,9 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def vis(self):
         """ Visualization component.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component
@@ -1714,7 +1726,12 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
     # Runs visualization component to render the surface
     @abc.abstractmethod
     def render(self):
-        """ Abstract method for rendering plots using the visualization component. """
+        """ Renders plots using the visualization component.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
 
