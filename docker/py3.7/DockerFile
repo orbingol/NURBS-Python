@@ -1,0 +1,33 @@
+# Use Python v3.7 debian-slim Docker image
+FROM python:3.7-slim
+
+# Create the working directory
+RUN mkdir /nurbs
+WORKDIR /nurbs
+
+# Update operating system
+RUN apt-get update && apt-get install -y gcc git && apt-get clean
+
+# Add required python packages
+RUN pip install numpy matplotlib plotly pytest cython
+
+# Download geomdl
+RUN git clone https://github.com/orbingol/NURBS-Python.git library
+
+# Download geomdl examples
+RUN git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
+
+# Change working directory
+WORKDIR /nurbs/library
+
+# Install geomdl
+RUN python setup.py develop && python setup.py build_ext --use-cython --inplace && python
+
+# Run python tests
+RUN pytest
+
+# Test Cython build
+RUN python -c "import geomdl_core"
+
+# Change working directory to "nurbs"
+WORKDIR /nurbs
