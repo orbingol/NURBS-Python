@@ -47,6 +47,21 @@ class Curve(Abstract.Curve):
 
         # Get curve points (the curve will be automatically evaluated)
         curve_points = curve.evalpts
+
+    This class provides the following properties:
+
+    * order
+    * degree
+    * knotvector
+    * ctrlpts
+    * delta
+    * sample_size
+    * bbox
+    * vis
+    * name
+    * dimension
+    * evaluator
+    * rational
     """
 
     def __init__(self, **kwargs):
@@ -58,6 +73,9 @@ class Curve(Abstract.Curve):
     @property
     def ctrlpts(self):
         """ Control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -77,6 +95,9 @@ class Curve(Abstract.Curve):
         """ Knot vector.
 
         The knot vector is always normalized to [0,1] domain.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -400,6 +421,33 @@ class Surface(Abstract.Surface):
 
         # Get surface points (the surface will be automatically evaluated)
         surface_points = surf.evalpts
+
+    This class provides the following properties:
+
+    * order_u
+    * order_v
+    * degree_v
+    * degree_v
+    * knotvector_u
+    * knotvector_v
+    * ctrlpts
+    * ctrlpts_size_u
+    * ctrlpts_size_v
+    * ctrlpts2d
+    * delta
+    * delta_u
+    * delta_v
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+    * bbox
+    * name
+    * dimension
+    * vis
+    * evaluator
+    * tessellator
+    * rational
+    * trims
     """
 
     def __init__(self, **kwargs):
@@ -417,6 +465,9 @@ class Surface(Abstract.Surface):
 
             The v index varies first. That is, a row of v control points for the first u value is found first.
             Then, the row of v control points for the next u value.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -485,6 +536,9 @@ class Surface(Abstract.Surface):
             Please note that the setter doesn't check for inconsistencies and using the setter is not recommended.
             Instead of the setter property, please use :func:`.set_ctrlpts()` function.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the control points as a 2-dimensional array in [u][v] format
         :setter: Sets the control points as a 2-dimensional array in [u][v] format
         :type: list
@@ -533,6 +587,9 @@ class Surface(Abstract.Surface):
 
         The knot vector is always normalized to [0,1] domain.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the knot vector for u-direction
         :setter: Sets the knot vector for u-direction
         :type: list
@@ -552,6 +609,9 @@ class Surface(Abstract.Surface):
         """ Knot vector for v-direction.
 
         The knot vector is always normalized to [0,1] domain.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the knot vector for v-direction
         :setter: Sets the knot vector for v-direction

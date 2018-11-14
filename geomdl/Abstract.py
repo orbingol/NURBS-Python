@@ -120,8 +120,12 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         Descriptor field allows users to assign an identification to the curve object. The identification can be a
         string or a number.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the descriptor
         :setter: Sets the descriptor
+        :type: str or int
         """
         return self._name
 
@@ -135,6 +139,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the current Evaluator instance
         :setter: Sets the evaluator
@@ -150,7 +157,14 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def rational(self):
-        """ Returns True if the curve is rational. """
+        """ True if the curve is rational.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Returns True is the curve is rational (NURBS)
+        :type: bool
+        """
         return self._rational
 
     @property
@@ -158,6 +172,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         """ Dimension of the curve.
 
         Dimension will be automatically estimated from the first element of the control points array.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
         :type: integer
@@ -170,7 +187,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def order(self):
         """ Curve order.
 
-        Defined as order = degree + 1
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the curve order
         :setter: Sets the curve order
@@ -185,6 +205,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def degree(self):
         """ Curve degree.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the curve degree
         :setter: Sets the curve degree
@@ -207,6 +230,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def knotvector(self):
         """ Knot vector.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -232,6 +258,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def ctrlpts(self):
         """ Control points.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the control points
         :setter: Sets the control points
         """
@@ -244,6 +273,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def evalpts(self):
         """ Evaluated curve points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the coordinates of the evaluated points
         """
@@ -263,6 +295,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         .. math::
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size
         :setter: Sets sample size
@@ -300,6 +335,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
             \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the delta value
         :setter: Sets the delta value
         :type: float
@@ -322,9 +360,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def vis(self):
         """ Visualization component.
 
-        .. note::
-
-            The visualization component is completely optional to use.
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component
@@ -343,6 +380,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         """ Bounding box.
 
         Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets bounding box
         :type: tuple
@@ -483,7 +523,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the curve. """
+        """ Evaluates the curve.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
 
@@ -493,6 +539,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate_single(self, u):
         """ Evaluates the curve at the given parameter.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
 
         :param u: parameter
         """
@@ -506,6 +556,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def evaluate_list(self, u_list):
         """ Evaluates the curve for an input range of parameters.
 
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
         :param u_list: array of parameters
         """
         # Check all parameters are set before the evaluation
@@ -517,6 +571,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
         """ Evaluates the derivatives of the curve at parameter u.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
 
         :param u: parameter value
         :type u: float
@@ -650,8 +708,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Descriptor field allows users to assign an identification to the surface object. The identification can be a
         string or a number.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the descriptor
         :setter: Sets the descriptor
+        :type: str or int
         """
         return self._name
 
@@ -665,6 +727,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Prints the name of the evaluator and returns the current Evaluator instance
         :setter: Sets the evaluator
@@ -680,7 +745,14 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def rational(self):
-        """ Returns True if the surface is rational. """
+        """ True if the surface is rational.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Returns True if the surface is rational (NURBS)
+        :type: bool
+        """
         return self._rational
 
     @property
@@ -688,6 +760,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         """ Dimension of the surface.
 
         Dimension will be automatically estimated from the first element of the control points array.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the dimension of the surface
         :type: integer
@@ -700,7 +775,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def order_u(self):
         """ Surface order for u-direction.
 
-        Follows the following equality: order = degree + 1
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the surface order for u-direction
         :setter: Sets the surface order for u-direction
@@ -716,7 +794,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def order_v(self):
         """ Surface order for v-direction.
 
-        Follows the following equality: order = degree + 1
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the surface order for v-direction
         :setter: Sets the surface order for v-direction
@@ -731,6 +812,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def degree_u(self):
         """ Surface degree for u-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the surface degree for u-direction
         :setter: Sets the surface degree for u-direction
@@ -752,6 +836,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def degree_v(self):
         """ Surface degree for v-direction.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the surface degree for v-direction
         :setter: Sets the surface degree for v-direction
         :type: integer
@@ -771,6 +858,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def knotvector_u(self):
         """ Knot vector for u-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the knot vector for u-direction
         :setter: Sets the knot vector for u-direction
@@ -796,6 +886,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def knotvector_v(self):
         """ Knot vector for v-direction.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the knot vector for v-direction
         :setter: Sets the knot vector for v-direction
         """
@@ -818,7 +911,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts(self):
-        """ 1-D control points.
+        """ 1-dimensional control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the control points
         :setter: Sets the control points
@@ -831,7 +927,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts2d(self):
-        """ 2-D control points.
+        """ 2-dimensional control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the control points as a 2-dimensional array in [u][v] format
         :setter: Sets the control points as a 2-dimensional array in [u][v] format
@@ -845,6 +944,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def ctrlpts_size_u(self):
         """ Size of the control points array on the u-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets number of control points on the u-direction
         :setter: Sets number of control points on the u-direction
@@ -865,6 +967,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def ctrlpts_size_v(self):
         """ Size of the control points array on the v-direction.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets number of control points on the v-direction
         :setter: Sets number of control points on the v-direction
         """
@@ -884,6 +989,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def evalpts(self):
         """ Evaluated surface points.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the coordinates of the evaluated points
         """
         if self._surface_points is None or len(self._surface_points) == 0:
@@ -896,6 +1004,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         """ Sample size for the u-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size for the u-direction
         :setter: Sets sample size for the u-direction
@@ -924,6 +1035,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         """ Sample size for the v-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size for the v-direction
         :setter: Sets sample size for the v-direction
@@ -958,6 +1072,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         .. math::
 
             \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same sample size value for both u- and v-directions
@@ -995,6 +1112,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the delta value for the u-direction
         :setter: Sets the delta value for the u-direction
         :type: float
@@ -1023,6 +1143,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the delta value for the v-direction
         :setter: Sets the delta value for the v-direction
@@ -1059,6 +1182,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
             \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
         :setter: Sets the same delta value for both u- and v-directions
         :type: float
@@ -1083,6 +1209,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def vis(self):
         """ Visualization component.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the visualization component
         :setter: Sets the visualization component
         """
@@ -1099,6 +1228,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @property
     def tessellator(self):
         """ Tessellation component.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the tessellation component
         :setter: Sets the tessellation component
@@ -1119,6 +1251,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets bounding box
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
@@ -1132,6 +1267,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         Trim curves are introduced to the surfaces on the parametric space. It should be an array (or list, tuple, etc.)
         and they are integrated to the existing visualization system.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the array of trim curves
         :setter: Sets the array of trim curves
@@ -1368,7 +1506,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the surface. """
+        """ Evaluates the surface.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        """
         # Check all parameters are set before the evaluation
         self._check_variables()
 
@@ -1378,6 +1522,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def evaluate_single(self, uv):
         """ Evaluates the surface at the given (u,v) parameter.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
 
         :param uv: parameter pair (u, v)
         """
@@ -1391,6 +1539,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def evaluate_list(self, uv_list):
         """ Evaluates the surface for an input range of (u,v) parameter pairs.
 
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
         :param uv_list: array of parameter pairs (u, v)
         """
         # Check all parameters are set before the evaluation
@@ -1402,6 +1554,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
         """ Evaluates the derivatives of the surface at parameter (u,v).
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
 
         :param u: parameter on the u-direction
         :type u: float

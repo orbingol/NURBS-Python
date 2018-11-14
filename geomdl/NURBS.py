@@ -30,6 +30,23 @@ class Curve(BSpline.Curve):
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     Please see ``curve2d\ex_curve04.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS curve example.
+
+    This class provides the following properties:
+
+    * order
+    * degree
+    * knotvector
+    * ctrlptsw
+    * ctrlpts
+    * weights
+    * delta
+    * sample_size
+    * bbox
+    * vis
+    * name
+    * dimension
+    * evaluator
+    * rational
     """
 
     def __init__(self, **kwargs):
@@ -56,6 +73,9 @@ class Curve(BSpline.Curve):
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the weighted control points
         :setter: Sets the weighted control points
         """
@@ -67,7 +87,10 @@ class Curve(BSpline.Curve):
 
     @property
     def ctrlpts(self):
-        """ Unweighted control points (P).
+        """ Control points (P).
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
         :setter: Sets unweighted control points
@@ -97,6 +120,9 @@ class Curve(BSpline.Curve):
     @property
     def weights(self):
         """ Weights vector.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
@@ -160,6 +186,35 @@ class Surface(BSpline.Surface):
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     Please see ``surface\ex_surface03.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS surface example.
+
+    This class provides the following properties:
+
+    * order_u
+    * order_v
+    * degree_v
+    * degree_v
+    * knotvector_u
+    * knotvector_v
+    * ctrlptsw
+    * ctrlpts
+    * weights
+    * ctrlpts_size_u
+    * ctrlpts_size_v
+    * ctrlpts2d
+    * delta
+    * delta_u
+    * delta_v
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+    * bbox
+    * name
+    * dimension
+    * vis
+    * evaluator
+    * tessellator
+    * rational
+    * trims
     """
 
     def __init__(self, **kwargs):
