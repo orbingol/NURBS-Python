@@ -25,12 +25,6 @@ class Curve(BSpline.Curve):
 
     You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
 
-    Notes:
-        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
-        * This class sets the *FindSpan* implementation to Linear Search by default.
-
-    Please see ``curve2d\ex_curve04.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS curve example.
-
     This class provides the following properties:
 
     * order
@@ -47,6 +41,12 @@ class Curve(BSpline.Curve):
     * dimension
     * evaluator
     * rational
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
+
+    Please see ``curve2d\ex_curve04.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS curve example.
     """
 
     def __init__(self, **kwargs):
@@ -181,12 +181,6 @@ class Surface(BSpline.Surface):
 
     You may also use ``set_ctrlpts()`` function which is designed to work with all types of control points.
 
-    Notes:
-        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
-        * This class sets the *FindSpan* implementation to Linear Search by default.
-
-    Please see ``surface\ex_surface03.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS surface example.
-
     This class provides the following properties:
 
     * order_u
@@ -215,6 +209,12 @@ class Surface(BSpline.Surface):
     * tessellator
     * rational
     * trims
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
+
+    Please see ``surface\ex_surface03.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS surface example.
     """
 
     def __init__(self, **kwargs):

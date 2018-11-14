@@ -18,7 +18,22 @@ from . import tessellate
 
 
 class Curve(Abstract.Curve):
-    """ Data storage and evaluation class for n-variate B-Spline (non-rational) curves.
+    """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
+
+    This class provides the following properties:
+
+    * order
+    * degree
+    * knotvector
+    * ctrlpts
+    * delta
+    * sample_size
+    * bbox
+    * vis
+    * name
+    * dimension
+    * evaluator
+    * rational
 
     Notes:
         * Please see the :py:class:`.Abstract.Curve()` documentation for details.
@@ -47,21 +62,6 @@ class Curve(Abstract.Curve):
 
         # Get curve points (the curve will be automatically evaluated)
         curve_points = curve.evalpts
-
-    This class provides the following properties:
-
-    * order
-    * degree
-    * knotvector
-    * ctrlpts
-    * delta
-    * sample_size
-    * bbox
-    * vis
-    * name
-    * dimension
-    * evaluator
-    * rational
     """
 
     def __init__(self, **kwargs):
@@ -386,7 +386,34 @@ class Curve(Abstract.Curve):
 
 
 class Surface(Abstract.Surface):
-    """ Data storage and evaluation class for B-Spline (non-rational) surfaces.
+    """ Data storage and evaluation class for B-spline (non-rational) surfaces.
+
+    This class provides the following properties:
+
+    * order_u
+    * order_v
+    * degree_v
+    * degree_v
+    * knotvector_u
+    * knotvector_v
+    * ctrlpts
+    * ctrlpts_size_u
+    * ctrlpts_size_v
+    * ctrlpts2d
+    * delta
+    * delta_u
+    * delta_v
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+    * bbox
+    * name
+    * dimension
+    * vis
+    * evaluator
+    * tessellator
+    * rational
+    * trims
 
     Notes:
         * Please see the :py:class:`.Abstract.Surface()` documentation for details.
@@ -421,33 +448,6 @@ class Surface(Abstract.Surface):
 
         # Get surface points (the surface will be automatically evaluated)
         surface_points = surf.evalpts
-
-    This class provides the following properties:
-
-    * order_u
-    * order_v
-    * degree_v
-    * degree_v
-    * knotvector_u
-    * knotvector_v
-    * ctrlpts
-    * ctrlpts_size_u
-    * ctrlpts_size_v
-    * ctrlpts2d
-    * delta
-    * delta_u
-    * delta_v
-    * sample_size
-    * sample_size_u
-    * sample_size_v
-    * bbox
-    * name
-    * dimension
-    * vis
-    * evaluator
-    * tessellator
-    * rational
-    * trims
     """
 
     def __init__(self, **kwargs):
