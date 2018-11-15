@@ -1,5 +1,11 @@
 # NURBS-Python Changelog
 
+## 4.4.1 released on 2018-11-15
+
+* Updated Cython-compiled module location for more convenient binary package generation
+* Major documentation update with more examples and API descriptions
+* Added DockerFiles
+
 ## 4.4.0 released on 2018-11-10
 
 * Added and updated import and export methods. Unfortunately, this update breaks .cfg exports prior to v4.4.x; therefore, you might need to re-export your .cfg exports.
