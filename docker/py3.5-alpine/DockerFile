@@ -1,0 +1,28 @@
+# geomdl DockerFile for Python v3.5
+FROM python:3.5-alpine
+
+USER root
+WORKDIR /nurbs
+
+RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash \
+    && pip install --no-cache-dir numpy matplotlib plotly pytest cython tornado \
+    && git clone https://github.com/orbingol/NURBS-Python.git library \
+    && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
+
+WORKDIR /nurbs/library
+
+RUN python setup.py develop \
+    && python setup.py build_ext --use-cython --inplace \
+    && python setup.py clean --all \
+    && python -c "import geomdl" \
+    && python -c "import geomdl_core"
+
+WORKDIR /root
+
+COPY matplotlibrc .config/matplotlib/matplotlibrc
+COPY README.md .
+RUN echo "cat README.md" >> .bashrc
+
+ENTRYPOINT ["/bin/bash", "-i"]
+
+EXPOSE 8000
