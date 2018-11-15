@@ -7,13 +7,13 @@ WORKDIR /nurbs
 RUN apt-get update \
     && apt-get install -y gcc git \
     && apt-get clean \
-    && pip install --no-cache-dir numpy matplotlib plotly pytest cython tornado \
     && git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
 
 WORKDIR /nurbs/library
 
-RUN python setup.py develop \
+RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir pytest tornado \
+    && python setup.py develop \
     && python setup.py build_ext --use-cython --inplace \
     && python setup.py clean --all \
     && pytest \
