@@ -1,4 +1,5 @@
 six>=1.9.0
 enum34>=1.16; python_version < '3.4'
+cython
 matplotlib
 plotly
