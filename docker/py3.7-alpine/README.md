@@ -1,4 +1,4 @@
-# geomdl py3.6-alpine image
+# geomdl py3.7-alpine image
 
 Welcome to geomdl, a pure Python B-spline and NURBS library!
 
