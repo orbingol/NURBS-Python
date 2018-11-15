@@ -4,8 +4,9 @@ FROM python:3.7-alpine
 USER root
 WORKDIR /nurbs
 
-RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash \
-    && git clone https://github.com/orbingol/NURBS-Python.git library \
+RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash
+
+RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
     && git clone https://github.com/orbingol/geomdl-cli.git app
 

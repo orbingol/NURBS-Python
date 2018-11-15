@@ -4,8 +4,9 @@ FROM python:3.5-alpine
 USER root
 WORKDIR /nurbs
 
-RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash \
-    && git clone https://github.com/orbingol/NURBS-Python.git library \
+RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash
+
+RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
     && git clone https://github.com/orbingol/geomdl-cli.git app
 
@@ -24,13 +25,6 @@ WORKDIR /nurbs/app
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install --no-cache-dir . \
     && python -c "import geomdl.cli"
-
-WORKDIR /nurbs/app
-
-RUN pip install --no-cache-dir -r requirements.txt \
-    && python setup.py install \
-    && python setup.py clean --all \
-    && geomdl-cli help
 
 WORKDIR /root
 
