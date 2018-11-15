@@ -25,6 +25,9 @@ USER nurbs
 WORKDIR /home/nurbs
 
 COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
+COPY --chown=nurbs:nurbs README.md .
+
+RUN echo "cat README.md" >> .bashrc
 
 ENTRYPOINT ["/bin/bash", "-i"]
 
