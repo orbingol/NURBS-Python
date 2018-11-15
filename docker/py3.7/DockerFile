@@ -7,7 +7,7 @@ WORKDIR /nurbs
 RUN apt-get update \
     && apt-get install -y gcc git \
     && apt-get clean \
-    && pip install numpy matplotlib plotly pytest cython tornado \
+    && pip install --no-cache-dir numpy matplotlib plotly pytest cython tornado \
     && git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
 
