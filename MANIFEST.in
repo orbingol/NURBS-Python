@@ -1,3 +1,4 @@
 include LICENSE
-include tests/*
 include DESCRIPTION.rst
+include tests/*
+include requirements.txt
