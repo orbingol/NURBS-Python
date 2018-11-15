@@ -1,4 +1,4 @@
 backend: webagg
-webadd.port: 8000
+webagg.port: 8000
 webagg.address: 0.0.0.0
 webagg.open_in_browser: False
