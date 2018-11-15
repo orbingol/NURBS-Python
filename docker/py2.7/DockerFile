@@ -8,17 +8,25 @@ RUN apt-get update \
     && apt-get install -y gcc git \
     && apt-get clean \
     && git clone https://github.com/orbingol/NURBS-Python.git library \
-    && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
+    && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
+    && git clone https://github.com/orbingol/geomdl-cli.git app
 
 WORKDIR /nurbs/library
 
 RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir tornado \
-    && python setup.py develop \
-    && python setup.py build_ext --use-cython --inplace \
+    && python setup.py bdist_wheel --use-cython \
+    && pip install dist/* \
     && python setup.py clean --all \
     && python -c "import geomdl" \
-    && python -c "import geomdl_core" \
-    && useradd -ms /bin/bash nurbs \
+    && python -c "import geomdl.core"
+
+WORKDIR /nurbs/app
+
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir . \
+    && python -c "import geomdl.cli"
+
+RUN useradd -ms /bin/bash nurbs \
     && chown -R nurbs:nurbs /nurbs
 
 USER nurbs

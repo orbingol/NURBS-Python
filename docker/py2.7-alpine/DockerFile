@@ -10,12 +10,19 @@ RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash \
 
 WORKDIR /nurbs/library
 
-RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir pytest tornado \
-    && python setup.py develop \
-    && python setup.py build_ext --use-cython --inplace \
+RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir tornado \
+    && python setup.py bdist_wheel --use-cython \
+    && pip install dist/* \
     && python setup.py clean --all \
+    && rm -rf dist/ \
     && python -c "import geomdl" \
-    && python -c "import geomdl_core"
+    && python -c "import geomdl.core"
+
+WORKDIR /nurbs/app
+
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir . \
+    && python -c "import geomdl.cli"
 
 WORKDIR /root
 
