@@ -1,33 +1,31 @@
-# Use Python v2.7 debian-slim Docker image
+# geomdl DockerFile for Python v2.7
 FROM python:2.7-slim
 
-# Create the working directory
-RUN mkdir /nurbs
+USER root
 WORKDIR /nurbs
 
-# Update operating system
-RUN apt-get update && apt-get install -y gcc git && apt-get clean
+RUN apt-get update \
+    && apt-get install -y gcc git \
+    && apt-get clean \
+    && pip install numpy matplotlib plotly pytest cython tornado \
+    && git clone https://github.com/orbingol/NURBS-Python.git library \
+    && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
 
-# Add required python packages
-RUN pip install numpy matplotlib plotly pytest cython
-
-# Download geomdl
-RUN git clone https://github.com/orbingol/NURBS-Python.git library
-
-# Download geomdl examples
-RUN git clone https://github.com/orbingol/NURBS-Python_Examples.git examples
-
-# Change working directory
 WORKDIR /nurbs/library
 
-# Install geomdl
-RUN python setup.py develop && python setup.py build_ext --use-cython --inplace
+RUN python setup.py develop \
+    && python setup.py build_ext --use-cython --inplace \
+    && python setup.py clean --all \
+    && pytest \
+    && python -c "import geomdl_core" \
+    && useradd -ms /bin/bash nurbs \
+    && chown -R nurbs:nurbs /nurbs
 
-# Run python tests
-RUN pytest
+USER nurbs
+WORKDIR /home/nurbs
 
-# Test Cython build
-RUN python -c "import geomdl_core"
+COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
 
-# Change working directory to "nurbs"
-WORKDIR /nurbs
+ENTRYPOINT ["/bin/bash", "-i"]
+
+EXPOSE 8000
