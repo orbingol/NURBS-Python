@@ -82,7 +82,7 @@ class CythonClean(CleanCommand):
         CleanCommand.run(self)
 
         # Find list of files with .c extension
-        flist, flist_path = read_files("cython_temp", ".c")
+        flist, flist_path = read_files("geomdl", ".c")
 
         # Clean files with .c extensions
         if flist_path:
@@ -100,7 +100,7 @@ def read_files(project, ext):
     flist_path = []
     for f in file_list:
         f_path = os.path.join(project_path, f)
-        if os.path.isfile(f_path) and f.endswith(ext):
+        if os.path.isfile(f_path) and f.endswith(ext) and f != "__init__.py":
             flist.append(f.split('.')[0])
             flist_path.append(f_path)
     return flist, flist_path
@@ -130,19 +130,31 @@ def make_dir(project, gen_init_py=True):
     # We need a __init__.py file inside the directory
     if gen_init_py:
         with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
+            fp.write('__version__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
             fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
             fp.write('__license__ = "MIT"\n')
 
 
+def in_argv(arg_list):
+    """ Checks if any of the elements of the input list is in sys.argv array. """
+    for arg in sys.argv:
+        if arg in arg_list:
+            return True
+    return False
+
+
+possible_cmds = ['install', 'build_ext', 'bdist_wheel']
+packages = ['geomdl', 'geomdl.visualization', 'geomdl.shapes']
+
 # Cython and compiled C module options
 # Ref: https://gist.github.com/ctokheim/6c34dc1d672afca0676a
-if 'build_ext' in sys.argv and '--use-source' in sys.argv:
+if in_argv(possible_cmds) and '--use-source' in sys.argv:
     BUILD_FROM_SOURCE = True
     sys.argv.remove('--use-source')
 else:
     BUILD_FROM_SOURCE = False
 
-if 'build_ext' in sys.argv and '--use-cython' in sys.argv:
+if in_argv(possible_cmds) and '--use-cython' in sys.argv:
     # Try to import Cython
     try:
         from Cython.Build import cythonize
@@ -151,36 +163,36 @@ if 'build_ext' in sys.argv and '--use-cython' in sys.argv:
 
     BUILD_FROM_CYTHON = True
     sys.argv.remove('--use-cython')
-    # Prepare files for compilation
-    make_dir('cython_temp', gen_init_py=False)
-    copy_files('geomdl', 'py', 'cython_temp')
 else:
     BUILD_FROM_CYTHON = False
 
 # We don't want to include any compiled files with the distribution
-extensions = []
+ext_modules = []
 
 if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
     # Choose the file extension
     file_ext = '.py' if BUILD_FROM_CYTHON else '.c'
 
     # Create Cython-compiled module directory
-    make_dir('geomdl_core')
+    make_dir('geomdl/core')
 
     # Create extensions
     optional_extensions = []
-    fnames, fnames_path = read_files('cython_temp', file_ext)
+    fnames, fnames_path = read_files('geomdl', file_ext)
     for fname, fpath in zip(fnames, fnames_path):
-        temp = Extension('geomdl_core.' + str(fname), sources=[fpath])
+        temp = Extension('geomdl.core.' + str(fname), sources=[fpath])
         optional_extensions.append(temp)
 
     # Call Cython when "python setup.py build_ext --use-cython" is executed
     if BUILD_FROM_CYTHON:
-        extensions = cythonize(optional_extensions, compiler_directives={'language_level': sys.version_info[0]})
+        ext_modules = cythonize(optional_extensions, compiler_directives={'language_level': sys.version_info[0]})
 
     # Compile from C source when "python setup.py build_ext --use-source" is executed
     if BUILD_FROM_SOURCE:
-        extensions = optional_extensions
+        ext_modules = optional_extensions
+
+    # Add Cython-compiled module to the packages list
+    packages.append('geomdl.core')
 
 # Add Enum type support for Python versions < 3.4
 if sys.version_info[:2] < (3, 4):
@@ -198,14 +210,14 @@ data = dict(
     author_email='nurbs-python@googlegroups.com',
     url='https://github.com/orbingol/NURBS-Python',
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
-    packages=['geomdl', 'geomdl.visualization', 'geomdl.shapes'],
+    packages=packages,
     install_requires=['six>=1.9.0'] + required,
     extras_require={
         'visualization': ['matplotlib', 'plotly'],
     },
     tests_require=["pytest>=3.0.0"],
     cmdclass={"test": PyTest, 'clean': CythonClean},
-    ext_modules=extensions,
+    ext_modules=ext_modules,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
