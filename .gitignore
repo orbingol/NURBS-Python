@@ -1,6 +1,7 @@
 .idea/*
 .pytest_cache/*
 .cache/*
+.tox/*
 build/
 dist/
 geomdl.egg-info/*
@@ -9,9 +10,6 @@ docs/_static
 geomdl_core/*
 cython_temp/*
 *.pyc
-*.out
-*.txt
-*.csv
 *.c
 *.cpp
 *.so
