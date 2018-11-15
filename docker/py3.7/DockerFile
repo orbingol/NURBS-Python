@@ -12,11 +12,11 @@ RUN apt-get update \
 
 WORKDIR /nurbs/library
 
-RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir pytest tornado \
+RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir tornado \
     && python setup.py develop \
     && python setup.py build_ext --use-cython --inplace \
     && python setup.py clean --all \
-    && pytest \
+    && python -c "import geomdl" \
     && python -c "import geomdl_core" \
     && useradd -ms /bin/bash nurbs \
     && chown -R nurbs:nurbs /nurbs
