@@ -131,7 +131,7 @@ compiled module with the latest changes, you have to re-cythonize and compile th
 
 To enable development mode;
 
-.. code-block::
+.. code-block:: console
 
     $ python setup.py develop
     $ python setup.py build_ext --use-cython --inplace
