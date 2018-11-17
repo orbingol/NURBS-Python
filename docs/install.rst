@@ -117,7 +117,7 @@ following command:
 
     $ python setup.py install --use-cython
 
-This command will generate .c files (i.e. cythonize) and compile the .c files into binary Python modules.
+This command generates .c files (i.e. cythonize) and compile the .c files into binary Python modules.
 
 The following command can be used to directly compile the generated .c files skipping the copy and the cythonization
 steps and install the compiled binaries:
@@ -128,6 +128,16 @@ steps and install the compiled binaries:
 
 You may prefer to skip the copy and the cythonization steps if the compilation fails for some reason. To update the
 compiled module with the latest changes, you have to re-cythonize and compile the code.
+
+To enable development mode;
+
+.. code-block::
+
+    $ python setup.py develop
+    $ python setup.py build_ext --use-cython --inplace
+
+As described above, these commands create a symbolic link to the repo directory and compile the module in the repo
+directory.
 
 After the successful execution of the command, the you can import and use the compiled library as follows:
 
