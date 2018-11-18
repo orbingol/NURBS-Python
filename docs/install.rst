@@ -171,7 +171,7 @@ Docker Containers
 A collection of Docker containers is provided on `Docker Hub <https://hub.docker.com/r/idealabisu/nurbs-python/>`_
 containing NURBS-Python, Cython-compiled core and the `command-line application <https://geomdl-cli.readthedocs.io>`_.
 To get started, first install `Docker <https://www.docker.com/>`_ and then run the following on the Docker command
-prompt to pull Python v3.5 image:
+prompt to pull the image prepared with Python v3.5:
 
 .. code-block:: console
 
