@@ -3,10 +3,11 @@
 This directory contains [conda-build](https://conda.io/docs/user-guide/tasks/build-packages/index.html) recipes for the
 [geomdl](https://pypi.org/project/geomdl/) package.
 
-The [conda](https://conda.io/docs/) package can be build via
+The following packages can be build via the following commands:
 
-`conda build geomdl`
+* **geomdl**: `conda build geomdl`
+* **geomdl** + **geomdl.core**: `conda build geomdl.core`
 
-or it can be directly installed from [Anaconda Cloud](https://anaconda.org/orbingol/geomdl) via
+**geomdl** can be directly installed from [Anaconda Cloud](https://anaconda.org/orbingol/geomdl) via the command:
 
 `conda install -c orbingol geomdl`
