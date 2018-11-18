@@ -11,11 +11,10 @@ source:
 
 build:
   noarch: python
-  string: {{ GIT_DESCRIBE_HASH[1:] }}_{{ build_number }}
+  number: {{ build_number }}
   script:
     - python setup.py sdist
     - pip install dist/geomdl-{{ setup_data['version'] }}.tar.gz --no-deps
-    #- python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
   host:
