@@ -1,0 +1,9 @@
+c_compiler:
+  - vs2017  # [win]
+  - gcc     # [linux]
+  - clang   # [osx]
+python:
+  #- 2.7
+  - 3.5
+  - 3.6
+  - 3.7

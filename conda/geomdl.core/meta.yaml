@@ -1,0 +1,50 @@
+# conda-build recipe for Cython-compiled NURBS-Python (geomdl.core) package
+{% set setup_data = load_setup_py_data() %}
+{% set build_number = 0 %}
+
+package:
+  name: geomdl.core
+  version: {{ setup_data['version'] }}
+
+source:
+  path: ../../
+
+build:
+  number: {{ build_number }}
+  script:
+    - python setup.py install --use-cython --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python {{ python }}
+    - setuptools
+    - six
+    - enum34                # [py27]
+    - cython
+  run:
+    - python {{ python }}
+    - six
+    - enum34                # [py27]
+
+test:
+  imports:
+    - geomdl
+    - geomdl.core
+  commands:
+    - python -c "import geomdl; print(geomdl.__version__)"
+    - python -c "import geomdl.core; print(geomdl.core.__version__)"
+
+about:
+  home: https://onurraufbingol.com/NURBS-Python/
+  license: MIT
+  license_file: ../../LICENSE
+  summary: Object-oriented NURBS curve and surface evaluation library
+  description: "Self-contained, object-oriented, pure Python B-Spline and NURBS evaluation library with knot vector and surface grid generators."
+  doc_url: "http://nurbs-python.readthedocs.io/"
+  dev_url: "https://github.com/orbingol/NURBS-Python"
+
+extra:
+  recipe-maintainers:
+    - orbingol
