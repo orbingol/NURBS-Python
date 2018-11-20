@@ -8,12 +8,86 @@
 """
 
 import copy
-from . import Abstract
+import abc
+import six
 from . import helpers
 from . import utilities
 
 
-class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
+class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
+    """ Evaluator abstract base class.
+
+    The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
+    The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
+
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see ``helpers`` module for details.
+    """
+
+    def __init__(self, **kwargs):
+        self._name = kwargs.get('name', self.__class__.__name__)
+        self._span_func = kwargs.get('find_span_func', None)
+
+    @property
+    def name(self):
+        """ Evaluator name (as a string).
+
+        :getter: Gets the name of the evaluator
+        :type: str
+        """
+        return self._name
+
+    @abc.abstractmethod
+    def evaluate_single(self, **kwargs):
+        """ Abstract method for computation of a single point at a single parameter. """
+        pass
+
+    @abc.abstractmethod
+    def evaluate(self, **kwargs):
+        """ Abstract method for computation of points over a range of parameters. """
+        pass
+
+    @abc.abstractmethod
+    def derivatives_single(self, **kwargs):
+        """ Abstract method for computation of derivatives at a single parameter. """
+        pass
+
+    @abc.abstractmethod
+    def derivatives(self, **kwargs):
+        """ Abstract method for computation of derivatives over a range of parameters. """
+        pass
+
+
+class AbstractCurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
+    """ Curve customizations for Evaluator abstract base class. """
+
+    def __init__(self, **kwargs):
+        self._span_func = kwargs.get('find_span_func', None)
+
+    @abc.abstractmethod
+    def insert_knot(self, **kwargs):
+        """ Abstract method for implementation of knot insertion algorithm. """
+        pass
+
+
+class AbstractSurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
+    """ Surface customizations for the Evaluator abstract base class. """
+
+    def __init__(self, **kwargs):
+        self._span_func = kwargs.get('find_span_func', None)
+
+    @abc.abstractmethod
+    def insert_knot_u(self, **kwargs):
+        """ Abstract method for implementation of knot insertion algorithm on the u-direction. """
+        pass
+
+    @abc.abstractmethod
+    def insert_knot_v(self, **kwargs):
+        """ Abstract method for implementation of knot insertion algorithm on the v-direction. """
+        pass
+
+
+class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
     """ Sequential B-Spline curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -36,48 +110,44 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         # Call parent method
         super(CurveEvaluator, self).evaluate_single(**kwargs)
 
-        knot = kwargs.get('knot')
+        param = kwargs.get('parameter')
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
 
         # Algorithm A3.1
-        span = self._span_func(degree, knot_vector, len(control_points), knot)
-        basis = helpers.basis_function(degree, knot_vector, span, knot)
+        crvpt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector,
+                              ctrlpts=ctrlpts, sample_size=1, dimension=dimension, precision=precision)
 
-        crvpt = [0.0 for _ in range(dimension)]
-        for i in range(0, degree + 1):
-            crvpt[:] = [crv_p + (basis[i] * ctl_p) for crv_p, ctl_p in
-                        zip(crvpt, control_points[span - degree + i])]
-
-        return crvpt
+        return crvpt[0]
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
         # Call parent method
         super(CurveEvaluator, self).evaluate(**kwargs)
 
-        start_u = kwargs.get('start_u')
-        stop_u = kwargs.get('stop_u')
+        start = kwargs.get('start')
+        stop = kwargs.get('stop')
         sample_size = kwargs.get('sample_size')
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
         precision = kwargs.get('precision')
 
         # Algorithm A3.1
-        knots = utilities.linspace(start_u, stop_u, sample_size, decimals=precision)
-        spans = helpers.find_spans(degree, knot_vector, len(control_points), knots, self._span_func)
-        basis = helpers.basis_functions(degree, knot_vector, spans, knots)
+        knots = utilities.linspace(start, stop, sample_size, decimals=precision)
+        spans = helpers.find_spans(degree, knotvector, len(ctrlpts), knots, self._span_func)
+        basis = helpers.basis_functions(degree, knotvector, spans, knots)
 
         eval_points = []
         for idx in range(len(knots)):
             crvpt = [0.0 for _ in range(dimension)]
             for i in range(0, degree + 1):
                 crvpt[:] = [crv_p + (basis[idx][i] * ctl_p) for crv_p, ctl_p in
-                            zip(crvpt, control_points[spans[idx] - degree + i])]
+                            zip(crvpt, ctrlpts[spans[idx] - degree + i])]
 
             eval_points.append(crvpt)
 
@@ -89,11 +159,11 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
         # Call parent method
         super(CurveEvaluator, self).derivatives_single(**kwargs)
 
-        knot = kwargs.get('knot')
+        param = kwargs.get('parameter')
         deriv_order = kwargs.get('deriv_order', 0)
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.2
@@ -101,13 +171,13 @@ class CurveEvaluator(Abstract.Evaluator, Abstract.CurveEvaluator):
 
         CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = self._span_func(degree, knot_vector, len(control_points), knot)
-        bfunsders = helpers.basis_function_ders(degree, tuple(knot_vector), span, knot, du)
+        span = self._span_func(degree, knotvector, len(ctrlpts), param)
+        bfunsders = helpers.basis_function_ders(degree, knotvector, span, param, du)
 
         for k in range(0, du + 1):
             for j in range(0, degree + 1):
                 CK[k][:] = [drv + (bfunsders[k][j] * ctl_pt) for drv, ctl_pt in
-                            zip(CK[k], control_points[span - degree + j])]
+                            zip(CK[k], ctrlpts[span - degree + j])]
 
         # Return the derivatives
         return CK
@@ -213,21 +283,21 @@ class CurveEvaluator2(CurveEvaluator):
         r2 = kwargs.get('r2')
         deriv_order = kwargs.get('deriv_order')
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.3
         r = r2 - r1
         PK = [[[None for _ in range(dimension)] for _ in range(r + 1)] for _ in range(deriv_order + 1)]
         for i in range(0, r + 1):
-            PK[0][i][:] = [elem for elem in control_points[r1 + i]]
+            PK[0][i][:] = [elem for elem in ctrlpts[r1 + i]]
 
         for k in range(1, deriv_order + 1):
             tmp = degree - k + 1
             for i in range(0, r - k + 1):
                 PK[k][i][:] = [tmp * (elem1 - elem2) /
-                               (knot_vector[r1 + i + degree + 1] - knot_vector[r1 + i + k]) for elem1, elem2
+                               (knotvector[r1 + i + degree + 1] - knotvector[r1 + i + k]) for elem1, elem2
                                in zip(PK[k - 1][i + 1], PK[k - 1][i])]
 
         # Return a 2-dimensional list of control points
@@ -239,11 +309,11 @@ class CurveEvaluator2(CurveEvaluator):
         # Call parent method
         super(CurveEvaluator2, self).derivatives_single(**kwargs)
 
-        knot = kwargs.get('knot')
+        param = kwargs.get('parameter')
         deriv_order = kwargs.get('deriv_order', 0)
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.4
@@ -251,14 +321,14 @@ class CurveEvaluator2(CurveEvaluator):
 
         CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = self._span_func(degree, knot_vector, len(control_points), knot)
-        bfuns = helpers.basis_function_all(degree, tuple(knot_vector), span, knot)
+        span = self._span_func(degree, knotvector, len(ctrlpts), param)
+        bfuns = helpers.basis_function_all(degree, tuple(knotvector), span, param)
 
         # "derivatives_ctrlpts" is a static method that could be called like below
         PK = CurveEvaluator2.derivatives_ctrlpts(r1=(span - degree), r2=span,
                                                  degree=degree,
-                                                 knotvector=knot_vector,
-                                                 ctrlpts=control_points,
+                                                 knotvector=knotvector,
+                                                 ctrlpts=ctrlpts,
                                                  dimension=dimension,
                                                  deriv_order=du)
 
@@ -288,18 +358,6 @@ class NURBSCurveEvaluator(CurveEvaluator):
     def __init__(self, **kwargs):
         super(NURBSCurveEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    def evaluate_single(self, **kwargs):
-        """ Evaluates a single curve point. """
-        dimension = kwargs.get('dimension')
-
-        # Algorithm A4.1
-        crvptw = super(NURBSCurveEvaluator, self).evaluate_single(**kwargs)
-
-        # Divide by weight
-        crvpt = [float(pt / crvptw[-1]) for pt in crvptw[0:(dimension - 1)]]
-
-        return crvpt
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
@@ -337,7 +395,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return CK
 
 
-class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
+class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
     """ Sequential B-Spline surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -360,77 +418,55 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         # Call parent method
         super(SurfaceEvaluator, self).evaluate_single(**kwargs)
 
-        knot_u = kwargs.get('knot_u')
-        knot_v = kwargs.get('knot_v')
-        degree_u = kwargs.get('degree_u')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_u = kwargs.get('knotvector_u')
-        knot_vector_v = kwargs.get('knotvector_v')
-        control_points2d = kwargs.get('ctrlpts')
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        param = kwargs.get('parameter')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+        ctrlpts_size = kwargs.get('ctrlpts_size')
         dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
 
-        # Algorithm A3.5
-        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
-        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
+        spt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
+                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1), dimension=dimension, precision=precision)
 
-        basis_u = helpers.basis_function(degree_u, knot_vector_u, span_u, knot_u)
-        basis_v = helpers.basis_function(degree_v, knot_vector_v, span_v, knot_v)
-
-        idx_u = span_u - degree_u
-        idx_v = span_v - degree_v
-        spt = [0.0 for _ in range(dimension)]
-
-        for k in range(0, degree_u + 1):
-            temp = [0.0 for _ in range(dimension)]
-            for l in range(0, degree_v + 1):
-                temp[:] = [tmp + (basis_v[l] * cp) for tmp, cp in zip(temp, control_points2d[idx_u + k][idx_v + l])]
-            spt[:] = [pt + (basis_u[k] * tmp) for pt, tmp in zip(spt, temp)]
-
-        return spt
+        return spt[0]
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """
         # Call parent method
         super(SurfaceEvaluator, self).evaluate(**kwargs)
 
-        start_u = kwargs.get('start_u')
-        stop_u = kwargs.get('stop_u')
-        start_v = kwargs.get('start_v')
-        stop_v = kwargs.get('stop_v')
+        start = kwargs.get('start')
+        stop = kwargs.get('stop')
         sample_size = kwargs.get('sample_size')
-        degree_u = kwargs.get('degree_u')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_u = kwargs.get('knotvector_u')
-        knot_vector_v = kwargs.get('knotvector_v')
-        control_points2d = kwargs.get('ctrlpts')
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+        ctrlpts_size = kwargs.get('ctrlpts_size')
         dimension = kwargs.get('dimension')
         precision = kwargs.get('precision')
 
         # Algorithm A3.5
-        knots_u = utilities.linspace(start_u, stop_u, sample_size[0], decimals=precision)
-        knots_v = utilities.linspace(start_v, stop_v, sample_size[1], decimals=precision)
+        knots_u = utilities.linspace(start[0], stop[0], sample_size[0], decimals=precision)
+        knots_v = utilities.linspace(start[1], stop[1], sample_size[1], decimals=precision)
 
-        spans_u = helpers.find_spans(degree_u, knot_vector_u, ctrlpts_size_u, knots_u, self._span_func)
-        spans_v = helpers.find_spans(degree_v, knot_vector_v, ctrlpts_size_v, knots_v, self._span_func)
+        spans_u = helpers.find_spans(degree[0], knotvector[0], ctrlpts_size[0], knots_u, self._span_func)
+        spans_v = helpers.find_spans(degree[1], knotvector[1], ctrlpts_size[1], knots_v, self._span_func)
 
-        basis_u = helpers.basis_functions(degree_u, knot_vector_u, spans_u, knots_u)
-        basis_v = helpers.basis_functions(degree_v, knot_vector_v, spans_v, knots_v)
+        basis_u = helpers.basis_functions(degree[0], knotvector[0], spans_u, knots_u)
+        basis_v = helpers.basis_functions(degree[1], knotvector[1], spans_v, knots_v)
 
         eval_points = []
         for i in range(len(knots_u)):
-            idx_u = spans_u[i] - degree_u
+            idx_u = spans_u[i] - degree[0]
             for j in range(len(knots_v)):
-                idx_v = spans_v[j] - degree_v
+                idx_v = spans_v[j] - degree[1]
                 spt = [0.0 for _ in range(dimension)]
-                for k in range(0, degree_u + 1):
+                for k in range(0, degree[0] + 1):
                     temp = [0.0 for _ in range(dimension)]
-                    for l in range(0, degree_v + 1):
+                    for l in range(0, degree[1] + 1):
                         temp[:] = [tmp + (basis_v[j][l] * cp) for tmp, cp in
-                                   zip(temp, control_points2d[idx_u + k][idx_v + l])]
+                                   zip(temp, ctrlpts[idx_v + l + (ctrlpts_size[1] * (idx_u + k))])]
                     spt[:] = [pt + (basis_u[i][k] * tmp) for pt, tmp in zip(spt, temp)]
 
                 eval_points.append(spt)
@@ -443,40 +479,36 @@ class SurfaceEvaluator(Abstract.Evaluator, Abstract.SurfaceEvaluator):
         super(SurfaceEvaluator, self).derivatives_single(**kwargs)
 
         deriv_order = kwargs.get('deriv_order')
-        knot_u = kwargs.get('knot_u')
-        knot_v = kwargs.get('knot_v')
-        degree_u = kwargs.get('degree_u')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_u = kwargs.get('knotvector_u')
-        knot_vector_v = kwargs.get('knotvector_v')
-        control_points2d = kwargs.get('ctrlpts')
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        param = kwargs.get('parameter')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+        ctrlpts_size = kwargs.get('ctrlpts_size')
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.6
-        du = min(degree_u, deriv_order)
-        dv = min(degree_v, deriv_order)
+        du = min(degree[0], deriv_order)
+        dv = min(degree[1], deriv_order)
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
-        bfunsders_u = helpers.basis_function_ders(degree_u, knot_vector_u, span_u, knot_u, du)
-        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
-        bfunsders_v = helpers.basis_function_ders(degree_v, knot_vector_v, span_v, knot_v, dv)
+        span_u = self._span_func(degree[0], knotvector[0], ctrlpts_size[0], param[0])
+        bfunsders_u = helpers.basis_function_ders(degree[0], knotvector[0], span_u, param[0], du)
+        span_v = self._span_func(degree[1], knotvector[1], ctrlpts_size[1], param[1])
+        bfunsders_v = helpers.basis_function_ders(degree[1], knotvector[1], span_v, param[1], dv)
 
         for k in range(0, du + 1):
-            temp = [[0.0 for _ in range(dimension)] for _ in range(degree_v + 1)]
-            for s in range(0, degree_v + 1):
-                for r in range(0, degree_u + 1):
-                    cu = span_u - degree_u + r
-                    cv = span_v - degree_v + s
+            temp = [[0.0 for _ in range(dimension)] for _ in range(degree[1] + 1)]
+            for s in range(0, degree[1] + 1):
+                for r in range(0, degree[0] + 1):
+                    cu = span_u - degree[0] + r
+                    cv = span_v - degree[1] + s
                     temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
-                                  zip(temp[s], control_points2d[cu][cv])]
+                                  zip(temp[s], ctrlpts[cv + (ctrlpts_size[1] * cu)])]
 
             dd = min(deriv_order - k, dv)
             for l in range(0, dd + 1):
-                for s in range(0, degree_v + 1):
+                for s in range(0, degree[1] + 1):
                     SKL[k][l][:] = [elem + (bfunsders_v[l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
 
         return SKL
@@ -647,25 +679,19 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         s1 = kwargs.get('s1')  # minimum span on the v-direction
         s2 = kwargs.get('s2')  # maximum span on the v-direction
 
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        degree_u = kwargs.get('degree_u')
-        knot_vector_u = kwargs.get('knotvector_u')
-
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_v = kwargs.get('knotvector_v')
-
-        ctrlpts2d = kwargs.get('ctrlpts')
         deriv_order = kwargs.get('deriv_order')
-
+        ctrlpts_size = kwargs.get('ctrlpts_size')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         dimension = kwargs.get('dimension')
 
         PKL = [[[[[None for _ in range(dimension)]
-                  for _ in range(ctrlpts_size_v)] for _ in range(ctrlpts_size_u)]
+                  for _ in range(ctrlpts_size[1])] for _ in range(ctrlpts_size[0])]
                 for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        du = min(degree_u, deriv_order)
-        dv = min(degree_v, deriv_order)
+        du = min(degree[0], deriv_order)
+        dv = min(degree[1], deriv_order)
 
         r = r2 - r1
         s = s2 - s1
@@ -673,9 +699,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         # Control points of the U derivatives of every U-curve
         for j in range(s1, s2 + 1):
             PKu = CurveEvaluator2.derivatives_ctrlpts(r1=r1, r2=r2,
-                                                      degree=degree_u,
-                                                      knotvector=knot_vector_u,
-                                                      ctrlpts=[ctrlpts2d[_][j] for _ in range(len(ctrlpts2d))],
+                                                      degree=degree[0],
+                                                      knotvector=knotvector[0],
+                                                      ctrlpts=[ctrlpts[j + (ctrlpts_size[1] * i)] for i in range(ctrlpts_size[0])],
                                                       dimension=dimension,
                                                       deriv_order=du)
 
@@ -690,8 +716,8 @@ class SurfaceEvaluator2(SurfaceEvaluator):
                 dd = min(deriv_order - k, dv)
 
                 PKuv = CurveEvaluator2.derivatives_ctrlpts(r1=0, r2=s,
-                                                           degree=degree_v,
-                                                           knotvector=knot_vector_v[s1:],
+                                                           degree=degree[1],
+                                                           knotvector=knotvector[1][s1:],
                                                            ctrlpts=PKL[k][0][i],
                                                            dimension=dimension,
                                                            deriv_order=dd)
@@ -711,28 +737,24 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         """
 
         deriv_order = kwargs.get('deriv_order')
-        knot_u = kwargs.get('knot_u')
-        knot_v = kwargs.get('knot_v')
-        degree_u = kwargs.get('degree_u')
-        degree_v = kwargs.get('degree_v')
-        knot_vector_u = kwargs.get('knotvector_u')
-        knot_vector_v = kwargs.get('knotvector_v')
-        ctrlpts_size_u = kwargs.get('ctrlpts_size_u')
-        ctrlpts_size_v = kwargs.get('ctrlpts_size_v')
+        param = kwargs.get('parameter')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts_size = kwargs.get('ctrlpts_size')
         dimension = kwargs.get('dimension')
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        du = min(degree_u, deriv_order)
-        dv = min(degree_v, deriv_order)
+        du = min(degree[0], deriv_order)
+        dv = min(degree[1], deriv_order)
 
-        span_u = self._span_func(degree_u, knot_vector_u, ctrlpts_size_u, knot_u)
-        bfuns_u = helpers.basis_function_all(degree_u, tuple(knot_vector_u), span_u, knot_u)
-        span_v = self._span_func(degree_v, knot_vector_v, ctrlpts_size_v, knot_v)
-        bfuns_v = helpers.basis_function_all(degree_v, tuple(knot_vector_v), span_v, knot_v)
+        span_u = self._span_func(degree[0], knotvector[0], ctrlpts_size[0], param[0])
+        bfuns_u = helpers.basis_function_all(degree[0], knotvector[0], span_u, param[0])
+        span_v = self._span_func(degree[1], knotvector[1], ctrlpts_size[1], param[1])
+        bfuns_v = helpers.basis_function_all(degree[1], knotvector[1], span_v, param[1])
 
-        PKL = self.derivatives_ctrlpts(r1=span_u - degree_u, r2=span_u,
-                                       s1=span_v - degree_v, s2=span_v,
+        PKL = self.derivatives_ctrlpts(r1=span_u - degree[0], r2=span_u,
+                                       s1=span_v - degree[1], s2=span_v,
                                        **kwargs)
 
         # Evaluating the derivative at parameters (u,v) using its control points
@@ -742,14 +764,14 @@ class SurfaceEvaluator2(SurfaceEvaluator):
             for l in range(0, dd + 1):
                 SKL[k][l] = [0.0 for _ in range(dimension)]
 
-                for i in range(0, degree_v - l + 1):
+                for i in range(0, degree[1] - l + 1):
                     temp = [0.0 for _ in range(dimension)]
 
-                    for j in range(0, degree_u - k + 1):
-                        temp[:] = [elem + (bfuns_u[j][degree_u - k] * drv_ctl_p) for elem, drv_ctl_p in
+                    for j in range(0, degree[0] - k + 1):
+                        temp[:] = [elem + (bfuns_u[j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
                                    zip(temp, PKL[k][l][j][i])]
 
-                    SKL[k][l][:] = [elem + (bfuns_v[i][degree_v - l] * drv_ctl_p) for elem, drv_ctl_p in
+                    SKL[k][l][:] = [elem + (bfuns_v[i][degree[1] - l] * drv_ctl_p) for elem, drv_ctl_p in
                                     zip(SKL[k][l], temp)]
 
         return SKL
@@ -772,18 +794,6 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
     def __init__(self, **kwargs):
         super(NURBSSurfaceEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    def evaluate_single(self, **kwargs):
-        """ Evaluates a single surface point. """
-        dimension = kwargs.get('dimension')
-
-        # Algorithm A4.3
-        cptw = super(NURBSSurfaceEvaluator, self).evaluate_single(**kwargs)
-
-        # Divide by weight
-        cpt = [float(pt / cptw[-1]) for pt in cptw[0:(dimension - 1)]]
-
-        return cpt
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """

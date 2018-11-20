@@ -204,7 +204,7 @@ class Curve(Abstract.Curve):
         self.reset(evalpts=True)
 
         # Evaluate
-        cpts = self._evaluator.evaluate(start_u=start, stop_u=stop,
+        cpts = self._evaluator.evaluate(start=start, stop=stop,
                                         degree=self.degree,
                                         knotvector=self.knotvector,
                                         ctrlpts=self._control_points,
@@ -229,11 +229,11 @@ class Curve(Abstract.Curve):
         utilities.check_uv(u)
 
         # Evaluate
-        return self._evaluator.evaluate_single(knot=u,
+        return self._evaluator.evaluate_single(parameter=u,
                                                degree=self.degree,
                                                knotvector=self.knotvector,
                                                ctrlpts=self._control_points,
-                                               dimension=self._dimension)
+                                               dimension=self._dimension, precision=self._precision)
 
     def evaluate_list(self, u_list):
         """ Evaluates the curve for an input range of parameters.
@@ -271,7 +271,7 @@ class Curve(Abstract.Curve):
         super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
-        return self._evaluator.derivatives_single(knot=u,
+        return self._evaluator.derivatives_single(parameter=u,
                                                   deriv_order=order,
                                                   degree=self.degree,
                                                   knotvector=self.knotvector,
@@ -766,14 +766,13 @@ class Surface(Abstract.Surface):
         self.reset(evalpts=True)
 
         # Evaluate
-        spts = self._evaluator.evaluate(start_u=start_u, stop_u=stop_u, start_v=start_v, stop_v=stop_v,
-                                        degree_u=self.degree_u, degree_v=self.degree_v,
-                                        knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                        ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
-                                        ctrlpts=self._control_points2D,
+        spts = self._evaluator.evaluate(start=(start_u, start_v), stop=(stop_u, stop_v),
+                                        degree=(self.degree_u, self.degree_v),
+                                        knotvector=(self.knotvector_u, self.knotvector_v),
+                                        ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
+                                        ctrlpts=self._control_points,
                                         sample_size=self.sample_size,
-                                        dimension=self._dimension,
-                                        precision=self._precision)
+                                        dimension=self._dimension, precision=self._precision)
 
         self._surface_points = spts
 
@@ -792,12 +791,12 @@ class Surface(Abstract.Surface):
         utilities.check_uv(uv[0], uv[1])
 
         # Evaluate the surface
-        spt = self._evaluator.evaluate_single(knot_u=uv[0], knot_v=uv[1],
-                                              degree_u=self.degree_u, degree_v=self.degree_v,
-                                              knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                              ctrlpts_size_u=self.ctrlpts_size_u, ctrlpts_size_v=self.ctrlpts_size_v,
-                                              ctrlpts=self._control_points2D,
-                                              dimension=self._dimension)
+        spt = self._evaluator.evaluate_single(parameter=uv,
+                                              degree=(self.degree_u, self.degree_v),
+                                              knotvector=(self.knotvector_u, self.knotvector_v),
+                                              ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
+                                              ctrlpts=self._control_points,
+                                              dimension=self._dimension, precision=self._precision)
 
         return spt
 
@@ -843,12 +842,11 @@ class Surface(Abstract.Surface):
         super(Surface, self).derivatives(u=u, v=v, order=order, **kwargs)
 
         # Evaluate and return the derivatives
-        return self._evaluator.derivatives_single(knot_u=u, knot_v=v, deriv_order=order,
-                                                  degree_u=self.degree_u, degree_v=self.degree_v,
-                                                  knotvector_u=self.knotvector_u, knotvector_v=self.knotvector_v,
-                                                  ctrlpts_size_u=self.ctrlpts_size_u,
-                                                  ctrlpts_size_v=self.ctrlpts_size_v,
-                                                  ctrlpts=self._control_points2D,
+        return self._evaluator.derivatives_single(parameter=(u, v), deriv_order=order,
+                                                  degree=(self.degree_u, self.degree_v),
+                                                  knotvector=(self.knotvector_u, self.knotvector_v),
+                                                  ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
+                                                  ctrlpts=self._control_points,
                                                   dimension=self._dimension)
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates

@@ -11,6 +11,7 @@ import copy
 import abc
 import six
 import warnings
+from .evaluators import AbstractEvaluator
 from . import utilities
 
 
@@ -150,8 +151,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @evaluator.setter
     def evaluator(self, value):
-        if not isinstance(value, Evaluator):
-            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        if not isinstance(value, AbstractEvaluator):
+            raise TypeError("The evaluator must be an instance of AbstractEvaluator")
         value._span_func = self._span_func
         self._evaluator = value
 
@@ -738,7 +739,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @evaluator.setter
     def evaluator(self, value):
-        if not isinstance(value, Evaluator):
+        if not isinstance(value, AbstractEvaluator):
             raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
         value._span_func = self._span_func
         self._evaluator = value
@@ -1732,79 +1733,6 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
 
             This is an abstract method and it must be implemented in the subclass.
         """
-        pass
-
-
-class Evaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Evaluator abstract base class.
-
-    The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
-    The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
-
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
-    """
-
-    def __init__(self, **kwargs):
-        self._name = kwargs.get('name', self.__class__.__name__)
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @property
-    def name(self):
-        """ Evaluator name (as a string).
-
-        :getter: Gets the name of the evaluator
-        :type: str
-        """
-        return self._name
-
-    @abc.abstractmethod
-    def evaluate_single(self, **kwargs):
-        """ Abstract method for computation of a single point at a single parameter. """
-        pass
-
-    @abc.abstractmethod
-    def evaluate(self, **kwargs):
-        """ Abstract method for computation of points over a range of parameters. """
-        pass
-
-    @abc.abstractmethod
-    def derivatives_single(self, **kwargs):
-        """ Abstract method for computation of derivatives at a single parameter. """
-        pass
-
-    @abc.abstractmethod
-    def derivatives(self, **kwargs):
-        """ Abstract method for computation of derivatives over a range of parameters. """
-        pass
-
-
-class CurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Curve customizations for Evaluator abstract base class. """
-
-    def __init__(self, **kwargs):
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @abc.abstractmethod
-    def insert_knot(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm. """
-        pass
-
-
-class SurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Surface customizations for the Evaluator abstract base class. """
-
-    def __init__(self, **kwargs):
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @abc.abstractmethod
-    def insert_knot_u(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm on the u-direction. """
-        pass
-
-    @abc.abstractmethod
-    def insert_knot_v(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm on the v-direction. """
         pass
 
 
