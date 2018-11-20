@@ -891,8 +891,7 @@ class Surface(Abstract.Surface):
             if can_insert_knot:
                 UQ, Q = self._evaluator.insert_knot_u(knot=u, r=ru, s=s_u, degree=self.degree_u,
                                                       knotvector=self.knotvector_u,
-                                                      ctrlpts_size_u=self.ctrlpts_size_u,
-                                                      ctrlpts_size_v=self.ctrlpts_size_v,
+                                                      ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
                                                       ctrlpts=self._control_points2D)
 
                 # Update class variables after knot insertion
@@ -916,8 +915,7 @@ class Surface(Abstract.Surface):
             if can_insert_knot:
                 VQ, Q = self._evaluator.insert_knot_v(knot=v, r=rv, s=s_v, degree=self.degree_v,
                                                       knotvector=self.knotvector_v,
-                                                      ctrlpts_size_u=self.ctrlpts_size_u,
-                                                      ctrlpts_size_v=self.ctrlpts_size_v,
+                                                      ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
                                                       ctrlpts=self._control_points2D)
 
                 # Update class variables after knot insertion
