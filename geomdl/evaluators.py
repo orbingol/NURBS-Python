@@ -550,13 +550,6 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         for i in range(span + 1, len(knotvector)):
             UQ[i + r] = knotvector[i]
 
-        # Save the alphas
-        alpha = [0.0 for _ in range((r + 1) * (degree - s))]
-        for j in range(1, r + 1):
-            L = span - degree + j
-            for i in range(0, degree - j - s + 1):
-                alpha[j + ((r + 1) * i)] = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
-
         # Update control points
         for row in range(0, ctrlpts_size[1]):
             for i in range(0, span - degree + 1):
@@ -570,8 +563,8 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
             for j in range(1, r + 1):
                 L = span - degree + j
                 for i in range(0, degree - j - s + 1):
-                    R[i][:] = [alpha[j + ((r + 1) * i)] * elem2 + (1.0 - alpha[j + ((r + 1) * i)]) * elem1
-                               for elem1, elem2 in zip(R[i], R[i + 1])]
+                    alpha = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
+                    R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
                 Q[row + (ctrlpts_size[1] * L)] = copy.deepcopy(R[0])
                 Q[row + (ctrlpts_size[1] * (span + r - j - s))] = copy.deepcopy(R[degree - j - s])
             # Load the remaining control points
@@ -612,13 +605,6 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         for i in range(span + 1, len(knotvector)):
             VQ[i + r] = knotvector[i]
 
-        # Save the alphas
-        alpha = [0.0 for _ in range((r + 1) * (degree - s))]
-        for j in range(1, r + 1):
-            L = span - degree + j
-            for i in range(0, degree - j - s + 1):
-                alpha[j + ((r + 1) * i)] = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
-
         # Update control points
         for col in range(0, ctrlpts_size[0]):
             for i in range(0, span - degree + 1):
@@ -632,8 +618,8 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
             for j in range(1, r + 1):
                 L = span - degree + j
                 for i in range(0, degree - j - s + 1):
-                    R[i][:] = [alpha[j + ((r + 1) * i)] * elem2 + (1.0 - alpha[j + ((r + 1) * i)]) * elem1
-                               for elem1, elem2 in zip(R[i], R[i + 1])]
+                    alpha = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
+                    R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
                 Q[L + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[0])
                 Q[span + r - j - s + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[degree - j - s])
             # Load the remaining control points
