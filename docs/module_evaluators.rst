@@ -6,39 +6,8 @@ i.e. the algorithms that are used to evaluate the curve & surface, take derivati
 Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
 or improve existing ones.
 
-Abstract Base Class
-=============
-
-This class provides an abstract base for all evaluator classes.
-
-.. autoclass:: geomdl.Abstract.Evaluator
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
-Abstract Custom Classes
-=======================
-
-The following classes provide curve and surface customizations for the abstract base.
-
-.. autoclass:: geomdl.Abstract.CurveEvaluator
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
-.. autoclass:: geomdl.Abstract.SurfaceEvaluator
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
-Included Evaluators
-===================
-
-These evaluators are implementations of the above abstract base classes and all are included in the NURBS-Python
-package.
+Class Reference
+===============
 
 .. automodule:: geomdl.evaluators
     :members:
