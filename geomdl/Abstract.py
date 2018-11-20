@@ -12,6 +12,7 @@ import abc
 import six
 import warnings
 from .evaluators import AbstractEvaluator
+from .tessellate import AbstractTessellate
 from . import utilities
 
 
@@ -1240,7 +1241,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @tessellator.setter
     def tessellator(self, value):
-        if not isinstance(value, Tessellate):
+        if not isinstance(value, AbstractTessellate):
             warnings.warn("Tessellation component must be an instance of Abstract.Tessellate class")
             return
 
@@ -1732,65 +1733,6 @@ class Multi(six.with_metaclass(abc.ABCMeta, object)):
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
-
-
-class Tessellate(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for tessellation algorithms. """
-
-    def __init__(self, **kwargs):
-        self._vertices = None
-        self._triangles = None
-        self._arguments = None
-
-    @property
-    def vertices(self):
-        """ Vertex objects generated after tessellation.
-
-        :getter: Gets the vertices
-        """
-        return self._vertices
-
-    @property
-    def triangles(self):
-        """ Triangle objects generated after tessellation.
-
-        :getter: Gets the triangles
-        """
-        return self._triangles
-
-    @property
-    def arguments(self):
-        """ Arguments passed to the tessellation function.
-
-        This property allows customization of the tessellation algorithm, and mainly designed to allow users to pass
-        additional arguments to the tessellation function or change the behavior of the algorithm at runtime. This
-        property can be thought as a way to input and store extra data for the tessellation functionality.
-
-        :getter: Gets the tessellation arguments
-        :setter: Sets the tessellation arguments
-        """
-        return self._arguments
-
-    @arguments.setter
-    def arguments(self, value):
-        self._arguments = value
-
-    def reset(self):
-        """ Clears stored vertices and triangles. """
-        self._vertices = None
-        self._triangles = None
-
-    @abc.abstractmethod
-    def tessellate(self, points, size_u, size_v, **kwargs):
-        """ Abstract method for the implementation of the tessellation algorithm.
-
-        This algorithm should update :py:attr:`~vertices` and :py:attr:`~triangles` properties.
-
-        :param points: 1-dimensional array of surface points
-        :param size_u: number of surface points on the u-direction
-        :param size_v: number of surface points on the v-direction
         """
         pass
 

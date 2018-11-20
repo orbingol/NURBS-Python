@@ -20,21 +20,19 @@ scenario of the tessellation algorithms with surfaces.
 
 NURBS-Python uses :py:class:`.TriangularTessellate` class for surface tessellation by default.
 
-Abstract Tessellation
-=====================
+Abstract Tessellator
+====================
 
-.. autoclass:: geomdl.Abstract.Tessellate
+.. autoclass:: geomdl.tesellate.AbstractTessellate
     :members:
     :undoc-members:
     :inherited-members:
     :show-inheritance:
 
-Included Tessellation Options
-=============================
+Triangular Tessellator
+======================
 
-The following tessellation classes are included in NURBS-Python.
-
-.. automodule:: geomdl.tessellate
+.. automodule:: geomdl.tessellate.TriangularTessellate
     :members:
     :undoc-members:
     :inherited-members:
