@@ -889,20 +889,15 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                UQ, Q = self._evaluator.insert_knot_u(knot=u, r=ru, s=s_u, degree=self.degree_u,
+                UQ, Q = self._evaluator.insert_knot_u(parameter=u, r=ru, s=s_u, degree=self.degree_u,
                                                       knotvector=self.knotvector_u,
                                                       ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
-                                                      ctrlpts=self._control_points2D)
+                                                      ctrlpts=self._control_points)
 
                 # Update class variables after knot insertion
                 self._knot_vector_u = UQ
-                self._control_points2D = Q
                 self._control_points_size_u += ru
-                # Update 1D control points
-                self._control_points[:] = []
-                for dir_u in self._control_points2D:
-                    for dir_v in dir_u:
-                        self._control_points.append(dir_v)
+                self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
         if v:
             s_v = helpers.find_multiplicity(v, self.knotvector_v)
@@ -913,20 +908,15 @@ class Surface(Abstract.Surface):
                 can_insert_knot = False
 
             if can_insert_knot:
-                VQ, Q = self._evaluator.insert_knot_v(knot=v, r=rv, s=s_v, degree=self.degree_v,
+                VQ, Q = self._evaluator.insert_knot_v(parameter=v, r=rv, s=s_v, degree=self.degree_v,
                                                       knotvector=self.knotvector_v,
                                                       ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
-                                                      ctrlpts=self._control_points2D)
+                                                      ctrlpts=self._control_points)
 
                 # Update class variables after knot insertion
                 self._knot_vector_v = VQ
-                self._control_points2D = Q
                 self._control_points_size_v += rv
-                # Update 1D control points
-                self._control_points[:] = []
-                for dir_u in self._control_points2D:
-                    for dir_v in dir_u:
-                        self._control_points.append(dir_v)
+                self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
         # Evaluate surface again if it has already been evaluated before knot insertion
         if check_r and self._surface_points:

@@ -524,21 +524,21 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         # Call parent method
         super(SurfaceEvaluator, self).insert_knot_u(**kwargs)
 
-        u = kwargs.get('knot')
+        param = kwargs.get('parameter')
         r = kwargs.get('r')
         s = kwargs.get('s')
         degree = kwargs.get('degree')
         knotvector = kwargs.get('knotvector')
-        control_points2d = kwargs.get('ctrlpts')
+        ctrlpts = kwargs.get('ctrlpts')
         ctrlpts_size = kwargs.get('ctrlpts_size')
 
         # Algorithm A5.3
-        span = self._span_func(degree, knotvector, ctrlpts_size[0], u)
+        span = self._span_func(degree, knotvector, ctrlpts_size[0], param)
 
         # Initialize new knot vector array
         UQ = [0.0 for _ in range(len(knotvector) + r)]
         # Initialize new control points array (control points can be weighted or not)
-        Q = [[[] for _ in range(ctrlpts_size[1])] for _ in range(ctrlpts_size[0] + r)]
+        Q = [[] for _ in range((ctrlpts_size[0] + r) * ctrlpts_size[1])]
         # Initialize a local array of length p + 1
         R = [[] for _ in range(degree + 1)]
 
@@ -546,38 +546,38 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         for i in range(0, span + 1):
             UQ[i] = knotvector[i]
         for i in range(1, r + 1):
-            UQ[span + i] = u
+            UQ[span + i] = param
         for i in range(span + 1, len(knotvector)):
             UQ[i + r] = knotvector[i]
 
         # Save the alphas
-        alpha = [[0.0 for _ in range(r + 1)] for _ in range(degree - s)]
+        alpha = [0.0 for _ in range((r + 1) * (degree - s))]
         for j in range(1, r + 1):
             L = span - degree + j
             for i in range(0, degree - j - s + 1):
-                alpha[i][j] = (u - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
+                alpha[j + ((r + 1) * i)] = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
 
         # Update control points
         for row in range(0, ctrlpts_size[1]):
             for i in range(0, span - degree + 1):
-                Q[i][row] = control_points2d[i][row]
+                Q[row + (ctrlpts_size[1] * i)] = ctrlpts[row + (ctrlpts_size[1] * i)]
             for i in range(span - s, ctrlpts_size[0]):
-                Q[i + r][row] = control_points2d[i][row]
+                Q[row + (ctrlpts_size[1] * (i + r))] = ctrlpts[row + (ctrlpts_size[1] * i)]
             # Load auxiliary control points
             for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(control_points2d[span - degree + i][row])
+                R[i] = copy.deepcopy(ctrlpts[row + (ctrlpts_size[1] * (span - degree + i))])
             # Insert the knot r times
             for j in range(1, r + 1):
                 L = span - degree + j
                 for i in range(0, degree - j - s + 1):
-                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1
+                    R[i][:] = [alpha[j + ((r + 1) * i)] * elem2 + (1.0 - alpha[j + ((r + 1) * i)]) * elem1
                                for elem1, elem2 in zip(R[i], R[i + 1])]
-                Q[L][row] = copy.deepcopy(R[0])
-                Q[span + r - j - s][row] = copy.deepcopy(R[degree - j - s])
+                Q[row + (ctrlpts_size[1] * L)] = copy.deepcopy(R[0])
+                Q[row + (ctrlpts_size[1] * (span + r - j - s))] = copy.deepcopy(R[degree - j - s])
             # Load the remaining control points
             L = span - degree + r
             for i in range(L + 1, span - s):
-                Q[i][row] = copy.deepcopy(R[i - L])
+                Q[row + (ctrlpts_size[1] * i)] = copy.deepcopy(R[i - L])
 
         return UQ, Q
 
@@ -586,60 +586,60 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         # Call parent method
         super(SurfaceEvaluator, self).insert_knot_v(**kwargs)
 
-        v = kwargs.get('knot')
+        param = kwargs.get('parameter')
         r = kwargs.get('r')
         s = kwargs.get('s')
         degree = kwargs.get('degree')
-        knot_vector = kwargs.get('knotvector')
-        control_points2d = kwargs.get('ctrlpts')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
         ctrlpts_size = kwargs.get('ctrlpts_size')
 
         # Algorithm A5.3
-        span = self._span_func(degree, knot_vector, ctrlpts_size[1], v)
+        span = self._span_func(degree, knotvector, ctrlpts_size[1], param)
 
         # Initialize new knot vector array
-        VQ = [0.0 for _ in range(len(knot_vector) + r)]
+        VQ = [0.0 for _ in range(len(knotvector) + r)]
         # Initialize new control points array (control points can be weighted or not)
-        Q = [[[] for _ in range(ctrlpts_size[1] + r)] for _ in range(ctrlpts_size[0])]
+        Q = [[] for _ in range(ctrlpts_size[0] * (ctrlpts_size[1] + r))]
         # Initialize a local array of length q + 1
         R = [[] for _ in range(degree + 1)]
 
         # Load new knot vector
         for i in range(0, span + 1):
-            VQ[i] = knot_vector[i]
+            VQ[i] = knotvector[i]
         for i in range(1, r + 1):
-            VQ[span + i] = v
-        for i in range(span + 1, len(knot_vector)):
-            VQ[i + r] = knot_vector[i]
+            VQ[span + i] = param
+        for i in range(span + 1, len(knotvector)):
+            VQ[i + r] = knotvector[i]
 
         # Save the alphas
-        alpha = [[0.0 for _ in range(r + 1)] for _ in range(degree - s)]
+        alpha = [0.0 for _ in range((r + 1) * (degree - s))]
         for j in range(1, r + 1):
             L = span - degree + j
             for i in range(0, degree - j - s + 1):
-                alpha[i][j] = (v - knot_vector[L + i]) / (knot_vector[i + span + 1] - knot_vector[L + i])
+                alpha[j + ((r + 1) * i)] = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
 
         # Update control points
         for col in range(0, ctrlpts_size[0]):
             for i in range(0, span - degree + 1):
-                Q[col][i] = control_points2d[col][i]
+                Q[i + ((ctrlpts_size[1] + r) * col)] = ctrlpts[i + (ctrlpts_size[1] * col)]
             for i in range(span - s, ctrlpts_size[1]):
-                Q[col][i + r] = control_points2d[col][i]
+                Q[i + r + ((ctrlpts_size[1] + r) * col)] = ctrlpts[i + (ctrlpts_size[1] * col)]
             # Load auxiliary control points
             for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(control_points2d[col][span - degree + i])
+                R[i] = copy.deepcopy(ctrlpts[span - degree + i + (ctrlpts_size[1] * col)])
             # Insert the knot r times
             for j in range(1, r + 1):
                 L = span - degree + j
                 for i in range(0, degree - j - s + 1):
-                    R[i][:] = [alpha[i][j] * elem2 + (1.0 - alpha[i][j]) * elem1
+                    R[i][:] = [alpha[j + ((r + 1) * i)] * elem2 + (1.0 - alpha[j + ((r + 1) * i)]) * elem1
                                for elem1, elem2 in zip(R[i], R[i + 1])]
-                Q[col][L] = copy.deepcopy(R[0])
-                Q[col][span + r - j - s] = copy.deepcopy(R[degree - j - s])
+                Q[L + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[0])
+                Q[span + r - j - s + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[degree - j - s])
             # Load the remaining control points
             L = span - degree + r
             for i in range(L + 1, span - s):
-                Q[col][i] = copy.deepcopy(R[i - L])
+                Q[i + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[i - L])
 
         return VQ, Q
 
