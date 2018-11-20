@@ -14,18 +14,26 @@ This module works with ``BSpline`` and ``NURBS`` modules and it contains the fol
 * :py:class:`.MultiSurface` surface container class
 
 
-Abstract Class Reference
-========================
+Abstract Container
+==================
 
-.. autoclass:: geomdl.Abstract.Multi
+.. autoclass:: geomdl.Multi.AbstractMulti
     :members:
     :inherited-members:
     :show-inheritance:
 
-Multi Curve and Surface Reference
-=================================
+Curve Container
+===============
 
-.. automodule:: geomdl.Multi
+.. automodule:: geomdl.Multi.MultiCurve
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+Surface Container
+=================
+
+.. automodule:: geomdl.Multi.MultiSurface
     :members:
     :inherited-members:
     :show-inheritance:

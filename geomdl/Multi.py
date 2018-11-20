@@ -7,12 +7,173 @@
 
 """
 
+import abc
 import warnings
+import six
 from . import Abstract
 from . import utilities
 
 
-class MultiCurve(Abstract.Multi):
+class AbstractMulti(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract class for curve and surface containers.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+
+    This class provides the following properties:
+
+    * dimension
+    * evalpts
+    * bbox
+    * vis
+    """
+
+    def __init__(self, *args, **kwargs):
+        self._elements = []  # elements contained
+        self._delta = None  # evaluation delta
+        self._vis_component = None  # visualization component
+        self._iter_index = 0  # iterator index
+        self._instance = None  # type of the initial element
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        try:
+            result = self._elements[self._iter_index]
+        except IndexError:
+            raise StopIteration
+        self._iter_index += 1
+        return result
+
+    def __reversed__(self):
+        return reversed(self._elements)
+
+    def __getitem__(self, index):
+        return self._elements[index]
+
+    def __len__(self):
+        return len(self._elements)
+
+    def __add__(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError("Cannot add non-matching container types")
+        self._elements += other._elements
+        return self
+
+    @property
+    def dimension(self):
+        """ Shape dimension.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the dimension of the shape
+        """
+        if self._elements:
+            return self._elements[0].dimension
+        return 0
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        Since there are multiple shapes contained in the Multi objects, the evaluated points will be returned in the
+        format of list of individual evaluated points which is also a list of Cartesian coordinates.
+
+        The following code example illustrates these details:
+
+        .. code-block:: python
+
+            multi_obj = Multi.MultiSurface()  # it can be Multi.MultiCurve() too
+            # Add shapes to multi_obj via multi_obj.add() method
+            # Then, the following loop will print all the evaluated points of the Multi object
+            for idx, mpt in enumerate(multi_obj.evalpts):
+                print("Shape", idx+1, "contains", len(mpt), "points. These points are:")
+                for pt in mpt:
+                    line = ", ".join([str(p) for p in pt])
+                    print(line)
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the evaluated points of all contained shapes
+        """
+        ret = []
+        for elem in self._elements:
+            elem.delta = self._delta
+            evalpts = elem.evalpts
+            ret.append(evalpts)
+        return ret
+
+    @property
+    def bbox(self):
+        """ Bounding box.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the bounding box of all contained shapes
+        """
+        all_box = []
+        for elem in self._elements:
+            all_box += list(elem.bbox)
+        return utilities.evaluate_bounding_box(all_box)
+
+    @property
+    def vis(self):
+        """ Visualization component.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        :type: float
+        """
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, Abstract.VisAbstract):
+            warnings.warn("Visualization component is NOT an instance of the abstract class")
+            return
+        self._vis_component = value
+
+    def add(self, element):
+        """ Adds shapes to the container.
+
+        The input can be a single shape, a list of shapes or a container object.
+
+        :param element: shape to be added
+        """
+        if isinstance(element, self._instance):
+            self._elements.append(element)
+        elif isinstance(element, self.__class__):
+            self + element
+        elif isinstance(element, (list, tuple)):
+            for elem in element:
+                self.add(elem)
+        else:
+            raise TypeError("Cannot add the element to the container")
+
+    # Runs visualization component to render the surface
+    @abc.abstractmethod
+    def render(self):
+        """ Renders plots using the visualization component.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
+        pass
+
+
+class MultiCurve(AbstractMulti):
     """ Container class for storing multiple curves.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -175,7 +336,7 @@ class MultiCurve(Abstract.Multi):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-class MultiSurface(Abstract.Multi):
+class MultiSurface(AbstractMulti):
     """ Container class for storing multiple surfaces.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in

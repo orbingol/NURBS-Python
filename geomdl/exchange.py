@@ -788,7 +788,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     # Input validity checking
-    if not isinstance(surface_list, Abstract.Multi):
+    if not isinstance(surface_list, Multi.AbstractMulti):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -894,7 +894,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     # Input validity checking
-    if not isinstance(surface_list, Abstract.Multi):
+    if not isinstance(surface_list, Multi.AbstractMulti):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
