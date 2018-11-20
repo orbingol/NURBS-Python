@@ -519,6 +519,16 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         # Not implemented, yet
         raise NotImplementedError("This functionality is not implemented at the moment")
 
+    def _compute_knot_vector(self, knotvector, r, param, span):
+        kv_new = [0.0 for _ in range(len(knotvector) + r)]
+        for i in range(0, span + 1):
+            kv_new[i] = knotvector[i]
+        for i in range(1, r + 1):
+            kv_new[span + i] = param
+        for i in range(span + 1, len(knotvector)):
+            kv_new[i + r] = knotvector[i]
+        return kv_new
+
     def insert_knot_u(self, **kwargs):
         """ Inserts knot(s) in u-direction. """
         # Call parent method
@@ -535,20 +545,13 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         # Algorithm A5.3
         span = self._span_func(degree, knotvector, ctrlpts_size[0], param)
 
-        # Initialize new knot vector array
-        UQ = [0.0 for _ in range(len(knotvector) + r)]
+        # Compute new know vector
+        UQ = self._compute_knot_vector(knotvector, r, param, span)
+
         # Initialize new control points array (control points can be weighted or not)
         Q = [[] for _ in range((ctrlpts_size[0] + r) * ctrlpts_size[1])]
         # Initialize a local array of length p + 1
         R = [[] for _ in range(degree + 1)]
-
-        # Load new knot vector
-        for i in range(0, span + 1):
-            UQ[i] = knotvector[i]
-        for i in range(1, r + 1):
-            UQ[span + i] = param
-        for i in range(span + 1, len(knotvector)):
-            UQ[i + r] = knotvector[i]
 
         # Update control points
         for row in range(0, ctrlpts_size[1]):
@@ -590,20 +593,13 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         # Algorithm A5.3
         span = self._span_func(degree, knotvector, ctrlpts_size[1], param)
 
-        # Initialize new knot vector array
-        VQ = [0.0 for _ in range(len(knotvector) + r)]
+        # Compute new know vector
+        VQ = self._compute_knot_vector(knotvector, r, param, span)
+
         # Initialize new control points array (control points can be weighted or not)
         Q = [[] for _ in range(ctrlpts_size[0] * (ctrlpts_size[1] + r))]
         # Initialize a local array of length q + 1
         R = [[] for _ in range(degree + 1)]
-
-        # Load new knot vector
-        for i in range(0, span + 1):
-            VQ[i] = knotvector[i]
-        for i in range(1, r + 1):
-            VQ[span + i] = param
-        for i in range(span + 1, len(knotvector)):
-            VQ[i + r] = knotvector[i]
 
         # Update control points
         for col in range(0, ctrlpts_size[0]):
