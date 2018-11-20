@@ -447,27 +447,25 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         precision = kwargs.get('precision')
 
         # Algorithm A3.5
-        knots_u = utilities.linspace(start[0], stop[0], sample_size[0], decimals=precision)
-        knots_v = utilities.linspace(start[1], stop[1], sample_size[1], decimals=precision)
-
-        spans_u = helpers.find_spans(degree[0], knotvector[0], ctrlpts_size[0], knots_u, self._span_func)
-        spans_v = helpers.find_spans(degree[1], knotvector[1], ctrlpts_size[1], knots_v, self._span_func)
-
-        basis_u = helpers.basis_functions(degree[0], knotvector[0], spans_u, knots_u)
-        basis_v = helpers.basis_functions(degree[1], knotvector[1], spans_v, knots_v)
+        spans = [[] for _ in range(len(degree))]
+        basis = [[] for _ in range(len(degree))]
+        for idx in range(len(degree)):
+            knots = utilities.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
+            spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], ctrlpts_size[idx], knots, self._span_func)
+            basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
 
         eval_points = []
-        for i in range(len(knots_u)):
-            idx_u = spans_u[i] - degree[0]
-            for j in range(len(knots_v)):
-                idx_v = spans_v[j] - degree[1]
+        for i in range(len(spans[0])):
+            idx_u = spans[0][i] - degree[0]
+            for j in range(len(spans[1])):
+                idx_v = spans[1][j] - degree[1]
                 spt = [0.0 for _ in range(dimension)]
                 for k in range(0, degree[0] + 1):
                     temp = [0.0 for _ in range(dimension)]
                     for l in range(0, degree[1] + 1):
-                        temp[:] = [tmp + (basis_v[j][l] * cp) for tmp, cp in
+                        temp[:] = [tmp + (basis[1][j][l] * cp) for tmp, cp in
                                    zip(temp, ctrlpts[idx_v + l + (ctrlpts_size[1] * (idx_u + k))])]
-                    spt[:] = [pt + (basis_u[i][k] * tmp) for pt, tmp in zip(spt, temp)]
+                    spt[:] = [pt + (basis[0][i][k] * tmp) for pt, tmp in zip(spt, temp)]
 
                 eval_points.append(spt)
 
@@ -487,29 +485,29 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         dimension = kwargs.get('dimension')
 
         # Algorithm A3.6
-        du = min(degree[0], deriv_order)
-        dv = min(degree[1], deriv_order)
+        d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        span_u = self._span_func(degree[0], knotvector[0], ctrlpts_size[0], param[0])
-        bfunsders_u = helpers.basis_function_ders(degree[0], knotvector[0], span_u, param[0], du)
-        span_v = self._span_func(degree[1], knotvector[1], ctrlpts_size[1], param[1])
-        bfunsders_v = helpers.basis_function_ders(degree[1], knotvector[1], span_v, param[1], dv)
+        span = [0 for _ in range(len(degree))]
+        basisdrv = [[] for _ in range(len(degree))]
+        for idx in range(len(degree)):
+            span[idx] = self._span_func(degree[idx], knotvector[idx], ctrlpts_size[idx], param[idx])
+            basisdrv[idx] = helpers.basis_function_ders(degree[idx], knotvector[idx], span[idx], param[idx], d[idx])
 
-        for k in range(0, du + 1):
+        for k in range(0, d[0] + 1):
             temp = [[0.0 for _ in range(dimension)] for _ in range(degree[1] + 1)]
             for s in range(0, degree[1] + 1):
                 for r in range(0, degree[0] + 1):
-                    cu = span_u - degree[0] + r
-                    cv = span_v - degree[1] + s
-                    temp[s][:] = [tmp + (bfunsders_u[k][r] * cp) for tmp, cp in
+                    cu = span[0] - degree[0] + r
+                    cv = span[1] - degree[1] + s
+                    temp[s][:] = [tmp + (basisdrv[0][k][r] * cp) for tmp, cp in
                                   zip(temp[s], ctrlpts[cv + (ctrlpts_size[1] * cu)])]
 
-            dd = min(deriv_order - k, dv)
+            dd = min(deriv_order - k, d[1])
             for l in range(0, dd + 1):
                 for s in range(0, degree[1] + 1):
-                    SKL[k][l][:] = [elem + (bfunsders_v[l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
+                    SKL[k][l][:] = [elem + (basisdrv[1][l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
 
         return SKL
 
@@ -733,7 +731,6 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         Output is SKL[k][l], derivative of the surface k times with respect to U and l times with respect to V
         """
-
         deriv_order = kwargs.get('deriv_order')
         param = kwargs.get('parameter')
         degree = kwargs.get('degree')
@@ -743,21 +740,21 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        du = min(degree[0], deriv_order)
-        dv = min(degree[1], deriv_order)
+        d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
 
-        span_u = self._span_func(degree[0], knotvector[0], ctrlpts_size[0], param[0])
-        bfuns_u = helpers.basis_function_all(degree[0], knotvector[0], span_u, param[0])
-        span_v = self._span_func(degree[1], knotvector[1], ctrlpts_size[1], param[1])
-        bfuns_v = helpers.basis_function_all(degree[1], knotvector[1], span_v, param[1])
+        span = [0 for _ in range(len(degree))]
+        basis = [[] for _ in range(len(degree))]
+        for idx in range(len(degree)):
+            span[idx] = self._span_func(degree[idx], knotvector[idx], ctrlpts_size[idx], param[idx])
+            basis[idx] = helpers.basis_function_all(degree[idx], knotvector[idx], span[idx], param[idx])
 
-        PKL = self.derivatives_ctrlpts(r1=span_u - degree[0], r2=span_u,
-                                       s1=span_v - degree[1], s2=span_v,
+        PKL = self.derivatives_ctrlpts(r1=span[0] - degree[0], r2=span[0],
+                                       s1=span[1] - degree[1], s2=span[1],
                                        **kwargs)
 
         # Evaluating the derivative at parameters (u,v) using its control points
-        for k in range(0, du + 1):
-            dd = min(deriv_order - k, dv)
+        for k in range(0, d[0] + 1):
+            dd = min(deriv_order - k, d[1])
 
             for l in range(0, dd + 1):
                 SKL[k][l] = [0.0 for _ in range(dimension)]
@@ -766,10 +763,10 @@ class SurfaceEvaluator2(SurfaceEvaluator):
                     temp = [0.0 for _ in range(dimension)]
 
                     for j in range(0, degree[0] - k + 1):
-                        temp[:] = [elem + (bfuns_u[j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
+                        temp[:] = [elem + (basis[0][j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
                                    zip(temp, PKL[k][l][j][i])]
 
-                    SKL[k][l][:] = [elem + (bfuns_v[i][degree[1] - l] * drv_ctl_p) for elem, drv_ctl_p in
+                    SKL[k][l][:] = [elem + (basis[1][i][degree[1] - l] * drv_ctl_p) for elem, drv_ctl_p in
                                     zip(SKL[k][l], temp)]
 
         return SKL
