@@ -243,11 +243,11 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @knotvector.setter
     def knotvector(self, value):
-        if self._degree == 0 or self._control_points is None or len(self._control_points) == 0:
+        if self.degree == 0 or self._control_points is None or len(self._control_points) == 0:
             raise ValueError("Set degree and control points first")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree, value, len(self._control_points)):
+        if not utilities.check_knot_vector(self.degree, value, len(self._control_points)):
             raise ValueError("Input is not a valid knot vector")
 
         # Clean up the curve points lists
@@ -312,13 +312,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         if not isinstance(value, int):
             raise ValueError("Sample size must be an integer value")
 
-        if self._knot_vector is None or len(self._knot_vector) == 0 or self._degree == 0:
+        if self.knotvector is None or len(self.knotvector) == 0 or self.degree == 0:
             warnings.warn("Cannot determine the delta value. Please set knot vector and degree before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
-        start = self._knot_vector[self._degree]
-        stop = self._knot_vector[-(self._degree+1)]
+        start = self.knotvector[self.degree]
+        stop = self.knotvector[-(self.degree+1)]
 
         # Set delta value
         self.delta = (stop - start) / float(value - 1)
@@ -420,10 +420,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :type ctrlpts: list
         """
         # Degree must be set before setting the control points
-        if self._degree == 0:
+        if self.degree == 0:
             raise ValueError("Set the degree first")
 
-        if len(ctrlpts) < self._degree + 1:
+        if len(ctrlpts) < self.degree + 1:
             raise ValueError("Number of control points should be at least degree + 1")
 
         # Keyword arguments
@@ -511,13 +511,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def _check_variables(self):
         works = True
         param_list = []
-        if self._degree == 0:
+        if self.degree == 0:
             works = False
             param_list.append('degree')
         if self._control_points is None or len(self._control_points) == 0:
             works = False
             param_list.append('ctrlpts')
-        if self._knot_vector is None or len(self._knot_vector) == 0:
+        if self.knotvector is None or len(self.knotvector) == 0:
             works = False
             param_list.append('knotvector')
         if not works:
@@ -643,17 +643,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def __init__(self, **kwargs):
         # Set default array type
         self._array_type = list
-        # Define u-direction variables
-        self._degree_u = 0  # degree
-        self._knot_vector_u = self._init_var(self._array_type)  # knot vector
-        self._control_points_size_u = 0  # control points array length
-        self._delta_u = 0.01  # evaluation delta
-        # Define v-direction variables
-        self._degree_v = 0  # degree
-        self._knot_vector_v = self._init_var(self._array_type)  # knot vector
-        self._control_points_size_v = 0  # control points array length
-        self._delta_v = 0.01  # evaluation delta
-        # Define common variables
+        self._degree = [0, 0]  # degree
+        self._knot_vector = [self._init_var(self._array_type), self._init_var(self._array_type)]  # knot vector
+        self._control_points_size = [0, 0]  # control points array length
+        self._delta = [0.01, 0.01]  # evaluation delta
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._control_points = self._init_var(self._array_type)  # control points, 1-D array (v-order)
@@ -786,7 +779,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the surface order for u-direction
         :type: integer
         """
-        return self._degree_u + 1
+        return self._degree[0] + 1
 
     @order_u.setter
     def order_u(self, value):
@@ -805,7 +798,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the surface order for v-direction
         :type: integer
         """
-        return self._degree_v + 1
+        return self._degree[1] + 1
 
     @order_v.setter
     def order_v(self, value):
@@ -822,7 +815,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the surface degree for u-direction
         :type: integer
         """
-        return self._degree_u
+        return self._degree[0]
 
     @degree_u.setter
     def degree_u(self, value):
@@ -832,7 +825,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Clean up the surface points
         self.reset(evalpts=True)
         # Set degree u
-        self._degree_u = int(value)
+        self._degree[0] = int(value)
 
     @property
     def degree_v(self):
@@ -845,7 +838,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the surface degree for v-direction
         :type: integer
         """
-        return self._degree_v
+        return self._degree[1]
 
     @degree_v.setter
     def degree_v(self, value):
@@ -855,7 +848,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Clean up the surface points
         self.reset(evalpts=True)
         # Set degree v
-        self._degree_v = val
+        self._degree[1] = val
 
     @property
     def knotvector_u(self):
@@ -867,22 +860,22 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets the knot vector for u-direction
         :setter: Sets the knot vector for u-direction
         """
-        return self._knot_vector_u
+        return self._knot_vector[0]
 
     @knotvector_u.setter
     def knotvector_u(self, value):
-        if self._degree_u == 0 or self._control_points_size_u == 0:
+        if self.degree_u == 0 or self.ctrlpts_size_u == 0:
             raise ValueError("Set degree and control points first on the u-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree_u, value, self._control_points_size_u):
+        if not utilities.check_knot_vector(self.degree_u, value, self.ctrlpts_size_u):
             raise ValueError("Input is not a valid knot vector on the u-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector_u = value
+        self._knot_vector[0] = value
 
     @property
     def knotvector_v(self):
@@ -894,22 +887,22 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets the knot vector for v-direction
         :setter: Sets the knot vector for v-direction
         """
-        return self._knot_vector_v
+        return self._knot_vector[1]
 
     @knotvector_v.setter
     def knotvector_v(self, value):
-        if self._degree_v == 0 or self._control_points_size_v == 0:
+        if self.degree_v == 0 or self.ctrlpts_size_v == 0:
             raise ValueError("Set degree and control points first on the v-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self._degree_v, value, self._control_points_size_v):
+        if not utilities.check_knot_vector(self.degree_v, value, self.ctrlpts_size_v):
             raise ValueError("Input is not a valid knot vector on the v-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector_v = value
+        self._knot_vector[1] = value
 
     @property
     def ctrlpts(self):
@@ -953,7 +946,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets number of control points on the u-direction
         :setter: Sets number of control points on the u-direction
         """
-        return self._control_points_size_u
+        return self._control_points_size[0]
 
     @ctrlpts_size_u.setter
     def ctrlpts_size_u(self, value):
@@ -963,7 +956,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             raise ValueError("Control points size cannot be less than and equal to zero")
 
         # Assume that user is doing this right
-        self._control_points_size_u = value
+        self._control_points_size[0] = value
 
     @property
     def ctrlpts_size_v(self):
@@ -975,7 +968,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets number of control points on the v-direction
         :setter: Sets number of control points on the v-direction
         """
-        return self._control_points_size_v
+        return self._control_points_size[1]
 
     @ctrlpts_size_v.setter
     def ctrlpts_size_v(self, value):
@@ -985,7 +978,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             raise ValueError("Control points size cannot be less than and equal to zero")
 
         # Assume that user is doing this right
-        self._control_points_size_v = value
+        self._control_points_size[1] = value
 
     @property
     def evalpts(self):
@@ -1021,13 +1014,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         if not isinstance(value, int):
             raise ValueError("Sample size must be an integer value")
 
-        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or self._degree_u == 0:
-            warnings.warn("Cannot determine the delta_u value. Please set knot vectors and degrees before sample size.")
+        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0:
+            warnings.warn("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
-        start_u = self._knot_vector_u[self._degree_u]
-        stop_u = self._knot_vector_u[-(self._degree_u+1)]
+        start_u = self.knotvector_u[self.degree_u]
+        stop_u = self.knotvector_u[-(self.degree_u+1)]
 
         # Set delta values
         self.delta_u = (stop_u - start_u) / float(value - 1)
@@ -1052,13 +1045,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         if not isinstance(value, int):
             raise ValueError("Sample size must be an integer value")
 
-        if (self._knot_vector_v is None or len(self._knot_vector_v) == 0) or self._degree_v == 0:
-            warnings.warn("Cannot determine the delta_v value. Please set knot vectors and degrees before sample size.")
+        if (self.knotvector_v is None or len(self.knotvector_v) == 0) or self.degree_v == 0:
+            warnings.warn("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
-        start_v = self._knot_vector_v[self._degree_v]
-        stop_v = self._knot_vector_v[-(self._degree_v+1)]
+        start_v = self.knotvector_v[self.degree_v]
+        stop_v = self.knotvector_v[-(self.degree_v+1)]
 
         # Set delta values
         self.delta_v = (stop_v - start_v) / float(value - 1)
@@ -1088,16 +1081,16 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @sample_size.setter
     def sample_size(self, value):
-        if (self._knot_vector_u is None or len(self._knot_vector_u) == 0) or self._degree_u == 0 or\
-                (self._knot_vector_v is None or len(self._knot_vector_v) == 0 or self._degree_v == 0):
-            warnings.warn("Cannot determine the delta value. Please set knot vectors and degrees before sample size.")
+        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or\
+                (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0):
+            warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
-        start_u = self._knot_vector_u[self._degree_u]
-        stop_u = self._knot_vector_u[-(self._degree_u+1)]
-        start_v = self._knot_vector_v[self._degree_v]
-        stop_v = self._knot_vector_v[-(self._degree_v+1)]
+        start_u = self.knotvector_u[self.degree_u]
+        stop_u = self.knotvector_u[-(self.degree_u+1)]
+        start_v = self.knotvector_v[self.degree_v]
+        stop_v = self.knotvector_v[-(self.degree_v+1)]
 
         # Set delta values
         self.delta_u = (stop_u - start_u) / float(value - 1)
@@ -1121,7 +1114,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the delta value for the u-direction
         :type: float
         """
-        return self._delta_u
+        return self._delta[0]
 
     @delta_u.setter
     def delta_u(self, value):
@@ -1133,7 +1126,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set new delta value
-        self._delta_u = float(value)
+        self._delta[0] = float(value)
 
     @property
     def delta_v(self):
@@ -1153,7 +1146,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the delta value for the v-direction
         :type: float
         """
-        return self._delta_v
+        return self._delta[1]
 
     @delta_v.setter
     def delta_v(self, value):
@@ -1165,7 +1158,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set new delta value
-        self._delta_v = float(value)
+        self._delta[1] = float(value)
 
     @property
     def delta(self):
@@ -1309,13 +1302,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :return: None
         """
         # Degrees must be set before setting the control points
-        if self._degree_u == 0 or self._degree_v == 0:
+        if self.degree_u == 0 or self.degree_v == 0:
             raise ValueError("Set the degrees first")
 
         # Check array size validity
-        if size_u < self._degree_u + 1:
+        if size_u < self.degree_u + 1:
             raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if size_v < self._degree_v + 1:
+        if size_v < self.degree_v + 1:
             raise ValueError("Number of control points on the v-direction should be at least degree + 1")
 
         # Keyword arguments
@@ -1349,8 +1342,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._control_points2D = ctrlpts_float2d
 
         # Set u and v sizes
-        self._control_points_size_u = size_u
-        self._control_points_size_v = size_v
+        self.ctrlpts_size_u = size_u
+        self.ctrlpts_size_v = size_v
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
@@ -1474,8 +1467,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         if reset_ctrlpts:
             self._control_points = self._init_var(self._array_type)
             self._control_points2D = self._init_var(self._array_type)
-            self._control_points_size_u = 0
-            self._control_points_size_v = 0
+            self._control_points_size[0] = 0
+            self._control_points_size[1] = 0
             self._bounding_box = self._init_var(self._array_type)
 
         if reset_evalpts:
@@ -1488,19 +1481,19 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def _check_variables(self):
         works = True
         param_list = []
-        if self._degree_u == 0:
+        if self.degree_u == 0:
             works = False
             param_list.append('degree_u')
-        if self._degree_v == 0:
+        if self.degree_v == 0:
             works = False
             param_list.append('degree_v')
         if self._control_points is None or len(self._control_points) == 0:
             works = False
             param_list.append('ctrlpts')
-        if self._knot_vector_u is None or len(self._knot_vector_u) == 0:
+        if self.knotvector_u is None or len(self.knotvector_u) == 0:
             works = False
             param_list.append('knotvector_u')
-        if self._knot_vector_v is None or len(self._knot_vector_v) == 0:
+        if self.knotvector_v is None or len(self.knotvector_v) == 0:
             works = False
             param_list.append('knotvector_v')
         if not works:

@@ -475,11 +475,11 @@ class Surface(Abstract.Surface):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
-        if self._control_points_size_u <= 0 and self._control_points_size_v <= 0:
+        if self.ctrlpts_size_u <= 0 and self.ctrlpts_size_v <= 0:
             raise ValueError("Please set size of the control points in u and v directions")
 
         # Use set_ctrlpts directly
-        self.set_ctrlpts(value, self._control_points_size_u, self._control_points_size_v)
+        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
     @property
     def ctrlpts2d(self):
@@ -539,9 +539,9 @@ class Surface(Abstract.Surface):
         :type: list
         """
         ret_list = []
-        for u in range(0, self._control_points_size_u):
+        for u in range(0, self.ctrlpts_size_u):
             ret_list_v = []
-            for v in range(0, self._control_points_size_v):
+            for v in range(0, self.ctrlpts_size_v):
                 ret_list_v.append(tuple(self._control_points2D[u][v]))
             ret_list.append(tuple(ret_list_v))
         return tuple(ret_list)
@@ -555,17 +555,17 @@ class Surface(Abstract.Surface):
         self.reset(evalpts=True, ctrlpts=True)
 
         # Assume that the user has prepared the lists correctly
-        self._control_points_size_u = len(value)
-        self._control_points_size_v = len(value[0])
+        self.ctrlpts_size_u = len(value)
+        self.ctrlpts_size_v = len(value[0])
 
         # Estimate dimension by checking the size of the first element
         self._dimension = len(value[0][0])
 
         # Make sure that all numbers are float type
-        ctrlpts2d = [[[] for _ in range(0, self._control_points_size_v)]
-                     for _ in range(0, self._control_points_size_u)]
-        for u in range(0, self._control_points_size_u):
-            for v in range(0, self._control_points_size_v):
+        ctrlpts2d = [[[] for _ in range(0, self.ctrlpts_size_v)]
+                     for _ in range(0, self.ctrlpts_size_u)]
+        for u in range(0, self.ctrlpts_size_u):
+            for v in range(0, self.ctrlpts_size_v):
                 ctrlpts2d[u][v] = [float(coord) for coord in value[u][v]]
 
         # Set 2D control points
@@ -589,7 +589,7 @@ class Surface(Abstract.Surface):
         :setter: Sets the knot vector for u-direction
         :type: list
         """
-        return tuple(self._knot_vector_u)
+        return tuple(self._knot_vector[0])
 
     @knotvector_u.setter
     def knotvector_u(self, value):
@@ -597,7 +597,7 @@ class Surface(Abstract.Surface):
         super(Surface, self.__class__).knotvector_u.fset(self, value)
 
         # Normalize knot vector
-        self._knot_vector_u = utilities.normalize_knot_vector(self._knot_vector_u, decimals=self._precision)
+        self._knot_vector[0] = utilities.normalize_knot_vector(self.knotvector_u, decimals=self._precision)
 
     @property
     def knotvector_v(self):
@@ -612,7 +612,7 @@ class Surface(Abstract.Surface):
         :setter: Sets the knot vector for v-direction
         :type: list
         """
-        return tuple(self._knot_vector_v)
+        return tuple(self._knot_vector[1])
 
     @knotvector_v.setter
     def knotvector_v(self, value):
@@ -620,7 +620,7 @@ class Surface(Abstract.Surface):
         super(Surface, self.__class__).knotvector_v.fset(self, value)
 
         # Normalize knot vector
-        self._knot_vector_v = utilities.normalize_knot_vector(self._knot_vector_v, decimals=self._precision)
+        self._knot_vector[1] = utilities.normalize_knot_vector(self.knotvector_v, decimals=self._precision)
 
     def save(self, file_name):
         """ Saves the surface as a pickled file.
@@ -630,13 +630,13 @@ class Surface(Abstract.Surface):
         :raises IOError: an error occurred writing the file
         """
         # Create a dictionary from the surface data
-        expdata = {'rational': self._rational,
-                   'degree_u': self._degree_u,
-                   'degree_v': self._degree_v,
-                   'knotvector_u': self._knot_vector_u,
-                   'knotvector_v': self._knot_vector_v,
-                   'ctrlpts_size_u': self._control_points_size_u,
-                   'ctrlpts_size_v': self._control_points_size_v,
+        expdata = {'rational': self.rational,
+                   'degree_u': self.degree_u,
+                   'degree_v': self.degree_v,
+                   'knotvector_u': self.knotvector_u,
+                   'knotvector_v': self.knotvector_v,
+                   'ctrlpts_size_u': self.ctrlpts_size_u,
+                   'ctrlpts_size_v': self.ctrlpts_size_v,
                    'ctrlpts': self._control_points,
                    'dimension': self._dimension}
 
@@ -659,14 +659,15 @@ class Surface(Abstract.Surface):
         self.reset(ctrlpts=True, evalpts=True)
 
         # Set the surface data
-        self._degree_u = impdata['degree_u']
-        self._degree_v = impdata['degree_v']
-        self._knot_vector_u = impdata['knotvector_u']
-        self._knot_vector_v = impdata['knotvector_v']
-        self._control_points_size_u = impdata['ctrlpts_size_u']
-        self._control_points_size_v = impdata['ctrlpts_size_v']
+        self.degree_u = impdata['degree_u']
+        self.degree_v = impdata['degree_v']
+        self.ctrlpts_size_u = impdata['ctrlpts_size_u']
+        self.ctrlpts_size_v = impdata['ctrlpts_size_v']
         self._dimension = impdata['dimension']
         self._control_points = impdata['ctrlpts']
+        self.knotvector_u = impdata['knotvector_u']
+        self.knotvector_v = impdata['knotvector_v']
+
 
     def transpose(self):
         """ Transposes the surface by swapping u- and v-directions. """
@@ -890,8 +891,8 @@ class Surface(Abstract.Surface):
                                                       ctrlpts=self._control_points)
 
                 # Update class variables after knot insertion
-                self._knot_vector_u = UQ
-                self._control_points_size_u += ru
+                self._knot_vector[0] = UQ
+                self._control_points_size[0] += ru
                 self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
         if v:
@@ -909,8 +910,8 @@ class Surface(Abstract.Surface):
                                                       ctrlpts=self._control_points)
 
                 # Update class variables after knot insertion
-                self._knot_vector_v = VQ
-                self._control_points_size_v += rv
+                self._knot_vector[1] = VQ
+                self._control_points_size[1] += rv
                 self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
         # Evaluate surface again if it has already been evaluated before knot insertion
