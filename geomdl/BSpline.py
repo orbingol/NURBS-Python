@@ -305,13 +305,8 @@ class Curve(Abstract.Curve):
         if check_r and r > self._degree - s:
             raise ValueError("Cannot insert " + str(r) + " number of knots")
 
-        UQ, Q = self._evaluator.insert_knot(knot=u,
-                                            r=r,
-                                            s=s,
-                                            degree=self.degree,
-                                            knotvector=self.knotvector,
-                                            ctrlpts=self._control_points,
-                                            dimension=self._dimension)
+        UQ, Q = self._evaluator.insert_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
+                                            ctrlpts=self._control_points, dimension=self._dimension)
 
         # Update class variables
         self._knot_vector = UQ

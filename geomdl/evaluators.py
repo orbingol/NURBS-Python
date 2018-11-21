@@ -195,7 +195,7 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
         # Call parent method
         super(CurveEvaluator, self).insert_knot(**kwargs)
 
-        knot = kwargs.get('knot')
+        param = kwargs.get('parameter')
         r = kwargs.get('r')  # number of knot insertions
         s = kwargs.get('s')  # multiplicity
         degree = kwargs.get('degree')
@@ -203,7 +203,7 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
         ctrlpts = kwargs.get('ctrlpts')
 
         # Algorithm A5.1
-        k = self._span_func(degree, knotvector, len(ctrlpts), knot)
+        k = self._span_func(degree, knotvector, len(ctrlpts), param)
         mp = len(knotvector)
         np = len(ctrlpts)
         nq = np + r
@@ -219,7 +219,7 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
         for i in range(0, k + 1):
             UQ[i] = knotvector[i]
         for i in range(1, r + 1):
-            UQ[k + i] = knot
+            UQ[k + i] = param
         for i in range(k + 1, mp):
             UQ[i + r] = knotvector[i]
 
@@ -237,7 +237,7 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
         for j in range(1, r + 1):
             L = k - degree + j
             for i in range(0, degree - j - s + 1):
-                alpha = (knot - knotvector[L + i]) / (knotvector[i + k + 1] - knotvector[L + i])
+                alpha = (param - knotvector[L + i]) / (knotvector[i + k + 1] - knotvector[L + i])
                 R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
             Q[L] = copy.deepcopy(R[0])
             Q[k + r - j - s] = copy.deepcopy(R[degree - j - s])
