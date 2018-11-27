@@ -65,9 +65,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        # Set default array type
         self._array_type = list
-        # Initialize class variables
+        self._iter_index = 0  # iterator index
         self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
         self._degree = 0  # degree
@@ -82,6 +81,22 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._precision = 6  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
         self._cache = {}  # cache dictionary
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
 
     def __copy__(self):
         cls = self.__class__
@@ -642,8 +657,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        # Set default array type
         self._array_type = list
+        self._iter_index = 0  # iterator index
         self._degree = [0, 0]  # degree
         self._knot_vector = [self._init_var(self._array_type), self._init_var(self._array_type)]  # knot vector
         self._control_points_size = [0, 0]  # control points array length
@@ -663,6 +678,22 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._cache = {}  # cache dictionary
         # Advanced functionality
         self._trims = self._init_var(self._array_type)  # trim curves
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
 
     def __copy__(self):
         cls = self.__class__
