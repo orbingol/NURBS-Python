@@ -7,7 +7,7 @@
 
 """
 
-from geomdl import abstract
+from geomdl import vis
 
 import numpy as np
 import matplotlib as mpl
@@ -16,7 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 
-class VisConfig(abstract.VisConfigAbstract):
+class VisConfig(vis.VisConfigAbstract):
     """ Configuration class for Matplotlib visualization module.
 
     This class is only required when you would like to change the visual defaults of the plots and the figure,
@@ -103,7 +103,7 @@ class VisConfig(abstract.VisConfigAbstract):
             fig.savefig(str(filename), bbox_inches='tight')
 
 
-class VisCurve2D(abstract.VisAbstract):
+class VisCurve2D(vis.VisAbstract):
     """ Matplotlib visualization module for 2D curves """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
@@ -168,7 +168,7 @@ class VisCurve2D(abstract.VisAbstract):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisCurve3D(abstract.VisAbstract):
+class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
@@ -241,7 +241,7 @@ class VisCurve3D(abstract.VisAbstract):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurface(abstract.VisAbstractSurf):
+class VisSurface(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
@@ -328,7 +328,7 @@ class VisSurface(abstract.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurfWireframe(abstract.VisAbstractSurf):
+class VisSurfWireframe(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Scatter plot for the control points and wireframe plot for the surface points.
@@ -413,7 +413,7 @@ class VisSurfWireframe(abstract.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurfTriangle(abstract.VisAbstractSurf):
+class VisSurfTriangle(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
@@ -535,7 +535,7 @@ class VisSurfTriangle(abstract.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurfScatter(abstract.VisAbstractSurf):
+class VisSurfScatter(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and scatter plot for the surface points.
