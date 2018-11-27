@@ -119,15 +119,14 @@ following command:
 
 This command generates .c files (i.e. cythonize) and compile the .c files into binary Python modules.
 
-The following command can be used to directly compile the generated .c files skipping the copy and the cythonization
-steps and install the compiled binaries:
+The following command can be used to directly compile the generated .c files skipping the cythonization step and
+install the compiled binaries:
 
 .. code-block:: console
 
     $ python setup.py install --use-source
 
-You may prefer to skip the copy and the cythonization steps if the compilation fails for some reason. To update the
-compiled module with the latest changes, you have to re-cythonize and compile the code.
+To update the compiled module with the latest changes from GitHub, you have to recythonize and compile the code.
 
 To enable development mode;
 
