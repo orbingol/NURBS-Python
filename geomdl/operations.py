@@ -10,7 +10,7 @@
 import copy
 import warnings
 from . import abstract
-from . import Multi
+from . import multi
 from . import helpers
 from . import utilities
 from . import evaluators
@@ -27,7 +27,7 @@ def split_curve(obj, u, **kwargs):
     :param u: parametric coordinate
     :type u: float
     :return: a list of curves as the split pieces of the initial curve
-    :rtype: Multi.MultiCurve
+    :rtype: multi.MultiCurve
     """
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of any Curve class")
@@ -76,7 +76,7 @@ def split_curve(obj, u, **kwargs):
     curve2.knotvector = curve2_kv
 
     # Create a MultiCurve
-    ret_val = Multi.MultiCurve()
+    ret_val = multi.MultiCurve()
     ret_val.add(curve1)
     ret_val.add(curve2)
 
@@ -92,12 +92,12 @@ def decompose_curve(obj, **kwargs):
     :param obj: Curve to be decomposed
     :type obj: BSpline.Curve or NURBS.Curve
     :return: a list of curve objects arranged in Bezier curve segments
-    :rtype: Multi.MultiCurve
+    :rtype: multi.MultiCurve
     """
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of any Curve class")
 
-    curve_list = Multi.MultiCurve()
+    curve_list = multi.MultiCurve()
     curve = copy.deepcopy(obj)
     knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
     while knots:
@@ -197,7 +197,7 @@ def split_surface_u(obj, t, **kwargs):
     :param t: parametric coordinate on the u-direction
     :type t: float
     :return: a list of surface as the split pieces of the initial surface
-    :rtype: Multi.MultiSurface
+    :rtype: multi.MultiSurface
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
@@ -250,7 +250,7 @@ def split_surface_u(obj, t, **kwargs):
     surf2.knotvector_v = temp_obj.knotvector_v
 
     # Create a MultiSurface
-    ret_val = Multi.MultiSurface()
+    ret_val = multi.MultiSurface()
     ret_val.add(surf1)
     ret_val.add(surf2)
 
@@ -269,7 +269,7 @@ def split_surface_v(obj, t, **kwargs):
     :param t: parametric coordinate on the v-direction
     :type t: float
     :return: a list of surface as the split pieces of the initial surface
-    :rtype: Multi.MultiSurface
+    :rtype: multi.MultiSurface
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
@@ -328,7 +328,7 @@ def split_surface_v(obj, t, **kwargs):
     surf2.knotvector_u = temp_obj.knotvector_u
 
     # Create a MultiSurface
-    ret_val = Multi.MultiSurface()
+    ret_val = multi.MultiSurface()
     ret_val.add(surf1)
     ret_val.add(surf2)
 
@@ -344,7 +344,7 @@ def decompose_surface(obj, **kwargs):
     :param obj: surface
     :type obj: BSpline.Surface or NURBS.Surface
     :return: a list of surface objects arranged as Bezier surface patches
-    :rtype: Multi.MultiSurface
+    :rtype: multi.MultiSurface
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
@@ -366,7 +366,7 @@ def decompose_surface(obj, **kwargs):
     surf_list.append(surf)
 
     # Process v-direction
-    multi_surf = Multi.MultiSurface()
+    multi_surf = multi.MultiSurface()
     for surf in surf_list:
         knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
         while knots_v:

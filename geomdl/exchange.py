@@ -13,7 +13,7 @@ import json
 from . import abstract
 from . import BSpline
 from . import NURBS
-from . import Multi
+from . import multi
 from . import compatibility
 from . import operations
 from . import utilities
@@ -409,7 +409,7 @@ def export_obj(surf_in, file_name, **kwargs):
         * ``vertex_normals``: if True, compute vertex normals. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -421,7 +421,7 @@ def export_obj(surf_in, file_name, **kwargs):
     if isinstance(surf_in, abstract.Surface):
         _export_obj_single(surf_in, file_name=file_name, return_as_str=is_str,
                            vertex_spacing=vertex_spacing, vertex_normals=eval_derivs)
-    elif isinstance(surf_in, Multi.MultiSurface):
+    elif isinstance(surf_in, multi.MultiSurface):
         _export_obj_multi(surf_in, file_name=file_name, return_as_str=is_str,
                           vertex_spacing=vertex_spacing, vertex_normals=eval_derivs)
     else:
@@ -437,7 +437,7 @@ def export_stl(surf_in, file_name, **kwargs):
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -451,7 +451,7 @@ def export_stl(surf_in, file_name, **kwargs):
             _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
         else:
             _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
-    elif isinstance(surf_in, Multi.MultiSurface):
+    elif isinstance(surf_in, multi.MultiSurface):
         if binary:
             _export_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
         else:
@@ -468,7 +468,7 @@ def export_off(surf_in, file_name, **kwargs):
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -478,7 +478,7 @@ def export_off(surf_in, file_name, **kwargs):
 
     if isinstance(surf_in, abstract.Surface):
         _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
-    elif isinstance(surf_in, Multi.MultiSurface):
+    elif isinstance(surf_in, multi.MultiSurface):
         _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
@@ -500,7 +500,7 @@ def import_smesh(file):
     :param file: path to a directory containing smesh files or a single smesh file
     :type file: str
     :return: NURBS surface(s)
-    :rtype: NURBS.Surface or Multi.MultiSurface
+    :rtype: NURBS.Surface or multi.MultiSurface
     :raises IOError: an error occurred reading the file
     """
     if os.path.isfile(file):
@@ -515,14 +515,14 @@ def export_smesh(surf_in, file_name, **kwargs):
     """ Exports surface(s) as .smesh files.
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
     if isinstance(surf_in, abstract.Surface):
         _export_smesh_single(surf_in, file_name, **kwargs)
-    elif isinstance(surf_in, Multi.MultiSurface):
+    elif isinstance(surf_in, multi.MultiSurface):
         _export_smesh_multi(surf_in, file_name)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
@@ -699,7 +699,7 @@ def _export_obj_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .obj file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiSurface
+    :type surface_list: multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -715,7 +715,7 @@ def _export_obj_multi(surface_list, **kwargs):
     eval_ders = kwargs.get('vertex_normals', False)
 
     # Input validity checking
-    if not isinstance(surface_list, Multi.MultiSurface):
+    if not isinstance(surface_list, multi.MultiSurface):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -830,7 +830,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as an ASCII .stl file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiSurface
+    :type surface_list: multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -844,7 +844,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
-    if not isinstance(surface_list, Multi.AbstractMulti):
+    if not isinstance(surface_list, multi.AbstractMulti):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -933,7 +933,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a binary .stl file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiSurface
+    :type surface_list: multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -945,7 +945,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     # Input validity checking
-    if not isinstance(surface_list, Multi.AbstractMulti):
+    if not isinstance(surface_list, multi.AbstractMulti):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -1035,7 +1035,7 @@ def _export_off_multi(surface_list, **kwargs):
     """ Saves multiple surfaces as a single .off file.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiSurface
+    :type surface_list: multi.MultiSurface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -1049,7 +1049,7 @@ def _export_off_multi(surface_list, **kwargs):
     return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
-    if not isinstance(surface_list, Multi.MultiSurface):
+    if not isinstance(surface_list, multi.MultiSurface):
         raise ValueError("Input must be a list of surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -1170,10 +1170,10 @@ def _import_smesh_multi(file_path):
     :param file_path: path to the directory containing smesh files
     :type file_path: str
     :return: a MultiSurface instance containing all NURBS surfaces
-    :rtype: Multi.MultiSurface
+    :rtype: multi.MultiSurface
     """
     files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
-    surf = Multi.MultiSurface()
+    surf = multi.MultiSurface()
     for f in files:
         surf.add(_import_smesh_single(f))
     return surf
@@ -1214,7 +1214,7 @@ def _export_smesh_multi(surface_list, file_name, **kwargs):
     """ Saves a list of surfaces as .idx.smesh files.
 
     :param surface_list: list of surfaces to be saved
-    :type surface_list: Multi.MultiSurface
+    :type surface_list: multi.MultiSurface
     :param file_name: file name
     :type file_name: str
     """
@@ -1334,11 +1334,11 @@ def _export_dict_all(obj, file_name, callback):
             elif isinstance(obj, abstract.Surface):
                 export_type = "surface"
                 data = [_prepare_export_dict_surface(obj)]
-            elif isinstance(obj, Multi.MultiCurve):
+            elif isinstance(obj, multi.MultiCurve):
                 export_type = "curve"
                 data = [_prepare_export_dict_curve(o) for o in obj]
                 count = len(obj)
-            elif isinstance(obj, Multi.MultiSurface):
+            elif isinstance(obj, multi.MultiSurface):
                 export_type = "surface"
                 data = [_prepare_export_dict_surface(o) for o in obj]
                 count = len(obj)

@@ -17,7 +17,7 @@ This module works with ``BSpline`` and ``NURBS`` modules and it contains the fol
 Abstract Container
 ==================
 
-.. autoclass:: geomdl.Multi.AbstractMulti
+.. autoclass:: geomdl.multi.AbstractMulti
     :members:
     :inherited-members:
     :show-inheritance:
@@ -25,7 +25,7 @@ Abstract Container
 Curve Container
 ===============
 
-.. automodule:: geomdl.Multi.MultiCurve
+.. automodule:: geomdl.multi.MultiCurve
     :members:
     :inherited-members:
     :show-inheritance:
@@ -33,7 +33,7 @@ Curve Container
 Surface Container
 =================
 
-.. automodule:: geomdl.Multi.MultiSurface
+.. automodule:: geomdl.multi.MultiSurface
     :members:
     :inherited-members:
     :show-inheritance:
