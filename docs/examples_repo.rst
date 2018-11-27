@@ -16,5 +16,10 @@ The Examples_ repository contains examples on the following:
 * Curve & surface splitting and Bézier decomposition
 * Exporting curves and surfaces using ``exchange`` module
 
+.. note::
+
+    Please see :doc:`Visualization <visualization>` section of the documentation for sample curve and surface figures
+    which can be generated using the scripts on the Examples_ repository.
+
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples

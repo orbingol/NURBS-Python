@@ -1,5 +1,5 @@
-NURBS-Python (geomdl) v5 Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NURBS-Python v5 Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 

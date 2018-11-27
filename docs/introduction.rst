@@ -23,27 +23,7 @@ Some significant features of NURBS-Python are:
 References
 ==========
 
-NURBS-Python implements the following algorithms from **The NURBS Book (2nd Edition)** by Piegl & Tiller:
-
-* A2.1 FindSpan *(page 68)*
-* A2.2 BasisFuns *(page 70)*
-* A2.3 DersBasisFuns *(pages 72,73)*
-* A2.4 OneBasisFun *(pages 74,75)*
-* A2.5 DersOneBasisFun *(pages 76-78)*
-* A3.1 CurvePoint *(page 82)*
-* A3.2 CurveDerivsAlg1 *(page 93)*
-* A3.3 CurveDerivCpts *(page 98)*
-* A3.4 CurveDerivsAlg2 *(pages 99,100)*
-* A3.5 SurfacePoint *(page 103)*
-* A3.6 SurfaceDerivsAlg1 *(pages 111,112)*
-* A3.7 SurfaceDerivCpts *(pages 114,115)*
-* A3.8 SurfaceDerivsAlg2 *(page 115)*
-* A4.1 CurvePoint *(page 124)*
-* A4.2 RatCurveDerivs *(page 127)*
-* A4.3 SurfacePoint *(page 134)*
-* A4.4 RatSurfaceDerivs *(pages 137,138)*
-* A5.1 CurveKnotIns *(page 151)*
-* A5.3 SurfaceKnotIns *(pages 155-157)*
+* Piegl, L., & Tiller, W. (2012). The NURBS book. Springer Science & Business Media.
 
 Author
 ======
