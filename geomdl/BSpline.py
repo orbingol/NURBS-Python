@@ -9,7 +9,7 @@
 
 import warnings
 import pickle
-from . import Abstract
+from . import abstract
 from . import utilities
 from . import helpers
 from . import evaluators
@@ -17,7 +17,7 @@ from . import operations
 from . import tessellate
 
 
-class Curve(Abstract.Curve):
+class Curve(abstract.Curve):
     """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
 
     This class provides the following properties:
@@ -380,7 +380,7 @@ class Curve(Abstract.Curve):
         return operations.binormal(self, parpos, **kwargs)
 
 
-class Surface(Abstract.Surface):
+class Surface(abstract.Surface):
     """ Data storage and evaluation class for B-spline (non-rational) surfaces.
 
     This class provides the following properties:

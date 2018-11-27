@@ -9,7 +9,7 @@
 
 import copy
 import warnings
-from . import Abstract
+from . import abstract
 from . import Multi
 from . import helpers
 from . import utilities
@@ -29,7 +29,7 @@ def split_curve(obj, u, **kwargs):
     :return: a list of curves as the split pieces of the initial curve
     :rtype: Multi.MultiCurve
     """
-    if not isinstance(obj, Abstract.Curve):
+    if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of any Curve class")
 
     # Keyword arguments
@@ -94,7 +94,7 @@ def decompose_curve(obj, **kwargs):
     :return: a list of curve objects arranged in Bezier curve segments
     :rtype: Multi.MultiCurve
     """
-    if not isinstance(obj, Abstract.Curve):
+    if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of any Curve class")
 
     curve_list = Multi.MultiCurve()
@@ -124,7 +124,7 @@ def add_dimension(obj, **kwargs):
     :return: updated Curve
     :rtype: BSpline.Curve or NURBS.Curve
     """
-    if not isinstance(obj, Abstract.Curve):
+    if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of any Curve class")
 
     # Keyword arguments
@@ -156,9 +156,9 @@ def derivative_curve(obj):
     :param obj: input curve
     :type obj: Abstract.Curve
     :return: derivative curve
-    :rtype: Abstract.Curve
+    :rtype: abstract.Curve
     """
-    if not isinstance(obj, Abstract.Curve):
+    if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of Abstract.Curve class")
 
     # Unfortunately, rational curves do not have this property
@@ -200,7 +200,7 @@ def split_surface_u(obj, t, **kwargs):
     :rtype: Multi.MultiSurface
     """
     # Validate input
-    if not isinstance(obj, Abstract.Surface):
+    if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of any Surface class")
 
     if t == 0.0 or t == 1.0:
@@ -272,7 +272,7 @@ def split_surface_v(obj, t, **kwargs):
     :rtype: Multi.MultiSurface
     """
     # Validate input
-    if not isinstance(obj, Abstract.Surface):
+    if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of any Surface class")
 
     if t == 0.0 or t == 1.0:
@@ -347,7 +347,7 @@ def decompose_surface(obj, **kwargs):
     :rtype: Multi.MultiSurface
     """
     # Validate input
-    if not isinstance(obj, Abstract.Surface):
+    if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of any Surface class")
 
     # Work with an identical copy
@@ -393,11 +393,11 @@ def derivative_surface(obj):
     * UV-derivative surface (derivative taken on both the u- and the v-direction)
 
     :param obj: input surface
-    :type obj: Abstract.Surface
+    :type obj: abstract.Surface
     :return: derivative surfaces w.r.t. u, v and both u-v
     :rtype: tuple
     """
-    if not isinstance(obj, Abstract.Surface):
+    if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of Abstract.Surface class")
 
     if obj.rational:
@@ -467,9 +467,9 @@ def translate(obj, vec, **kwargs):
     if not vec or not isinstance(vec, (tuple, list)):
         raise TypeError("The input must be a list or a tuple")
 
-    if isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+    if isinstance(obj, (abstract.Curve, abstract.Surface)):
         return _translate_single(obj, vec, **kwargs)
-    elif isinstance(obj, Abstract.Multi):
+    elif isinstance(obj, abstract.Multi):
         return _translate_multi(obj, vec, **kwargs)
     else:
         raise TypeError("The input shape must be a curve or a surface (single or multi)")
@@ -520,19 +520,19 @@ def tangent(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: Abstract.Curve or Abstract.Surface
+    :type obj: abstract.Curve or Abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
     normalize = kwargs.get('normalize', True)
-    if isinstance(obj, Abstract.Curve):
+    if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
             return _tangent_curve_single_list(obj, params, normalize)
         else:
             return _tangent_curve_single(obj, params, normalize)
-    if isinstance(obj, Abstract.Surface):
+    if isinstance(obj, abstract.Surface):
         if isinstance(params[0], float):
             return _tangent_surface_single(obj, params, normalize)
         else:
@@ -546,19 +546,19 @@ def normal(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: Abstract.Curve or Abstract.Surface
+    :type obj: Abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
     normalize = kwargs.get('normalize', True)
-    if isinstance(obj, Abstract.Curve):
+    if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
             return _normal_curve_single_list(obj, params, normalize)
         else:
             return _normal_curve_single(obj, params, normalize)
-    if isinstance(obj, Abstract.Surface):
+    if isinstance(obj, abstract.Surface):
         if isinstance(params[0], float):
             return _normal_surface_single(obj, params, normalize)
         else:
@@ -572,19 +572,19 @@ def binormal(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: Abstract.Curve or Abstract.Surface
+    :type obj: Abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
     normalize = kwargs.get('normalize', True)
-    if isinstance(obj, Abstract.Curve):
+    if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
             return _binormal_curve_single_list(obj, params, normalize)
         else:
             return _binormal_curve_single(obj, params, normalize)
-    if isinstance(obj, Abstract.Surface):
+    if isinstance(obj, abstract.Surface):
         raise NotImplementedError("Binormal vector evaluation for the surfaces is not implemented!")
 
 
@@ -595,7 +595,7 @@ def _tangent_curve_single(obj, u, normalize):
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param u: parameter
     :type u: float
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -616,7 +616,7 @@ def _tangent_curve_single_list(obj, param_list, normalize):
     """ Evaluates the curve tangent vectors at the given list of parameter values.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param param_list: parameter list
     :type param_list: list or tuple
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -638,7 +638,7 @@ def _normal_curve_single(obj, u, normalize):
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param u: parameter
     :type u: float
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -659,7 +659,7 @@ def _normal_curve_single_list(obj, param_list, normalize):
     """ Evaluates the curve normal vectors at the given list of parameter values.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param param_list: parameter list
     :type param_list: list or tuple
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -682,7 +682,7 @@ def _binormal_curve_single(obj, u, normalize):
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param u: parameter
     :type u: float
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -705,7 +705,7 @@ def _binormal_curve_single_list(obj, param_list, normalize):
     """ Evaluates the curve binormal vectors at the given list of parameter values.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :param param_list: parameter list
     :type param_list: list or tuple
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -727,7 +727,7 @@ def _tangent_surface_single(obj, uv, normalize):
     The output returns a list containing the starting point (i.e., origin) of the vector and the vectors themselves.
 
     :param obj: input surface
-    :type obj: Abstract.Surface
+    :type obj: abstract.Surface
     :param uv: (u,v) parameter pair
     :type uv: list or tuple
     :param normalize: if True, the returned tangent vector is converted to a unit vector
@@ -749,7 +749,7 @@ def _tangent_surface_single_list(obj, param_list, normalize):
     """ Evaluates the surface tangent vectors at the given list of parameter values.
 
     :param obj: input surface
-    :type obj: Abstract.Surface
+    :type obj: abstract.Surface
     :param param_list: parameter list
     :type param_list: list or tuple
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -771,7 +771,7 @@ def _normal_surface_single(obj, uv, normalize):
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input surface
-    :type obj: Abstract.Surface
+    :type obj: abstract.Surface
     :param uv: (u,v) parameter pair
     :type uv: list or tuple
     :param normalize: if True, the returned normal vector is converted to a unit vector
@@ -793,7 +793,7 @@ def _normal_surface_single_list(obj, param_list, normalize):
     """ Evaluates the surface normal vectors at the given list of parameter values.
 
     :param obj: input surface
-    :type obj: Abstract.Surface
+    :type obj: abstract.Surface
     :param param_list: parameter list
     :type param_list: list or tuple
     :param normalize: if True, the returned vector is converted to a unit vector
@@ -812,7 +812,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
     :param obj: curve or surface
-    :type obj: Abstract.Curve or Abstract.Surface
+    :type obj: abstract.Curve or Abstract.Surface
     :param u: parameter (for curve), parameter on the u-direction (for surface)
     :type u: float
     :param v: parameter on the v-direction (for surface only)
@@ -821,9 +821,9 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     :rtype: list
     """
     utilities.check_uv(u, v)
-    if isinstance(obj, Abstract.Curve):
+    if isinstance(obj, abstract.Curve):
         return _find_ctrlpts_curve(u, obj, **kwargs)
-    elif isinstance(obj, Abstract.Surface):
+    elif isinstance(obj, abstract.Surface):
         if v is None:
             raise ValueError("Parameter value for the v-direction must be set for operating on surfaces")
         return _find_ctrlpts_surface(u, v, obj, **kwargs)
@@ -839,7 +839,7 @@ def _find_ctrlpts_curve(t, curve, **kwargs):
     :param t: parameter
     :type t: float
     :param curve: input curve object
-    :type curve: Abstract.Curve
+    :type curve: abstract.Curve
     :return: 1-dimensional control points array
     :rtype: list
     """
@@ -869,7 +869,7 @@ def _find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
     :param t_v: parameter on the v-direction
     :type t_v: float
     :param surf: input surface
-    :type surf: Abstract.Surface
+    :type surf: abstract.Surface
     :return: 2-dimensional control points array
     :rtype: list
     """

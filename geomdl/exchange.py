@@ -10,7 +10,7 @@
 import os
 import struct
 import json
-from . import Abstract
+from . import abstract
 from . import BSpline
 from . import NURBS
 from . import Multi
@@ -103,7 +103,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
         raise ValueError("There are no control points to save!")
 
     # Check the usage of two_dimensional flag
-    if isinstance(obj, Abstract.Curve) and two_dimensional:
+    if isinstance(obj, abstract.Curve) and two_dimensional:
         # Silently ignore two_dimensional flag
         two_dimensional = False
 
@@ -173,7 +173,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     :type point_type: str
     :raises IOError: an error occurred writing the file
     """
-    if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+    if not isinstance(obj, (abstract.Curve, abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
 
     # Pick correct points from the object
@@ -221,7 +221,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
     :type point_type: str
     :raises IOError: an error occurred writing the file
     """
-    if not isinstance(obj, (Abstract.Curve, Abstract.Surface)):
+    if not isinstance(obj, (abstract.Curve, abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
 
     # Pick correct points from the object
@@ -409,7 +409,7 @@ def export_obj(surf_in, file_name, **kwargs):
         * ``vertex_normals``: if True, compute vertex normals. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -418,7 +418,7 @@ def export_obj(surf_in, file_name, **kwargs):
     is_str = kwargs.get('return_as_str', False)
     eval_derivs = kwargs.get('vertex_normals', False)
 
-    if isinstance(surf_in, Abstract.Surface):
+    if isinstance(surf_in, abstract.Surface):
         _export_obj_single(surf_in, file_name=file_name, return_as_str=is_str,
                            vertex_spacing=vertex_spacing, vertex_normals=eval_derivs)
     elif isinstance(surf_in, Multi.MultiSurface):
@@ -437,7 +437,7 @@ def export_stl(surf_in, file_name, **kwargs):
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -446,7 +446,7 @@ def export_stl(surf_in, file_name, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
     is_str = kwargs.get('return_as_str', False)
 
-    if isinstance(surf_in, Abstract.Surface):
+    if isinstance(surf_in, abstract.Surface):
         if binary:
             _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
         else:
@@ -468,7 +468,7 @@ def export_off(surf_in, file_name, **kwargs):
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -476,7 +476,7 @@ def export_off(surf_in, file_name, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
     is_str = kwargs.get('return_as_str', False)
 
-    if isinstance(surf_in, Abstract.Surface):
+    if isinstance(surf_in, abstract.Surface):
         _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
     elif isinstance(surf_in, Multi.MultiSurface):
         _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
@@ -515,12 +515,12 @@ def export_smesh(surf_in, file_name, **kwargs):
     """ Exports surface(s) as .smesh files.
 
     :param surf_in: surface or surfaces to be saved
-    :type surf_in: Abstract.Surface or Multi.MultiSurface
+    :type surf_in: abstract.Surface or Multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    if isinstance(surf_in, Abstract.Surface):
+    if isinstance(surf_in, abstract.Surface):
         _export_smesh_single(surf_in, file_name, **kwargs)
     elif isinstance(surf_in, Multi.MultiSurface):
         _export_smesh_multi(surf_in, file_name)
@@ -646,7 +646,7 @@ def _export_obj_single(surface, **kwargs):
     """ Saves a single surface as a .obj file.
 
     :param surface: surface to be saved
-    :type surface: Abstract.Surface
+    :type surface: abstract.Surface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -662,7 +662,7 @@ def _export_obj_single(surface, **kwargs):
     eval_ders = kwargs.get('vertex_normals', False)
 
     # Input validity checking
-    if not isinstance(surface, Abstract.Surface):
+    if not isinstance(surface, abstract.Surface):
         raise ValueError("Input is not a surface")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -731,7 +731,7 @@ def _export_obj_multi(surface_list, **kwargs):
 
     # Loop through MultiSurface object
     for surface in surface_list:
-        if not isinstance(surface, Abstract.Surface):
+        if not isinstance(surface, abstract.Surface):
             # Skip non-surface objects
             continue
 
@@ -787,7 +787,7 @@ def _export_stl_ascii_single(surface, **kwargs):
     """ Saves a single surface as an ASCII .stl file.
 
     :param surface: surface to be saved
-    :type surface: Abstract.Surface
+    :type surface: abstract.Surface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -801,7 +801,7 @@ def _export_stl_ascii_single(surface, **kwargs):
     return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
-    if not isinstance(surface, Abstract.Surface):
+    if not isinstance(surface, abstract.Surface):
         raise ValueError("Input is not a surface")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -853,7 +853,7 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
 
     # Loop through MultiSurface object
     for surface in surface_list:
-        if not isinstance(surface, Abstract.Surface):
+        if not isinstance(surface, abstract.Surface):
             # Skip non-surface objects
             continue
 
@@ -890,7 +890,7 @@ def _export_stl_binary_single(surface, **kwargs):
     Inspired from https://github.com/apparentlymart/python-stl
 
     :param surface: surface to be saved
-    :type surface: Abstract.Surface
+    :type surface: abstract.Surface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -902,7 +902,7 @@ def _export_stl_binary_single(surface, **kwargs):
     vertex_spacing = kwargs.get('vertex_spacing', 2)
 
     # Input validity checking
-    if not isinstance(surface, Abstract.Surface):
+    if not isinstance(surface, abstract.Surface):
         raise ValueError("Input is not a surface")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -956,7 +956,7 @@ def _export_stl_binary_multi(surface_list, **kwargs):
             # Loop through MultiSurface object
             triangles_list = []
             for surface in surface_list:
-                if not isinstance(surface, Abstract.Surface):
+                if not isinstance(surface, abstract.Surface):
                     # Skip non-surface objects
                     continue
 
@@ -991,7 +991,7 @@ def _export_off_single(surface, **kwargs):
     """ Saves a single surface as a .off file.
 
     :param surface: surface to be saved
-    :type surface: Abstract.Surface
+    :type surface: abstract.Surface
 
     Keyword Arguments:
         * file_name (str): name of the output file
@@ -1005,7 +1005,7 @@ def _export_off_single(surface, **kwargs):
     return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
-    if not isinstance(surface, Abstract.Surface):
+    if not isinstance(surface, abstract.Surface):
         raise ValueError("Input is not a surface")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -1063,7 +1063,7 @@ def _export_off_multi(surface_list, **kwargs):
 
     # Loop through MultiSurface object
     for surface in surface_list:
-        if not isinstance(surface, Abstract.Surface):
+        if not isinstance(surface, abstract.Surface):
             # Skip non-surface objects
             continue
 
@@ -1183,7 +1183,7 @@ def _export_smesh_single(surface, file_name, **kwargs):
     """ Saves a single surface as a .smesh file.
 
     :param surface: surface to be saved
-    :type surface: Abstract.Surface
+    :type surface: abstract.Surface
     :param file_name: file name
     :type file_name: str
     """
@@ -1328,10 +1328,10 @@ def _export_dict_all(obj, file_name, callback):
     try:
         with open(file_name, 'w') as fp:
             count = 1
-            if isinstance(obj, Abstract.Curve):
+            if isinstance(obj, abstract.Curve):
                 export_type = "curve"
                 data = [_prepare_export_dict_curve(obj)]
-            elif isinstance(obj, Abstract.Surface):
+            elif isinstance(obj, abstract.Surface):
                 export_type = "surface"
                 data = [_prepare_export_dict_surface(obj)]
             elif isinstance(obj, Multi.MultiCurve):

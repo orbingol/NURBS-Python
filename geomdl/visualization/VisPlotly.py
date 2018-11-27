@@ -7,14 +7,14 @@
 
 """
 
-from geomdl import Abstract
+from geomdl import abstract
 
 import numpy as np
 import plotly
 from plotly import graph_objs
 
 
-class VisConfig(Abstract.VisConfigAbstract):
+class VisConfig(abstract.VisConfigAbstract):
     """ Configuration class for Plotly visualization module.
 
     This class is only required when you would like to change the visual defaults of the plots and the figure,
@@ -88,7 +88,7 @@ class VisConfig(Abstract.VisConfigAbstract):
         self.line_width = kwargs.get('linewidth', 2)
 
 
-class VisCurve2D(Abstract.VisAbstract):
+class VisCurve2D(abstract.VisAbstract):
     """ Plotly visualization module for 2D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
@@ -192,7 +192,7 @@ class VisCurve2D(Abstract.VisAbstract):
         self._config.plotfn(fig, **plotfn_dict)
 
 
-class VisCurve3D(Abstract.VisAbstract):
+class VisCurve3D(abstract.VisAbstract):
     """ Plotly visualization module for 3D curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve3D, self).__init__(config=config)
@@ -318,7 +318,7 @@ class VisCurve3D(Abstract.VisAbstract):
         self._config.plotfn(fig, **plotfn_dict)
 
 
-class VisSurface(Abstract.VisAbstractSurf):
+class VisSurface(abstract.VisAbstractSurf):
     """ Plotly visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.

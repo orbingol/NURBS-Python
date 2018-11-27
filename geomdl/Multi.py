@@ -10,7 +10,7 @@
 import abc
 import warnings
 import six
-from . import Abstract
+from . import abstract
 from . import utilities
 
 
@@ -139,7 +139,7 @@ class AbstractMulti(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, Abstract.VisAbstract):
+        if not isinstance(value, abstract.VisAbstract):
             warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
@@ -211,7 +211,7 @@ class MultiCurve(AbstractMulti):
 
     def __init__(self, *args, **kwargs):
         super(MultiCurve, self).__init__()
-        self._instance = Abstract.Curve
+        self._instance = abstract.Curve
         self._delta = 0.01  # evaluation delta
         for arg in args:
             self.add(arg)
@@ -374,7 +374,7 @@ class MultiSurface(AbstractMulti):
 
     def __init__(self, *args, **kwargs):
         super(MultiSurface, self).__init__()
-        self._instance = Abstract.Surface
+        self._instance = abstract.Surface
         self._delta = [0.01, 0.01]  # evaluation delta
         for arg in args:
             self.add(arg)
