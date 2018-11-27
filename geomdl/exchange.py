@@ -552,10 +552,10 @@ def import_3dm(file_name, **kwargs):
         if r['shape_type'] == "curve":
             tmp = NURBS.Curve()
             tmp.degree = r['degree']
-            tmp.ctrlpts = r['ctrlpts']
+            tmp.ctrlpts = r['control_points']['points']
             if 'weights' in r:
-                tmp.weights = r['weights']
-            tmp.knotvector = r['knotvector']
+                tmp.weights = r['control_points']['weights']
+            tmp.knotvector = [r['knotvector'][0]] + r['knotvector'] + [r['knotvector'][-1]]
             res.append(tmp)
         if r['shape_type'] == "surface":
             tmp = NURBS.Surface()
@@ -563,11 +563,11 @@ def import_3dm(file_name, **kwargs):
             tmp.degree_v = r['degree_v']
             tmp.ctrlpts_size_u = r['size_u']
             tmp.ctrlpts_size_v = r['size_v']
-            tmp.ctrlpts = r['ctrlpts']
+            tmp.ctrlpts = r['control_points']['points']
             if 'weights' in r:
-                tmp.weights = r['weights']
-            tmp.knotvector_u = r['knotvector_u']
-            tmp.knotvector_v = r['knotvector_v']
+                tmp.weights = r['control_points']['weights']
+            tmp.knotvector_u = [r['knotvector_u'][0]] + r['knotvector_u'] + [r['knotvector_u'][-1]]
+            tmp.knotvector_v = [r['knotvector_v'][0]] + r['knotvector_v'] + [r['knotvector_v'][-1]]
             res.append(tmp)
 
     return res
