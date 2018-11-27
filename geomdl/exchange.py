@@ -232,24 +232,17 @@ def export_vtk(obj, file_name, point_type='evalpts'):
     else:
         raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            # Write header to the file
-            fp.write("# vtk DataFile Version 3.0\n")
-            fp.write(repr(obj) + "\n")
-            fp.write("ASCII\nDATASET POLYDATA\n")
-            fp.write("POINTS " + str(len(points)) + " FLOAT\n")
+    # Write header to the file
+    line = "# vtk DataFile Version 3.0\n"
+    line += repr(obj) + "\n"
+    line += "ASCII\nDATASET POLYDATA\n"
+    line += "POINTS " + str(len(points)) + " FLOAT\n"
 
-            # Loop through points
-            for pt in points:
-                line = " ".join(str(c) for c in pt) + "\n"
-                fp.write(line)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Loop through points
+    for pt in points:
+        line += " ".join(str(c) for c in pt) + "\n"
+
+    return _write_file(file_name, line)
 
 
 def import_cfg(file_name, **kwargs):
@@ -412,6 +405,8 @@ def export_obj(surf_in, file_name, **kwargs):
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``return_as_str``: if True, return the file contents as a string. *Default: False*
+        * ``vertex_normals``: if True, compute vertex normals. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -420,11 +415,15 @@ def export_obj(surf_in, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    is_str = kwargs.get('return_as_str', False)
+    eval_derivs = kwargs.get('vertex_normals', False)
 
     if isinstance(surf_in, Abstract.Surface):
-        _export_obj_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_obj_single(surf_in, file_name=file_name, return_as_str=is_str,
+                           vertex_spacing=vertex_spacing, vertex_normals=eval_derivs)
     elif isinstance(surf_in, Multi.MultiSurface):
-        _export_obj_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_obj_multi(surf_in, file_name=file_name, return_as_str=is_str,
+                          vertex_spacing=vertex_spacing, vertex_normals=eval_derivs)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
 
@@ -435,6 +434,7 @@ def export_stl(surf_in, file_name, **kwargs):
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: True*
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -444,12 +444,13 @@ def export_stl(surf_in, file_name, **kwargs):
     """
     binary = kwargs.get('binary', True)
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    is_str = kwargs.get('return_as_str', False)
 
     if isinstance(surf_in, Abstract.Surface):
         if binary:
-            _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_binary_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
         else:
-            _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+            _export_stl_ascii_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
     elif isinstance(surf_in, Multi.MultiSurface):
         if binary:
             _export_stl_binary_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
@@ -464,6 +465,7 @@ def export_off(surf_in, file_name, **kwargs):
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``return_as_str``: if True, return the file contents as a string. *Default: False*
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: Abstract.Surface or Multi.MultiSurface
@@ -472,11 +474,12 @@ def export_off(surf_in, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    is_str = kwargs.get('return_as_str', False)
 
     if isinstance(surf_in, Abstract.Surface):
-        _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_off_single(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
     elif isinstance(surf_in, Multi.MultiSurface):
-        _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing)
+        _export_off_multi(surf_in, file_name=file_name, vertex_spacing=vertex_spacing, return_as_str=is_str)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
 
@@ -523,6 +526,18 @@ def export_smesh(surf_in, file_name, **kwargs):
         _export_smesh_multi(surf_in, file_name)
     else:
         raise NotImplementedError("Cannot export input surface - unknown type")
+
+
+def _write_file(file_name, line):
+    try:
+        with open(file_name, 'w') as fp:
+            fp.write(line)
+        return True
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _import_txt(fp, sep, col_sep=";", two_dimensional=False):
@@ -594,11 +609,15 @@ def _export_obj_single(surface, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
+        * vertex_normals (bool): computes vertex normals
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.obj')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
+    eval_ders = kwargs.get('vertex_normals', False)
 
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
@@ -607,36 +626,31 @@ def _export_obj_single(surface, **kwargs):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
     # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            fp.write("# Generated by geomdl\n")
+    line = "# Generated by geomdl\n"
 
-            # Tessellate surface
-            surface.tessellate(vertex_spacing=vertex_spacing)
-            vertices = surface.tessellator.vertices
-            triangles = surface.tessellator.triangles
+    # Tessellate surface
+    surface.tessellate(vertex_spacing=vertex_spacing)
+    vertices = surface.tessellator.vertices
+    triangles = surface.tessellator.triangles
 
-            # Write vertices
-            for vert in vertices:
-                line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                fp.write(line)
+    # Write vertices
+    for vert in vertices:
+        line += "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
 
-            # Write vertex normals
-            for vert in vertices:
-                sn = operations.normal(surface, vert.uv)
-                line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                fp.write(line)
+    # Write vertex normals
+    if eval_ders:
+        for vert in vertices:
+            sn = operations.normal(surface, vert.uv)
+            line += "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
 
-            # Write faces
-            for t in triangles:
-                vl = t.vertex_ids
-                line = "f " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
-                fp.write(line)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Write faces
+    for t in triangles:
+        vl = t.vertex_ids
+        line += "f " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_obj_multi(surface_list, **kwargs):
@@ -648,11 +662,15 @@ def _export_obj_multi(surface_list, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
+        * vertex_normals (bool): computes vertex normals
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.obj')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
+    eval_ders = kwargs.get('vertex_normals', False)
 
     # Input validity checking
     if not isinstance(surface_list, Multi.MultiSurface):
@@ -661,68 +679,66 @@ def _export_obj_multi(surface_list, **kwargs):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
     # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            fp.write("# Generated by geomdl\n")
-            vertex_offset = 0  # count the vertices to update the face numbers correctly
+    line = "# Generated by geomdl\n"
+    vertex_offset = 0  # count the vertices to update the face numbers correctly
 
-            # Initialize lists for vertices, vertex normals and faces
-            str_v = []
-            str_vn = []
-            str_f = []
+    # Initialize lists for vertices, vertex normals and faces
+    str_v = []
+    str_vn = []
+    str_f = []
 
-            # Loop through MultiSurface object
-            for surface in surface_list:
-                if not isinstance(surface, Abstract.Surface):
-                    # Skip non-surface objects
-                    continue
+    # Loop through MultiSurface object
+    for surface in surface_list:
+        if not isinstance(surface, Abstract.Surface):
+            # Skip non-surface objects
+            continue
 
-                # Set surface evaluation delta
-                if surface_list.sample_size_u != 0:
-                    surface.sample_size_u = surface_list.sample_size_u
-                if surface_list.sample_size_v != 0:
-                    surface.sample_size_v = surface_list.sample_size_v
+        # Set surface evaluation delta
+        if surface_list.sample_size_u != 0:
+            surface.sample_size_u = surface_list.sample_size_u
+        if surface_list.sample_size_v != 0:
+            surface.sample_size_v = surface_list.sample_size_v
 
-                # Tessellate surface
-                surface.tessellate(vertex_spacing=vertex_spacing)
-                vertices = surface.tessellator.vertices
-                triangles = surface.tessellator.triangles
+        # Tessellate surface
+        surface.tessellate(vertex_spacing=vertex_spacing)
+        vertices = surface.tessellator.vertices
+        triangles = surface.tessellator.triangles
 
-                # Collect vertices
-                for vert in vertices:
-                    line = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    str_v.append(line)
+        # Collect vertices
+        for vert in vertices:
+            temp = "v " + str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+            str_v.append(temp)
 
-                # Collect vertex normals
-                for vert in vertices:
-                    sn = operations.normal(surface, vert.uv)
-                    line = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
-                    str_vn.append(line)
+        # Collect vertex normals
+        if eval_ders:
+            for vert in vertices:
+                sn = operations.normal(surface, vert.uv)
+                temp = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
+                str_vn.append(temp)
 
-                # Collect faces
-                for t in triangles:
-                    vl = t.vertex_ids
-                    line = "f " + \
-                           str(vl[0] + vertex_offset) + " " + \
-                           str(vl[1] + vertex_offset) + " " + \
-                           str(vl[2] + vertex_offset) + "\n"
-                    str_f.append(line)
+        # Collect faces
+        for t in triangles:
+            vl = t.vertex_ids
+            temp = "f " + \
+                   str(vl[0] + vertex_offset) + " " + \
+                   str(vl[1] + vertex_offset) + " " + \
+                   str(vl[2] + vertex_offset) + "\n"
+            str_f.append(temp)
 
-                # Update vertex offset
-                vertex_offset = len(str_v)
+        # Update vertex offset
+        vertex_offset = len(str_v)
 
-            # Write all collected data to the file
-            for line in str_v:
-                fp.write(line)
-            for line in str_vn:
-                fp.write(line)
-            for line in str_f:
-                fp.write(line)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Write all collected data to the file
+    for lv in str_v:
+        line += lv
+    for lvn in str_vn:
+        line += lvn
+    for lf in str_f:
+        line += lf
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_stl_ascii_single(surface, **kwargs):
@@ -734,11 +750,13 @@ def _export_stl_ascii_single(surface, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.stl')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
@@ -746,30 +764,24 @@ def _export_stl_ascii_single(surface, **kwargs):
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
-    # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            # Tessellate surface
-            surface.tessellate(vertex_spacing=vertex_spacing)
-            triangles = surface.tessellator.triangles
+    # Tessellate surface
+    surface.tessellate(vertex_spacing=vertex_spacing)
+    triangles = surface.tessellator.triangles
 
-            fp.write("solid Surface\n")
-            for t in triangles:
-                nvec = utilities.triangle_normal(t)
-                line = "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
-                fp.write(line)
-                fp.write("\t\touter loop\n")
-                for v in t.vertices:
-                    line = "\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n"
-                    fp.write(line)
-                fp.write("\t\tendloop\n")
-                fp.write("\tendfacet\n")
-            fp.write("endsolid Surface\n")
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    line = "solid Surface\n"
+    for t in triangles:
+        nvec = utilities.triangle_normal(t)
+        line += "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
+        line += "\t\touter loop\n"
+        for v in t.vertices:
+            line += "\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n"
+        line += "\t\tendloop\n"
+        line += "\tendfacet\n"
+    line += "endsolid Surface\n"
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_stl_ascii_multi(surface_list, **kwargs):
@@ -781,11 +793,13 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.stl')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
     if not isinstance(surface_list, Multi.AbstractMulti):
@@ -793,44 +807,39 @@ def _export_stl_ascii_multi(surface_list, **kwargs):
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
-    # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            fp.write("solid Surface\n")
+    line = "solid Surface\n"
 
-            # Loop through MultiSurface object
-            for surface in surface_list:
-                if not isinstance(surface, Abstract.Surface):
-                    # Skip non-surface objects
-                    continue
+    # Loop through MultiSurface object
+    for surface in surface_list:
+        if not isinstance(surface, Abstract.Surface):
+            # Skip non-surface objects
+            continue
 
-                # Set surface evaluation delta
-                if surface_list.sample_size_u != 0:
-                    surface.sample_size_u = surface_list.sample_size_u
-                if surface_list.sample_size_v != 0:
-                    surface.sample_size_v = surface_list.sample_size_v
+        # Set surface evaluation delta
+        if surface_list.sample_size_u != 0:
+            surface.sample_size_u = surface_list.sample_size_u
+        if surface_list.sample_size_v != 0:
+            surface.sample_size_v = surface_list.sample_size_v
 
-                # Tessellate surface
-                surface.tessellate(vertex_spacing=vertex_spacing)
-                triangles = surface.tessellator.triangles
+        # Tessellate surface
+        surface.tessellate(vertex_spacing=vertex_spacing)
+        triangles = surface.tessellator.triangles
 
-                for t in triangles:
-                    nvec = utilities.triangle_normal(t)
-                    line = "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
-                    fp.write(line)
-                    fp.write("\t\touter loop\n")
-                    for v in t.vertices:
-                        line = "\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n"
-                        fp.write(line)
-                    fp.write("\t\tendloop\n")
-                    fp.write("\tendfacet\n")
+        for t in triangles:
+            nvec = utilities.triangle_normal(t)
+            line += "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
 
-            fp.write("endsolid Surface\n")
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+            line += "\t\touter loop\n"
+            for v in t.vertices:
+                line += "\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n"
+            line += "\t\tendloop\n"
+            line += "\tendfacet\n"
+
+    line += "endsolid Surface\n"
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_stl_binary_single(surface, **kwargs):
@@ -945,11 +954,13 @@ def _export_off_single(surface, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.off')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
     if not isinstance(surface, Abstract.Surface):
@@ -957,34 +968,25 @@ def _export_off_single(surface, **kwargs):
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
-    # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            fp.write("OFF\n")
+    # Tessellate surface
+    surface.tessellate(vertex_spacing=vertex_spacing)
+    vertices = surface.tessellator.vertices
+    triangles = surface.tessellator.triangles
 
-            # Tessellate surface
-            surface.tessellate(vertex_spacing=vertex_spacing)
-            vertices = surface.tessellator.vertices
-            triangles = surface.tessellator.triangles
+    line = str(len(vertices) * len(vertices[0])) + " " + str(len(triangles)) + " 0\n"
 
-            line = str(len(vertices) * len(vertices[0])) + " " + str(len(triangles)) + " 0\n"
-            fp.write(line)
+    # Write vertices
+    for vert in vertices:
+        line += str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
 
-            # Write vertices
-            for vert in vertices:
-                line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                fp.write(line)
+    # Write faces (zero-indexed)
+    for t in triangles:
+        vl = t.vertex_ids_zero
+        line += "3 " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
 
-            # Write faces (zero-indexed)
-            for t in triangles:
-                vl = t.vertex_ids_zero
-                line = "3 " + str(vl[0]) + " " + str(vl[1]) + " " + str(vl[2]) + "\n"
-                fp.write(line)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_off_multi(surface_list, **kwargs):
@@ -996,11 +998,13 @@ def _export_off_multi(surface_list, **kwargs):
     Keyword Arguments:
         * file_name (str): name of the output file
         * vertex_spacing (int): size of the triangle edge in terms of points sampled on the surface
+        * return_as_str (bool): returns the file contents as a string
 
     """
     # Get keyword arguments
     file_name = kwargs.get('file_name', 'default.off')
     vertex_spacing = kwargs.get('vertex_spacing', 2)
+    return_as_str = kwargs.get('return_as_str', False)
 
     # Input validity checking
     if not isinstance(surface_list, Multi.MultiSurface):
@@ -1008,63 +1012,60 @@ def _export_off_multi(surface_list, **kwargs):
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
 
-    # Create the file and start saving triangulated surface points
-    try:
-        with open(file_name, 'w') as fp:
-            vertex_offset = 0  # count the vertices to update the face numbers correctly
+    # Count the vertices to update the face numbers correctly
+    vertex_offset = 0
 
-            # Initialize lists for vertices, vertex normals and faces
-            str_v = []
-            str_f = []
+    # Initialize lists for vertices, vertex normals and faces
+    str_v = []
+    str_f = []
 
-            # Loop through MultiSurface object
-            for surface in surface_list:
-                if not isinstance(surface, Abstract.Surface):
-                    # Skip non-surface objects
-                    continue
+    # Loop through MultiSurface object
+    for surface in surface_list:
+        if not isinstance(surface, Abstract.Surface):
+            # Skip non-surface objects
+            continue
 
-                # Set surface evaluation delta
-                if surface_list.sample_size_u != 0:
-                    surface.sample_size_u = surface_list.sample_size_u
-                if surface_list.sample_size_v != 0:
-                    surface.sample_size_v = surface_list.sample_size_v
+        # Set surface evaluation delta
+        if surface_list.sample_size_u != 0:
+            surface.sample_size_u = surface_list.sample_size_u
+        if surface_list.sample_size_v != 0:
+            surface.sample_size_v = surface_list.sample_size_v
 
-                # Tessellate surface
-                surface.tessellate(vertex_spacing=vertex_spacing)
-                vertices = surface.tessellator.vertices
-                triangles = surface.tessellator.triangles
+        # Tessellate surface
+        surface.tessellate(vertex_spacing=vertex_spacing)
+        vertices = surface.tessellator.vertices
+        triangles = surface.tessellator.triangles
 
-                # Collect vertices
-                for vert in vertices:
-                    line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
-                    str_v.append(line)
+        # Collect vertices
+        for vert in vertices:
+            line = str(vert.x) + " " + str(vert.y) + " " + str(vert.z) + "\n"
+            str_v.append(line)
 
-                # Collect faces (zero-indexed)
-                for t in triangles:
-                    vl = t.vertex_ids
-                    line = "3 " + \
-                           str(vl[0] - 1 + vertex_offset) + " " + \
-                           str(vl[1] - 1 + vertex_offset) + " " + \
-                           str(vl[2] - 1 + vertex_offset) + "\n"
-                    str_f.append(line)
+        # Collect faces (zero-indexed)
+        for t in triangles:
+            vl = t.vertex_ids
+            line = "3 " + \
+                   str(vl[0] - 1 + vertex_offset) + " " + \
+                   str(vl[1] - 1 + vertex_offset) + " " + \
+                   str(vl[2] - 1 + vertex_offset) + "\n"
+            str_f.append(line)
 
-                # Update vertex offset
-                vertex_offset = len(str_v)
+        # Update vertex offset
+        vertex_offset = len(str_v)
 
-            # Write file header
-            fp.write("OFF\n")
-            fp.write(str(len(str_v)) + " " + str(len(str_f)) + " 0\n")
+    # Write file header
+    line = "OFF\n"
+    line += str(len(str_v)) + " " + str(len(str_f)) + " 0\n"
 
-            # Write all collected data to the file
-            for line in str_v:
-                fp.write(line)
-            for line in str_f:
-                fp.write(line)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Write all collected data to the file
+    for lv in str_v:
+        line += lv
+    for lf in str_f:
+        line += lf
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _import_smesh_single(file_name):
@@ -1144,29 +1145,27 @@ def _export_smesh_single(surface, file_name, **kwargs):
     :param file_name: file name
     :type file_name: str
     """
-    le = kwargs.get('line_ending', "\n")
     idx_val = kwargs.get('idx', 1)
-    try:
-        with open(file_name, 'w') as fp:
-            if isinstance(surface, BSpline.Surface):
-                surf = convert.bspline_to_nurbs(surface)
-            else:
-                surf = surface
-            fp.write(str(surf.dimension) + le)
-            fp.write(str(surf.degree_u) + " " + str(surf.degree_v) + le)
-            fp.write(str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + le)
-            fp.write(" ".join([str(v) for v in surf.knotvector_u]) + le)
-            fp.write(" ".join([str(v) for v in surf.knotvector_v]) + le)
-            # Convert control points into (x, y, z, w)
-            ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
-            for ptw in ctrlptsw:
-                fp.write(" ".join([str(p) for p in ptw]) + le)
-            fp.write(str(idx_val) + le)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    return_as_str = kwargs.get('return_as_str', False)
+
+    if isinstance(surface, BSpline.Surface):
+        surf = convert.bspline_to_nurbs(surface)
+    else:
+        surf = surface
+    line = str(surf.dimension) + "\n"
+    line += str(surf.degree_u) + " " + str(surf.degree_v) + "\n"
+    line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
+    line += " ".join([str(v) for v in surf.knotvector_u]) + "\n"
+    line += " ".join([str(v) for v in surf.knotvector_v]) + "\n"
+    # Convert control points into (x, y, z, w)
+    ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
+    for ptw in ctrlptsw:
+        line += " ".join([str(p) for p in ptw]) + "\n"
+    line += str(idx_val) + "\n"
+
+    if return_as_str:
+        return line
+    return _write_file(file_name, line)
 
 
 def _export_smesh_multi(surface_list, file_name, **kwargs):
