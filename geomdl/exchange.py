@@ -544,8 +544,33 @@ def import_3dm(file_name, **kwargs):
         print("Please install 'rw3dm' module: https://github.com/orbingol/rw3dm")
         return
 
-    # TODO implement .3dm importer
-    pass
+    res3dm = []
+    rw3dm.read(file_name, res3dm, **kwargs)
+
+    res = []
+    for r in res3dm:
+        if r['shape_type'] == "curve":
+            tmp = NURBS.Curve()
+            tmp.degree = r['degree']
+            tmp.ctrlpts = r['ctrlpts']
+            if 'weights' in r:
+                tmp.weights = r['weights']
+            tmp.knotvector = r['knotvector']
+            res.append(tmp)
+        if r['shape_type'] == "surface":
+            tmp = NURBS.Surface()
+            tmp.degree_u = r['degree_u']
+            tmp.degree_v = r['degree_v']
+            tmp.ctrlpts_size_u = r['size_u']
+            tmp.ctrlpts_size_v = r['size_v']
+            tmp.ctrlpts = r['ctrlpts']
+            if 'weights' in r:
+                tmp.weights = r['weights']
+            tmp.knotvector_u = r['knotvector_u']
+            tmp.knotvector_v = r['knotvector_v']
+            res.append(tmp)
+
+    return res
 
 
 def export_3dm(obj, file_name, **kwargs):
