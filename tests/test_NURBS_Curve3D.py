@@ -5,33 +5,54 @@
 
     Tests geomdl.NURBS.Curve module. Requires "pytest" to run.
 """
+
+import pytest
 from geomdl import NURBS
 
 GEOMDL_DELTA = 0.001
-OBJECT_INSTANCE = NURBS.Curve
-CONTROL_POINTS = [[5.0, 15.0, 0.0, 1.0], [10.0, 25.0, 5.0, 1.0], [20.0, 20.0, 10.0, 1.0], [15.0, -5.0, 15.0, 1.0],
-                  [7.5, 10.0, 20.0, 1.0], [12.5, 15.0, 25.0, 1.0], [15.0, 0.0, 30.0, 1.0], [5.0, -10.0, 35.0, 1.0],
-                  [10.0, 15.0, 40.0, 1.0], [5.0, 15.0, 30.0, 1.0]]
-CONTROL_POINTS2 = [[5.0, 15.0, 0.0, 0.1], [10.0, 25.0, 5.0, 0.2], [20.0, 20.0, 10.0, 1.0], [15.0, -5.0, 15.0, 1.0],
-                   [7.5, 10.0, 20.0, 1.0], [12.5, 15.0, 25.0, 1.0], [15.0, 0.0, 30.0, 0.5], [5.0, -10.0, 35.0, 1.0],
-                   [10.0, 15.0, 40.0, 0.7], [5.0, 15.0, 30.0, 1.0], [15.0, 20.0, 40.0, 1.0]]
 
 
-def test_nurbs_curve3d_eval1():
+@pytest.fixture
+def ns_curve():
     # Create a curve instance
-    curve = OBJECT_INSTANCE()
+    curve = NURBS.Curve()
 
     # Set curve degree
     curve.degree = 4
 
     # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS
+    curve.ctrlptsw = [[5.0, 15.0, 0.0, 1.0], [10.0, 25.0, 5.0, 1.0], [20.0, 20.0, 10.0, 1.0], [15.0, -5.0, 15.0, 1.0],
+                      [7.5, 10.0, 20.0, 1.0], [12.5, 15.0, 25.0, 1.0], [15.0, 0.0, 30.0, 1.0], [5.0, -10.0, 35.0, 1.0],
+                      [10.0, 15.0, 40.0, 1.0], [5.0, 15.0, 30.0, 1.0]]
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
 
+    return curve
+
+
+@pytest.fixture
+def ns_curve2():
+    # Create a curve instance
+    curve = NURBS.Curve()
+
+    # Set curve degree
+    curve.degree = 5
+
+    # Set weighted control points
+    curve.ctrlptsw = [[5.0, 15.0, 0.0, 0.1], [10.0, 25.0, 5.0, 0.2], [20.0, 20.0, 10.0, 1.0], [15.0, -5.0, 15.0, 1.0],
+                      [7.5, 10.0, 20.0, 1.0], [12.5, 15.0, 25.0, 1.0], [15.0, 0.0, 30.0, 0.5], [5.0, -10.0, 35.0, 1.0],
+                      [10.0, 15.0, 40.0, 0.7], [5.0, 15.0, 30.0, 1.0], [15.0, 20.0, 40.0, 1.0]]
+
+    # Set knot vector
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+    return curve
+
+
+def test_nurbs_curve3d_eval1(ns_curve):
     # Evaluate curve
-    evalpt = curve.curvept(0.0)
+    evalpt = ns_curve.curvept(0.0)
 
     # Evaluation result
     res = [5.0, 15.0, 0.0]
@@ -41,21 +62,9 @@ def test_nurbs_curve3d_eval1():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval2():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 4
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval2(ns_curve):
     # Evaluate curve
-    evalpt = curve.curvept(0.2)
+    evalpt = ns_curve.curvept(0.2)
 
     # Evaluation result
     res = [15.727, 6.509, 13.692]
@@ -65,21 +74,9 @@ def test_nurbs_curve3d_eval2():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval3():
-    # Create an object instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 4
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval3(ns_curve):
     # Evaluate curve
-    evalpt = curve.curvept(0.5)
+    evalpt = ns_curve.curvept(0.5)
 
     # Evaluation result
     res = [10.476, 11.071, 22.5]
@@ -89,21 +86,9 @@ def test_nurbs_curve3d_eval3():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval4():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 4
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval4(ns_curve):
     # Evaluate curve
-    evalpt = curve.curvept(0.8)
+    evalpt = ns_curve.curvept(0.8)
 
     # Evaluation result
     res = [10.978, -1.349, 31.307]
@@ -113,21 +98,9 @@ def test_nurbs_curve3d_eval4():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval5():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 4
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval5(ns_curve):
     # Evaluate curve
-    evalpt = curve.curvept(1.0)
+    evalpt = ns_curve.curvept(1.0)
 
     # Evaluation result
     res = [5.0, 15.0, 30.0]
@@ -137,21 +110,9 @@ def test_nurbs_curve3d_eval5():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval6():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval6(ns_curve2):
     # Evaluate curve
-    evalpt = curve.curvept(0.0)
+    evalpt = ns_curve2.curvept(0.0)
 
     # Evaluation result
     res = [50.0, 150.0, 0.0]
@@ -161,21 +122,9 @@ def test_nurbs_curve3d_eval6():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval7():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval7(ns_curve2):
     # Evaluate curve
-    evalpt = curve.curvept(0.2)
+    evalpt = ns_curve2.curvept(0.2)
 
     # Evaluation result
     res = [14.297, 5.130, 15.395]
@@ -185,21 +134,9 @@ def test_nurbs_curve3d_eval7():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval8():
-    # Create an object instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval8(ns_curve2):
     # Evaluate curve
-    evalpt = curve.curvept(0.7)
+    evalpt = ns_curve2.curvept(0.7)
 
     # Evaluation result
     res = [14.735, -0.255, 41.088]
@@ -209,21 +146,9 @@ def test_nurbs_curve3d_eval8():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval9():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval9(ns_curve2):
     # Evaluate curve
-    evalpt = curve.curvept(0.1)
+    evalpt = ns_curve2.curvept(0.1)
 
     # Evaluation result
     res = [19.514, 17.411, 12.515]
@@ -233,21 +158,9 @@ def test_nurbs_curve3d_eval9():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_eval10():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_eval10(ns_curve2):
     # Evaluate curve
-    evalpt = curve.curvept(0.5)
+    evalpt = ns_curve2.curvept(0.5)
 
     # Evaluation result
     res = [13.421, 10.976, 28.329]
@@ -257,51 +170,27 @@ def test_nurbs_curve3d_eval10():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_deriv1():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_deriv1(ns_curve2):
     # Evaluate curve
-    ept = curve.curvept(0.35)
+    ept = ns_curve2.curvept(0.35)
 
     # Take the derivative
-    der = curve.derivatives(u=0.35, order=7)
+    der = ns_curve2.derivatives(u=0.35, order=7)
 
     assert abs(ept[0] - der[0][0]) < GEOMDL_DELTA
     assert abs(ept[1] - der[0][1]) < GEOMDL_DELTA
     assert abs(ept[2] - der[0][2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_insert_knot1():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_insert_knot1(ns_curve2):
     # Set evaluation parameter
     u = 0.5
 
     # Insert knot
-    curve.insert_knot(u)
+    ns_curve2.insert_knot(u)
 
     # Evaluate curve at the given parameter
-    evalpt = curve.curvept(u)
+    evalpt = ns_curve2.curvept(u)
 
     # Evaluation result
     res = [13.421, 10.976, 28.329]
@@ -311,27 +200,15 @@ def test_nurbs_curve3d_insert_knot1():
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_nurbs_curve3d_insert_knot2():
-    # Create a curve instance
-    curve = OBJECT_INSTANCE()
-
-    # Set curve degree
-    curve.degree = 5
-
-    # Set weighted control points
-    curve.ctrlptsw = CONTROL_POINTS2
-
-    # Set knot vector
-    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-
+def test_nurbs_curve3d_insert_knot2(ns_curve2):
     # Set evaluation parameter
     u = 0.5
 
     # Insert knot
-    curve.insert_knot(u, 3)
+    ns_curve2.insert_knot(u, 3)
 
     # Evaluate curve at the given parameter
-    evalpt = curve.curvept(u)
+    evalpt = ns_curve2.curvept(u)
 
     # Evaluation result
     res = [13.421, 10.976, 28.329]
