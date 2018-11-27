@@ -593,33 +593,40 @@ def export_3dm(obj, file_name, **kwargs):
 
     res3dm = []
     for o in obj:
-        rd = {}
         if isinstance(o, abstract.Curve):
-            rd['shape_type'] = "curve"
-            rd['degree'] = o.degree
-            rd['knotvector'] = o.knotvector
-            rd['control_points']['points'] = o.ctrlpts
+            rd = dict(
+                shape_type="curve",
+                degree=o.degree,
+                knotvector=o.knotvector[1:-1],
+                control_points=dict(
+                    points=o.ctrlpts
+                )
+            )
             try:
                 rd['control_points']['weights'] = o.weights
             except AttributeError:
                 pass
             res3dm.append(rd)
         if isinstance(o, abstract.Surface):
-            rd['shape_type'] = "surface"
-            rd['degree_u'] = o.degree_u
-            rd['degree_v'] = o.degree_v
-            rd['knotvector_u'] = o.knotvector_u
-            rd['knotvector_v'] = o.knotvector_v
-            rd['size_u'] = o.ctrlpts_size_u
-            rd['size_v'] = o.ctrlpts_size_v
-            rd['control_points']['points'] = o.ctrlpts
+            rd = dict(
+                shape_type="surface",
+                degree_u=o.degree_u,
+                degree_v=o.degree_v,
+                knotvector_u=o.knotvector_u[1:-1],
+                knotvector_v=o.knotvector_v[1:-1],
+                size_u=o.ctrlpts_size_u,
+                size_v=o.ctrlpts_size_v,
+                control_points=dict(
+                    points=o.ctrlpts
+                )
+            )
             try:
                 rd['control_points']['weights'] = o.weights
             except AttributeError:
                 pass
             res3dm.append(rd)
 
-    rw3dm.write(file_name, res3dm)
+    rw3dm.write(res3dm, file_name)
 
 
 def _write_file(file_name, line):
