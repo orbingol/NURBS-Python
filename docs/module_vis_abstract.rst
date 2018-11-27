@@ -8,7 +8,7 @@ required abstract base classes for all visualization components.
 Abstract Visualization
 ======================
 
-.. autoclass:: geomdl.Abstract.VisAbstract
+.. autoclass:: geomdl.vis.VisAbstract
     :members:
     :undoc-members:
     :inherited-members:
@@ -18,7 +18,7 @@ Abstract Visualization
 Abstract Visualization for Surfaces
 ===================================
 
-.. autoclass:: geomdl.Abstract.VisAbstractSurf
+.. autoclass:: geomdl.vis.VisAbstractSurf
     :members:
     :undoc-members:
     :inherited-members:
@@ -28,7 +28,7 @@ Abstract Visualization for Surfaces
 Abstract Visualization Configuration
 ====================================
 
-.. autoclass:: geomdl.Abstract.VisConfigAbstract
+.. autoclass:: geomdl.vis.VisConfigAbstract
     :members:
     :undoc-members:
     :inherited-members:
