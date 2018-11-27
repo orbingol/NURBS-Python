@@ -528,6 +528,48 @@ def export_smesh(surf_in, file_name, **kwargs):
         raise NotImplementedError("Cannot export input surface - unknown type")
 
 
+def import_3dm(file_name, **kwargs):
+    """ Imports Rhinoceros/OpenNURBS .3dm file format.
+
+    .. note::
+
+        Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
+
+    :param file_name: input file name
+    :type file_name: str
+    """
+    try:
+        from rw3dm import rw3dm
+    except ImportError:
+        print("Please install 'rw3dm' module: https://github.com/orbingol/rw3dm")
+        return
+
+    # TODO implement .3dm importer
+    pass
+
+
+def export_3dm(obj, file_name, **kwargs):
+    """ Exports NURBS curves and surfaces in Rhinoceros/OpenNURBS .3dm format.
+
+    .. note::
+
+        Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
+
+    :param obj: curves/surfaces to be exported
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve, Multi.MultiSurface
+    :param file_name: file name
+    :type file_name: str
+    """
+    try:
+        from rw3dm import rw3dm
+    except ImportError:
+        print("Please install 'rw3dm' module: https://github.com/orbingol/rw3dm")
+        return
+
+    # TODO implement .3dm exporter
+    pass
+
+
 def _write_file(file_name, line):
     try:
         with open(file_name, 'w') as fp:
