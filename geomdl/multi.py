@@ -283,7 +283,8 @@ class MultiCurve(AbstractMulti):
         * ``cpcolor``: sets the color of the control points grid
         * ``evalcolor``: sets the color of the surface
         * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. Default is True.
+        * ``plot``: a flag to control displaying the plot window. *Default: True*
+        * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -304,6 +305,8 @@ class MultiCurve(AbstractMulti):
         evalcolor = kwargs.get('evalcolor')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        # Flag to control evaluation delta updates
+        update_delta = kwargs.get('delta', True)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -319,7 +322,8 @@ class MultiCurve(AbstractMulti):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.delta = self.delta
+            if update_delta:
+                elem.delta = self.delta
             elem.evaluate()
 
             # Color selection
@@ -550,8 +554,9 @@ class MultiSurface(AbstractMulti):
             * ``cpcolor``: sets the color of the control points grids
             * ``evalcolor``: sets the color of the surface
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``plot``: a flag to control displaying the plot window. *Default: True*
             * ``colormap``: sets the colormap of the surfaces
+            * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -579,6 +584,8 @@ class MultiSurface(AbstractMulti):
         trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        # Flag to control evaluation delta updates
+        update_delta = kwargs.get('delta', True)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -600,7 +607,8 @@ class MultiSurface(AbstractMulti):
         # Run the visualization component
         self._vis_component.clear()
         for idx, elem in enumerate(self._elements):
-            elem.delta = self.delta
+            if update_delta:
+                elem.delta = self.delta
             elem.evaluate()
 
             # Color selection
