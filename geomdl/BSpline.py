@@ -668,7 +668,6 @@ class Surface(abstract.Surface):
         self.knotvector_u = impdata['knotvector_u']
         self.knotvector_v = impdata['knotvector_v']
 
-
     def transpose(self):
         """ Transposes the surface by swapping u- and v-directions. """
         # Transpose existing data
