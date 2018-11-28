@@ -7,6 +7,7 @@
 
 """
 
+import math
 import copy
 import warnings
 from . import abstract
@@ -894,3 +895,114 @@ def _find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
 
     # Return 2-dimensional control points array
     return surf_ctrlpts
+
+
+def rotate_x(obj, angle):
+    """ Rotates the grid about the x-axis.
+
+    :param obj: input curve or surface
+    :type obj: abstract.Curve or abstract.Surface
+    :param angle: angle of rotation about the x-axis
+    :type angle: float
+    """
+    if isinstance(obj, abstract.Curve):
+        origin = obj.evaluate_single(0.0)
+    elif isinstance(obj, abstract.Surface):
+        origin = obj.evaluate_single((0.0, 0.0))
+    else:
+        raise TypeError("Can only work with single curves and surfaces")
+
+    if obj.dimension != 3:
+        raise ValueError("Can only work with 3-dimensional shapes")
+
+    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
+
+    # Translate to the origin
+    translate(obj, translate_vector, inplace=True)
+
+    # Then, rotate about the axis
+    rot = math.radians(angle)
+    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
+    for idx, pt in enumerate(obj.ctrlpts):
+        new_ctrlpts[idx][0] = pt[0]
+        new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) - (pt[2] * math.sin(rot))
+        new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[1] * math.sin(rot))
+
+    obj.ctrlpts = new_ctrlpts
+
+    # Finally, translate back to the starting location
+    translate(obj, [-o for o in origin])
+
+
+def rotate_y(obj, angle):
+    """ Rotates the grid about the y-axis.
+
+    :param obj: input curve or surface
+    :type obj: abstract.Curve or abstract.Surface
+    :param angle: angle of rotation about the y-axis
+    :type angle: float
+    """
+    if isinstance(obj, abstract.Curve):
+        origin = obj.evaluate_single(0.0)
+    elif isinstance(obj, abstract.Surface):
+        origin = obj.evaluate_single((0.0, 0.0))
+    else:
+        raise TypeError("Can only work with single curves and surfaces")
+
+    if obj.dimension != 3:
+        raise ValueError("Can only work with 3-dimensional shapes")
+
+    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
+
+    # Translate to the origin
+    translate(obj, translate_vector, inplace=True)
+
+    # Then, rotate about the axis
+    rot = math.radians(angle)
+    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
+    for idx, pt in enumerate(obj.ctrlpts):
+        new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[2] * math.sin(rot))
+        new_ctrlpts[idx][1] = pt[1]
+        new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[0] * math.sin(rot))
+
+    obj.ctrlpts = new_ctrlpts
+
+    # Finally, translate back to the starting location
+    translate(obj, [-o for o in origin])
+
+
+def rotate_z(obj, angle):
+    """ Rotates the grid about the z-axis.
+
+    :param obj: input curve or surface
+    :type obj: abstract.Curve or abstract.Surface
+    :param angle: angle of rotation about the z-axis
+    :type angle: float
+    """
+    if isinstance(obj, abstract.Curve):
+        origin = obj.evaluate_single(0.0)
+    elif isinstance(obj, abstract.Surface):
+        origin = obj.evaluate_single((0.0, 0.0))
+    else:
+        raise TypeError("Can only work with single curves and surfaces")
+
+    if obj.dimension != 3:
+        raise ValueError("Can only work with 3-dimensional shapes")
+
+    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
+
+    # Translate to the origin
+    translate(obj, translate_vector, inplace=True)
+
+    # Then, rotate about the axis
+    rot = math.radians(angle)
+    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
+    for idx, pt in enumerate(obj.ctrlpts):
+        new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
+        new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
+        new_ctrlpts[idx][2] = pt[2]
+
+    obj.ctrlpts = new_ctrlpts
+
+    # Finally, translate back to the starting location
+    translate(obj, [-o for o in origin])
