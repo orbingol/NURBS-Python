@@ -897,14 +897,75 @@ def _find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
     return surf_ctrlpts
 
 
-def rotate_x(obj, angle):
-    """ Rotates the grid about the x-axis.
+def rotate(obj, angle, **kwargs):
+    """ Rotates the curves and surfaces about the chosen axis.
+
+    Keyword Arguments:
+        * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively.
 
     :param obj: input curve or surface
     :type obj: abstract.Curve or abstract.Surface
-    :param angle: angle of rotation about the x-axis
+    :param angle: angle of rotation (in degrees)
     :type angle: float
     """
+    def rotate_x(ncs, opt, alpha):
+        # Generate translation vector
+        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+
+        # Translate to the origin
+        translate(ncs, translate_vector, inplace=True)
+
+        # Then, rotate about the axis
+        rot = math.radians(alpha)
+        new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(len(ncs.ctrlpts))]
+        for idx, pt in enumerate(ncs.ctrlpts):
+            new_ctrlpts[idx][0] = pt[0]
+            new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) - (pt[2] * math.sin(rot))
+            new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[1] * math.sin(rot))
+        ncs.ctrlpts = new_ctrlpts
+
+        # Finally, translate back to the starting location
+        translate(ncs, [-o for o in opt])
+
+    def rotate_y(ncs, opt, alpha):
+        # Generate translation vector
+        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+
+        # Translate to the origin
+        translate(ncs, translate_vector, inplace=True)
+
+        # Then, rotate about the axis
+        rot = math.radians(alpha)
+        new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(len(ncs.ctrlpts))]
+        for idx, pt in enumerate(ncs.ctrlpts):
+            new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[2] * math.sin(rot))
+            new_ctrlpts[idx][1] = pt[1]
+            new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[0] * math.sin(rot))
+        ncs.ctrlpts = new_ctrlpts
+
+        # Finally, translate back to the starting location
+        translate(ncs, [-o for o in opt])
+
+    def rotate_z(ncs, opt, alpha):
+        # Generate translation vector
+        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+
+        # Translate to the origin
+        translate(ncs, translate_vector, inplace=True)
+
+        # Then, rotate about the axis
+        rot = math.radians(alpha)
+        new_ctrlpts = [list(ncs.ctrlpts[i]) for i in range(len(ncs.ctrlpts))]
+        for idx, pt in enumerate(ncs.ctrlpts):
+            new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
+            new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
+        ncs.ctrlpts = new_ctrlpts
+
+        # Finally, translate back to the starting location
+        translate(ncs, [-o for o in opt])
+
+    axis = 2 if obj.dimension == 2 else kwargs.get('axis', 2)
+
     if isinstance(obj, abstract.Curve):
         origin = obj.evaluate_single(0.0)
     elif isinstance(obj, abstract.Surface):
@@ -912,97 +973,12 @@ def rotate_x(obj, angle):
     else:
         raise TypeError("Can only work with single curves and surfaces")
 
-    if obj.dimension != 3:
-        raise ValueError("Can only work with 3-dimensional shapes")
-
-    # Generate translation vector
-    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
-
-    # Translate to the origin
-    translate(obj, translate_vector, inplace=True)
-
-    # Then, rotate about the axis
-    rot = math.radians(angle)
-    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
-    for idx, pt in enumerate(obj.ctrlpts):
-        new_ctrlpts[idx][0] = pt[0]
-        new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) - (pt[2] * math.sin(rot))
-        new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[1] * math.sin(rot))
-    obj.ctrlpts = new_ctrlpts
-
-    # Finally, translate back to the starting location
-    translate(obj, [-o for o in origin])
-
-
-def rotate_y(obj, angle):
-    """ Rotates the grid about the y-axis.
-
-    :param obj: input curve or surface
-    :type obj: abstract.Curve or abstract.Surface
-    :param angle: angle of rotation about the y-axis
-    :type angle: float
-    """
-    if isinstance(obj, abstract.Curve):
-        origin = obj.evaluate_single(0.0)
-    elif isinstance(obj, abstract.Surface):
-        origin = obj.evaluate_single((0.0, 0.0))
+    args = [obj, origin, angle]
+    if axis == 0:
+        rotate_x(*args)
+    elif axis == 1:
+        rotate_y(*args)
+    elif axis == 2:
+        rotate_z(*args)
     else:
-        raise TypeError("Can only work with single curves and surfaces")
-
-    if obj.dimension != 3:
-        raise ValueError("Can only work with 3-dimensional shapes")
-
-    # Generate translation vector
-    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
-
-    # Translate to the origin
-    translate(obj, translate_vector, inplace=True)
-
-    # Then, rotate about the axis
-    rot = math.radians(angle)
-    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
-    for idx, pt in enumerate(obj.ctrlpts):
-        new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[2] * math.sin(rot))
-        new_ctrlpts[idx][1] = pt[1]
-        new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[0] * math.sin(rot))
-    obj.ctrlpts = new_ctrlpts
-
-    # Finally, translate back to the starting location
-    translate(obj, [-o for o in origin])
-
-
-def rotate_z(obj, angle):
-    """ Rotates the grid about the z-axis.
-
-    :param obj: input curve or surface
-    :type obj: abstract.Curve or abstract.Surface
-    :param angle: angle of rotation about the z-axis
-    :type angle: float
-    """
-    if isinstance(obj, abstract.Curve):
-        origin = obj.evaluate_single(0.0)
-    elif isinstance(obj, abstract.Surface):
-        origin = obj.evaluate_single((0.0, 0.0))
-    else:
-        raise TypeError("Can only work with single curves and surfaces")
-
-    if obj.dimension != 3:
-        raise ValueError("Can only work with 3-dimensional shapes")
-
-    # Generate translation vector
-    translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
-
-    # Translate to the origin
-    translate(obj, translate_vector, inplace=True)
-
-    # Then, rotate about the axis
-    rot = math.radians(angle)
-    new_ctrlpts = [[0.0 for _ in range(obj.dimension)] for _ in range(len(obj.ctrlpts))]
-    for idx, pt in enumerate(obj.ctrlpts):
-        new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
-        new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
-        new_ctrlpts[idx][2] = pt[2]
-    obj.ctrlpts = new_ctrlpts
-
-    # Finally, translate back to the starting location
-    translate(obj, [-o for o in origin])
+        raise ValueError("Value of the 'axis' argument should be 0, 1 or 2")
