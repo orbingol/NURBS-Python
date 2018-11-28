@@ -241,19 +241,19 @@ class VisCurve3D(vis.VisAbstract):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurface(vis.VisAbstractSurf):
+class VisSurfTriangle(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
     """
     def __init__(self, config=VisConfig()):
-        super(VisSurface, self).__init__(config=config)
+        super(VisSurfTriangle, self).__init__(config=config)
         self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         # Calling parent function
-        super(VisSurface, self).render(**kwargs)
+        super(VisSurfTriangle, self).render(**kwargs)
 
         # Initialize variables
         legend_proxy = []
@@ -413,14 +413,14 @@ class VisSurfWireframe(vis.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurfTriangle(vis.VisAbstractSurf):
+class VisSurface(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
     The surface is triangulated externally using :py:func:`.utilities.make_triangle_mesh()` function.
     """
     def __init__(self, config=VisConfig()):
-        super(VisSurfTriangle, self).__init__(config=config)
+        super(VisSurface, self).__init__(config=config)
         self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
 
     def render(self, **kwargs):
@@ -436,7 +436,7 @@ class VisSurfTriangle(vis.VisAbstractSurf):
         https://matplotlib.org/tutorials/colors/colormaps.html
         """
         # Calling parent function
-        super(VisSurfTriangle, self).render(**kwargs)
+        super(VisSurface, self).render(**kwargs)
 
         # Colormaps
         surf_cmaps = kwargs.get('colormap', None)
