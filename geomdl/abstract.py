@@ -13,7 +13,7 @@ import six
 import warnings
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
-from .vis import VisAbstract
+from geomdl.vis import VisAbstract
 from . import utilities
 
 
