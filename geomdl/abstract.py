@@ -289,6 +289,14 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._control_points = value
 
     @property
+    def ctrlpts_size(self):
+        """ Size of the control points array.
+
+        :getter: Gets the size of the control points array
+        """
+        return len(self._control_points)
+
+    @property
     def evalpts(self):
         """ Evaluated curve points.
 
