@@ -7,7 +7,6 @@
 
 """
 
-import math
 import random
 import warnings
 
@@ -26,7 +25,6 @@ class Grid(object):
     """
 
     def __init__(self, size_x, size_y):
-        self._origin = [0.0, 0.0, 0.0]  # Grid origin (always set to the bottom left corner of the grid)
         self._size_x = float(size_x)  # width of the grid
         self._size_y = float(size_y)  # height of the grid
         self._size_u = 0  # grid size in x-direction
@@ -50,7 +48,6 @@ class Grid(object):
             self._grid_points[:] = []
             self._size_u = 0
             self._size_v = 0
-            self._origin = [0.0, 0.0, 0.0]
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
@@ -106,170 +103,6 @@ class Grid(object):
         # Set class variables
         self._size_u = num_u
         self._size_v = num_v
-
-    # Rotates the grid about the z-axis
-    def rotate_z(self, angle=0.0):
-        """ Rotates the grid about the z-axis.
-        
-        :param angle: angle of rotation about the z-axis
-        :type angle: float
-        """
-        # Check if the grid points are generated
-        if not self._grid_points:
-            raise RuntimeError("Grid must be generated before calling this function")
-
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
-
-        # Translate to the origin
-        self.translate([0.0, 0.0, 0.0])
-
-        # Then, rotate about the axis
-        rot = math.radians(angle)
-        for r in self._grid_points:
-            for c in r:
-                new_x = (c[0] * math.cos(rot)) - (c[1] * math.sin(rot))
-                new_y = (c[1] * math.cos(rot)) + (c[0] * math.sin(rot))
-                c[0] = new_x
-                c[1] = new_y
-
-        # Finally, translate back to the starting location
-        self.translate(current_origin)
-
-    # Rotates the grid about the y-axis
-    def rotate_y(self, angle=0.0):
-        """ Rotates the grid about the y-axis.
-
-        :param angle: angle of rotation about the y-axis
-        :type angle: float
-        """
-        # Check if the grid points are generated
-        if not self._grid_points:
-            raise RuntimeError("Grid must be generated before calling this function")
-
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
-
-        # Translate to the origin
-        self.translate([0.0, 0.0, 0.0])
-
-        # Then, rotate about the axis
-        rot = math.radians(angle)
-        for r in self._grid_points:
-            for c in r:
-                new_x = (c[0] * math.cos(rot)) - (c[2] * math.sin(rot))
-                new_z = (c[2] * math.cos(rot)) + (c[0] * math.sin(rot))
-                c[0] = new_x
-                c[2] = new_z
-
-        # Finally, translate back to the starting location
-        self.translate(current_origin)
-
-    # Rotates the grid about the x-axis
-    def rotate_x(self, angle=0.0):
-        """ Rotates the grid about the x-axis.
-
-        :param angle: angle of rotation about the x-axis
-        :type angle: float
-        """
-        # Check if the grid points are generated
-        if not self._grid_points:
-            raise RuntimeError("Grid must be generated before calling this function")
-
-        # Get current origin / starting point (we need a copy of the self._origin)
-        current_origin = list(self._origin)
-
-        # Translate to the origin
-        self.translate([0.0, 0.0, 0.0])
-
-        # Then, rotate about the axis
-        rot = math.radians(angle)
-        for r in self._grid_points:
-            for c in r:
-                new_y = (c[1] * math.cos(rot)) - (c[2] * math.sin(rot))
-                new_z = (c[2] * math.cos(rot)) + (c[1] * math.sin(rot))
-                c[1] = new_y
-                c[2] = new_z
-
-        # Finally, translate back to the starting location
-        self.translate(current_origin)
-
-    # Translates the grid origin to the input position
-    def translate(self, pos=(0.0, 0.0, 0.0)):
-        """ Translates the grid origin to the input position.
-        
-        The origin is initially (0, 0, 0) and always represents the bottom left corner of the 2-dimensional grid.
-        
-        :param pos: new origin point
-        :type pos: list
-        """
-        # Check if the grid points are generated
-        if not self._grid_points:
-            raise RuntimeError("Grid must be generated before calling this function")
-
-        # Check input position validity
-        if not isinstance(pos, (list, tuple)):
-            raise TypeError("Input position must be a list or a tuple")
-
-        if len(pos) != 3:
-            raise ValueError("Input position must have 3 elements representing (x, y, z) coordinates")
-
-        # Find the difference between starting and the input point
-        diff_x = pos[0] - self._origin[0]
-        diff_y = pos[1] - self._origin[1]
-        diff_z = pos[2] - self._origin[2]
-
-        # Translate all points
-        for r in self._grid_points:
-            for c in r:
-                c[0] = c[0] + diff_x
-                c[1] = c[1] + diff_y
-                c[2] = c[2] + diff_z
-
-        # Update the origin (bottom left corner)
-        self._origin = self._grid_points[0][0]
-
-    # Saves the generated grid to a text file
-    def save(self, filename="grid.txt"):
-        """ Saves the generated grid to a text file.
-
-        :param filename: File name to be saved
-        :type filename: str
-        :raises IOError: an error occurred writing the file
-        """
-        # Check if the grid points are generated
-        if not self._grid_points:
-            raise RuntimeError("Grid must be generated before calling this function")
-
-        if not isinstance(filename, str):
-            raise TypeError("File name must be a string")
-
-        # Open the file for writing
-        try:
-            with open(filename, 'w') as fp:
-                # Clear file contents
-                fp.truncate()
-                # Start saving the generated grid to the file
-                for cols in self.grid:
-                    line = ""
-                    col_size = len(cols)
-                    counter = 0
-                    for rows in cols:
-                        for idx, coord in enumerate(rows):
-                            if idx:  # Add comma if we are not on the first element
-                                line += ","
-                            line += str(coord)
-                        counter += 1
-                        # Not the best way, but it works
-                        if counter != col_size:
-                            line += ";"
-                    line += "\n"
-                    fp.write(line)
-        except IOError as e:
-            print("An error occurred: {}".format(e.args[-1]))
-            raise e
-        except Exception:
-            raise
 
     # Generates hills (a.k.a. bumps) on the grid
     def bumps(self, num_bumps, **kwargs):
