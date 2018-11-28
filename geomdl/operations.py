@@ -915,6 +915,7 @@ def rotate_x(obj, angle):
     if obj.dimension != 3:
         raise ValueError("Can only work with 3-dimensional shapes")
 
+    # Generate translation vector
     translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
 
     # Translate to the origin
@@ -927,7 +928,6 @@ def rotate_x(obj, angle):
         new_ctrlpts[idx][0] = pt[0]
         new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) - (pt[2] * math.sin(rot))
         new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[1] * math.sin(rot))
-
     obj.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
@@ -952,6 +952,7 @@ def rotate_y(obj, angle):
     if obj.dimension != 3:
         raise ValueError("Can only work with 3-dimensional shapes")
 
+    # Generate translation vector
     translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
 
     # Translate to the origin
@@ -964,7 +965,6 @@ def rotate_y(obj, angle):
         new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[2] * math.sin(rot))
         new_ctrlpts[idx][1] = pt[1]
         new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[0] * math.sin(rot))
-
     obj.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
@@ -989,6 +989,7 @@ def rotate_z(obj, angle):
     if obj.dimension != 3:
         raise ValueError("Can only work with 3-dimensional shapes")
 
+    # Generate translation vector
     translate_vector = utilities.vector_generate(origin, (0.0, 0.0, 0.0))
 
     # Translate to the origin
@@ -1001,7 +1002,6 @@ def rotate_z(obj, angle):
         new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
         new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
         new_ctrlpts[idx][2] = pt[2]
-
     obj.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
