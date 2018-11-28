@@ -25,6 +25,7 @@ class Grid(object):
     """
 
     def __init__(self, size_x, size_y):
+        self._origin = [0.0, 0.0, 0.0]  # Grid origin (always set to the bottom left corner of the grid)
         self._size_x = float(size_x)  # width of the grid
         self._size_y = float(size_y)  # height of the grid
         self._size_u = 0  # grid size in x-direction
@@ -48,6 +49,7 @@ class Grid(object):
             self._grid_points[:] = []
             self._size_u = 0
             self._size_v = 0
+            self._origin = [0.0, 0.0, 0.0]
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
