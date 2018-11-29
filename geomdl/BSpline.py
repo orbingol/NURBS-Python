@@ -669,39 +669,8 @@ class Surface(abstract.Surface):
         self.knotvector_v = impdata['knotvector_v']
 
     def transpose(self):
-        """ Transposes the surface by swapping u- and v-directions. """
-        # Transpose existing data
-        degree_u_new = self._degree_v
-        degree_v_new = self._degree_u
-        kv_u_new = self._knot_vector_v
-        kv_v_new = self._knot_vector_u
-        ctrlpts2d_new = []
-        for v in range(0, self._control_points_size_v):
-            ctrlpts_u = []
-            for u in range(0, self._control_points_size_u):
-                temp = self._control_points2D[u][v]
-                ctrlpts_u.append(temp)
-            ctrlpts2d_new.append(ctrlpts_u)
-        ctrlpts_new_size_u = self._control_points_size_v
-        ctrlpts_new_size_v = self._control_points_size_u
-
-        ctrlpts_new = []
-        for v in range(0, ctrlpts_new_size_v):
-            for u in range(0, ctrlpts_new_size_u):
-                ctrlpts_new.append(ctrlpts2d_new[u][v])
-
-        # Clean up the surface points
-        self.reset(evalpts=True)
-
-        # Save transposed data
-        self._degree_u = degree_u_new
-        self._degree_v = degree_v_new
-        self._knot_vector_u = kv_u_new
-        self._knot_vector_v = kv_v_new
-        self._control_points = ctrlpts_new
-        self._control_points_size_u = ctrlpts_new_size_u
-        self._control_points_size_v = ctrlpts_new_size_v
-        self._control_points2D = ctrlpts2d_new
+        """ Transposes the surface by swapping u and v parametric directions. """
+        operations.transpose(self, inplace=True)
 
     def surfpt(self, u, v):
         """ Evaluates the surface at the given (u,v) parameter pair.

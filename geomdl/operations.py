@@ -116,7 +116,7 @@ def add_dimension(obj, **kwargs):
     """ Converts x-dimensional curve to a (x+1)-dimensional curve.
 
     If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
-    change the input shape but returns the updated shape.
+    change the input shape but returns a new instance of the same shape with the updated data.
 
     Useful when converting a 2-dimensional curve to a 3-dimensional curve.
 
@@ -457,7 +457,7 @@ def translate(obj, vec, **kwargs):
     """ Translates single or multi curves and surface by the input vector.
 
     If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
-    change the input shape but returns the updated shape.
+    change the input shape but returns a new instance of the same shape with the updated data.
 
     :param obj: Curve(s) or surface(s) to be translated
     :type obj: Abstract.Curve, Abstract.Surface or Abstract.Multi
@@ -982,3 +982,49 @@ def rotate(obj, angle, **kwargs):
         rotate_z(*args)
     else:
         raise ValueError("Value of the 'axis' argument should be 0, 1 or 2")
+
+
+def transpose(surf, **kwargs):
+    """ Transposes the input surface by swapping u and v parametric directions.
+
+    If you pass ``inplace=True`` keyword argument, the input surface will be updated. Otherwise, this function does not
+    change the input surface but returns a new instance of the same surface with the updated data.
+
+    :param surf: input surface
+    :type surf: abstract.Surface
+    :return: transposed surface
+    :rtype: abstract.Surface()
+    """
+    if not isinstance(surf, abstract.Surface):
+        raise TypeError("Can only transpose single surfaces")
+
+    inplace = kwargs.get('inplace', False)
+
+    # Get existing data
+    degree_u_new = surf.degree_v
+    degree_v_new = surf.degree_u
+    kv_u_new = surf.knotvector_v
+    kv_v_new = surf.knotvector_u
+    ctrlpts2d_old = surf.ctrlpts2d
+
+    # Find new control points
+    ctrlpts2d_new = []
+    for v in range(0, surf.ctrlpts_size_v):
+        ctrlpts_u = []
+        for u in range(0, surf.ctrlpts_size_u):
+            temp = ctrlpts2d_old[u][v]
+            ctrlpts_u.append(temp)
+        ctrlpts2d_new.append(ctrlpts_u)
+
+    # Save transposed data
+    if inplace:
+        surf_t = surf
+    else:
+        surf_t = surf.__class__()
+    surf_t.degree_u = degree_u_new
+    surf_t.degree_v = degree_v_new
+    surf_t.ctrlpts2d = ctrlpts2d_new
+    surf_t.knotvector_u = kv_u_new
+    surf_t.knotvector_v = kv_v_new
+
+    return surf_t
