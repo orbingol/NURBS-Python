@@ -902,11 +902,14 @@ def rotate(obj, angle, **kwargs):
 
     Keyword Arguments:
         * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively.
+        * ``inplace``: if True, the input shape is modified. *Default: False*
 
     :param obj: input curve or surface
     :type obj: abstract.Curve or abstract.Surface
     :param angle: angle of rotation (in degrees)
     :type angle: float
+    :return: rotated curve or surface
+    :rtype: abstract.Curve or abstract.Surface
     """
     def rotate_x(ncs, opt, alpha):
         # Generate translation vector
@@ -964,8 +967,6 @@ def rotate(obj, angle, **kwargs):
         # Finally, translate back to the starting location
         translate(ncs, [-o for o in opt])
 
-    axis = 2 if obj.dimension == 2 else kwargs.get('axis', 2)
-
     if isinstance(obj, abstract.Curve):
         origin = obj.evaluate_single(0.0)
     elif isinstance(obj, abstract.Surface):
@@ -973,7 +974,15 @@ def rotate(obj, angle, **kwargs):
     else:
         raise TypeError("Can only work with single curves and surfaces")
 
-    args = [obj, origin, angle]
+    axis = 2 if obj.dimension == 2 else kwargs.get('axis', 2)
+    inplace = kwargs.get('inplace', False)
+
+    if inplace:
+        _obj = obj
+    else:
+        _obj = copy.deepcopy(obj)
+
+    args = [_obj, origin, angle]
     if axis == 0:
         rotate_x(*args)
     elif axis == 1:
@@ -982,6 +991,8 @@ def rotate(obj, angle, **kwargs):
         rotate_z(*args)
     else:
         raise ValueError("Value of the 'axis' argument should be 0, 1 or 2")
+
+    return _obj
 
 
 def transpose(surf, **kwargs):
