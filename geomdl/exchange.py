@@ -66,19 +66,14 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     :rtype: list
     :raises IOError: an error occurred reading the file
     """
+    # Read file
+    content = _read_file(file_name)
+
     # File delimiters
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    # Try opening the file for reading
-    try:
-        with open(file_name, 'r') as fp:
-            return _import_txt(fp, sep, col_sep, two_dimensional)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    return _import_text_data(content, sep, col_sep, two_dimensional)
 
 
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
@@ -111,15 +106,8 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            _export_txt(fp, obj, sep, col_sep, two_dimensional)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    content = _export_text_data(obj, sep, col_sep, two_dimensional)
+    return _write_file(file_name, content)
 
 
 def import_csv(file_name, **kwargs):
@@ -148,18 +136,8 @@ def import_csv(file_name, **kwargs):
     # File delimiters
     sep = kwargs.get('separator', ",")
 
-    # Try opening the file for reading
-    try:
-        with open(file_name, 'r') as fp:
-            # Skip header row
-            next(fp)
-            # After skipping the header row, the file format becomes the same as the txt format
-            return _import_txt(fp, sep)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    content = _read_file(file_name, skip_lines=1)
+    return _import_text_data(content, sep)
 
 
 def export_csv(obj, file_name, point_type='evalpts', **kwargs):
@@ -184,28 +162,19 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     else:
         raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
-    # File delimiters
-    sep = kwargs.get('separator', ",")
-
     # Prepare CSV header
     dim = len(points[0])
-    header = "dim "
+    line = "dim "
     for i in range(dim-1):
-        header += str(i + 1) + ", dim "
-    header += str(dim) + "\n"
+        line += str(i + 1) + ", dim "
+    line += str(dim) + "\n"
 
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            # Write header to the file
-            fp.write(header)
-            # Write points
-            _export_txt(fp, obj, sep)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Prepare values
+    for pt in points:
+        line += ",".join([str(p) for p in pt]) + "\n"
+
+    # Write to file
+    return _write_file(file_name, line)
 
 
 def export_vtk(obj, file_name, point_type='evalpts'):
@@ -232,16 +201,17 @@ def export_vtk(obj, file_name, point_type='evalpts'):
     else:
         raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
-    # Write header to the file
+    # Prepare header
     line = "# vtk DataFile Version 3.0\n"
     line += repr(obj) + "\n"
     line += "ASCII\nDATASET POLYDATA\n"
     line += "POINTS " + str(len(points)) + " FLOAT\n"
 
-    # Loop through points
+    # Prepare values
     for pt in points:
         line += " ".join(str(c) for c in pt) + "\n"
 
+    # Write to file
     return _write_file(file_name, line)
 
 
@@ -780,9 +750,11 @@ def export_3dm(obj, file_name, **kwargs):
     rw3dm.write(res3dm, file_name)
 
 
-def _read_file(file_name, binary=False):
+def _read_file(file_name, skip_lines=0, binary=False):
     try:
         with open(file_name, 'rb' if binary else 'r') as fp:
+            for _ in range(skip_lines):
+                next(fp)
             content = fp.read()
         return content
     except IOError as e:
@@ -804,15 +776,14 @@ def _write_file(file_name, content, binary=False):
         raise
 
 
-def _import_txt(fp, sep, col_sep=";", two_dimensional=False):
-    # Initialize an empty list to store control points
+def _import_text_data(content, sep, col_sep=";", two_dimensional=False):
+    lines = content.strip().split("\n")
     ctrlpts = []
-
     if two_dimensional:
         # Start reading file
         size_u = 0
         size_v = 0
-        for line in fp:
+        for line in lines:
             # Remove whitespace
             line = line.strip()
             # Convert the string containing the coordinates into a list
@@ -828,7 +799,7 @@ def _import_txt(fp, sep, col_sep=";", two_dimensional=False):
         return ctrlpts, size_u, size_v
     else:
         # Start reading file
-        for line in fp:
+        for line in lines:
             # Remove whitespace
             line = line.strip()
             # Clean and convert the values
@@ -838,7 +809,8 @@ def _import_txt(fp, sep, col_sep=";", two_dimensional=False):
         return ctrlpts
 
 
-def _export_txt(fp, obj, sep, col_sep=";", two_dimensional=False):
+def _export_text_data(obj, sep, col_sep=";", two_dimensional=False):
+    result = ""
     if two_dimensional:
         for i in range(0, obj.ctrlpts_size_u):
             line = ""
@@ -851,7 +823,7 @@ def _export_txt(fp, obj, sep, col_sep=";", two_dimensional=False):
                     line += col_sep
                 else:
                     line += "\n"
-            fp.write(line)
+            result += line
     else:
         # B-spline or NURBS?
         try:
@@ -860,8 +832,9 @@ def _export_txt(fp, obj, sep, col_sep=";", two_dimensional=False):
             ctrlpts = obj.ctrlpts
         # Loop through points
         for pt in ctrlpts:
-            line = sep.join(str(c) for c in pt) + "\n"
-            fp.write(line)
+            result += sep.join(str(c) for c in pt) + "\n"
+
+    return result
 
 
 def _import_smesh_single(file_name):
