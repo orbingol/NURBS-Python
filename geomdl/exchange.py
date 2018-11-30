@@ -466,6 +466,7 @@ def export_stl(surface, file_name, **kwargs):
         * ``binary``: flag to generate a binary STL file. *Default: True*
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
+        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
     :type surface: abstract.Surface or multi.MultiSurface
@@ -533,6 +534,7 @@ def export_off(surface, file_name, **kwargs):
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
         * ``return_as_str``: if True, return the file contents as a string. *Default: False*
+        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
     :type surface: abstract.Surface or multi.MultiSurface
