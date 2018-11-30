@@ -772,12 +772,15 @@ def export_3dm(obj, file_name, **kwargs):
     rw3dm.write(res3dm, file_name)
 
 
-def _read_file(file_name, skip_lines=0, binary=False):
+def _read_file(file_name, **kwargs):
+    binary = kwargs.get('binary', False)
+    skip_lines = kwargs.get('skip_lines', 0)
+    fp_callback = kwargs.get('callback', None)
     try:
         with open(file_name, 'rb' if binary else 'r') as fp:
             for _ in range(skip_lines):
                 next(fp)
-            content = fp.read()
+            content = fp.read() if fp_callback is None else fp_callback(fp)
         return content
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
@@ -786,10 +789,12 @@ def _read_file(file_name, skip_lines=0, binary=False):
         raise
 
 
-def _write_file(file_name, content, binary=False):
+def _write_file(file_name, content, **kwargs):
+    binary = kwargs.get('binary', False)
+    callback = kwargs.get('callback', None)
     try:
         with open(file_name, 'wb' if binary else 'w') as fp:
-            fp.write(content)
+            fp.write(content) if callback is None else callback(fp, content)
         return True
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
