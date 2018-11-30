@@ -525,7 +525,7 @@ def export_stl(surface, file_name, **kwargs):
 
     if return_as_str:
         return line
-    return _write_file(file_name, line, binary)
+    return _write_file(file_name, line, binary=binary)
 
 
 def export_off(surface, file_name, **kwargs):
