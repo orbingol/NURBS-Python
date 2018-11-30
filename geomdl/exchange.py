@@ -645,7 +645,7 @@ def export_smesh(surface, file_name, **kwargs):
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    if isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+    if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
         raise TypeError("Can only work single or multi surfaces")
 
     # Split file name and extension
