@@ -608,7 +608,7 @@ def export_off(surface, file_name, **kwargs):
 
 
 def import_smesh(file):
-    """ Generates NURBS surface(s) from smesh file(s).
+    """ Generates NURBS surface(s) from surface mesh (smesh) file(s).
 
     *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
     NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
@@ -635,7 +635,9 @@ def import_smesh(file):
 
 
 def export_smesh(surf_in, file_name, **kwargs):
-    """ Exports surface(s) as .smesh files.
+    """ Exports surface(s) as surface mesh (smesh) files.
+
+    Please see :py:func:`.import_smesh()` for details on the file format.
 
     :param surf_in: surface or surfaces to be saved
     :type surf_in: abstract.Surface or multi.MultiSurface
