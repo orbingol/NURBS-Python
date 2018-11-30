@@ -1006,64 +1006,47 @@ def _prepare_export_dict_surface(obj):
 def _import_dict_all(file_name, delta, callback):
     type_map = {'curve': _prepare_import_dict_curve, 'surface': _prepare_import_dict_surface}
 
-    # Try to read the input file
-    try:
-        with open(file_name, 'r') as fp:
-            # Callback function
-            imported_data = callback(fp)
+    # Callback function
+    imported_data = _read_file(file_name, callback=callback)
 
-            # Process imported data
-            ret_list = []
-            for data in imported_data['shape']['data']:
-                temp = type_map[imported_data['shape']['type']](data)
-                if 0.0 < delta < 1.0:
-                    temp.delta = delta
-                ret_list.append(temp)
+    # Process imported data
+    ret_list = []
+    for data in imported_data['shape']['data']:
+        temp = type_map[imported_data['shape']['type']](data)
+        if 0.0 < delta < 1.0:
+            temp.delta = delta
+        ret_list.append(temp)
 
-            # Return imported data
-            return ret_list
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    # Return imported data
+    return ret_list
 
 
 def _export_dict_all(obj, file_name, callback):
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'w') as fp:
-            count = 1
-            if isinstance(obj, abstract.Curve):
-                export_type = "curve"
-                data = [_prepare_export_dict_curve(obj)]
-            elif isinstance(obj, abstract.Surface):
-                export_type = "surface"
-                data = [_prepare_export_dict_surface(obj)]
-            elif isinstance(obj, multi.MultiCurve):
-                export_type = "curve"
-                data = [_prepare_export_dict_curve(o) for o in obj]
-                count = len(obj)
-            elif isinstance(obj, multi.MultiSurface):
-                export_type = "surface"
-                data = [_prepare_export_dict_surface(o) for o in obj]
-                count = len(obj)
-            else:
-                raise NotADirectoryError("Object type is not defined for dict export")
+    count = 1
+    if isinstance(obj, abstract.Curve):
+        export_type = "curve"
+        data = [_prepare_export_dict_curve(obj)]
+    elif isinstance(obj, abstract.Surface):
+        export_type = "surface"
+        data = [_prepare_export_dict_surface(obj)]
+    elif isinstance(obj, multi.MultiCurve):
+        export_type = "curve"
+        data = [_prepare_export_dict_curve(o) for o in obj]
+        count = len(obj)
+    elif isinstance(obj, multi.MultiSurface):
+        export_type = "surface"
+        data = [_prepare_export_dict_surface(o) for o in obj]
+        count = len(obj)
+    else:
+        raise NotADirectoryError("Object type is not defined for dict export")
 
-            # Create the dictionary
-            data = dict(
-                shape=dict(
-                    type=export_type,
-                    count=count,
-                    data=tuple(data)
-                )
-            )
+    # Create the dictionary
+    data = dict(
+        shape=dict(
+            type=export_type,
+            count=count,
+            data=tuple(data)
+        )
+    )
 
-            # Callback function
-            callback(fp, data)
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    return _write_file(file_name, data, callback=callback)
