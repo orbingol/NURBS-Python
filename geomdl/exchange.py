@@ -634,7 +634,7 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
-def export_smesh(surface, file_name, **kwargs):
+def export_smesh(surface, file_name):
     """ Exports surface(s) as surface mesh (smesh) files.
 
     Please see :py:func:`.import_smesh()` for details on the file format.
