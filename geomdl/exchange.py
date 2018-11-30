@@ -667,8 +667,8 @@ def export_smesh(surface, file_name, **kwargs):
             line += " ".join([str(p) for p in ptw]) + "\n"
 
         # Write to file
-        fname_curr = fname + "." + str(idx + 1) + "." + fext
-        _write_file(fname_curr, line)
+        fname_curr = fname + "." + str(idx + 1)
+        _write_file(fname_curr + fext, line)
 
 
 def import_3dm(file_name, **kwargs):
