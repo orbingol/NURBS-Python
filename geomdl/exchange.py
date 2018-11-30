@@ -629,7 +629,11 @@ def import_smesh(file):
     if os.path.isfile(file):
         return _import_smesh_single(file)
     elif os.path.isdir(file):
-        return _import_smesh_multi(file)
+        files = sorted([os.path.join(file, f) for f in os.listdir(file)])
+        surf = multi.MultiSurface()
+        for f in files:
+            surf.add(_import_smesh_single(f))
+        return surf
     else:
         raise IOError("Input is not a file or a directory")
 
@@ -915,21 +919,6 @@ def _import_smesh_single(file_name):
     surf.knotvector_v = [float(v) for v in content[4]]
 
     # Return the surface instance
-    return surf
-
-
-def _import_smesh_multi(file_path):
-    """ Generates NURBS surfaces from smesh files contained in the input directory.
-
-    :param file_path: path to the directory containing smesh files
-    :type file_path: str
-    :return: a MultiSurface instance containing all NURBS surfaces
-    :rtype: multi.MultiSurface
-    """
-    files = sorted([os.path.join(file_path, f) for f in os.listdir(file_path)])
-    surf = multi.MultiSurface()
-    for f in files:
-        surf.add(_import_smesh_single(f))
     return surf
 
 
