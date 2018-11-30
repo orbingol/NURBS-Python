@@ -302,7 +302,7 @@ def test_surf_ctrlpts_offset(bspline_surface):
 # Test if plotting a multi-surface without a window is possible
 def test_surf_multi_fig_nowindow(bspline_surface):
     conf = VisMPL.VisConfig()
-    vis = VisMPL.VisSurfTriangle(config=conf)
+    vis = VisMPL.VisSurfScatter(config=conf)
 
     fname = conf.figure_image_filename
 
@@ -321,7 +321,7 @@ def test_surf_multi_fig_nowindow(bspline_surface):
 # Test if using a different file name is possible
 def test_surf_multi_fig_save(bspline_surface):
     conf = VisMPL.VisConfig()
-    vis = VisMPL.VisSurfTriangle(config=conf)
+    vis = VisMPL.VisSurfWireframe(config=conf)
 
     fname = "test-multi_surface.png"
 
