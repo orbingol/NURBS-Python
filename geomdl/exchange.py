@@ -634,23 +634,41 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
-def export_smesh(surf_in, file_name, **kwargs):
+def export_smesh(surface, file_name, **kwargs):
     """ Exports surface(s) as surface mesh (smesh) files.
 
     Please see :py:func:`.import_smesh()` for details on the file format.
 
-    :param surf_in: surface or surfaces to be saved
-    :type surf_in: abstract.Surface or multi.MultiSurface
+    :param surface: surface or surfaces to be exported
+    :type surface: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    if isinstance(surf_in, abstract.Surface):
-        _export_smesh_single(surf_in, file_name, **kwargs)
-    elif isinstance(surf_in, multi.MultiSurface):
-        _export_smesh_multi(surf_in, file_name)
-    else:
-        raise TypeError("Cannot export input surface - unknown type")
+    if isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+        raise TypeError("Can only work single or multi surfaces")
+
+    # Split file name and extension
+    fname, fext = os.path.splitext(file_name)
+
+    for idx, s in enumerate(surface):
+        if isinstance(s, BSpline.Surface):
+            surf = convert.bspline_to_nurbs(s)
+        else:
+            surf = s
+        line = str(surf.dimension) + "\n"
+        line += str(surf.degree_u) + " " + str(surf.degree_v) + "\n"
+        line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
+        line += " ".join([str(v) for v in surf.knotvector_u]) + "\n"
+        line += " ".join([str(v) for v in surf.knotvector_v]) + "\n"
+        # Convert control points into (x, y, z, w)
+        ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
+        for ptw in ctrlptsw:
+            line += " ".join([str(p) for p in ptw]) + "\n"
+
+        # Write to file
+        fname_curr = fname + "." + str(idx + 1) + "." + fext
+        _write_file(fname_curr, line)
 
 
 def import_3dm(file_name, **kwargs):
@@ -908,54 +926,6 @@ def _import_smesh_multi(file_path):
     for f in files:
         surf.add(_import_smesh_single(f))
     return surf
-
-
-def _export_smesh_single(surface, file_name, **kwargs):
-    """ Saves a single surface as a .smesh file.
-
-    :param surface: surface to be saved
-    :type surface: abstract.Surface
-    :param file_name: file name
-    :type file_name: str
-    """
-    idx_val = kwargs.get('idx', 1)
-    return_as_str = kwargs.get('return_as_str', False)
-
-    if isinstance(surface, BSpline.Surface):
-        surf = convert.bspline_to_nurbs(surface)
-    else:
-        surf = surface
-    line = str(surf.dimension) + "\n"
-    line += str(surf.degree_u) + " " + str(surf.degree_v) + "\n"
-    line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
-    line += " ".join([str(v) for v in surf.knotvector_u]) + "\n"
-    line += " ".join([str(v) for v in surf.knotvector_v]) + "\n"
-    # Convert control points into (x, y, z, w)
-    ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
-    for ptw in ctrlptsw:
-        line += " ".join([str(p) for p in ptw]) + "\n"
-    line += str(idx_val) + "\n"
-
-    if return_as_str:
-        return line
-    return _write_file(file_name, line)
-
-
-def _export_smesh_multi(surface_list, file_name, **kwargs):
-    """ Saves a list of surfaces as .idx.smesh files.
-
-    :param surface_list: list of surfaces to be saved
-    :type surface_list: multi.MultiSurface
-    :param file_name: file name
-    :type file_name: str
-    """
-    fname_arr = file_name.strip().split(".")
-    if len(fname_arr) > 2 or len(fname_arr) < 0:
-        raise ValueError("The input file name should be in 'file_name.smesh' format. Please do not use dots.")
-
-    for idx, surf in enumerate(surface_list):
-        fname = fname_arr[0] + "." + str(idx + 1) + "." + fname_arr[1]
-        _export_smesh_single(surf, fname, idx=idx+1, **kwargs)
 
 
 def _prepare_import_dict_curve(data):
