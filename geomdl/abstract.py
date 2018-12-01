@@ -14,6 +14,7 @@ import warnings
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
 from geomdl.vis import VisAbstract
+from . import helpers
 from . import utilities
 
 
@@ -79,7 +80,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = self._init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
-        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
+        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vector
         self._cache = {}  # cache dictionary
 
     def __iter__(self):
@@ -249,13 +251,16 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def knotvector(self):
         """ Knot vector.
 
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
+
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
         """
-        return self._knot_vector
+        return tuple(self._knot_vector)
 
     @knotvector.setter
     def knotvector(self, value):
@@ -270,7 +275,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector = value
+        self._knot_vector = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
 
     @property
     def ctrlpts(self):
@@ -682,7 +688,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._bounding_box = self._init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
-        self._span_func = kwargs.get('find_span_func', None)  # "find_span" function
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
+        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
         self._cache = {}  # cache dictionary
         # Advanced functionality
         self._trims = self._init_var(self._array_type)  # trim curves
@@ -892,7 +899,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for u-direction.
+        """ Knot vector for the u-direction.
+
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -900,7 +910,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets the knot vector for u-direction
         :setter: Sets the knot vector for u-direction
         """
-        return self._knot_vector[0]
+        return tuple(self._knot_vector[0])
 
     @knotvector_u.setter
     def knotvector_u(self, value):
@@ -915,11 +925,15 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[0] = value
+        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
 
     @property
     def knotvector_v(self):
-        """ Knot vector for v-direction.
+        """ Knot vector for the v-direction.
+
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -927,7 +941,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets the knot vector for v-direction
         :setter: Sets the knot vector for v-direction
         """
-        return self._knot_vector[1]
+        return tuple(self._knot_vector[1])
 
     @knotvector_v.setter
     def knotvector_v(self, value):
@@ -942,7 +956,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[1] = value
+        self._knot_vector[1] = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
 
     @property
     def ctrlpts(self):

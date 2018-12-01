@@ -66,7 +66,6 @@ class Curve(abstract.Curve):
 
     def __init__(self, **kwargs):
         super(Curve, self).__init__(**kwargs)
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
         self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
     @property
@@ -88,29 +87,6 @@ class Curve(abstract.Curve):
     @ctrlpts.setter
     def ctrlpts(self, value):
         self.set_ctrlpts(value)
-
-    @property
-    def knotvector(self):
-        """ Knot vector.
-
-        The knot vector is always normalized to [0,1] domain.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the knot vector
-        :setter: Sets the knot vector
-        :type: list
-        """
-        return tuple(self._knot_vector)
-
-    @knotvector.setter
-    def knotvector(self, value):
-        # Call parent property setter
-        super(Curve, self.__class__).knotvector.fset(self, value)
-
-        # Normalize knot vector
-        self._knot_vector = utilities.normalize_knot_vector(self._knot_vector, decimals=self._precision)
 
     def save(self, file_name):
         """  Saves the curve as a pickled file.
@@ -446,7 +422,6 @@ class Surface(abstract.Surface):
 
     def __init__(self, **kwargs):
         super(Surface, self).__init__(**kwargs)
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
 
@@ -573,52 +548,6 @@ class Surface(abstract.Surface):
         for u in self._control_points2D:
             for v in u:
                 self._control_points.append(v)
-
-    @property
-    def knotvector_u(self):
-        """ Knot vector for u-direction.
-
-        The knot vector is always normalized to [0,1] domain.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the knot vector for u-direction
-        :setter: Sets the knot vector for u-direction
-        :type: list
-        """
-        return tuple(self._knot_vector[0])
-
-    @knotvector_u.setter
-    def knotvector_u(self, value):
-        # Call parent property setter
-        super(Surface, self.__class__).knotvector_u.fset(self, value)
-
-        # Normalize knot vector
-        self._knot_vector[0] = utilities.normalize_knot_vector(self.knotvector_u, decimals=self._precision)
-
-    @property
-    def knotvector_v(self):
-        """ Knot vector for v-direction.
-
-        The knot vector is always normalized to [0,1] domain.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the knot vector for v-direction
-        :setter: Sets the knot vector for v-direction
-        :type: list
-        """
-        return tuple(self._knot_vector[1])
-
-    @knotvector_v.setter
-    def knotvector_v(self, value):
-        # Call parent property setter
-        super(Surface, self.__class__).knotvector_v.fset(self, value)
-
-        # Normalize knot vector
-        self._knot_vector[1] = utilities.normalize_knot_vector(self.knotvector_v, decimals=self._precision)
 
     def save(self, file_name):
         """ Saves the surface as a pickled file.
