@@ -9,7 +9,6 @@ Abstract Curve
 
 .. autoclass:: geomdl.abstract.Curve
     :members:
-    :undoc-members:
     :inherited-members:
     :show-inheritance:
 
@@ -18,7 +17,6 @@ Abstract Surface
 
 .. autoclass:: geomdl.abstract.Surface
     :members:
-    :undoc-members:
     :inherited-members:
     :show-inheritance:
 
@@ -27,6 +25,5 @@ Abstract Volume
 
 .. autoclass:: geomdl.abstract.Volume
     :members:
-    :undoc-members:
     :inherited-members:
     :show-inheritance:
