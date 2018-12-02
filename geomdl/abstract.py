@@ -450,7 +450,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :type ctrlpts: list
         """
         # Degree must be set before setting the control points
-        if self.degree == 0:
+        if self.degree <= 0:
             raise ValueError("Set the degree first")
 
         if len(ctrlpts) < self.degree + 1:
@@ -1350,14 +1350,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
-        :param size_u: size of the control points grid on the u-direction
+        :param size_u: number of control points for the u-direction
         :type size_u: int
-        :param size_v: size of the control points grid on the v-direction
+        :param size_v: number of control points for the v-direction
         :type size_v: int
-        :return: None
         """
         # Degrees must be set before setting the control points
-        if self.degree_u == 0 or self.degree_v == 0:
+        if self.degree_u <= 0 or self.degree_v <= 0:
             raise ValueError("Set the degrees first")
 
         # Check array size validity
