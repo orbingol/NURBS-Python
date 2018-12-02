@@ -19,7 +19,7 @@ from . import utilities
 
 
 class Curve(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for all n-variate curves.
+    """ Abstract base class (ABC) for parametric curves.
 
     The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -624,7 +624,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class Surface(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for all surfaces.
+    """ Abstract base class (ABC) for parametric surfaces.
 
     The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
