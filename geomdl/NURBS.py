@@ -330,6 +330,5 @@ class Surface(BSpline.Surface):
         super(Surface, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
 
         if reset_ctrlpts:
-            # Delete the caches
-            self._cache['ctrlpts'] = self._init_array(self._array_type)
-            self._cache['weights'] = self._init_array(self._array_type)
+            # Re-initialize the caches
+            self.init_cache()

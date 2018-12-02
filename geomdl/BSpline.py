@@ -362,7 +362,7 @@ class Surface(abstract.Surface):
 
     * order_u
     * order_v
-    * degree_v
+    * degree_u
     * degree_v
     * knotvector_u
     * knotvector_v
