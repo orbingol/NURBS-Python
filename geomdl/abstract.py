@@ -674,25 +674,25 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._array_type = list
         self._iter_index = 0  # iterator index
         self._degree = [0, 0]  # degree
-        self._knot_vector = [self._init_var(self._array_type), self._init_var(self._array_type)]  # knot vector
+        self._knot_vector = [self._init_array(self._array_type), self._init_array(self._array_type)]  # knot vector
         self._control_points_size = [0, 0]  # control points array length
         self._delta = [0.01, 0.01]  # evaluation delta
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
-        self._control_points = self._init_var(self._array_type)  # control points, 1-D array (v-order)
-        self._control_points2D = self._init_var(self._array_type)  # control points, 2-D array [u][v]
-        self._surface_points = self._init_var(self._array_type)  # evaluated points
+        self._control_points = self._init_array(self._array_type)  # control points, 1-D array (v-order)
+        self._control_points2D = self._init_array(self._array_type)  # control points, 2-D array [u][v]
+        self._surface_points = self._init_array(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
         self._tsl_component = None  # tessellation component
-        self._bounding_box = self._init_var(self._array_type)  # bounding box
+        self._bounding_box = self._init_array(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 6  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
         self._cache = {}  # cache dictionary
         # Advanced functionality
-        self._trims = self._init_var(self._array_type)  # trim curves
+        self._trims = self._init_array(self._array_type)  # trim curves
 
     def __iter__(self):
         self._iter_index = 0
@@ -733,7 +733,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     __repr__ = __str__
 
-    def _init_var(self, arr_type):
+    def _init_array(self, arr_type, **kwargs):
         """ Initializes the arrays.
 
         :param arr_type: array type
@@ -1520,14 +1520,14 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         reset_evalpts = kwargs.get('evalpts', False)
 
         if reset_ctrlpts:
-            self._control_points = self._init_var(self._array_type)
-            self._control_points2D = self._init_var(self._array_type)
+            self._control_points = self._init_array(self._array_type)
+            self._control_points2D = self._init_array(self._array_type)
             self._control_points_size[0] = 0
             self._control_points_size[1] = 0
-            self._bounding_box = self._init_var(self._array_type)
+            self._bounding_box = self._init_array(self._array_type)
 
         if reset_evalpts:
-            self._surface_points = self._init_var(self._array_type)
+            self._surface_points = self._init_array(self._array_type)
 
         # Reset vertices and triangles
         self._tsl_component.reset()

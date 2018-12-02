@@ -230,8 +230,8 @@ class Surface(BSpline.Surface):
         return result
 
     def init_cache(self):
-        self._cache['ctrlpts'] = self._init_var(self._array_type)
-        self._cache['weights'] = self._init_var(self._array_type)
+        self._cache['ctrlpts'] = self._init_array(self._array_type)
+        self._cache['weights'] = self._init_array(self._array_type)
 
     @property
     def ctrlptsw(self):
@@ -331,5 +331,5 @@ class Surface(BSpline.Surface):
 
         if reset_ctrlpts:
             # Delete the caches
-            self._cache['ctrlpts'] = self._init_var(self._array_type)
-            self._cache['weights'] = self._init_var(self._array_type)
+            self._cache['ctrlpts'] = self._init_array(self._array_type)
+            self._cache['weights'] = self._init_array(self._array_type)
