@@ -2441,6 +2441,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
+    def set_ctrlpts(self, ctrlpts, size_u, size_v, size_w):
+        pass
+
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the parametric volume.
