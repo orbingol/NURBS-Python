@@ -25,7 +25,7 @@ Abstract Surface
 Abstract Volume
 ===============
 
-.. autoclass:: geomdl.abstract.Surface
+.. autoclass:: geomdl.abstract.Volume
     :members:
     :undoc-members:
     :inherited-members:
