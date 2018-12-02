@@ -1624,3 +1624,834 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Should implement the derivatives functionality here
         pass
+
+
+class Volume(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class (ABC) for parametric volumes.
+
+    The Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
+
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Volume ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func``
+    keyword as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the
+    FindSpan function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+
+    The properties and functions defined in the abstract base class will be automatically available in the subclasses.
+    """
+
+    def __init__(self, **kwargs):
+        self._array_type = list
+        self._iter_index = 0  # iterator index
+        self._degree = [0, 0, 0]  # degree
+        self._knot_vector = [self._init_array(self._array_type),
+                             self._init_array(self._array_type),
+                             self._init_array(self._array_type)]  # knot vector
+        self._control_points_size = [0, 0, 0]  # control points array length
+        self._delta = [0.01, 0.01, 0.01]  # evaluation delta
+        self._name = "Volume"  # descriptor field
+        self._rational = False  # defines whether the surface is rational or not
+        self._control_points = self._init_array(self._array_type)  # control points, 1-D array (w-order)
+        self._eval_points = self._init_array(self._array_type)  # evaluated points
+        self._dimension = 0  # dimension of the volume
+        self._vis_component = None  # visualization component
+        self._bounding_box = self._init_array(self._array_type)  # bounding box
+        self._evaluator = None  # evaluator instance
+        self._precision = 6  # number of decimal places to round to
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
+        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
+        self._cache = {}  # cache dictionary
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        # Don't copy self reference
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Copy all other attributes
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        return result
+
+    def __str__(self):
+        return self.name
+
+    __repr__ = __str__
+
+    def _init_array(self, arr_type, **kwargs):
+        """ Initializes the arrays.
+
+        :param arr_type: array type
+        """
+        if callable(arr_type):
+            return arr_type()
+        else:
+            return None
+
+    @property
+    def name(self):
+        """ Volume descriptor (as a string or a number).
+
+        Descriptor field allows users to assign an identification to the volume object. The identification can be a
+        string or a number.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the descriptor
+        :setter: Sets the descriptor
+        :type: str or int
+        """
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def evaluator(self):
+        """ Volume evaluator.
+
+        Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
+        documentation on ``Evaluator`` classes.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Prints the name of the evaluator and returns the current Evaluator instance
+        :setter: Sets the evaluator
+        """
+        return self._evaluator
+
+    @evaluator.setter
+    def evaluator(self, value):
+        if not isinstance(value, AbstractEvaluator):
+            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+        value._span_func = self._span_func
+        self._evaluator = value
+
+    @property
+    def rational(self):
+        """ True if the volume is rational.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Returns True if the surface is rational (NURBS)
+        :type: bool
+        """
+        return self._rational
+
+    @property
+    def dimension(self):
+        """ Dimension of the volume.
+
+        Dimension will be automatically estimated from the first element of the control points array.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the dimension of the surface
+        :type: integer
+        """
+        if self._rational:
+            return self._dimension - 1
+        return self._dimension
+
+    @property
+    def order_u(self):
+        """ Order for the u-direction.
+
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the surface order for u-direction
+        :setter: Sets the surface order for u-direction
+        :type: integer
+        """
+        return self.degree_u + 1
+
+    @order_u.setter
+    def order_u(self, value):
+        self.degree_u = value - 1
+
+    @property
+    def order_v(self):
+        """ Order for the v-direction.
+
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the surface order for v-direction
+        :setter: Sets the surface order for v-direction
+        :type: integer
+        """
+        return self.degree_v + 1
+
+    @order_v.setter
+    def order_v(self, value):
+        self.degree_v = value - 1
+
+    @property
+    def order_w(self):
+        """ Order for the w-direction.
+
+        Defined as ``order = degree + 1``
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the surface order for v-direction
+        :setter: Sets the surface order for v-direction
+        :type: integer
+        """
+        return self.degree_w + 1
+
+    @order_w.setter
+    def order_w(self, value):
+        self.degree_w = value - 1
+
+    @property
+    def degree_u(self):
+        """ Degree for the u-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets degree for the u-direction
+        :setter: Sets degree for the u-direction
+        :type: integer
+        """
+        return self._degree[0]
+
+    @degree_u.setter
+    def degree_u(self, value):
+        val = int(value)
+        if val <= 0:
+            raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points
+        self.reset(evalpts=True)
+        # Set degree u
+        self._degree[0] = int(value)
+
+    @property
+    def degree_v(self):
+        """ Degree for the v-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets degree for the v-direction
+        :setter: Sets degree for the v-direction
+        :type: integer
+        """
+        return self._degree[1]
+
+    @degree_v.setter
+    def degree_v(self, value):
+        val = int(value)
+        if val <= 0:
+            raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points
+        self.reset(evalpts=True)
+        # Set degree v
+        self._degree[1] = val
+
+    @property
+    def degree_w(self):
+        """ Degree for the w-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets degree for the w-direction
+        :setter: Sets degree for the w-direction
+        :type: integer
+        """
+        return self._degree[2]
+
+    @degree_w.setter
+    def degree_w(self, value):
+        val = int(value)
+        if val <= 0:
+            raise ValueError("Degree cannot be less than zero")
+        # Clean up the surface points
+        self.reset(evalpts=True)
+        # Set degree v
+        self._degree[2] = val
+
+    @property
+    def knotvector_u(self):
+        """ Knot vector for the u-direction.
+
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets knot vector for the u-direction
+        :setter: Sets knot vector for the u-direction
+        """
+        return tuple(self._knot_vector[0])
+
+    @knotvector_u.setter
+    def knotvector_u(self, value):
+        if self.degree_u == 0 or self.ctrlpts_size_u == 0:
+            raise ValueError("Set degree and control points first on the u-direction")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self.degree_u, value, self.ctrlpts_size_u):
+            raise ValueError("Input is not a valid knot vector on the u-direction")
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Set knot vector
+        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
+
+    @property
+    def knotvector_v(self):
+        """ Knot vector for the v-direction.
+
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets knot vector for the v-direction
+        :setter: Sets knot vector for the v-direction
+        """
+        return tuple(self._knot_vector[1])
+
+    @knotvector_v.setter
+    def knotvector_v(self, value):
+        if self.degree_v == 0 or self.ctrlpts_size_v == 0:
+            raise ValueError("Set degree and control points first on the v-direction")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self.degree_v, value, self.ctrlpts_size_v):
+            raise ValueError("Input is not a valid knot vector on the v-direction")
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Set knot vector
+        self._knot_vector[1] = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
+
+    @property
+    def knotvector_w(self):
+        """ Knot vector for the w-direction.
+
+        The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
+        argument.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets knot vector for the w-direction
+        :setter: Sets knot vector for the w-direction
+        """
+        return tuple(self._knot_vector[2])
+
+    @knotvector_w.setter
+    def knotvector_w(self, value):
+        if self.degree_w == 0 or self.ctrlpts_size_w == 0:
+            raise ValueError("Set degree and control points first for the w-direction")
+
+        # Check knot vector validity
+        if not utilities.check_knot_vector(self.degree_w, value, self.ctrlpts_size_w):
+            raise ValueError("Input is not a valid knot vector for the w-direction")
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Set knot vector
+        self._knot_vector[2] = utilities.normalize_knot_vector(value, decimals=self._precision) \
+            if self._kv_normalize else value
+
+    @property
+    def ctrlpts(self):
+        """ Control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        """
+        return self._control_points
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        self._control_points = value
+
+    @property
+    def ctrlpts_size_u(self):
+        """ Number of control points for the u-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets number of control points for the u-direction
+        :setter: Sets number of control points for the u-direction
+        """
+        return self._control_points_size[0]
+
+    @ctrlpts_size_u.setter
+    def ctrlpts_size_u(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Number of control points for the u-direction must be an integer number")
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size[0] = value
+
+    @property
+    def ctrlpts_size_v(self):
+        """ Number of control points for the v-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets number of control points for the v-direction
+        :setter: Sets number of control points for the v-direction
+        """
+        return self._control_points_size[1]
+
+    @ctrlpts_size_v.setter
+    def ctrlpts_size_v(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Number of control points for the v-direction must be an integer number")
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size[1] = value
+
+    @property
+    def ctrlpts_size_w(self):
+        """ Number of control points for the w-direction.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets number of control points for the w-direction
+        :setter: Sets number of control points for the w-direction
+        """
+        return self._control_points_size[2]
+
+    @ctrlpts_size_w.setter
+    def ctrlpts_size_w(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Number of control points for the w-direction must be an integer number")
+        if value <= 0:
+            raise ValueError("Control points size cannot be less than and equal to zero")
+
+        # Assume that user is doing this right
+        self._control_points_size[2] = value
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the coordinates of the evaluated points
+        """
+        if self._eval_points is None or len(self._eval_points) == 0:
+            self.evaluate()
+
+        return self._eval_points
+
+    @property
+    def sample_size_u(self):
+        """ Sample size for the u-direction.
+
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
+        :type: int
+        """
+        return int(1.0 / self.delta_u) + 1
+
+    @sample_size_u.setter
+    def sample_size_u(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
+        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0:
+            warnings.warn("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_u = self.knotvector_u[self.degree_u]
+        stop_u = self.knotvector_u[-(self.degree_u + 1)]
+
+        # Set delta values
+        self.delta_u = (stop_u - start_u) / float(value - 1)
+
+    @property
+    def sample_size_v(self):
+        """ Sample size for the v-direction.
+
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the v-direction
+        :setter: Sets sample size for the v-direction
+        :type: int
+        """
+        return int(1.0 / self.delta_v) + 1
+
+    @sample_size_v.setter
+    def sample_size_v(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
+        if (self.knotvector_v is None or len(self.knotvector_v) == 0) or self.degree_v == 0:
+            warnings.warn("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_v = self.knotvector_v[self.degree_v]
+        stop_v = self.knotvector_v[-(self.degree_v + 1)]
+
+        # Set delta values
+        self.delta_v = (stop_v - start_v) / float(value - 1)
+
+    @property
+    def sample_size_w(self):
+        """ Sample size for the w-direction.
+
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the w-direction
+        :setter: Sets sample size for the w-direction
+        :type: int
+        """
+        return int(1.0 / self.delta_w) + 1
+
+    @sample_size_w.setter
+    def sample_size_w(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+
+        if (self.knotvector_w is None or len(self.knotvector_w) == 0) or self.degree_w == 0:
+            warnings.warn("Cannot determine 'delta_w' value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_w = self.knotvector_w[self.degree_w]
+        stop_w = self.knotvector_w[-(self.degree_w + 1)]
+
+        # Set delta values
+        self.delta_w = (stop_w - start_w) / float(value - 1)
+
+    @property
+    def sample_size(self):
+        """ Sample size for both u- and v-directions.
+
+        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size as a tuple of values corresponding to u-, v- and w-directions
+        :setter: Sets sample size value for both u-, v- and w-directions
+        :type: int
+        """
+        sample_size_u = int(1.0 / self.delta_u) + 1
+        sample_size_v = int(1.0 / self.delta_v) + 1
+        sample_size_w = int(1.0 / self.delta_w) + 1
+        return sample_size_u, sample_size_v, sample_size_w
+
+    @sample_size.setter
+    def sample_size(self, value):
+        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or \
+                (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0) or \
+                (self.knotvector_w is None or len(self.knotvector_w) == 0 or self.degree_w == 0):
+            warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
+            return
+
+        # To make it operate like linspace, we have to know the starting and ending points.
+        start_u = self.knotvector_u[self.degree_u]
+        stop_u = self.knotvector_u[-(self.degree_u + 1)]
+        start_v = self.knotvector_v[self.degree_v]
+        stop_v = self.knotvector_v[-(self.degree_v + 1)]
+        start_w = self.knotvector_w[self.degree_w]
+        stop_w = self.knotvector_w[-(self.degree_w + 1)]
+
+        # Set delta values
+        self.delta_u = (stop_u - start_u) / float(value - 1)
+        self.delta_v = (stop_v - start_v) / float(value - 1)
+        self.delta_w = (stop_w - start_w) / float(value - 1)
+
+    @property
+    def delta_u(self):
+        """ Evaluation delta for the u-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets evaluation delta for the u-direction
+        :setter: Sets evaluation delta for the u-direction
+        :type: float
+        """
+        return self._delta[0]
+
+    @delta_u.setter
+    def delta_u(self, value):
+        # Delta value should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Evaluation delta (u-direction) must be between 0.0 and 1.0")
+
+        # Clean up evaluated points
+        self.reset(evalpts=True)
+
+        # Set new delta value
+        self._delta[0] = float(value)
+
+    @property
+    def delta_v(self):
+        """ Evaluation delta for the v-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets evaluation delta for the v-direction
+        :setter: Sets evaluation delta for the v-direction
+        :type: float
+        """
+        return self._delta[1]
+
+    @delta_v.setter
+    def delta_v(self, value):
+        # Delta value should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Evaluation delta (v-direction) should be between 0.0 and 1.0")
+
+        # Clean up evaluated points
+        self.reset(evalpts=True)
+
+        # Set new delta value
+        self._delta[1] = float(value)
+
+    @property
+    def delta_w(self):
+        """ Evaluation delta for the w-direction.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta_w`` and ``sample_size_w`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_w`` will also set ``sample_size_w``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets evaluation delta for the w-direction
+        :setter: Sets evaluation delta for the w-direction
+        :type: float
+        """
+        return self._delta[2]
+
+    @delta_w.setter
+    def delta_w(self, value):
+        # Delta value should be between 0 and 1
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Evaluation delta (w-direction) should be between 0.0 and 1.0")
+
+        # Clean up evaluated points
+        self.reset(evalpts=True)
+
+        # Set new delta value
+        self._delta[2] = float(value)
+
+    @property
+    def delta(self):
+        """ Evaluation delta for u-, v- and w-directions.
+
+        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
+        generate surface points. Decreasing step size results in generation of more surface points.
+        Therefore; smaller the delta value, smoother the surface.
+
+        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets evaluation delta as a tuple of values corresponding to u-, v- and w-directions
+        :setter: Sets evaluation delta for u-, v- and w-directions
+        :type: float
+        """
+        return self.delta_u, self.delta_v, self.delta_w
+
+    @delta.setter
+    def delta(self, value):
+        if isinstance(value, (int, float)):
+            self.delta_u = value
+            self.delta_v = value
+            self.delta_w = value
+        elif isinstance(value, (list, tuple)):
+            if len(value) == 3:
+                self.delta_u = value[0]
+                self.delta_v = value[1]
+                self.delta_w = value[2]
+            else:
+                raise ValueError("Surface requires 3 delta values")
+        else:
+            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 3 numeric values")
+
+    @property
+    def bbox(self):
+        """ Bounding box.
+
+        Evaluates the bounding box of the volume and returns the minimum and maximum coordinates.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the volume bounding box
+        """
+        if self._bounding_box is None or len(self._bounding_box) == 0:
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
+
+        return tuple(self._bounding_box)
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        if reset_ctrlpts:
+            self._control_points = self._init_array(self._array_type)
+            self._control_points_size = [0, 0, 0]
+            self._bounding_box = self._init_array(self._array_type)
+
+        if reset_evalpts:
+            self._eval_points = self._init_array(self._array_type)
+
+    def _check_variables(self):
+        """ Checks whether the evaluation is possible or not. """
+        works = True
+        param_list = []
+        if self.degree_u == 0:
+            works = False
+            param_list.append('degree_u')
+        if self.degree_v == 0:
+            works = False
+            param_list.append('degree_v')
+        if self.degree_w == 0:
+            works = False
+            param_list.append('degree_w')
+        if self._control_points is None or len(self._control_points) == 0:
+            works = False
+            param_list.append('ctrlpts')
+        if self.knotvector_u is None or len(self.knotvector_u) == 0:
+            works = False
+            param_list.append('knotvector_u')
+        if self.knotvector_v is None or len(self.knotvector_v) == 0:
+            works = False
+            param_list.append('knotvector_v')
+        if self.knotvector_w is None or len(self.knotvector_w) == 0:
+            works = False
+            param_list.append('knotvector_w')
+        if not works:
+            raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
+
+    @abc.abstractmethod
+    def evaluate(self, **kwargs):
+        """ Evaluates the parametric volume.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
