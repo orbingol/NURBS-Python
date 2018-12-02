@@ -1053,7 +1053,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size_u(self):
         """ Sample size for the u-direction.
 
-        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of surface points to generate. It also sets the ``delta_u`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1084,7 +1084,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size_v(self):
         """ Sample size for the v-direction.
 
-        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of surface points to generate. It also sets the ``delta_v`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2106,7 +2106,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size_u(self):
         """ Sample size for the u-direction.
 
-        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta_u`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2137,7 +2137,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size_v(self):
         """ Sample size for the v-direction.
 
-        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta_v`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2168,7 +2168,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size_w(self):
         """ Sample size for the w-direction.
 
-        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta_w`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
