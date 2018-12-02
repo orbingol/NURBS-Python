@@ -851,6 +851,114 @@ class Surface(abstract.Surface):
         return operations.normal(self, parpos, **kwargs)
 
 
+class Volume(abstract.Volume):
+    """ Data storage and evaluation class for B-spline (non-rational) volumes.
+
+    This class provides the following properties:
+
+    * order_u
+    * order_v
+    * order_w
+    * degree_u
+    * degree_v
+    * degree_w
+    * knotvector_u
+    * knotvector_v
+    * knotvector_w
+    * ctrlpts
+    * ctrlpts_size_u
+    * ctrlpts_size_v
+    * ctrlpts_size_w
+    * delta
+    * delta_u
+    * delta_v
+    * delta_w
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+    * sample_size_w
+    * bbox
+    * name
+    * dimension
+    * vis
+    * evaluator
+    * rational
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Volume()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
+    """
+
+    def __init__(self, **kwargs):
+        super(Volume, self).__init__(**kwargs)
+        self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
+
+    @property
+    def ctrlpts(self):
+        """ 1-dimensional array of control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        :type: list
+        """
+        ret_list = []
+        for pt in self._control_points:
+            ret_list.append(tuple(pt))
+        return tuple(ret_list)
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
+            raise ValueError("Please set the number of control points on the u-, v- and w-directions")
+        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the volume.
+
+        **The evaluated points are stored in :py:attr:`~evalpts` property.**
+
+        Keyword arguments:
+            * ``start_u``: start parameter on the u-direction
+            * ``stop_u``: stop parameter on the u-direction
+            * ``start_v``: start parameter on the v-direction
+            * ``stop_v``: stop parameter on the v-direction
+            * ``start_w``: start parameter on the w-direction
+            * ``stop_w``: stop parameter on the w-direction
+
+        """
+        # Call parent method
+        super(Volume, self).evaluate(**kwargs)
+
+        # Find evaluation start and stop parameter values
+        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
+        start_w = kwargs.get('start_w', self.knotvector_w[self.degree_w])
+        stop_w = kwargs.get('stop_w', self.knotvector_w[-(self.degree_w + 1)])
+
+        # Check if all the input parameters are in the range
+        utilities.check_uv(start_u, stop_u)
+        utilities.check_uv(start_v, stop_v)
+        utilities.check_uv(start_w, stop_w)
+
+        # Clean up the surface points
+        self.reset(evalpts=True)
+
+        # Evaluate
+        spts = self._evaluator.evaluate(start=(start_u, start_v, start_w), stop=(stop_u, stop_v, stop_w),
+                                        degree=(self.degree_u, self.degree_v, self.degree_w),
+                                        knotvector=(self.knotvector_u, self.knotvector_v, self.knotvector_w),
+                                        ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w),
+                                        ctrlpts=self._control_points,
+                                        sample_size=self.sample_size,
+                                        dimension=self._dimension, precision=self._precision)
+        self._eval_points = spts
+
+
 def save_pickle(data_dict, file_name):
     """ Saves the contents of the data dictionary as a pickled file.
 

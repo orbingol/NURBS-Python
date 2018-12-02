@@ -331,3 +331,168 @@ class Surface(BSpline.Surface):
         if reset_ctrlpts:
             # Re-initialize the caches
             self.init_cache()
+
+
+class Volume(BSpline.Volume):
+    """ Data storage and evaluation class for NURBS (rational) volumes.
+
+    The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
+    with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
+    a different set of properties (i.e. getters and setters):
+
+        * ``ctrlptsw``: 1-dimensional array of weighted control points
+        * ``ctrlpts``: 1-dimensional array of control points
+        * ``weights``: 1-dimensional array of weights
+
+    This class provides the following properties:
+
+    * order_u
+    * order_v
+    * order_w
+    * degree_u
+    * degree_v
+    * degree_w
+    * knotvector_u
+    * knotvector_v
+    * knotvector_w
+    * ctrlptsw
+    * ctrlpts
+    * weights
+    * ctrlpts_size_u
+    * ctrlpts_size_v
+    * ctrlpts_size_w
+    * delta
+    * delta_u
+    * delta_v
+    * delta_w
+    * sample_size
+    * sample_size_u
+    * sample_size_v
+    * sample_size_w
+    * bbox
+    * name
+    * dimension
+    * vis
+    * evaluator
+    * rational
+
+    Notes:
+        * Please see the :py:class:`.Abstract.Volume()` documentation for details.
+        * This class sets the *FindSpan* implementation to Linear Search by default.
+    """
+
+    def __init__(self, **kwargs):
+        super(Volume, self).__init__(**kwargs)
+        self._rational = True
+        self._evaluator = evaluators.NURBSVolumeEvaluator(find_span_func=self._span_func)
+        # Variables for caching
+        self.init_cache()
+
+    def __deepcopy__(self, memo):
+        # Call parent method
+        result = super(Volume, self).__deepcopy__(memo)
+        result.init_cache()
+        return result
+
+    def init_cache(self):
+        self._cache['ctrlpts'] = self._init_array(self._array_type)
+        self._cache['weights'] = self._init_array(self._array_type)
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+
+            * ``evalpts``: if True, then resets the evaluated points
+            * ``ctrlpts`` if True, then resets the control points
+
+        """
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_evalpts = kwargs.get('evalpts', False)
+
+        # Call parent function
+        super(Volume, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
+
+        if reset_ctrlpts:
+            # Re-initialize the caches
+            self.init_cache()
+
+    @property
+    def ctrlptsw(self):
+        """ 1-dimensional array of weighted control points (Pw).
+
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets weighted control points
+        :setter: Sets weighted control points
+        """
+        ret_list = []
+        for pt in self._control_points:
+            ret_list.append(tuple(pt))
+        return tuple(ret_list)
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
+            raise ValueError("Please set the number of control points for all u-, v- and w-directions")
+        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
+
+    @property
+    def ctrlpts(self):
+        """ 1-dimensional array of control points (P).
+
+        This property sets and gets the control points in 1-D.
+
+        :getter: Gets unweighted control points. Use :py:attr:`~weights` to get weights vector.
+        :setter: Sets unweighted control points.
+        :type: list
+        """
+        if not self._cache['ctrlpts']:
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
+        return tuple(self._cache['ctrlpts'])
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
+            raise ValueError("Please set the number of control points for all u-, v- and w-directions")
+
+        # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+        if not self.weights:
+            weights = [1.0 for _ in range(len(value))]
+        else:
+            weights = self.weights
+
+        # Generate weighted control points using the new control points
+        ctrlptsw = compatibility.combine_ctrlpts_weights(value, weights)
+
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
+
+    @property
+    def weights(self):
+        """ Weights vector.
+
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
+        :type: list
+        """
+        if not self._cache['weights']:
+            c, w = compatibility.separate_ctrlpts_weights(self._control_points)
+            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['weights'] = w
+        return tuple(self._cache['weights'])
+
+    @weights.setter
+    def weights(self, value):
+        if not self.ctrlpts:
+            raise ValueError("Set control points first")
+
+        # Generate weighted control points using the new weights
+        ctrlptsw = compatibility.combine_ctrlpts_weights(self.ctrlpts, value)
+
+        # Set weighted control points
+        self.set_ctrlpts(ctrlptsw, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
