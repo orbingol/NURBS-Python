@@ -205,18 +205,18 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def order(self):
-        """ Curve order.
+        """ Order.
 
         Defined as ``order = degree + 1``
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the curve order
-        :setter: Sets the curve order
+        :getter: Gets the order
+        :setter: Sets the order
         :type: integer
         """
-        return self._degree + 1
+        return self.degree + 1
 
     @order.setter
     def order(self, value):
@@ -224,13 +224,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def degree(self):
-        """ Curve degree.
+        """ Degree.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the curve degree
-        :setter: Sets the curve degree
+        :getter: Gets the degree
+        :setter: Sets the degree
         :type: integer
         """
         return self._degree
@@ -296,15 +296,15 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts_size(self):
-        """ Size of the control points array.
+        """ Number of control points.
 
-        :getter: Gets the size of the control points array
+        :getter: Gets number of control points
         """
         return len(self._control_points)
 
     @property
     def evalpts(self):
-        """ Evaluated curve points.
+        """ Evaluated points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -320,7 +320,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     def sample_size(self):
         """ Sample size.
 
-        Sample size defines the number of curve points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
 
         The following figure illustrates the working principles of sample size property:
 
@@ -355,7 +355,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def delta(self):
-        """ Curve evaluation delta.
+        """ Evaluation delta.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate curve points. Decreasing step size results in generation of more curve points.
@@ -555,7 +555,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the curve.
+        """ Evaluates the parametric curve.
 
         .. note::
 
@@ -570,7 +570,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_single(self, u):
-        """ Evaluates the curve at the given parameter.
+        """ Evaluates the paremetric curve at the given parameter.
 
         .. note::
 
@@ -586,7 +586,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_list(self, u_list):
-        """ Evaluates the curve for an input range of parameters.
+        """ Evaluates the parametric curve for an input range of parameters.
 
         .. note::
 
@@ -602,7 +602,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
-        """ Evaluates the derivatives of the curve at parameter u.
+        """ Evaluates the derivatives of the parametric curve at parameter u.
 
         .. note::
 
@@ -765,7 +765,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def evaluator(self):
-        """ Curve evaluator.
+        """ Surface evaluator.
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
@@ -815,18 +815,18 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def order_u(self):
-        """ Surface order for u-direction.
+        """ Order for the u-direction.
 
         Defined as ``order = degree + 1``
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the surface order for u-direction
-        :setter: Sets the surface order for u-direction
+        :getter: Gets order for the u-direction
+        :setter: Sets order for the u-direction
         :type: integer
         """
-        return self._degree[0] + 1
+        return self.degree_u + 1
 
     @order_u.setter
     def order_u(self, value):
@@ -834,18 +834,18 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def order_v(self):
-        """ Surface order for v-direction.
+        """ Order for the v-direction.
 
         Defined as ``order = degree + 1``
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the surface order for v-direction
-        :setter: Sets the surface order for v-direction
+        :getter: Gets surface order for the v-direction
+        :setter: Sets surface order for the v-direction
         :type: integer
         """
-        return self._degree[1] + 1
+        return self.degree_v + 1
 
     @order_v.setter
     def order_v(self, value):
@@ -853,13 +853,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def degree_u(self):
-        """ Surface degree for u-direction.
+        """ Degree for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the surface degree for u-direction
-        :setter: Sets the surface degree for u-direction
+        :getter: Gets degree for the u-direction
+        :setter: Sets degree for the u-direction
         :type: integer
         """
         return self._degree[0]
@@ -876,13 +876,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def degree_v(self):
-        """ Surface degree for v-direction.
+        """ Degree for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the surface degree for v-direction
-        :setter: Sets the surface degree for v-direction
+        :getter: Gets degree for the v-direction
+        :setter: Sets degree for the v-direction
         :type: integer
         """
         return self._degree[1]
@@ -907,19 +907,19 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the knot vector for u-direction
-        :setter: Sets the knot vector for u-direction
+        :getter: Gets knot vector for the u-direction
+        :setter: Sets knot vector for the u-direction
         """
         return tuple(self._knot_vector[0])
 
     @knotvector_u.setter
     def knotvector_u(self, value):
         if self.degree_u == 0 or self.ctrlpts_size_u == 0:
-            raise ValueError("Set degree and control points first on the u-direction")
+            raise ValueError("Set degree and control points first for the u-direction")
 
         # Check knot vector validity
         if not utilities.check_knot_vector(self.degree_u, value, self.ctrlpts_size_u):
-            raise ValueError("Input is not a valid knot vector on the u-direction")
+            raise ValueError("Input is not a valid knot vector for the u-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -938,19 +938,19 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the knot vector for v-direction
-        :setter: Sets the knot vector for v-direction
+        :getter: Gets knot vector for the v-direction
+        :setter: Sets knot vector for the v-direction
         """
         return tuple(self._knot_vector[1])
 
     @knotvector_v.setter
     def knotvector_v(self, value):
         if self.degree_v == 0 or self.ctrlpts_size_v == 0:
-            raise ValueError("Set degree and control points first on the v-direction")
+            raise ValueError("Set degree and control points first for the v-direction")
 
         # Check knot vector validity
         if not utilities.check_knot_vector(self.degree_v, value, self.ctrlpts_size_v):
-            raise ValueError("Input is not a valid knot vector on the v-direction")
+            raise ValueError("Input is not a valid knot vector for the v-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -993,20 +993,20 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts_size_u(self):
-        """ Size of the control points array on the u-direction.
+        """ Number of control points for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets number of control points on the u-direction
-        :setter: Sets number of control points on the u-direction
+        :getter: Gets number of control points for the u-direction
+        :setter: Sets number of control points for the u-direction
         """
         return self._control_points_size[0]
 
     @ctrlpts_size_u.setter
     def ctrlpts_size_u(self, value):
         if not isinstance(value, int):
-            raise TypeError("Number of control points on the u-direction must be an integer number")
+            raise TypeError("Number of control points for the u-direction must be an integer number")
         if value <= 0:
             raise ValueError("Control points size cannot be less than and equal to zero")
 
@@ -1015,7 +1015,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts_size_v(self):
-        """ Size of the control points array on the v-direction.
+        """ Number of control points for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1126,8 +1126,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
-        :setter: Sets the same sample size value for both u- and v-directions
+        :getter: Gets sample size as a tuple of values corresponding to u- and v-directions
+        :setter: Sets sample size for both u- and v-directions
         :type: int
         """
         sample_size_u = int(1.0 / self.delta_u) + 1
@@ -1165,8 +1165,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta value for the u-direction
-        :setter: Sets the delta value for the u-direction
+        :getter: Gets evaluation delta for the u-direction
+        :setter: Sets evaluation delta for the u-direction
         :type: float
         """
         return self._delta[0]
@@ -1197,8 +1197,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta value for the v-direction
-        :setter: Sets the delta value for the v-direction
+        :getter: Gets evaluation delta for the v-direction
+        :setter: Sets evaluation delta for the v-direction
         :type: float
         """
         return self._delta[1]
@@ -1235,8 +1235,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
-        :setter: Sets the same delta value for both u- and v-directions
+        :getter: Gets evaluation delta as a tuple of values corresponding to u- and v-directions
+        :setter: Sets evaluation delta for both u- and v-directions
         :type: float
         """
         return self.delta_u, self.delta_v
@@ -1304,7 +1304,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets bounding box
+        :getter: Gets the surface bounding box
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
             self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
@@ -1556,7 +1556,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the surface.
+        """ Evaluates the parametric surface.
 
         .. note::
 
@@ -1571,7 +1571,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_single(self, uv):
-        """ Evaluates the surface at the given (u,v) parameter.
+        """ Evaluates the parametric surface at the given (u,v) parameter.
 
         .. note::
 
@@ -1587,7 +1587,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_list(self, uv_list):
-        """ Evaluates the surface for an input range of (u,v) parameter pairs.
+        """ Evaluates the parametric surface for an input range of (u,v) parameter pairs.
 
         .. note::
 
@@ -1603,7 +1603,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
-        """ Evaluates the derivatives of the surface at parameter (u,v).
+        """ Evaluates the derivatives of the parametric surface at parameter (u,v).
 
         .. note::
 
