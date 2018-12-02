@@ -1331,7 +1331,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._trims = value
 
     def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
-        """ Sets 1-dimensional control points and checks if the data is consistent.
+        """ Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -2440,8 +2440,61 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-    def set_ctrlpts(self, ctrlpts, size_u, size_v, size_w):
-        pass
+    def set_ctrlpts(self, ctrlpts, size_u, size_v, size_w, **kwargs):
+        """ Sets the control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        :param size_u: number of control points for the u-direction
+        :type size_u: int
+        :param size_v: number of control points for the v-direction
+        :type size_v: int
+        :param size_w: number of control points for the w-direction
+        :type size_w: int
+        """
+        # Degrees must be set before setting the control points
+        if self.degree_u <= 0 or self.degree_v <= 0 or self.degree_w <= 0:
+            raise ValueError("Set the degrees first")
+
+        # Check array size validity
+        if size_u < self.degree_u + 1:
+            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
+        if size_v < self.degree_v + 1:
+            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
+        if size_w < self.degree_w + 1:
+            raise ValueError("Number of control points on the w-direction should be at least degree + 1")
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+
+        # Clean up the surface and control points
+        self.reset(evalpts=True, ctrlpts=True)
+
+        # Estimate dimension by checking the size of the first element
+        self._dimension = len(ctrlpts[0])
+
+        # Check the dimensions of the input control points array and type cast to float
+        ctrlpts_float = array_init
+        for idx, cpt in enumerate(ctrlpts):
+            if not isinstance(cpt, (list, tuple)):
+                raise ValueError("Element number " + str(idx) + " is not a list")
+            if len(cpt) is not self._dimension:
+                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                 " is not a valid control point")
+            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+
+        # Set new control points
+        self._control_points = ctrlpts_float
+
+        # Set number of control points
+        self.ctrlpts_size_u = size_u
+        self.ctrlpts_size_v = size_v
+        self.ctrlpts_size_w = size_w
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
