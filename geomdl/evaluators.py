@@ -820,3 +820,113 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
 
         # Return S(u,v) derivatives
         return SKL
+
+
+class VolumeEvaluator(AbstractEvaluator):
+    """ Sequential B-Spline volume evaluation algorithms.
+
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
+    """
+
+    def __init__(self, **kwargs):
+        super(VolumeEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+
+    def evaluate_single(self, **kwargs):
+        """ Evaluates a single point. """
+        # Call parent method
+        super(VolumeEvaluator, self).evaluate_single(**kwargs)
+
+        param = kwargs.get('parameter')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+        ctrlpts_size = kwargs.get('ctrlpts_size')
+        dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
+
+        spt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
+                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1), dimension=dimension, precision=precision)
+
+        return spt[0]
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the shape. """
+        # Call parent method
+        super(VolumeEvaluator, self).evaluate(**kwargs)
+
+        start = kwargs.get('start')
+        stop = kwargs.get('stop')
+        sample_size = kwargs.get('sample_size')
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+        size = kwargs.get('ctrlpts_size')
+        dimension = kwargs.get('dimension')
+        precision = kwargs.get('precision')
+
+        spans = [[] for _ in range(len(degree))]
+        basis = [[] for _ in range(len(degree))]
+        for idx in range(len(degree)):
+            knots = utilities.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
+            spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], size[idx], knots, self._span_func)
+            basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
+
+        eval_points = []
+        for i in range(len(spans[0])):
+            iu = spans[0][i] - degree[0]
+            for j in range(len(spans[1])):
+                iv = spans[1][j] - degree[1]
+                for k in range(len(spans[2])):
+                    iw = spans[2][k] - degree[2]
+                    spt = [0.0 for _ in range(dimension)]
+                    for du in range(0, degree[0] + 1):
+                        temp2 = [0.0 for _ in range(dimension)]
+                        for dv in range(0, degree[1] + 1):
+                            temp = [0.0 for _ in range(dimension)]
+                            for dw in range(0, degree[2] + 1):
+                                temp[:] = [tmp + (basis[2][k][dw] * cp) for tmp, cp in
+                                           zip(temp, ctrlpts[iv + dv + (size[1] * (iu + du)) + (size[2] * (iw + dw))])]
+                            temp2[:] = [pt + (basis[1][j][dv] * tmp) for pt, tmp in zip(temp2, temp)]
+                        spt[:] = [pt + (basis[0][i][du] * tmp) for pt, tmp in zip(spt, temp2)]
+                    eval_points.append(spt)
+
+        return eval_points
+
+    def derivatives_single(self, **kwargs):
+        pass
+
+    def derivatives(self, **kwargs):
+        pass
+
+
+class NURBSVolumeEvaluator(VolumeEvaluator):
+    """ Sequential NURBS volume evaluation algorithms.
+
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
+    """
+
+    def __init__(self, **kwargs):
+        super(NURBSVolumeEvaluator, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+
+    def evaluate(self, **kwargs):
+        """ Evaluates the surface. """
+        dimension = kwargs.get('dimension')
+
+        cptw = super(NURBSVolumeEvaluator, self).evaluate(**kwargs)
+
+        # Divide by weight
+        eval_points = []
+        for pt in cptw:
+            cpt = [float(c / pt[-1]) for c in pt[0:(dimension - 1)]]
+            eval_points.append(cpt)
+
+        return eval_points
+
+    def derivatives_single(self, **kwargs):
+        pass
