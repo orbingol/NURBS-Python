@@ -528,26 +528,21 @@ class Surface(abstract.Surface):
         self.reset(evalpts=True, ctrlpts=True)
 
         # Assume that the user has prepared the lists correctly
-        self.ctrlpts_size_u = len(value)
-        self.ctrlpts_size_v = len(value[0])
+        size_u = len(value)
+        size_v = len(value[0])
 
         # Estimate dimension by checking the size of the first element
         self._dimension = len(value[0][0])
 
         # Make sure that all numbers are float type
-        ctrlpts2d = [[[] for _ in range(0, self.ctrlpts_size_v)]
-                     for _ in range(0, self.ctrlpts_size_u)]
-        for u in range(0, self.ctrlpts_size_u):
-            for v in range(0, self.ctrlpts_size_v):
-                ctrlpts2d[u][v] = [float(coord) for coord in value[u][v]]
+        ctrlpts = [[] for _ in range(size_u * size_v)]
+        for u in range(size_u):
+            for v in range(size_v):
+                idx = v + (size_v * u)
+                ctrlpts[idx] = [float(coord) for coord in value[u][v]]
 
-        # Set 2D control points
-        self._control_points2D = ctrlpts2d
-
-        # Set 1D control points
-        for u in self._control_points2D:
-            for v in u:
-                self._control_points.append(v)
+        # Set control points
+        self.set_ctrlpts(ctrlpts, size_u, size_v)
 
     def save(self, file_name):
         """ Saves the surface as a pickled file.
