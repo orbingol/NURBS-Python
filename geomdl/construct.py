@@ -57,7 +57,7 @@ def construct_volume(*args, **kwargs):
     :rtype: NURBS.Volume
     """
     # Get keyword arguments
-    degree_w = kwargs.get('degree', 2)
+    degree_w = kwargs.get('degree', 1)
 
     size_w = len(args)
     if size_w < 2:
