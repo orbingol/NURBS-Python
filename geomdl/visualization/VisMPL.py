@@ -8,12 +8,15 @@
 """
 
 from geomdl import vis
-
-import numpy as np
-import matplotlib as mpl
-import matplotlib.tri as mpltri
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
+from . import np
+try:
+    import matplotlib as mpl
+    import matplotlib.tri as mpltri
+    from mpl_toolkits.mplot3d import Axes3D
+    import matplotlib.pyplot as plt
+except ImportError:
+    print("Please install Matplotlib before using VisMPL visualization module")
+    exit(0)
 
 
 class VisConfig(vis.VisConfigAbstract):

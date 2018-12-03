@@ -8,10 +8,13 @@
 """
 
 from geomdl import vis
-
-import numpy as np
-import plotly
-from plotly import graph_objs
+from . import np
+try:
+    import plotly
+    from plotly import graph_objs
+except ImportError:
+    print("Please install Plotly for Python before using VisPlotly visualization module")
+    exit(0)
 
 
 class VisConfig(vis.VisConfigAbstract):
