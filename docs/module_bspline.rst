@@ -1,7 +1,7 @@
 B-Spline Module
 ^^^^^^^^^^^^^^^
 
-``BSpline`` module provides data storage and evaluation functions for B-Spline (NUBS) curves and surfaces.
+``BSpline`` module provides data storage and evaluation functions for non-rational parametric shapes.
 
 B-Spline Curve
 ==============
@@ -16,6 +16,15 @@ B-Spline Surface
 ================
 
 .. autoclass:: geomdl.BSpline.Surface
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+B-Spline Volume
+===============
+
+.. autoclass:: geomdl.BSpline.Volume
     :members:
     :undoc-members:
     :inherited-members:
