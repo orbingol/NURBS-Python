@@ -616,41 +616,29 @@ class SurfaceContainer(AbstractContainer):
 
             # Add control points
             if self._vis_component.plot_types['ctrlpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.ctrlpts,
-                                        size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
-                                        name="Control Points for " + elem.name,
+                self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
                                         color=color[0], plot_type='ctrlpts')
 
             # Add control points as quads
             if self._vis_component.plot_types['ctrlpts'] == 'quads':
                 ctrlpts_quads = utilities.make_quad_mesh(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
-                self._vis_component.add(ptsarr=ctrlpts_quads,
-                                        size=[elem.ctrlpts_size_u, elem.ctrlpts_size_v],
-                                        name="Control Points for " + elem.name,
+                self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points for " + elem.name,
                                         color=color[0], plot_type='ctrlpts')
 
             # Add surface points
             if self._vis_component.plot_types['evalpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.evalpts,
-                                        size=[elem.sample_size_u, elem.sample_size_v],
-                                        name=elem.name,
-                                        color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as quads
             if self._vis_component.plot_types['evalpts'] == 'quads':
                 evalpts_quads = utilities.make_quad_mesh(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
-                self._vis_component.add(ptsarr=evalpts_quads,
-                                        size=[elem.sample_size_u, elem.sample_size_v],
-                                        name=elem.name,
-                                        color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=evalpts_quads, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as vertices and triangles
             if self._vis_component.plot_types['evalpts'] == 'triangles':
                 elem.tessellate()
                 self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.triangles],
-                                        size=[elem.sample_size_u, elem.sample_size_v],
-                                        name=elem.name,
-                                        color=color[1], plot_type='evalpts')
+                                        name=elem.name, color=color[1], plot_type='evalpts')
 
             # Visualize the trim curve
             for idx, trim in enumerate(elem.trims):

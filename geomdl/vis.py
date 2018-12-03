@@ -38,13 +38,11 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
-    def add(self, ptsarr=(), size=0, name=None, color=None, plot_type=0):
+    def add(self, ptsarr=(), name=None, color=None, plot_type=0):
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control, curve or surface points
         :type ptsarr: list, tuple
-        :param size: size in all directions, e.g. in u- and v-directions
-        :type size: int, tuple, list
         :param name: name of the point on the legend
         :type name: str
         :param color: color of the point on the legend
