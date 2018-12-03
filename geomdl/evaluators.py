@@ -887,8 +887,10 @@ class VolumeEvaluator(AbstractEvaluator):
                         for dv in range(0, degree[1] + 1):
                             temp = [0.0 for _ in range(dimension)]
                             for dw in range(0, degree[2] + 1):
+                                # flattening algorithm 1: x + (WIDTH * y) + (WIDTH * DEPTH) * z
+                                # flattening algorithm 2: x + (WIDTH * (y + (DEPTH * z))
                                 temp[:] = [tmp + (basis[2][k][dw] * cp) for tmp, cp in
-                                           zip(temp, ctrlpts[iv + dv + (size[1] * (iu + du)) + (size[0] * size[1] * (iw + dw))])]
+                                           zip(temp, ctrlpts[iv + dv + (size[1] * (iu + du + (size[0] * (iw + dw))))])]
                             temp2[:] = [pt + (basis[1][j][dv] * tmp) for pt, tmp in zip(temp2, temp)]
                         spt[:] = [pt + (basis[0][i][du] * tmp) for pt, tmp in zip(spt, temp2)]
                     eval_points.append(spt)
