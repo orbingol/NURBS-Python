@@ -1567,7 +1567,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param param: parameter pair (u, v)
+        :param param: parameter (u, v)
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
@@ -1577,13 +1577,13 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
-        """ Evaluates the parametric surface for an input range of (u, v) parameter pairs.
+        """ Evaluates the parametric surface for an input range of (u, v) parameters.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param param_list: array of parameter pairs (u, v)
+        :param param_list: array of parameters (u, v)
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
@@ -1593,7 +1593,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
-        """ Evaluates the derivatives of the parametric surface at parameter (u,v).
+        """ Evaluates the derivatives of the parametric surface at parameter (u, v).
 
         .. note::
 
