@@ -18,9 +18,9 @@ Following modules are included in the library:
     module_utilities
     module_convert
     module_construct
+    module_container
     module_compatibility
     module_cpgen
-    module_container
     module_exchange
     module_tessellate
     module_elements
