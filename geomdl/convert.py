@@ -51,7 +51,7 @@ def bspline_to_nurbs_surface(bsurf):
 
 
 def bspline_to_nurbs_volume(bvol):
-    nvol = NURBS.Surface()
+    nvol = NURBS.Volume()
     nvol.degree_u = bvol.degree_u
     nvol.degree_v = bvol.degree_v
     nvol.degree_w = bvol.degree_w
