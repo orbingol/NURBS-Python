@@ -930,8 +930,7 @@ class Volume(abstract.Volume):
         spts = self._evaluator.evaluate(start=(start_u, start_v, start_w), stop=(stop_u, stop_v, stop_w),
                                         degree=(self.degree_u, self.degree_v, self.degree_w),
                                         knotvector=(self.knotvector_u, self.knotvector_v, self.knotvector_w),
-                                        ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w),
-                                        ctrlpts=self._control_points,
+                                        ctrlpts_size=self.ctrlpts_size, ctrlpts=self._control_points,
                                         sample_size=self.sample_size,
                                         dimension=self._dimension, precision=self._precision)
         self._eval_points = spts
