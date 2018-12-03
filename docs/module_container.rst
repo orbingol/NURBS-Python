@@ -25,7 +25,7 @@ Abstract Container
 Curve Container
 ===============
 
-.. automodule:: geomdl.multi.MultiCurve
+.. autoclass:: geomdl.multi.MultiCurve
     :members:
     :inherited-members:
     :show-inheritance:
@@ -33,7 +33,7 @@ Curve Container
 Surface Container
 =================
 
-.. automodule:: geomdl.multi.MultiSurface
+.. autoclass:: geomdl.multi.MultiSurface
     :members:
     :inherited-members:
     :show-inheritance:
