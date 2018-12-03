@@ -23,7 +23,7 @@ NURBS-Python uses :py:class:`.TriangularTessellate` class for surface tessellati
 Abstract Tessellator
 ====================
 
-.. autoclass:: geomdl.tesellate.AbstractTessellate
+.. autoclass:: geomdl.tessellate.AbstractTessellate
     :members:
     :undoc-members:
     :inherited-members:
