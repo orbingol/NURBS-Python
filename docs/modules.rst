@@ -17,6 +17,7 @@ Following modules are included in the library:
     module_operations
     module_utilities
     module_convert
+    module_construct
     module_compatibility
     module_cpgen
     module_container
