@@ -8,7 +8,7 @@
 import pytest
 from geomdl import utilities
 
-GEOMDL_DELTA = 10e-8
+GEOMDL_DELTA = 10e-6
 
 
 def test_generate_knot_vector1():
@@ -228,8 +228,12 @@ def test_vector_generate2():
     result_normalized = (0.707107, 0.424264, 0.565685)
     to_check = utilities.vector_generate(pt1, pt2)
     to_check_normalized = utilities.vector_generate(pt1, pt2, normalize=True)
-    assert to_check == result
-    assert to_check_normalized == result_normalized
+    assert abs(to_check[0] - result[0]) <= GEOMDL_DELTA
+    assert abs(to_check[1] - result[1]) <= GEOMDL_DELTA
+    assert abs(to_check[2] - result[2]) <= GEOMDL_DELTA
+    assert abs(to_check_normalized[0] - result_normalized[0]) <= GEOMDL_DELTA
+    assert abs(to_check_normalized[1] - result_normalized[1]) <= GEOMDL_DELTA
+    assert abs(to_check_normalized[2] - result_normalized[2]) <= GEOMDL_DELTA
 
 
 def test_vector_generate3():
