@@ -627,7 +627,6 @@ class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
 
     def render(self, **kwargs):
         """ Plots the evaluated and the control points. """

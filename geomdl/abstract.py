@@ -2548,14 +2548,10 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.clear()
 
         # Add control points
-        if self._vis_component.plot_types['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts,
-                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
-        # Add surface points
-        if self._vis_component.plot_types['evalpts'] == 'points':
-            self._vis_component.add(ptsarr=self.evalpts,
-                                    name=self.name, color=evalcolor, plot_type='evalpts')
+        # Add evaluated points
+        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
