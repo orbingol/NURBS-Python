@@ -1,5 +1,5 @@
-Operations Module
-^^^^^^^^^^^^^^^^^
+Geometric Operations
+^^^^^^^^^^^^^^^^^^^^
 
 This module provides common geometric operations for curves and surfaces. It includes the following operations:
 

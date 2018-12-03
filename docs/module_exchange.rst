@@ -1,5 +1,5 @@
-Exchange Module
-^^^^^^^^^^^^^^^
+Import and Export Data
+^^^^^^^^^^^^^^^^^^^^^^
 
 This module allows users to export NURBS surfaces in common CAD exchange formats. The functions starting with *import_*
 are used for generating B-spline and NURBS objects from the input files. The functions starting with *export_* are used

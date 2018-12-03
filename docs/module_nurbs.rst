@@ -1,5 +1,5 @@
-NURBS Module
-^^^^^^^^^^^^
+NURBS Geometry
+^^^^^^^^^^^^^^
 
 ``NURBS`` module provides data storage and evaluation functions for rational parametric shapes.
 

@@ -1,5 +1,5 @@
-Abstract Module
-^^^^^^^^^^^^^^^
+Geometry Abstract Base
+^^^^^^^^^^^^^^^^^^^^^^
 
 ``abstract`` module provides base classes for parametric curves, surfaces and volumes contained in this library and
 therefore, it provides an easy way to extend the library in the most proper way.

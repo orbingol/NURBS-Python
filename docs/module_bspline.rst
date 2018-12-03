@@ -1,5 +1,5 @@
-B-Spline Module
-^^^^^^^^^^^^^^^
+B-Spline Geometry
+^^^^^^^^^^^^^^^^^
 
 ``BSpline`` module provides data storage and evaluation functions for non-rational parametric shapes.
 
