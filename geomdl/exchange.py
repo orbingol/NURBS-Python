@@ -656,7 +656,7 @@ def export_smesh(surface, file_name):
     fname, fext = os.path.splitext(file_name)
 
     for idx, s in enumerate(surface):
-        if isinstance(s, BSpline.Surface):
+        if not s.rational:
             surf = convert.bspline_to_nurbs(s)
         else:
             surf = s
@@ -665,8 +665,10 @@ def export_smesh(surface, file_name):
         line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
         line += " ".join([str(k) for k in surf.knotvector_u]) + "\n"
         line += " ".join([str(k) for k in surf.knotvector_v]) + "\n"
-        # Convert control points into (x, y, z, w)
+        # Flip control points
         ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
+        # Convert control points into (x, y, z, w) format
+        ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
             line += " ".join([str(p) for p in ptw]) + "\n"
 
@@ -691,7 +693,7 @@ def export_vmesh(volume, file_name):
     fname, fext = os.path.splitext(file_name)
 
     for idx, v in enumerate(volume):
-        if isinstance(v, BSpline.Volume):
+        if not v.rational:
             vol = convert.bspline_to_nurbs(v)
         else:
             vol = v
@@ -705,7 +707,10 @@ def export_vmesh(volume, file_name):
         ctrlptsw = []
         for w in range(vol.ctrlpts_size_w):
             surf = vol.ctrlptsw[(w * vol.ctrlpts_size_u * vol.ctrlpts_size_v):((w + 1) * vol.ctrlpts_size_u * vol.ctrlpts_size_v)]
+            # Flip control points
             ctrlptsw += compatibility.flip_ctrlpts(surf, vol.ctrlpts_size_u, vol.ctrlpts_size_v)
+        # Convert control points into (x, y, z, w) format
+        ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
             line += " ".join([str(p) for p in ptw]) + "\n"
 
