@@ -297,7 +297,7 @@ def test_nurbs_surface_name_property(nurbs_surface):
 
 
 def test_nurbs_surface_eval1(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.0, v=0.0)
+    evalpt = nurbs_surface.evaluate_single((0.0, 0.0))
 
     assert abs(evalpt[0] - RESULT_LIST[0][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[0][1]) < GEOMDL_DELTA
@@ -305,7 +305,7 @@ def test_nurbs_surface_eval1(nurbs_surface):
 
 
 def test_nurbs_surface_eval2(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.0, v=0.2)
+    evalpt = nurbs_surface.evaluate_single((0.0, 0.2))
 
     assert abs(evalpt[0] - RESULT_LIST[1][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[1][1]) < GEOMDL_DELTA
@@ -313,7 +313,7 @@ def test_nurbs_surface_eval2(nurbs_surface):
 
 
 def test_nurbs_surface_eval3(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.0, v=1.0)
+    evalpt = nurbs_surface.evaluate_single((0.0, 1.0))
 
     assert abs(evalpt[0] - RESULT_LIST[2][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[2][1]) < GEOMDL_DELTA
@@ -321,7 +321,7 @@ def test_nurbs_surface_eval3(nurbs_surface):
 
 
 def test_nurbs_surface_eval4(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.0)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.0))
 
     assert abs(evalpt[0] - RESULT_LIST[3][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[3][1]) < GEOMDL_DELTA
@@ -329,7 +329,7 @@ def test_nurbs_surface_eval4(nurbs_surface):
 
 
 def test_nurbs_surface_eval5(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -337,7 +337,7 @@ def test_nurbs_surface_eval5(nurbs_surface):
 
 
 def test_nurbs_surface_eval6(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.3, v=1.0)
+    evalpt = nurbs_surface.evaluate_single((0.3, 1.0))
 
     assert abs(evalpt[0] - RESULT_LIST[5][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[5][1]) < GEOMDL_DELTA
@@ -345,7 +345,7 @@ def test_nurbs_surface_eval6(nurbs_surface):
 
 
 def test_nurbs_surface_eval7(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.6, v=0.0)
+    evalpt = nurbs_surface.evaluate_single((0.6, 0.0))
 
     assert abs(evalpt[0] - RESULT_LIST[6][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[6][1]) < GEOMDL_DELTA
@@ -353,7 +353,7 @@ def test_nurbs_surface_eval7(nurbs_surface):
 
 
 def test_nurbs_surface_eval8(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.6, v=0.6)
+    evalpt = nurbs_surface.evaluate_single((0.6, 0.6))
 
     assert abs(evalpt[0] - RESULT_LIST[7][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[7][1]) < GEOMDL_DELTA
@@ -361,7 +361,7 @@ def test_nurbs_surface_eval8(nurbs_surface):
 
 
 def test_nurbs_surface_eval9(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=0.6, v=1.0)
+    evalpt = nurbs_surface.evaluate_single((0.6, 1.0))
 
     assert abs(evalpt[0] - RESULT_LIST[8][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[8][1]) < GEOMDL_DELTA
@@ -369,7 +369,7 @@ def test_nurbs_surface_eval9(nurbs_surface):
 
 
 def test_nurbs_surface_eval10(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=1.0, v=0.0)
+    evalpt = nurbs_surface.evaluate_single((1.0, 0.0))
 
     assert abs(evalpt[0] - RESULT_LIST[9][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[9][1]) < GEOMDL_DELTA
@@ -377,7 +377,7 @@ def test_nurbs_surface_eval10(nurbs_surface):
 
 
 def test_nurbs_surface_eval11(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=1.0, v=0.8)
+    evalpt = nurbs_surface.evaluate_single((1.0, 0.8))
 
     assert abs(evalpt[0] - RESULT_LIST[10][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[10][1]) < GEOMDL_DELTA
@@ -385,7 +385,7 @@ def test_nurbs_surface_eval11(nurbs_surface):
 
 
 def test_nurbs_surface_eval12(nurbs_surface):
-    evalpt = nurbs_surface.surfpt(u=1.0, v=1.0)
+    evalpt = nurbs_surface.evaluate_single((1.0, 1.0))
 
     assert abs(evalpt[0] - RESULT_LIST[11][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[11][1]) < GEOMDL_DELTA
@@ -394,7 +394,7 @@ def test_nurbs_surface_eval12(nurbs_surface):
 
 def test_nurbs_surface_eval13(nurbs_surface2):
     # Evaluate curve
-    evalpt = nurbs_surface2.surfpt(u=0.0, v=0.0)
+    evalpt = nurbs_surface2.evaluate_single((0.0, 0.0))
 
     assert abs(evalpt[0] - RESULT_LIST[12][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[12][1]) < GEOMDL_DELTA
@@ -403,7 +403,7 @@ def test_nurbs_surface_eval13(nurbs_surface2):
 
 def test_nurbs_surface_eval14(nurbs_surface2):
     # Evaluate curve
-    evalpt = nurbs_surface2.surfpt(u=1.0, v=1.0)
+    evalpt = nurbs_surface2.evaluate_single((1.0, 1.0))
 
     assert abs(evalpt[0] - RESULT_LIST[13][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[13][1]) < GEOMDL_DELTA
@@ -415,7 +415,7 @@ def test_nurbs_surface_insert_knot1(nurbs_surface):
     nurbs_surface.insert_knot(0.3, 0.4)
 
     # Evaluate surface
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -427,7 +427,7 @@ def test_nurbs_surface_insert_knot2(nurbs_surface):
     nurbs_surface.insert_knot(u=0.3, v=0.4, ru=2, rv=2)
 
     # Evaluate surface
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -439,7 +439,7 @@ def test_nurbs_surface_insert_knot3(nurbs_surface):
     nurbs_surface.insert_knot(v=0.4, rv=2)
 
     # Evaluate surface
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -451,7 +451,7 @@ def test_nurbs_surface_insert_knot4(nurbs_surface):
     nurbs_surface.insert_knot(u=0.3, ru=2)
 
     # Evaluate surface
-    evalpt = nurbs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = nurbs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA

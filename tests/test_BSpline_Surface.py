@@ -100,84 +100,84 @@ def test_bspline_surface_knot_vector_v(bs_surface):
 
 
 def test_bspline_surface_eval1(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.0, v=0.0)
+    evalpt = bs_surface.evaluate_single((0.0, 0.0))
     assert abs(evalpt[0] - RESULT_LIST[0][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[0][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[0][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval2(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.0, v=0.2)
+    evalpt = bs_surface.evaluate_single((0.0, 0.2))
     assert abs(evalpt[0] - RESULT_LIST[1][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[1][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[1][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval3(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.0, v=1.0)
+    evalpt = bs_surface.evaluate_single((0.0, 1.0))
     assert abs(evalpt[0] - RESULT_LIST[2][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[2][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[2][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval4(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.3, v=0.0)
+    evalpt = bs_surface.evaluate_single((0.3, 0.0))
     assert abs(evalpt[0] - RESULT_LIST[3][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[3][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[3][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval5(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = bs_surface.evaluate_single((0.3, 0.4))
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[4][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval6(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.3, v=1.0)
+    evalpt = bs_surface.evaluate_single((0.3, 1.0))
     assert abs(evalpt[0] - RESULT_LIST[5][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[5][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[5][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval7(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.6, v=0.0)
+    evalpt = bs_surface.evaluate_single((0.6, 0.0))
     assert abs(evalpt[0] - RESULT_LIST[6][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[6][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[6][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval8(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.6, v=0.6)
+    evalpt = bs_surface.evaluate_single((0.6, 0.6))
     assert abs(evalpt[0] - RESULT_LIST[7][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[7][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[7][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval9(bs_surface):
-    evalpt = bs_surface.surfpt(u=0.6, v=1.0)
+    evalpt = bs_surface.evaluate_single((0.6, 1.0))
     assert abs(evalpt[0] - RESULT_LIST[8][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[8][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[8][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval10(bs_surface):
-    evalpt = bs_surface.surfpt(u=1.0, v=0.0)
+    evalpt = bs_surface.evaluate_single((1.0, 0.0))
     assert abs(evalpt[0] - RESULT_LIST[9][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[9][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[9][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval11(bs_surface):
-    evalpt = bs_surface.surfpt(u=1.0, v=0.8)
+    evalpt = bs_surface.evaluate_single((1.0, 0.8))
     assert abs(evalpt[0] - RESULT_LIST[10][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[10][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[10][2]) < GEOMDL_DELTA
 
 
 def test_bspline_surface_eval12(bs_surface):
-    evalpt = bs_surface.surfpt(u=1.0, v=1.0)
+    evalpt = bs_surface.evaluate_single((1.0, 1.0))
     assert abs(evalpt[0] - RESULT_LIST[11][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[11][1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - RESULT_LIST[11][2]) < GEOMDL_DELTA
@@ -214,7 +214,7 @@ def test_bspline_surface_insert_knot1(bs_surface):
     bs_surface.insert_knot(u=0.3, v=0.4)
 
     # Evaluate surface
-    evalpt = bs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = bs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -226,7 +226,7 @@ def test_bspline_surface_insert_knot2(bs_surface):
     bs_surface.insert_knot(u=0.3, ru=2)
 
     # Evaluate surface
-    evalpt = bs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = bs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA
@@ -238,7 +238,7 @@ def test_bspline_surface_insert_knot3(bs_surface):
     bs_surface.insert_knot(v=0.3, rv=2)
 
     # Evaluate surface
-    evalpt = bs_surface.surfpt(u=0.3, v=0.4)
+    evalpt = bs_surface.evaluate_single((0.3, 0.4))
 
     assert abs(evalpt[0] - RESULT_LIST[4][0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - RESULT_LIST[4][1]) < GEOMDL_DELTA

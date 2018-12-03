@@ -57,7 +57,7 @@ def test_nurbs_curve2d_name_property(nurbs_curve):
 
 def test_nurbs_curve2d_eval1(nurbs_curve):
     # Evaluate curve
-    evalpt = nurbs_curve.curvept(0.0)
+    evalpt = nurbs_curve.evaluate_single(0.0)
 
     # Evaluation result
     res = [5.0, 5.0]
@@ -68,7 +68,7 @@ def test_nurbs_curve2d_eval1(nurbs_curve):
 
 def test_nurbs_curve2d_eval2(nurbs_curve):
     # Evaluate curve
-    evalpt = nurbs_curve.curvept(0.3)
+    evalpt = nurbs_curve.evaluate_single(0.3)
 
     # Evaluation result
     res = [18.617, 13.377]
@@ -79,7 +79,7 @@ def test_nurbs_curve2d_eval2(nurbs_curve):
 
 def test_nurbs_curve2d_eval3(nurbs_curve):
     # Evaluate curve
-    evalpt = nurbs_curve.curvept(0.5)
+    evalpt = nurbs_curve.evaluate_single(0.5)
 
     # Evaluation result
     res = [27.645, 14.691]
@@ -90,7 +90,7 @@ def test_nurbs_curve2d_eval3(nurbs_curve):
 
 def test_nurbs_curve2d_eval4(nurbs_curve):
     # Evaluate curve
-    evalpt = nurbs_curve.curvept(0.6)
+    evalpt = nurbs_curve.evaluate_single(0.6)
 
     # Evaluation result
     res = [32.143, 14.328]
@@ -101,7 +101,7 @@ def test_nurbs_curve2d_eval4(nurbs_curve):
 
 def test_nurbs_curve2d_eval5(nurbs_curve):
     # Evaluate curve
-    evalpt = nurbs_curve.curvept(1.0)
+    evalpt = nurbs_curve.evaluate_single(1.0)
 
     # Evaluation result
     res = [50.0, 5.0]
@@ -112,7 +112,7 @@ def test_nurbs_curve2d_eval5(nurbs_curve):
 
 def test_nurbs_curve2d_eval6(nurbs_curve2):
     # Evaluate curve
-    evalpt = nurbs_curve2.curvept(0.0)
+    evalpt = nurbs_curve2.evaluate_single(0.0)
 
     # Evaluation result
     res = [10.0, 10.0]
@@ -123,7 +123,7 @@ def test_nurbs_curve2d_eval6(nurbs_curve2):
 
 def test_nurbs_curve2d_eval7(nurbs_curve2):
     # Evaluate curve
-    evalpt = nurbs_curve2.curvept(0.2)
+    evalpt = nurbs_curve2.evaluate_single(0.2)
 
     # Evaluation result
     res = [33.304, 24.593]
@@ -134,7 +134,7 @@ def test_nurbs_curve2d_eval7(nurbs_curve2):
 
 def test_nurbs_curve2d_eval8(nurbs_curve2):
     # Evaluate curve
-    evalpt = nurbs_curve2.curvept(0.7)
+    evalpt = nurbs_curve2.evaluate_single(0.7)
 
     # Evaluation result
     res = [54.345, 13.347]
@@ -145,7 +145,7 @@ def test_nurbs_curve2d_eval8(nurbs_curve2):
 
 def test_nurbs_curve2d_eval9(nurbs_curve2):
     # Evaluate curve
-    evalpt = nurbs_curve2.curvept(0.1)
+    evalpt = nurbs_curve2.evaluate_single(0.1)
 
     # Evaluation result
     res = [15.675, 13.915]
@@ -156,7 +156,7 @@ def test_nurbs_curve2d_eval9(nurbs_curve2):
 
 def test_nurbs_curve2d_eval10(nurbs_curve2):
     # Evaluate curve
-    evalpt = nurbs_curve2.curvept(0.5)
+    evalpt = nurbs_curve2.evaluate_single(0.5)
 
     # Evaluation result
     res = [80.474, 32.359]
@@ -173,7 +173,7 @@ def test_nurbs_curve2d_insert_knot1(nurbs_curve2):
     nurbs_curve2.insert_knot(u)
 
     # Evaluate curve at the given parameter
-    evalpt = nurbs_curve2.curvept(u)
+    evalpt = nurbs_curve2.evaluate_single(u)
 
     # Evaluation result
     res = [33.304, 24.593]
@@ -190,7 +190,7 @@ def test_nurbs_curve2d_insert_knot2(nurbs_curve2):
     nurbs_curve2.insert_knot(u, 3)
 
     # Evaluate curve at the given parameter
-    evalpt = nurbs_curve2.curvept(u)
+    evalpt = nurbs_curve2.evaluate_single(u)
 
     # Evaluation result
     res = [33.304, 24.593]

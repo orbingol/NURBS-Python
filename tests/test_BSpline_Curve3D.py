@@ -34,7 +34,7 @@ def bs_curve():
 
 def test_bspline_curve3d_eval1(bs_curve):
     # Evaluate curve
-    evalpt = bs_curve.curvept(0.0)
+    evalpt = bs_curve.evaluate_single(0.0)
 
     # Evaluation result
     res = [5.0, 15.0, 0.0]
@@ -46,7 +46,7 @@ def test_bspline_curve3d_eval1(bs_curve):
 
 def test_bspline_curve3d_eval2(bs_curve):
     # Evaluate curve
-    evalpt = bs_curve.curvept(0.2)
+    evalpt = bs_curve.evaluate_single(0.2)
 
     # Evaluation result
     res = [15.727, 6.509, 13.692]
@@ -58,7 +58,7 @@ def test_bspline_curve3d_eval2(bs_curve):
 
 def test_bspline_curve3d_eval3(bs_curve):
     # Evaluate curve
-    evalpt = bs_curve.curvept(0.5)
+    evalpt = bs_curve.evaluate_single(0.5)
 
     # Evaluation result
     res = [10.476, 11.071, 22.499]
@@ -70,7 +70,7 @@ def test_bspline_curve3d_eval3(bs_curve):
 
 def test_bspline_curve3d_eval4(bs_curve):
     # Evaluate curve
-    evalpt = bs_curve.curvept(0.8)
+    evalpt = bs_curve.evaluate_single(0.8)
 
     # Evaluation result
     res = [10.978, -1.349, 31.307]
@@ -82,7 +82,7 @@ def test_bspline_curve3d_eval4(bs_curve):
 
 def test_bspline_curve3d_eval5(bs_curve):
     # Evaluate curve
-    evalpt = bs_curve.curvept(1.0)
+    evalpt = bs_curve.evaluate_single(1.0)
 
     # Evaluation result
     res = [5.0, 15.0, 30.0]
@@ -126,7 +126,7 @@ def test_bspline_curve3d_deriv1(bs_curve):
 
 def test_bspline_curve3d_deriv2(bs_curve):
     # Take the derivative
-    evalpt = bs_curve.curvept(u=0.35)
+    evalpt = bs_curve.evaluate_single(0.35)
     der1 = bs_curve.derivatives(u=0.35)
     bs_curve.evaluator = evaluators.CurveEvaluator2()
     der2 = bs_curve.derivatives(u=0.35)
@@ -147,7 +147,7 @@ def test_bspline_curve3d_insert_knot1(bs_curve):
     bs_curve.insert_knot(u)
 
     # Evaluate curve at the given parameter
-    evalpt = bs_curve.curvept(u)
+    evalpt = bs_curve.evaluate_single(u)
 
     # Evaluation result
     res = [10.476, 11.071, 22.499]
@@ -162,7 +162,7 @@ def test_bspline_curve3d_insert_knot2(bs_curve):
     bs_curve.insert_knot(0.5)
 
     # Evaluate curve at u = 0.8
-    evalpt = bs_curve.curvept(0.8)
+    evalpt = bs_curve.evaluate_single(0.8)
 
     # Evaluation result
     res = [10.978, -1.349, 31.307]
@@ -176,7 +176,7 @@ def test_bspline_curve3d_insert_knot3(bs_curve):
     bs_curve.insert_knot(0.5, 2)
 
     # Evaluate curve at u = 0.8
-    evalpt = bs_curve.curvept(0.8)
+    evalpt = bs_curve.evaluate_single(0.8)
 
     # Evaluation result
     res = [10.978, -1.349, 31.307]
