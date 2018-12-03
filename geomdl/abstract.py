@@ -569,14 +569,14 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def evaluate_single(self, u):
-        """ Evaluates the paremetric curve at the given parameter.
+    def evaluate_single(self, param):
+        """ Evaluates the parametric curve at the given parameter.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param u: parameter
+        :param param: parameter
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
@@ -585,14 +585,14 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def evaluate_list(self, u_list):
+    def evaluate_list(self, param_list):
         """ Evaluates the parametric curve for an input range of parameters.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param u_list: array of parameters
+        :param param_list: array of parameters
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
@@ -1560,14 +1560,14 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def evaluate_single(self, uv):
-        """ Evaluates the parametric surface at the given (u,v) parameter.
+    def evaluate_single(self, param):
+        """ Evaluates the parametric surface at the given (u, v) parameter.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param uv: parameter pair (u, v)
+        :param param: parameter pair (u, v)
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
@@ -1576,14 +1576,14 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def evaluate_list(self, uv_list):
-        """ Evaluates the parametric surface for an input range of (u,v) parameter pairs.
+    def evaluate_list(self, param_list):
+        """ Evaluates the parametric surface for an input range of (u, v) parameter pairs.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param uv_list: array of parameter pairs (u, v)
+        :param param_list: array of parameter pairs (u, v)
         """
         # Check all parameters are set before the evaluation
         self._check_variables()

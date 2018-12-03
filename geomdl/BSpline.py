@@ -179,44 +179,44 @@ class Curve(abstract.Curve):
 
         self._curve_points = cpts
 
-    def evaluate_single(self, u):
+    def evaluate_single(self, param):
         """ Evaluates the curve at the input parameter.
 
-        :param u: parameter
-        :type u: float
+        :param param: parameter
+        :type param: float
         :return: evaluated surface point at the given parameter
         :rtype: list
         """
         # Call parent method
-        super(Curve, self).evaluate_single(u)
+        super(Curve, self).evaluate_single(param)
 
-        # Check u parameters are correct
-        utilities.check_uv(u)
+        # Check param parameters are correct
+        utilities.check_uv(param)
 
         # Evaluate
-        return self._evaluator.evaluate_single(parameter=u,
+        return self._evaluator.evaluate_single(parameter=param,
                                                degree=self.degree,
                                                knotvector=self.knotvector,
                                                ctrlpts=self._control_points,
                                                dimension=self._dimension, precision=self._precision)
 
-    def evaluate_list(self, u_list):
+    def evaluate_list(self, param_list):
         """ Evaluates the curve for an input range of parameters.
 
-        :param u_list: list of parameters
-        :type u_list: list, tuple
+        :param param_list: list of parameters
+        :type param_list: list, tuple
         :return: evaluated surface points at the input parameters
         :rtype: tuple
         """
         # Call parent method
-        super(Curve, self).evaluate_list(u_list)
+        super(Curve, self).evaluate_list(param_list)
 
         # Tolerance value
         tol = 10e-8
 
         # Evaluate (u,v) list
         res = []
-        for u in u_list:
+        for u in param_list:
             if 0.0 + tol < u < 1.0 - tol:
                 res.append(self.evaluate_single(u))
         return tuple(res)
@@ -638,22 +638,22 @@ class Surface(abstract.Surface):
 
         self._surface_points = spts
 
-    def evaluate_single(self, uv):
-        """ Evaluates the surface at the input (u,v) parameter pair.
+    def evaluate_single(self, param):
+        """ Evaluates the surface at the input (u, v) parameter pair.
 
-        :param uv: parameter pair (u, v)
-        :type uv: list, tuple
+        :param param: parameter pair (u, v)
+        :type param: list, tuple
         :return: evaluated surface point at the given parameter pair
         :rtype: list
         """
         # Call parent method
-        super(Surface, self).evaluate_single(uv)
+        super(Surface, self).evaluate_single(param)
 
         # Check u and v parameters are correct
-        utilities.check_uv(uv[0], uv[1])
+        utilities.check_uv(param[0], param[1])
 
         # Evaluate the surface
-        spt = self._evaluator.evaluate_single(parameter=uv,
+        spt = self._evaluator.evaluate_single(parameter=param,
                                               degree=(self.degree_u, self.degree_v),
                                               knotvector=(self.knotvector_u, self.knotvector_v),
                                               ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
@@ -662,23 +662,23 @@ class Surface(abstract.Surface):
 
         return spt
 
-    def evaluate_list(self, uv_list):
-        """ Evaluates the surface for a given list of (u,v) parameters.
+    def evaluate_list(self, param_list):
+        """ Evaluates the surface for a given list of (u, v) parameters.
 
-        :param uv_list: list of parameter pairs (u, v)
-        :type uv_list: list, tuple
+        :param param_list: list of parameter pairs (u, v)
+        :type param_list: list, tuple
         :return: evaluated surface point at the input parameter pairs
         :rtype: tuple
         """
         # Call parent method
-        super(Surface, self).evaluate_list(uv_list)
+        super(Surface, self).evaluate_list(param_list)
 
         # Tolerance value
         tol = 10e-8
 
         # Evaluate (u,v) list
         res = []
-        for uv in uv_list:
+        for uv in param_list:
             if 0.0 + tol < uv[0] < 1.0 - tol and 0.0 + tol < uv[1] < 1.0 - tol:
                 res.append(self.evaluate_single(uv))
         return tuple(res)
