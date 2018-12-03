@@ -252,6 +252,9 @@ def export_cfg(obj, file_name):
 
         Requires `libconf <https://pypi.org/project/libconf/>`_ package.
 
+    Libconfig format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
+    as a way to input shape data from the command line.
+
     :param obj: input curve(s) or surface(s)
     :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
     :param file_name: name of the output file
@@ -311,8 +314,8 @@ def export_yaml(obj, file_name):
 
         Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
 
-    The YAML format is mainly used by the `geomdl command line app lication<https://github.com/orbingol/geomdl-cli>`_
-    as a way to input data from the command line.
+    YAML format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
+    as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
     :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
@@ -356,6 +359,9 @@ def import_json(file_name, **kwargs):
 
 def export_json(obj, file_name):
     """ Exports curves and surfaces in JSON format.
+
+    JSON format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
+    as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
     :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
