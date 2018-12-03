@@ -7,7 +7,6 @@
 
 """
 
-from . import BSpline
 from . import NURBS
 from . import utilities
 from . import convert
@@ -35,7 +34,7 @@ def construct_surface(*args, **kwargs):
             raise ValueError("Input curves must have the same degrees")
         if size_u != arg.ctrlpts_size:
             raise ValueError("Input curves must have the same number of control points")
-        nc = convert.bspline_to_nurbs(arg) if isinstance(arg, BSpline.Curve) else arg
+        nc = arg if arg.rational else convert.bspline_to_nurbs(arg)
         new_ctrlptsw += list(nc.ctrlptsw)
 
     # Generate the surface
@@ -73,7 +72,7 @@ def construct_volume(*args, **kwargs):
             raise ValueError("Input surfaces must have the same degrees")
         if size_u != arg.ctrlpts_size_u or size_v != arg.ctrlpts_size_v:
             raise ValueError("Input surfaces must have the same number of control points")
-        ns = convert.bspline_to_nurbs(arg) if isinstance(arg, BSpline.Surface) else arg
+        ns = arg if arg.rational else convert.bspline_to_nurbs(arg)
         new_ctrlptsw += list(ns.ctrlptsw)
 
     # Generate the volume
