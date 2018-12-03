@@ -848,7 +848,7 @@ class VolumeEvaluator(AbstractEvaluator):
         precision = kwargs.get('precision')
 
         spt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
-                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1), dimension=dimension, precision=precision)
+                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1, 1), dimension=dimension, precision=precision)
 
         return spt[0]
 
