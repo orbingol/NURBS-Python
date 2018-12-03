@@ -2487,6 +2487,62 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self.ctrlpts_size_v = size_v
         self.ctrlpts_size_w = size_w
 
+    def render(self, **kwargs):
+        """ Renders the volume using the visualization component.
+
+        The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        Keyword Arguments:
+            * ``cpcolor``: sets the color of the control points
+            * ``evalcolor``: sets the color of the volume
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. Default is True.
+
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
+        """
+        if not self._vis_component:
+            warnings.warn("No visualization component has been set")
+            return
+
+        cpcolor = kwargs.get('cpcolor', 'blue')
+        evalcolor = kwargs.get('evalcolor', 'green')
+        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
+        filename = kwargs.get('filename', None)
+        plot_visible = kwargs.get('plot', True)
+
+        # Get colormap and convert to a list
+        surf_cmap = kwargs.get('colormap', None)
+        surf_cmap = [surf_cmap] if surf_cmap else []
+
+        # Check all parameters are set
+        self._check_variables()
+
+        # Check if the surface has been evaluated
+        if self._eval_points is None or len(self._eval_points) == 0:
+            self.evaluate()
+
+        # Clear the visualization component
+        self._vis_component.clear()
+
+        # Add control points
+        if self._vis_component.plot_types['ctrlpts'] == 'points':
+            self._vis_component.add(ptsarr=self.ctrlpts,
+                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+
+        # Add surface points
+        if self._vis_component.plot_types['evalpts'] == 'points':
+            self._vis_component.add(ptsarr=self.evalpts,
+                                    name=self.name, color=evalcolor, plot_type='evalpts')
+
+        # Bounding box
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+
+        # Plot the surface
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Evaluates the parametric volume.

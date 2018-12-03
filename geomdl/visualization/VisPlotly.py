@@ -470,3 +470,126 @@ class VisSurface(vis.VisAbstractSurf):
 
         # Display the plot
         self._config.plotfn(fig, **plotfn_dict)
+
+
+class VisVolume(vis.VisAbstract):
+    """ Plotly visualization module for volumes. """
+    def __init__(self, config=VisConfig()):
+        super(VisVolume, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
+
+    def render(self, **kwargs):
+        """ Plots the evaluated and the control points. """
+        # Calling parent function
+        super(VisVolume, self).render(**kwargs)
+
+        # Initialize variables
+        plot_data = []
+
+        for plot in self._plots:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'],
+                        size=self._config.line_width,
+                    )
+                )
+                plot_data.append(figure)
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'],
+                        size=self._config.line_width * 2,
+                    )
+                )
+                plot_data.append(figure)
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='lines',
+                    line=dict(
+                        color=plot['color'],
+                        width=self._config.line_width,
+                        dash='dashdot',
+                    ),
+                )
+                plot_data.append(figure)
+
+        plot_layout = dict(
+            width=self._config.figure_size[0],
+            height=self._config.figure_size[1],
+            autosize=False,
+            showlegend=self._config.display_legend,
+            scene=dict(
+                xaxis=dict(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                yaxis=dict(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+                zaxis=dict(
+                    showgrid=self._config.display_axes,
+                    showline=self._config.display_axes,
+                    zeroline=self._config.display_axes,
+                    showticklabels=self._config.display_axes,
+                    title='',
+                ),
+            ),
+        )
+
+        # Set aspect ratio
+        if self._config.axes_equal:
+            plot_layout['scene']['aspectmode'] = 'data'
+
+        # Generate the figure
+        fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        # Prepare plot configuration
+        plotfn_dict = {
+            'show_link': False,
+            'filename': self._config.figure_filename,
+            'image': None if fig_display else self._config.figure_image_format,
+        }
+        if self._config.no_ipython:
+            plotfn_dict_extra = {
+                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'auto_open': fig_display,
+            }
+            # Python < 3.5 does not support starred expressions inside dicts
+            plotfn_dict.update(plotfn_dict_extra)
+
+        # Display the plot
+        self._config.plotfn(fig, **plotfn_dict)

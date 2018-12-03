@@ -618,3 +618,74 @@ class VisSurfScatter(vis.VisAbstractSurf):
 
         # Save the figure
         self._config.save_figure_as(fig, fig_filename)
+
+
+class VisVolume(vis.VisAbstract):
+    """ Matplotlib visualization module for volumes. """
+    def __init__(self, config=VisConfig()):
+        super(VisVolume, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+
+    def render(self, **kwargs):
+        """ Plots the evaluated and the control points. """
+        # Calling parent function
+        super(VisVolume, self).render(**kwargs)
+
+        # Initialize variables
+        legend_proxy = []
+        legend_names = []
+
+        # Start plotting of the surface and the control points grid
+        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        ax = Axes3D(fig)
+
+        # Start plotting
+        for plot in self._plots:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=25, depthshade=True)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=50, depthshade=True)
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot bounding box
+            if plot['type'] == 'bbox' and self._config.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+        # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
+        if self._config.display_legend:
+            ax.legend(legend_proxy, legend_names, numpoints=1)
+
+        # Remove axes
+        if not self._config.display_axes:
+            plt.axis('off')
+
+        # Set axes equal
+        if self._config.axes_equal:
+            self._config.set_axes_equal(ax)
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self._config.save_figure_as(fig, fig_filename)
