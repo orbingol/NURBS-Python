@@ -2591,3 +2591,35 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
         # Should implement the evaluation functionality
         pass
+
+    @abc.abstractmethod
+    def evaluate_single(self, param):
+        """ Evaluates the parametric surface at the given (u, v, w) parameter.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        :param param: parameter pair (u, v, w)
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass
+
+    @abc.abstractmethod
+    def evaluate_list(self, param_list):
+        """ Evaluates the parametric volume for an input range of (u, v, w) parameter pairs.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        :param param_list: array of parameter pairs (u, v, w)
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Should implement the evaluation functionality
+        pass

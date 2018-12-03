@@ -935,6 +935,50 @@ class Volume(abstract.Volume):
                                         dimension=self._dimension, precision=self._precision)
         self._eval_points = spts
 
+    def evaluate_single(self, param):
+        """ Evaluates the volume at the input (u, v, w) parameter.
+
+        :param param: parameter (u, v, w)
+        :type param: list, tuple
+        :return: evaluated surface point at the given parameter pair
+        :rtype: list
+        """
+        # Call parent method
+        super(Volume, self).evaluate_single(param)
+
+        # Check u and v parameters are correct
+        utilities.check_uv(param[0], param[1])
+
+        # Evaluate the surface
+        spt = self._evaluator.evaluate_single(parameter=param,
+                                              degree=(self.degree_u, self.degree_v, self.degree_w),
+                                              knotvector=(self.knotvector_u, self.knotvector_v, self.knotvector_w),
+                                              ctrlpts_size=self.ctrlpts_size, ctrlpts=self._control_points,
+                                              dimension=self._dimension, precision=self._precision)
+
+        return spt
+
+    def evaluate_list(self, param_list):
+        """ Evaluates the volume for a given list of (u, v, w) parameters.
+
+        :param param_list: list of parameters in format (u, v, w)
+        :type param_list: list, tuple
+        :return: evaluated surface point at the input parameter pairs
+        :rtype: tuple
+        """
+        # Call parent method
+        super(Volume, self).evaluate_list(param_list)
+
+        # Tolerance value
+        tol = 10e-8
+
+        # Evaluate (u, v, w) list
+        res = []
+        for prm in param_list:
+            if 0.0 + tol < prm[0] < 1.0 - tol and 0.0 + tol < prm[1] < 1.0 - tol and 0.0 + tol < prm[2] < 1.0 - tol:
+                res.append(self.evaluate_single(prm))
+        return tuple(res)
+
 
 def save_pickle(data_dict, file_name):
     """ Saves the contents of the data dictionary as a pickled file.
