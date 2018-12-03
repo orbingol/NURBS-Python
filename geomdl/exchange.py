@@ -675,6 +675,45 @@ def export_smesh(surface, file_name):
         _write_file(fname_curr + fext, line)
 
 
+def export_vmesh(volume, file_name):
+    """ Exports volume(s) as volume mesh (vmesh) files.
+
+    :param volume: volume(s) to be exported
+    :type volume: abstract.Volume
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises IOError: an error occurred writing the file
+    """
+    if not isinstance(volume, abstract.Volume):
+        raise TypeError("Can only work with volumes")
+
+    # Split file name and extension
+    fname, fext = os.path.splitext(file_name)
+
+    for idx, v in enumerate(volume):
+        if isinstance(v, BSpline.Volume):
+            vol = convert.bspline_to_nurbs(v)
+        else:
+            vol = v
+        line = str(vol.dimension) + "\n"
+        line += str(vol.degree_u) + " " + str(vol.degree_v) + " " + str(vol.degree_w) + "\n"
+        line += str(vol.ctrlpts_size_u) + " " + str(vol.ctrlpts_size_v) + " " + str(vol.ctrlpts_size_w) + "\n"
+        line += " ".join([str(k) for k in vol.knotvector_u]) + "\n"
+        line += " ".join([str(k) for k in vol.knotvector_v]) + "\n"
+        line += " ".join([str(k) for k in vol.knotvector_w]) + "\n"
+        # Convert control points into (x, y, z, w)
+        ctrlptsw = []
+        for w in range(vol.ctrlpts_size_w):
+            surf = vol.ctrlptsw[(w * vol.ctrlpts_size_u * vol.ctrlpts_size_v):((w + 1) * vol.ctrlpts_size_u * vol.ctrlpts_size_v)]
+            ctrlptsw += compatibility.flip_ctrlpts(surf, vol.ctrlpts_size_u, vol.ctrlpts_size_v)
+        for ptw in ctrlptsw:
+            line += " ".join([str(p) for p in ptw]) + "\n"
+
+        # Write to file
+        fname_curr = fname + "." + str(idx + 1)
+        _write_file(fname_curr + fext, line)
+
+
 def import_3dm(file_name, **kwargs):
     """ Imports Rhinoceros/OpenNURBS .3dm file format.
 
