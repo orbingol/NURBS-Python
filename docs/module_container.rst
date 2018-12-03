@@ -9,15 +9,15 @@ This module provides parametric curve, surface and volume containers which could
 
 This module works with ``BSpline`` and ``NURBS`` modules and it contains the following classes:
 
-* :py:class:`.AbstractMulti` abstract base class for all containers
-* :py:class:`.MultiCurve` curve container class
-* :py:class:`.MultiSurface` surface container class
+* :py:class:`.AbstractContainer` abstract base class for all containers
+* :py:class:`.CurveContainer` curve container class
+* :py:class:`.SurfaceContainer` surface container class
 
 
 Abstract Container
 ==================
 
-.. autoclass:: geomdl.multi.AbstractMulti
+.. autoclass:: geomdl.multi.AbstractContainer
     :members:
     :inherited-members:
     :show-inheritance:
@@ -25,7 +25,7 @@ Abstract Container
 Curve Container
 ===============
 
-.. autoclass:: geomdl.multi.MultiCurve
+.. autoclass:: geomdl.multi.CurveContainer
     :members:
     :inherited-members:
     :show-inheritance:
@@ -33,7 +33,7 @@ Curve Container
 Surface Container
 =================
 
-.. autoclass:: geomdl.multi.MultiSurface
+.. autoclass:: geomdl.multi.SurfaceContainer
     :members:
     :inherited-members:
     :show-inheritance:

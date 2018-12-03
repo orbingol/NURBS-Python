@@ -256,7 +256,7 @@ def export_cfg(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -318,7 +318,7 @@ def export_yaml(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -364,7 +364,7 @@ def export_json(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve or Multi.MultiSurface
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -386,7 +386,7 @@ def export_obj(surface, file_name, **kwargs):
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.MultiSurface
+    :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -398,7 +398,7 @@ def export_obj(surface, file_name, **kwargs):
     update_delta = kwargs.get('update_delta', False)
 
     # Input validity checking
-    if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+    if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
         raise TypeError("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -412,7 +412,7 @@ def export_obj(surface, file_name, **kwargs):
     str_vn = []
     str_f = []
 
-    # Loop through MultiSurface object
+    # Loop through SurfaceContainer object
     for srf in surface:
         if not isinstance(srf, abstract.Surface):
             # Skip non-surface objects
@@ -475,7 +475,7 @@ def export_stl(surface, file_name, **kwargs):
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.MultiSurface
+    :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -486,7 +486,7 @@ def export_stl(surface, file_name, **kwargs):
     update_delta = kwargs.get('update_delta', False)
 
     # Input validity checking
-    if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+    if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
         raise TypeError("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -543,7 +543,7 @@ def export_off(surface, file_name, **kwargs):
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.MultiSurface
+    :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -554,7 +554,7 @@ def export_off(surface, file_name, **kwargs):
     update_delta = kwargs.get('update_delta', False)
 
     # Input validity checking
-    if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+    if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
         raise TypeError("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
         raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
@@ -629,14 +629,14 @@ def import_smesh(file):
     :param file: path to a directory containing smesh files or a single smesh file
     :type file: str
     :return: NURBS surface(s)
-    :rtype: NURBS.Surface or multi.MultiSurface
+    :rtype: NURBS.Surface or multi.SurfaceContainer
     :raises IOError: an error occurred reading the file
     """
     if os.path.isfile(file):
         return _import_smesh_single(file)
     elif os.path.isdir(file):
         files = sorted([os.path.join(file, f) for f in os.listdir(file)])
-        surf = multi.MultiSurface()
+        surf = multi.SurfaceContainer()
         for f in files:
             surf.add(_import_smesh_single(f))
         return surf
@@ -650,12 +650,12 @@ def export_smesh(surface, file_name):
     Please see :py:func:`.import_smesh()` for details on the file format.
 
     :param surface: surface(s) to be exported
-    :type surface: abstract.Surface or multi.MultiSurface
+    :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
+    if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
         raise TypeError("Can only work with single or multi surfaces")
 
     # Split file name and extension
@@ -778,7 +778,7 @@ def export_3dm(obj, file_name, **kwargs):
         Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
 
     :param obj: curves/surfaces to be exported
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.MultiCurve, Multi.MultiSurface
+    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer, Multi.SurfaceContainer
     :param file_name: file name
     :type file_name: str
     """
@@ -1068,11 +1068,11 @@ def _export_dict_all(obj, file_name, callback):
     elif isinstance(obj, abstract.Surface):
         export_type = "surface"
         data = [_prepare_export_dict_surface(obj)]
-    elif isinstance(obj, multi.MultiCurve):
+    elif isinstance(obj, multi.CurveContainer):
         export_type = "curve"
         data = [_prepare_export_dict_curve(o) for o in obj]
         count = len(obj)
-    elif isinstance(obj, multi.MultiSurface):
+    elif isinstance(obj, multi.SurfaceContainer):
         export_type = "surface"
         data = [_prepare_export_dict_surface(o) for o in obj]
         count = len(obj)

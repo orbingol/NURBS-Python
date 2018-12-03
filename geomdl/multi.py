@@ -14,7 +14,7 @@ from . import abstract
 from . import utilities
 
 
-class AbstractMulti(six.with_metaclass(abc.ABCMeta, object)):
+class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract class for curve and surface containers.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -89,7 +89,7 @@ class AbstractMulti(six.with_metaclass(abc.ABCMeta, object)):
 
         .. code-block:: python
 
-            multi_obj = Multi.MultiSurface()  # it can be Multi.MultiCurve() too
+            multi_obj = Multi.SurfaceContainer()  # it can be Multi.CurveContainer() too
             # Add shapes to multi_obj via multi_obj.add() method
             # Then, the following loop will print all the evaluated points of the Multi object
             for idx, mpt in enumerate(multi_obj.evalpts):
@@ -173,7 +173,7 @@ class AbstractMulti(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class MultiCurve(AbstractMulti):
+class CurveContainer(AbstractContainer):
     """ Container class for storing multiple curves.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -197,7 +197,7 @@ class MultiCurve(AbstractMulti):
     .. code-block:: python
 
         # Create a multi-curve container instance
-        mcrv = Multi.MultiCurve()
+        mcrv = Multi.CurveContainer()
 
         # Add single or multi curves to the multi container using mcrv.add() command
         # Addition operator, e.g. mcrv1 + mcrv2, also works
@@ -210,7 +210,7 @@ class MultiCurve(AbstractMulti):
     """
 
     def __init__(self, *args, **kwargs):
-        super(MultiCurve, self).__init__()
+        super(CurveContainer, self).__init__()
         self._instance = abstract.Curve
         self._delta = 0.01  # evaluation delta
         for arg in args:
@@ -340,7 +340,7 @@ class MultiCurve(AbstractMulti):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-class MultiSurface(AbstractMulti):
+class SurfaceContainer(AbstractContainer):
     """ Container class for storing multiple surfaces.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -364,7 +364,7 @@ class MultiSurface(AbstractMulti):
     .. code-block:: python
 
         # Create a multi-surface container instance
-        msurf = Multi.MultiSurface()
+        msurf = Multi.SurfaceContainer()
 
         # Add single or multi surfaces to the multi container using msurf.add() command
         # Addition operator, e.g. msurf1 + msurf2, also works
@@ -377,7 +377,7 @@ class MultiSurface(AbstractMulti):
     """
 
     def __init__(self, *args, **kwargs):
-        super(MultiSurface, self).__init__()
+        super(SurfaceContainer, self).__init__()
         self._instance = abstract.Surface
         self._delta = [0.01, 0.01]  # evaluation delta
         for arg in args:
