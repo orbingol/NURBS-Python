@@ -36,7 +36,7 @@ class Curve(abstract.Curve):
     * rational
 
     Notes:
-        * Please see the :py:class:`.Abstract.Curve()` documentation for details.
+        * Please see the :py:class:`.abstract.Curve()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     The following code segment illustrates the usage of Curve class:
@@ -386,7 +386,7 @@ class Surface(abstract.Surface):
     * trims
 
     Notes:
-        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * Please see the :py:class:`.abstract.Surface()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     The following code segment illustrates the usage of Surface class:
@@ -885,7 +885,7 @@ class Volume(abstract.Volume):
     * rational
 
     Notes:
-        * Please see the :py:class:`.Abstract.Volume()` documentation for details.
+        * Please see the :py:class:`.abstract.Volume()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 

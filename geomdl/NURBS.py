@@ -43,7 +43,7 @@ class Curve(BSpline.Curve):
     * rational
 
     Notes:
-        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * Please see the :py:class:`.abstract.Surface()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     Please refer to ``ex_curve04.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS curve example.
@@ -210,7 +210,7 @@ class Surface(BSpline.Surface):
     * trims
 
     Notes:
-        * Please see the :py:class:`.Abstract.Surface()` documentation for details.
+        * Please see the :py:class:`.abstract.Surface()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
 
     Please refer to ``ex_surface03.py`` in the :doc:`Examples repository <examples_repo>` for a NURBS surface example.
@@ -377,7 +377,7 @@ class Volume(BSpline.Volume):
     * rational
 
     Notes:
-        * Please see the :py:class:`.Abstract.Volume()` documentation for details.
+        * Please see the :py:class:`.abstract.Volume()` documentation for details.
         * This class sets the *FindSpan* implementation to Linear Search by default.
     """
 
