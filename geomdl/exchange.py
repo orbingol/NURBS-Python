@@ -643,14 +643,14 @@ def export_smesh(surface, file_name):
 
     Please see :py:func:`.import_smesh()` for details on the file format.
 
-    :param surface: surface or surfaces to be exported
+    :param surface: surface(s) to be exported
     :type surface: abstract.Surface or multi.MultiSurface
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
     if not isinstance(surface, (abstract.Surface, multi.MultiSurface)):
-        raise TypeError("Can only work single or multi surfaces")
+        raise TypeError("Can only work with single or multi surfaces")
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
@@ -663,8 +663,8 @@ def export_smesh(surface, file_name):
         line = str(surf.dimension) + "\n"
         line += str(surf.degree_u) + " " + str(surf.degree_v) + "\n"
         line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
-        line += " ".join([str(v) for v in surf.knotvector_u]) + "\n"
-        line += " ".join([str(v) for v in surf.knotvector_v]) + "\n"
+        line += " ".join([str(k) for k in surf.knotvector_u]) + "\n"
+        line += " ".join([str(k) for k in surf.knotvector_v]) + "\n"
         # Convert control points into (x, y, z, w)
         ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
         for ptw in ctrlptsw:
