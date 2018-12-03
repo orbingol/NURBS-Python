@@ -424,6 +424,22 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         return tuple(self._bounding_box)
 
+    @property
+    def data(self):
+        """ Returns a dictionary containing all shape data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return dict(
+            rational=self._rational,
+            degree=self._degree,
+            knotvector=self._knot_vector,
+            control_points=dict(
+                points=self._control_points
+            )
+        )
+
     def set_ctrlpts(self, ctrlpts, **kwargs):
         """ Sets control points and checks if the data is consistent.
 
@@ -961,7 +977,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional control points.
+        """ 1-dimensional array of control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1338,6 +1354,22 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @trims.setter
     def trims(self, value):
         self._trims = value
+
+    @property
+    def data(self):
+        """ Returns a dictionary containing all shape data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return dict(
+            rational=self._rational,
+            degree=self._degree,
+            knotvector=self._knot_vector,
+            control_points=dict(
+                points=self._control_points
+            )
+        )
 
     def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
         """ Sets the control points and checks if the data is consistent.
@@ -2421,6 +2453,22 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             return
 
         self._vis_component = value
+
+    @property
+    def data(self):
+        """ Returns a dictionary containing all shape data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return dict(
+            rational=self.rational,
+            degree=self._degree,
+            knotvector=self._knot_vector,
+            control_points=dict(
+                points=self._control_points
+            )
+        )
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
