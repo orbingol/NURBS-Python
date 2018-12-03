@@ -2384,6 +2384,26 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
         return tuple(self._bounding_box)
 
+    @property
+    def vis(self):
+        """ Visualization component.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
+        """
+        return self._vis_component
+
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, VisAbstract):
+            warnings.warn("Visualization component must be an instance of VisAbstract class")
+            return
+
+        self._vis_component = value
+
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
 
