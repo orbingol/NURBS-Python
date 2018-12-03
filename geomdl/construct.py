@@ -20,7 +20,7 @@ def construct_surface(*args, **kwargs):
     :rtype: NURBS.Surface
     """
     # Get keyword arguments
-    degree_v = kwargs.get('degree_v', 2)
+    degree_v = kwargs.get('degree', 2)
 
     size_v = len(args)
     if size_v < 2:
@@ -58,7 +58,7 @@ def construct_volume(*args, **kwargs):
     :rtype: NURBS.Volume
     """
     # Get keyword arguments
-    degree_w = kwargs.get('degree_w', 2)
+    degree_w = kwargs.get('degree', 2)
 
     size_w = len(args)
     if size_w < 2:
