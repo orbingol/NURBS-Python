@@ -12,41 +12,54 @@ from . import NURBS
 
 
 def bspline_to_nurbs(obj):
-    """ Converts B-Spline objects to NURBS objects.
+    """ Converts B-Spline parametric shapes to NURBS parametric shapes.
 
-    The intended functionality is converting B-Spline curves and surfaces to NURBS curves and surfaces, respectively.
-    Therefore, the inputs should be :py:class:`.BSpline.Curve` or :py:class:`.BSpline.Surface`.
-    Otherwise, the function will raise a TypeError.
-
-    :param obj: B-Spline object
-    :type obj: BSpline.Curve, BSpline.Surface
-    :return: NURBS object
-    :rtype: NURBS.Curve, NURBS.Surface
+    :param obj: B-Spline shape
+    :type obj: BSpline.Curve, BSpline.Surface or BSpline.Volume
+    :return: NURBS shape
+    :rtype: NURBS.Curve, NURBS.Surface or BSpline.Volume
     :raises: TypeError
     """
     if isinstance(obj, BSpline.Curve):
         return bspline_to_nurbs_curve(obj)
     elif isinstance(obj, BSpline.Surface):
         return bspline_to_nurbs_surface(obj)
+    elif isinstance(obj, BSpline.Volume):
+        return bspline_to_nurbs_volume(obj)
     else:
-        raise TypeError("Input must be an instance of B-Spline curve or surface")
+        raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
 
 
-def bspline_to_nurbs_curve(bs_curve):
-    nurbs_curve = NURBS.Curve()
-    nurbs_curve.degree = bs_curve.degree
-    nurbs_curve.ctrlpts = bs_curve.ctrlpts
-    nurbs_curve.knotvector = bs_curve.knotvector
-    return nurbs_curve
+def bspline_to_nurbs_curve(bcrv):
+    ncrv = NURBS.Curve()
+    ncrv.degree = bcrv.degree
+    ncrv.ctrlpts = bcrv.ctrlpts
+    ncrv.knotvector = bcrv.knotvector
+    return ncrv
 
 
-def bspline_to_nurbs_surface(bs_surface):
-    nurbs_surface = NURBS.Surface()
-    nurbs_surface.degree_u = bs_surface.degree_u
-    nurbs_surface.degree_v = bs_surface.degree_v
-    nurbs_surface.ctrlpts_size_u = bs_surface.ctrlpts_size_u
-    nurbs_surface.ctrlpts_size_v = bs_surface.ctrlpts_size_v
-    nurbs_surface.ctrlpts = bs_surface.ctrlpts
-    nurbs_surface.knotvector_u = bs_surface.knotvector_u
-    nurbs_surface.knotvector_v = bs_surface.knotvector_v
-    return nurbs_surface
+def bspline_to_nurbs_surface(bsurf):
+    nsurf = NURBS.Surface()
+    nsurf.degree_u = bsurf.degree_u
+    nsurf.degree_v = bsurf.degree_v
+    nsurf.ctrlpts_size_u = bsurf.ctrlpts_size_u
+    nsurf.ctrlpts_size_v = bsurf.ctrlpts_size_v
+    nsurf.ctrlpts = bsurf.ctrlpts
+    nsurf.knotvector_u = bsurf.knotvector_u
+    nsurf.knotvector_v = bsurf.knotvector_v
+    return nsurf
+
+
+def bspline_to_nurbs_volume(bvol):
+    nvol = NURBS.Surface()
+    nvol.degree_u = bvol.degree_u
+    nvol.degree_v = bvol.degree_v
+    nvol.degree_w = bvol.degree_w
+    nvol.ctrlpts_size_u = bvol.ctrlpts_size_u
+    nvol.ctrlpts_size_v = bvol.ctrlpts_size_v
+    nvol.ctrlpts_size_w = bvol.ctrlpts_size_w
+    nvol.ctrlpts = bvol.ctrlpts
+    nvol.knotvector_u = bvol.knotvector_u
+    nvol.knotvector_v = bvol.knotvector_v
+    nvol.knotvector_w = bvol.knotvector_w
+    return nvol
