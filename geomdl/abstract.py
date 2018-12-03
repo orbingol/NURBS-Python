@@ -432,7 +432,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         on using this class member.
         """
         return dict(
-            rational=self._rational,
+            rational=self.rational,
+            dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
             control_points=dict(
@@ -1363,7 +1364,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         on using this class member.
         """
         return dict(
-            rational=self._rational,
+            rational=self.rational,
+            dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
             control_points=dict(
@@ -2463,6 +2465,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         """
         return dict(
             rational=self.rational,
+            dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
             control_points=dict(
