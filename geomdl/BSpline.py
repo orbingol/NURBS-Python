@@ -125,16 +125,6 @@ class Curve(abstract.Curve):
         self._dimension = impdata['dimension']
         self._control_points = impdata['ctrlpts']
 
-    def curvept(self, u):
-        """ Evaluates the curve at the given parameter.
-
-        :param u: parameter
-        :type u: float
-        :return: evaluated curve point
-        :rtype: list
-        """
-        return self.evaluate_single(u)
-
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
 
@@ -591,18 +581,6 @@ class Surface(abstract.Surface):
     def transpose(self):
         """ Transposes the surface by swapping u and v parametric directions. """
         operations.transpose(self, inplace=True)
-
-    def surfpt(self, u, v):
-        """ Evaluates the surface at the given (u,v) parameter pair.
-
-        :param u: parameter on the u-direction
-        :type u: float
-        :param v: parameter on the v-direction
-        :type v: float
-        :return: evaluated surface point at the given parameter pair
-        :rtype: list
-        """
-        return self.evaluate_single([u, v])
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
