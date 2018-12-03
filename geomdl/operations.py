@@ -39,7 +39,7 @@ def split_curve(obj, u, **kwargs):
     # Validate input data
     if u == 0.0 or u == 1.0:
         raise ValueError("Cannot split on the corner points")
-    utilities.check_uv(u)
+    utilities.check_params(u)
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), u) - obj.degree + 1
@@ -206,7 +206,7 @@ def split_surface_u(obj, t, **kwargs):
 
     if t == 0.0 or t == 1.0:
         raise ValueError("Cannot split on the corner points")
-    utilities.check_uv(t)
+    utilities.check_params(t)
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
@@ -278,7 +278,7 @@ def split_surface_v(obj, t, **kwargs):
 
     if t == 0.0 or t == 1.0:
         raise ValueError("Cannot split on the corner points")
-    utilities.check_uv(t)
+    utilities.check_params(t)
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
@@ -821,7 +821,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     :return: control points; 1-dimensional array for curve, 2-dimensional array for surface
     :rtype: list
     """
-    utilities.check_uv(u, v)
+    utilities.check_params(u, v)
     if isinstance(obj, abstract.Curve):
         return _find_ctrlpts_curve(u, obj, **kwargs)
     elif isinstance(obj, abstract.Surface):

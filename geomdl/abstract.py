@@ -617,7 +617,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._check_variables()
 
         # Check u parameters are correct
-        utilities.check_uv(u)
+        utilities.check_params(u)
 
         # Should implement the derivatives functionality
         pass
@@ -1619,7 +1619,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._check_variables()
 
         # Check u and v parameters are correct
-        utilities.check_uv(u, v)
+        utilities.check_params(u, v)
 
         # Should implement the derivatives functionality here
         pass

@@ -485,25 +485,34 @@ def backward_substitution(matrix_u, matrix_y):
     return matrix_x
 
 
-def check_uv(u=None, v=None):
-    """ Checks if the parameter values are valid.
+def check_params(u=None, v=None, w=None):
+    """ Checks if the parameters are valid.
 
     :param u: u parameter
     :type u: float
     :param v: v parameter
     :type v: float
-    :raises ValueError: u and/or v is not in the interval [0, 1]
+    :param w: w parameter
+    :type w: float
+    :raises ValueError: input parameters are not in the interval [0, 1]
     """
     tol = 10e-8
     # Check u value
     if u is not None:
         if not (0.0 - tol) <= u <= (1.0 + tol):
-            raise ValueError('"u" value should be between 0 and 1.')
+            raise ValueError("Parameter u should be between 0 and 1")
 
     # Check v value, if necessary
     if v is not None:
         if not (0.0 - tol) <= v <= (1.0 + tol):
-            raise ValueError('"v" value should be between 0 and 1.')
+            raise ValueError("Parameter v should be between 0 and 1")
+
+    # Check w value, if necessary
+    if w is not None:
+        if not (0.0 - tol) <= w <= (1.0 + tol):
+            raise ValueError("Parameter w should be between 0 and 1")
+
+    return True
 
 
 def evaluate_bounding_box(ctrlpts):
