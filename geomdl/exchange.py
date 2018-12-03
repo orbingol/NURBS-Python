@@ -644,7 +644,7 @@ def import_smesh(file):
         raise IOError("Input is not a file or a directory")
 
 
-def export_smesh(surface, file_name):
+def export_smesh(surface, file_name, **kwargs):
     """ Exports surface(s) as surface mesh (smesh) files.
 
     Please see :py:func:`.import_smesh()` for details on the file format.
@@ -657,6 +657,9 @@ def export_smesh(surface, file_name):
     """
     if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
         raise TypeError("Can only work with single or multi surfaces")
+
+    # Get keyword arguments
+    decimals = kwargs.get('decimals', 18)
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
@@ -683,7 +686,7 @@ def export_smesh(surface, file_name):
         _write_file(fname_curr + fext, line)
 
 
-def export_vmesh(volume, file_name):
+def export_vmesh(volume, file_name, **kwargs):
     """ Exports volume(s) as volume mesh (vmesh) files.
 
     :param volume: volume(s) to be exported
@@ -694,6 +697,9 @@ def export_vmesh(volume, file_name):
     """
     if not isinstance(volume, abstract.Volume):
         raise TypeError("Can only work with volumes")
+
+    # Get keyword arguments
+    decimals = kwargs.get('decimals', 18)
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)

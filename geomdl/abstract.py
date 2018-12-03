@@ -79,7 +79,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = None  # visualization component
         self._bounding_box = self._init_var(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
-        self._precision = 6  # number of decimal places to round to
+        self._precision = 18  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vector
         self._cache = {}  # cache dictionary
@@ -687,7 +687,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._tsl_component = None  # tessellation component
         self._bounding_box = self._init_array(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
-        self._precision = 6  # number of decimal places to round to
+        self._precision = 18  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
         self._cache = {}  # cache dictionary
@@ -1662,7 +1662,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component = None  # visualization component
         self._bounding_box = self._init_array(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
-        self._precision = 6  # number of decimal places to round to
+        self._precision = 18  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
         self._cache = {}  # cache dictionary

@@ -12,7 +12,7 @@ import math
 from .elements import Vertex, Triangle
 
 
-def linspace(start, stop, num, decimals=6):
+def linspace(start, stop, num, decimals=18):
     """ Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
@@ -129,7 +129,7 @@ def vector_multiply(vector_in, scalar):
 
 
 # Normalizes the input vector
-def vector_normalize(vector_in, decimals=6):
+def vector_normalize(vector_in, decimals=18):
     """ Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
@@ -940,7 +940,7 @@ def frange(start, stop, step=1.0):
 
 
 # Normalizes knot vector
-def normalize_knot_vector(knot_vector, decimals=4):
+def normalize_knot_vector(knot_vector, decimals=18):
     """ Normalizes the input knot vector between 0 and 1.
 
     :param knot_vector: knot vector to be normalized
