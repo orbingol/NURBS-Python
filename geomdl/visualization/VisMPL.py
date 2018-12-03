@@ -646,7 +646,7 @@ class VisVolume(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
-                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=25, depthshade=True)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -654,7 +654,7 @@ class VisVolume(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
-                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=50, depthshade=True)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
