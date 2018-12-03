@@ -57,7 +57,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         if not color or not name:
             return
         # Add points, size, plot color and name on the legend
-        elem = {'ptsarr': ptsarr, 'size': size, 'name': name, 'color': color, 'type': plot_type}
+        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
         self._plots.append(elem)
 
     @abc.abstractmethod

@@ -479,7 +479,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
-        """ Renders the curve using the loaded visualization component
+        """ Renders the curve using the visualization component
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1401,7 +1401,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     # Runs visualization component to render the surface
     def render(self, **kwargs):
-        """ Renders the surface using the loaded visualization component.
+        """ Renders the surface using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1449,35 +1449,26 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Add control points
         if self._vis_component.plot_types['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts,
-                                    size=[self.ctrlpts_size_u, self.ctrlpts_size_v],
-                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+            self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as quads
         if self._vis_component.plot_types['ctrlpts'] == 'quads':
             ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
-            self._vis_component.add(ptsarr=ctrlpts_quads,
-                                    size=[self.ctrlpts_size_u, self.ctrlpts_size_v],
-                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+            self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
         if self._vis_component.plot_types['evalpts'] == 'points':
-            self._vis_component.add(ptsarr=self.evalpts,
-                                    size=[self.sample_size_u, self.sample_size_v],
-                                    name=self.name, color=evalcolor, plot_type='evalpts')
+            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as quads
         if self._vis_component.plot_types['evalpts'] == 'quads':
             evalpts_quads = utilities.make_quad_mesh(self.evalpts, self.sample_size_u, self.sample_size_v)
-            self._vis_component.add(ptsarr=evalpts_quads,
-                                    size=[self.sample_size_u, self.sample_size_v],
-                                    name=self.name, color=evalcolor, plot_type='evalpts')
+            self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles
         if self._vis_component.plot_types['evalpts'] == 'triangles':
             self.tessellate()
             self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.triangles],
-                                    size=[self.sample_size_u, self.sample_size_v],
                                     name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Visualize the trim curve
