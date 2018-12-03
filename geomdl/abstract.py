@@ -73,7 +73,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._degree = 0  # degree
         self._knot_vector = self._init_var(self._array_type)  # knot vector
         self._control_points = self._init_var(self._array_type)  # control points
-        self._delta = 0.01  # evaluation delta
+        self._delta = 0.05  # evaluation delta
         self._curve_points = self._init_var(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
@@ -676,7 +676,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._degree = [0, 0]  # degree
         self._knot_vector = [self._init_array(self._array_type), self._init_array(self._array_type)]  # knot vector
         self._control_points_size = [0, 0]  # control points array length
-        self._delta = [0.01, 0.01]  # evaluation delta
+        self._delta = [0.05, 0.05]  # evaluation delta
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._control_points = self._init_array(self._array_type)  # control points, 1-D array (v-order)
@@ -1644,7 +1644,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
                              self._init_array(self._array_type),
                              self._init_array(self._array_type)]  # knot vector
         self._control_points_size = [0, 0, 0]  # control points array length
-        self._delta = [0.01, 0.01, 0.01]  # evaluation delta
+        self._delta = [0.1, 0.1, 0.1]  # evaluation delta
         self._name = "Volume"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._control_points = self._init_array(self._array_type)  # control points, 1-D array (w-order)
