@@ -672,14 +672,14 @@ def export_smesh(surface, file_name, **kwargs):
         line = str(surf.dimension) + "\n"
         line += str(surf.degree_u) + " " + str(surf.degree_v) + "\n"
         line += str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + "\n"
-        line += " ".join([str(k) for k in surf.knotvector_u]) + "\n"
-        line += " ".join([str(k) for k in surf.knotvector_v]) + "\n"
+        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in surf.knotvector_u]) + "\n"
+        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in surf.knotvector_v]) + "\n"
         # Flip control points
         ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
         # Convert control points into (x, y, z, w) format
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
-            line += " ".join([str(p) for p in ptw]) + "\n"
+            line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
@@ -712,9 +712,9 @@ def export_vmesh(volume, file_name, **kwargs):
         line = str(vol.dimension) + "\n"
         line += str(vol.degree_u) + " " + str(vol.degree_v) + " " + str(vol.degree_w) + "\n"
         line += str(vol.ctrlpts_size_u) + " " + str(vol.ctrlpts_size_v) + " " + str(vol.ctrlpts_size_w) + "\n"
-        line += " ".join([str(k) for k in vol.knotvector_u]) + "\n"
-        line += " ".join([str(k) for k in vol.knotvector_v]) + "\n"
-        line += " ".join([str(k) for k in vol.knotvector_w]) + "\n"
+        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in vol.knotvector_u]) + "\n"
+        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in vol.knotvector_v]) + "\n"
+        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in vol.knotvector_w]) + "\n"
         # Convert control points into (x, y, z, w)
         ctrlptsw = []
         for w in range(vol.ctrlpts_size_w):
@@ -724,7 +724,7 @@ def export_vmesh(volume, file_name, **kwargs):
         # Convert control points into (x, y, z, w) format
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
-            line += " ".join([str(p) for p in ptw]) + "\n"
+            line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)

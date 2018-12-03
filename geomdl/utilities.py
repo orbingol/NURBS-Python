@@ -34,9 +34,9 @@ def linspace(start, stop, num, decimals=18):
     if num > 1:
         div = num - 1
         delta = stop - start
-        return [float(("%0." + str(decimals) + "f") %
-                      (start + (float(x) * float(delta) / float(div)))) for x in range(num)]
-    return [float(("%0." + str(decimals) + "f") % start)]
+        return [float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
+                for x in range(num)]
+    return [float(("{:." + str(decimals) + "f}").format(start))]
 
 
 def vector_cross(vector1, vector2):
@@ -158,7 +158,7 @@ def vector_normalize(vector_in, decimals=18):
             vector_out.append(vin / magnitude)
 
         # Return the normalized vector and consider the number of significands
-        return tuple([float(("%0." + str(decimals) + "f") % vout) for vout in vector_out])
+        return tuple([float(("{:." + str(decimals) + "f}").format(vout)) for vout in vector_out])
     else:
         raise ValueError("The magnitude of the vector is zero")
 
@@ -963,7 +963,7 @@ def normalize_knot_vector(knot_vector, decimals=18):
     last_knot = float(knot_vector[-1])
     denominator = last_knot - first_knot
 
-    knot_vector_out = [(float(("%0." + str(decimals) + "f") % ((float(kv) - first_knot) / denominator)))
+    knot_vector_out = [float(("{:." + str(decimals) + "f}").format((float(kv) - first_knot) / denominator))
                        for kv in knot_vector]
 
     return knot_vector_out
