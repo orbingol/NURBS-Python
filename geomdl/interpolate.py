@@ -11,15 +11,21 @@ from . import utilities
 
 
 def interpolate_curve(points, degree, **kwargs):
+    # Keyword arguments
+    clamped = kwargs.get('clamped', True)
+
     # Number of control points
     num_cpts = len(points)
 
     # Number of knots
     m = num_cpts + degree + 1
-    m_compute = m - ((degree + 1) * 2)
+
+    # Number of middle knots
+    n = degree + 1 if clamped else 1
+    m_compute = m - (n * 2)
 
     # Start knot vector
-    kv = [0.0 for _ in range(degree + 1)]
+    kv = [0.0 for _ in range(n)]
 
     # Compute middle knots if required
     if m_compute > 0:
@@ -40,7 +46,7 @@ def interpolate_curve(points, degree, **kwargs):
             kv.append(temp_kv)
 
     # End knot vector
-    kv += [1.0 for _ in range(degree + 1)]
+    kv += [1.0 for _ in range(n)]
 
     # Set up coefficient matrix
     pass
