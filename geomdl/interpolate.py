@@ -63,8 +63,7 @@ def interpolate_curve(points, degree, **kwargs):
     matrix_a = [[0.0 for _ in range(num_cpts)] for _ in range(num_cpts)]
     for i in range(num_cpts):
         span = span_func(degree, kv, num_cpts, uk[i])
-        bfuncs = helpers.basis_function(degree, kv, span, uk[i])
-        matrix_a[i][span-degree:span+1] = bfuncs
+        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, kv, span, uk[i])
 
     # Solve system of linear equations
     pass
