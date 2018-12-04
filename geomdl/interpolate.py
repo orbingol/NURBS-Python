@@ -11,6 +11,15 @@ from . import utilities
 
 
 def interpolate_curve(points, degree, **kwargs):
+    """ Applies global curve interpolation through the input points.
+
+    :param points: points on the curve
+    :type points: list, tuple
+    :param degree: degree of the output parametric curve
+    :type degree: int
+    :return: interpolated B-Spline curve
+    :rtype: BSpline.Curve
+    """
     # Keyword arguments
     clamped = kwargs.get('clamped', True)
 
