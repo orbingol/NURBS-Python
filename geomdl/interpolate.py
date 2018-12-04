@@ -8,6 +8,7 @@
 """
 
 from . import utilities
+from . import helpers
 
 
 def interpolate_curve(points, degree, **kwargs):
@@ -22,6 +23,7 @@ def interpolate_curve(points, degree, **kwargs):
     """
     # Keyword arguments
     clamped = kwargs.get('clamped', True)
+    span_func = kwargs.get('span_func', helpers.find_span_linear)
 
     # Number of control points
     num_cpts = len(points)
@@ -58,4 +60,11 @@ def interpolate_curve(points, degree, **kwargs):
     kv += [1.0 for _ in range(m_ends)]
 
     # Set up coefficient matrix
+    matrix_a = [[0.0 for _ in range(num_cpts)] for _ in range(num_cpts)]
+    for i in range(num_cpts):
+        span = span_func(degree, kv, num_cpts, uk[i])
+        bfuncs = helpers.basis_function(degree, kv, span, uk[i])
+        matrix_a[i][span-degree:span+1] = bfuncs
+
+    # Solve system of linear equations
     pass
