@@ -15,6 +15,8 @@ from . import helpers
 def interpolate_curve(points, degree, **kwargs):
     """ Applies global curve interpolation through the input points.
 
+    Please see Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
+
     :param points: points on the curve
     :type points: list, tuple
     :param degree: degree of the output parametric curve
@@ -39,22 +41,13 @@ def interpolate_curve(points, degree, **kwargs):
     m_ends = degree + 1 if clamped else 1
     m_compute = m - (m_ends * 2)
 
+    # Get uk
+    uk = compute_uk(points)
+
     # Start knot vector
     kv = [0.0 for _ in range(m_ends)]
 
-    # Chord length parametrization
-    ubar = [0.0 for _ in range(num_cpts + 1)]
-    ubar[-1] = 1.0
-    for i in range(1, num_cpts):
-        ubar[i] = utilities.point_distance(points[i], points[i - 1])
-    # Find total chord length
-    d = sum(ubar[1:-1])
-    # Divide individual chord lengths by the total chord length
-    uk = [0.0 for _ in range(num_cpts)]
-    for i in range(num_cpts):
-        uk[i] = sum(ubar[0:i + 1]) / d
-
-    # Use averaging to compute middle knots in the knot vector
+    # Use averaging method (Eqn 9.8) to compute middle knots in the knot vector
     if m_compute > 0:
         for i in range(m_compute):
             temp_kv = (1.0 / degree) * sum([uk[j] for j in range(i + 1, i + degree + 1)])
@@ -86,3 +79,33 @@ def interpolate_curve(points, degree, **kwargs):
     curve.knotvector = kv
 
     return curve
+
+
+def compute_uk(points):
+    """ Computes :math:`\\overline{u}_{k}` using chord length parametrization.
+
+    Please see Equation 9.4 on The NURBS Book (2nd Edition), p.364 for details.
+
+    :param points: points on the curve
+    :type points: list, tuple
+    :return: knots array
+    :rtype: list
+    """
+    # Length of the points array
+    num_points = len(points)
+
+    # Calculate chord lengths
+    ubar = [0.0 for _ in range(num_points + 1)]
+    ubar[-1] = 1.0
+    for i in range(1, num_points):
+        ubar[i] = utilities.point_distance(points[i], points[i - 1])
+
+    # Find the total chord length
+    d = sum(ubar[1:-1])
+
+    # Divide individual chord lengths by the total chord length
+    uk = [0.0 for _ in range(num_points)]
+    for i in range(num_points):
+        uk[i] = sum(ubar[0:i + 1]) / d
+
+    return uk
