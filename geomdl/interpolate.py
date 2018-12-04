@@ -7,6 +7,7 @@
 
 """
 
+from . import BSpline
 from . import utilities
 from . import helpers
 
@@ -24,6 +25,9 @@ def interpolate_curve(points, degree, **kwargs):
     # Keyword arguments
     clamped = kwargs.get('clamped', True)
     span_func = kwargs.get('span_func', helpers.find_span_linear)
+
+    # Dimension
+    dim = len(points[0])
 
     # Number of control points
     num_cpts = len(points)
@@ -66,4 +70,19 @@ def interpolate_curve(points, degree, **kwargs):
         matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, kv, span, uk[i])
 
     # Solve system of linear equations
-    pass
+    matrix_l, matrix_u = utilities.lu_decomposition(matrix_a)
+    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts)]
+    for i in range(dim):
+        b = [pt[i] for pt in points]
+        y = utilities.forward_substitution(matrix_l, b)
+        x = utilities.backward_substitution(matrix_u, y)
+        for j in range(num_cpts):
+            ctrlpts[j][i] = x[j]
+
+    # Generate B-spline curve
+    curve = BSpline.Curve()
+    curve.degree = degree
+    curve.ctrlpts = ctrlpts
+    curve.knotvector = kv
+
+    return curve
