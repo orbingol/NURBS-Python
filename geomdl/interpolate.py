@@ -35,7 +35,7 @@ def interpolate_curve(points, degree, **kwargs):
     num_points = len(points)
 
     # Get uk
-    uk = compute_knots_curve(points)
+    uk = compute_params_curve(points)
 
     # Get knot vector
     kv = compute_knot_vector(degree, num_points, uk, clamped)
@@ -103,7 +103,7 @@ def compute_knot_vector(degree, num_points, param_list, clamped):
     return kv
 
 
-def compute_knots_curve(points):
+def compute_params_curve(points):
     """ Computes :math:`\\overline{u}_{k}` for curves using chord length parametrization.
 
     Please see Equations 9.4 and 9.5 on The NURBS Book (2nd Edition), pp.364-365 for details.
@@ -133,7 +133,7 @@ def compute_knots_curve(points):
     return uk
 
 
-def compute_knots_surface(points, size_u, size_v):
+def compute_params_surface(points, size_u, size_v):
     """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces using chord length parametrization.
 
     The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
@@ -159,7 +159,7 @@ def compute_knots_surface(points, size_u, size_v):
     ubar_l = []
     for u in range(size_u):
         pts_v = [points[v + (size_v *u)] for v in range(size_v)]
-        ubar_l += compute_knots_curve(pts_v)
+        ubar_l += compute_params_curve(pts_v)
 
     # Do averaging on the v-direction
     for v in range(size_v):
@@ -173,7 +173,7 @@ def compute_knots_surface(points, size_u, size_v):
     vbar_k = []
     for v in range(size_v):
         pts_u = [points[v + (size_v * u)] for u in range(size_u)]
-        vbar_k += compute_knots_curve(pts_u)
+        vbar_k += compute_params_curve(pts_u)
 
     # Do averaging on the u-direction
     for u in range(size_u):
