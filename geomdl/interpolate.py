@@ -32,9 +32,6 @@ def interpolate_curve(points, degree, **kwargs):
     clamped = kwargs.get('clamped', True)
     span_func = kwargs.get('span_func', helpers.find_span_linear)
 
-    # Dimension
-    dim = len(points[0])
-
     # Number of control points
     num_points = len(points)
 
@@ -45,7 +42,7 @@ def interpolate_curve(points, degree, **kwargs):
     kv = compute_knot_vector(degree, num_points, uk, clamped)
 
     # Do global interpolation
-    ctrlpts = ginterp(dim, degree, kv, points, num_points, uk, span_func)
+    ctrlpts = ginterp(degree, kv, points, uk, span_func)
 
     # Generate B-spline curve
     curve = BSpline.Curve()
@@ -174,19 +171,15 @@ def compute_params_surface(points, size_u, size_v):
     return uk, vl
 
 
-def ginterp(dim, degree, knotvector, points, num_points, params, span_func):
+def ginterp(degree, knotvector, points, params, span_func):
     """ Global interpolation.
 
-    :param dim: dimension
-    :type degree: int
     :param degree: degree
     :type degree: int
     :param knotvector: knot vector
     :type knotvector: list, tuple
     :param points: data points
     :type points: list, tuple
-    :param num_points: number of data points
-    :type num_points: int
     :param params: list of parameters
     :type params: list, tuple
     :param span_func: reference to the knot span finding function
@@ -194,6 +187,12 @@ def ginterp(dim, degree, knotvector, points, num_points, params, span_func):
     :return: control points
     :rtype: list
     """
+    # Dimension
+    dim = len(points[0])
+
+    # Number of data points
+    num_points = len(points)
+
     # Set up coefficient matrix
     matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
     for i in range(num_points):
