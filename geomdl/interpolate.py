@@ -141,32 +141,32 @@ def compute_params_surface(points, size_u, size_v):
     :rtype: tuple
     """
     # Compute uk
-    uk = [0.0 for _ in range(size_v)]
-
-    # Compute for each curve on the u-direction
-    ubar_l = []
-    for u in range(size_u):
-        pts_v = [points[v + (size_v *u)] for v in range(size_v)]
-        ubar_l += compute_params_curve(pts_v)
-
-    # Do averaging on the v-direction
-    for v in range(size_v):
-        knots_u = [ubar_l[v + (size_v * u)] for u in range(size_u)]
-        uk[v] = sum(knots_u) / size_u
-
-    # Compute vl
-    vl = [0.0 for _ in range(size_u)]
+    uk = [0.0 for _ in range(size_u)]
 
     # Compute for each curve on the v-direction
-    vbar_k = []
+    uk_temp = []
     for v in range(size_v):
         pts_u = [points[v + (size_v * u)] for u in range(size_u)]
-        vbar_k += compute_params_curve(pts_u)
+        uk_temp += compute_params_curve(pts_u)
 
     # Do averaging on the u-direction
     for u in range(size_u):
-        knots_v = [vbar_k[u + (size_u * v)] for v in range(size_v)]
-        vl[u] = sum(knots_v) / size_v
+        knots_v = [uk_temp[u + (size_u * v)] for v in range(size_v)]
+        uk[u] = sum(knots_v) / size_v
+
+    # Compute vl
+    vl = [0.0 for _ in range(size_v)]
+
+    # Compute for each curve on the u-direction
+    vl_temp = []
+    for u in range(size_u):
+        pts_v = [points[v + (size_v * u)] for v in range(size_v)]
+        vl_temp += compute_params_curve(pts_v)
+
+    # Do averaging on the v-direction
+    for v in range(size_v):
+        knots_u = [vl_temp[v + (size_v * u)] for u in range(size_u)]
+        vl[v] = sum(knots_u) / size_u
 
     return uk, vl
 
