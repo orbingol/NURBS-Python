@@ -21,16 +21,16 @@ def bspline_to_nurbs(obj):
     :raises: TypeError
     """
     if isinstance(obj, BSpline.Curve):
-        return bspline_to_nurbs_curve(obj)
+        return _bspline_to_nurbs_curve(obj)
     elif isinstance(obj, BSpline.Surface):
-        return bspline_to_nurbs_surface(obj)
+        return _bspline_to_nurbs_surface(obj)
     elif isinstance(obj, BSpline.Volume):
-        return bspline_to_nurbs_volume(obj)
+        return _bspline_to_nurbs_volume(obj)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
 
 
-def bspline_to_nurbs_curve(bcrv):
+def _bspline_to_nurbs_curve(bcrv):
     ncrv = NURBS.Curve()
     ncrv.degree = bcrv.degree
     ncrv.ctrlpts = bcrv.ctrlpts
@@ -38,7 +38,7 @@ def bspline_to_nurbs_curve(bcrv):
     return ncrv
 
 
-def bspline_to_nurbs_surface(bsurf):
+def _bspline_to_nurbs_surface(bsurf):
     nsurf = NURBS.Surface()
     nsurf.degree_u = bsurf.degree_u
     nsurf.degree_v = bsurf.degree_v
@@ -50,7 +50,7 @@ def bspline_to_nurbs_surface(bsurf):
     return nsurf
 
 
-def bspline_to_nurbs_volume(bvol):
+def _bspline_to_nurbs_volume(bvol):
     nvol = NURBS.Volume()
     nvol.degree_u = bvol.degree_u
     nvol.degree_v = bvol.degree_v
