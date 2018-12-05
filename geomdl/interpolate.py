@@ -110,7 +110,7 @@ def compute_params_curve(points):
 
     :param points: data points
     :type points: list, tuple
-    :return: knots array, :math:`\\overline{u}_{k}`
+    :return: parameter array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
     # Length of the points array
@@ -149,7 +149,7 @@ def compute_params_surface(points, size_u, size_v):
     :type size_u: int
     :param size_v: number of points on the v-direction
     :type size_v: int
-    :return: :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` as a tuple
+    :return: :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` parameter arrays as a tuple
     :rtype: tuple
     """
     # Compute uk
