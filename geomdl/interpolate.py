@@ -13,7 +13,7 @@ from . import helpers
 
 
 def interpolate_curve(points, degree, **kwargs):
-    """ Applies global curve interpolation through the input points.
+    """ Applies global curve interpolation through the data points.
 
     Please see Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
 
@@ -32,44 +32,28 @@ def interpolate_curve(points, degree, **kwargs):
     dim = len(points[0])
 
     # Number of control points
-    num_cpts = len(points)
-
-    # Number of knots
-    m = num_cpts + degree + 1
-
-    # Number of middle knots
-    m_ends = degree + 1 if clamped else 1
-    m_compute = m - (m_ends * 2)
+    num_points = len(points)
 
     # Get uk
-    uk = compute_uk(points)
+    uk = compute_knots_curve(points)
 
-    # Start knot vector
-    kv = [0.0 for _ in range(m_ends)]
-
-    # Use averaging method (Eqn 9.8) to compute middle knots in the knot vector
-    if m_compute > 0:
-        for i in range(m_compute):
-            temp_kv = (1.0 / degree) * sum([uk[j] for j in range(i + 1, i + degree + 1)])
-            kv.append(temp_kv)
-
-    # End knot vector
-    kv += [1.0 for _ in range(m_ends)]
+    # Get knot vector
+    kv = compute_knot_vector(degree, num_points, uk, clamped)
 
     # Set up coefficient matrix
-    matrix_a = [[0.0 for _ in range(num_cpts)] for _ in range(num_cpts)]
-    for i in range(num_cpts):
-        span = span_func(degree, kv, num_cpts, uk[i])
+    matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
+    for i in range(num_points):
+        span = span_func(degree, kv, num_points, uk[i])
         matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, kv, span, uk[i])
 
     # Solve system of linear equations
     matrix_l, matrix_u = utilities.lu_decomposition(matrix_a)
-    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts)]
+    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
     for i in range(dim):
         b = [pt[i] for pt in points]
         y = utilities.forward_substitution(matrix_l, b)
         x = utilities.backward_substitution(matrix_u, y)
-        for j in range(num_cpts):
+        for j in range(num_points):
             ctrlpts[j][i] = x[j]
 
     # Generate B-spline curve
@@ -81,31 +65,69 @@ def interpolate_curve(points, degree, **kwargs):
     return curve
 
 
-def compute_uk(points):
-    """ Computes :math:`\\overline{u}_{k}` using chord length parametrization.
+def compute_knot_vector(degree, num_points, param_list, clamped):
+    """ Computes knot vector from the parameter list using averaging method.
 
-    Please see Equation 9.4 on The NURBS Book (2nd Edition), p.364 for details.
+    Please see Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
 
-    :param points: points on the curve
+    :param degree: degree
+    :type degree: int
+    :param num_points: number of data points
+    :type num_points: int
+    :param param_list: list of parameters, :math:`\\overline{u}_{k}`
+    :type param_list: list, tuple
+    :param clamped: flag to generate clamped or unclamped knot vector
+    :type clamped: bool
+    :return: knot vector
+    :rtype: list
+    """
+    # Number of knots
+    m = num_points + degree + 1
+
+    # Number of middle knots
+    m_ends = degree + 1 if clamped else 1
+    m_compute = m - (m_ends * 2)
+
+    # Start knot vector
+    kv = [0.0 for _ in range(m_ends)]
+
+    # Use averaging method (Eqn 9.8) to compute middle knots in the knot vector
+    if m_compute > 0:
+        for i in range(m_compute):
+            temp_kv = (1.0 / degree) * sum([param_list[j] for j in range(i + 1, i + degree + 1)])
+            kv.append(temp_kv)
+
+    # End knot vector
+    kv += [1.0 for _ in range(m_ends)]
+
+    return kv
+
+
+def compute_knots_curve(points):
+    """ Computes :math:`\\overline{u}_{k}` for curves using chord length parametrization.
+
+    Please see Equations 9.4 and 9.5 on The NURBS Book (2nd Edition), pp.364-365 for details.
+
+    :param points: data points
     :type points: list, tuple
-    :return: knots array
+    :return: knots array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
     # Length of the points array
     num_points = len(points)
 
     # Calculate chord lengths
-    ubar = [0.0 for _ in range(num_points + 1)]
-    ubar[-1] = 1.0
+    cds = [0.0 for _ in range(num_points + 1)]
+    cds[-1] = 1.0
     for i in range(1, num_points):
-        ubar[i] = utilities.point_distance(points[i], points[i - 1])
+        cds[i] = utilities.point_distance(points[i], points[i - 1])
 
     # Find the total chord length
-    d = sum(ubar[1:-1])
+    d = sum(cds[1:-1])
 
     # Divide individual chord lengths by the total chord length
     uk = [0.0 for _ in range(num_points)]
     for i in range(num_points):
-        uk[i] = sum(ubar[0:i + 1]) / d
+        uk[i] = sum(cds[0:i + 1]) / d
 
     return uk
