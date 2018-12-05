@@ -131,3 +131,53 @@ def compute_knots_curve(points):
         uk[i] = sum(cds[0:i + 1]) / d
 
     return uk
+
+
+def compute_knots_surface(points, size_u, size_v):
+    """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces using chord length parametrization.
+
+    The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
+    see The NURBS Book (2nd Edition), pp.366-367 for details on how to compute :math:`\\overline{u}_{k}` and
+    :math:`\\overline{u}_{l}` arrays for global surface interpolation.
+
+    Please note that this function is not a direct implementation of Algorithm A9.3 which can be found on The NURBS Book
+    (2nd Edition), pp.377-378. However, the output is the same.
+
+    :param points: data points
+    :type points: list, tuple
+    :param size_u: number of points on the u-direction
+    :type size_u: int
+    :param size_v: number of points on the v-direction
+    :type size_v: int
+    :return: :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` as a tuple
+    :rtype: tuple
+    """
+    # Compute uk
+    uk = [0.0 for _ in range(size_v)]
+
+    # Compute for each curve on the u-direction
+    ubar_l = []
+    for u in range(size_u):
+        pts_v = [points[v + (size_v *u)] for v in range(size_v)]
+        ubar_l += compute_knots_curve(pts_v)
+
+    # Do averaging on the v-direction
+    for v in range(size_v):
+        knots_u = [ubar_l[v + (size_v * u)] for u in range(size_u)]
+        uk[v] = sum(knots_u) / size_u
+
+    # Compute vl
+    vl = [0.0 for _ in range(size_u)]
+
+    # Compute for each curve on the v-direction
+    vbar_k = []
+    for v in range(size_v):
+        pts_u = [points[v + (size_v * u)] for u in range(size_u)]
+        vbar_k += compute_knots_curve(pts_u)
+
+    # Do averaging on the u-direction
+    for u in range(size_u):
+        knots_v = [vbar_k[u + (size_u * v)] for v in range(size_v)]
+        vl[u] = sum(knots_v) / size_v
+
+    return uk, vl
