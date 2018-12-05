@@ -53,6 +53,66 @@ def interpolate_curve(points, degree, **kwargs):
     return curve
 
 
+def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
+    """ Surface interpolation through the data points.
+
+    Please see Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
+
+    Keyword Arguments:
+        * ``clamped_u``: if True, surface is clamped on the u-direction. *Default: True*
+        * ``clamped_v``: if True, surface is clamped on the v-direction. *Default: True*
+        * ``span_func``: Knot span finding function. *Default: linear search*
+
+    :param points: data points
+    :type points: list, tuple
+    :param size_u: number of data points on the u-direction
+    :type size_u: int
+    :param size_v: number of data points on the v-direction
+    :type size_v: int
+    :param degree_u: degree of the output surface for the u-direction
+    :type degree_u: int
+    :param degree_v: degree of the output surface for the v-direction
+    :type degree_v: int
+    :return: interpolated B-Spline curve
+    :rtype: BSpline.Curve
+    """
+    # Keyword arguments
+    clamped_u = kwargs.get('clamped_u', True)
+    clamped_v = kwargs.get('clamped_v', True)
+    span_func = kwargs.get('span_func', helpers.find_span_linear)
+
+    # Get uk and vl
+    uk, vl = compute_params_surface(points, size_u, size_v)
+
+    # Compute knot vectors
+    kv_u = compute_knot_vector(degree_u, size_u, uk, clamped_u)
+    kv_v = compute_knot_vector(degree_v, size_v, vl, clamped_v)
+
+    # Do global interpolation on the u-direction
+    ctrlpts_r = []
+    for v in range(size_v):
+        pts = [points[v + (size_v * u)] for u in range(size_u)]
+        ctrlpts_r += ginterp(degree_u, kv_u, pts, uk, span_func)
+
+    # Do global interpolation on the v-direction
+    ctrlpts = []
+    for u in range(size_u):
+        pts = [ctrlpts_r[u + (size_u * v)] for v in range(size_v)]
+        ctrlpts += ginterp(degree_v, kv_v, pts, vl, span_func)
+
+    # Generate B-spline surface
+    surf = BSpline.Surface()
+    surf.degree_u = degree_u
+    surf.degree_v = degree_v
+    surf.ctrlpts_size_u = size_u
+    surf.ctrlpts_size_v = size_v
+    surf.ctrlpts = ctrlpts
+    surf.knotvector_u = kv_u
+    surf.knotvector_v = kv_v
+
+    return surf
+
+
 def compute_knot_vector(degree, num_points, params, clamped):
     """ Computes knot vector from the parameter list using averaging method.
 
