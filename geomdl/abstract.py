@@ -436,9 +436,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
-            control_points=dict(
-                points=self._control_points
-            )
+            size=self.ctrlpts_size,
+            control_points=self._control_points
         )
 
     def set_ctrlpts(self, ctrlpts, **kwargs):
@@ -1368,9 +1367,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
-            control_points=dict(
-                points=self._control_points
-            )
+            size=self._control_points_size,
+            control_points=self._control_points
         )
 
     def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
@@ -2468,9 +2466,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
-            control_points=dict(
-                points=self._control_points
-            )
+            size=self._control_points_size,
+            control_points=self._control_points
         )
 
     def reset(self, **kwargs):
