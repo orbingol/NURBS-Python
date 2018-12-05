@@ -7,6 +7,7 @@
 
 """
 
+from . import BSpline
 from . import NURBS
 from . import utilities
 from . import convert
@@ -89,3 +90,43 @@ def construct_volume(*args, **kwargs):
     nv.knotvector_w = utilities.generate_knot_vector(degree_w, size_w)
 
     return nv
+
+
+def extract_curves(surface):
+    """ Extract curves from a surface.
+
+    :param surface: input surface
+    :type surface: abstract.Surface
+    :return: extracted curves
+    :rtype: dict
+    """
+    # Get data from the surface object
+    surf_data = surface.data
+    rational = surf_data['rational']
+    degree_u = surf_data['degree'][0]
+    degree_v = surf_data['degree'][1]
+    kv_u = surf_data['knotvector'][0]
+    kv_v = surf_data['knotvector'][1]
+    size_u = surf_data['size'][0]
+    size_v = surf_data['size'][1]
+    ctrlpts = surf_data['control_points']
+
+    obj = NURBS.Curve if rational else BSpline.Curve
+
+    curves_u = []
+    for u in range(size_u):
+        curve = obj()
+        curve.degree = degree_v
+        curve.ctrlpts = [ctrlpts[v + (size_v * u)] for v in range(size_v)]
+        curve.knotvector = kv_v
+        curves_u.append(curve)
+
+    curves_v = []
+    for v in range(size_v):
+        curve = obj()
+        curve.degree = degree_u
+        curve.ctrlpts = [ctrlpts[v + (size_v * u)] for u in range(size_u)]
+        curve.knotvector = kv_u
+        curves_v.append(curve)
+
+    return dict(u=curves_u, v=curves_v)
