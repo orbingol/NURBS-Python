@@ -21,7 +21,7 @@ def interpolate_curve(points, degree, **kwargs):
         * ``clamped``: if True, a clamped curve is generated. *Default: True*
         * ``span_func``: Knot span finding function. *Default: linear search*
 
-    :param points: points on the curve
+    :param points: data points
     :type points: list, tuple
     :param degree: degree of the output parametric curve
     :type degree: int
@@ -41,11 +41,11 @@ def interpolate_curve(points, degree, **kwargs):
     # Get uk
     uk = compute_params_curve(points)
 
-    # Get knot vector
+    # Compute knot vector
     kv = compute_knot_vector(degree, num_points, uk, clamped)
 
     # Do global interpolation
-    ctrlpts = global_interpolation(dim, degree, kv, points, num_points, uk, span_func)
+    ctrlpts = ginterp(dim, degree, kv, points, num_points, uk, span_func)
 
     # Generate B-spline curve
     curve = BSpline.Curve()
@@ -174,7 +174,7 @@ def compute_params_surface(points, size_u, size_v):
     return uk, vl
 
 
-def global_interpolation(dim, degree, knotvector, points, num_points, params, span_func):
+def ginterp(dim, degree, knotvector, points, num_points, params, span_func):
     """ Global interpolation.
 
     :param dim: dimension
