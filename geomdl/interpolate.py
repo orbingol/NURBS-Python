@@ -7,6 +7,7 @@
 
 """
 
+import math
 from . import BSpline
 from . import utilities
 from . import helpers
@@ -20,6 +21,7 @@ def interpolate_curve(points, degree, **kwargs):
     Keyword Arguments:
         * ``clamped``: if True, a clamped curve is generated. *Default: True*
         * ``span_func``: Knot span finding function. *Default: linear search*
+        * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
     :type points: list, tuple
@@ -31,12 +33,13 @@ def interpolate_curve(points, degree, **kwargs):
     # Keyword arguments
     clamped = kwargs.get('clamped', True)
     span_func = kwargs.get('span_func', helpers.find_span_linear)
+    use_centripetal = kwargs.get('centripetal', False)
 
     # Number of control points
     num_points = len(points)
 
     # Get uk
-    uk = compute_params_curve(points)
+    uk = compute_params_curve(points, use_centripetal)
 
     # Compute knot vector
     kv = compute_knot_vector(degree, num_points, uk, clamped)
@@ -61,7 +64,8 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     Keyword Arguments:
         * ``clamped_u``: if True, surface is clamped on the u-direction. *Default: True*
         * ``clamped_v``: if True, surface is clamped on the v-direction. *Default: True*
-        * ``span_func``: Knot span finding function. *Default: linear search*
+        * ``span_func``: knot span finding function. *Default: linear search*
+        * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
     :type points: list, tuple
@@ -80,9 +84,10 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     clamped_u = kwargs.get('clamped_u', True)
     clamped_v = kwargs.get('clamped_v', True)
     span_func = kwargs.get('span_func', helpers.find_span_linear)
+    use_centripetal = kwargs.get('centripetal', False)
 
     # Get uk and vl
-    uk, vl = compute_params_surface(points, size_u, size_v)
+    uk, vl = compute_params_surface(points, size_u, size_v, use_centripetal)
 
     # Compute knot vectors
     kv_u = compute_knot_vector(degree_u, size_u, uk, clamped_u)
@@ -151,13 +156,16 @@ def compute_knot_vector(degree, num_points, params, clamped):
     return kv
 
 
-def compute_params_curve(points):
-    """ Computes :math:`\\overline{u}_{k}` for curves using chord length parametrization.
+def compute_params_curve(points, centripetal):
+    """ Computes :math:`\\overline{u}_{k}` for curves.
 
-    Please see Equations 9.4 and 9.5 on The NURBS Book (2nd Edition), pp.364-365 for details.
+    Please see Equations 9.4 and 9.5 for chord length parametrization, and Equation 9.6 for centripetal method on
+    The NURBS Book (2nd Edition), pp.364-365.
 
     :param points: data points
     :type points: list, tuple
+    :param centripetal: activates centripetal parametrization method
+    :type centripetal: bool
     :return: parameter array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
@@ -168,7 +176,8 @@ def compute_params_curve(points):
     cds = [0.0 for _ in range(num_points + 1)]
     cds[-1] = 1.0
     for i in range(1, num_points):
-        cds[i] = utilities.point_distance(points[i], points[i - 1])
+        distance = utilities.point_distance(points[i], points[i - 1])
+        cds[i] = math.sqrt(distance) if centripetal else distance
 
     # Find the total chord length
     d = sum(cds[1:-1])
@@ -181,8 +190,8 @@ def compute_params_curve(points):
     return uk
 
 
-def compute_params_surface(points, size_u, size_v):
-    """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces using chord length parametrization.
+def compute_params_surface(points, size_u, size_v, centripetal):
+    """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
 
     The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
     see The NURBS Book (2nd Edition), pp.366-367 for details on how to compute :math:`\\overline{u}_{k}` and
@@ -197,6 +206,8 @@ def compute_params_surface(points, size_u, size_v):
     :type size_u: int
     :param size_v: number of points on the v-direction
     :type size_v: int
+    :param centripetal: activates centripetal parametrization method
+    :type centripetal: bool
     :return: :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` parameter arrays as a tuple
     :rtype: tuple
     """
@@ -207,7 +218,7 @@ def compute_params_surface(points, size_u, size_v):
     uk_temp = []
     for v in range(size_v):
         pts_u = [points[v + (size_v * u)] for u in range(size_u)]
-        uk_temp += compute_params_curve(pts_u)
+        uk_temp += compute_params_curve(pts_u, centripetal)
 
     # Do averaging on the u-direction
     for u in range(size_u):
@@ -221,7 +232,7 @@ def compute_params_surface(points, size_u, size_v):
     vl_temp = []
     for u in range(size_u):
         pts_v = [points[v + (size_v * u)] for v in range(size_v)]
-        vl_temp += compute_params_curve(pts_v)
+        vl_temp += compute_params_curve(pts_v, centripetal)
 
     # Do averaging on the v-direction
     for v in range(size_v):
