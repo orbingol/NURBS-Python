@@ -12,6 +12,46 @@ from . import utilities
 from . import helpers
 
 
+def _global_interpolation(dim, degree, knotvector, points, num_points, params, span_func):
+    """ Global interpolation.
+
+    :param dim: dimension
+    :type degree: int
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param points: data points
+    :type points: list, tuple
+    :param num_points: number of data points
+    :type num_points: int
+    :param params: list of parameters
+    :type params: list, tuple
+    :param span_func: reference to the knot span finding function
+    :type span_func: function
+    :return: control points
+    :rtype: list
+    """
+    # Set up coefficient matrix
+    matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
+    for i in range(num_points):
+        span = span_func(degree, knotvector, num_points, params[i])
+        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, knotvector, span, params[i])
+
+    # Solve system of linear equations
+    matrix_l, matrix_u = utilities.lu_decomposition(matrix_a)
+    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
+    for i in range(dim):
+        b = [pt[i] for pt in points]
+        y = utilities.forward_substitution(matrix_l, b)
+        x = utilities.backward_substitution(matrix_u, y)
+        for j in range(num_points):
+            ctrlpts[j][i] = x[j]
+
+    # Return control points
+    return ctrlpts
+
+
 def interpolate_curve(points, degree, **kwargs):
     """ Applies global curve interpolation through the data points.
 
@@ -40,21 +80,8 @@ def interpolate_curve(points, degree, **kwargs):
     # Get knot vector
     kv = compute_knot_vector(degree, num_points, uk, clamped)
 
-    # Set up coefficient matrix
-    matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
-    for i in range(num_points):
-        span = span_func(degree, kv, num_points, uk[i])
-        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, kv, span, uk[i])
-
-    # Solve system of linear equations
-    matrix_l, matrix_u = utilities.lu_decomposition(matrix_a)
-    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
-    for i in range(dim):
-        b = [pt[i] for pt in points]
-        y = utilities.forward_substitution(matrix_l, b)
-        x = utilities.backward_substitution(matrix_u, y)
-        for j in range(num_points):
-            ctrlpts[j][i] = x[j]
+    # Do global interpolation
+    ctrlpts = _global_interpolation(dim, degree, kv, points, num_points, uk, span_func)
 
     # Generate B-spline curve
     curve = BSpline.Curve()
@@ -65,7 +92,7 @@ def interpolate_curve(points, degree, **kwargs):
     return curve
 
 
-def compute_knot_vector(degree, num_points, param_list, clamped):
+def compute_knot_vector(degree, num_points, params, clamped):
     """ Computes knot vector from the parameter list using averaging method.
 
     Please see Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
@@ -74,8 +101,8 @@ def compute_knot_vector(degree, num_points, param_list, clamped):
     :type degree: int
     :param num_points: number of data points
     :type num_points: int
-    :param param_list: list of parameters, :math:`\\overline{u}_{k}`
-    :type param_list: list, tuple
+    :param params: list of parameters, :math:`\\overline{u}_{k}`
+    :type params: list, tuple
     :param clamped: flag to generate clamped or unclamped knot vector
     :type clamped: bool
     :return: knot vector
@@ -94,7 +121,7 @@ def compute_knot_vector(degree, num_points, param_list, clamped):
     # Use averaging method (Eqn 9.8) to compute middle knots in the knot vector
     if m_compute > 0:
         for i in range(m_compute):
-            temp_kv = (1.0 / degree) * sum([param_list[j] for j in range(i + 1, i + degree + 1)])
+            temp_kv = (1.0 / degree) * sum([params[j] for j in range(i + 1, i + degree + 1)])
             kv.append(temp_kv)
 
     # End knot vector
