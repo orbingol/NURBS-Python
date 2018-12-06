@@ -27,20 +27,20 @@ class Curve(BSpline.Curve):
 
     This class provides the following properties:
 
-    * order
-    * degree
-    * knotvector
-    * ctrlptsw
-    * ctrlpts
-    * weights
-    * delta
-    * sample_size
-    * bbox
-    * vis
-    * name
-    * dimension
-    * evaluator
-    * rational
+    * :py:meth:`order`
+    * :py:meth:`degree`
+    * :py:meth:`knotvector`
+    * :py:meth:`ctrlptsw`
+    * :py:meth:`ctrlpts`
+    * :py:meth:`weights`
+    * :py:meth:`delta`
+    * :py:meth:`sample_size`
+    * :py:meth:`bbox`
+    * :py:meth:`vis`
+    * :py:meth:`name`
+    * :py:meth:`dimension`
+    * :py:meth:`evaluator`
+    * :py:meth:`rational`
 
     Notes:
         * Please see the :py:class:`.abstract.Surface()` documentation for details.
@@ -182,32 +182,32 @@ class Surface(BSpline.Surface):
 
     This class provides the following properties:
 
-    * order_u
-    * order_v
-    * degree_v
-    * degree_v
-    * knotvector_u
-    * knotvector_v
-    * ctrlptsw
-    * ctrlpts
-    * weights
-    * ctrlpts_size_u
-    * ctrlpts_size_v
-    * ctrlpts2d
-    * delta
-    * delta_u
-    * delta_v
-    * sample_size
-    * sample_size_u
-    * sample_size_v
-    * bbox
-    * name
-    * dimension
-    * vis
-    * evaluator
-    * tessellator
-    * rational
-    * trims
+    * :py:meth:`order_u`
+    * :py:meth:`order_v`
+    * :py:meth:`degree_u`
+    * :py:meth:`degree_v`
+    * :py:meth:`knotvector_u`
+    * :py:meth:`knotvector_v`
+    * :py:meth:`ctrlptsw`
+    * :py:meth:`ctrlpts`
+    * :py:meth:`weights`
+    * :py:meth:`ctrlpts_size_u`
+    * :py:meth:`ctrlpts_size_v`
+    * :py:meth:`ctrlpts2d`
+    * :py:meth:`delta`
+    * :py:meth:`delta_u`
+    * :py:meth:`delta_v`
+    * :py:meth:`sample_size`
+    * :py:meth:`sample_size_u`
+    * :py:meth:`sample_size_v`
+    * :py:meth:`bbox`
+    * :py:meth:`name`
+    * :py:meth:`dimension`
+    * :py:meth:`vis`
+    * :py:meth:`evaluator`
+    * :py:meth:`tessellator`
+    * :py:meth:`rational`
+    * :py:meth:`trims`
 
     Notes:
         * Please see the :py:class:`.abstract.Surface()` documentation for details.
@@ -346,35 +346,35 @@ class Volume(BSpline.Volume):
 
     This class provides the following properties:
 
-    * order_u
-    * order_v
-    * order_w
-    * degree_u
-    * degree_v
-    * degree_w
-    * knotvector_u
-    * knotvector_v
-    * knotvector_w
-    * ctrlptsw
-    * ctrlpts
-    * weights
-    * ctrlpts_size_u
-    * ctrlpts_size_v
-    * ctrlpts_size_w
-    * delta
-    * delta_u
-    * delta_v
-    * delta_w
-    * sample_size
-    * sample_size_u
-    * sample_size_v
-    * sample_size_w
-    * bbox
-    * name
-    * dimension
-    * vis
-    * evaluator
-    * rational
+    * :py:meth:`order_u`
+    * :py:meth:`order_v`
+    * :py:meth:`order_w`
+    * :py:meth:`degree_u`
+    * :py:meth:`degree_v`
+    * :py:meth:`degree_w`
+    * :py:meth:`knotvector_u`
+    * :py:meth:`knotvector_v`
+    * :py:meth:`knotvector_w`
+    * :py:meth:`ctrlptsw`
+    * :py:meth:`ctrlpts`
+    * :py:meth:`weights`
+    * :py:meth:`ctrlpts_size_u`
+    * :py:meth:`ctrlpts_size_v`
+    * :py:meth:`ctrlpts_size_w`
+    * :py:meth:`delta`
+    * :py:meth:`delta_u`
+    * :py:meth:`delta_v`
+    * :py:meth:`delta_w`
+    * :py:meth:`sample_size`
+    * :py:meth:`sample_size_u`
+    * :py:meth:`sample_size_v`
+    * :py:meth:`sample_size_w`
+    * :py:meth:`bbox`
+    * :py:meth:`name`
+    * :py:meth:`dimension`
+    * :py:meth:`vis`
+    * :py:meth:`evaluator`
+    * :py:meth:`rational`
 
     Notes:
         * Please see the :py:class:`.abstract.Volume()` documentation for details.
