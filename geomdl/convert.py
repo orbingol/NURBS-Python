@@ -12,54 +12,89 @@ from . import NURBS
 
 
 def bspline_to_nurbs(obj):
-    """ Converts B-Spline parametric shapes to NURBS parametric shapes.
+    """ Converts non-rational parametric shapes to rational ones.
 
     :param obj: B-Spline shape
     :type obj: BSpline.Curve, BSpline.Surface or BSpline.Volume
     :return: NURBS shape
-    :rtype: NURBS.Curve, NURBS.Surface or BSpline.Volume
+    :rtype: NURBS.Curve, NURBS.Surface or NURBS.Volume
     :raises: TypeError
     """
+    # B-Spline -> NURBS
     if isinstance(obj, BSpline.Curve):
-        return _bspline_to_nurbs_curve(obj)
+        return _convert_curve(obj, NURBS)
     elif isinstance(obj, BSpline.Surface):
-        return _bspline_to_nurbs_surface(obj)
+        return _convert_surface(obj, NURBS)
     elif isinstance(obj, BSpline.Volume):
-        return _bspline_to_nurbs_volume(obj)
+        return _convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
 
 
-def _bspline_to_nurbs_curve(bcrv):
-    ncrv = NURBS.Curve()
-    ncrv.degree = bcrv.degree
-    ncrv.ctrlpts = bcrv.ctrlpts
-    ncrv.knotvector = bcrv.knotvector
-    return ncrv
+def nurbs_to_bspline(obj, **kwargs):
+    """ Extracts the non-rational components from rational parametric shapes, if possible.
+
+    The possibility of converting a rational shape to a non-rational one depends on the weights vector.
+
+    :param obj: NURBS shape
+    :type obj: NURBS.Curve, NURBS.Surface or NURBS.Volume
+    :return: B-Spline shape
+    :rtype: BSpline.Curve, BSpline.Surface or BSpline.Volume
+    :raises: TypeError
+    """
+    if not obj.rational:
+        raise TypeError("The input must be a rational shape")
+
+    # Get keyword arguments
+    tol = kwargs.get('tol', 10e-8)
+
+    # Test for non-rational component extraction
+    for w in obj.weights:
+        if abs(w - 1.0) > tol:
+            print("Cannot extract non-rational components")
+            return obj
+
+    # NURBS -> B-Spline
+    if isinstance(obj, NURBS.Curve):
+        return _convert_curve(obj, BSpline)
+    elif isinstance(obj, NURBS.Surface):
+        return _convert_surface(obj, BSpline)
+    elif isinstance(obj, NURBS.Volume):
+        return _convert_volume(obj, BSpline)
+    else:
+        raise TypeError("Input must be an instance of NURBS curve, surface or volume")
 
 
-def _bspline_to_nurbs_surface(bsurf):
-    nsurf = NURBS.Surface()
-    nsurf.degree_u = bsurf.degree_u
-    nsurf.degree_v = bsurf.degree_v
-    nsurf.ctrlpts_size_u = bsurf.ctrlpts_size_u
-    nsurf.ctrlpts_size_v = bsurf.ctrlpts_size_v
-    nsurf.ctrlpts = bsurf.ctrlpts
-    nsurf.knotvector_u = bsurf.knotvector_u
-    nsurf.knotvector_v = bsurf.knotvector_v
-    return nsurf
+def _convert_curve(incrv, outtype):
+    outcrv = outtype.Curve()
+    outcrv.degree = incrv.degree
+    outcrv.ctrlpts = incrv.ctrlpts
+    outcrv.knotvector = incrv.knotvector
+    return outcrv
 
 
-def _bspline_to_nurbs_volume(bvol):
-    nvol = NURBS.Volume()
-    nvol.degree_u = bvol.degree_u
-    nvol.degree_v = bvol.degree_v
-    nvol.degree_w = bvol.degree_w
-    nvol.ctrlpts_size_u = bvol.ctrlpts_size_u
-    nvol.ctrlpts_size_v = bvol.ctrlpts_size_v
-    nvol.ctrlpts_size_w = bvol.ctrlpts_size_w
-    nvol.ctrlpts = bvol.ctrlpts
-    nvol.knotvector_u = bvol.knotvector_u
-    nvol.knotvector_v = bvol.knotvector_v
-    nvol.knotvector_w = bvol.knotvector_w
-    return nvol
+def _convert_surface(insrf, outtype):
+    outsrf = outtype.Surface()
+    outsrf.degree_u = insrf.degree_u
+    outsrf.degree_v = insrf.degree_v
+    outsrf.ctrlpts_size_u = insrf.ctrlpts_size_u
+    outsrf.ctrlpts_size_v = insrf.ctrlpts_size_v
+    outsrf.ctrlpts = insrf.ctrlpts
+    outsrf.knotvector_u = insrf.knotvector_u
+    outsrf.knotvector_v = insrf.knotvector_v
+    return outsrf
+
+
+def _convert_volume(invol, outtype):
+    outvol = outtype.Volume()
+    outvol.degree_u = invol.degree_u
+    outvol.degree_v = invol.degree_v
+    outvol.degree_w = invol.degree_w
+    outvol.ctrlpts_size_u = invol.ctrlpts_size_u
+    outvol.ctrlpts_size_v = invol.ctrlpts_size_v
+    outvol.ctrlpts_size_w = invol.ctrlpts_size_w
+    outvol.ctrlpts = invol.ctrlpts
+    outvol.knotvector_u = invol.knotvector_u
+    outvol.knotvector_v = invol.knotvector_v
+    outvol.knotvector_w = invol.knotvector_w
+    return outvol
