@@ -470,7 +470,7 @@ def translate(obj, vec, **kwargs):
 
     if isinstance(obj, (abstract.Curve, abstract.Surface)):
         return _translate_single(obj, vec, **kwargs)
-    elif isinstance(obj, abstract.Multi):
+    elif isinstance(obj, multi.AbstractContainer):
         return _translate_multi(obj, vec, **kwargs)
     else:
         raise TypeError("The input shape must be a curve or a surface (single or multi)")
