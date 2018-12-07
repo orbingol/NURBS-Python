@@ -128,6 +128,21 @@ def vector_multiply(vector_in, scalar):
     return tuple(scaled_vector)
 
 
+# Sums the input vectors
+def vector_sum(vector1, vector2):
+    """ Sums the vectors.
+
+    :param vector1: vector 1
+    :type vector1: list, tuple
+    :param vector2: vector 2
+    :type vector2: list, tuple
+    :return: updated vector
+    :rtype: tuple
+    """
+    summed_vector = [v1 + v2 for v1, v2 in zip(vector1, vector2)]
+    return tuple(summed_vector)
+
+
 # Normalizes the input vector
 def vector_normalize(vector_in, decimals=18):
     """ Generates a unit vector from the input.
