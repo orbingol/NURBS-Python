@@ -1009,12 +1009,15 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts_size(self):
-        """ Number of control points.
+        """ Total number of control points.
 
-        :getter: Gets number of control points for all parametric directions
-        :type: tuple
+        :getter: Gets the total number of control points
+        :type: int
         """
-        return tuple(self._control_points_size)
+        res = 1
+        for sz in self._control_points_size:
+            res *= sz
+        return res
 
     @property
     def ctrlpts_size_u(self):
@@ -2055,12 +2058,15 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def ctrlpts_size(self):
-        """ Number of control points.
+        """ Total number of control points.
 
-        :getter: Gets number of control points for all parametric directions
-        :type: tuple
+        :getter: Gets the total number of control points
+        :type: int
         """
-        return tuple(self._control_points_size)
+        res = 1
+        for sz in self._control_points_size:
+            res *= sz
+        return res
 
     @property
     def ctrlpts_size_u(self):
