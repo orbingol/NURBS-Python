@@ -995,6 +995,65 @@ def rotate(obj, angle, **kwargs):
     return _obj
 
 
+def scale(obj, multiplier, **kwargs):
+    """ Scales the curves and surfaces by the input multiplier.
+
+    Keyword Arguments:
+        * ``inplace``: if True, the input shape is modified. *Default: False*
+
+    :param obj: input curve or surface
+    :type obj: abstract.Curve or abstract.Surface
+    :param multiplier: scaling multiplier
+    :type multiplier: float
+    :return: scaled curve or surface
+    :rtype: abstract.Curve or abstract.Surface
+    """
+    # Input validity checks
+    if not isinstance(multiplier, (int, float)):
+        raise TypeError("The multiplier must be a float or an integer")
+
+    if isinstance(obj, (abstract.Curve, abstract.Surface)):
+        return _scale_single(obj, multiplier, **kwargs)
+    elif isinstance(obj, multi.AbstractContainer):
+        return _scale_multi(obj, multiplier, **kwargs)
+    else:
+        raise TypeError("The input shape must be a curve or a surface (single or multi)")
+
+
+def _scale_single(obj, multiplier, **kwargs):
+    # Get keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    # Scale control points
+    new_ctrlpts = [[] for _ in range(obj.ctrlpts_size)]
+    for idx, pts in enumerate(obj.ctrlpts):
+        new_ctrlpts[idx] = [p * float(multiplier) for p in pts]
+
+    # Return scaled shape
+    if inplace:
+        obj.ctrlpts = new_ctrlpts
+        return obj
+    else:
+        nobj = copy.deepcopy(obj)
+        nobj.ctrlpts = new_ctrlpts
+        return nobj
+
+
+def _scale_multi(obj, multiplier, **kwargs):
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    ret = obj.__class__()
+    for o in obj:
+        temp = _scale_single(o, multiplier, **kwargs)
+        ret.add(temp)
+
+    if inplace:
+        return obj
+    else:
+        return ret
+
+
 def transpose(surf, **kwargs):
     """ Transposes the input surface by swapping u and v parametric directions.
 
