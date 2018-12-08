@@ -680,6 +680,8 @@ def export_smesh(surface, file_name, **kwargs):
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
             line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
+        # Open or closed?
+        line += "1\n"
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
@@ -725,6 +727,8 @@ def export_vmesh(volume, file_name, **kwargs):
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
             line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
+        # Open or closed?
+        line += "1\n"
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
