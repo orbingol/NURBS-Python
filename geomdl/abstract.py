@@ -1,7 +1,7 @@
 """
-.. module:: Abstract
+.. module:: abstract
     :platform: Unix, Windows
-    :synopsis: Provides abstract base classes for NURBS shapes
+    :synopsis: Provides abstract base classes for parametric shapes
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

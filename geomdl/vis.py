@@ -1,5 +1,5 @@
 """
-.. module:: Abstract
+.. module:: vis
     :platform: Unix, Windows
     :synopsis: Provides abstract base classes for visualization modules
 
