@@ -14,32 +14,42 @@ from . import utilities
 def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surface and volumes.
 
-    :param obj: input surface or volume
+    :param obj: input surface(s) or volume(s)
     :type obj: abstract.Surface or abstract.Volume
-    :return: binary voxel grid
-    :rtype: list
+    :return: voxel grid and filled information
+    :rtype: tuple
     """
-    if not isinstance(obj, (abstract.Surface, abstract.Volume)):
-        raise TypeError("Can only work with surfaces or volumes")
-
     # Get keyword arguments
-    grid_size = kwargs.get('grid_size', 8)
+    grid_size_x = kwargs.get('size_x', 8)
+    grid_size_y = kwargs.get('size_y', 8)
+    grid_size_z = kwargs.get('size_z', 8)
     padding = kwargs.get('padding', 10e-8)
 
-    if isinstance(grid_size, int):
+    if not isinstance(grid_size_x, int) or not isinstance(grid_size_y, int) or not isinstance(grid_size_z, int):
         raise TypeError("Grid size must be an integer")
 
-    # Generate voxel grid
-    grid = _generate_voxel_grid(obj.bbox, grid_size, grid_size, grid_size)
+    # Initialize result arrays
+    grid = []
+    filled = []
 
-    # Generate binary grid
-    binary_grid = [0 for _ in range(len(grid))]
-    for idx, bb in enumerate(grid):
-        pts_inside = _find_points_inside_voxel(bb, obj.evalpts, padding=padding)
-        if len(pts_inside):
-            binary_grid[idx] = 1
+    # Should also work with multi surfaces and volumes
+    for o in obj:
+        # Generate voxel grid
+        grid_temp = _generate_voxel_grid(o.bbox, grid_size_x, grid_size_y, grid_size_z)
 
-    return binary_grid
+        # Generate binary grid to store voxel filled state
+        filled_temp = [0 for _ in range(len(grid_temp))]
+        for idx, bb in enumerate(grid_temp):
+            pts_inside = _find_points_inside_voxel(bb, o.evalpts, padding=padding)
+            if len(pts_inside):
+                filled_temp[idx] = 1
+
+        # Add to result arrays
+        grid += grid_temp
+        filled += filled_temp
+
+    # Return result arrays
+    return grid, filled
 
 
 def _generate_voxel_grid(bbox, size_u, size_v, size_w):
