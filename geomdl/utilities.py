@@ -129,17 +129,22 @@ def vector_multiply(vector_in, scalar):
 
 
 # Sums the input vectors
-def vector_sum(vector1, vector2):
+def vector_sum(vector1, vector2, coeff=1.0):
     """ Sums the vectors.
+
+    This function computes the result of the vector operation :math:`\\overline{v}_{1} + c * \\overline{v}_{2}`, where
+    :math:`\\overline{v}_{1}` is ``vector1``, :math:`\\overline{v}_{2}`  is ``vector2`` and :math:`c` is ``coeff``.
 
     :param vector1: vector 1
     :type vector1: list, tuple
     :param vector2: vector 2
     :type vector2: list, tuple
+    :param coeff: multiplier for vector 2
+    :type coeff: float
     :return: updated vector
     :rtype: tuple
     """
-    summed_vector = [v1 + v2 for v1, v2 in zip(vector1, vector2)]
+    summed_vector = [v1 + (coeff * v2) for v1, v2 in zip(vector1, vector2)]
     return tuple(summed_vector)
 
 
