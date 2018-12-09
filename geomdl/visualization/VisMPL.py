@@ -695,16 +695,16 @@ class VisVolume(vis.VisAbstractVol):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisVolVoxel(vis.VisAbstractVol):
+class VisVoxel(vis.VisAbstractVol):
     """ Matplotlib visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig()):
-        super(VisVolVoxel, self).__init__(config=config)
+        super(VisVoxel, self).__init__(config=config)
         self._plot_types = {'ctrlpts': 'points', 'evalpts': 'voxels'}
 
     def render(self, **kwargs):
         """ Displays the voxels and the control points. """
         # Calling parent function
-        super(VisVolVoxel, self).render(**kwargs)
+        super(VisVoxel, self).render(**kwargs)
 
         # Initialize variables
         legend_proxy = []
