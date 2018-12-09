@@ -13,6 +13,7 @@ try:
     import matplotlib as mpl
     import matplotlib.tri as mpltri
     from mpl_toolkits.mplot3d import Axes3D
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import matplotlib.pyplot as plt
 except ImportError:
     print("Please install Matplotlib before using VisMPL visualization module")
@@ -725,8 +726,20 @@ class VisVolVoxel(vis.VisAbstractVol):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype).reshape(plot['ptsarr'][1])
-                ax.voxels(filled, facecolors=plot['color'], edgecolors='black')
+                grid = np.array(plot['ptsarr'][0], dtype=self._config.dtype)
+                filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype)
+                # Find filled voxels
+                grid_filled = grid[filled == 1.0]
+                # Create a single Poly3DCollection object
+                pc3d = Poly3DCollection(grid_filled, facecolors=plot['color'], edgecolors='k')
+                ax.add_collection3d(pc3d)
+                # Set axis limits
+                gf_min = np.amin(grid_filled, axis=(0, 1))
+                gf_max = np.amax(grid_filled, axis=(0, 1))
+                ax.set_xlim([gf_min[0], gf_max[0]])
+                ax.set_ylim([gf_min[1], gf_max[1]])
+                ax.set_zlim([gf_min[2], gf_max[2]])
+                # Legend
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
