@@ -20,13 +20,11 @@ def voxelize(obj, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    grid_size_x = kwargs.get('size_x', 8)
-    grid_size_y = kwargs.get('size_y', 8)
-    grid_size_z = kwargs.get('size_z', 8)
+    grid_size = kwargs.get('grid_size', (8, 8, 8))
     padding = kwargs.get('padding', 10e-8)
 
-    if not isinstance(grid_size_x, int) or not isinstance(grid_size_y, int) or not isinstance(grid_size_z, int):
-        raise TypeError("Grid size must be an integer")
+    if not isinstance(grid_size, (list, tuple)):
+        raise TypeError("Grid size must be a list or a tuple of integers")
 
     # Initialize result arrays
     grid = []
@@ -35,7 +33,7 @@ def voxelize(obj, **kwargs):
     # Should also work with multi surfaces and volumes
     for o in obj:
         # Generate voxel grid
-        grid_temp = _generate_voxel_grid(o.bbox, grid_size_x, grid_size_y, grid_size_z)
+        grid_temp = _generate_voxel_grid(o.bbox, *grid_size)
 
         # Generate binary grid to store voxel filled state
         filled_temp = [0 for _ in range(len(grid_temp))]
