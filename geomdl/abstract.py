@@ -13,9 +13,10 @@ import six
 import warnings
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
-from geomdl.vis import VisAbstract
+from . import vis
 from . import helpers
 from . import utilities
+from . import voxelize
 
 
 class Curve(six.with_metaclass(abc.ABCMeta, object)):
@@ -402,7 +403,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, VisAbstract):
+        if not isinstance(value, vis.VisAbstract):
             warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
@@ -1297,8 +1298,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, VisAbstract):
-            warnings.warn("Visualization component must be an instance of VisAbstract class")
+        if not isinstance(value, vis.VisAbstractSurf):
+            warnings.warn("Visualization component must be an instance of VisAbstractSurf class")
             return
 
         self._vis_component = value
@@ -2454,8 +2455,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, VisAbstract):
-            warnings.warn("Visualization component must be an instance of VisAbstract class")
+        if not isinstance(value, vis.VisAbstractVol):
+            warnings.warn("Visualization component must be an instance of VisAbstractVol class")
             return
 
         self._vis_component = value
@@ -2588,7 +2589,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             * ``cpcolor``: sets the color of the control points
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``grid_size``: grid size for voxelization
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -2604,10 +2606,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
-
-        # Get colormap and convert to a list
-        surf_cmap = kwargs.get('colormap', None)
-        surf_cmap = [surf_cmap] if surf_cmap else []
+        grid_size = kwargs.get('grid_size', (32, 32, 32))
 
         # Check all parameters are set
         self._check_variables()
@@ -2620,16 +2619,23 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.clear()
 
         # Add control points
-        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+        if self._vis_component.plot_types['ctrlpts'] == 'points':
+            self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add evaluated points
-        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+        if self._vis_component.plot_types['evalpts'] == 'points':
+            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+
+        # Add evaluated points as voxels
+        if self._vis_component.plot_types['evalpts'] == 'voxels':
+            grid, filled = voxelize.voxelize(self, grid_size=grid_size)
+            self._vis_component.add(ptsarr=[grid, list(grid_size), filled], name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
         # Plot the surface
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):

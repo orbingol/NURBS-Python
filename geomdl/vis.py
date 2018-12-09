@@ -137,3 +137,61 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
 
         # Remaining should be implemented
         pass
+
+
+class VisAbstractVol(six.with_metaclass(abc.ABCMeta, VisAbstract)):
+    """ Visualization abstract class for volumes
+
+    Implements ``VisAbstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
+    for **volume** visualization options in NURBS-Python package.
+    """
+
+    def __init__(self, config=None):
+        super(VisAbstractVol, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+
+    @property
+    def plot_types(self):
+        """ Plot types
+
+        :getter: Gets the plot types
+        :type: tuple
+        """
+        return self._plot_types
+
+    def set_plot_type(self, plot_type, type_value):
+        """ Sets the plot type.
+
+        By default, the following plot types are possible: *ctrlpts*, *evalpts*
+
+        By default, the following plot type values are possible:
+
+        * For control points (*ctrlpts*): points
+        * For surface points (*evalpts*): points, voxels
+
+        :param plot_type: plot type
+        :type plot_type: str
+        :param type_value: type value
+        :type type_value: str
+        :return:
+        """
+        if not isinstance(plot_type, str) or not isinstance(type_value, str):
+            raise TypeError("Plot type and its value should be string type")
+
+        if plot_type not in self._plot_types.keys():
+            raise KeyError(plot_type + " is not a type. Possible types: " +
+                           ", ".join([k for k in self._plot_types.keys()]))
+
+        self._plot_types[plot_type] = type_value
+
+    @abc.abstractmethod
+    def render(self, **kwargs):
+        """ Abstract method for rendering plots of the point sets.
+
+        This method must be implemented in all subclasses of ``VisAbstractVol`` class.
+        """
+        # Calling parent function
+        super(VisAbstractVol, self).render()
+
+        # Remaining should be implemented
+        pass
