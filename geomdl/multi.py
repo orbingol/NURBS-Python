@@ -11,6 +11,7 @@ import abc
 import warnings
 import six
 from . import abstract
+from . import vis
 from . import utilities
 
 
@@ -139,7 +140,7 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, abstract.VisAbstract):
+        if not isinstance(value, vis.VisAbstract):
             warnings.warn("Visualization component is NOT an instance of the abstract class")
             return
         self._vis_component = value
