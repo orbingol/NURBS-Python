@@ -727,7 +727,7 @@ class VisVoxel(vis.VisAbstractVol):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 grid = np.array(plot['ptsarr'][0], dtype=self._config.dtype)
-                filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype)
+                filled = np.array(plot['ptsarr'][1], dtype=self._config.dtype)
                 # Find filled voxels
                 grid_filled = np.concatenate(grid[filled == 1.0])
                 # Create a single Poly3DCollection object
