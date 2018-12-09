@@ -11,7 +11,6 @@ import struct
 from functools import partial
 from contextlib import contextmanager
 from multiprocessing import Pool
-from . import abstract
 from . import utilities
 
 
