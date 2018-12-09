@@ -2606,7 +2606,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
-        grid_size = kwargs.get('grid_size', (32, 32, 32))
+        grid_size = kwargs.get('grid_size', (8, 8, 8))
 
         # Check all parameters are set
         self._check_variables()
