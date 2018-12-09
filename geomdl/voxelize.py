@@ -7,12 +7,34 @@
 
 """
 
+import struct
+from functools import partial
+from contextlib import contextmanager
+from multiprocessing import Pool
 from . import abstract
 from . import utilities
 
 
+# Context manager for multiprocessing.Pool (for compatibility with Python 2.7.x)
+@contextmanager
+def poolcontext(*args, **kwargs):
+    pool = Pool(*args, **kwargs)
+    try:
+        yield pool
+    except Exception as e:
+        raise e
+    finally:
+        pool.terminate()
+
+
 def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surface and volumes.
+
+    Keyword Arguments:
+        * ``grid_size``: size of the voxel grid. *Default: (8, 8, 8)*
+        * ``padding``: voxel padding for in-outs finding. *Default: 10e-8*
+        * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
+        * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
 
     :param obj: input surface(s) or volume(s)
     :type obj: abstract.Surface or abstract.Volume
@@ -21,7 +43,7 @@ def voxelize(obj, **kwargs):
     """
     # Get keyword arguments
     grid_size = kwargs.get('grid_size', (8, 8, 8))
-    padding = kwargs.get('padding', 10e-8)
+    use_mp = kwargs.get('use_mp', False)
 
     if not isinstance(grid_size, (list, tuple)):
         raise TypeError("Grid size must be a list or a tuple of integers")
@@ -34,13 +56,10 @@ def voxelize(obj, **kwargs):
     for o in obj:
         # Generate voxel grid
         grid_temp = _generate_voxel_grid(o.bbox, *grid_size)
+        args = [grid_temp, o.evalpts]
 
-        # Generate binary grid to store voxel filled state
-        filled_temp = [0 for _ in range(len(grid_temp))]
-        for idx, bb in enumerate(grid_temp):
-            pts_inside = _find_points_inside_voxel(bb, o.evalpts, padding=padding)
-            if len(pts_inside):
-                filled_temp[idx] = 1
+        # Find in-outs
+        filled_temp = _voxelize_mp(*args, **kwargs) if use_mp else _voxelize_st(*args, **kwargs)
 
         # Add to result arrays
         grid += grid_temp
@@ -48,6 +67,47 @@ def voxelize(obj, **kwargs):
 
     # Return result arrays
     return grid, filled
+
+
+def _voxelize_st(voxel_grid, datapts, **kwargs):
+    """ Single-threaded in-out finding (default) """
+    padding = kwargs.get('padding', 10e-8)
+    filled = [0 for _ in range(len(voxel_grid))]
+    for idx, bb in enumerate(voxel_grid):
+        pts_inside = _find_points_inside_voxel(bb, datapts, padding=padding)
+        if pts_inside:
+            filled[idx] = 1
+    return filled
+
+
+def _voxelize_mp(voxel_grid, datapts, **kwargs):
+    """ Multi-threaded in-out finding (using multiprocessing) """
+    padding = kwargs.get('padding', 10e-8)
+    num_procs = kwargs.get('num_procs', 4)
+    with poolcontext(processes=num_procs) as pool:
+        filled = pool.map(partial(_find_points_inside_voxel, ptarr=datapts, padding=padding), voxel_grid)
+    return filled
+
+
+def save(voxel_grid, file_name):
+    """ Saves binary voxel grid as a binary file
+
+    The binary file would be structured in little-endian unsigned int format.
+
+    :param voxel_grid: binary voxel grid
+    :type voxel_grid: list, tuple
+    :param file_name: file name to save
+    :type file_name: str
+    """
+    try:
+        with open(file_name, 'wb') as fp:
+            for voxel in voxel_grid:
+                fp.write(struct.pack("<I", voxel))
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def _generate_voxel_grid(bbox, size_u, size_v, size_w):
@@ -101,6 +161,7 @@ def _find_points_inside_voxel(bbox, ptarr, **kwargs):
     """
     # Get keyword arguments
     padding = kwargs.get('padding', 10e-8)
+    get_inout = kwargs.get('inout', True)
 
     # Make bounding box vertices more readable
     bbmin = [b - padding for b in bbox[0]]
@@ -128,6 +189,11 @@ def _find_points_inside_voxel(bbox, ptarr, **kwargs):
         vdj = utilities.vector_dot(v, j)
         vdk = utilities.vector_dot(v, k)
         if idi > vdi >= 0.0 and jdj > vdj >= 0.0 and kdk > vdk >= 0.0:
-            points_inside.append(pt)
+            if get_inout:
+                return 1
+            else:
+                points_inside.append(pt)
 
+    if get_inout:
+        return 0
     return points_inside
