@@ -24,6 +24,7 @@ Following modules are included in the library:
     module_cpgen
     module_exchange
     module_tessellate
+    module_voxelize
     module_elements
     module_ray
 

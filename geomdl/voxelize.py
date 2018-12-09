@@ -70,7 +70,12 @@ def voxelize(obj, **kwargs):
 
 
 def _voxelize_st(voxel_grid, datapts, **kwargs):
-    """ Single-threaded in-out finding (default) """
+    """ Single-threaded in-out finding (default)
+
+    :param voxel_grid: voxel grid
+    :param datapts: data points
+    :return: in-outs
+    """
     padding = kwargs.get('padding', 10e-8)
     filled = [0 for _ in range(len(voxel_grid))]
     for idx, bb in enumerate(voxel_grid):
@@ -81,7 +86,12 @@ def _voxelize_st(voxel_grid, datapts, **kwargs):
 
 
 def _voxelize_mp(voxel_grid, datapts, **kwargs):
-    """ Multi-threaded in-out finding (using multiprocessing) """
+    """ Multi-threaded in-out finding (using multiprocessing)
+
+    :param voxel_grid: voxel grid
+    :param datapts: data points
+    :return: in-outs
+    """
     padding = kwargs.get('padding', 10e-8)
     num_procs = kwargs.get('num_procs', 4)
     with poolcontext(processes=num_procs) as pool:
