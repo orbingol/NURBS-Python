@@ -627,7 +627,7 @@ class VisVolume(vis.VisAbstractVol):
     """ Matplotlib visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'voxels'}
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
 
     def render(self, **kwargs):
         """ Plots the evaluated and the control points. """
@@ -654,8 +654,8 @@ class VisVolume(vis.VisAbstractVol):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype).reshape(plot['ptsarr'][1])
-                ax.voxels(filled, facecolors=plot['color'], edgecolors='black')
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -694,16 +694,16 @@ class VisVolume(vis.VisAbstractVol):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisVolScatter(vis.VisAbstractVol):
-    """ Matplotlib visualization module for volumes. """
+class VisVolVoxel(vis.VisAbstractVol):
+    """ Matplotlib visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig()):
-        super(VisVolScatter, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+        super(VisVolVoxel, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'voxels'}
 
     def render(self, **kwargs):
-        """ Plots the evaluated and the control points. """
+        """ Displays the voxels and the control points. """
         # Calling parent function
-        super(VisVolScatter, self).render(**kwargs)
+        super(VisVolVoxel, self).render(**kwargs)
 
         # Initialize variables
         legend_proxy = []
@@ -725,8 +725,8 @@ class VisVolScatter(vis.VisAbstractVol):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
-                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
+                filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype).reshape(plot['ptsarr'][1])
+                ax.voxels(filled, facecolors=plot['color'], edgecolors='black')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
