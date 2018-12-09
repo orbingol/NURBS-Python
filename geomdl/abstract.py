@@ -2590,7 +2590,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
-            * ``grid_size``: grid size for voxelization
+            * ``grid_size``: grid size for voxelization. *Default: (8, 8, 8)*
+            * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
+            * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -2628,7 +2630,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
         # Add evaluated points as voxels
         if self._vis_component.plot_types['evalpts'] == 'voxels':
-            grid, filled = voxelize.voxelize(self, grid_size=grid_size)
+            grid, filled = voxelize.voxelize(self, **kwargs)
             polygrid = voxelize.generate_faces(grid)
             self._vis_component.add(ptsarr=[polygrid, filled], name=self.name, color=evalcolor, plot_type='evalpts')
 
