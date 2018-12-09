@@ -729,7 +729,7 @@ class VisVolVoxel(vis.VisAbstractVol):
                 grid = np.array(plot['ptsarr'][0], dtype=self._config.dtype)
                 filled = np.array(plot['ptsarr'][2], dtype=self._config.dtype)
                 # Find filled voxels
-                grid_filled = grid[filled == 1.0]
+                grid_filled = np.concatenate(grid[filled == 1.0])
                 # Create a single Poly3DCollection object
                 pc3d = Poly3DCollection(grid_filled, facecolors=plot['color'], edgecolors='k')
                 ax.add_collection3d(pc3d)

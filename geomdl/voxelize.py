@@ -98,6 +98,26 @@ def _voxelize_mp(voxel_grid, datapts, **kwargs):
     return filled
 
 
+def generate_faces(voxel_grid):
+    """ Converts bounding box min and max coordinates to faces.
+
+    :param voxel_grid: voxel grid with bounding box data
+    :return: voxel grid with face data
+    """
+    new_vg = []
+    for v in voxel_grid:
+        p1 = v[0]; p2 = [v[1][0], v[0][1], v[0][2]]; p3 = [v[1][0], v[1][1], v[0][2]]; p4 = [v[0][0], v[1][1], v[0][2]]
+        p5 = [v[0][0], v[0][1], v[1][2]]; p6 = [v[1][0], v[0][1], v[1][2]]; p7 = v[1]; p8 = [v[0][0], v[1][1], v[1][2]]
+        fb = [p1, p2, p3, p4]  # bottom face
+        ft = [p5, p6, p7, p8]  # top face
+        fs1 = [p1, p2, p6, p5]  # side face 1
+        fs2 = [p2, p3, p7, p6]  # side face 2
+        fs3 = [p3, p4, p8, p7]  # side face 3
+        fs4 = [p4, p1, p5, p8]  # side face 4
+        new_vg.append([ft, fs1, fs2, fs3, fs4, fb])
+    return new_vg
+
+
 def save(voxel_grid, file_name):
     """ Saves binary voxel grid as a binary file.
 

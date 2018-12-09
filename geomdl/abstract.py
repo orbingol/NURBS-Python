@@ -2629,7 +2629,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         # Add evaluated points as voxels
         if self._vis_component.plot_types['evalpts'] == 'voxels':
             grid, filled = voxelize.voxelize(self, grid_size=grid_size)
-            self._vis_component.add(ptsarr=[grid, list(grid_size), filled], name=self.name, color=evalcolor, plot_type='evalpts')
+            polygrid = voxelize.generate_faces(grid)
+            self._vis_component.add(ptsarr=[polygrid, list(grid_size), filled], name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
