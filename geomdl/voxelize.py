@@ -27,7 +27,7 @@ def poolcontext(*args, **kwargs):
 
 
 def voxelize(obj, **kwargs):
-    """ Generates binary voxel representation of the surface and volumes.
+    """ Generates binary voxel representation of the surfaces and volumes.
 
     Keyword Arguments:
         * ``grid_size``: size of the voxel grid. *Default: (8, 8, 8)*
@@ -99,7 +99,7 @@ def _voxelize_mp(voxel_grid, datapts, **kwargs):
 
 
 def save(voxel_grid, file_name):
-    """ Saves binary voxel grid as a binary file
+    """ Saves binary voxel grid as a binary file.
 
     The binary file would be structured in little-endian unsigned int format.
 
