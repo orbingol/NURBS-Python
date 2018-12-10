@@ -140,7 +140,7 @@ def extract_curves(psurf):
 
 
 def extract_surfaces(pvol):
-    """ Extract surfaces from a parametric volume
+    """ Extract surfaces from a parametric volume.
 
     :param pvol: input volume
     :type pvol: abstract.Volume
@@ -150,19 +150,19 @@ def extract_surfaces(pvol):
     if not isinstance(pvol, BSpline.abstract.Volume):
         raise TypeError("The input should be an instance of abstract.Volume")
 
-    # Get data from the surface object
-    surf_data = pvol.data
-    rational = surf_data['rational']
-    degree_u = surf_data['degree'][0]
-    degree_v = surf_data['degree'][1]
-    degree_w = surf_data['degree'][2]
-    kv_u = surf_data['knotvector'][0]
-    kv_v = surf_data['knotvector'][1]
-    kv_w = surf_data['knotvector'][2]
-    size_u = surf_data['size'][0]
-    size_v = surf_data['size'][1]
-    size_w = surf_data['size'][2]
-    cpts = surf_data['control_points']
+    # Get data from the volume object
+    vol_data = pvol.data
+    rational = vol_data['rational']
+    degree_u = vol_data['degree'][0]
+    degree_v = vol_data['degree'][1]
+    degree_w = vol_data['degree'][2]
+    kv_u = vol_data['knotvector'][0]
+    kv_v = vol_data['knotvector'][1]
+    kv_w = vol_data['knotvector'][2]
+    size_u = vol_data['size'][0]
+    size_v = vol_data['size'][1]
+    size_w = vol_data['size'][2]
+    cpts = vol_data['control_points']
 
     # Determine object type
     obj = NURBS.Surface if rational else BSpline.Surface
