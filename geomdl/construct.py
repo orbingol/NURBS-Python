@@ -92,16 +92,19 @@ def construct_volume(*args, **kwargs):
     return nv
 
 
-def extract_curves(surface):
-    """ Extract curves from a surface.
+def extract_curves(psurf):
+    """ Extract curves from a parametric surface.
 
-    :param surface: input surface
-    :type surface: abstract.Surface
+    :param psurf: input surface
+    :type psurf: abstract.Surface
     :return: extracted curves
     :rtype: dict
     """
+    if not isinstance(psurf, BSpline.abstract.Surface):
+        raise TypeError("The input should be an instance of abstract.Surface")
+
     # Get data from the surface object
-    surf_data = surface.data
+    surf_data = psurf.data
     rational = surf_data['rational']
     degree_u = surf_data['degree'][0]
     degree_v = surf_data['degree'][1]
@@ -109,24 +112,28 @@ def extract_curves(surface):
     kv_v = surf_data['knotvector'][1]
     size_u = surf_data['size'][0]
     size_v = surf_data['size'][1]
-    ctrlpts = surf_data['control_points']
+    cpts = surf_data['control_points']
 
+    # Determine object type
     obj = NURBS.Curve if rational else BSpline.Curve
 
-    curves_u = []
+    # v-direction
+    crvlist_v = []
     for u in range(size_u):
         curve = obj()
         curve.degree = degree_v
-        curve.ctrlpts = [ctrlpts[v + (size_v * u)] for v in range(size_v)]
+        curve.ctrlpts = [cpts[v + (size_v * u)] for v in range(size_v)]
         curve.knotvector = kv_v
-        curves_u.append(curve)
+        crvlist_v.append(curve)
 
-    curves_v = []
+    # u-direction
+    crvlist_u = []
     for v in range(size_v):
         curve = obj()
         curve.degree = degree_u
-        curve.ctrlpts = [ctrlpts[v + (size_v * u)] for u in range(size_u)]
+        curve.ctrlpts = [cpts[v + (size_v * u)] for u in range(size_u)]
         curve.knotvector = kv_u
-        curves_v.append(curve)
+        crvlist_u.append(curve)
 
-    return dict(u=curves_u, v=curves_v)
+    # Return shapes as a dict object
+    return dict(u=crvlist_u, v=crvlist_v)
