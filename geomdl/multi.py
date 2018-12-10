@@ -693,9 +693,11 @@ class VolumeContainer(SurfaceContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        self._instance = abstract.Volume
+        super(VolumeContainer, self).__init__()
         self._delta = [0.1, 0.1, 0.1]  # evaluation delta
-        super(VolumeContainer, self).__init__(*args, **kwargs)
+        self._instance = abstract.Volume
+        for arg in args:
+            self.add(arg)
 
     @property
     def sample_size_w(self):
