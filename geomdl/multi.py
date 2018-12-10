@@ -32,9 +32,9 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
 
     def __init__(self, *args, **kwargs):
         self._elements = []  # elements contained
-        self._delta = None  # evaluation delta
         self._vis_component = None  # visualization component
         self._iter_index = 0  # iterator index
+        self._delta = None  # evaluation delta
         self._instance = None  # type of the initial element
 
     def __iter__(self):
@@ -213,8 +213,8 @@ class CurveContainer(AbstractContainer):
 
     def __init__(self, *args, **kwargs):
         super(CurveContainer, self).__init__(*args, **kwargs)
-        self._instance = abstract.Curve
         self._delta = 0.01  # evaluation delta
+        self._instance = abstract.Curve
         for arg in args:
             self.add(arg)
 
@@ -381,10 +381,8 @@ class SurfaceContainer(AbstractContainer):
 
     def __init__(self, *args, **kwargs):
         super(SurfaceContainer, self).__init__(*args, **kwargs)
-        if not self._instance:
-            self._instance = abstract.Surface
-        if not self._delta:
-            self._delta = [0.05, 0.05]  # evaluation delta
+        self._delta = [0.05, 0.05]  # evaluation delta
+        self._instance = abstract.Surface
         for arg in args:
             self.add(arg)
 
