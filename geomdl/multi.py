@@ -23,10 +23,10 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
 
     This class provides the following properties:
 
-    * dimension
-    * evalpts
-    * bbox
-    * vis
+    * :py:meth:`dimension`
+    * :py:meth:`evalpts`
+    * :py:meth:`bbox`
+    * :py:meth:`vis`
     """
 
     def __init__(self, *args, **kwargs):
@@ -186,12 +186,12 @@ class CurveContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * dimension
-    * evalpts
-    * bbox
-    * vis
-    * delta
-    * sample_size
+    * :py:meth:`dimension`
+    * :py:meth:`evalpts`
+    * :py:meth:`bbox`
+    * :py:meth:`vis`
+    * :py:meth:`delta`
+    * :py:meth:`sample_size`
 
     The following code example illustrates the usage of the Python properties:
 
@@ -274,7 +274,7 @@ class CurveContainer(AbstractContainer):
         self.delta = 1.0 / float(value - 1)
 
     def render(self, **kwargs):
-        """ Renders the curve the using the visualization component.
+        """ Renders the multi-curve the using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -312,12 +312,14 @@ class CurveContainer(AbstractContainer):
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
+                                 ") cannot be less than the number of shaped contained ("
+                                 + str(len(self._elements)) + ")")
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of curves (" + str(len(self._elements)) + ")")
+                                 ") cannot be less than the number of shapes contained ("
+                                 + str(len(self._elements)) + ")")
 
         # Run the visualization component
         self._vis_component.clear()
@@ -348,16 +350,16 @@ class SurfaceContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * dimension
-    * evalpts
-    * bbox
-    * vis
-    * delta
-    * delta_u
-    * delta_v
-    * sample_size
-    * sample_size_u
-    * sample_size_v
+    * :py:meth:`dimension`
+    * :py:meth:`evalpts`
+    * :py:meth:`bbox`
+    * :py:meth:`vis`
+    * :py:meth:`delta`
+    * :py:meth:`delta_u`
+    * :py:meth:`delta_v`
+    * :py:meth:`sample_size`
+    * :py:meth:`sample_size_u`
+    * :py:meth:`sample_size_v`
 
     The following code example illustrates the usage of these Python properties:
 
@@ -440,8 +442,8 @@ class SurfaceContainer(AbstractContainer):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets sample size values as a tuple of values corresponding to u- and v-directions
-        :setter: Sets the same sample size value for both u- and v-directions
+        :getter: Gets sample size values as a tuple of values corresponding to all parametric directions
+        :setter: Sets the same sample size value for all parametric directions
         :type: int
         """
         sample_size = []
@@ -478,7 +480,7 @@ class SurfaceContainer(AbstractContainer):
     @delta_u.setter
     def delta_u(self, value):
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta (u-direction) must be between 0.0 and 1.0")
+            raise ValueError("Evaluation delta (u-direction) must be between 0.0 and 1.0")
         self._delta[0] = float(value)
 
     @property
@@ -503,7 +505,7 @@ class SurfaceContainer(AbstractContainer):
     @delta_v.setter
     def delta_v(self, value):
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Surface evaluation delta (v-direction) should be between 0.0 and 1.0")
+            raise ValueError("Evaluation delta (v-direction) should be between 0.0 and 1.0")
         self._delta[1] = float(value)
 
     @property
@@ -525,8 +527,8 @@ class SurfaceContainer(AbstractContainer):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta values as a tuple of values corresponding to u- and v-directions
-        :setter: Sets the same delta value for both u- and v-directions
+        :getter: Gets the delta values as a tuple of values corresponding to all parametric directions
+        :setter: Sets the same delta value for all parametric directions
         :type: float
         """
         return tuple(self._delta)
@@ -546,7 +548,7 @@ class SurfaceContainer(AbstractContainer):
             raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 2 numeric values")
 
     def render(self, **kwargs):
-        """ Renders the surface the using the visualization component.
+        """ Renders the multi-surface the using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -575,7 +577,7 @@ class SurfaceContainer(AbstractContainer):
         will automatically assign a random color for the remaining surfaces.
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has set")
+            warnings.warn("No visualization component has been set")
             return
 
         # Get the color values from keyword arguments
@@ -591,12 +593,14 @@ class SurfaceContainer(AbstractContainer):
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
+                                 ") cannot be less than the number of shapes contained(" +
+                                 str(len(self._elements)) + ")")
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of surfaces (" + str(len(self._elements)) + ")")
+                                 ") cannot be less than the number of shapes contained ("
+                                 + str(len(self._elements)) + ")")
 
         # Get colormaps as a list
         surf_cmaps = kwargs.get('colormap', [])
