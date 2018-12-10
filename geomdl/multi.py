@@ -645,9 +645,9 @@ class SurfaceContainer(AbstractContainer):
                                         name=elem.name, color=color[1], plot_type='evalpts')
 
             # Visualize the trim curve
-            for idx, trim in enumerate(elem.trims):
+            for itc, trim in enumerate(elem.trims):
                 self._vis_component.add(ptsarr=elem.evaluate_list(trim.evalpts),
-                                        name="Trim Curve " + str(idx + 1),
+                                        name="Trim Curve " + str(itc + 1),
                                         color=trimcolor, plot_type='trimcurve')
 
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
