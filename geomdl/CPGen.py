@@ -24,12 +24,13 @@ class Grid(object):
     :type size_y: float
     """
 
-    def __init__(self, size_x, size_y):
+    def __init__(self, size_x, size_y, **kwargs):
         self._origin = [0.0, 0.0, 0.0]  # Grid origin (always set to the bottom left corner of the grid)
         self._size_x = float(size_x)  # width of the grid
         self._size_y = float(size_y)  # height of the grid
         self._size_u = 0  # grid size in x-direction
         self._size_v = 0  # grid size in y-direction
+        self._z_value = kwargs.get('z_value', 0.0)
         self._grid_points = []  # 2-dimensional grid points
         self._delta = 10e-8  # default tolerance
         self._cache = {}  # cache dictionary
@@ -94,7 +95,7 @@ class Grid(object):
             current_y = self._origin[1]
             for _ in range(0, num_v + 1):
                 # Add the first point
-                row.append([current_x, current_y, 0.0])
+                row.append([current_x, current_y, self._z_value])
                 # Set the y value for the next row
                 current_y = current_y + spacing_y
             # Update the list to be returned
@@ -247,8 +248,8 @@ class GridWeighted(Grid):
     :type size_y: float
     """
 
-    def __init__(self, size_x, size_y):
-        super(GridWeighted, self).__init__(size_x, size_y)
+    def __init__(self, size_x, size_y, **kwargs):
+        super(GridWeighted, self).__init__(size_x, size_y, **kwargs)
         self._weight = 1.0  # weight value
         # Variables for caching
         self._cache['grid_points'] = []
