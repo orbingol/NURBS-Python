@@ -211,7 +211,7 @@ class CurveContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        super(CurveContainer, self).__init__()
+        super(CurveContainer, self).__init__(*args, **kwargs)
         self._instance = abstract.Curve
         self._delta = 0.01  # evaluation delta
         for arg in args:
@@ -221,9 +221,8 @@ class CurveContainer(AbstractContainer):
     def delta(self):
         """ Evaluation delta.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
-        generate curve points. Decreasing step size results in generation of more curve points.
-        Therefore; smaller the delta value, smoother the curve.
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta value, smoother the shape.
 
         The following figure illustrates the working principles of the delta property:
 
@@ -251,7 +250,7 @@ class CurveContainer(AbstractContainer):
     def sample_size(self):
         """ Sample size.
 
-        Sample size defines the number of curve points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
 
         The following figure illustrates the working principles of sample size property:
 
@@ -378,9 +377,9 @@ class SurfaceContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        super(SurfaceContainer, self).__init__()
+        super(SurfaceContainer, self).__init__(*args, **kwargs)
         self._instance = abstract.Surface
-        self._delta = [0.01, 0.01]  # evaluation delta
+        self._delta = [0.05, 0.05]  # evaluation delta
         for arg in args:
             self.add(arg)
 
@@ -388,7 +387,7 @@ class SurfaceContainer(AbstractContainer):
     def sample_size_u(self):
         """ Sample size for the u-direction.
 
-        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -409,7 +408,7 @@ class SurfaceContainer(AbstractContainer):
     def sample_size_v(self):
         """ Sample size for the v-direction.
 
-        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -428,9 +427,9 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def sample_size(self):
-        """ Sample size for both u- and v-directions.
+        """ Sample size for all parametric directions.
 
-        Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
+        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
 
         The following figure illustrates the working principles of sample size property:
 
@@ -445,12 +444,15 @@ class SurfaceContainer(AbstractContainer):
         :setter: Sets the same sample size value for both u- and v-directions
         :type: int
         """
-        sample_size_u = int(1.0 / self.delta_u) + 1
-        sample_size_v = int(1.0 / self.delta_v) + 1
-        return sample_size_u, sample_size_v
+        sample_size = []
+        for d in self._delta:
+            sample_size.append(int(1.0 / d) + 1)
+        return tuple(sample_size)
 
     @sample_size.setter
     def sample_size(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
         self.delta_u = 1.0 / float(value - 1)
         self.delta_v = 1.0 / float(value - 1)
 
@@ -458,9 +460,8 @@ class SurfaceContainer(AbstractContainer):
     def delta_u(self):
         """ Evaluation delta for the u-direction.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
-        generate surface points. Decreasing step size results in generation of more surface points.
-        Therefore; smaller the delta value, smoother the surface.
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
 
         Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
@@ -484,9 +485,8 @@ class SurfaceContainer(AbstractContainer):
     def delta_v(self):
         """ Evaluation delta for the v-direction.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
-        generate surface points. Decreasing step size results in generation of more surface points.
-        Therefore; smaller the delta value, smoother the surface.
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
 
         Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
@@ -508,11 +508,10 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def delta(self):
-        """ Evaluation delta for both u- and v-directions.
+        """ Evaluation delta for all parametric directions.
 
-        Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
-        generate surface points. Decreasing step size results in generation of more surface points.
-        Therefore; smaller the delta value, smoother the surface.
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
 
         Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
         descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
