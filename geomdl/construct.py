@@ -137,3 +137,74 @@ def extract_curves(psurf):
 
     # Return shapes as a dict object
     return dict(u=crvlist_u, v=crvlist_v)
+
+
+def extract_surfaces(pvol):
+    """ Extract surfaces from a parametric volume
+
+    :param pvol: input volume
+    :type pvol: abstract.Volume
+    :return: extracted surface
+    :rtype: dict
+    """
+    if not isinstance(pvol, BSpline.abstract.Volume):
+        raise TypeError("The input should be an instance of abstract.Volume")
+
+    # Get data from the surface object
+    surf_data = pvol.data
+    rational = surf_data['rational']
+    degree_u = surf_data['degree'][0]
+    degree_v = surf_data['degree'][1]
+    degree_w = surf_data['degree'][2]
+    kv_u = surf_data['knotvector'][0]
+    kv_v = surf_data['knotvector'][1]
+    kv_w = surf_data['knotvector'][2]
+    size_u = surf_data['size'][0]
+    size_v = surf_data['size'][1]
+    size_w = surf_data['size'][2]
+    cpts = surf_data['control_points']
+
+    # Determine object type
+    obj = NURBS.Surface if rational else BSpline.Surface
+
+    # u-v plane
+    surflist_uv = []
+    for w in range(size_w):
+        surf = obj()
+        surf.degree_u = degree_u
+        surf.degree_v = degree_v
+        surf.ctrlpts_size_u = size_u
+        surf.ctrlpts_size_v = size_v
+        surf.ctrlpts2d = [[cpts[v + (size_v * (u + (size_u * w)))] for v in range(size_v)] for u in range(size_u)]
+        surf.knotvector_u = kv_u
+        surf.knotvector_v = kv_v
+        surflist_uv.append(surf)
+
+    # u-w plane
+    surflist_uw = []
+    for v in range(size_v):
+        surf = obj()
+        surf.degree_u = degree_u
+        surf.degree_v = degree_w
+        surf.ctrlpts_size_u = size_u
+        surf.ctrlpts_size_v = size_w
+        surf.ctrlpts2d = [[cpts[v + (size_v * (u + (size_u * w)))] for w in range(size_w)] for u in range(size_u)]
+        surf.knotvector_u = kv_u
+        surf.knotvector_v = kv_w
+        surflist_uw.append(surf)
+
+    # v-w plane
+    surflist_vw = []
+    for u in range(size_u):
+        surf = obj()
+        surf.degree_u = degree_v
+        surf.degree_v = degree_w
+        surf.ctrlpts_size_u = size_v
+        surf.ctrlpts_size_v = size_w
+        surf.ctrlpts2d = [[cpts[v + (size_v * (u + (size_u * w)))] for w in range(size_w)] for v in range(size_v)]
+        surf.knotvector_u = kv_v
+        surf.knotvector_v = kv_w
+        surflist_vw.append(surf)
+
+    # Return shapes as a dict object
+    return dict(uv=surflist_uv, uw=surflist_uw, vw=surflist_vw)
