@@ -30,7 +30,7 @@ def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surfaces and volumes.
 
     Keyword Arguments:
-        * ``grid_size``: size of the voxel grid. *Default: (8, 8, 8)*
+        * ``grid_size``: size of the voxel grid. *Default: (16, 16, 16)*
         * ``padding``: voxel padding for in-outs finding. *Default: 10e-8*
         * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
         * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
@@ -41,7 +41,7 @@ def voxelize(obj, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    grid_size = kwargs.get('grid_size', (8, 8, 8))
+    grid_size = kwargs.get('grid_size', (16, 16, 16))
     use_mp = kwargs.get('use_mp', False)
 
     if not isinstance(grid_size, (list, tuple)):

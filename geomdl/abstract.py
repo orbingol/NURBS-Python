@@ -2590,7 +2590,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
-            * ``grid_size``: grid size for voxelization. *Default: (8, 8, 8)*
+            * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
             * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
 
@@ -2608,7 +2608,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
-        grid_size = kwargs.get('grid_size', (8, 8, 8))
 
         # Check all parameters are set
         self._check_variables()
