@@ -12,6 +12,7 @@ import warnings
 import six
 from . import abstract
 from . import vis
+from . import voxelize
 from . import utilities
 
 
@@ -380,8 +381,10 @@ class SurfaceContainer(AbstractContainer):
 
     def __init__(self, *args, **kwargs):
         super(SurfaceContainer, self).__init__(*args, **kwargs)
-        self._instance = abstract.Surface
-        self._delta = [0.05, 0.05]  # evaluation delta
+        if not self._instance:
+            self._instance = abstract.Surface
+        if not self._delta:
+            self._delta = [0.05, 0.05]  # evaluation delta
         for arg in args:
             self.add(arg)
 
@@ -651,6 +654,245 @@ class SurfaceContainer(AbstractContainer):
                                         color=trimcolor, plot_type='trimcurve')
 
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
+
+
+class VolumeContainer(SurfaceContainer):
+    """ Container class for storing multiple volumes.
+
+    This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
+    a for loop.
+
+    This class provides the following properties:
+
+    * :py:meth:`dimension`
+    * :py:meth:`evalpts`
+    * :py:meth:`bbox`
+    * :py:meth:`vis`
+    * :py:meth:`delta`
+    * :py:meth:`delta_u`
+    * :py:meth:`delta_v`
+    * :py:meth:`delta_w`
+    * :py:meth:`sample_size`
+    * :py:meth:`sample_size_u`
+    * :py:meth:`sample_size_v`
+    * :py:meth:`sample_size_w`
+
+    The following code example illustrates the usage of these Python properties:
+
+    .. code-block:: python
+
+        # Create a multi-volume container instance
+        mvol = Multi.VolumeContainer()
+
+        # Add single or multi volumes to the multi container using mvol.add() command
+        # Addition operator, e.g. mvol1 + mvol2, also works
+
+        # Set the evaluation delta of the multi-volume
+        mvol.delta = 0.05
+
+        # Get the evaluated points
+        volume_points = mvol.evalpts
+    """
+
+    def __init__(self, *args, **kwargs):
+        self._instance = abstract.Volume
+        self._delta = [0.1, 0.1, 0.1]  # evaluation delta
+        super(VolumeContainer, self).__init__(*args, **kwargs)
+
+    @property
+    def sample_size_w(self):
+        """ Sample size for the w-direction.
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta_w`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the w-direction
+        :setter: Sets sample size for the w-direction
+        :type: int
+        """
+        return int(1.0 / self.delta_w) + 1
+
+    @sample_size_w.setter
+    def sample_size_w(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+        self.delta_w = 1.0 / float(value - 1)
+
+    @property
+    def sample_size(self):
+        """ Sample size for all parametric directions.
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size values as a tuple of values corresponding to all parametric directions
+        :setter: Sets the same sample size value for all parametric directions
+        :type: int
+        """
+        sample_size = []
+        for d in self._delta:
+            sample_size.append(int(1.0 / d) + 1)
+        return tuple(sample_size)
+
+    @sample_size.setter
+    def sample_size(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value")
+        self.delta_u = 1.0 / float(value - 1)
+        self.delta_v = 1.0 / float(value - 1)
+        self.delta_w = 1.0 / float(value - 1)
+
+    @property
+    def delta_w(self):
+        """ Evaluation delta for the w-direction.
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
+
+        Please note that ``delta_w`` and ``sample_size_w`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_w`` will also set ``sample_size_w``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta value for the w-direction
+        :setter: Sets the delta value for the w-direction
+        :type: float
+        """
+        return self._delta[2]
+
+    @delta_w.setter
+    def delta_w(self, value):
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Evaluation delta (w-direction) should be between 0.0 and 1.0")
+        self._delta[2] = float(value)
+
+    @property
+    def delta(self):
+        """ Evaluation delta for all parametric directions.
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
+
+        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta values as a tuple of values corresponding to all parametric directions
+        :setter: Sets the same delta value for all parametric directions
+        :type: float
+        """
+        return tuple(self._delta)
+
+    @delta.setter
+    def delta(self, value):
+        if isinstance(value, (int, float)):
+            self.delta_u = value
+            self.delta_v = value
+            self.delta_w = value
+        elif isinstance(value, (list, tuple)):
+            if len(value) == 3:
+                self.delta_u = value[0]
+                self.delta_v = value[1]
+                self.delta_w = value[2]
+            else:
+                raise ValueError("Volume requires 3 delta values")
+        else:
+            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 3 numeric values")
+
+    def render(self, **kwargs):
+        """ Renders the multi-volume the using the visualization component.
+
+        The visualization component must be set using :py:attr:`~vis` property before calling this method.
+
+        Keyword Arguments:
+            * ``cpcolor``: sets the color of the control points plot
+            * ``evalcolor``: sets the color of the volume
+            * ``filename``: saves the plot with the input name
+            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
+            * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
+            * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
+            * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
+
+        The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
+        values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
+        a list or  a tuple, or vice versa. A single string value sets the color to the same value. List input allows
+        customization over the color values. If none provided, a random color will be selected.
+
+        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
+        plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
+        configuration class.
+        """
+        if not self._vis_component:
+            warnings.warn("No visualization component has been set")
+            return
+
+        cpcolor = kwargs.get('cpcolor')
+        evalcolor = kwargs.get('evalcolor')
+        filename = kwargs.get('filename', None)
+        plot_visible = kwargs.get('plot', True)
+        # Flag to control evaluation delta updates
+        update_delta = kwargs.get('delta', True)
+
+        # Check if the input list sizes are equal
+        if isinstance(cpcolor, (list, tuple)):
+            if len(cpcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
+                                 ") cannot be less than the number of shapes contained(" +
+                                 str(len(self._elements)) + ")")
+
+        if isinstance(evalcolor, (list, tuple)):
+            if len(evalcolor) != len(self._elements):
+                raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
+                                 ") cannot be less than the number of shapes contained ("
+                                 + str(len(self._elements)) + ")")
+
+        # Run the visualization component
+        self._vis_component.clear()
+        for idx, elem in enumerate(self._elements):
+            if update_delta:
+                elem.delta = self.delta
+            elem.evaluate()
+
+            # Color selection
+            color = _select_color(cpcolor, evalcolor, idx=idx)
+
+            # Add control points
+            if self._vis_component.plot_types['ctrlpts'] == 'points':
+                self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
+                                        color=color[0], plot_type='ctrlpts')
+
+            # Add evaluated points
+            if self._vis_component.plot_types['evalpts'] == 'points':
+                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
+
+            # Add evaluated points as voxels
+            if self._vis_component.plot_types['evalpts'] == 'voxels':
+                grid, filled = voxelize.voxelize(elem, **kwargs)
+                polygrid = voxelize.generate_faces(grid)
+                self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type='evalpts')
+
+        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
 def _select_color(cpcolor, evalcolor, idx=0):
