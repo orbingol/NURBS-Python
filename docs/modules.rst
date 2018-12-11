@@ -20,7 +20,7 @@ Following modules are included in the library:
     module_construct
     module_container
     module_compatibility
-    module_interpolate
+    module_fitting
     module_cpgen
     module_exchange
     module_tessellate
