@@ -98,8 +98,8 @@ def test_grid_reset2(gridw):
     assert gridw._size_u == 0
     assert gridw._size_v == 0
     assert gridw._origin == [0.0, 0.0, 0.0]
-    assert gridw._cache['grid_points'] == []
-    assert gridw._weight == 1.0
+    assert gridw._cache['gridptsw'] == []
+    assert gridw._weights == []
 
 
 def test_grid_weight1(gridw):
@@ -129,14 +129,14 @@ def test_grid_weight3(gridw):
 
 
 def test_grid_weight4(gridw):
-    # default weight should be 1.0
-    assert gridw.weight == 1.0
+    # default weights vector should be empty
+    assert gridw._weights == []
 
 
 def test_grid_weight5(gridw):
     # try to change weight
     gridw.weight = 0.35
-    assert gridw.weight == 0.35
+    assert gridw.weight == [0.35 for _ in range(len(gridw))]
 
 
 def test_grid_weight6(gridw):
