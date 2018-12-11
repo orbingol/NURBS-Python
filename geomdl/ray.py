@@ -40,6 +40,9 @@ class Ray(object):
     def dimension(self):
         """ Spatial dimension of the ray
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the dimension of the ray
         """
         return self._dim
@@ -47,6 +50,9 @@ class Ray(object):
     @property
     def points(self):
         """ Start and end points of the line segment that the ray was generated
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the points
         """
@@ -56,6 +62,9 @@ class Ray(object):
     def p(self):
         """ Origin point of the ray (p)
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the origin point of the ray
         """
         return tuple(self._pt1)
@@ -63,6 +72,9 @@ class Ray(object):
     @property
     def d(self):
         """ Vector component of the ray (d)
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the vector component of the ray
         """

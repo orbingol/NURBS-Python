@@ -42,6 +42,9 @@ class Grid(object):
     def grid(self):
         """ Grid points.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the 2-dimensional list of points in [u][v] format
         """
         return self._grid_points
@@ -262,6 +265,9 @@ class GridWeighted(Grid):
 
         The input can be a single int or a float value, then all weights will be set to the same value.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the weights vector
         :setter: Sets the weights vector
         """
@@ -294,6 +300,9 @@ class GridWeighted(Grid):
     @property
     def grid(self):
         """ Weighted grid points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the 2-dimensional list of weighted points in [u][v] format
         """
