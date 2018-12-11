@@ -22,18 +22,18 @@ class Curve(abstract.Curve):
 
     This class provides the following properties:
 
-    * :py:meth:`order`
-    * :py:meth:`degree`
-    * :py:meth:`knotvector`
-    * :py:meth:`ctrlpts`
-    * :py:meth:`delta`
-    * :py:meth:`sample_size`
-    * :py:meth:`bbox`
-    * :py:meth:`vis`
-    * :py:meth:`name`
-    * :py:meth:`dimension`
-    * :py:meth:`evaluator`
-    * :py:meth:`rational`
+    * :py:attr:`order`
+    * :py:attr:`degree`
+    * :py:attr:`knotvector`
+    * :py:attr:`ctrlpts`
+    * :py:attr:`delta`
+    * :py:attr:`sample_size`
+    * :py:attr:`bbox`
+    * :py:attr:`vis`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`evaluator`
+    * :py:attr:`rational`
 
     Notes:
         * Please see the :py:class:`.abstract.Curve()` documentation for details.
@@ -342,30 +342,30 @@ class Surface(abstract.Surface):
 
     This class provides the following properties:
 
-    * :py:meth:`order_u`
-    * :py:meth:`order_v`
-    * :py:meth:`degree_u`
-    * :py:meth:`degree_v`
-    * :py:meth:`knotvector_u`
-    * :py:meth:`knotvector_v`
-    * :py:meth:`ctrlpts`
-    * :py:meth:`ctrlpts_size_u`
-    * :py:meth:`ctrlpts_size_v`
-    * :py:meth:`ctrlpts2d`
-    * :py:meth:`delta`
-    * :py:meth:`delta_u`
-    * :py:meth:`delta_v`
-    * :py:meth:`sample_size`
-    * :py:meth:`sample_size_u`
-    * :py:meth:`sample_size_v`
-    * :py:meth:`bbox`
-    * :py:meth:`name`
-    * :py:meth:`dimension`
-    * :py:meth:`vis`
-    * :py:meth:`evaluator`
-    * :py:meth:`tessellator`
-    * :py:meth:`rational`
-    * :py:meth:`trims`
+    * :py:attr:`order_u`
+    * :py:attr:`order_v`
+    * :py:attr:`degree_u`
+    * :py:attr:`degree_v`
+    * :py:attr:`knotvector_u`
+    * :py:attr:`knotvector_v`
+    * :py:attr:`ctrlpts`
+    * :py:attr:`ctrlpts_size_u`
+    * :py:attr:`ctrlpts_size_v`
+    * :py:attr:`ctrlpts2d`
+    * :py:attr:`delta`
+    * :py:attr:`delta_u`
+    * :py:attr:`delta_v`
+    * :py:attr:`sample_size`
+    * :py:attr:`sample_size_u`
+    * :py:attr:`sample_size_v`
+    * :py:attr:`bbox`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`vis`
+    * :py:attr:`evaluator`
+    * :py:attr:`tessellator`
+    * :py:attr:`rational`
+    * :py:attr:`trims`
 
     Notes:
         * Please see the :py:class:`.abstract.Surface()` documentation for details.
@@ -816,33 +816,33 @@ class Volume(abstract.Volume):
 
     This class provides the following properties:
 
-    * :py:meth:`order_u`
-    * :py:meth:`order_v`
-    * :py:meth:`order_w`
-    * :py:meth:`degree_u`
-    * :py:meth:`degree_v`
-    * :py:meth:`degree_w`
-    * :py:meth:`knotvector_u`
-    * :py:meth:`knotvector_v`
-    * :py:meth:`knotvector_w`
-    * :py:meth:`ctrlpts`
-    * :py:meth:`ctrlpts_size_u`
-    * :py:meth:`ctrlpts_size_v`
-    * :py:meth:`ctrlpts_size_w`
-    * :py:meth:`delta`
-    * :py:meth:`delta_u`
-    * :py:meth:`delta_v`
-    * :py:meth:`delta_w`
-    * :py:meth:`sample_size`
-    * :py:meth:`sample_size_u`
-    * :py:meth:`sample_size_v`
-    * :py:meth:`sample_size_w`
-    * :py:meth:`bbox`
-    * :py:meth:`name`
-    * :py:meth:`dimension`
-    * :py:meth:`vis`
-    * :py:meth:`evaluator`
-    * :py:meth:`rational`
+    * :py:attr:`order_u`
+    * :py:attr:`order_v`
+    * :py:attr:`order_w`
+    * :py:attr:`degree_u`
+    * :py:attr:`degree_v`
+    * :py:attr:`degree_w`
+    * :py:attr:`knotvector_u`
+    * :py:attr:`knotvector_v`
+    * :py:attr:`knotvector_w`
+    * :py:attr:`ctrlpts`
+    * :py:attr:`ctrlpts_size_u`
+    * :py:attr:`ctrlpts_size_v`
+    * :py:attr:`ctrlpts_size_w`
+    * :py:attr:`delta`
+    * :py:attr:`delta_u`
+    * :py:attr:`delta_v`
+    * :py:attr:`delta_w`
+    * :py:attr:`sample_size`
+    * :py:attr:`sample_size_u`
+    * :py:attr:`sample_size_v`
+    * :py:attr:`sample_size_w`
+    * :py:attr:`bbox`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`vis`
+    * :py:attr:`evaluator`
+    * :py:attr:`rational`
 
     Notes:
         * Please see the :py:class:`.abstract.Volume()` documentation for details.

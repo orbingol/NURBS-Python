@@ -187,12 +187,12 @@ class CurveContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:meth:`dimension`
-    * :py:meth:`evalpts`
-    * :py:meth:`bbox`
-    * :py:meth:`vis`
-    * :py:meth:`delta`
-    * :py:meth:`sample_size`
+    * :py:attr:`dimension`
+    * :py:attr:`evalpts`
+    * :py:attr:`bbox`
+    * :py:attr:`vis`
+    * :py:attr:`delta`
+    * :py:attr:`sample_size`
 
     The following code example illustrates the usage of the Python properties:
 
@@ -351,16 +351,16 @@ class SurfaceContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:meth:`dimension`
-    * :py:meth:`evalpts`
-    * :py:meth:`bbox`
-    * :py:meth:`vis`
-    * :py:meth:`delta`
-    * :py:meth:`delta_u`
-    * :py:meth:`delta_v`
-    * :py:meth:`sample_size`
-    * :py:meth:`sample_size_u`
-    * :py:meth:`sample_size_v`
+    * :py:attr:`dimension`
+    * :py:attr:`evalpts`
+    * :py:attr:`bbox`
+    * :py:attr:`vis`
+    * :py:attr:`delta`
+    * :py:attr:`delta_u`
+    * :py:attr:`delta_v`
+    * :py:attr:`sample_size`
+    * :py:attr:`sample_size_u`
+    * :py:attr:`sample_size_v`
 
     The following code example illustrates the usage of these Python properties:
 
@@ -662,18 +662,18 @@ class VolumeContainer(SurfaceContainer):
 
     This class provides the following properties:
 
-    * :py:meth:`dimension`
-    * :py:meth:`evalpts`
-    * :py:meth:`bbox`
-    * :py:meth:`vis`
-    * :py:meth:`delta`
-    * :py:meth:`delta_u`
-    * :py:meth:`delta_v`
-    * :py:meth:`delta_w`
-    * :py:meth:`sample_size`
-    * :py:meth:`sample_size_u`
-    * :py:meth:`sample_size_v`
-    * :py:meth:`sample_size_w`
+    * :py:attr:`dimension`
+    * :py:attr:`evalpts`
+    * :py:attr:`bbox`
+    * :py:attr:`vis`
+    * :py:attr:`delta`
+    * :py:attr:`delta_u`
+    * :py:attr:`delta_v`
+    * :py:attr:`delta_w`
+    * :py:attr:`sample_size`
+    * :py:attr:`sample_size_u`
+    * :py:attr:`sample_size_v`
+    * :py:attr:`sample_size_w`
 
     The following code example illustrates the usage of these Python properties:
 
