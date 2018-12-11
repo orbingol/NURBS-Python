@@ -15,7 +15,7 @@ class Grid(object):
     """ Simple control points grid generator to use with non-rational surfaces.
 
     This class stores grid points in [x, y, z] format and the grid (control) points can be retrieved from the
-    :py:meth:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
+    :py:attr:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
     while initializing the class.
 
     :param size_x: width of the grid
@@ -246,7 +246,7 @@ class GridWeighted(Grid):
     """ Simple control points grid generator to use with rational surfaces.
 
     This class stores grid points in [x*w, y*w, z*w, w] format and the grid (control) points can be retrieved from the
-    :py:meth:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
+    :py:attr:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
     while initializing the class.
 
     :param size_x: width of the grid
