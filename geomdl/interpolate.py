@@ -20,7 +20,6 @@ def interpolate_curve(points, degree, **kwargs):
 
     Keyword Arguments:
         * ``clamped``: if True, a clamped curve is generated. *Default: True*
-        * ``span_func``: Knot span finding function. *Default: linear search*
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
