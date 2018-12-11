@@ -32,7 +32,6 @@ def interpolate_curve(points, degree, **kwargs):
     """
     # Keyword arguments
     clamped = kwargs.get('clamped', True)
-    span_func = kwargs.get('span_func', helpers.find_span_linear)
     use_centripetal = kwargs.get('centripetal', False)
 
     # Number of control points
@@ -45,7 +44,8 @@ def interpolate_curve(points, degree, **kwargs):
     kv = compute_knot_vector(degree, num_points, uk, clamped)
 
     # Do global interpolation
-    ctrlpts = ginterp(degree, kv, points, uk, span_func)
+    matrix_a = _build_coeff_matrix(degree, kv, uk, points)
+    ctrlpts = ginterp(matrix_a, points)
 
     # Generate B-spline curve
     curve = BSpline.Curve()
@@ -64,7 +64,6 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     Keyword Arguments:
         * ``clamped_u``: if True, surface is clamped on the u-direction. *Default: True*
         * ``clamped_v``: if True, surface is clamped on the v-direction. *Default: True*
-        * ``span_func``: knot span finding function. *Default: linear search*
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
@@ -83,7 +82,6 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # Keyword arguments
     clamped_u = kwargs.get('clamped_u', True)
     clamped_v = kwargs.get('clamped_v', True)
-    span_func = kwargs.get('span_func', helpers.find_span_linear)
     use_centripetal = kwargs.get('centripetal', False)
 
     # Get uk and vl
@@ -97,13 +95,15 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     ctrlpts_r = []
     for v in range(size_v):
         pts = [points[v + (size_v * u)] for u in range(size_u)]
-        ctrlpts_r += ginterp(degree_u, kv_u, pts, uk, span_func)
+        matrix_a = _build_coeff_matrix(degree_u, kv_u, uk, pts)
+        ctrlpts_r += ginterp(matrix_a, pts)
 
     # Do global interpolation on the v-direction
     ctrlpts = []
     for u in range(size_u):
         pts = [ctrlpts_r[u + (size_u * v)] for v in range(size_v)]
-        ctrlpts += ginterp(degree_v, kv_v, pts, vl, span_func)
+        matrix_a = _build_coeff_matrix(degree_v, kv_v, vl, pts)
+        ctrlpts += ginterp(matrix_a, pts)
 
     # Generate B-spline surface
     surf = BSpline.Surface()
@@ -242,19 +242,13 @@ def compute_params_surface(points, size_u, size_v, centripetal):
     return uk, vl
 
 
-def ginterp(degree, knotvector, points, params, span_func):
-    """ Global interpolation.
+def ginterp(coeff_matrix, points):
+    """ Applies global interpolation to the set of data points to find control points.
 
-    :param degree: degree
-    :type degree: int
-    :param knotvector: knot vector
-    :type knotvector: list, tuple
+    :param coeff_matrix: coefficient matrix
+    :type coeff_matrix: list, tuple
     :param points: data points
     :type points: list, tuple
-    :param params: list of parameters
-    :type params: list, tuple
-    :param span_func: reference to the knot span finding function
-    :type span_func: function
     :return: control points
     :rtype: list
     """
@@ -264,14 +258,8 @@ def ginterp(degree, knotvector, points, params, span_func):
     # Number of data points
     num_points = len(points)
 
-    # Set up coefficient matrix
-    matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
-    for i in range(num_points):
-        span = span_func(degree, knotvector, num_points, params[i])
-        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, knotvector, span, params[i])
-
     # Solve system of linear equations
-    matrix_l, matrix_u = utilities.lu_decomposition(matrix_a)
+    matrix_l, matrix_u = utilities.lu_decomposition(coeff_matrix)
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
     for i in range(dim):
         b = [pt[i] for pt in points]
@@ -282,3 +270,55 @@ def ginterp(degree, knotvector, points, params, span_func):
 
     # Return control points
     return ctrlpts
+
+
+def _build_coeff_matrix(degree, knotvector, params, points):
+    """ Builds the coefficient matrix for global interpolation.
+
+    This function only uses data points to build the coefficient matrix. Please refer to The NURBS Book (2nd Edition),
+    pp364-370 for details.
+
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param params: list of parameters
+    :type params: list, tuple
+    :param points: data points
+    :type points: list, tuple
+    :return: coefficient matrix
+    :rtype: list
+    """
+    # Number of data points
+    num_points = len(points)
+
+    # Set up coefficient matrix
+    matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
+    for i in range(num_points):
+        span = helpers.find_span_linear(degree, knotvector, num_points, params[i])
+        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, knotvector, span, params[i])
+
+    # Return coefficient matrix
+    return matrix_a
+
+
+def _build_coeff_matrix_ders(degree, knotvector, params, points):
+    """ Builds the coefficient matrix for global interpolation.
+
+    This function uses data points and first derivatives to build the coefficient matrix. Please refer to The NURBS Book
+    (2nd Edition), pp373-376 for details.
+
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param params: list of parameters
+    :type params: list, tuple
+    :param points: data points and first derivatives
+    :type points: list, tuple
+    :return: coefficient matrix
+    :rtype: list
+    """
+    # TODO: Implement global interpolation with first derivatives specified
+    # Points array = [P0, D0, P1, D1, P2, D2, ....]
+    pass
