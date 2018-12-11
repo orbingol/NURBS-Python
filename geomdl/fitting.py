@@ -19,7 +19,6 @@ def interpolate_curve(points, degree, **kwargs):
     Please see Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
 
     Keyword Arguments:
-        * ``clamped``: if True, a clamped curve is generated. *Default: True*
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
@@ -30,7 +29,6 @@ def interpolate_curve(points, degree, **kwargs):
     :rtype: BSpline.Curve
     """
     # Keyword arguments
-    clamped = kwargs.get('clamped', True)
     use_centripetal = kwargs.get('centripetal', False)
 
     # Number of control points
@@ -40,7 +38,7 @@ def interpolate_curve(points, degree, **kwargs):
     uk = compute_params_curve(points, use_centripetal)
 
     # Compute knot vector
-    kv = compute_knot_vector(degree, num_points, uk, clamped)
+    kv = compute_knot_vector(degree, num_points, uk)
 
     # Do global interpolation
     matrix_a = _build_coeff_matrix(degree, kv, uk, points)
@@ -58,11 +56,9 @@ def interpolate_curve(points, degree, **kwargs):
 def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     """ Surface interpolation through the data points.
 
-    Please see Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
+    Please refer to the Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
 
     Keyword Arguments:
-        * ``clamped_u``: if True, surface is clamped on the u-direction. *Default: True*
-        * ``clamped_v``: if True, surface is clamped on the v-direction. *Default: True*
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
 
     :param points: data points
@@ -75,20 +71,18 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     :type degree_u: int
     :param degree_v: degree of the output surface for the v-direction
     :type degree_v: int
-    :return: interpolated B-Spline curve
-    :rtype: BSpline.Curve
+    :return: interpolated B-Spline surface
+    :rtype: BSpline.Surface
     """
     # Keyword arguments
-    clamped_u = kwargs.get('clamped_u', True)
-    clamped_v = kwargs.get('clamped_v', True)
     use_centripetal = kwargs.get('centripetal', False)
 
     # Get uk and vl
     uk, vl = compute_params_surface(points, size_u, size_v, use_centripetal)
 
     # Compute knot vectors
-    kv_u = compute_knot_vector(degree_u, size_u, uk, clamped_u)
-    kv_v = compute_knot_vector(degree_v, size_v, vl, clamped_v)
+    kv_u = compute_knot_vector(degree_u, size_u, uk)
+    kv_v = compute_knot_vector(degree_v, size_v, vl)
 
     # Do global interpolation on the u-direction
     ctrlpts_r = []
@@ -117,10 +111,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     return surf
 
 
-def compute_knot_vector(degree, num_points, params, clamped):
-    """ Computes knot vector from the parameter list using averaging method.
 
-    Please see Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
 
     :param degree: degree
     :type degree: int
@@ -128,17 +119,13 @@ def compute_knot_vector(degree, num_points, params, clamped):
     :type num_points: int
     :param params: list of parameters, :math:`\\overline{u}_{k}`
     :type params: list, tuple
-    :param clamped: flag to generate clamped or unclamped knot vector
-    :type clamped: bool
     :return: knot vector
     :rtype: list
     """
-    # Number of knots
-    m = num_points + degree + 1
-
+    # Number of start and end knots
+    m_ends = degree + 1
     # Number of middle knots
-    m_ends = degree + 1 if clamped else 1
-    m_compute = m - (m_ends * 2)
+    m_compute = len(num_points) - degree - 1
 
     # Start knot vector
     kv = [0.0 for _ in range(m_ends)]
@@ -158,8 +145,8 @@ def compute_knot_vector(degree, num_points, params, clamped):
 def compute_params_curve(points, centripetal):
     """ Computes :math:`\\overline{u}_{k}` for curves.
 
-    Please see Equations 9.4 and 9.5 for chord length parametrization, and Equation 9.6 for centripetal method on
-    The NURBS Book (2nd Edition), pp.364-365.
+    Please refer to the Equations 9.4 and 9.5 for chord length parametrization, and Equation 9.6 for centripetal method
+    on The NURBS Book (2nd Edition), pp.364-365.
 
     :param points: data points
     :type points: list, tuple
@@ -193,7 +180,7 @@ def compute_params_surface(points, size_u, size_v, centripetal):
     """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
 
     The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
-    see The NURBS Book (2nd Edition), pp.366-367 for details on how to compute :math:`\\overline{u}_{k}` and
+    refer to The NURBS Book (2nd Edition), pp.366-367 for details on how to compute :math:`\\overline{u}_{k}` and
     :math:`\\overline{u}_{l}` arrays for global surface interpolation.
 
     Please note that this function is not a direct implementation of Algorithm A9.3 which can be found on The NURBS Book
