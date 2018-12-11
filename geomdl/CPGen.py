@@ -36,7 +36,9 @@ class Grid(object):
         self._cache = {}  # cache dictionary
 
     def __len__(self):
-        return len(self._grid_points)
+        if not self._grid_points:
+            return 0
+        return len(self._grid_points) * len(self._grid_points[0])
 
     @property
     def grid(self):
@@ -255,9 +257,9 @@ class GridWeighted(Grid):
 
     def __init__(self, size_x, size_y, **kwargs):
         super(GridWeighted, self).__init__(size_x, size_y, **kwargs)
+        self._weights = []
         # Variables for caching
         self._cache['gridptsw'] = []
-        self._cache['weights'] = []
 
     @property
     def weight(self):
@@ -271,7 +273,7 @@ class GridWeighted(Grid):
         :getter: Gets the weights vector
         :setter: Sets the weights vector
         """
-        return self._cache['weights']
+        return self._weights
 
     @weight.setter
     def weight(self, value):
@@ -280,22 +282,22 @@ class GridWeighted(Grid):
         if isinstance(value, (int, float)):
             if value <= 0:
                 raise ValueError("Weight value must be bigger than 0")
-            self._cache['weights'] = [float(value) for _ in range(len(self))]
+            self._weights = [float(value) for _ in range(len(self))]
         elif isinstance(value, (list, tuple)):
             if len(value) != len(self):
                 raise ValueError("Input must be the same size with the grid points")
             if all(val <= 0 for val in value):
                 raise ValueError("Weight values must be bigger than 0")
-            self._cache['weights'] = [float(val) for val in value]
+            self._weights = [float(val) for val in value]
         else:
             raise TypeError("The input should be a list, tuple or a single int, float value")
 
     def reset(self):
         """ Resets the grid. """
         super(GridWeighted, self).reset()
-        if self._grid_points:
+        if self._grid_points or self._weights:
             self._cache['gridptsw'][:] = []
-            self._cache['weights'][:] = []
+            self._weights[:] = []
 
     @property
     def grid(self):
@@ -307,16 +309,16 @@ class GridWeighted(Grid):
         :getter: Gets the 2-dimensional list of weighted points in [u][v] format
         """
         # Generate default weights if they haven't been set
-        if not self._cache['weights']:
-            self._cache['weights'] = [1.0 for _ in range(len(self))]
+        if not self._weights :
+            self._weights = [1.0 for _ in range(len(self))]
 
         # Start adding weights, if not cached
         if not self._cache['gridptsw']:
             for idx, cols in enumerate(self._grid_points):
                 weighted_gp_row = []
                 for row in cols:
-                    temp = [r * self._cache['weights'][idx] for r in row]
-                    temp.append(self._cache['weights'][idx])
+                    temp = [r * self._weights[idx] for r in row]
+                    temp.append(self._weights[idx])
                     weighted_gp_row.append(temp)
                 self._cache['gridptsw'].append(weighted_gp_row)
 
