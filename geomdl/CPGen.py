@@ -1,7 +1,7 @@
 """
 .. module:: CPGen
     :platform: Unix, Windows
-    :synopsis: A simple control points grid generator for B-Spline and NURBS surfaces
+    :synopsis: A simple control points grid generator for parametric surfaces
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -12,11 +12,11 @@ import warnings
 
 
 class Grid(object):
-    """ Simple grid generator to use with B-Spline surfaces.
+    """ Simple control points grid generator to use with non-rational surfaces.
 
-    This class stores grid points in [x, y, z] format.
-
-    .. note:: Additional details on the file formats can be found in the documentation.
+    This class stores grid points in [x, y, z] format and the grid (control) points can be retrieved from the
+    :py:meth:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
+    while initializing the class.
 
     :param size_x: width of the grid
     :type size_x: float
@@ -30,14 +30,17 @@ class Grid(object):
         self._size_y = float(size_y)  # height of the grid
         self._size_u = 0  # grid size in x-direction
         self._size_v = 0  # grid size in y-direction
-        self._z_value = kwargs.get('z_value', 0.0)
-        self._grid_points = []  # 2-dimensional grid points
+        self._z_value = kwargs.get('z_value', 0.0)  # z-coordinate of the grid points
+        self._grid_points = []  # 2-dimensional grid (control) points
         self._delta = 10e-8  # default tolerance
         self._cache = {}  # cache dictionary
 
+    def __len__(self):
+        return len(self._grid_points)
+
     @property
     def grid(self):
-        """ The generated grid.
+        """ Grid points.
 
         :getter: Gets the 2-dimensional list of points in [u][v] format
         """
@@ -45,7 +48,7 @@ class Grid(object):
 
     # Resets the grid to its initial state
     def reset(self):
-        """ Resets the grid to its initial state. """
+        """ Resets the grid. """
         if self._grid_points:
             self._grid_points[:] = []
             self._size_u = 0
@@ -61,7 +64,6 @@ class Grid(object):
         :param num_v: number of divisions in y-direction
         :type num_v: int
         """
-
         # Some error checking and fixing
         if num_u < 1:
             raise ValueError("Divisions in the x-direction (num_u) cannot be less than 1")
@@ -118,10 +120,10 @@ class Grid(object):
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
         uses a brute-force algorithm to determine whether the bumps can be generated or not. For instance::
         
-            testgrid = Grid(5, 10) # generates a 5x10 rectangle
-            testgrid.generate(4, 4) # splits the rectangle into 2x2 pieces
-            testgrid.bumps(100) # impossible, it will return an error message
-            testgrid.bumps(1) # You will get a bump at the center of the generated grid
+            test_grid = Grid(5, 10) # generates a 5x10 rectangle
+            test_grid.generate(4, 4) # splits the rectangle into 2x2 pieces
+            test_grid.bumps(100) # impossible, it will return an error message
+            test_grid.bumps(1) # You will get a bump at the center of the generated grid
 
         This method accepts the following keyword arguments:
 
@@ -236,11 +238,11 @@ class Grid(object):
 
 
 class GridWeighted(Grid):
-    """ Simple grid generator to use with NURBS surfaces.
+    """ Simple control points grid generator to use with rational surfaces.
 
-    This class stores grid points in [x*w, y*w, z*w, w] format.
-
-    .. note:: Additional details for the file formats can be found in the documentation.
+    This class stores grid points in [x*w, y*w, z*w, w] format and the grid (control) points can be retrieved from the
+    :py:meth:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
+    while initializing the class.
 
     :param size_x: width of the grid
     :type size_x: float
@@ -250,52 +252,63 @@ class GridWeighted(Grid):
 
     def __init__(self, size_x, size_y, **kwargs):
         super(GridWeighted, self).__init__(size_x, size_y, **kwargs)
-        self._weight = 1.0  # weight value
         # Variables for caching
-        self._cache['grid_points'] = []
+        self._cache['gridptsw'] = []
+        self._cache['weights'] = []
 
     @property
     def weight(self):
-        """ Weight (w) component of the points.
+        """ Weight (w) component of the grid points.
 
-        :getter: Gets the weight
-        :setter: Sets the weight
+        The input can be a single int or a float value, then all weights will be set to the same value.
+
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
         """
-        return self._weight
+        return self._cache['weights']
 
     @weight.setter
     def weight(self, value):
-        # Input value should be a numerical value
-        if not isinstance(value, (int, float)):
-            raise TypeError("Weight must be a numerical value, i.e. integer or float")
-
-        # Check if the input weight is valid
-        if value <= 0:
-            raise ValueError("Weight value must be bigger than 0")
-
-        self._weight = value
+        if not self._grid_points:
+            raise ValueError("Generate the grid first")
+        if isinstance(value, (int, float)):
+            if value <= 0:
+                raise ValueError("Weight value must be bigger than 0")
+            self._cache['weights'] = [float(value) for _ in range(len(self))]
+        elif isinstance(value, (list, tuple)):
+            if len(value) != len(self):
+                raise ValueError("Input must be the same size with the grid points")
+            if all(val <= 0 for val in value):
+                raise ValueError("Weight values must be bigger than 0")
+            self._cache['weights'] = [float(val) for val in value]
+        else:
+            raise TypeError("The input should be a list, tuple or a single int, float value")
 
     def reset(self):
-        """ Resets the grid to its initial state. """
+        """ Resets the grid. """
         super(GridWeighted, self).reset()
-        if self._grid_points or self._weight != 1.0:
-            self._cache['grid_points'][:] = []
-            self._weight = 1.0
+        if self._grid_points:
+            self._cache['gridptsw'][:] = []
+            self._cache['weights'][:] = []
 
     @property
     def grid(self):
-        """ The generated grid with weighted points.
+        """ Weighted grid points.
 
         :getter: Gets the 2-dimensional list of weighted points in [u][v] format
         """
+        # Generate default weights if they haven't been set
+        if not self._cache['weights']:
+            self._cache['weights'] = [1.0 for _ in range(len(self))]
+
         # Start adding weights, if not cached
-        if not self._cache['grid_points']:
-            for cols in self._grid_points:
+        if not self._cache['gridptsw']:
+            for idx, cols in enumerate(self._grid_points):
                 weighted_gp_row = []
                 for row in cols:
-                    temp = [r / self._weight for r in row]
-                    temp.append(self._weight)
+                    temp = [r * self._cache['weights'][idx] for r in row]
+                    temp.append(self._cache['weights'][idx])
                     weighted_gp_row.append(temp)
-                self._cache['grid_points'].append(weighted_gp_row)
+                self._cache['gridptsw'].append(weighted_gp_row)
 
-        return self._cache['grid_points']
+        return self._cache['gridptsw']
