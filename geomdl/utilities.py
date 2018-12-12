@@ -365,6 +365,47 @@ def point_mid(pt1, pt2):
     return point_translate(pt1, half_dist_vector)
 
 
+def matrix_transpose(m):
+    """ Transposes the input matrix.
+
+    The input matrix :math:`m` is a 2-dimensional array.
+
+    :param m: input matrix with dimensions :math:`(n \\times m)`
+    :type m: list, tuple
+    :return: transpose matrix with dimensions :math:`(m \\times n)`
+    :rtype: list
+    """
+    num_cols = len(m)
+    num_rows = len(m[0])
+    m_t = []
+    for i in range(num_rows):
+        temp = []
+        for j in range(num_cols):
+            temp.append(m[j][i])
+        m_t.append(temp)
+    return m_t
+
+
+def matrix_multiply(m1, m2):
+    """ Matrix multiplication (iterative algorithm).
+
+    The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
+
+    :param m1: 1st matrix with dimensions :math:`(n \\times p)`
+    :type m1: list, tuple
+    :param m2: 2nd matrix with dimensions :math:`(p \\times m)`
+    :type m2: list, tuple
+    :return: resultant matrix with dimensions :math:`(n \\times m)`
+    :rtype: list, tuple
+    """
+    mm = [[0.0 for _ in range(len(m1))] for _ in range(len(m2[0]))]
+    for i in range(len(m1)):
+        for j in range(len(m2[0])):
+            for k in range(len(m2)):
+                mm[i][j] += float(m1[i][k] * m2[k][j])
+    return mm
+
+
 def binomial_coefficient(k, i):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
