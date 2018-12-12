@@ -111,6 +111,85 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     return surf
 
 
+def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
+    """ Surface approximation with fixed number of control points.
+
+    :param points: data points
+    :type points: list, tuple
+    :param size_u: number of data points on the u-direction
+    :type size_u: int
+    :param size_v: number of data points on the v-direction
+    :type size_v: int
+    :param degree_u: degree of the output surface for the u-direction
+    :type degree_u: int
+    :param degree_v: degree of the output surface for the v-direction
+    :type degree_v: int
+    :return: approximated B-Spline surface
+    :rtype: BSpline.Surface
+    """
+    # Keyword arguments
+    use_centripetal = kwargs.get('centripetal', False)
+    cpts_size_u = kwargs.get('ctrlpts_size_u', size_u - 1)  # number of datapts > number of ctrlpts
+    cpts_size_v = kwargs.get('ctrlpts_size_v', size_v - 1)  # number of datapts > number of ctrlpts
+
+    # Get uk and vl
+    uk, vl = compute_params_surface(points, size_u, size_v, use_centripetal)
+
+    # Compute knot vectors
+    kv_u = compute_knot_vector2(degree_u, size_u, cpts_size_u, uk)
+    kv_v = compute_knot_vector2(degree_v, size_v, cpts_size_v, vl)
+
+    # ctrlpts[spans[idx]]
+
+    # Construct matrix Nu
+    spans_u = helpers.find_spans(degree_u, kv_u, cpts_size_u, uk)
+    basis_u = helpers.basis_functions(degree_u, kv_u, spans_u, uk)
+    matrix_nu = []
+    for i in range(1, size_u):
+        matrix_nu.append(basis_u[1:-1][degree_u])
+    # Compute Nu transpose
+    matrix_ntu = utilities.matrix_transpose(matrix_nu)
+    # Compute NTNu matrix
+    matrix_ntnu = utilities.matrix_multiply(matrix_ntu, matrix_nu)
+    # Compute LU-decomposition of NTNu matrix
+    matrix_ntnul, matrix_ntnuu = utilities.lu_decomposition(matrix_ntnu)
+
+    # Construct matrix Nv
+    spans_v = helpers.find_spans(degree_v, kv_v, cpts_size_v, vl)
+    basis_v = helpers.basis_functions(degree_v, kv_v, spans_v, vl)
+    matrix_nv = []
+    for i in range(1, size_u):
+        matrix_nv.append(basis_v[1:-1][degree_v])
+    # Compute Nv transpose
+    matrix_ntv = utilities.matrix_transpose(matrix_nv)
+    # Compute NTNv matrix
+    matrix_ntnv = utilities.matrix_multiply(matrix_ntv, matrix_nv)
+    # Compute LU-decomposition of NTNv matrix
+    matrix_ntnvl, matrix_ntnvu = utilities.lu_decomposition(matrix_ntnv)
+
+    # Corner CPs interpolated and inner CPs approximated
+    ctrlpts = []
+
+    # Fit u-direction
+    for j in range(cpts_size_v):
+        pass
+
+    # Fit v-direction
+    for i in range(cpts_size_u):
+        pass
+
+    # Generate B-spline surface
+    surf = BSpline.Surface()
+    surf.degree_u = degree_u
+    surf.degree_v = degree_v
+    surf.ctrlpts_size_u = cpts_size_u
+    surf.ctrlpts_size_v = cpts_size_v
+    surf.ctrlpts = ctrlpts
+    surf.knotvector_u = kv_u
+    surf.knotvector_v = kv_v
+
+    return surf
+
 
 def compute_knot_vector(degree, num_points, params):
     """ Computes a knot vector from the parameter list using averaging method.
