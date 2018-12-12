@@ -112,7 +112,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    """ Surface approximation using least-square method with fixed number of control points.
+    """ Surface approximation using least squares method with fixed number of control points.
 
     This algorithm interpolates the corner control points and approximates the inner control points. Please refer to
     The NURBS Book (2nd Edition), pp.422-423 for details.
