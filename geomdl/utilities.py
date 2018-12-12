@@ -489,7 +489,11 @@ def lu_decomposition(matrix_in, q=0):
                 matrix_l[i][i] = 1.0
             else:
                 matrix_l[k][i] = float(matrix_a[k][i] - sum([matrix_l[k][j] * matrix_u[j][i] for j in range(0, i)]))
-                matrix_l[k][i] /= float(matrix_u[i][i])
+                # Handle zero division error
+                try:
+                    matrix_l[k][i] /= float(matrix_u[i][i])
+                except ZeroDivisionError:
+                    matrix_l[k][i] = 0.0
 
     # Prepare and return the L and U matrices
     if convert_res:
