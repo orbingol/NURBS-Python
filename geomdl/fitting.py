@@ -112,6 +112,10 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 
+def compute_knot_vector(degree, num_points, params):
+    """ Computes a knot vector from the parameter list using averaging method.
+
+    Please refer to the Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
 
     :param degree: degree
     :type degree: int
