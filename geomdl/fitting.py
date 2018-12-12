@@ -112,7 +112,10 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    """ Surface approximation with fixed number of control points.
+    """ Surface approximation using least-square method with fixed number of control points.
+
+    This algorithm interpolates the corner control points and approximates the inner control points. Please refer to
+    The NURBS Book (2nd Edition), pp.422-423 for details.
 
     :param points: data points
     :type points: list, tuple
@@ -139,8 +142,6 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     kv_u = compute_knot_vector2(degree_u, size_u, cpts_size_u, uk)
     kv_v = compute_knot_vector2(degree_v, size_v, cpts_size_v, vl)
 
-    # ctrlpts[spans[idx]]
-
     # Construct matrix Nu
     spans_u = helpers.find_spans(degree_u, kv_u, cpts_size_u, uk)
     basis_u = helpers.basis_functions(degree_u, kv_u, spans_u, uk)
@@ -153,6 +154,16 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     matrix_ntnu = utilities.matrix_multiply(matrix_ntu, matrix_nu)
     # Compute LU-decomposition of NTNu matrix
     matrix_ntnul, matrix_ntnuu = utilities.lu_decomposition(matrix_ntnu)
+
+    # Fit u-direction
+    ctrlpts_tmp = [0.0 for _ in range(cpts_size_u * cpts_size_v)]
+    for j in range(cpts_size_v):
+        ctrlpts_tmp[j + (cpts_size_v * 0)] = list(points[j + (size_v * 0)])
+        ctrlpts_tmp[j + (cpts_size_v * (cpts_size_u - 1))] = list(points[j + (size_v * (size_u - 1))])
+        # Compute Ru - Eqs. 9.63 and 9.67
+
+        # Get intermediate control points
+        pass
 
     # Construct matrix Nv
     spans_v = helpers.find_spans(degree_v, kv_v, cpts_size_v, vl)
@@ -167,15 +178,14 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # Compute LU-decomposition of NTNv matrix
     matrix_ntnvl, matrix_ntnvu = utilities.lu_decomposition(matrix_ntnv)
 
-    # Corner CPs interpolated and inner CPs approximated
-    ctrlpts = []
-
-    # Fit u-direction
-    for j in range(cpts_size_v):
-        pass
-
     # Fit v-direction
+    ctrlpts = [0.0 for _ in range(cpts_size_u * cpts_size_v)]
     for i in range(cpts_size_u):
+        ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (cpts_size_v * i)])
+        ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)])
+        # Compute Rv - Eqs. 9.63 and 9.67
+
+        # Get final control points
         pass
 
     # Generate B-spline surface
