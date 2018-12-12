@@ -146,6 +146,40 @@ def compute_knot_vector(degree, num_points, params):
     return kv
 
 
+def compute_knot_vector2(degree, num_dpts, num_cpts, params):
+    """ Computes a knot vector ensuring that every knot span has at least one :math:`\\overline{u}_{k}`.
+
+    Please refer to the Equations 9.68 and 9.69 on The NURBS Book (2nd Edition), p.412 for details.
+
+    :param degree: degree
+    :type degree: int
+    :param num_dpts: number of data points
+    :type num_dpts: int
+    :param num_cpts: number of control points
+    :type num_cpts: int
+    :param params: list of parameters, :math:`\\overline{u}_{k}`
+    :type params: list, tuple
+    :return: knot vector
+    :rtype: list
+    """
+    # Start knot vector
+    kv = [0.0 for _ in range(degree + 1)]
+
+    # Compute "d" value - Eqn 9.68
+    d = float(num_dpts) / float(num_cpts - degree)
+    # Find internal knots
+    for j in range(1, num_cpts - degree):
+        i = int(j * d)
+        alpha = (j * d) - i
+        temp_kv = ((1.0 - alpha) * params[i - 1]) + (alpha * params[i])
+        kv.append(temp_kv)
+
+    # End knot vector
+    kv += [1.0 for _ in range(degree + 1)]
+
+    return kv
+
+
 def compute_params_curve(points, centripetal):
     """ Computes :math:`\\overline{u}_{k}` for curves.
 
