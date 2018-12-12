@@ -143,11 +143,13 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     kv_v = compute_knot_vector2(degree_v, size_v, cpts_size_v, vl)
 
     # Construct matrix Nu
-    spans_u = helpers.find_spans(degree_u, kv_u, cpts_size_u, uk)
-    basis_u = helpers.basis_functions(degree_u, kv_u, spans_u, uk)
     matrix_nu = []
-    for i in range(1, size_u):
-        matrix_nu.append(basis_u[1:-1][degree_u])
+    for i in range(1, size_u - 1):
+        m_temp = []
+        for j in range(1, cpts_size_u - 1):
+            basis = helpers.basis_function(degree_u, kv_u, j, uk[i])
+            m_temp.append(basis[degree_u])
+        matrix_nu.append(m_temp)
     # Compute Nu transpose
     matrix_ntu = utilities.matrix_transpose(matrix_nu)
     # Compute NTNu matrix
@@ -166,11 +168,13 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         pass
 
     # Construct matrix Nv
-    spans_v = helpers.find_spans(degree_v, kv_v, cpts_size_v, vl)
-    basis_v = helpers.basis_functions(degree_v, kv_v, spans_v, vl)
     matrix_nv = []
-    for i in range(1, size_u):
-        matrix_nv.append(basis_v[1:-1][degree_v])
+    for i in range(1, size_v - 1):
+        m_temp = []
+        for j in range(1, cpts_size_v - 1):
+            basis = helpers.basis_function(degree_v, kv_v, j, vl[i])
+            m_temp.append(basis[degree_v])
+        matrix_nv.append(m_temp)
     # Compute Nv transpose
     matrix_ntv = utilities.matrix_transpose(matrix_nv)
     # Compute NTNv matrix
