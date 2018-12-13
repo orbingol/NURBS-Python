@@ -150,10 +150,7 @@ def basis_function(degree, knot_vector, span, knot):
         right[j] = knot_vector[span + j] - knot
         saved = 0.0
         for r in range(0, j):
-            try:
-                temp = N[r] / (right[r + 1] + left[j - r])
-            except ZeroDivisionError:
-                temp = 0.0
+            temp = N[r] / (right[r + 1] + left[j - r])
             N[r] = saved + right[r + 1] * temp
             saved = left[j - r] * temp
         N[j] = saved
