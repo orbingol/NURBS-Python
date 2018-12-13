@@ -196,7 +196,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     matrix_nv = []
     for i in range(1, size_v - 1):
         m_temp = []
-        for j in range(1, size_v - 1):
+        for j in range(1, cpts_size_v - 1):
             m_temp.append(helpers.basis_function_one(degree_v, kv_v, j, vl[i]))
         matrix_nv.append(m_temp)
     # Compute Nv transpose
@@ -223,8 +223,8 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
             elem3 = [c * nnp for c in ptm]
             rkv.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
         # Compute Rv - Eqn. 9.67
-        rv = [[0.0 for _ in range(dim)] for _ in range(size_v - 2)]
-        for j in range(1, size_v - 1):
+        rv = [[0.0 for _ in range(dim)] for _ in range(cpts_size_v - 2)]
+        for j in range(1, cpts_size_v - 1):
             rv_tmp = []
             for idx, pt in enumerate(rkv):
                 rv_tmp.append([p * helpers.basis_function_one(degree_v, kv_v, j, vl[idx + 1]) for p in pt])
