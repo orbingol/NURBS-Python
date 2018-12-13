@@ -241,13 +241,13 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
     # Generate B-spline surface
     surf = BSpline.Surface()
-    surf.degree_u = degree_v
-    surf.degree_v = degree_u
-    surf.ctrlpts_size_u = cpts_size_v
-    surf.ctrlpts_size_v = cpts_size_u
+    surf.degree_u = degree_u
+    surf.degree_v = degree_v
+    surf.ctrlpts_size_u = cpts_size_u
+    surf.ctrlpts_size_v = cpts_size_v
     surf.ctrlpts = ctrlpts
-    surf.knotvector_u = kv_v
-    surf.knotvector_v = kv_u
+    surf.knotvector_u = kv_u
+    surf.knotvector_v = kv_v
 
     return surf
 
