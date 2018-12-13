@@ -16,15 +16,15 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
     if FindSpan returns 1, then the knot is between the interval [0, 1).
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param num_ctrlpts: number of control points
+    :param num_ctrlpts: number of control points, :math:`n + 1`
     :type num_ctrlpts: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
-    :return: span of the knot over the knot vector
+    :return: knot span
     :rtype: int
     """
     # Get tolerance value
@@ -64,15 +64,15 @@ def find_span_linear(degree, knot_vector, num_ctrlpts, knot, **kwargs):
 
     Alternative implementation for the Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param num_ctrlpts: number of control points
+    :param num_ctrlpts: number of control points, :math:`n + 1`
     :type num_ctrlpts: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
-    :return: span of the knot over the knot vector
+    :return: knot span
     :rtype: int
     """
     span = 0  # Knot span index starts from zero
@@ -85,15 +85,15 @@ def find_span_linear(degree, knot_vector, num_ctrlpts, knot, **kwargs):
 def find_spans(degree, knot_vector, num_ctrlpts, knots, func=find_span_linear):
     """ Finds spans of a list of knots over the knot vector.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param num_ctrlpts: number of control points
+    :param num_ctrlpts: number of control points, :math:`n + 1`
     :type num_ctrlpts: int
-    :param knots: list of knots
+    :param knots: list of knots or parameters
     :type knots: list, tuple
-    :param func: function to evaluate span finding operation
+    :param func: function for span finding, e.g. linear or binary search
     :return: list of spans
     :rtype: list
     """
@@ -106,11 +106,11 @@ def find_spans(degree, knot_vector, num_ctrlpts, knots, func=find_span_linear):
 def find_multiplicity(knot, knot_vector, **kwargs):
     """ Finds knot multiplicity over the knot vector.
 
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :return: multiplicity of the knot
+    :return: knot multiplicity, :math:`s`
     :rtype: int
     """
     # Get tolerance value
@@ -130,13 +130,13 @@ def basis_function(degree, knot_vector, span, knot):
 
     Implementation of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param span: span of the knot
+    :param span: knot span, :math:`i`
     :type span: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
     :return: basis functions
     :rtype: list
@@ -161,13 +161,13 @@ def basis_function(degree, knot_vector, span, knot):
 def basis_functions(degree, knot_vector, spans, knots):
     """ Computes the non-vanishing basis functions for a list of knots.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param spans: spans
+    :param spans: list of knot spans
     :type spans:  list, tuple
-    :param knots: knots
+    :param knots: list of knots or parameters
     :type knots: list, tuple
     :return: basis functions
     :rtype: list
@@ -184,13 +184,13 @@ def basis_function_all(degree, knot_vector, span, knot):
 
     A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector:  knot vector
+    :param knot_vector:  knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param span: span of the knot
+    :param span: knot span, :math:`i`
     :type span: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
     :return: basis functions
     :rtype: list
@@ -208,17 +208,17 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
 
     Implementation of Algorithm A2.3 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot vector
+    :param knot_vector: knot vector, :math:`U`
     :type knot_vector: list, tuple
-    :param span: span of the knot
+    :param span: knot span, :math:`i`
     :type span: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
     :param order: order of the derivative
     :type order: int
-    :return: basis function derivatives
+    :return: derivatives of the basis functions
     :rtype: list
     """
     # Initialize variables
@@ -298,15 +298,15 @@ def basis_function_one(degree, knot_vector, span, knot):
 
     Implementation of Algorithm 2.4 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
     :param knot_vector: knot vector
     :type knot_vector: list, tuple
-    :param span: span of the knot
+    :param span: knot span, :math:`i`
     :type span: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
-    :return: basis function value
+    :return: basis function, :math:`N_{i,p}`
     :rtype: float
     """
     # Special case at boundaries
@@ -353,17 +353,17 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
     Implementation of Algorithm A2.5 from The NURBS Book by Piegl & Tiller.
 
-    :param degree: degree
+    :param degree: degree, :math:`p`
     :type degree: int
-    :param knot_vector: knot_vector
+    :param knot_vector: knot_vector, :math:`U`
     :type knot_vector: list, tuple
-    :param span: span of the knot
+    :param span: knot span, :math:`i`
     :type span: int
-    :param knot: knot
+    :param knot: knot or parameter, :math:`u`
     :type knot: float
     :param order: order of the derivative
     :type order: int
-    :return: basis function derivatives values
+    :return: basis function derivatives
     :rtype: list
     """
     ders = [0.0 for _ in range(0, order + 1)]
