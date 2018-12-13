@@ -212,11 +212,11 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (cpts_size_v * i)])
         ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)])
         # Compute Rkv - Eqs. 9.63
-        pt0 = points[0 + (size_v * i)]  # Qzero
-        ptm = points[size_v - 1 + (size_v * i)]  # Qm
+        pt0 = ctrlpts_tmp[0 + (cpts_size_v * i)]  # Qzero
+        ptm = ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)]  # Qm
         rkv = []
         for j in range(1, cpts_size_v - 1):
-            ptk = points[j + (size_v * i)]
+            ptk = ctrlpts_tmp[j + (cpts_size_v * i)]
             n0p = helpers.basis_function_one(degree_v, kv_v, 0, vl[j])
             nnp = helpers.basis_function_one(degree_v, kv_v, cpts_size_v - 1, vl[j])
             elem2 = [c * n0p for c in pt0]
