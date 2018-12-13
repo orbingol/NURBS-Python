@@ -119,9 +119,9 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
     :param points: data points
     :type points: list, tuple
-    :param size_u: number of data points on the u-direction
+    :param size_u: number of data points on the u-direction, :math:`r`
     :type size_u: int
-    :param size_v: number of data points on the v-direction
+    :param size_v: number of data points on the v-direction, :math:`s`
     :type size_v: int
     :param degree_u: degree of the output surface for the u-direction
     :type degree_u: int
@@ -132,8 +132,11 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     """
     # Keyword arguments
     use_centripetal = kwargs.get('centripetal', False)
-    cpts_size_u = kwargs.get('ctrlpts_size_u', size_u - 1)  # number of datapts > number of ctrlpts
-    cpts_size_v = kwargs.get('ctrlpts_size_v', size_v - 1)  # number of datapts > number of ctrlpts
+    cpts_size_u = kwargs.get('ctrlpts_size_u', size_u - 1)  # number of datapts > number of ctrlpts, n + 1
+    cpts_size_v = kwargs.get('ctrlpts_size_v', size_v - 1)  # number of datapts > number of ctrlpts, m + 1
+
+    # Dimension
+    dim = len(points[0])
 
     # Get uk and vl
     uk, vl = compute_params_surface(points, size_u, size_v, use_centripetal)
@@ -157,23 +160,37 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     matrix_ntnul, matrix_ntnuu = utilities.lu_decomposition(matrix_ntnu)
 
     # Fit u-direction
-    ctrlpts_tmp = [0.0 for _ in range(cpts_size_u * cpts_size_v)]
+    ctrlpts_tmp = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u * cpts_size_v)]
     for j in range(cpts_size_v):
         ctrlpts_tmp[j + (cpts_size_v * 0)] = list(points[j + (size_v * 0)])
         ctrlpts_tmp[j + (cpts_size_v * (cpts_size_u - 1))] = list(points[j + (size_v * (size_u - 1))])
-        # Compute Ru - Eqs. 9.63 and 9.67
+        # Compute Rku - Eqn. 9.63
         pt0 = points[j + (size_v * 0)]  # Qzero
         ptm = points[j + (size_v * (size_u - 1))]  # Qm
-        ru = []
+        rku = []
         for i in range(1, cpts_size_u - 1):
             ptk = points[j + (size_v * i)]
             n0p = helpers.basis_function_one(degree_u, kv_u, 0, uk[i])
             nnp = helpers.basis_function_one(degree_u, kv_u, cpts_size_u - 1, uk[i])
             elem2 = [c * n0p for c in pt0]
             elem3 = [c * nnp for c in ptm]
-            ru.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
+            rku.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
+        # Compute Ru - Eqn. 9.67
+        ru = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u - 2)]
+        for i in range(1, cpts_size_u - 1):
+            ru_tmp = []
+            for idx, pt in enumerate(rku):
+                ru_tmp.append([p * helpers.basis_function_one(degree_u, kv_u, i, uk[idx + 1]) for p in pt])
+            for d in range(dim):
+                for idx in range(len(ru_tmp)):
+                    ru[i - 1][d] += ru_tmp[idx][d]
         # Get intermediate control points
-        pass
+        for d in range(dim):
+            b = [pt[d] for pt in ru]
+            y = utilities.forward_substitution(matrix_ntnul, b)
+            x = utilities.backward_substitution(matrix_ntnuu, y)
+            for i in range(1, cpts_size_u - 1):
+                ctrlpts_tmp[j + (cpts_size_v * i)][d] = x[i - 1]
 
     # Construct matrix Nv
     matrix_nv = []
@@ -190,33 +207,47 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     matrix_ntnvl, matrix_ntnvu = utilities.lu_decomposition(matrix_ntnv)
 
     # Fit v-direction
-    ctrlpts = [0.0 for _ in range(cpts_size_u * cpts_size_v)]
+    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u * cpts_size_v)]
     for i in range(cpts_size_u):
         ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (cpts_size_v * i)])
         ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)])
-        # Compute Rv - Eqs. 9.63 and 9.67
+        # Compute Rkv - Eqs. 9.63
         pt0 = points[0 + (size_v * i)]  # Qzero
         ptm = points[size_v - 1 + (size_v * i)]  # Qm
-        rv = []
+        rkv = []
         for j in range(1, cpts_size_v - 1):
             ptk = points[j + (size_v * i)]
             n0p = helpers.basis_function_one(degree_v, kv_v, 0, vl[j])
             nnp = helpers.basis_function_one(degree_v, kv_v, cpts_size_v - 1, vl[j])
             elem2 = [c * n0p for c in pt0]
             elem3 = [c * nnp for c in ptm]
-            rv.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
-        # Get final control points
-        pass
+            rkv.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
+        # Compute Rv - Eqn. 9.67
+        rv = [[0.0 for _ in range(dim)] for _ in range(cpts_size_v - 2)]
+        for j in range(1, cpts_size_v - 1):
+            rv_tmp = []
+            for idx, pt in enumerate(rkv):
+                rv_tmp.append([p * helpers.basis_function_one(degree_v, kv_v, j, vl[idx + 1]) for p in pt])
+            for d in range(dim):
+                for idx in range(len(rv_tmp)):
+                    rv[j - 1][d] += rv_tmp[idx][d]
+        # Get intermediate control points
+        for d in range(dim):
+            b = [pt[d] for pt in rv]
+            y = utilities.forward_substitution(matrix_ntnvl, b)
+            x = utilities.backward_substitution(matrix_ntnvu, y)
+            for j in range(1, cpts_size_v - 1):
+                ctrlpts[j + (cpts_size_v * i)][d] = x[j - 1]
 
     # Generate B-spline surface
     surf = BSpline.Surface()
-    surf.degree_u = degree_u
-    surf.degree_v = degree_v
-    surf.ctrlpts_size_u = cpts_size_u
-    surf.ctrlpts_size_v = cpts_size_v
+    surf.degree_u = degree_v
+    surf.degree_v = degree_u
+    surf.ctrlpts_size_u = cpts_size_v
+    surf.ctrlpts_size_v = cpts_size_u
     surf.ctrlpts = ctrlpts
-    surf.knotvector_u = kv_u
-    surf.knotvector_v = kv_v
+    surf.knotvector_u = kv_v
+    surf.knotvector_v = kv_u
 
     return surf
 
