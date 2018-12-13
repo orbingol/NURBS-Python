@@ -162,7 +162,16 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         ctrlpts_tmp[j + (cpts_size_v * 0)] = list(points[j + (size_v * 0)])
         ctrlpts_tmp[j + (cpts_size_v * (cpts_size_u - 1))] = list(points[j + (size_v * (size_u - 1))])
         # Compute Ru - Eqs. 9.63 and 9.67
-
+        pt0 = points[j + (size_v * 0)]  # Qzero
+        ptm = points[j + (size_v * (size_u - 1))]  # Qm
+        ru = []
+        for i in range(1, cpts_size_u - 1):
+            ptk = points[j + (size_v * i)]
+            n0p = helpers.basis_function_one(degree_u, kv_u, 0, uk[i])
+            nnp = helpers.basis_function_one(degree_u, kv_u, cpts_size_u - 1, uk[i])
+            elem2 = [c * n0p for c in pt0]
+            elem3 = [c * nnp for c in ptm]
+            ru.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
         # Get intermediate control points
         pass
 
@@ -186,7 +195,16 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (cpts_size_v * i)])
         ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)])
         # Compute Rv - Eqs. 9.63 and 9.67
-
+        pt0 = points[0 + (size_v * i)]  # Qzero
+        ptm = points[size_v - 1 + (size_v * i)]  # Qm
+        rv = []
+        for j in range(1, cpts_size_v - 1):
+            ptk = points[j + (size_v * i)]
+            n0p = helpers.basis_function_one(degree_v, kv_v, 0, vl[j])
+            nnp = helpers.basis_function_one(degree_v, kv_v, cpts_size_v - 1, vl[j])
+            elem2 = [c * n0p for c in pt0]
+            elem3 = [c * nnp for c in ptm]
+            rv.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
         # Get final control points
         pass
 
