@@ -235,22 +235,16 @@ def compute_knot_vector(degree, num_points, params):
     :return: knot vector
     :rtype: list
     """
-    # Number of start and end knots
-    m_ends = degree + 1
-    # Number of middle knots
-    m_compute = len(num_points) - degree - 1
-
     # Start knot vector
-    kv = [0.0 for _ in range(m_ends)]
+    kv = [0.0 for _ in range(degree + 1)]
 
-    # Use averaging method (Eqn 9.8) to compute middle knots in the knot vector
-    if m_compute > 0:
-        for i in range(m_compute):
-            temp_kv = (1.0 / degree) * sum([params[j] for j in range(i + 1, i + degree + 1)])
-            kv.append(temp_kv)
+    # Use averaging method (Eqn 9.8) to compute internal knots in the knot vector
+    for i in range(num_points - degree - 1):
+        temp_kv = (1.0 / degree) * sum([params[j] for j in range(i + 1, i + degree + 1)])
+        kv.append(temp_kv)
 
     # End knot vector
-    kv += [1.0 for _ in range(m_ends)]
+    kv += [1.0 for _ in range(degree + 1)]
 
     return kv
 
