@@ -147,8 +147,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     for i in range(1, size_u - 1):
         m_temp = []
         for j in range(1, cpts_size_u - 1):
-            basis = helpers.basis_function(degree_u, kv_u, j, uk[i])
-            m_temp.append(basis[degree_u])
+            m_temp.append(helpers.basis_function_one(degree_u, kv_u, j, uk[i]))
         matrix_nu.append(m_temp)
     # Compute Nu transpose
     matrix_ntu = utilities.matrix_transpose(matrix_nu)
@@ -172,8 +171,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     for i in range(1, size_v - 1):
         m_temp = []
         for j in range(1, cpts_size_v - 1):
-            basis = helpers.basis_function(degree_v, kv_v, j, vl[i])
-            m_temp.append(basis[degree_v])
+            m_temp.append(helpers.basis_function_one(degree_v, kv_v, j, vl[i]))
         matrix_nv.append(m_temp)
     # Compute Nv transpose
     matrix_ntv = utilities.matrix_transpose(matrix_nv)
