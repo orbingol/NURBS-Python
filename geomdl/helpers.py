@@ -301,7 +301,7 @@ def basis_function_one(degree, knot_vector, span, knot):
     :param degree: degree
     :type degree: int
     :param knot_vector: knot vector
-    :type knot_vector: list, typle
+    :type knot_vector: list, tuple
     :param span: span of the knot
     :type span: int
     :param knot: knot
