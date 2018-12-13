@@ -160,10 +160,10 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     matrix_ntnul, matrix_ntnuu = utilities.lu_decomposition(matrix_ntnu)
 
     # Fit u-direction
-    ctrlpts_tmp = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u * cpts_size_v)]
-    for j in range(cpts_size_v):
-        ctrlpts_tmp[j + (cpts_size_v * 0)] = list(points[j + (size_v * 0)])
-        ctrlpts_tmp[j + (cpts_size_v * (cpts_size_u - 1))] = list(points[j + (size_v * (size_u - 1))])
+    ctrlpts_tmp = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u * size_v)]
+    for j in range(size_v):
+        ctrlpts_tmp[j + (size_v * 0)] = list(points[j + (size_v * 0)])
+        ctrlpts_tmp[j + (size_v * (cpts_size_u - 1))] = list(points[j + (size_v * (size_u - 1))])
         # Compute Rku - Eqn. 9.63
         pt0 = points[j + (size_v * 0)]  # Qzero
         ptm = points[j + (size_v * (size_u - 1))]  # Qm
@@ -190,13 +190,13 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
             y = utilities.forward_substitution(matrix_ntnul, b)
             x = utilities.backward_substitution(matrix_ntnuu, y)
             for i in range(1, cpts_size_u - 1):
-                ctrlpts_tmp[j + (cpts_size_v * i)][d] = x[i - 1]
+                ctrlpts_tmp[j + (size_v * i)][d] = x[i - 1]
 
     # Construct matrix Nv
     matrix_nv = []
     for i in range(1, size_v - 1):
         m_temp = []
-        for j in range(1, cpts_size_v - 1):
+        for j in range(1, size_v - 1):
             m_temp.append(helpers.basis_function_one(degree_v, kv_v, j, vl[i]))
         matrix_nv.append(m_temp)
     # Compute Nv transpose
@@ -209,22 +209,22 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # Fit v-direction
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(cpts_size_u * cpts_size_v)]
     for i in range(cpts_size_u):
-        ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (cpts_size_v * i)])
-        ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)])
+        ctrlpts[0 + (cpts_size_v * i)] = list(ctrlpts_tmp[0 + (size_v * i)])
+        ctrlpts[cpts_size_v - 1 + (cpts_size_v * i)] = list(ctrlpts_tmp[size_v - 1 + (size_v * i)])
         # Compute Rkv - Eqs. 9.63
-        pt0 = ctrlpts_tmp[0 + (cpts_size_v * i)]  # Qzero
-        ptm = ctrlpts_tmp[cpts_size_v - 1 + (cpts_size_v * i)]  # Qm
+        pt0 = ctrlpts_tmp[0 + (size_v * i)]  # Qzero
+        ptm = ctrlpts_tmp[size_v - 1 + (size_v * i)]  # Qm
         rkv = []
-        for j in range(1, cpts_size_v - 1):
-            ptk = ctrlpts_tmp[j + (cpts_size_v * i)]
+        for j in range(1, size_v - 1):
+            ptk = ctrlpts_tmp[j + (size_v * i)]
             n0p = helpers.basis_function_one(degree_v, kv_v, 0, vl[j])
             nnp = helpers.basis_function_one(degree_v, kv_v, cpts_size_v - 1, vl[j])
             elem2 = [c * n0p for c in pt0]
             elem3 = [c * nnp for c in ptm]
             rkv.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
         # Compute Rv - Eqn. 9.67
-        rv = [[0.0 for _ in range(dim)] for _ in range(cpts_size_v - 2)]
-        for j in range(1, cpts_size_v - 1):
+        rv = [[0.0 for _ in range(dim)] for _ in range(size_v - 2)]
+        for j in range(1, size_v - 1):
             rv_tmp = []
             for idx, pt in enumerate(rkv):
                 rv_tmp.append([p * helpers.basis_function_one(degree_v, kv_v, j, vl[idx + 1]) for p in pt])
