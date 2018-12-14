@@ -10,13 +10,7 @@
 import os
 import struct
 import json
-from . import abstract
-from . import NURBS
-from . import multi
-from . import compatibility
-from . import operations
-from . import utilities
-from . import convert
+from . import abstract, NURBS, multi, compatibility, operations, utilities, convert
 from ._exchange import import_smesh_single, import_dict_crv, export_dict_crv, import_dict_surf, export_dict_surf
 
 

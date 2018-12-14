@@ -7,7 +7,7 @@
 
 """
 
-from geomdl import NURBS, compatibility
+from . import NURBS, compatibility
 
 
 def import_smesh_single(file_name):
