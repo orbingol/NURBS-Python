@@ -150,6 +150,23 @@ class VisCurve2D(vis.VisAbstract):
                 )
                 plot_data.append(figure)
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                figure = graph_objs.Scatter(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'][0],
+                        size=plot['color'][1],
+                        line=dict(
+                            width=self._config.line_width
+                        )
+                    )
+                )
+                plot_data.append(figure)
+
         plot_layout = dict(
             width=self._config.figure_size[0],
             height=self._config.figure_size[1],
@@ -259,6 +276,24 @@ class VisCurve3D(vis.VisAbstract):
                         width=self._config.line_width,
                         dash='dashdot',
                     ),
+                )
+                plot_data.append(figure)
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'][0],
+                        size=plot['color'][1],
+                        line=dict(
+                            width=self._config.line_width
+                        )
+                    )
                 )
                 plot_data.append(figure)
 
@@ -416,6 +451,25 @@ class VisSurface(vis.VisAbstractSurf):
                     )
                     plot_data.append(figure)
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'][0],
+                        size=plot['color'][1],
+                        line=dict(
+                            width=self._config.line_width
+                        )
+                    )
+                )
+                plot_data.append(figure)
+
         plot_layout = dict(
             width=self._config.figure_size[0],
             height=self._config.figure_size[1],
@@ -490,9 +544,9 @@ class VisVolume(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -508,7 +562,6 @@ class VisVolume(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -524,7 +577,6 @@ class VisVolume(vis.VisAbstract):
 
             # Plot bounding box
             if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -536,6 +588,24 @@ class VisVolume(vis.VisAbstract):
                         width=self._config.line_width,
                         dash='dashdot',
                     ),
+                )
+                plot_data.append(figure)
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                figure = graph_objs.Scatter3d(
+                    x=pts[:, 0],
+                    y=pts[:, 1],
+                    z=pts[:, 2],
+                    name=plot['name'],
+                    mode='markers',
+                    marker=dict(
+                        color=plot['color'][0],
+                        size=plot['color'][1],
+                        line= dict(
+                            width=self._config.line_width
+                        )
+                    )
                 )
                 plot_data.append(figure)
 

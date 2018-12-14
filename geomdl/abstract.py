@@ -494,7 +494,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         self._control_points = ctrlpts_float
 
-    # Runs visualization component to render the surface
+    # Runs visualization component to render the curve
     def render(self, **kwargs):
         """ Renders the curve using the visualization component
 
@@ -505,12 +505,33 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the curve
             * ``bboxcolor``: sets the color of the bounding box
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``extras``: adds line plots to the figure. *Default: None*
 
-        The ``plot`` argument is useful when you would like to work on the command line without any window context.
+        ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        ``extras`` argument can be used to add extra line plots to the figure. This argument expects a list of dicts
+        in the format described below:
+
+        .. code-block:: python
+
+            [
+                dict(  # line plot 1
+                    points=[[1, 2, 3], [4, 5, 6]],  # list of points
+                    name="My line Plot 1",  # name displayed on the legend
+                    color="red",   # color of the line plot
+                    size=6.5  # size of the line plot
+                ),
+                dict(  # line plot 2
+                    points=[[7, 8, 9], [10, 11, 12]],  # list of points
+                    name="My line Plot 2",  # name displayed on the legend
+                    color="navy",   # color of the line plot
+                    size=12.5  # size of the line plot
+                )
+            ]
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -521,19 +542,34 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        extra_plots = kwargs.get('extras', None)
 
         # Check all parameters are set
         self._check_variables()
 
-        # Check if the surface has been evaluated
+        # Check if the curve has been evaluated
         if self._curve_points is None or len(self._curve_points) == 0:
             self.evaluate()
 
-        # Run the visualization component
+        # Clear the visualization component
         self._vis_component.clear()
+
+        # Control points
         self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+
+        # Evaluated points
         self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+
+        # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+
+        # Extra plots
+        if extra_plots is not None:
+            for ep in extra_plots:
+                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
+                                        color=(ep['color'], ep['size']), plot_type='extras')
+
+        # Plot the curve
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
@@ -1455,13 +1491,34 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the surface
             * ``trimcolor``: sets the color of the trim curves
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. Default is True.
+            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``extras``: adds line plots to the figure. *Default: None*
             * ``colormap``: sets the colormap of the surface
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        ``extras`` argument can be used to add extra line plots to the figure. This argument expects a list of dicts
+        in the format described below:
+
+        .. code-block:: python
+
+            [
+                dict(  # line plot 1
+                    points=[[1, 2, 3], [4, 5, 6]],  # list of points
+                    name="My line Plot 1",  # name displayed on the legend
+                    color="red",   # color of the line plot
+                    size=6.5  # size of the line plot
+                ),
+                dict(  # line plot 2
+                    points=[[7, 8, 9], [10, 11, 12]],  # list of points
+                    name="My line Plot 2",  # name displayed on the legend
+                    color="navy",   # color of the line plot
+                    size=12.5  # size of the line plot
+                )
+            ]
 
         Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
         example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects a single
@@ -1477,6 +1534,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        extra_plots = kwargs.get('extras', None)
 
         # Get colormap and convert to a list
         surf_cmap = kwargs.get('colormap', None)
@@ -1523,6 +1581,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+
+        # Extra plots
+        if extra_plots is not None:
+            for ep in extra_plots:
+                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
+                                        color=(ep['color'], ep['size']), plot_type='extras')
 
         # Plot the surface
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
@@ -2590,6 +2654,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``extras``: adds line plots to the figure. *Default: None*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
             * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
@@ -2598,6 +2663,26 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
         plot window popping out. If you don't provide a file name, the name of the image file will be pulled from the
         configuration class.
+
+        ``extras`` argument can be used to add extra line plots to the figure. This argument expects a list of dicts
+        in the format described below:
+
+        .. code-block:: python
+
+            [
+                dict(  # line plot 1
+                    points=[[1, 2, 3], [4, 5, 6]],  # list of points
+                    name="My line Plot 1",  # name displayed on the legend
+                    color="red",   # color of the line plot
+                    size=6.5  # size of the line plot
+                ),
+                dict(  # line plot 2
+                    points=[[7, 8, 9], [10, 11, 12]],  # list of points
+                    name="My line Plot 2",  # name displayed on the legend
+                    color="navy",   # color of the line plot
+                    size=12.5  # size of the line plot
+                )
+            ]
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -2608,11 +2693,12 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         bboxcolor = kwargs.get('bboxcolor', 'darkorange')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        extra_plots = kwargs.get('extras', None)
 
         # Check all parameters are set
         self._check_variables()
 
-        # Check if the surface has been evaluated
+        # Check if the volume has been evaluated
         if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
 
@@ -2636,7 +2722,13 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
-        # Plot the surface
+        # Extra plots
+        if extra_plots is not None:
+            for ep in extra_plots:
+                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
+                                        color=(ep['color'], ep['size']), plot_type='extras')
+
+        # Plot the volume
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     @abc.abstractmethod

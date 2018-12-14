@@ -146,6 +146,13 @@ class VisCurve2D(vis.VisAbstract):
                 legend_proxy.append(bboxplt)
                 legend_names.append(plot['name'])
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                extrasplt, = plt.plot(pts[:, 0], pts[:, 1],
+                                      color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                legend_proxy.append(extrasplt)
+                legend_names.append(plot['name'])
+
         # Add legend
         if self._config.display_legend:
             plt.legend(legend_proxy, legend_names)
@@ -216,6 +223,14 @@ class VisCurve3D(vis.VisAbstract):
             if plot['type'] == 'bbox' and self._config.display_bbox:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -306,6 +321,15 @@ class VisSurfTriangle(vis.VisAbstractSurf):
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -390,6 +414,15 @@ class VisSurfWireframe(vis.VisAbstractSurf):
                     plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
@@ -513,6 +546,15 @@ class VisSurface(vis.VisAbstractSurf):
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -598,6 +640,15 @@ class VisSurfScatter(vis.VisAbstractSurf):
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
+            # Plot extras
+            if plot['type'] == 'extras':
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
         if self._config.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
@@ -645,9 +696,9 @@ class VisVolume(vis.VisAbstractVol):
 
         # Start plotting
         for plot in self._plots:
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
@@ -655,7 +706,6 @@ class VisVolume(vis.VisAbstractVol):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
@@ -663,9 +713,16 @@ class VisVolume(vis.VisAbstractVol):
 
             # Plot bounding box
             if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -716,9 +773,9 @@ class VisVoxel(vis.VisAbstractVol):
 
         # Start plotting
         for plot in self._plots:
+            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
@@ -746,9 +803,16 @@ class VisVoxel(vis.VisAbstractVol):
 
             # Plot bounding box
             if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
+                legend_proxy.append(plot_proxy)
+                legend_names.append(plot['name'])
+
+            # Plot extras
+            if plot['type'] == 'extras':
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
+                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
