@@ -168,7 +168,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         pt0 = points[j + (size_v * 0)]  # Qzero
         ptm = points[j + (size_v * (size_u - 1))]  # Qm
         rku = []
-        for i in range(1, cpts_size_u - 1):
+        for i in range(1, size_u - 1):
             ptk = points[j + (size_v * i)]
             n0p = helpers.basis_function_one(degree_u, kv_u, 0, uk[i])
             nnp = helpers.basis_function_one(degree_u, kv_u, cpts_size_u - 1, uk[i])
