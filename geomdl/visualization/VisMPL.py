@@ -149,7 +149,7 @@ class VisCurve2D(vis.VisAbstract):
             # Plot extras
             if plot['type'] == 'extras':
                 extrasplt, = plt.plot(pts[:, 0], pts[:, 1],
-                                      color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
+                                      color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
                 legend_proxy.append(extrasplt)
                 legend_names.append(plot['name'])
 
@@ -229,8 +229,8 @@ class VisCurve3D(vis.VisAbstract):
             # Plot extras
             if plot['type'] == 'extras':
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -325,8 +325,8 @@ class VisSurfTriangle(vis.VisAbstractSurf):
             if plot['type'] == 'extras':
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -419,8 +419,8 @@ class VisSurfWireframe(vis.VisAbstractSurf):
             if plot['type'] == 'extras':
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -550,8 +550,8 @@ class VisSurface(vis.VisAbstractSurf):
             if plot['type'] == 'extras':
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -644,8 +644,8 @@ class VisSurfScatter(vis.VisAbstractSurf):
             if plot['type'] == 'extras':
                 pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -721,8 +721,8 @@ class VisVolume(vis.VisAbstractVol):
             # Plot extras
             if plot['type'] == 'extras':
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
@@ -811,8 +811,8 @@ class VisVoxel(vis.VisAbstractVol):
             # Plot extras
             if plot['type'] == 'extras':
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
-                        color=plot['color'][0], linestyle=':', linewidth=plot['color'][1])
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle=':', color=plot['color'][0])
+                        color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
+                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
