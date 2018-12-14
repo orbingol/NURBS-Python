@@ -1,3 +1,12 @@
+"""
+.. module:: _exchange
+    :platform: Unix, Windows
+    :synopsis: Helper functions for exchange module
+
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+
+"""
+
 from geomdl import NURBS, compatibility
 
 
