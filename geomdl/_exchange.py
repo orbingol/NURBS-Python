@@ -6,7 +6,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
-
+from geomdl import abstract, multi
 from . import NURBS, compatibility
 
 
@@ -132,3 +132,144 @@ def export_dict_surf(obj):
         # Not a NURBS curve
         pass
     return data
+
+
+def read_file(file_name, **kwargs):
+    binary = kwargs.get('binary', False)
+    skip_lines = kwargs.get('skip_lines', 0)
+    fp_callback = kwargs.get('callback', None)
+    try:
+        with open(file_name, 'rb' if binary else 'r') as fp:
+            for _ in range(skip_lines):
+                next(fp)
+            content = fp.read() if fp_callback is None else fp_callback(fp)
+        return content
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def write_file(file_name, content, **kwargs):
+    binary = kwargs.get('binary', False)
+    callback = kwargs.get('callback', None)
+    try:
+        with open(file_name, 'wb' if binary else 'w') as fp:
+            fp.write(content) if callback is None else callback(fp, content)
+        return True
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def import_text_data(content, sep, col_sep=";", two_dimensional=False):
+    lines = content.strip().split("\n")
+    ctrlpts = []
+    if two_dimensional:
+        # Start reading file
+        size_u = 0
+        size_v = 0
+        for line in lines:
+            # Remove whitespace
+            line = line.strip()
+            # Convert the string containing the coordinates into a list
+            control_point_row = line.split(col_sep)
+            # Clean and convert the values
+            size_v = 0
+            for cpr in control_point_row:
+                ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
+                size_v += 1
+            size_u += 1
+
+        # Return control points, size in u- and v-directions
+        return ctrlpts, size_u, size_v
+    else:
+        # Start reading file
+        for line in lines:
+            # Remove whitespace
+            line = line.strip()
+            # Clean and convert the values
+            ctrlpts.append([float(c.strip()) for c in line.split(sep)])
+
+        # Return control points
+        return ctrlpts
+
+
+def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
+    result = ""
+    if two_dimensional:
+        for i in range(0, obj.ctrlpts_size_u):
+            line = ""
+            for j in range(0, obj.ctrlpts_size_v):
+                for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
+                    if idx:  # check for the first element
+                        line += sep
+                    line += str(coord)
+                if j != obj.ctrlpts_size_v - 1:
+                    line += col_sep
+                else:
+                    line += "\n"
+            result += line
+    else:
+        # B-spline or NURBS?
+        try:
+            ctrlpts = obj.ctrlptsw
+        except AttributeError:
+            ctrlpts = obj.ctrlpts
+        # Loop through points
+        for pt in ctrlpts:
+            result += sep.join(str(c) for c in pt) + "\n"
+
+    return result
+
+
+def import_dict(file_name, delta, callback):
+    type_map = {'curve': import_dict_crv, 'surface': import_dict_surf}
+
+    # Callback function
+    imported_data = read_file(file_name, callback=callback)
+
+    # Process imported data
+    ret_list = []
+    for data in imported_data['shape']['data']:
+        temp = type_map[imported_data['shape']['type']](data)
+        if 0.0 < delta < 1.0:
+            temp.delta = delta
+        ret_list.append(temp)
+
+    # Return imported data
+    return ret_list
+
+
+def export_dict(obj, file_name, callback):
+    count = 1
+    if isinstance(obj, abstract.Curve):
+        export_type = "curve"
+        data = [export_dict_crv(obj)]
+    elif isinstance(obj, abstract.Surface):
+        export_type = "surface"
+        data = [export_dict_surf(obj)]
+    elif isinstance(obj, multi.CurveContainer):
+        export_type = "curve"
+        data = [export_dict_crv(o) for o in obj]
+        count = len(obj)
+    elif isinstance(obj, multi.SurfaceContainer):
+        export_type = "surface"
+        data = [export_dict_surf(o) for o in obj]
+        count = len(obj)
+    else:
+        raise NotADirectoryError("Object type is not defined for dict export")
+
+    # Create the dictionary
+    data = dict(
+        shape=dict(
+            type=export_type,
+            count=count,
+            data=tuple(data)
+        )
+    )
+
+    return write_file(file_name, data, callback=callback)

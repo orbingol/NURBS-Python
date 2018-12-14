@@ -8,7 +8,7 @@
 """
 
 from . import BSpline, NURBS
-from ._convert import convert_curve, convert_surface, convert_volume
+from . import _convert
 
 
 def bspline_to_nurbs(obj):
@@ -22,11 +22,11 @@ def bspline_to_nurbs(obj):
     """
     # B-Spline -> NURBS
     if isinstance(obj, BSpline.Curve):
-        return convert_curve(obj, NURBS)
+        return _convert.convert_curve(obj, NURBS)
     elif isinstance(obj, BSpline.Surface):
-        return convert_surface(obj, NURBS)
+        return _convert.convert_surface(obj, NURBS)
     elif isinstance(obj, BSpline.Volume):
-        return convert_volume(obj, NURBS)
+        return _convert.convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
 
@@ -56,11 +56,11 @@ def nurbs_to_bspline(obj, **kwargs):
 
     # NURBS -> B-Spline
     if isinstance(obj, NURBS.Curve):
-        return convert_curve(obj, BSpline)
+        return _convert.convert_curve(obj, BSpline)
     elif isinstance(obj, NURBS.Surface):
-        return convert_surface(obj, BSpline)
+        return _convert.convert_surface(obj, BSpline)
     elif isinstance(obj, NURBS.Volume):
-        return convert_volume(obj, BSpline)
+        return _convert.convert_volume(obj, BSpline)
     else:
         raise TypeError("Input must be an instance of NURBS curve, surface or volume")
 

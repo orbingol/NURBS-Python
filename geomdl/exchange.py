@@ -11,7 +11,7 @@ import os
 import struct
 import json
 from . import abstract, NURBS, multi, compatibility, operations, utilities, convert
-from ._exchange import import_smesh_single, import_dict_crv, export_dict_crv, import_dict_surf, export_dict_surf
+from . import _exchange
 
 
 def import_txt(file_name, two_dimensional=False, **kwargs):
@@ -61,13 +61,13 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     :raises IOError: an error occurred reading the file
     """
     # Read file
-    content = _read_file(file_name)
+    content = _exchange.read_file(file_name)
 
     # File delimiters
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    return _import_text_data(content, sep, col_sep, two_dimensional)
+    return _exchange.import_text_data(content, sep, col_sep, two_dimensional)
 
 
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
@@ -100,8 +100,8 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    content = _export_text_data(obj, sep, col_sep, two_dimensional)
-    return _write_file(file_name, content)
+    content = _exchange.export_text_data(obj, sep, col_sep, two_dimensional)
+    return _exchange.write_file(file_name, content)
 
 
 def import_csv(file_name, **kwargs):
@@ -130,8 +130,8 @@ def import_csv(file_name, **kwargs):
     # File delimiters
     sep = kwargs.get('separator', ",")
 
-    content = _read_file(file_name, skip_lines=1)
-    return _import_text_data(content, sep)
+    content = _exchange.read_file(file_name, skip_lines=1)
+    return _exchange.import_text_data(content, sep)
 
 
 def export_csv(obj, file_name, point_type='evalpts', **kwargs):
@@ -168,7 +168,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
         line += ",".join([str(p) for p in pt]) + "\n"
 
     # Write to file
-    return _write_file(file_name, line)
+    return _exchange.write_file(file_name, line)
 
 
 def export_vtk(obj, file_name, point_type='evalpts'):
@@ -206,7 +206,7 @@ def export_vtk(obj, file_name, point_type='evalpts'):
         line += " ".join(str(c) for c in pt) + "\n"
 
     # Write to file
-    return _write_file(file_name, line)
+    return _exchange.write_file(file_name, line)
 
 
 def import_cfg(file_name, **kwargs):
@@ -236,7 +236,7 @@ def import_cfg(file_name, **kwargs):
     delta = kwargs.get('delta', -1.0)
 
     # Import data
-    return _import_dict_all(file_name, delta, callback)
+    return _exchange.import_dict(file_name, delta, callback)
 
 
 def export_cfg(obj, file_name):
@@ -267,7 +267,7 @@ def export_cfg(obj, file_name):
         return
 
     # Export data as a file
-    _export_dict_all(obj, file_name, callback)
+    _exchange.export_dict(obj, file_name, callback)
 
 
 def import_yaml(file_name, **kwargs):
@@ -298,7 +298,7 @@ def import_yaml(file_name, **kwargs):
     delta = kwargs.get('delta', -1.0)
 
     # Import data
-    return _import_dict_all(file_name, delta, callback)
+    return _exchange.import_dict(file_name, delta, callback)
 
 
 def export_yaml(obj, file_name):
@@ -329,7 +329,7 @@ def export_yaml(obj, file_name):
         return
 
     # Export data as a file
-    _export_dict_all(obj, file_name, callback)
+    _exchange.export_dict(obj, file_name, callback)
 
 
 def import_json(file_name, **kwargs):
@@ -348,7 +348,7 @@ def import_json(file_name, **kwargs):
     delta = kwargs.get('delta', -1.0)
 
     # Import data
-    return _import_dict_all(file_name, delta, callback)
+    return _exchange.import_dict(file_name, delta, callback)
 
 
 def export_json(obj, file_name):
@@ -367,7 +367,7 @@ def export_json(obj, file_name):
         fp.write(json.dumps(data, indent=4))
 
     # Export data as a file
-    _export_dict_all(obj, file_name, callback)
+    _exchange.export_dict(obj, file_name, callback)
 
 
 def export_obj(surface, file_name, **kwargs):
@@ -385,7 +385,7 @@ def export_obj(surface, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     content = export_obj_str(surface, **kwargs)
-    return _write_file(file_name, content)
+    return _exchange.write_file(file_name, content)
 
 
 def export_obj_str(surface, **kwargs):
@@ -490,7 +490,7 @@ def export_stl(surface, file_name, **kwargs):
     if 'binary' in kwargs:
         kwargs.pop('binary')
     content = export_stl_str(surface, binary=binary, **kwargs)
-    return _write_file(file_name, content, binary=binary)
+    return _exchange.write_file(file_name, content, binary=binary)
 
 
 def export_stl_str(surface, **kwargs):
@@ -571,7 +571,7 @@ def export_off(surface, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     content = export_off_str(surface, **kwargs)
-    return _write_file(file_name, content)
+    return _exchange.write_file(file_name, content)
 
 
 def export_off_str(surface, **kwargs):
@@ -668,12 +668,12 @@ def import_smesh(file):
     :raises IOError: an error occurred reading the file
     """
     if os.path.isfile(file):
-        return import_smesh_single(file)
+        return _exchange.import_smesh_single(file)
     elif os.path.isdir(file):
         files = sorted([os.path.join(file, f) for f in os.listdir(file)])
         surf = multi.SurfaceContainer()
         for f in files:
-            surf.add(import_smesh_single(f))
+            surf.add(_exchange.import_smesh_single(f))
         return surf
     else:
         raise IOError("Input is not a file or a directory")
@@ -720,7 +720,7 @@ def export_smesh(surface, file_name, **kwargs):
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
-        _write_file(fname_curr + fext, line)
+        _exchange.write_file(fname_curr + fext, line)
 
 
 def export_vmesh(volume, file_name, **kwargs):
@@ -767,7 +767,7 @@ def export_vmesh(volume, file_name, **kwargs):
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
-        _write_file(fname_curr + fext, line)
+        _exchange.write_file(fname_curr + fext, line)
 
 
 def import_3dm(file_name, **kwargs):
@@ -844,10 +844,8 @@ def export_3dm(obj, file_name, **kwargs):
                     points=o.ctrlpts
                 )
             )
-            try:
+            if o.rational:
                 rd['control_points']['weights'] = o.weights
-            except AttributeError:
-                pass
             res3dm.append(rd)
         if isinstance(o, abstract.Surface):
             rd = dict(
@@ -862,151 +860,10 @@ def export_3dm(obj, file_name, **kwargs):
                     points=o.ctrlpts
                 )
             )
-            try:
+            if o.rational:
                 rd['control_points']['weights'] = o.weights
-            except AttributeError:
-                pass
             res3dm.append(rd)
 
     rw3dm.write(res3dm, file_name)
 
 
-def _read_file(file_name, **kwargs):
-    binary = kwargs.get('binary', False)
-    skip_lines = kwargs.get('skip_lines', 0)
-    fp_callback = kwargs.get('callback', None)
-    try:
-        with open(file_name, 'rb' if binary else 'r') as fp:
-            for _ in range(skip_lines):
-                next(fp)
-            content = fp.read() if fp_callback is None else fp_callback(fp)
-        return content
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
-
-
-def _write_file(file_name, content, **kwargs):
-    binary = kwargs.get('binary', False)
-    callback = kwargs.get('callback', None)
-    try:
-        with open(file_name, 'wb' if binary else 'w') as fp:
-            fp.write(content) if callback is None else callback(fp, content)
-        return True
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
-
-
-def _import_text_data(content, sep, col_sep=";", two_dimensional=False):
-    lines = content.strip().split("\n")
-    ctrlpts = []
-    if two_dimensional:
-        # Start reading file
-        size_u = 0
-        size_v = 0
-        for line in lines:
-            # Remove whitespace
-            line = line.strip()
-            # Convert the string containing the coordinates into a list
-            control_point_row = line.split(col_sep)
-            # Clean and convert the values
-            size_v = 0
-            for cpr in control_point_row:
-                ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
-                size_v += 1
-            size_u += 1
-
-        # Return control points, size in u- and v-directions
-        return ctrlpts, size_u, size_v
-    else:
-        # Start reading file
-        for line in lines:
-            # Remove whitespace
-            line = line.strip()
-            # Clean and convert the values
-            ctrlpts.append([float(c.strip()) for c in line.split(sep)])
-
-        # Return control points
-        return ctrlpts
-
-
-def _export_text_data(obj, sep, col_sep=";", two_dimensional=False):
-    result = ""
-    if two_dimensional:
-        for i in range(0, obj.ctrlpts_size_u):
-            line = ""
-            for j in range(0, obj.ctrlpts_size_v):
-                for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
-                    if idx:  # check for the first element
-                        line += sep
-                    line += str(coord)
-                if j != obj.ctrlpts_size_v - 1:
-                    line += col_sep
-                else:
-                    line += "\n"
-            result += line
-    else:
-        # B-spline or NURBS?
-        try:
-            ctrlpts = obj.ctrlptsw
-        except AttributeError:
-            ctrlpts = obj.ctrlpts
-        # Loop through points
-        for pt in ctrlpts:
-            result += sep.join(str(c) for c in pt) + "\n"
-
-    return result
-
-
-def _import_dict_all(file_name, delta, callback):
-    type_map = {'curve': import_dict_crv, 'surface': import_dict_surf}
-
-    # Callback function
-    imported_data = _read_file(file_name, callback=callback)
-
-    # Process imported data
-    ret_list = []
-    for data in imported_data['shape']['data']:
-        temp = type_map[imported_data['shape']['type']](data)
-        if 0.0 < delta < 1.0:
-            temp.delta = delta
-        ret_list.append(temp)
-
-    # Return imported data
-    return ret_list
-
-
-def _export_dict_all(obj, file_name, callback):
-    count = 1
-    if isinstance(obj, abstract.Curve):
-        export_type = "curve"
-        data = [export_dict_crv(obj)]
-    elif isinstance(obj, abstract.Surface):
-        export_type = "surface"
-        data = [export_dict_surf(obj)]
-    elif isinstance(obj, multi.CurveContainer):
-        export_type = "curve"
-        data = [export_dict_crv(o) for o in obj]
-        count = len(obj)
-    elif isinstance(obj, multi.SurfaceContainer):
-        export_type = "surface"
-        data = [export_dict_surf(o) for o in obj]
-        count = len(obj)
-    else:
-        raise NotADirectoryError("Object type is not defined for dict export")
-
-    # Create the dictionary
-    data = dict(
-        shape=dict(
-            type=export_type,
-            count=count,
-            data=tuple(data)
-        )
-    )
-
-    return _write_file(file_name, data, callback=callback)
