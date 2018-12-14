@@ -7,8 +7,8 @@
 
 """
 
-from . import BSpline
-from . import NURBS
+from . import BSpline, NURBS
+from ._convert import convert_curve, convert_surface, convert_volume
 
 
 def bspline_to_nurbs(obj):
@@ -22,11 +22,11 @@ def bspline_to_nurbs(obj):
     """
     # B-Spline -> NURBS
     if isinstance(obj, BSpline.Curve):
-        return _convert_curve(obj, NURBS)
+        return convert_curve(obj, NURBS)
     elif isinstance(obj, BSpline.Surface):
-        return _convert_surface(obj, NURBS)
+        return convert_surface(obj, NURBS)
     elif isinstance(obj, BSpline.Volume):
-        return _convert_volume(obj, NURBS)
+        return convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
 
@@ -56,45 +56,12 @@ def nurbs_to_bspline(obj, **kwargs):
 
     # NURBS -> B-Spline
     if isinstance(obj, NURBS.Curve):
-        return _convert_curve(obj, BSpline)
+        return convert_curve(obj, BSpline)
     elif isinstance(obj, NURBS.Surface):
-        return _convert_surface(obj, BSpline)
+        return convert_surface(obj, BSpline)
     elif isinstance(obj, NURBS.Volume):
-        return _convert_volume(obj, BSpline)
+        return convert_volume(obj, BSpline)
     else:
         raise TypeError("Input must be an instance of NURBS curve, surface or volume")
 
 
-def _convert_curve(incrv, outtype):
-    outcrv = outtype.Curve()
-    outcrv.degree = incrv.degree
-    outcrv.ctrlpts = incrv.ctrlpts
-    outcrv.knotvector = incrv.knotvector
-    return outcrv
-
-
-def _convert_surface(insrf, outtype):
-    outsrf = outtype.Surface()
-    outsrf.degree_u = insrf.degree_u
-    outsrf.degree_v = insrf.degree_v
-    outsrf.ctrlpts_size_u = insrf.ctrlpts_size_u
-    outsrf.ctrlpts_size_v = insrf.ctrlpts_size_v
-    outsrf.ctrlpts = insrf.ctrlpts
-    outsrf.knotvector_u = insrf.knotvector_u
-    outsrf.knotvector_v = insrf.knotvector_v
-    return outsrf
-
-
-def _convert_volume(invol, outtype):
-    outvol = outtype.Volume()
-    outvol.degree_u = invol.degree_u
-    outvol.degree_v = invol.degree_v
-    outvol.degree_w = invol.degree_w
-    outvol.ctrlpts_size_u = invol.ctrlpts_size_u
-    outvol.ctrlpts_size_v = invol.ctrlpts_size_v
-    outvol.ctrlpts_size_w = invol.ctrlpts_size_w
-    outvol.ctrlpts = invol.ctrlpts
-    outvol.knotvector_u = invol.knotvector_u
-    outvol.knotvector_v = invol.knotvector_v
-    outvol.knotvector_w = invol.knotvector_w
-    return outvol
