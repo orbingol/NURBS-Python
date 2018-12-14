@@ -7,7 +7,7 @@
 
 """
 
-from typing import List, Tuple
+from typing import Sequence, List, Tuple
 import math
 from . import BSpline
 from . import utilities
@@ -15,7 +15,7 @@ from . import helpers
 
 
 def interpolate_curve(points, degree, **kwargs):
-    # type: (List[List[float]], int, **bool) -> BSpline.Curve
+    # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
     """ Curve interpolation through the data points.
 
     Please see Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
@@ -56,7 +56,7 @@ def interpolate_curve(points, degree, **kwargs):
 
 
 def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    # type: (List[List[float]], int, int, int, int, **bool) -> BSpline.Surface
+    # type: (Sequence[Sequence[float]], int, int, int, int, **bool) -> BSpline.Surface
     """ Surface interpolation through the data points.
 
     Please refer to the Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
@@ -115,7 +115,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    # type: (List[List[float]], int, int, int, int, **bool) -> BSpline.Surface
+    # type: (Sequence[Sequence[float]], int, int, int, int, **bool) -> BSpline.Surface
     """ Surface approximation using least squares method with fixed number of control points.
 
     This algorithm interpolates the corner control points and approximates the inner control points. Please refer to
@@ -257,7 +257,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def compute_knot_vector(degree, num_points, params):
-    # type: (int, int, List[float]) -> List[float]
+    # type: (int, int, Sequence[float]) -> List[float]
     """ Computes a knot vector from the parameter list using averaging method.
 
     Please refer to the Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
@@ -286,7 +286,7 @@ def compute_knot_vector(degree, num_points, params):
 
 
 def compute_knot_vector2(degree, num_dpts, num_cpts, params):
-    # type: (int, int, int, List[float]) -> List[float]
+    # type: (int, int, int, Sequence[float]) -> List[float]
     """ Computes a knot vector ensuring that every knot span has at least one :math:`\\overline{u}_{k}`.
 
     Please refer to the Equations 9.68 and 9.69 on The NURBS Book (2nd Edition), p.412 for details.
@@ -321,7 +321,7 @@ def compute_knot_vector2(degree, num_dpts, num_cpts, params):
 
 
 def compute_params_curve(points, centripetal):
-    # type: (List[List[float]], bool) -> List[float]
+    # type: (Sequence[Sequence[float]], bool) -> List[float]
     """ Computes :math:`\\overline{u}_{k}` for curves.
 
     Please refer to the Equations 9.4 and 9.5 for chord length parametrization, and Equation 9.6 for centripetal method
@@ -356,7 +356,7 @@ def compute_params_curve(points, centripetal):
 
 
 def compute_params_surface(points, size_u, size_v, centripetal):
-    # type: (List[List[float]], int, int, bool) -> Tuple[List[float], List[float]]
+    # type: (Sequence[Sequence[float]], int, int, bool) -> Tuple[List[float], List[float]]
     """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
 
     The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
@@ -409,7 +409,7 @@ def compute_params_surface(points, size_u, size_v, centripetal):
 
 
 def ginterp(coeff_matrix, points):
-    # type: (List[List[float]], List[List[float]]) -> List[List[float]]
+    # type: (Sequence[Sequence[float]], Sequence[Sequence[float]]) -> List[List[float]]
     """ Applies global interpolation to the set of data points to find control points.
 
     :param coeff_matrix: coefficient matrix
@@ -440,7 +440,7 @@ def ginterp(coeff_matrix, points):
 
 
 def _build_coeff_matrix(degree, knotvector, params, points):
-    # type: (int, List[float], List[float], List[List[float]]) -> List[List[float]]
+    # type: (int, Sequence[float], Sequence[float], Sequence[Sequence[float]]) -> List[List[float]]
     """ Builds the coefficient matrix for global interpolation.
 
     This function only uses data points to build the coefficient matrix. Please refer to The NURBS Book (2nd Edition),
@@ -471,7 +471,7 @@ def _build_coeff_matrix(degree, knotvector, params, points):
 
 
 def _build_coeff_matrix_ders(degree, knotvector, params, points):
-    # type: (int, List[float], List[float], List[List[float]]) -> List[List[float]]
+    # type: (int, Sequence[float], Sequence[float], Sequence[Sequence[float]]) -> List[List[float]]
     """ Builds the coefficient matrix for global interpolation.
 
     This function uses data points and first derivatives to build the coefficient matrix. Please refer to The NURBS Book
