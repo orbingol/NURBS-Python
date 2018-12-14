@@ -122,7 +122,7 @@ def extract_curves(psurf):
     for u in range(size_u):
         curve = obj()
         curve.degree = degree_v
-        curve.ctrlpts = [cpts[v + (size_v * u)] for v in range(size_v)]
+        curve.set_ctrlpts([cpts[v + (size_v * u)] for v in range(size_v)])
         curve.knotvector = kv_v
         crvlist_v.append(curve)
 
@@ -131,7 +131,7 @@ def extract_curves(psurf):
     for v in range(size_v):
         curve = obj()
         curve.degree = degree_u
-        curve.ctrlpts = [cpts[v + (size_v * u)] for u in range(size_u)]
+        curve.set_ctrlpts([cpts[v + (size_v * u)] for u in range(size_u)])
         curve.knotvector = kv_u
         crvlist_u.append(curve)
 
