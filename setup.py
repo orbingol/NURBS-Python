@@ -194,11 +194,16 @@ if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
     # Add Cython-compiled module to the packages list
     packages.append('geomdl.core')
 
+# Required packages
+required = []
+
 # Add Enum type support for Python versions < 3.4
 if sys.version_info[:2] < (3, 4):
-    required = ['enum34']
-else:
-    required = []
+    required += ['enum34']
+
+# Add type hints support for Python versions < 3.5
+if sys.version_info[:2] < (3, 5):
+    required += ['typing']
 
 data = dict(
     name='geomdl',
