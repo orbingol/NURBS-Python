@@ -202,7 +202,7 @@ def approximate_curve(points, degree, **kwargs):
 
 
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    # type: (Sequence[Sequence[float]], int, int, int, int, **bool) -> BSpline.Surface
+    # type: (Sequence[Sequence[float]], int, int, int, int, **int) -> BSpline.Surface
     """ Surface approximation using least squares method with fixed number of control points.
 
     This algorithm interpolates the corner control points and approximates the remaining control points. Please refer to
