@@ -30,7 +30,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
         # Import surface control points from a text file (2-dimensional file)
         surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
 
-    If keyword argument ``jinja=True`` is set, then the input file is processed as a `Jinja2 <http://jinja.pocoo.org/>`_
+    If argument ``jinja2=True`` is set, then the input file is processed as a `Jinja2 <http://jinja.pocoo.org/>`_
     template. You can also use the following convenience template functions which correspond to the given mathematical
     equations:
 
