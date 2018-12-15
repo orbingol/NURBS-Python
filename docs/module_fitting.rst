@@ -7,6 +7,7 @@ Please see the following functions for details:
 
 * :py:func:`.interpolate_curve`
 * :py:func:`.interpolate_surface`
+* :py:func:`.approximate_curve`
 * :py:func:`.approximate_surface`
 
 Function Reference
