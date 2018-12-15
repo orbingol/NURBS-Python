@@ -18,7 +18,7 @@ def interpolate_curve(points, degree, **kwargs):
     # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
     """ Curve interpolation through the data points.
 
-    Please see Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
+    Please refer to Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
 
     Keyword Arguments:
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
@@ -118,7 +118,7 @@ def approximate_curve(points, degree, **kwargs):
     # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
     """ Weighted and unconstrained curve approximation using least squares method with fixed number of control points.
 
-    Please see Algorithm A9.6 on The NURBS Book (2nd Edition), pp.417-419 for details.
+    Please refer to Algorithm A9.6 on The NURBS Book (2nd Edition), pp.417-419 for details.
 
     Keyword Arguments:
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
