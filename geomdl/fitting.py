@@ -114,6 +114,84 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     return surf
 
 
+def approximate_curve(points, degree, **kwargs):
+    # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
+    """ Weighted and unconstrained curve approximation using least squares method with fixed number of control points.
+
+    Please see Algorithm A9.6 on The NURBS Book (2nd Edition), pp.417-419 for details.
+
+    Keyword Arguments:
+        * ``centripetal``: activates centripetal parametrization method. *Default: False*
+        * ``ctrlpts_size``: number of control points to fix the curve. *Default: len(points) - 1*
+        * ``weights``: weights for the least squares fitting. *Default: 1.0 x len(points)*
+
+    :param points: data points
+    :type points: list, tuple
+    :param degree: degree of the output parametric curve
+    :type degree: int
+    :return: interpolated B-Spline curve
+    :rtype: BSpline.Curve
+    """
+    # Number of data points
+    num_dpts = len(points)  # corresponds to variable "r" in the algorithm
+
+    # Get keyword arguments
+    use_centripetal = kwargs.get('centripetal', False)
+    num_cpts = kwargs.get('ctrlpts_size', num_dpts - 1)  # number of datapts > number of ctrlpts, n + 1
+    weights = kwargs.get('weights', [1.0 for _ in range(num_dpts)])  # weights for LS-fitting
+
+    # Dimension
+    dim = len(points[0])
+
+    # Get uk
+    uk = compute_params_curve(points, use_centripetal)
+
+    # Compute knot vector
+    kv = compute_knot_vector2(degree, num_dpts, num_cpts, uk)
+
+    # Find basis functions
+    spans = helpers.find_spans(degree, kv, num_cpts, uk)
+    basis = helpers.basis_functions(degree, kv, spans, uk)  # matrix N
+
+    # Unconstrained weighted least squares approximation
+    matrix_ws = [[] for _ in range(num_dpts)]
+    matrix_wn = [[] for _ in range(num_dpts)]
+    for i in range(num_dpts):
+        # Compute WS matrix
+        matrix_ws[i] = [pt * weights[i] for pt in points[i]]
+        # Compute WN matrix
+        matrix_wn[i] = [b * weights[i] for b in basis[i]]
+
+    # Compute NT
+    basis_t = utilities.matrix_transpose(basis)
+
+    # Compute NTWN matrix
+    matrix_ntwn = utilities.matrix_multiply(basis_t, matrix_wn)
+
+    # Compute NTWS matrix
+    matrix_ntws = utilities.matrix_multiply(basis_t, matrix_ws)
+
+    # LU-factorization
+    matrix_l, matrix_u = utilities.lu_decomposition(matrix_ntwn)
+
+    # Eqn 9.71
+    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts)]
+    for i in range(dim):
+        b = [pt[i] for pt in matrix_ntws]
+        y = utilities.forward_substitution(matrix_l, b)
+        x = utilities.backward_substitution(matrix_u, y)
+        for j in range(num_cpts):
+            ctrlpts[j][i] = x[j]
+
+    # Generate B-spline curve
+    curve = BSpline.Curve()
+    curve.degree = degree
+    curve.ctrlpts = ctrlpts
+    curve.knotvector = kv
+
+    return curve
+
+
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # type: (Sequence[Sequence[float]], int, int, int, int, **bool) -> BSpline.Surface
     """ Surface approximation using least squares method with fixed number of control points.
