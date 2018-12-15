@@ -116,13 +116,13 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 def approximate_curve(points, degree, **kwargs):
     # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
-    """ Weighted and unconstrained curve approximation using least squares method with fixed number of control points.
+    """ Weighted curve approximation using least squares method with fixed number of control points.
 
     Please refer to Algorithm A9.6 on The NURBS Book (2nd Edition), pp.417-419 for details.
 
     Keyword Arguments:
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
-        * ``ctrlpts_size``: number of control points to fix the curve. *Default: len(points) - 1*
+        * ``ctrlpts_size``: number of control points to fix the curve. *Default: degree + 1*
         * ``weights``: weights for the least squares fitting. *Default: 1.0 x len(points)*
 
     :param points: data points
@@ -137,8 +137,16 @@ def approximate_curve(points, degree, **kwargs):
 
     # Get keyword arguments
     use_centripetal = kwargs.get('centripetal', False)
-    num_cpts = kwargs.get('ctrlpts_size', num_dpts - 1)  # number of datapts > number of ctrlpts, n + 1
+    num_cpts = kwargs.get('ctrlpts_size', num_dpts - 1)
+
+    # Unfortunately, since we don't use derivatives of the data points, the following becomes a hard condition:
+    if num_cpts > degree + 1:
+        raise ValueError("Cannot approximate curve: Too many data points")
+
+    # Weights vector for least squares approximation
     weights = kwargs.get('weights', [1.0 for _ in range(num_dpts)])  # weights for LS-fitting
+    if len(weights) != num_dpts:
+        raise ValueError("Number of weights and data points should be the same")
 
     # Dimension
     dim = len(points[0])
@@ -152,6 +160,7 @@ def approximate_curve(points, degree, **kwargs):
     # Find basis functions
     spans = helpers.find_spans(degree, kv, num_cpts, uk)
     basis = helpers.basis_functions(degree, kv, spans, uk)  # matrix N
+    # basis_ders = helpers.basis_functions_ders(degree, kv, spans, uk, 1)
 
     # Unconstrained weighted least squares approximation
     matrix_ws = [[] for _ in range(num_dpts)]
