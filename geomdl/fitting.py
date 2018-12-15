@@ -115,21 +115,20 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def approximate_curve(points, degree, **kwargs):
-    # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
-    """ Weighted curve approximation using least squares method with fixed number of control points.
+    # type: (Sequence[Sequence[float]], int, **int) -> BSpline.Curve
+    """ Curve approximation using least squares method with fixed number of control points.
 
-    Please refer to Algorithm A9.6 on The NURBS Book (2nd Edition), pp.417-419 for details.
+    Please refer to The NURBS Book (2nd Edition), pp.410-413 for details.
 
     Keyword Arguments:
         * ``centripetal``: activates centripetal parametrization method. *Default: False*
-        * ``ctrlpts_size``: number of control points to fix the curve. *Default: degree + 1*
-        * ``weights``: weights for the least squares fitting. *Default: 1.0 x len(points)*
+        * ``ctrlpts_size``: number of control points. *Default: len(points) - 1*
 
     :param points: data points
     :type points: list, tuple
     :param degree: degree of the output parametric curve
     :type degree: int
-    :return: interpolated B-Spline curve
+    :return: approximated B-Spline curve
     :rtype: BSpline.Curve
     """
     # Number of data points
@@ -138,15 +137,6 @@ def approximate_curve(points, degree, **kwargs):
     # Get keyword arguments
     use_centripetal = kwargs.get('centripetal', False)
     num_cpts = kwargs.get('ctrlpts_size', num_dpts - 1)
-
-    # Unfortunately, since we don't use derivatives of the data points, the following becomes a hard condition:
-    if num_cpts > degree + 1:
-        raise ValueError("Cannot approximate curve: Too many data points")
-
-    # Weights vector for least squares approximation
-    weights = kwargs.get('weights', [1.0 for _ in range(num_dpts)])  # weights for LS-fitting
-    if len(weights) != num_dpts:
-        raise ValueError("Number of weights and data points should be the same")
 
     # Dimension
     dim = len(points[0])
@@ -157,40 +147,59 @@ def approximate_curve(points, degree, **kwargs):
     # Compute knot vector
     kv = compute_knot_vector2(degree, num_dpts, num_cpts, uk)
 
-    # Find basis functions
-    spans = helpers.find_spans(degree, kv, num_cpts, uk)
-    basis = helpers.basis_functions(degree, kv, spans, uk)  # matrix N
-    # basis_ders = helpers.basis_functions_ders(degree, kv, spans, uk, 1)
-
-    # Unconstrained weighted least squares approximation
-    matrix_ws = [[] for _ in range(num_dpts)]
-    matrix_wn = [[] for _ in range(num_dpts)]
-    for i in range(num_dpts):
-        # Compute WS matrix
-        matrix_ws[i] = [pt * weights[i] for pt in points[i]]
-        # Compute WN matrix
-        matrix_wn[i] = [b * weights[i] for b in basis[i]]
+    # Compute matrix N
+    matrix_n = []
+    for i in range(1, num_dpts - 1):
+        m_temp = []
+        for j in range(1, num_cpts - 1):
+            m_temp.append(helpers.basis_function_one(degree, kv, j, uk[i]))
+        matrix_n.append(m_temp)
 
     # Compute NT
-    basis_t = utilities.matrix_transpose(basis)
+    matrix_nt = utilities.matrix_transpose(matrix_n)
 
-    # Compute NTWN matrix
-    matrix_ntwn = utilities.matrix_multiply(basis_t, matrix_wn)
-
-    # Compute NTWS matrix
-    matrix_ntws = utilities.matrix_multiply(basis_t, matrix_ws)
+    # Compute NTN matrix
+    matrix_ntn = utilities.matrix_multiply(matrix_nt, matrix_n)
 
     # LU-factorization
-    matrix_l, matrix_u = utilities.lu_decomposition(matrix_ntwn)
+    matrix_l, matrix_u = utilities.lu_decomposition(matrix_ntn)
 
-    # Eqn 9.71
+    # Initialize control points array
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts)]
+
+    # Fix start and end points
+    ctrlpts[0] = list(points[0])
+    ctrlpts[-1] = list(points[-1])
+
+    # Compute Rk - Eqn 9.63
+    pt0 = points[0]  # Qzero
+    ptm = points[-1]  # Qm
+    rk = []
+    for i in range(1, num_dpts - 1):
+        ptk = points[i]
+        n0p = helpers.basis_function_one(degree, kv, 0, uk[i])
+        nnp = helpers.basis_function_one(degree, kv, num_cpts - 1, uk[i])
+        elem2 = [c * n0p for c in pt0]
+        elem3 = [c * nnp for c in ptm]
+        rk.append([a - b - c for a, b, c in zip(ptk, elem2, elem3)])
+
+    # Compute R - Eqn. 9.67
+    vector_r = [[0.0 for _ in range(dim)] for _ in range(num_cpts - 2)]
+    for i in range(1, num_cpts - 1):
+        ru_tmp = []
+        for idx, pt in enumerate(rk):
+            ru_tmp.append([p * helpers.basis_function_one(degree, kv, i, uk[idx + 1]) for p in pt])
+        for d in range(dim):
+            for idx in range(len(ru_tmp)):
+                vector_r[i - 1][d] += ru_tmp[idx][d]
+
+    # Computer control points
     for i in range(dim):
-        b = [pt[i] for pt in matrix_ntws]
+        b = [pt[i] for pt in vector_r]
         y = utilities.forward_substitution(matrix_l, b)
         x = utilities.backward_substitution(matrix_u, y)
-        for j in range(num_cpts):
-            ctrlpts[j][i] = x[j]
+        for j in range(1, num_cpts - 1):
+            ctrlpts[j][i] = x[j - 1]
 
     # Generate B-spline curve
     curve = BSpline.Curve()
