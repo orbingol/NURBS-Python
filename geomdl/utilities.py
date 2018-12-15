@@ -398,7 +398,7 @@ def matrix_multiply(m1, m2):
     :return: resultant matrix with dimensions :math:`(n \\times m)`
     :rtype: list, tuple
     """
-    mm = [[0.0 for _ in range(len(m1))] for _ in range(len(m2[0]))]
+    mm = [[0.0 for _ in range(len(m2[0]))] for _ in range(len(m1))]
     for i in range(len(m1)):
         for j in range(len(m2[0])):
             for k in range(len(m2)):
