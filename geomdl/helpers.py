@@ -292,6 +292,28 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
     return ders
 
 
+def basis_functions_ders(degree, knot_vector, spans, knots, order):
+    """ Computes derivatives of the basis functions for a list of parameters.
+
+    :param degree: degree, :math:`p`
+    :type degree: int
+    :param knot_vector: knot vector, :math:`U`
+    :type knot_vector: list, tuple
+    :param spans: list of knot spans
+    :type spans:  list, tuple
+    :param knots: list of knots or parameters
+    :type knots: list, tuple
+    :param order: order of the derivative
+    :type order: int
+    :return: derivatives of the basis functions
+    :rtype: list
+    """
+    basis_ders = []
+    for span, knot in zip(spans, knots):
+        basis_ders.append(basis_function_ders(degree, knot_vector, span, knot, order))
+    return basis_ders
+
+
 def basis_function_one(degree, knot_vector, span, knot):
     """ Computes the value of a basis function for a single parameter.
 
