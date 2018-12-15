@@ -12,6 +12,55 @@ from . import abstract, multi
 from . import NURBS, compatibility
 
 
+def process_template(file_src):
+    """ Process Jinja2 template input
+
+    :param file_src: file contents
+    :type file_src: str
+    """
+    def t_sqrt(val):
+        """ Square-root of the input value """
+        return math.sqrt(val)
+
+    def t_cubert(val):
+        """ Cube-root of the input value """
+        return val**(1.0 / 3.0) if val >= 0 else -(-val)**(1.0 / 3.0)
+
+    def t_pow(val, pow):
+        """ 'val' to the power 'pow' """
+        return math.pow(val, pow)
+
+    # Check if it is possible to import 'jinja2'
+    try:
+        import jinja2
+    except ImportError:
+        print("Please install 'jinja2' package to use templated input: pip install jinja2")
+        return
+
+    # Replace jinja2 template tags for compatibility
+    fsrc = file_src.replace("{%", "<%").replace("%}", "%>").replace("{{", "<{").replace("}}", "}>")
+
+    # Generate Jinja2 environment
+    env = jinja2.Environment(
+        loader=jinja2.BaseLoader(),
+        trim_blocks=True,
+        block_start_string='<%', block_end_string='%>',
+        variable_start_string='<{', variable_end_string='}>'
+    ).from_string(fsrc)
+
+    # Load custom functions into the Jinja2 environment
+    template_funcs = dict(
+        sqrt=t_sqrt,
+        cubert=t_cubert,
+        pow=t_pow,
+    )
+    for k, v in template_funcs.items():
+        env.globals[k] = v
+
+    # Process Jinja2 template functions & variables inside the input file
+    return env.render()
+
+
 def read_file(file_name, **kwargs):
     binary = kwargs.get('binary', False)
     skip_lines = kwargs.get('skip_lines', 0)

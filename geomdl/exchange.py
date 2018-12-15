@@ -30,6 +30,14 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
         # Import surface control points from a text file (2-dimensional file)
         surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
 
+    If keyword argument ``jinja=True`` is set, then the input file is processed as a `Jinja2 <http://jinja.pocoo.org/>`_
+    template. You can also use the following convenience template functions which correspond to the given mathematical
+    equations:
+
+    * ``sqrt(x)``:  :math:`\\sqrt{x}`
+    * ``cubert(x)``: :math:`\\sqrt[3]{x}`
+    * ``pow(x, y)``: :math:`x^{y}`
+
     You may set the file delimiters using the keyword arguments ``separator`` and ``col_separator``, respectively.
     ``separator`` is the delimiter between the coordinates of the control points. It could be comma
     ``1, 2, 3`` or space ``1 2 3`` or something else. ``col_separator`` is the delimiter between the control
@@ -62,6 +70,11 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     """
     # Read file
     content = _exchange.read_file(file_name)
+
+    # Are we using a Jinja2 template?
+    j2tmpl = kwargs.get('jinja2', False)
+    if j2tmpl:
+        content = _exchange.process_template(content)
 
     # File delimiters
     col_sep = kwargs.get('col_separator', ";")
