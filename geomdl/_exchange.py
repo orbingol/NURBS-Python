@@ -6,8 +6,41 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
-from geomdl import abstract, multi
+
+import math
+from . import abstract, multi
 from . import NURBS, compatibility
+
+
+def read_file(file_name, **kwargs):
+    binary = kwargs.get('binary', False)
+    skip_lines = kwargs.get('skip_lines', 0)
+    fp_callback = kwargs.get('callback', None)
+    try:
+        with open(file_name, 'rb' if binary else 'r') as fp:
+            for _ in range(skip_lines):
+                next(fp)
+            content = fp.read() if fp_callback is None else fp_callback(fp)
+        return content
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
+
+
+def write_file(file_name, content, **kwargs):
+    binary = kwargs.get('binary', False)
+    callback = kwargs.get('callback', None)
+    try:
+        with open(file_name, 'wb' if binary else 'w') as fp:
+            fp.write(content) if callback is None else callback(fp, content)
+        return True
+    except IOError as e:
+        print("An error occurred: {}".format(e.args[-1]))
+        raise e
+    except Exception:
+        raise
 
 
 def import_smesh_single(file_name):
@@ -132,37 +165,6 @@ def export_dict_surf(obj):
         # Not a NURBS curve
         pass
     return data
-
-
-def read_file(file_name, **kwargs):
-    binary = kwargs.get('binary', False)
-    skip_lines = kwargs.get('skip_lines', 0)
-    fp_callback = kwargs.get('callback', None)
-    try:
-        with open(file_name, 'rb' if binary else 'r') as fp:
-            for _ in range(skip_lines):
-                next(fp)
-            content = fp.read() if fp_callback is None else fp_callback(fp)
-        return content
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
-
-
-def write_file(file_name, content, **kwargs):
-    binary = kwargs.get('binary', False)
-    callback = kwargs.get('callback', None)
-    try:
-        with open(file_name, 'wb' if binary else 'w') as fp:
-            fp.write(content) if callback is None else callback(fp, content)
-        return True
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
 
 
 def import_text_data(content, sep, col_sep=";", two_dimensional=False):
