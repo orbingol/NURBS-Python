@@ -126,7 +126,7 @@ def find_multiplicity(knot, knot_vector, **kwargs):
 
 
 def basis_function(degree, knot_vector, span, knot):
-    """ Computes the non-vanishing basis functions for a single knot.
+    """ Computes the non-vanishing basis functions for a single parameter.
 
     Implementation of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
@@ -159,7 +159,7 @@ def basis_function(degree, knot_vector, span, knot):
 
 
 def basis_functions(degree, knot_vector, spans, knots):
-    """ Computes the non-vanishing basis functions for a list of knots.
+    """ Computes the non-vanishing basis functions for a list of parameters.
 
     :param degree: degree, :math:`p`
     :type degree: int
@@ -173,14 +173,13 @@ def basis_functions(degree, knot_vector, spans, knots):
     :rtype: list
     """
     basis = []
-
     for span, knot in zip(spans, knots):
         basis.append(basis_function(degree, knot_vector, span, knot))
     return basis
 
 
 def basis_function_all(degree, knot_vector, span, knot):
-    """ Finds all non-zero basis functions of all degrees from 0 up to the input degree for a single knot.
+    """ Computes all non-zero basis functions of all degrees from 0 up to the input degree for a single parameter.
 
     A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
 
@@ -204,7 +203,7 @@ def basis_function_all(degree, knot_vector, span, knot):
 
 
 def basis_function_ders(degree, knot_vector, span, knot, order):
-    """ Finds derivatives of the basis functions for a single knot.
+    """ Computes derivatives of the basis functions for a single parameter.
 
     Implementation of Algorithm A2.3 from The NURBS Book by Piegl & Tiller.
 
@@ -294,7 +293,7 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
 
 
 def basis_function_one(degree, knot_vector, span, knot):
-    """ Computes the value of a basis function for a knot.
+    """ Computes the value of a basis function for a single parameter.
 
     Implementation of Algorithm 2.4 from The NURBS Book by Piegl & Tiller.
 
@@ -349,7 +348,7 @@ def basis_function_one(degree, knot_vector, span, knot):
 
 
 def basis_function_ders_one(degree, knot_vector, span, knot, order):
-    """ Finds the derivative of one basis functions for a single knot.
+    """ Computes the derivative of one basis functions for a single parameter.
 
     Implementation of Algorithm A2.5 from The NURBS Book by Piegl & Tiller.
 
