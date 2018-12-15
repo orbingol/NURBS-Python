@@ -229,7 +229,7 @@ def import_cfg(file_name, **kwargs):
     try:
         import libconf
     except ImportError:
-        print("Please install 'libconf' module to use libconfig format: pip install libconf")
+        print("Please install 'libconf' package to use libconfig format: pip install libconf")
         return
 
     # Get keyword arguments
@@ -263,7 +263,7 @@ def export_cfg(obj, file_name):
     try:
         import libconf
     except ImportError:
-        print("Please install 'libconf' module to use libconfig format: pip install libconf")
+        print("Please install 'libconf' package to use libconfig format: pip install libconf")
         return
 
     # Export data as a file
@@ -291,7 +291,7 @@ def import_yaml(file_name, **kwargs):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
+        print("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
         return
 
     # Get keyword arguments
@@ -325,7 +325,7 @@ def export_yaml(obj, file_name):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        print("Please install 'ruamel.yaml' module to use YAML format: pip install ruamel.yaml")
+        print("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
         return
 
     # Export data as a file
