@@ -681,7 +681,7 @@ def make_quad(points, size_u, size_v):
     return new_points
 
 
-def make_quad_mesh2(points, size_u, size_v):
+def make_quad_mesh(points, size_u, size_v):
     """ Generates a mesh of quadrilateral elements.
 
     :param points: list of points
