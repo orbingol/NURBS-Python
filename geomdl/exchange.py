@@ -184,44 +184,6 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     return _exchange.write_file(file_name, line)
 
 
-def export_vtk(obj, file_name, point_type='evalpts'):
-    """ Exports control points or evaluated points in legacy VTK format.
-
-    Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
-
-    :param obj: a curve or a surface object
-    :type obj: Abstract.Curve, Abstract.Surface
-    :param file_name: output file name
-    :type file_name: str
-    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
-    :type point_type: str
-    :raises IOError: an error occurred writing the file
-    """
-    if not isinstance(obj, (abstract.Curve, abstract.Surface)):
-        raise ValueError("Input object should be a curve or a surface")
-
-    # Pick correct points from the object
-    if point_type == 'ctrlpts':
-        points = obj.ctrlpts
-    elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
-        points = obj.evalpts
-    else:
-        raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
-
-    # Prepare header
-    line = "# vtk DataFile Version 3.0\n"
-    line += repr(obj) + "\n"
-    line += "ASCII\nDATASET POLYDATA\n"
-    line += "POINTS " + str(len(points)) + " FLOAT\n"
-
-    # Prepare values
-    for pt in points:
-        line += " ".join(str(c) for c in pt) + "\n"
-
-    # Write to file
-    return _exchange.write_file(file_name, line)
-
-
 def import_cfg(file_name, **kwargs):
     """ Imports curves and surfaces from files in libconfig format.
 

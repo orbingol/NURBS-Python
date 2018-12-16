@@ -14,4 +14,4 @@ NURBS-Python comes with the following visualization modules:
     module_vis_plotly
 
 The users are not limited with these visualization backends. For instance, control points and evaluated points can be
-exported via :py:func:`.export_csv()` or :py:func:`.export_vtk()` functions to plot with COTS software.
+in various formats. Please refer to the :doc:`Exchange module documentation <module_exchange>` for details.

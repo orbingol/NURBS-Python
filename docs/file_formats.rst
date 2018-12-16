@@ -21,12 +21,6 @@ Comma-Separated (CSV)
 You may use :py:func:`.export_csv()` and :py:func:`.import_csv()` functions to save/load control points and/or evaluated
 points as a CSV file. This function works with both curves and surfaces.
 
-VTK (Legacy) Format
-===================
-
-You may use :py:func:`.export_vtk()` function to save control points and/or evaluated points as a VTK file
-(legacy format). This function works with both curves and surfaces.
-
 OBJ Format
 ==========
 

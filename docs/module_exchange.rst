@@ -11,7 +11,6 @@ The following functions can only **import/export control points** or **export ev
 * :py:func:`.exchange.export_txt()`
 * :py:func:`.exchange.import_csv()`
 * :py:func:`.exchange.export_csv()`
-* :py:func:`.exchange.export_vtk()`
 
 The following functions can only work with **single or multiple surfaces**:
 
@@ -36,4 +35,11 @@ Function Reference
 
 .. automodule:: geomdl.exchange
     :members:
-    :undoc-members:
+
+VTK Support
+===========
+
+The following functions export control points and evaluated points as VTK files (in legacy format).
+
+.. automodule:: geomdl.exchange_vtk
+    :members:

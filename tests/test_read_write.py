@@ -8,6 +8,8 @@
 
 import os
 import pytest
+
+import geomdl.exchange_vtk
 from geomdl import BSpline, NURBS
 from geomdl import exchange
 from geomdl import compatibility
@@ -339,7 +341,7 @@ def test_export_vtk_curve_ctrlpts(bspline_curve3d):
     fname = FILE_NAME + ".vtk"
 
     bspline_curve3d.sample_size = SAMPLE_SIZE
-    exchange.export_vtk(bspline_curve3d, fname, point_type="ctrlpts")
+    geomdl.exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="ctrlpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -353,7 +355,7 @@ def test_export_vtk_surface_ctrlpts(bspline_surface):
     fname = FILE_NAME + ".vtk"
 
     bspline_surface.sample_size = SAMPLE_SIZE
-    exchange.export_vtk(bspline_surface, fname, point_type="ctrlpts")
+    geomdl.exchange_vtk.export_polydata(bspline_surface, fname, point_type="ctrlpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -367,7 +369,7 @@ def test_export_vtk_curve_evalpts(bspline_curve3d):
     fname = FILE_NAME + ".vtk"
 
     bspline_curve3d.sample_size = SAMPLE_SIZE
-    exchange.export_vtk(bspline_curve3d, fname, point_type="evalpts")
+    geomdl.exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="evalpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -381,7 +383,7 @@ def test_export_vtk_surface_evalpts(bspline_surface):
     fname = FILE_NAME + ".vtk"
 
     bspline_surface.sample_size = SAMPLE_SIZE
-    exchange.export_vtk(bspline_surface, fname, point_type="evalpts")
+    geomdl.exchange_vtk.export_polydata(bspline_surface, fname, point_type="evalpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
