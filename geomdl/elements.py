@@ -395,6 +395,43 @@ class Triangle(AbstractEntity):
         self._data = res
 
 
+# Quad entity
+class Quad(AbstractEntity):
+    """ Quad entity which represents a quadrilateral structure composed of vertices. """
+
+    def __init__(self, *args, **kwargs):
+        super(Quad, self).__init__(*args, **kwargs)
+
+    def __str__(self):
+        return "Quad " + str(self._id)
+
+    __repr__ = __str__
+
+    @property
+    def vertex_ids(self):
+        """ Vertex indices of the quad
+
+        :getter: Gets the list of vertex identifiers
+        :type: tuple
+        """
+        return tuple(self._data)
+
+    def add_vertex(self, *args):
+        """ Adds vertices to the Quad object.
+
+        This method takes a single or a list of vertices as its function arguments.
+        """
+        if len(self._data) > 3:
+            raise ValueError("Cannot add more vertices")
+        res = []
+        for arg in args:
+            if isinstance(arg, Vertex):
+                res.append(arg.id)
+            else:
+                raise TypeError("Input must be a Vertex object")
+        self._data = res
+
+
 # Face entity
 class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
