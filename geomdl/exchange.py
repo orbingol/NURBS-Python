@@ -93,7 +93,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
 
     :param obj: a curve or a surface object
-    :type obj: Abstract.Curve, Abstract.Surface
+    :type obj: abstract.Curve, abstract.Surface
     :param file_name: file name of the text file to be saved
     :type file_name: str
     :param two_dimensional: type of the text file (only works for Surface objects)
@@ -151,7 +151,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     """ Exports control points or evaluated points as a CSV file.
 
     :param obj: a curve or a surface object
-    :type obj: Abstract.Curve, Abstract.Surface
+    :type obj: abstract.Curve, abstract.Surface
     :param file_name: output file name
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
@@ -263,7 +263,7 @@ def export_cfg(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
+    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -325,7 +325,7 @@ def export_yaml(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
+    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -371,7 +371,7 @@ def export_json(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input curve(s) or surface(s)
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer or Multi.SurfaceContainer
+    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises IOError: an error occurred writing the file
@@ -836,7 +836,7 @@ def export_3dm(obj, file_name, **kwargs):
         Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
 
     :param obj: curves/surfaces to be exported
-    :type obj: Abstract.Curve, Abstract.Surface, Multi.CurveContainer, Multi.SurfaceContainer
+    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer, multi.SurfaceContainer
     :param file_name: file name
     :type file_name: str
     """
