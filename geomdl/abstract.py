@@ -1556,7 +1556,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Add control points as quads
         if self._vis_component.plot_types['ctrlpts'] == 'quads':
-            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
@@ -1565,7 +1565,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Add surface points as quads
         if self._vis_component.plot_types['evalpts'] == 'quads':
-            evalpts_quads = utilities.make_quad_mesh(self.evalpts, self.sample_size_u, self.sample_size_v)
+            evalpts_quads = utilities.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
             self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles

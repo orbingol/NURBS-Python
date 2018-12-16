@@ -649,8 +649,8 @@ def make_zigzag(points, num_cols):
     return new_points
 
 
-def make_quad_mesh(points, size_u, size_v):
-    """ Generates a quad mesh from linearly ordered list of points.
+def make_quad(points, size_u, size_v):
+    """ Converts linear sequence of input points into a quad structure.
 
     :param points: list of points to be ordered
     :type points: list, tuple

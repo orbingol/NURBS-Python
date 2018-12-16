@@ -626,7 +626,7 @@ class SurfaceContainer(AbstractContainer):
 
             # Add control points as quads
             if self._vis_component.plot_types['ctrlpts'] == 'quads':
-                ctrlpts_quads = utilities.make_quad_mesh(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
+                ctrlpts_quads = utilities.make_quad(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
                 self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points for " + elem.name,
                                         color=color[0], plot_type='ctrlpts')
 
@@ -636,7 +636,7 @@ class SurfaceContainer(AbstractContainer):
 
             # Add surface points as quads
             if self._vis_component.plot_types['evalpts'] == 'quads':
-                evalpts_quads = utilities.make_quad_mesh(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
+                evalpts_quads = utilities.make_quad(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
                 self._vis_component.add(ptsarr=evalpts_quads, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as vertices and triangles
