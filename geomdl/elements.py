@@ -277,7 +277,7 @@ class Vertex(AbstractEntity):
 
 # Triangle entity
 class Triangle(AbstractEntity):
-    """ Triangle entity which represents a triangle composed from vertices. """
+    """ Triangle entity which represents a triangle composed of vertices. """
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
         self._inside = False  # flag for trimming
@@ -397,7 +397,7 @@ class Triangle(AbstractEntity):
 
 # Face entity
 class Face(AbstractEntity):
-    """ Representation of Face entity which is composed from triangles. """
+    """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
 
