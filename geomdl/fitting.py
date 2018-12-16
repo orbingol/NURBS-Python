@@ -10,8 +10,8 @@
 from typing import Sequence, List, Tuple
 import math
 from . import BSpline
-from . import utilities
 from . import helpers
+from . import linalg
 
 
 def interpolate_curve(points, degree, **kwargs):
@@ -156,13 +156,13 @@ def approximate_curve(points, degree, **kwargs):
         matrix_n.append(m_temp)
 
     # Compute NT
-    matrix_nt = utilities.matrix_transpose(matrix_n)
+    matrix_nt = linalg.matrix_transpose(matrix_n)
 
     # Compute NTN matrix
-    matrix_ntn = utilities.matrix_multiply(matrix_nt, matrix_n)
+    matrix_ntn = linalg.matrix_multiply(matrix_nt, matrix_n)
 
     # LU-factorization
-    matrix_l, matrix_u = utilities.lu_decomposition(matrix_ntn)
+    matrix_l, matrix_u = linalg.lu_decomposition(matrix_ntn)
 
     # Initialize control points array
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts)]
@@ -196,8 +196,8 @@ def approximate_curve(points, degree, **kwargs):
     # Computer control points
     for i in range(dim):
         b = [pt[i] for pt in vector_r]
-        y = utilities.forward_substitution(matrix_l, b)
-        x = utilities.backward_substitution(matrix_u, y)
+        y = linalg.forward_substitution(matrix_l, b)
+        x = linalg.backward_substitution(matrix_u, y)
         for j in range(1, num_cpts - 1):
             ctrlpts[j][i] = x[j - 1]
 
@@ -258,11 +258,11 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
             m_temp.append(helpers.basis_function_one(degree_u, kv_u, j, uk[i]))
         matrix_nu.append(m_temp)
     # Compute Nu transpose
-    matrix_ntu = utilities.matrix_transpose(matrix_nu)
+    matrix_ntu = linalg.matrix_transpose(matrix_nu)
     # Compute NTNu matrix
-    matrix_ntnu = utilities.matrix_multiply(matrix_ntu, matrix_nu)
+    matrix_ntnu = linalg.matrix_multiply(matrix_ntu, matrix_nu)
     # Compute LU-decomposition of NTNu matrix
-    matrix_ntnul, matrix_ntnuu = utilities.lu_decomposition(matrix_ntnu)
+    matrix_ntnul, matrix_ntnuu = linalg.lu_decomposition(matrix_ntnu)
 
     # Fit u-direction
     ctrlpts_tmp = [[0.0 for _ in range(dim)] for _ in range(num_cpts_u * size_v)]
@@ -292,8 +292,8 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         # Get intermediate control points
         for d in range(dim):
             b = [pt[d] for pt in ru]
-            y = utilities.forward_substitution(matrix_ntnul, b)
-            x = utilities.backward_substitution(matrix_ntnuu, y)
+            y = linalg.forward_substitution(matrix_ntnul, b)
+            x = linalg.backward_substitution(matrix_ntnuu, y)
             for i in range(1, num_cpts_u - 1):
                 ctrlpts_tmp[j + (size_v * i)][d] = x[i - 1]
 
@@ -305,11 +305,11 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
             m_temp.append(helpers.basis_function_one(degree_v, kv_v, j, vl[i]))
         matrix_nv.append(m_temp)
     # Compute Nv transpose
-    matrix_ntv = utilities.matrix_transpose(matrix_nv)
+    matrix_ntv = linalg.matrix_transpose(matrix_nv)
     # Compute NTNv matrix
-    matrix_ntnv = utilities.matrix_multiply(matrix_ntv, matrix_nv)
+    matrix_ntnv = linalg.matrix_multiply(matrix_ntv, matrix_nv)
     # Compute LU-decomposition of NTNv matrix
-    matrix_ntnvl, matrix_ntnvu = utilities.lu_decomposition(matrix_ntnv)
+    matrix_ntnvl, matrix_ntnvu = linalg.lu_decomposition(matrix_ntnv)
 
     # Fit v-direction
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_cpts_u * num_cpts_v)]
@@ -339,8 +339,8 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         # Get intermediate control points
         for d in range(dim):
             b = [pt[d] for pt in rv]
-            y = utilities.forward_substitution(matrix_ntnvl, b)
-            x = utilities.backward_substitution(matrix_ntnvu, y)
+            y = linalg.forward_substitution(matrix_ntnvl, b)
+            x = linalg.backward_substitution(matrix_ntnvu, y)
             for j in range(1, num_cpts_v - 1):
                 ctrlpts[j + (num_cpts_v * i)][d] = x[j - 1]
 
@@ -442,7 +442,7 @@ def compute_params_curve(points, centripetal):
     cds = [0.0 for _ in range(num_points + 1)]
     cds[-1] = 1.0
     for i in range(1, num_points):
-        distance = utilities.point_distance(points[i], points[i - 1])
+        distance = linalg.point_distance(points[i], points[i - 1])
         cds[i] = math.sqrt(distance) if centripetal else distance
 
     # Find the total chord length
@@ -527,12 +527,12 @@ def ginterp(coeff_matrix, points):
     num_points = len(points)
 
     # Solve system of linear equations
-    matrix_l, matrix_u = utilities.lu_decomposition(coeff_matrix)
+    matrix_l, matrix_u = linalg.lu_decomposition(coeff_matrix)
     ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
     for i in range(dim):
         b = [pt[i] for pt in points]
-        y = utilities.forward_substitution(matrix_l, b)
-        x = utilities.backward_substitution(matrix_u, y)
+        y = linalg.forward_substitution(matrix_l, b)
+        x = linalg.backward_substitution(matrix_u, y)
         for j in range(num_points):
             ctrlpts[j][i] = x[j]
 

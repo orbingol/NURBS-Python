@@ -8,7 +8,7 @@
 """
 
 from enum import Enum
-from geomdl import utilities
+from . import linalg
 
 
 class Ray(object):
@@ -78,7 +78,7 @@ class Ray(object):
 
         :getter: Gets the vector component of the ray
         """
-        return utilities.vector_generate(self._pt1, self._pt2, normalize=False)
+        return linalg.vector_generate(self._pt1, self._pt2, normalize=False)
 
     def eval(self, t=0):
         """ Finds the point on the line segment defined by the input parameter.
@@ -91,7 +91,7 @@ class Ray(object):
         :return: point at the parameter value
         :rtype: tuple
         """
-        return utilities.point_translate(self.p, utilities.vector_multiply(self.d, t))
+        return linalg.point_translate(self.p, linalg.vector_multiply(self.d, t))
 
 
 class RayIntersection(Enum):
@@ -156,30 +156,30 @@ def _intersect2d(ray1, ray2, tol):
 
 def _intersect3d(ray1, ray2, tol):
     # Check for colinear case
-    d_cross = utilities.vector_cross(ray1.d, ray2.d)
-    if utilities.vector_is_zero(d_cross):
+    d_cross = linalg.vector_cross(ray1.d, ray2.d)
+    if linalg.vector_is_zero(d_cross):
         return -1, -1, RayIntersection.COLINEAR
 
     # Find common values
-    p_diff = utilities.vector_generate(ray1.p, ray2.p)
-    d_magn = utilities.vector_magnitude(d_cross)
+    p_diff = linalg.vector_generate(ray1.p, ray2.p)
+    d_magn = linalg.vector_magnitude(d_cross)
     d_magn_square = d_magn ** 2
 
     # Find t1
-    pd1_cross = utilities.vector_cross(p_diff, ray2.d)
-    pd1_dot = utilities.vector_dot(pd1_cross, d_cross)
+    pd1_cross = linalg.vector_cross(p_diff, ray2.d)
+    pd1_dot = linalg.vector_dot(pd1_cross, d_cross)
     t1 = pd1_dot / d_magn_square
 
     # Find t2
-    pd2_cross = utilities.vector_cross(p_diff, ray1.d)
-    pd2_dot = utilities.vector_dot(pd2_cross, d_cross)
+    pd2_cross = linalg.vector_cross(p_diff, ray1.d)
+    pd2_dot = linalg.vector_dot(pd2_cross, d_cross)
     t2 = pd2_dot / d_magn_square
 
     # Check for skew case
     ray1_pt = ray1.eval(t1)
     ray2_pt = ray2.eval(t2)
 
-    if utilities.point_distance(ray1_pt, ray2_pt) < tol:
+    if linalg.point_distance(ray1_pt, ray2_pt) < tol:
         return t1, t2, RayIntersection.INTERSECT
     else:
         return t1, t2, RayIntersection.SKEW

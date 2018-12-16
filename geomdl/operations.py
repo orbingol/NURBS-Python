@@ -15,6 +15,7 @@ from . import multi
 from . import helpers
 from . import utilities
 from . import evaluators
+from . import linalg
 
 
 def split_curve(obj, u, **kwargs):
@@ -608,7 +609,7 @@ def _tangent_curve_single(obj, u, normalize):
     ders = obj.derivatives(u, 1)
 
     point = ders[0]
-    vector = utilities.vector_normalize(ders[1]) if normalize else ders[1]
+    vector = linalg.vector_normalize(ders[1]) if normalize else ders[1]
 
     return tuple(point), tuple(vector)
 
@@ -651,7 +652,7 @@ def _normal_curve_single(obj, u, normalize):
     ders = obj.derivatives(u, 2)
 
     point = ders[0]
-    vector = utilities.vector_normalize(ders[2]) if normalize else ders[2]
+    vector = linalg.vector_normalize(ders[2]) if normalize else ders[2]
 
     return tuple(point), tuple(vector)
 
@@ -696,8 +697,8 @@ def _binormal_curve_single(obj, u, normalize):
     norm_vector = _normal_curve_single(obj, u, normalize)
 
     point = tan_vector[0]
-    vector = utilities.vector_cross(tan_vector[1], norm_vector[1])
-    vector = utilities.vector_normalize(vector) if normalize else vector
+    vector = linalg.vector_cross(tan_vector[1], norm_vector[1])
+    vector = linalg.vector_normalize(vector) if normalize else vector
 
     return tuple(point), tuple(vector)
 
@@ -740,8 +741,8 @@ def _tangent_surface_single(obj, uv, normalize):
     skl = obj.derivatives(uv[0], uv[1], 1)
 
     point = skl[0][0]
-    vector_u = utilities.vector_normalize(skl[1][0]) if normalize else skl[1][0]
-    vector_v = utilities.vector_normalize(skl[0][1]) if normalize else skl[0][1]
+    vector_u = linalg.vector_normalize(skl[1][0]) if normalize else skl[1][0]
+    vector_v = linalg.vector_normalize(skl[0][1]) if normalize else skl[0][1]
 
     return tuple(point), tuple(vector_u), tuple(vector_v)
 
@@ -784,8 +785,8 @@ def _normal_surface_single(obj, uv, normalize):
     skl = obj.derivatives(uv[0], uv[1], 1)
 
     point = skl[0][0]
-    vector = utilities.vector_cross(skl[1][0], skl[0][1])
-    vector = utilities.vector_normalize(vector) if normalize else vector
+    vector = linalg.vector_cross(skl[1][0], skl[0][1])
+    vector = linalg.vector_normalize(vector) if normalize else vector
 
     return tuple(point), tuple(vector)
 
@@ -913,7 +914,7 @@ def rotate(obj, angle, **kwargs):
     """
     def rotate_x(ncs, opt, alpha):
         # Generate translation vector
-        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+        translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
         # Translate to the origin
         translate(ncs, translate_vector, inplace=True)
@@ -932,7 +933,7 @@ def rotate(obj, angle, **kwargs):
 
     def rotate_y(ncs, opt, alpha):
         # Generate translation vector
-        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+        translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
         # Translate to the origin
         translate(ncs, translate_vector, inplace=True)
@@ -951,7 +952,7 @@ def rotate(obj, angle, **kwargs):
 
     def rotate_z(ncs, opt, alpha):
         # Generate translation vector
-        translate_vector = utilities.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
+        translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
         # Translate to the origin
         translate(ncs, translate_vector, inplace=True)

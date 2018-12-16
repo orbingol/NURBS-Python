@@ -10,8 +10,8 @@
 import copy
 import abc
 import six
+from . import linalg
 from . import helpers
-from . import utilities
 
 
 class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
@@ -138,7 +138,7 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
         precision = kwargs.get('precision')
 
         # Algorithm A3.1
-        knots = utilities.linspace(start, stop, sample_size, decimals=precision)
+        knots = linalg.linspace(start, stop, sample_size, decimals=precision)
         spans = helpers.find_spans(degree, knotvector, len(ctrlpts), knots, self._span_func)
         basis = helpers.basis_functions(degree, knotvector, spans, knots)
 
@@ -387,7 +387,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         for k in range(0, deriv_order + 1):
             v = [val for val in CKw[k][0:(dimension - 1)]]
             for i in range(1, k + 1):
-                v[:] = [tmp - (utilities.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in
+                v[:] = [tmp - (linalg.binomial_coefficient(k, i) * CKw[i][-1] * drv) for tmp, drv in
                         zip(v, CK[k - i])]
             CK[k][:] = [tmp / CKw[0][-1] for tmp in v]
 
@@ -450,7 +450,7 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
         spans = [[] for _ in range(len(degree))]
         basis = [[] for _ in range(len(degree))]
         for idx in range(len(degree)):
-            knots = utilities.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
+            knots = linalg.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
             spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], ctrlpts_size[idx], knots, self._span_func)
             basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
 
@@ -805,16 +805,16 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
                 v = copy.deepcopy(SKLw[k][l])
 
                 for j in range(1, l + 1):
-                    v[:] = [tmp - (utilities.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (linalg.binomial_coefficient(l, j) * SKLw[0][j][-1] * drv) for tmp, drv in
                             zip(v, SKL[k][l - j])]
                 for i in range(1, k + 1):
-                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
+                    v[:] = [tmp - (linalg.binomial_coefficient(k, i) * SKLw[i][0][-1] * drv) for tmp, drv in
                             zip(v, SKL[k - i][l])]
                     v2 = [0.0 for _ in range(dimension - 1)]
                     for j in range(1, l + 1):
-                        v2[:] = [tmp + (utilities.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
+                        v2[:] = [tmp + (linalg.binomial_coefficient(l, j) * SKLw[i][j][-1] * drv) for tmp, drv in
                                  zip(v2, SKL[k - i][l - j])]
-                    v[:] = [tmp - (utilities.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
+                    v[:] = [tmp - (linalg.binomial_coefficient(k, i) * tmp2) for tmp, tmp2 in zip(v, v2)]
 
                 SKL[k][l][:] = [tmp / SKLw[0][0][-1] for tmp in v[0:(dimension - 1)]]
 
@@ -870,7 +870,7 @@ class VolumeEvaluator(AbstractEvaluator):
         spans = [[] for _ in range(len(degree))]
         basis = [[] for _ in range(len(degree))]
         for idx in range(len(degree)):
-            knots = utilities.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
+            knots = linalg.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
             spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], size[idx], knots, self._span_func)
             basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
 

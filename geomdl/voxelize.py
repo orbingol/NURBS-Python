@@ -11,7 +11,7 @@ import struct
 from functools import partial
 from contextlib import contextmanager
 from multiprocessing import Pool
-from . import utilities
+from . import linalg
 
 
 # Context manager for multiprocessing.Pool (for compatibility with Python 2.7.x)
@@ -162,9 +162,9 @@ def _generate_voxel_grid(bbox, size_u, size_v, size_w):
     step_w = float(bbox[1][2] - bbox[0][2]) / float(size_w - 1)
 
     # Find range
-    range_u = utilities.linspace(bbox[1][0], bbox[0][0], size_u)
-    range_v = utilities.linspace(bbox[1][1], bbox[0][1], size_v)
-    range_w = utilities.linspace(bbox[1][2], bbox[0][2], size_w)
+    range_u = linalg.linspace(bbox[1][0], bbox[0][0], size_u)
+    range_v = linalg.linspace(bbox[1][1], bbox[0][1], size_v)
+    range_w = linalg.linspace(bbox[1][2], bbox[0][2], size_w)
 
     voxel_grid = []
     for u in range_u:
@@ -205,18 +205,18 @@ def _find_points_inside_voxel(bbox, ptarr, **kwargs):
     k = [0, 0, bbmax[2] - bbmin[2]]
 
     # Find dot products
-    idi = utilities.vector_dot(i, i)
-    jdj = utilities.vector_dot(j, j)
-    kdk = utilities.vector_dot(k, k)
+    idi = linalg.vector_dot(i, i)
+    jdj = linalg.vector_dot(j, j)
+    kdk = linalg.vector_dot(k, k)
 
     for pt in ptarr:
         v = [p - b for p, b in zip(pt, bbmin)]
         # Bigger than and equal to will include the border and,
         # since we have a padding on the boundary box, we only
         # need to include the lower boundary below
-        vdi = utilities.vector_dot(v, i)
-        vdj = utilities.vector_dot(v, j)
-        vdk = utilities.vector_dot(v, k)
+        vdi = linalg.vector_dot(v, i)
+        vdj = linalg.vector_dot(v, j)
+        vdk = linalg.vector_dot(v, k)
         if idi > vdi >= 0.0 and jdj > vdj >= 0.0 and kdk > vdk >= 0.0:
             if get_inout:
                 return 1
