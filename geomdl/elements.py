@@ -7,14 +7,16 @@
 
 """
 
+import abc
 import copy
+import six
 
 
 # Abstract base class for geometric entities
-class AbstractEntity(object):
+class AbstractEntity(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract base class for all geometric entities. """
-    def __init__(self):
-        self._id = 0  # element identifier
+    def __init__(self, *args, **kwargs):
+        self._id = int(kwargs.get('id', 0))  # element identifier
         self._data = []  # data storage array
 
     def __copy__(self):
@@ -67,9 +69,9 @@ class AbstractEntity(object):
 # Vertex entity
 class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
-    def __init__(self):
-        super(Vertex, self).__init__()
-        self._data = [0.0, 0.0, 0.0]  # spatial coordinates
+    def __init__(self, *args, **kwargs):
+        super(Vertex, self).__init__(*args, **kwargs)
+        self.data = args if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._inside = False  # flag for trimming
 
@@ -269,14 +271,15 @@ class Vertex(AbstractEntity):
             raise TypeError("Vertex data must be a list or tuple")
         if len(value) != 3:
             raise ValueError("Vertex can only store 3 components")
-        self._data = list(value)
+        # Convert to float
+        self._data = [float(val) for val in value]
 
 
 # Triangle entity
 class Triangle(AbstractEntity):
     """ Triangle entity which represents a triangle composed from vertices. """
-    def __init__(self):
-        super(Triangle, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(Triangle, self).__init__(*args, **kwargs)
         self._inside = False  # flag for trimming
 
     def __str__(self):
@@ -395,8 +398,8 @@ class Triangle(AbstractEntity):
 # Face entity
 class Face(AbstractEntity):
     """ Representation of Face entity which is composed from triangles. """
-    def __init__(self):
-        super(Face, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(Face, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return "Face " + str(self._id)
@@ -429,8 +432,8 @@ class Face(AbstractEntity):
 # Body entity
 class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
-    def __init__(self):
-        super(Body, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(Body, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return "Body " + str(self._id)
