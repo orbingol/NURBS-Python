@@ -401,20 +401,31 @@ class Quad(AbstractEntity):
 
     def __init__(self, *args, **kwargs):
         super(Quad, self).__init__(*args, **kwargs)
+        if args:
+            self.data = args
 
     def __str__(self):
-        return "Quad " + str(self._id)
+        return "Quad " + str(self._id) + " V: " + str(self._data)
 
     __repr__ = __str__
 
     @property
-    def vertex_ids(self):
-        """ Vertex indices of the quad
+    def data(self):
+        """ Vertex indices.
 
-        :getter: Gets the list of vertex identifiers
-        :type: tuple
+        :getter: Gets the vertex indices
+        :setter: Sets the vertex indices
         """
         return tuple(self._data)
+
+    @data.setter
+    def data(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise TypeError("Input data must be a list or tuple")
+        if len(value) != 4:
+            raise ValueError("Quad can only have 4 vertices")
+        # Convert to int
+        self._data = [int(val) for val in value]
 
     def add_vertex(self, *args):
         """ Adds vertices to the Quad object.
