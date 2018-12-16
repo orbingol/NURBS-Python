@@ -16,12 +16,15 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
-    :param obj: a curve or a surface object
+    :param obj: a B-Spline or NURBS shape
     :type obj: abstract.Curve, abstract.Surface
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
     :return: contents of the VTK Polydata file
     :rtype: str
+    :raises ValueError: input object is not an instance of abstract shapes
+    :raises ValueError: point type is not supported
+    :raises UserWarning: file title is bigger than 256 characters
     """
     if not isinstance(obj, (abstract.Curve, abstract.Surface)):
         raise ValueError("Input object should be a curve or a surface")
