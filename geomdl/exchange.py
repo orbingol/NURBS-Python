@@ -840,5 +840,3 @@ def export_3dm(obj, file_name, **kwargs):
             res3dm.append(rd)
 
     rw3dm.write(res3dm, file_name)
-
-
