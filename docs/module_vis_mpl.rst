@@ -1,7 +1,7 @@
 Matplotlib Implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This module provides `Matplotlib <https://matplotlib.org/>`_ visualization implementation.
+This module provides `Matplotlib <https://matplotlib.org/>`_ visualization implementation for NURBS-Python.
 
 Class Reference
 ===============

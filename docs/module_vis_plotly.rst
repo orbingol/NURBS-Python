@@ -1,7 +1,7 @@
 Plotly Implementation
 ^^^^^^^^^^^^^^^^^^^^^
 
-This module provides `Plotly <https://plot.ly/>`_ visualization implementation.
+This module provides `Plotly <https://plot.ly/>`_ visualization implementation for NURBS-Python.
 
 Class Reference
 ===============
