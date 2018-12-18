@@ -1559,6 +1559,11 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
+        # Add control points as a quad mesh
+        if self._vis_component.plot_types['ctrlpts'] == 'quadmesh':
+            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+
         # Add surface points
         if self._vis_component.plot_types['evalpts'] == 'points':
             self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
