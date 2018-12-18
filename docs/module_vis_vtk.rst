@@ -8,5 +8,6 @@ Class Reference
 
 .. automodule:: geomdl.visualization.VisVTK
     :members:
+    :undoc-members:
     :inherited-members:
     :show-inheritance:
