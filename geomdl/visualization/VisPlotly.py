@@ -32,7 +32,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``axes`` (bool): Axes and figure grid visibility. *Default: True*
     * ``trims`` (bool): Trim curves visibility. *Default: True*
     * ``axes_equal`` (bool): Enables or disables equal aspect ratio for the axes. *Default: True*
-    * ``linewidth`` (int): Thickness of the lines on the figure. *Default: 2*
+    * ``line_width`` (int): Thickness of the lines on the figure. *Default: 2*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: [800, 600]*
     * ``trim_size`` (int): Size of the trim curves. *Default: 20*
 
@@ -88,7 +88,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.axes_equal = kwargs.get('axes_equal', True)
         self.figure_size = kwargs.get('figure_size', [800, 600])
         self.trim_size = kwargs.get('trim_size', 1)
-        self.line_width = kwargs.get('linewidth', 2)
+        self.line_width = kwargs.get('line_width', 2)
 
 
 class VisCurve2D(vis.VisAbstract):
