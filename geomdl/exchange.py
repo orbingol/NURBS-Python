@@ -200,7 +200,9 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
             # Write header to the file
             fp.write(header)
             # Write points
-            _export_txt(fp, obj, sep)
+            for pt in points:
+                line = sep.join(str(c) for c in pt) + "\n"
+                fp.write(line)
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
         raise e
