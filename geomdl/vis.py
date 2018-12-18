@@ -88,6 +88,8 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     def plot_types(self):
         """ Plot types
 
+        Please refer to :py:meth:`set_plot_type` method documentation for details.
+
         :getter: Gets the plot types
         :type: tuple
         """
@@ -96,18 +98,25 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     def set_plot_type(self, plot_type, type_value):
         """ Sets the plot type.
 
-        By default, the following plot types are possible: *ctrlpts*, *evalpts*
+        The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
+        (*evalpts*). These are called as *plot types*. However, there is more than one way to plot the control points
+        and the surface points. For instance, a control points plot can be a scatter plot or a quad mesh, and a
+        surface points plot can be a scatter plot or a tessellated surface plot.
 
-        By default, the following plot type values are possible:
+        This function allows you to change the type of the plot, e.g. from scatter plot to tessellated surface plot.
+        On the other than, some visualization modules also defines some specialized classes for this purpose as it might
+        not be possible to change the type of the plot at the runtime due to visualization library internal API
+        differences (i.e. different backends for 2- and 3-dimensional plots).
 
-        * For control points (*ctrlpts*): points, quads
+        By default, the following plot types and values are possible:
+
+        * For control points (*ctrlpts*): points, quads, quadmesh
         * For surface points (*evalpts*): points, quads, triangles
 
         :param plot_type: plot type
         :type plot_type: str
         :param type_value: type value
         :type type_value: str
-        :return:
         """
         if not isinstance(plot_type, str) or not isinstance(type_value, str):
             raise TypeError("Plot type and its value should be string type")
