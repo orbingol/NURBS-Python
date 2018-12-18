@@ -87,43 +87,57 @@ class VisSurface(vis.VisAbstractSurf):
                 temp_actor = create_actor_tri2d(vtkpts)
                 vtk_actors.append(temp_actor)
 
-        # Create camera
-        camera = vtk.vtkCamera()
-        camera.SetPosition(0, 0, 100)
-        camera.SetFocalPoint(0, 0, 0)
-
-        # Create renderer
-        renderer = vtk.vtkRenderer()
-        renderer.SetActiveCamera(camera)
-        renderer.SetBackground(1.0, 1.0, 1.0)
-
-        # Add actors to the scene
-        for actor in vtk_actors:
-            renderer.AddActor(actor)
-
-        # Render window
-        render_window = vtk.vtkRenderWindow()
-        render_window.AddRenderer(renderer)
-        render_window.SetSize(*self._config.figure_size)
-
-        # Render window interactor
-        window_interactor = vtk.vtkRenderWindowInteractor()
-        window_interactor.SetRenderWindow(render_window)
-        window_interactor.AddObserver("KeyPressEvent", self._config.vtk_keypress_callback, 1.0)
-
         # Render actors
-        render_window.Render()
-
-        # Set window name after render() is called
-        render_window.SetWindowName("NURBS-Python")
-
-        # Start interactor
-        window_interactor.Start()
+        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
 
 
 ########################
 # VTK Helper Functions #
 ########################
+def create_render_window(actors, figure_size, callbacks):
+    """ Creates VTK render window with an interactor.
+
+    :param actors: list of VTK actors
+    :type actors: list, tuple
+    :param figure_size: size of the VTK render window
+    :type figure_size: list, tuple
+    :param callbacks: callback functions for registering custom events
+    :type callbacks: dict
+    """
+    # Create camera
+    camera = vtk.vtkCamera()
+    camera.SetPosition(0, 0, 100)
+    camera.SetFocalPoint(0, 0, 0)
+
+    # Create renderer
+    renderer = vtk.vtkRenderer()
+    renderer.SetActiveCamera(camera)
+    renderer.SetBackground(1.0, 1.0, 1.0)
+
+    # Add actors to the scene
+    for actor in actors:
+        renderer.AddActor(actor)
+
+    # Render window
+    render_window = vtk.vtkRenderWindow()
+    render_window.AddRenderer(renderer)
+    render_window.SetSize(*figure_size)
+
+    # Render window interactor
+    window_interactor = vtk.vtkRenderWindowInteractor()
+    window_interactor.SetRenderWindow(render_window)
+    window_interactor.AddObserver("KeyPressEvent", callbacks['keypress'], 1.0)
+
+    # Render actors
+    render_window.Render()
+
+    # Set window name after render() is called
+    render_window.SetWindowName("NURBS-Python")
+
+    # Start interactor
+    window_interactor.Start()
+
+
 def create_actor_pts(pts, **kwargs):
     """ Creates a VTK actor for rendering scatter plots.
 
