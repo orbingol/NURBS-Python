@@ -1159,8 +1159,10 @@ def _export_smesh_single(surface, file_name, **kwargs):
             fp.write(str(surf.ctrlpts_size_u) + " " + str(surf.ctrlpts_size_v) + le)
             fp.write(" ".join([str(v) for v in surf.knotvector_u]) + le)
             fp.write(" ".join([str(v) for v in surf.knotvector_v]) + le)
-            # Convert control points into (x, y, z, w)
+            # Flip control points
             ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
+            # Convert control points into (x, y, z, w) format
+            ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
             for ptw in ctrlptsw:
                 fp.write(" ".join([str(p) for p in ptw]) + le)
             fp.write(str(idx_val) + le)
