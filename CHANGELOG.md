@@ -1,5 +1,9 @@
 # NURBS-Python Changelog
 
+## 4.4.2 released on 2018-12-18
+
+* Fix bugs in `export_csv` and `export_smesh` functions
+
 ## 4.4.1 released on 2018-11-15
 
 * Updated Cython-compiled module location for more convenient binary package generation
