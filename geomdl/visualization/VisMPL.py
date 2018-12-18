@@ -33,6 +33,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``bbox`` (bool): Bounding box visibility. *Default: False*
     * ``legend`` (bool): Figure legend visibility. *Default: True*
     * ``axes`` (bool): Axes and figure grid visibility. *Default: True*
+    * ``labels`` (bool): Axis labels visibility. *Default: True*
     * ``trims`` (bool): Trim curves visibility. *Default: True*
     * ``axes_equal`` (bool): Enables or disables equal aspect ratio for the axes. *Default: True*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: [10.67, 8]*
@@ -71,6 +72,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.display_bbox = kwargs.get('bbox', False)
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
+        self.display_labels = kwargs.get('labels', True)
         self.display_trims = kwargs.get('trims', True)
         self.axes_equal = kwargs.get('axes_equal', True)
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
@@ -165,6 +167,11 @@ class VisCurve2D(vis.VisAbstract):
         if self._config.axes_equal:
             ax.set_aspect('equal')
 
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
@@ -245,6 +252,12 @@ class VisCurve3D(vis.VisAbstract):
         # Set axes equal
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
+
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -377,6 +390,12 @@ class VisSurface(vis.VisAbstractSurf):
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
 
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
+
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
@@ -475,6 +494,12 @@ class VisSurfWireframe(vis.VisAbstractSurf):
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
 
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
+
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
@@ -569,6 +594,12 @@ class VisSurfScatter(vis.VisAbstractSurf):
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
 
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
+
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
@@ -645,6 +676,12 @@ class VisVolume(vis.VisAbstractVol):
         # Set axes equal
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
+
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -735,6 +772,12 @@ class VisVoxel(vis.VisAbstractVol):
         # Set axes equal
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
+
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
 
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
@@ -829,6 +872,11 @@ class VisSurface2(vis.VisAbstractSurf):
         if self._config.axes_equal:
             self._config.set_axes_equal(ax)
 
+        # Axis labels
+        if self._config.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
         # Process keyword arguments
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
