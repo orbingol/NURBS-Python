@@ -31,8 +31,10 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, config=None):
-        self._plots = []
+        if not isinstance(config, VisConfigAbstract):
+            raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._config = config
+        self._plots = []
 
     def clear(self):
         """ Clears the points, colors and names lists. """
