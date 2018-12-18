@@ -18,7 +18,16 @@ except ImportError:
 
 
 class VisConfig(vis.VisConfigAbstract):
-    """ Configuration class for VTK visualization module. """
+    """ Configuration class for VTK visualization module.
+
+    This class is only required when you would like to change the visual defaults of the plots and the figure.
+
+    The ``VisVTK`` module has the following configuration variables:
+
+    * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
+    * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
+    * ``figure_size`` (list): Size of the figure in (x, y). *Default: (800, 600)*
+    """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
         self._vtk_bg = ((0.5, 0.5, 0.5), (0.25, 0.5, 0.75), (0.5, 0.25, 0.75), (0.0, 0.0, 0.0), (1.0, 1.0, 1.0))
