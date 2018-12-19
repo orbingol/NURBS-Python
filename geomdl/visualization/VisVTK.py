@@ -135,6 +135,41 @@ class VisSurface(vis.VisAbstractSurf):
         create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
 
 
+class VisVolume(vis.VisAbstractVol):
+    """ VTK visualization module for volumes. """
+    def __init__(self, config=VisConfig()):
+        super(VisVolume, self).__init__(config=config)
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+
+    def render(self, **kwargs):
+        """ Plots the volume and the control points. """
+        # Calling parent function
+        super(VisVolume, self).render(**kwargs)
+
+        # Initialize a list to store VTK actors
+        vtk_actors = []
+
+        # Start plotting
+        for plot in self._plots:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                # Points as spheres
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
+                temp_actor_pts = create_actor_pts(vtkpts)
+                vtk_actors.append(temp_actor_pts)
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
+                temp_actor = create_actor_tri3d(vtkpts)
+                vtk_actors.append(temp_actor)
+
+        # Render actors
+        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+
+
 ########################
 # VTK Helper Functions #
 ########################
@@ -332,6 +367,41 @@ def create_actor_tri2d(pts, **kwargs):
 
     # Apply 2-dimensional Delaunay triangulation on the poly data object
     triangulation = vtk.vtkDelaunay2D()
+    triangulation.SetInputData(polydata)
+
+    # Map triangulated surface to the graphics primitives
+    mapper = vtk.vtkDataSetMapper()
+    mapper.SetInputConnection(triangulation.GetOutputPort())
+
+    # Create an actor and set its properties
+    actor = vtk.vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(*point_color)
+
+    # Return the actor
+    return actor
+
+
+def create_actor_tri3d(pts, **kwargs):
+    """ Creates a VTK actor for rendering triangulated volumes.
+
+    :param pts: points
+    :type pts: vtkFloatArray
+    :return: a VTK actor
+    :rtype: vtkActor
+    """
+    point_color = kwargs.get('color', (0.0, 1.0, 0.25))
+
+    # Create points
+    points = vtk.vtkPoints()
+    points.SetData(pts)
+
+    # Convert points to poly data
+    polydata = vtk.vtkPolyData()
+    polydata.SetPoints(points)
+
+    # Apply 3-dimensional Delaunay triangulation on the poly data object
+    triangulation = vtk.vtkDelaunay3D()
     triangulation.SetInputData(polydata)
 
     # Map triangulated surface to the graphics primitives

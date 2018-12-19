@@ -621,7 +621,7 @@ class VisVolume(vis.VisAbstractVol):
         self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
 
     def render(self, **kwargs):
-        """ Plots the evaluated and the control points. """
+        """ Plots the volume and the control points. """
         # Calling parent function
         super(VisVolume, self).render(**kwargs)
 
