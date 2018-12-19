@@ -48,14 +48,14 @@ class VisConfig(vis.VisConfigAbstract):
             obj.GetRenderWindow().Render()
 
 
-class VisCurve3D(vis.VisAbstract):
+class VisCurve2D(vis.VisAbstract):
     def __init__(self, config=VisConfig()):
-        super(VisCurve3D, self).__init__(config=config)
+        super(VisCurve2D, self).__init__(config=config)
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         # Calling parent function
-        super(VisCurve3D, self).render(**kwargs)
+        super(VisCurve2D, self).render(**kwargs)
 
         # Initialize a list to store VTK actors
         vtk_actors = []
@@ -66,6 +66,9 @@ class VisCurve3D(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
+                # Handle 2-dimensional data
+                if pts.shape[1] == 2:
+                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
                 temp_actor_pts = create_actor_pts(vtkpts)
                 vtk_actors.append(temp_actor_pts)
@@ -76,12 +79,19 @@ class VisCurve3D(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
+                # Handle 2-dimensional data
+                if pts.shape[1] == 2:
+                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
                 temp_actor = create_actor_polygon(vtkpts)
                 vtk_actors.append(temp_actor)
 
         # Render actors
         create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+
+
+# VisCurve3D is an alias for VisCurve2D
+VisCurve3D = VisCurve2D
 
 
 class VisSurface(vis.VisAbstractSurf):
