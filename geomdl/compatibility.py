@@ -8,64 +8,6 @@
 """
 
 
-def flip_ctrlpts_u(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points from u-row order to v-row order.
-
-    **u-row order**: each row corresponds to a list of u values
-
-    **v-row order**: each row corresponds to a list of v values
-
-    :param ctrlpts: control points in u-row order
-    :type ctrlpts: list, tuple
-    :param size_u: size in u-direction
-    :type size_u: int
-    :param size_v: size in v-direction
-    :type size_v: int
-    :return: control points in v-row order
-    :rtype: list
-    """
-    new_ctrlpts = []
-    for i in range(0, size_u):
-        for j in range(0, size_v):
-            temp = [float(c) for c in ctrlpts[i + (j * size_u)]]
-            new_ctrlpts.append(temp)
-
-    return new_ctrlpts
-
-
-def flip_ctrlpts(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points from v-row order to u-row order.
-
-    **u-row order**: each row corresponds to a list of u values
-
-    **v-row order**: each row corresponds to a list of v values
-
-    :param ctrlpts: control points in v-row order
-    :type ctrlpts: list, tuple
-    :param size_u: size in u-direction (row length)
-    :type size_u: int
-    :param size_v: size in v-direction (column length)
-    :type size_v: int
-    :return: control points in u-row order
-    :rtype: list
-    """
-    ctrlpts2d = []
-    for i in range(0, size_u):
-        ctrlpts_v = []
-        for j in range(0, size_v):
-            ctrlpts_v.append(ctrlpts[j + (i * size_v)])
-        ctrlpts2d.append(ctrlpts_v)
-
-    new_ctrlpts2d = flip_ctrlpts2d(ctrlpts2d, size_u, size_v)
-
-    new_ctrlpts = []
-    for i in range(0, size_v):
-        for j in range(0, size_u):
-            new_ctrlpts.append(new_ctrlpts2d[i][j])
-
-    return new_ctrlpts
-
-
 def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
     """ Flips a list of surface 2-D control points from *[u][v]* to *[v][u]* order.
 
@@ -108,7 +50,7 @@ def generate_ctrlptsw(ctrlpts):
     # Multiply control points by weight
     new_ctrlpts = []
     for cpt in ctrlpts:
-        temp = [float(pt * cpt[-1]) for pt in cpt]
+        temp = [float(pt) * float(cpt[-1]) for pt in cpt]
         temp[-1] = float(cpt[-1])
         new_ctrlpts.append(temp)
 
