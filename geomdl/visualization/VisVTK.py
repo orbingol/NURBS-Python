@@ -48,6 +48,42 @@ class VisConfig(vis.VisConfigAbstract):
             obj.GetRenderWindow().Render()
 
 
+class VisCurve3D(vis.VisAbstract):
+    def __init__(self, config=VisConfig()):
+        super(VisCurve3D, self).__init__(config=config)
+
+    def render(self, **kwargs):
+        """ Plots the curve and the control points polygon. """
+        # Calling parent function
+        super(VisCurve3D, self).render(**kwargs)
+
+        # Initialize a list to store VTK actors
+        vtk_actors = []
+
+        # Start plotting
+        for plot in self._plots:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                # Points as spheres
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
+                temp_actor_pts = create_actor_pts(vtkpts)
+                vtk_actors.append(temp_actor_pts)
+                # Lines
+                temp_actor_lines = create_actor_polygon(vtkpts)
+                vtk_actors.append(temp_actor_lines)
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
+                temp_actor = create_actor_polygon(vtkpts)
+                vtk_actors.append(temp_actor)
+
+        # Render actors
+        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+
+
 class VisSurface(vis.VisAbstractSurf):
     """ VTK visualization module for surfaces. """
     def __init__(self, config=VisConfig()):
@@ -68,13 +104,11 @@ class VisSurface(vis.VisAbstractSurf):
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
                 vertices = [v.data for v in plot['ptsarr'][0]]
                 quads = [q.data for q in plot['ptsarr'][1]]
-
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
                 temp_actor_pts = create_actor_pts(vtkpts)
                 vtk_actors.append(temp_actor_pts)
-
                 # Quad mesh
                 lines = np.array(quads, dtype=np.int)
                 temp_actor_lines = create_actor_mesh(vtkpts, lines)
@@ -172,6 +206,51 @@ def create_actor_pts(pts, **kwargs):
     actor.GetProperty().SetColor(*point_color)
     actor.GetProperty().SetPointSize(point_size)
     actor.GetProperty().SetRenderPointsAsSpheres(point_sphere)
+
+    # Return the actor
+    return actor
+
+
+def create_actor_polygon(pts, **kwargs):
+    """ Creates a VTK actor for rendering polygons.
+
+    :param pts: points
+    :type pts: vtkFloatArray
+    :return: a VTK actor
+    :rtype: vtkActor
+    """
+    line_color = kwargs.get('color', (0.0, 0.0, 1.0))
+    line_width = kwargs.get('size', 0.5)
+
+    # Create points
+    points = vtk.vtkPoints()
+    points.SetData(pts)
+
+    # Number of points
+    num_points = points.GetNumberOfPoints()
+
+    # Create lines
+    cells = vtk.vtkCellArray()
+    for i in range(num_points - 1):
+        line = vtk.vtkLine()
+        line.GetPointIds().SetId(0, i)
+        line.GetPointIds().SetId(1, i + 1)
+        cells.InsertNextCell(line)
+
+    # Create poly data objects
+    polydata = vtk.vtkPolyData()
+    polydata.SetPoints(points)
+    polydata.SetLines(cells)
+
+    # Map poly data to the graphics primitives
+    mapper = vtk.vtkPolyDataMapper()
+    mapper.SetInputDataObject(polydata)
+
+    # Create an actor and set its properties
+    actor = vtk.vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(*line_color)
+    actor.GetProperty().SetLineWidth(line_width)
 
     # Return the actor
     return actor
