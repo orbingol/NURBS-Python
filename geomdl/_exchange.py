@@ -127,8 +127,10 @@ def import_smesh_single(file_name):
     ctrlpts_end = 5 + (dim_u * dim_v)
 
     # Starting from 6th line, we have the weighted control points
-    ctrlpts = content[5:ctrlpts_end]
-    ctrlpts.reverse()
+    ctrlpts_smesh = content[5:ctrlpts_end]
+
+    # smesh files have the control points in u-row order format
+    ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_smesh, dim_u, dim_v)
 
     # smesh files store control points in format (x, y, z, w) -- Rhino format
     ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)

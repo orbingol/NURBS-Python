@@ -685,7 +685,7 @@ def export_smesh(surface, file_name, **kwargs):
         line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in surf.knotvector_u]) + "\n"
         line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in surf.knotvector_v]) + "\n"
         # Flip control points
-        ctrlptsw = surf.ctrlptsw[::-1]
+        ctrlptsw = compatibility.flip_ctrlpts(surf.ctrlptsw, surf.ctrlpts_size_u, surf.ctrlpts_size_v)
         # Convert control points into (x, y, z, w) format
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
@@ -732,7 +732,7 @@ def export_vmesh(volume, file_name, **kwargs):
         for w in range(vol.ctrlpts_size_w):
             surf = vol.ctrlptsw[(w * vol.ctrlpts_size_u * vol.ctrlpts_size_v):((w + 1) * vol.ctrlpts_size_u * vol.ctrlpts_size_v)]
             # Flip control points
-            ctrlptsw += surf[::-1]
+            ctrlptsw += compatibility.flip_ctrlpts(surf, vol.ctrlpts_size_u, vol.ctrlpts_size_v)
         # Convert control points into (x, y, z, w) format
         ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
         for ptw in ctrlptsw:
