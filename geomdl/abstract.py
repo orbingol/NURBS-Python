@@ -40,9 +40,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     .. code-block:: python
 
-        from geomdl import Abstract
+        from geomdl import abstract
 
-        class MyCurveClass(Abstract.Curve):
+        class MyCurveClass(abstract.Curve):
             def __init__(self, **kwargs):
             super(MyCurveClass, self).__init__(**kwargs)
             # Add your constructor code here
@@ -707,9 +707,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     .. code-block:: python
 
-        from geomdl import Abstract
+        from geomdl import abstract
 
-        class MySurfaceClass(Abstract.Surface):
+        class MySurfaceClass(abstract.Surface):
             def __init__(self, **kwargs):
             super(MySurfaceClass, self).__init__(**kwargs)
             # Add your constructor code here
@@ -718,15 +718,15 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                 # Implement this function
                 pass
 
-            def evaluate_single(self, u):
+            def evaluate_single(self, uv):
                 # Implement this function
                 pass
 
-            def evaluate_list(self, u_list):
+            def evaluate_list(self, uv_list):
                 # Implement this function
                 pass
 
-            def derivatives(self, u, order, **kwargs):
+            def derivatives(self, u, v, order, **kwargs):
                 # Implement this function
                 pass
 
@@ -1766,6 +1766,29 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     keyword as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the
     FindSpan function in the ``helpers`` module.
     You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+
+    Code segment below illustrates a possible implementation of Volume abstract base class:
+
+    .. code-block:: python
+
+        from geomdl import abstract
+
+        class MyVolumeClass(abstract.Volume):
+            def __init__(self, **kwargs):
+            super(MyVolumeClass, self).__init__(**kwargs)
+            # Add your constructor code here
+
+            def evaluate(self, **kwargs):
+                # Implement this function
+                pass
+
+            def evaluate_single(self, uvw):
+                # Implement this function
+                pass
+
+            def evaluate_list(self, uvw_list):
+                # Implement this function
+                pass
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
     """
