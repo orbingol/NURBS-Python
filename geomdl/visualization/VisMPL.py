@@ -718,9 +718,9 @@ class VisVoxel(vis.VisAbstractVol):
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
             # Plot control points
             if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
