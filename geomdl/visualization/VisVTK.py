@@ -75,10 +75,10 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(vtkpts)
                 vtk_actors.append(temp_actor_pts)
                 # Lines
-                temp_actor_lines = create_actor_polygon(vtkpts)
+                temp_actor_lines = _create_actor_polygon(vtkpts)
                 vtk_actors.append(temp_actor_lines)
 
             # Plot evaluated points
@@ -88,7 +88,7 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = create_actor_polygon(vtkpts)
+                temp_actor = _create_actor_polygon(vtkpts)
                 vtk_actors.append(temp_actor)
 
             # Update camera focal point
@@ -98,9 +98,9 @@ class VisCurve2D(vis.VisAbstract):
                     focal_point.append(0.0)
 
         # Render actors
-        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
-                             figure_size=self._config.figure_size,
-                             camera_focal_point=focal_point)
+        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                              figure_size=self._config.figure_size,
+                              camera_focal_point=focal_point)
 
 
 # VisCurve3D is an alias for VisCurve2D
@@ -135,18 +135,18 @@ class VisSurface(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(vtkpts)
                 vtk_actors.append(temp_actor_pts)
                 # Quad mesh
                 lines = np.array(quads, dtype=np.int)
-                temp_actor_lines = create_actor_mesh(vtkpts, lines)
+                temp_actor_lines = _create_actor_mesh(vtkpts, lines)
                 vtk_actors.append(temp_actor_lines)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = create_actor_tri2d(vtkpts)
+                temp_actor = _create_actor_tri2d(vtkpts)
                 vtk_actors.append(temp_actor)
 
             # Update camera focal point
@@ -154,9 +154,9 @@ class VisSurface(vis.VisAbstract):
                 focal_point = plot['ptsarr'][0]
 
         # Render actors
-        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
-                             figure_size=self._config.figure_size,
-                             camera_focal_point=focal_point)
+        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                              figure_size=self._config.figure_size,
+                              camera_focal_point=focal_point)
 
 
 class VisVolume(vis.VisAbstract):
@@ -182,25 +182,25 @@ class VisVolume(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(vtkpts)
                 vtk_actors.append(temp_actor_pts)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = create_actor_tri3d(vtkpts)
+                temp_actor = _create_actor_tri3d(vtkpts)
                 vtk_actors.append(temp_actor)
 
         # Render actors
-        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
-                             figure_size=self._config.figure_size)
+        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                              figure_size=self._config.figure_size)
 
 
 ########################
 # VTK Helper Functions #
 ########################
-def create_render_window(actors, callbacks, **kwargs):
+def _create_render_window(actors, callbacks, **kwargs):
     """ Creates VTK render window with an interactor.
 
     :param actors: list of VTK actors
@@ -247,7 +247,7 @@ def create_render_window(actors, callbacks, **kwargs):
     window_interactor.Start()
 
 
-def create_actor_pts(pts, **kwargs):
+def _create_actor_pts(pts, **kwargs):
     """ Creates a VTK actor for rendering scatter plots.
 
     :param pts: points
@@ -286,7 +286,7 @@ def create_actor_pts(pts, **kwargs):
     return actor
 
 
-def create_actor_polygon(pts, **kwargs):
+def _create_actor_polygon(pts, **kwargs):
     """ Creates a VTK actor for rendering polygons.
 
     :param pts: points
@@ -331,7 +331,7 @@ def create_actor_polygon(pts, **kwargs):
     return actor
 
 
-def create_actor_mesh(pts, lines, **kwargs):
+def _create_actor_mesh(pts, lines, **kwargs):
     """ Creates a VTK actor for rendering quadrilateral plots.
 
     :param pts: points
@@ -377,7 +377,7 @@ def create_actor_mesh(pts, lines, **kwargs):
     return actor
 
 
-def create_actor_tri2d(pts, **kwargs):
+def _create_actor_tri2d(pts, **kwargs):
     """ Creates a VTK actor for rendering triangulated plots.
 
     :param pts: points
@@ -412,7 +412,7 @@ def create_actor_tri2d(pts, **kwargs):
     return actor
 
 
-def create_actor_tri3d(pts, **kwargs):
+def _create_actor_tri3d(pts, **kwargs):
     """ Creates a VTK actor for rendering triangulated volumes.
 
     :param pts: points
