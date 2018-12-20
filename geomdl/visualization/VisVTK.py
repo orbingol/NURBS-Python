@@ -107,7 +107,7 @@ class VisCurve2D(vis.VisAbstract):
 VisCurve3D = VisCurve2D
 
 
-class VisSurface(vis.VisAbstractSurf):
+class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
@@ -159,7 +159,7 @@ class VisSurface(vis.VisAbstractSurf):
                              camera_focal_point=focal_point)
 
 
-class VisVolume(vis.VisAbstractVol):
+class VisVolume(vis.VisAbstract):
     """ VTK visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)

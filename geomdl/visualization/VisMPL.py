@@ -273,7 +273,7 @@ class VisCurve3D(vis.VisAbstract):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurface(vis.VisAbstractSurf):
+class VisSurface(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
@@ -415,7 +415,7 @@ class VisSurface(vis.VisAbstractSurf):
 VisSurfTriangle = VisSurface
 
 
-class VisSurfWireframe(vis.VisAbstractSurf):
+class VisSurfWireframe(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
 
     Scatter plot for the control points and wireframe plot for the surface points.
@@ -516,7 +516,7 @@ class VisSurfWireframe(vis.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurfScatter(vis.VisAbstractSurf):
+class VisSurfScatter(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
 
     Wireframe plot for the control points and scatter plot for the surface points.
@@ -617,7 +617,7 @@ class VisSurfScatter(vis.VisAbstractSurf):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisVolume(vis.VisAbstractVol):
+class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
@@ -701,7 +701,7 @@ class VisVolume(vis.VisAbstractVol):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisVoxel(vis.VisAbstractVol):
+class VisVoxel(vis.VisAbstract):
     """ Matplotlib visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVoxel, self).__init__(config=config)
@@ -798,7 +798,7 @@ class VisVoxel(vis.VisAbstractVol):
         self._config.save_figure_as(fig, fig_filename)
 
 
-class VisSurface2(vis.VisAbstractSurf):
+class VisSurface2(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces (testing) """
     def __init__(self, config=VisConfig()):
         super(VisSurface2, self).__init__(config=config)

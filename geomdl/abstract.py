@@ -1344,8 +1344,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, vis.VisAbstractSurf):
-            warnings.warn("Visualization component must be an instance of VisAbstractSurf class")
+        if not isinstance(value, vis.VisAbstract):
+            warnings.warn("Visualization component must be an instance of VisAbstract class")
             return
 
         self._vis_component = value
@@ -2544,8 +2544,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
     @vis.setter
     def vis(self, value):
-        if not isinstance(value, vis.VisAbstractVol):
-            warnings.warn("Visualization component must be an instance of VisAbstractVol class")
+        if not isinstance(value, vis.VisAbstract):
+            warnings.warn("Visualization component must be an instance of VisAbstract class")
             return
 
         self._vis_component = value

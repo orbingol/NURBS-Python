@@ -12,10 +12,9 @@ import six
 
 
 class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for storing configuration of visualization classes
+    """ Abstract base class for visualization configuration
 
-    Uses Python's *Abstract Base Class* implementation to define a base for all visualization configurations
-    in NURBS-Python package.
+    Defines an abstract base for NURBS-Python visualization configuration.
     """
 
     def __init__(self, **kwargs):
@@ -23,10 +22,9 @@ class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for visualization (general)
+    """ Abstract base class for visualization
 
-    Uses Python's *Abstract Base Class* implementation to define a base for all common visualization options
-    in NURBS-Python package.
+    Defines an abstract base for NURBS-Python visualization modules.
     """
 
     def __init__(self, config=None):
@@ -35,6 +33,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         self._config = config
         self._plots = []
         self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
+        self._ctrlpts_offset = 0.0
 
     def clear(self):
         """ Clears the points, colors and names lists. """
@@ -112,33 +111,8 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
 
         self._plot_types[plot_type] = type_value
 
-    @abc.abstractmethod
-    def render(self, **kwargs):
-        """ Abstract method for rendering plots of the point sets.
-
-        This method must be implemented in all subclasses of ``VisAbstract`` class.
-        """
-        # We need something to plot
-        if self._plots is None or len(self._plots) == 0:
-            raise ValueError("Nothing to plot")
-
-        # Remaining should be implemented
-        pass
-
-
-class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
-    """ Abstract base class for surface visualization
-
-    Implements ``VisAbstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
-    for **surface** visualization options in NURBS-Python package.
-    """
-
-    def __init__(self, config=None):
-        super(VisAbstractSurf, self).__init__(config=config)
-        self._ctrlpts_offset = 0.0
-
     def set_ctrlpts_offset(self, offset_value):
-        """ Sets an offset for the control points grid plot.
+        """ Sets an offset value for the control points plots.
 
         :param offset_value: offset value
         :type offset_value: float
@@ -149,33 +123,11 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     def render(self, **kwargs):
         """ Abstract method for rendering plots of the point sets.
 
-        This method must be implemented in all subclasses of ``VisAbstractSurf`` class.
+        This method must be implemented in all subclasses of ``VisAbstract`` class.
         """
-        # Calling parent function
-        super(VisAbstractSurf, self).render()
-
-        # Remaining should be implemented
-        pass
-
-
-class VisAbstractVol(six.with_metaclass(abc.ABCMeta, VisAbstract)):
-    """ Abstract base class for volume visualization
-
-    Implements ``VisAbstract`` class and also uses Python's *Abstract Base Class* implementation to define a base
-    for **volume** visualization options in NURBS-Python package.
-    """
-
-    def __init__(self, config=None):
-        super(VisAbstractVol, self).__init__(config=config)
-
-    @abc.abstractmethod
-    def render(self, **kwargs):
-        """ Abstract method for rendering plots of the point sets.
-
-        This method must be implemented in all subclasses of ``VisAbstractVol`` class.
-        """
-        # Calling parent function
-        super(VisAbstractVol, self).render()
+        # We need something to plot
+        if self._plots is None or len(self._plots) == 0:
+            raise ValueError("Nothing to plot")
 
         # Remaining should be implemented
         pass

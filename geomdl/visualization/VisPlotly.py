@@ -356,7 +356,7 @@ class VisCurve3D(vis.VisAbstract):
         self._config.plotfn(fig, **plotfn_dict)
 
 
-class VisSurface(vis.VisAbstractSurf):
+class VisSurface(vis.VisAbstract):
     """ Plotly visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
