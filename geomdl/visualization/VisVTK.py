@@ -31,22 +31,25 @@ class VisConfig(vis.VisConfigAbstract):
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self._vtk_bg = ((0.5, 0.5, 0.5), (0.25, 0.5, 0.75), (0.5, 0.25, 0.75), (0.0, 0.0, 0.0), (1.0, 1.0, 1.0))
-        self._vtk_bg_id = 0  # used for keeping track of the background numbering
+        self._bg = (  # background colors
+            (0.5, 0.5, 0.5), (0.2, 0.2, 0.2), (0.25, 0.5, 0.75), (1.0, 1.0, 0.0),
+            (1.0, 0.5, 0.0), (0.5, 0.0, 1.0), (0.0, 0.0, 0.0), (1.0, 1.0, 1.0)
+        )
+        self._bg_id = 0  # used for keeping track of the background numbering
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
         self.figure_size = kwargs.get('figure_size', (800, 600))  # size of the render window
-        self.line_width = kwargs.get('line_width', 0.5)
+        self.line_width = kwargs.get('line_width', 1.0)
 
-    def vtk_keypress_callback(self, obj, ev):
+    def keypress_callback(self, obj, ev):
         """ VTK callback for keypress events """
         key = obj.GetKeySym()
         # Change background
         if key == 'b':
-            if self._vtk_bg_id >= len(self._vtk_bg):
-                self._vtk_bg_id = 0
-            obj.GetRenderWindow().GetRenderers().GetFirstRenderer().SetBackground(*self._vtk_bg[self._vtk_bg_id])
-            self._vtk_bg_id += 1
+            if self._bg_id >= len(self._bg):
+                self._bg_id = 0
+            obj.GetRenderWindow().GetRenderers().GetFirstRenderer().SetBackground(*self._bg[self._bg_id])
+            self._bg_id += 1
             obj.GetRenderWindow().Render()
 
 
@@ -102,7 +105,7 @@ class VisCurve2D(vis.VisAbstract):
                     focal_point.append(0.0)
 
         # Render actors
-        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+        _create_render_window(vtk_actors, dict(KeyPressEvent=(self._config.keypress_callback, 1.0)),
                               figure_size=self._config.figure_size,
                               camera_focal_point=focal_point)
 
@@ -159,7 +162,7 @@ class VisSurface(vis.VisAbstract):
                 focal_point = plot['ptsarr'][0]
 
         # Render actors
-        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+        _create_render_window(vtk_actors, dict(KeyPressEvent=(self._config.keypress_callback, 1.0)),
                               figure_size=self._config.figure_size,
                               camera_focal_point=focal_point)
 
@@ -198,7 +201,7 @@ class VisVolume(vis.VisAbstract):
                 vtk_actors.append(temp_actor)
 
         # Render actors
-        _create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+        _create_render_window(vtk_actors, dict(KeyPressEvent=(self._config.keypress_callback, 1.0)),
                               figure_size=self._config.figure_size)
 
 
@@ -240,7 +243,10 @@ def _create_render_window(actors, callbacks, **kwargs):
     # Render window interactor
     window_interactor = vtk.vtkRenderWindowInteractor()
     window_interactor.SetRenderWindow(render_window)
-    window_interactor.AddObserver("KeyPressEvent", callbacks['keypress'], 1.0)
+
+    # Add event observers
+    for cb in callbacks:
+        window_interactor.AddObserver(cb, callbacks[cb][0], callbacks[cb][1])  # cb name, cb function ref, cb priority
 
     # Render actors
     render_window.Render()
