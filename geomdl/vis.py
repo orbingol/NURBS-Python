@@ -34,27 +34,26 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._config = config
         self._plots = []
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'other': None}
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
 
     def clear(self):
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
-    def add(self, ptsarr=(), name=None, color=None, plot_type=0):
+    def add(self, ptsarr, plot_type, name=None, color=None):
         """ Adds points sets to the visualization instance for plotting.
 
-        :param ptsarr: control, curve or surface points
+        :param ptsarr: control or evaluated points
         :type ptsarr: list, tuple
-        :param name: name of the point on the legend
+        :param plot_type: type of the plot, e.g. ctrlpts, evalpts, bbox, etc.
+        :type plot_type: str
+        :param name: name of the plot displayed on the legend
         :type name: str
-        :param color: color of the point on the legend
+        :param color: plot color
         :type color: str
-        :param plot_type: type of the plot, control points (type = 1) or evaluated points (type = 0)
-        :type plot_type: int
         """
+        # ptsarr can be a list, a tuple or an array
         if ptsarr is None or len(ptsarr) == 0:
-            return
-        if not color or not name:
             return
         # Add points, size, plot color and name on the legend
         elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
