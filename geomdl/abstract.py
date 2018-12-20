@@ -576,7 +576,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
                 if vo_clean == "midpt":
-                    midpt = self.evaluate_single(0.5)
+                    midprm = (max(self.knotvector) + min(self.knotvector)) / 2.0
+                    midpt = self.evaluate_single(midprm)
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the curve
@@ -1610,7 +1611,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
                 if vo_clean == "midpt":
-                    midpt = self.evaluate_single((0.5, 0.5))
+                    midprm_u = (max(self.knotvector_u) + min(self.knotvector_u)) / 2.0
+                    midprm_v = (max(self.knotvector_v) + min(self.knotvector_v)) / 2.0
+                    midpt = self.evaluate_single((midprm_u, midprm_v))
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the surface
@@ -2783,7 +2786,10 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
                 if vo_clean == "midpt":
-                    midpt = self.evaluate_single((0.5, 0.5, 0.5))
+                    midprm_u = (max(self.knotvector_u) + min(self.knotvector_u)) / 2.0
+                    midprm_v = (max(self.knotvector_v) + min(self.knotvector_v)) / 2.0
+                    midprm_w = (max(self.knotvector_w) + min(self.knotvector_w)) / 2.0
+                    midpt = self.evaluate_single((midprm_u, midprm_v, midprm_w))
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the volume
