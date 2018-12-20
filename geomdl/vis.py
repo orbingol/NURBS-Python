@@ -34,7 +34,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._config = config
         self._plots = []
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'config': None}
+        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'other': None}
 
     def clear(self):
         """ Clears the points, colors and names lists. """
@@ -60,6 +60,59 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
         self._plots.append(elem)
 
+    @property
+    def plot_types(self):
+        """ Plot types
+
+        :getter: Gets the plot types
+        :type: tuple
+        """
+        return self._plot_types
+
+    def set_plot_type(self, plot_type, type_value):
+        """ Sets the plot type.
+
+        The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
+        (*evalpts*). These are called as *plot types*. However, there is more than one way to plot the control points
+        and the surface points. For instance, a control points plot can be a scatter plot or a quad mesh, and a
+        surface points plot can be a scatter plot or a tessellated surface plot.
+
+        This function allows you to change the type of the plot, e.g. from scatter plot to tessellated surface plot.
+        On the other than, some visualization modules also defines some specialized classes for this purpose as it might
+        not be possible to change the type of the plot at the runtime due to visualization library internal API
+        differences (i.e. different backends for 2- and 3-dimensional plots).
+
+        By default, the following plot types and values are available:
+
+        **Curve**:
+
+        * For control points (*ctrlpts*): points
+        * For evaluated points (*evalpts*): points
+
+        **Surface**:
+
+        * For control points (*ctrlpts*): points, quads, quadmesh
+        * For evaluated points (*evalpts*): points, quads, triangles
+
+        **Volume**:
+
+        * For control points (*ctrlpts*): points
+        * For evaluated points (*evalpts*): points, voxels
+
+        :param plot_type: plot type
+        :type plot_type: str
+        :param type_value: type value
+        :type type_value: str
+        """
+        if not isinstance(plot_type, str) or not isinstance(type_value, str):
+            raise TypeError("Plot type and its value should be string type")
+
+        if plot_type not in self._plot_types.keys():
+            raise KeyError(plot_type + " is not a type. Possible types: " +
+                           ", ".join([k for k in self._plot_types.keys()]))
+
+        self._plot_types[plot_type] = type_value
+
     @abc.abstractmethod
     def render(self, **kwargs):
         """ Abstract method for rendering plots of the point sets.
@@ -84,49 +137,6 @@ class VisAbstractSurf(six.with_metaclass(abc.ABCMeta, VisAbstract)):
     def __init__(self, config=None):
         super(VisAbstractSurf, self).__init__(config=config)
         self._ctrlpts_offset = 0.0
-
-    @property
-    def plot_types(self):
-        """ Plot types
-
-        Please refer to :py:meth:`set_plot_type` method documentation for details.
-
-        :getter: Gets the plot types
-        :type: tuple
-        """
-        return self._plot_types
-
-    def set_plot_type(self, plot_type, type_value):
-        """ Sets the plot type.
-
-        The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
-        (*evalpts*). These are called as *plot types*. However, there is more than one way to plot the control points
-        and the surface points. For instance, a control points plot can be a scatter plot or a quad mesh, and a
-        surface points plot can be a scatter plot or a tessellated surface plot.
-
-        This function allows you to change the type of the plot, e.g. from scatter plot to tessellated surface plot.
-        On the other than, some visualization modules also defines some specialized classes for this purpose as it might
-        not be possible to change the type of the plot at the runtime due to visualization library internal API
-        differences (i.e. different backends for 2- and 3-dimensional plots).
-
-        By default, the following plot types and values are possible:
-
-        * For control points (*ctrlpts*): points, quads, quadmesh
-        * For surface points (*evalpts*): points, quads, triangles
-
-        :param plot_type: plot type
-        :type plot_type: str
-        :param type_value: type value
-        :type type_value: str
-        """
-        if not isinstance(plot_type, str) or not isinstance(type_value, str):
-            raise TypeError("Plot type and its value should be string type")
-
-        if plot_type not in self._plot_types.keys():
-            raise KeyError(plot_type + " is not a type. Possible types: " +
-                           ", ".join([k for k in self._plot_types.keys()]))
-
-        self._plot_types[plot_type] = type_value
 
     def set_ctrlpts_offset(self, offset_value):
         """ Sets an offset for the control points grid plot.
@@ -158,47 +168,6 @@ class VisAbstractVol(six.with_metaclass(abc.ABCMeta, VisAbstract)):
 
     def __init__(self, config=None):
         super(VisAbstractVol, self).__init__(config=config)
-
-    @property
-    def plot_types(self):
-        """ Plot types
-
-        :getter: Gets the plot types
-        :type: tuple
-        """
-        return self._plot_types
-
-    def set_plot_type(self, plot_type, type_value):
-        """ Sets the plot type.
-
-        The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
-        (*evalpts*). These are called as *plot types*. However, there is more than one way to plot the control points
-        and the surface points. For instance, a control points plot can be a scatter plot or a quad mesh, and a
-        surface points plot can be a scatter plot or a tessellated surface plot.
-
-        This function allows you to change the type of the plot, e.g. from scatter plot to tessellated surface plot.
-        On the other than, some visualization modules also defines some specialized classes for this purpose as it might
-        not be possible to change the type of the plot at the runtime due to visualization library internal API
-        differences (i.e. different backends for 2- and 3-dimensional plots).
-
-        By default, the following plot types and values are possible:
-
-        * For control points (*ctrlpts*): points
-        * For surface points (*evalpts*): points, voxels
-
-        :param plot_type: plot type
-        :type plot_type: str
-        :param type_value: type value
-        :type type_value: str
-        """
-        if not isinstance(plot_type, str) or not isinstance(type_value, str):
-            raise TypeError("Plot type and its value should be string type")
-
-        if plot_type not in self._plot_types.keys():
-            raise KeyError(plot_type + " is not a type. Possible types: " +
-                           ", ".join([k for k in self._plot_types.keys()]))
-
-        self._plot_types[plot_type] = type_value
 
     @abc.abstractmethod
     def render(self, **kwargs):
