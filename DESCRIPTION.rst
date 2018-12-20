@@ -77,8 +77,8 @@ NURBS-Python is licensed under the MIT License.
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
 
-.. |RTD| image::https://readthedocs.org/projects/nurbs-python/badge/?version=latest
-.. _RTD: https://nurbs-python.readthedocs.io/en/4.x/
+.. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
+.. _RTD: https://nurbs-python.readthedocs.io/en/4.x/?badge=4.x
 
 .. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
 .. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
