@@ -1,5 +1,9 @@
 # NURBS-Python Changelog
 
+## 4.4.4 released on 2018-12-20
+
+* Fix PyPI description
+
 ## 4.4.3 released on 2018-12-20
 
 * Prepare for NURBS-Python v5 release
