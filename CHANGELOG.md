@@ -1,5 +1,9 @@
 # NURBS-Python Changelog
 
+## 4.4.3 released on 2018-12-20
+
+* Prepare for NURBS-Python v5 release
+
 ## 4.4.2 released on 2018-12-18
 
 * Fix bugs in `export_csv` and `export_smesh` functions
