@@ -189,6 +189,25 @@ def derivative_curve(obj):
     return curve
 
 
+def length_curve(obj):
+    """ Computes the approximate length of the parametric curve.
+
+    :param obj: input curve
+    :type obj: abstract.Curve
+    :return: length
+    :rtype: float
+    """
+    if not isinstance(obj, abstract.Curve):
+        raise TypeError("Input shape must be an instance of abstract.Curve class")
+
+    length = 0.0
+    evalpts = obj.evalpts
+    num_evalpts = len(obj.evalpts)
+    for idx in range(num_evalpts - 1):
+        length += linalg.point_distance(evalpts[idx], evalpts[idx + 1])
+    return length
+
+
 def split_surface_u(obj, t, **kwargs):
     """ Splits the surface at the input parametric coordinate on the u-direction.
 
