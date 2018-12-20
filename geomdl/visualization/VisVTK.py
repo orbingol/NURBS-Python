@@ -27,6 +27,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
     * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: (800, 600)*
+    * ``line_width`` (int): Thickness of the lines on the figure. *Default: 0.5*
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
@@ -35,6 +36,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
         self.figure_size = kwargs.get('figure_size', (800, 600))  # size of the render window
+        self.line_width = kwargs.get('line_width', 0.5)
 
     def vtk_keypress_callback(self, obj, ev):
         """ VTK callback for keypress events """
@@ -75,10 +77,11 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = _create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(pts=vtkpts, color=plot['color'])
                 vtk_actors.append(temp_actor_pts)
                 # Lines
-                temp_actor_lines = _create_actor_polygon(vtkpts)
+                temp_actor_lines = _create_actor_polygon(pts=vtkpts, color=plot['color'],
+                                                         size=self._config.line_width)
                 vtk_actors.append(temp_actor_lines)
 
             # Plot evaluated points
@@ -88,7 +91,8 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = _create_actor_polygon(vtkpts)
+                temp_actor = _create_actor_polygon(pts=vtkpts, color=plot['color'],
+                                                   size=self._config.line_width * 2)
                 vtk_actors.append(temp_actor)
 
             # Update camera focal point
@@ -135,18 +139,19 @@ class VisSurface(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = _create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(pts=vtkpts, color=plot['color'])
                 vtk_actors.append(temp_actor_pts)
                 # Quad mesh
                 lines = np.array(quads, dtype=np.int)
-                temp_actor_lines = _create_actor_mesh(vtkpts, lines)
+                temp_actor_lines = _create_actor_mesh(pts=vtkpts, lines=lines, color=plot['color'],
+                                                      size=self._config.line_width)
                 vtk_actors.append(temp_actor_lines)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = _create_actor_tri2d(vtkpts)
+                temp_actor = _create_actor_tri(pts=vtkpts, color=plot['color'], d3d=False)
                 vtk_actors.append(temp_actor)
 
             # Update camera focal point
@@ -182,14 +187,14 @@ class VisVolume(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor_pts = _create_actor_pts(vtkpts)
+                temp_actor_pts = _create_actor_pts(pts=vtkpts, color=plot['color'])
                 vtk_actors.append(temp_actor_pts)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self._config.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=vtk.VTK_FLOAT)
-                temp_actor = _create_actor_tri3d(vtkpts)
+                temp_actor = _create_actor_tri(pts=vtkpts, color=plot['color'], d3d=True)
                 vtk_actors.append(temp_actor)
 
         # Render actors
@@ -247,15 +252,16 @@ def _create_render_window(actors, callbacks, **kwargs):
     window_interactor.Start()
 
 
-def _create_actor_pts(pts, **kwargs):
+def _create_actor_pts(pts, color, **kwargs):
     """ Creates a VTK actor for rendering scatter plots.
 
     :param pts: points
     :type pts: vtkFloatArray
+    :param color: actor color
+    :type color: str
     :return: a VTK actor
     :rtype: vtkActor
     """
-    point_color = kwargs.get('color', (0.0, 0.0, 128/255))
     point_size = kwargs.get('size', 5)
     point_sphere = kwargs.get('point_as_sphere', True)
 
@@ -275,10 +281,13 @@ def _create_actor_pts(pts, **kwargs):
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputConnection(vertex_filter.GetOutputPort())
 
+    # Create a named colors instance
+    nc = vtk.vtkNamedColors()
+
     # Create an actor and set its properties
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*point_color)
+    actor.GetProperty().SetColor(nc.GetColor3d(color))
     actor.GetProperty().SetPointSize(point_size)
     actor.GetProperty().SetRenderPointsAsSpheres(point_sphere)
 
@@ -286,16 +295,17 @@ def _create_actor_pts(pts, **kwargs):
     return actor
 
 
-def _create_actor_polygon(pts, **kwargs):
+def _create_actor_polygon(pts, color, **kwargs):
     """ Creates a VTK actor for rendering polygons.
 
     :param pts: points
     :type pts: vtkFloatArray
+    :param color: actor color
+    :type color: str
     :return: a VTK actor
     :rtype: vtkActor
     """
-    line_color = kwargs.get('color', (0.0, 0.0, 1.0))
-    line_width = kwargs.get('size', 0.5)
+    line_width = kwargs.get('size', 1.0)
 
     # Create points
     points = vtk.vtkPoints()
@@ -321,27 +331,31 @@ def _create_actor_polygon(pts, **kwargs):
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputDataObject(polydata)
 
+    # Create a named colors instance
+    nc = vtk.vtkNamedColors()
+
     # Create an actor and set its properties
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*line_color)
+    actor.GetProperty().SetColor(nc.GetColor3d(color))
     actor.GetProperty().SetLineWidth(line_width)
 
     # Return the actor
     return actor
 
 
-def _create_actor_mesh(pts, lines, **kwargs):
+def _create_actor_mesh(pts, lines, color, **kwargs):
     """ Creates a VTK actor for rendering quadrilateral plots.
 
     :param pts: points
     :type pts: vtkFloatArray
     :param lines: point connectivity information
     :type lines: vtkIntArray
+    :param color: actor color
+    :type color: str
     :return: a VTK actor
     :rtype: vtkActor
     """
-    line_color = kwargs.get('color', (0.0, 0.0, 1.0))
     line_width = kwargs.get('size', 0.5)
 
     # Create points
@@ -367,25 +381,31 @@ def _create_actor_mesh(pts, lines, **kwargs):
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputDataObject(polydata)
 
+    # Create a named colors instance
+    nc = vtk.vtkNamedColors()
+
     # Create an actor and set its properties
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*line_color)
+    actor.GetProperty().SetColor(nc.GetColor3d(color))
     actor.GetProperty().SetLineWidth(line_width)
 
     # Return the actor
     return actor
 
 
-def _create_actor_tri2d(pts, **kwargs):
+def _create_actor_tri(pts, color, **kwargs):
     """ Creates a VTK actor for rendering triangulated plots.
 
     :param pts: points
     :type pts: vtkFloatArray
+    :param color: actor color
+    :type color: str
     :return: a VTK actor
     :rtype: vtkActor
     """
-    point_color = kwargs.get('color', (0.0, 1.0, 0.25))
+    # Get keyword arguments
+    use_delaunay3d = kwargs.get("d3d", False)
 
     # Create points
     points = vtk.vtkPoints()
@@ -395,53 +415,21 @@ def _create_actor_tri2d(pts, **kwargs):
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
 
-    # Apply 2-dimensional Delaunay triangulation on the poly data object
-    triangulation = vtk.vtkDelaunay2D()
+    # Apply Delaunay triangulation on the poly data object
+    triangulation = vtk.vtkDelaunay3D() if use_delaunay3d else vtk.vtkDelaunay2D()
     triangulation.SetInputData(polydata)
 
     # Map triangulated surface to the graphics primitives
     mapper = vtk.vtkDataSetMapper()
     mapper.SetInputConnection(triangulation.GetOutputPort())
 
-    # Create an actor and set its properties
-    actor = vtk.vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*point_color)
-
-    # Return the actor
-    return actor
-
-
-def _create_actor_tri3d(pts, **kwargs):
-    """ Creates a VTK actor for rendering triangulated volumes.
-
-    :param pts: points
-    :type pts: vtkFloatArray
-    :return: a VTK actor
-    :rtype: vtkActor
-    """
-    point_color = kwargs.get('color', (0.0, 1.0, 0.25))
-
-    # Create points
-    points = vtk.vtkPoints()
-    points.SetData(pts)
-
-    # Convert points to poly data
-    polydata = vtk.vtkPolyData()
-    polydata.SetPoints(points)
-
-    # Apply 3-dimensional Delaunay triangulation on the poly data object
-    triangulation = vtk.vtkDelaunay3D()
-    triangulation.SetInputData(polydata)
-
-    # Map triangulated surface to the graphics primitives
-    mapper = vtk.vtkDataSetMapper()
-    mapper.SetInputConnection(triangulation.GetOutputPort())
+    # Create a named colors instance
+    nc = vtk.vtkNamedColors()
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*point_color)
+    actor.GetProperty().SetColor(nc.GetColor3d(color))
 
     # Return the actor
     return actor
