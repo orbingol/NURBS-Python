@@ -51,14 +51,19 @@ class VisConfig(vis.VisConfigAbstract):
 class VisCurve2D(vis.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
+        self._plot_types['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         # Calling parent function
         super(VisCurve2D, self).render(**kwargs)
+        self._plot_types['other'] = "midpt"
 
         # Initialize a list to store VTK actors
         vtk_actors = []
+
+        # Default focal point for VTK camera
+        focal_point = [0, 0, 0]
 
         # Start plotting
         for plot in self._plots:
@@ -86,8 +91,16 @@ class VisCurve2D(vis.VisAbstract):
                 temp_actor = create_actor_polygon(vtkpts)
                 vtk_actors.append(temp_actor)
 
+            # Update camera focal point
+            if plot['type'] == 'midpt':
+                focal_point = plot['ptsarr'][0]
+                if len(focal_point) == 2:
+                    focal_point.append(0.0)
+
         # Render actors
-        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                             figure_size=self._config.figure_size,
+                             camera_focal_point=focal_point)
 
 
 # VisCurve3D is an alias for VisCurve2D
@@ -98,7 +111,9 @@ class VisSurface(vis.VisAbstractSurf):
     """ VTK visualization module for surfaces. """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quadmesh', 'evalpts': 'points'}
+        self._plot_types['ctrlpts'] = "quadmesh"
+        self._plot_types['evalpts'] = "points"
+        self._plot_types['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -107,6 +122,9 @@ class VisSurface(vis.VisAbstractSurf):
 
         # Initialize a list to store VTK actors
         vtk_actors = []
+
+        # Default focal point for VTK camera
+        focal_point = [0, 0, 0]
 
         # Start plotting
         for plot in self._plots:
@@ -131,15 +149,23 @@ class VisSurface(vis.VisAbstractSurf):
                 temp_actor = create_actor_tri2d(vtkpts)
                 vtk_actors.append(temp_actor)
 
+            # Update camera focal point
+            if plot['type'] == 'midpt':
+                focal_point = plot['ptsarr'][0]
+
         # Render actors
-        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                             figure_size=self._config.figure_size,
+                             camera_focal_point=focal_point)
 
 
 class VisVolume(vis.VisAbstractVol):
     """ VTK visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+        self._plot_types['ctrlpts'] = "points"
+        self._plot_types['evalpts'] = "points"
+        self._plot_types['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
@@ -167,26 +193,30 @@ class VisVolume(vis.VisAbstractVol):
                 vtk_actors.append(temp_actor)
 
         # Render actors
-        create_render_window(vtk_actors, self._config.figure_size, dict(keypress=self._config.vtk_keypress_callback))
+        create_render_window(vtk_actors, dict(keypress=self._config.vtk_keypress_callback),
+                             figure_size=self._config.figure_size)
 
 
 ########################
 # VTK Helper Functions #
 ########################
-def create_render_window(actors, figure_size, callbacks):
+def create_render_window(actors, callbacks, **kwargs):
     """ Creates VTK render window with an interactor.
 
     :param actors: list of VTK actors
     :type actors: list, tuple
-    :param figure_size: size of the VTK render window
-    :type figure_size: list, tuple
     :param callbacks: callback functions for registering custom events
     :type callbacks: dict
     """
+    # Get keyword arguments
+    figure_size = kwargs.get('figure_size', (800, 600))
+    camera_position = kwargs.get('camera_position', (0, 0, 100))
+    camera_focal_point = kwargs.get('camera_focal_point', (0, 0, 0))
+
     # Create camera
     camera = vtk.vtkCamera()
-    camera.SetPosition(0, 0, 100)
-    camera.SetFocalPoint(0, 0, 0)
+    camera.SetPosition(*camera_position)
+    camera.SetFocalPoint(*camera_focal_point)
 
     # Create renderer
     renderer = vtk.vtkRenderer()

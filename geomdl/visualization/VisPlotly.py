@@ -363,7 +363,8 @@ class VisSurface(vis.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
+        self._plot_types['ctrlpts'] = "quads"
+        self._plot_types['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -533,7 +534,8 @@ class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
+        self._plot_types['ctrlpts'] = "points"
+        self._plot_types['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the evaluated and the control points. """

@@ -563,11 +563,21 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
-        # Extra plots
+        # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
                 self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
                                         color=(ep['color'], ep['size']), plot_type='extras')
+
+        # Data requested by the visualization module
+        if self._vis_component.plot_types['others']:
+            vis_other = self._vis_component.plot_types['others'].split(",")
+            for vo in vis_other:
+                vo_clean = vo.strip()
+                # Send center point of the parametric space to the visualization module
+                if vo_clean == "midpt":
+                    midpt = self.evaluate_single(0.5)
+                    self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the curve
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
@@ -1587,11 +1597,21 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
-        # Extra plots
+        # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
                 self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
                                         color=(ep['color'], ep['size']), plot_type='extras')
+
+        # Data requested by the visualization module
+        if self._vis_component.plot_types['others']:
+            vis_other = self._vis_component.plot_types['others'].split(",")
+            for vo in vis_other:
+                vo_clean = vo.strip()
+                # Send center point of the parametric space to the visualization module
+                if vo_clean == "midpt":
+                    midpt = self.evaluate_single((0.5, 0.5))
+                    self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the surface
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
@@ -2727,11 +2747,21 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
 
-        # Extra plots
+        # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
                 self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
                                         color=(ep['color'], ep['size']), plot_type='extras')
+
+        # Data requested by the visualization module
+        if self._vis_component.plot_types['others']:
+            vis_other = self._vis_component.plot_types['others'].split(",")
+            for vo in vis_other:
+                vo_clean = vo.strip()
+                # Send center point of the parametric space to the visualization module
+                if vo_clean == "midpt":
+                    midpt = self.evaluate_single((0.5, 0.5, 0.5))
+                    self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
         # Plot the volume
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)

@@ -281,7 +281,8 @@ class VisSurface(vis.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
+        self._plot_types['ctrlpts'] = "quads"
+        self._plot_types['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -421,7 +422,8 @@ class VisSurfWireframe(vis.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'quads'}
+        self._plot_types['ctrlpts'] = "points"
+        self._plot_types['evalpts'] = "quads"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -521,7 +523,8 @@ class VisSurfScatter(vis.VisAbstractSurf):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfScatter, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'points'}
+        self._plot_types['ctrlpts'] = "quads"
+        self._plot_types['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -618,7 +621,8 @@ class VisVolume(vis.VisAbstractVol):
     """ Matplotlib visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points'}
+        self._plot_types['ctrlpts'] = "points"
+        self._plot_types['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
@@ -701,7 +705,8 @@ class VisVoxel(vis.VisAbstractVol):
     """ Matplotlib visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVoxel, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'voxels'}
+        self._plot_types['ctrlpts'] = "points"
+        self._plot_types['evalpts'] = "voxels"
 
     def render(self, **kwargs):
         """ Displays the voxels and the control points. """
@@ -797,7 +802,8 @@ class VisSurface2(vis.VisAbstractSurf):
     """ Matplotlib visualization module for surfaces (testing) """
     def __init__(self, config=VisConfig()):
         super(VisSurface2, self).__init__(config=config)
-        self._plot_types = {'ctrlpts': 'quads', 'evalpts': 'triangles'}
+        self._plot_types['ctrlpts'] = "quads"
+        self._plot_types['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
