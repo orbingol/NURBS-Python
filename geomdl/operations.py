@@ -114,42 +114,6 @@ def decompose_curve(obj, **kwargs):
     return curve_list
 
 
-def add_dimension(obj, **kwargs):
-    """ Converts x-dimensional curve to a (x+1)-dimensional curve.
-
-    If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
-    change the input shape but returns a new instance of the same shape with the updated data.
-
-    Useful when converting a 2-dimensional curve to a 3-dimensional curve.
-
-    :param obj: Curve
-    :type obj: BSpline.Curve or NURBS.Curve
-    :return: updated Curve
-    :rtype: BSpline.Curve or NURBS.Curve
-    """
-    if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of any Curve class")
-
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-    array_init = kwargs.get('array_init', [[] for _ in range(len(obj.ctrlpts))])
-
-    # Update control points
-    new_ctrlpts = array_init
-    for idx, point in enumerate(obj.ctrlpts):
-        temp = [float(p) for p in point[0:obj.dimension]]
-        temp.append(0.0)
-        new_ctrlpts[idx] = temp
-
-    if inplace:
-        obj.ctrlpts = new_ctrlpts
-        return obj
-    else:
-        ret = copy.deepcopy(obj)
-        ret.ctrlpts = new_ctrlpts
-        return ret
-
-
 def derivative_curve(obj):
     """ Computes the hodograph (first derivative) curve of the input curve.
 
@@ -157,12 +121,12 @@ def derivative_curve(obj):
     knot vectors and the control points of the derivative curve.
 
     :param obj: input curve
-    :type obj: Abstract.Curve
+    :type obj: abstract.Curve
     :return: derivative curve
     :rtype: abstract.Curve
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of Abstract.Curve class")
+        raise TypeError("Input shape must be an instance of abstract.Curve class")
 
     # Unfortunately, rational curves do not have this property
     # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
@@ -206,6 +170,42 @@ def length_curve(obj):
     for idx in range(num_evalpts - 1):
         length += linalg.point_distance(evalpts[idx], evalpts[idx + 1])
     return length
+
+
+def add_dimension(obj, **kwargs):
+    """ Converts x-dimensional curve to a (x+1)-dimensional curve.
+
+    If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
+    change the input shape but returns a new instance of the same shape with the updated data.
+
+    Useful when converting a 2-dimensional curve to a 3-dimensional curve.
+
+    :param obj: Curve
+    :type obj: BSpline.Curve or NURBS.Curve
+    :return: updated Curve
+    :rtype: BSpline.Curve or NURBS.Curve
+    """
+    if not isinstance(obj, abstract.Curve):
+        raise TypeError("Input shape must be an instance of any Curve class")
+
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+    array_init = kwargs.get('array_init', [[] for _ in range(len(obj.ctrlpts))])
+
+    # Update control points
+    new_ctrlpts = array_init
+    for idx, point in enumerate(obj.ctrlpts):
+        temp = [float(p) for p in point[0:obj.dimension]]
+        temp.append(0.0)
+        new_ctrlpts[idx] = temp
+
+    if inplace:
+        obj.ctrlpts = new_ctrlpts
+        return obj
+    else:
+        ret = copy.deepcopy(obj)
+        ret.ctrlpts = new_ctrlpts
+        return ret
 
 
 def split_surface_u(obj, t, **kwargs):
@@ -420,7 +420,7 @@ def derivative_surface(obj):
     :rtype: tuple
     """
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of Abstract.Surface class")
+        raise TypeError("Input shape must be an instance of abstract.Surface class")
 
     if obj.rational:
         warnings.warn("Cannot compute hodograph surface for a rational surface")
@@ -481,7 +481,7 @@ def translate(obj, vec, **kwargs):
     change the input shape but returns a new instance of the same shape with the updated data.
 
     :param obj: Curve(s) or surface(s) to be translated
-    :type obj: Abstract.Curve, Abstract.Surface or Abstract.Multi
+    :type obj: abstract.Curve, abstract.Surface or abstract.Multi
     :param vec: translation vector
     :type vec: list, tuple
     """
@@ -504,7 +504,7 @@ def tangent(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: abstract.Curve or Abstract.Surface
+    :type obj: abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
@@ -530,7 +530,7 @@ def normal(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: Abstract.Curve or abstract.Surface
+    :type obj: abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
@@ -556,7 +556,7 @@ def binormal(obj, params, **kwargs):
     multiple parameter positions.
 
     :param obj: input shape
-    :type obj: Abstract.Curve or abstract.Surface
+    :type obj: abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
     :return: a list containing "point" and "vector" pairs
@@ -576,7 +576,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
     :param obj: curve or surface
-    :type obj: abstract.Curve or Abstract.Surface
+    :type obj: abstract.Curve or abstract.Surface
     :param u: parameter (for curve), parameter on the u-direction (for surface)
     :type u: float
     :param v: parameter on the v-direction (for surface only)
@@ -592,7 +592,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
             raise ValueError("Parameter value for the v-direction must be set for operating on surfaces")
         return _operations.find_ctrlpts_surface(u, v, obj, **kwargs)
     else:
-        raise NotImplementedError("The input must be an instance of Abstract.Curve or Abstract.Surface")
+        raise NotImplementedError("The input must be an instance of abstract.Curve or abstract.Surface")
 
 
 def rotate(obj, angle, **kwargs):
