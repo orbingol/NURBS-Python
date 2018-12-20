@@ -16,7 +16,7 @@ versions 2.7.x, 3.4.x and later.
 Further Reading
 ===============
 
-* Documentation: http://nurbs-python.readthedocs.io/
+* Documentation: https://nurbs-python.readthedocs.io/
 * Examples: https://github.com/orbingol/NURBS-Python_Examples
 * Wiki: https://github.com/orbingol/NURBS-Python/wiki
 * Development: https://github.com/orbingol/NURBS-Python
