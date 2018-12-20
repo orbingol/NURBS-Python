@@ -15,7 +15,7 @@ of advanced computation algorithms in an extensible way. It comes with on-the-fl
 knot vector and surface grid generators, and more.
 
 NURBS-Python (geomdl) is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any
-compilation steps during installation. It is tested with Python v2.7.x, Python v3.3.x and later versions. The Python 2
+compilation steps during installation. It is tested with Python v2.7.x, Python v3.4.x and later versions. The Python 2
 and 3 compatibility library ``six`` will be automatically installed during NURBS-Python setup.
 
 Please see the `Examples Repository <https://github.com/orbingol/NURBS-Python_Examples>`_ for details on library usage
@@ -63,10 +63,10 @@ for the list of modules and features.
 Further Reading
 ===============
 
-* Documentation: http://nurbs-python.readthedocs.io/
-* Examples: https://github.com/orbingol/NURBS-Python_Examples
+* Documentation: https://nurbs-python.readthedocs.io/en/4.x/
+* Development: https://github.com/orbingol/NURBS-Python/tree/4.x
+* Examples: https://github.com/orbingol/NURBS-Python_Examples/tree/4.x
 * Wiki: https://github.com/orbingol/NURBS-Python/wiki
-* Development: https://github.com/orbingol/NURBS-Python
 
 License
 =======
@@ -77,8 +77,8 @@ NURBS-Python is licensed under the MIT License.
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
 .. _DOI: https://doi.org/10.5281/zenodo.815010
 
-.. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
-.. _RTD: http://nurbs-python.readthedocs.io/en/stable/?badge=latest
+.. |RTD| image::https://readthedocs.org/projects/nurbs-python/badge/?version=4.x
+.. _RTD: https://nurbs-python.readthedocs.io/en/4.x/?badge=4.x
 
 .. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
 .. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
