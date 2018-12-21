@@ -12,7 +12,6 @@ The following example illustrates the usage of :doc:`compatibility <module_compa
     from geomdl import NURBS
     from geomdl import utilities as utils
     from geomdl import compatibility as compat
-
     from geomdl.visualization import VisMPL
 
     #
@@ -58,14 +57,18 @@ The following example illustrates the usage of :doc:`compatibility <module_compa
     # Create a NURBS surface instance
     surf = NURBS.Surface()
 
-    # Using __call__ method to fill the surface object
-    surf(p_degree_u, p_degree_v, p_size_u, p_size_v, n_ctrlptsw, n_knotvector_u, n_knotvector_v)
+    # Fill the surface object
+    surf.degree_u = p_degree_u
+    surf.degree_v = p_degree_v
+    surf_set_ctrlpts(n_ctrlptsw, p_size_u, p_size_v)
+    surf.knotvector_u = n_knotvector_u
+    surf.knotvector_v = n_knotvector_v
 
     # Set evaluation delta
     surf.delta = 0.05
 
     # Set visualization component
-    vis_comp = VisMPL.VisSurfTriangle()
+    vis_comp = VisMPL.VisSurface()
     surf.vis = vis_comp
 
     # Render the surface
