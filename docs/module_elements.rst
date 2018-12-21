@@ -8,6 +8,7 @@ This module provides the following geometric and topological entities:
 
 * :py:class:`.Vertex`
 * :py:class:`.Triangle`
+* :py:class:`.Quad`
 * :py:class:`.Face`
 * :py:class:`.Body`
 

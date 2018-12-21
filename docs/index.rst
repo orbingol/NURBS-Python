@@ -3,12 +3,18 @@ NURBS-Python v5 Documentation
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 
-Welcome to the **NURBS-Python (geomdl)** documentation! NURBS-Python contains native Python implementations of several
-`The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_ algorithms. These algorithms are used for generating
-Non-Uniform Rational B-Spline (NURBS) curves and surfaces.
+.. note::
 
-NURBS-Python also provides a convenient and easy-to-use data structure for storing curve and surface descriptions. All
-elements of the provided data structures are documented under :ref:`modules`.
+    These documentation pages are for v5 release of NURBS-Python (geomdl) library.
+    Please see `NURBS-Python 4.x documentation <https://nurbs-python.readthedocs.io/en/4.x/index.html>`_ for the
+    previous stable release.
+
+Welcome to the **NURBS-Python (geomdl) v5.x** documentation! NURBS-Python is a pure Python, object-oriented B-Spline
+and NURBS library. It is compatible with Python versions 2.7.x, 3.4.x and later. It supports rational and non-rational
+parametric shapes; e.g. curves, surfaces and volumes.
+
+NURBS-Python also provides a convenient and easy-to-use data structures for storing parametric shape descriptions.
+These are documented under :ref:`modules`.
 
 This documentation is organized into a couple sections:
 
@@ -55,14 +61,6 @@ This documentation is organized into a couple sections:
 
 NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released under the
 `MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
-
-
-.. Indices and tables
-.. ==================
-
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
