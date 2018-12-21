@@ -152,3 +152,23 @@ The format of the control points file for generating NURBS surfaces is as follow
 
     :doc:`compatibility <module_compatibility>` module provides several functions to manipulate & convert control
     point arrays into NURBS-Python compatible ones and more.
+
+Volumes
+=======
+
+Parametric volumes can be considered as a stacked surfaces, which means that w-parametric axis comes the first and then
+other parametric axes come.
+
+Using Templates
+===============
+
+NURBS-Python v5.x comes with `Jinja2 <http://jinja.pocoo.org/>`_ template support on importing control points. To
+enable template support, you need to pass ``jinja2=True`` argument to :py:func:`.import_txt()` function.
+Additionally, the following custom template functions are supported:
+
+* ``sqrt(x)``:  :math:`\\sqrt{x}`
+* ``cubert(x)``: :math:`\\sqrt[3]{x}`
+* ``pow(x, y)``: :math:`x^{y}`
+
+Please see ``ex_cylinder_tmpl.py`` and ``ex_cylinder_tmpl.cptw`` files in the :doc:`Examples repository <examples_repo>`
+for details on using Jinja2 templates with control point text files.
