@@ -93,7 +93,7 @@ def construct_volume(*args, **kwargs):
 
 
 def extract_curves(psurf):
-    """ Extract curves from a parametric surface.
+    """ Extracts curves from a parametric surface.
 
     :param psurf: input surface
     :type psurf: abstract.Surface
@@ -140,7 +140,7 @@ def extract_curves(psurf):
 
 
 def extract_surfaces(pvol):
-    """ Extract surfaces from a parametric volume.
+    """ Extracts surfaces from a parametric volume.
 
     :param pvol: input volume
     :type pvol: abstract.Volume
@@ -208,3 +208,40 @@ def extract_surfaces(pvol):
 
     # Return shapes as a dict object
     return dict(uv=surflist_uv, uw=surflist_uw, vw=surflist_vw)
+
+
+def extract_isosurface(pvol):
+    """ Extracts isosurface from a parametric volume.
+
+    The following example illustrates one of the usage scenarios:
+
+    .. code-block:: python
+
+        from geomdl import construct, multi
+        from geomdl.visualization import VisMPL
+
+        # Assuming that "myvol" variable stores your spline volume information
+        isosrf = construct.extract_isosurface(myvol)
+
+        # Create a surface container
+        msurf = multi.SurfaceContainer(isosrf)
+
+        # Set visualization components
+        msurf.vis = VisMPL.VisSurface(VisMPL.VisConfig(ctrlpts=False))
+
+        # Render isosurface
+        msurf.render()
+
+    :param pvol: input volume
+    :type pvol: abstract.Volume
+    :return: isosurface (as a tuple of surfaces)
+    :rtype: tuple
+    """
+    if not isinstance(pvol, BSpline.abstract.Volume):
+        raise TypeError("The input should be an instance of abstract.Volume")
+
+    # Extract surfaces from the parametric volume
+    isosrf = extract_surfaces(pvol)
+
+    # Return the isosurface
+    return isosrf['uv'][0], isosrf['uv'][-1], isosrf['uw'][0], isosrf['uw'][-1], isosrf['vw'][0], isosrf['vw'][-1]
