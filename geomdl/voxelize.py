@@ -9,21 +9,8 @@
 
 import struct
 from functools import partial
-from contextlib import contextmanager
-from multiprocessing import Pool
 from . import linalg
-
-
-# Context manager for multiprocessing.Pool (for compatibility with Python 2.7.x)
-@contextmanager
-def poolcontext(*args, **kwargs):
-    pool = Pool(*args, **kwargs)
-    try:
-        yield pool
-    except Exception as e:
-        raise e
-    finally:
-        pool.terminate()
+from ._mp import pool_context
 
 
 def voxelize(obj, **kwargs):
@@ -93,7 +80,7 @@ def _voxelize_mp(voxel_grid, datapts, **kwargs):
     """
     padding = kwargs.get('padding', 10e-8)
     num_procs = kwargs.get('num_procs', 4)
-    with poolcontext(processes=num_procs) as pool:
+    with pool_context(processes=num_procs) as pool:
         filled = pool.map(partial(_find_points_inside_voxel, ptarr=datapts, padding=padding), voxel_grid)
     return filled
 
