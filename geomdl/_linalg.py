@@ -8,7 +8,7 @@
 """
 
 
-def doolittle_2d(matrix_a):
+def doolittle(matrix_a):
     """ Doolittle's Method for LU-factorization.
 
     :param matrix_a: Input matrix (must be a square matrix)

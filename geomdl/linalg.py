@@ -462,51 +462,7 @@ def lu_decomposition(matrix_a):
                              "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
 
     # Return L and U matrices
-    return _linalg.doolittle_2d(matrix_a)
-
-
-def lu_decomposition_1d(matrix_in, q):
-    # type: (Sequence[float], int) -> Tuple[Sequence[float], Sequence[float]]
-    """ LU-Factorization method using Doolittle's Method for solution of linear systems.
-
-    Decomposes the matrix :math:`A` such that :math:`A = LU`.
-
-    The input matrix is represented by a list or a tuple. The input matrix is **1-dimensional**, i.e. a list or tuple
-    of integers and/or floats; therefore, the second argument ``q`` must be bigger than zero.
-
-    :param matrix_in: Input matrix (must be a square matrix)
-    :type matrix_in: list, tuple
-    :param q: matrix size, :math:`q \\times q`
-    :type q: int
-    :return: a tuple containing matrices L and U
-    :rtype: tuple
-    """
-    if not isinstance(q, int):
-        raise TypeError("Matrix size must be an integer")
-
-    if q < 0:
-        raise ValueError("Matrix size should be bigger than zero")
-
-    # Check if the 1-dimensional input matrix is a square matrix
-    if len(matrix_in) != q ** 2:
-        raise ValueError("The input matrix must be a square matrix")
-
-    # Convert 1-dimensional matrix to 2-dimensional
-    matrix_a = [[0.0 for _ in range(q)] for _ in range(q)]
-    for i in range(0, q):
-        for j in range(0, q):
-            matrix_a[i][j] = matrix_in[j + (q * i)]
-
-    # Apply Doolittle's Method
-    matrix_l, matrix_u = _linalg.doolittle_2d(matrix_a)
-
-    # Prepare and return the L and U matrices
-    m_u = []  # type: List[float]
-    m_l = []  # type: List[float]
-    for upper, lower in zip(matrix_u, matrix_l):
-        m_u.extend(upper)
-        m_l.extend(lower)
-    return m_l, m_u
+    return _linalg.doolittle(matrix_a)
 
 
 def forward_substitution(matrix_l, matrix_b):
