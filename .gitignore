@@ -1,5 +1,6 @@
 .idea/*
 .pytest_cache/*
+.mypy_cache/*
 .cache/*
 .tox/*
 build/
