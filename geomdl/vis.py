@@ -9,6 +9,7 @@
 
 import abc
 import six
+from typing import Any, Sequence, List
 
 
 class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
@@ -18,6 +19,7 @@ class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
+        # type: (**Any) -> None
         pass
 
 
@@ -25,21 +27,27 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract base class for visualization
 
     Defines an abstract base for NURBS-Python visualization modules.
+
+    :param config: configuration class
+    :type config: VisConfigAbstract
     """
 
-    def __init__(self, config=None):
+    def __init__(self, config):
+        # type: (VisConfigAbstract) -> None
         if not isinstance(config, VisConfigAbstract):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._config = config
-        self._plots = []
+        self._plots = []  # type: List[dict]
         self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
         self._ctrlpts_offset = 0.0
 
     def clear(self):
+        # type: () -> None
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
-    def add(self, ptsarr, plot_type, name=None, color=None):
+    def add(self, ptsarr, plot_type, name="", color=""):
+        # type: (Sequence[Sequence[float]], str, str, str) -> None
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control or evaluated points
@@ -60,6 +68,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def plot_types(self):
+        # type: () -> dict
         """ Plot types
 
         :getter: Gets the plot types
@@ -68,6 +77,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         return self._plot_types
 
     def set_plot_type(self, plot_type, type_value):
+        # type: (str, str) -> None
         """ Sets the plot type.
 
         The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
@@ -112,6 +122,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         self._plot_types[plot_type] = type_value
 
     def set_ctrlpts_offset(self, offset_value):
+        # type: (float) -> None
         """ Sets an offset value for the control points plots.
 
         :param offset_value: offset value
@@ -121,6 +132,7 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def render(self, **kwargs):
+        # type: (**Any) -> None
         """ Abstract method for rendering plots of the point sets.
 
         This method must be implemented in all subclasses of ``VisAbstract`` class.
