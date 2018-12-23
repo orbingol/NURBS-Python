@@ -7,15 +7,15 @@
 
 """
 
-from typing import Sequence, List, Tuple
 import math
+from typing import Any, Sequence, List, Tuple
 from . import BSpline
 from . import helpers
 from . import linalg
 
 
 def interpolate_curve(points, degree, **kwargs):
-    # type: (Sequence[Sequence[float]], int, **bool) -> BSpline.Curve
+    # type: (Sequence[Sequence[float]], int, **Any) -> BSpline.Curve
     """ Curve interpolation through the data points.
 
     Please refer to Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
@@ -56,7 +56,7 @@ def interpolate_curve(points, degree, **kwargs):
 
 
 def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    # type: (Sequence[Sequence[float]], int, int, int, int, **bool) -> BSpline.Surface
+    # type: (Sequence[Sequence[float]], int, int, int, int, **Any) -> BSpline.Surface
     """ Surface interpolation through the data points.
 
     Please refer to the Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
@@ -88,14 +88,14 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     kv_v = compute_knot_vector(degree_v, size_v, vl)
 
     # Do global interpolation on the u-direction
-    ctrlpts_r = []
+    ctrlpts_r = []  # type: List[List[float]]
     for v in range(size_v):
         pts = [points[v + (size_v * u)] for u in range(size_u)]
         matrix_a = _build_coeff_matrix(degree_u, kv_u, uk, pts)
         ctrlpts_r += ginterp(matrix_a, pts)
 
     # Do global interpolation on the v-direction
-    ctrlpts = []
+    ctrlpts = []  # type: List[List[float]]
     for u in range(size_u):
         pts = [ctrlpts_r[u + (size_u * v)] for v in range(size_v)]
         matrix_a = _build_coeff_matrix(degree_v, kv_v, vl, pts)
@@ -115,7 +115,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def approximate_curve(points, degree, **kwargs):
-    # type: (Sequence[Sequence[float]], int, **int) -> BSpline.Curve
+    # type: (Sequence[Sequence[float]], int, **Any) -> BSpline.Curve
     """ Curve approximation using least squares method with fixed number of control points.
 
     Please refer to The NURBS Book (2nd Edition), pp.410-413 for details.
@@ -211,7 +211,7 @@ def approximate_curve(points, degree, **kwargs):
 
 
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    # type: (Sequence[Sequence[float]], int, int, int, int, **int) -> BSpline.Surface
+    # type: (Sequence[Sequence[float]], int, int, int, int, **Any) -> BSpline.Surface
     """ Surface approximation using least squares method with fixed number of control points.
 
     This algorithm interpolates the corner control points and approximates the remaining control points. Please refer to
@@ -421,7 +421,7 @@ def compute_knot_vector2(degree, num_dpts, num_cpts, params):
     return kv
 
 
-def compute_params_curve(points, centripetal):
+def compute_params_curve(points, centripetal=False):
     # type: (Sequence[Sequence[float]], bool) -> List[float]
     """ Computes :math:`\\overline{u}_{k}` for curves.
 
@@ -435,6 +435,9 @@ def compute_params_curve(points, centripetal):
     :return: parameter array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
+    if not isinstance(points, (list, tuple)):
+        raise TypeError("Data points must be a list or a tuple")
+
     # Length of the points array
     num_points = len(points)
 
@@ -456,7 +459,7 @@ def compute_params_curve(points, centripetal):
     return uk
 
 
-def compute_params_surface(points, size_u, size_v, centripetal):
+def compute_params_surface(points, size_u, size_v, centripetal=False):
     # type: (Sequence[Sequence[float]], int, int, bool) -> Tuple[List[float], List[float]]
     """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
 
@@ -482,7 +485,7 @@ def compute_params_surface(points, size_u, size_v, centripetal):
     uk = [0.0 for _ in range(size_u)]
 
     # Compute for each curve on the v-direction
-    uk_temp = []
+    uk_temp = []  # type: List[float]
     for v in range(size_v):
         pts_u = [points[v + (size_v * u)] for u in range(size_u)]
         uk_temp += compute_params_curve(pts_u, centripetal)
@@ -496,7 +499,7 @@ def compute_params_surface(points, size_u, size_v, centripetal):
     vl = [0.0 for _ in range(size_v)]
 
     # Compute for each curve on the u-direction
-    vl_temp = []
+    vl_temp = []  # type: List[float]
     for u in range(size_u):
         pts_v = [points[v + (size_v * u)] for v in range(size_v)]
         vl_temp += compute_params_curve(pts_v, centripetal)
