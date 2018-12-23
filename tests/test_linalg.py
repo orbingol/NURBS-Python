@@ -56,7 +56,7 @@ def test_vector_cross2():
 
 
 def test_vector_cross3():
-    result = (-1.0, -4.0, 3.0)
+    result = [-1.0, -4.0, 3.0]
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
     to_check = linalg.vector_cross(vec1, vec2)
@@ -87,14 +87,14 @@ def test_vector_normalize3():
 
 def test_vector3_normalize():
     vec = (5, 2.5, 5)
-    result = (0.667, 0.333, 0.667)
+    result = [0.667, 0.333, 0.667]
     to_check = linalg.vector_normalize(vec, decimals=3)
     assert to_check == result
 
 
 def test_vector4_normalize():
     vec = (5, 2.5, 5, 10)
-    result = (0.4, 0.2, 0.4, 0.8)
+    result = [0.4, 0.2, 0.4, 0.8]
     to_check = linalg.vector_normalize(vec)
     assert to_check == result
 
@@ -136,7 +136,7 @@ def test_point_translate1():
 def test_point_translate2():
     pt = (1, 0, 0)
     vec = (5, 5, 5)
-    result = (6, 5, 5)
+    result = [6, 5, 5]
     to_check = linalg.point_translate(pt, vec)
     assert to_check == result
 
@@ -186,14 +186,14 @@ def test_frange2():
 
 
 def test_vector_multiply():
-    result = (2, 4, 6)
+    result = [2, 4, 6]
     computed = linalg.vector_multiply((1, 2, 3), 2)
     assert result == computed
 
 
 def test_vector_mean():
     vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-    result = (4, 5, 6)
+    result = [4, 5, 6]
     computed = linalg.vector_mean(*vector_list)
     assert result == computed
 
@@ -214,6 +214,6 @@ def test_point_distance():
 
 
 def test_point_mid():
-    result = (2.5, 3.5, 4.5)
+    result = [2.5, 3.5, 4.5]
     computed = linalg.point_mid((1, 2, 3), (4, 5, 6))
     assert result == computed

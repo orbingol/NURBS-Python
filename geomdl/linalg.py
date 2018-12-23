@@ -1,7 +1,19 @@
+"""
+.. module:: linalg
+    :platform: Unix, Windows
+    :synopsis: Provides linear algebra utility functions
+
+.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+
+"""
+
 import math
+from typing import cast, Sequence, List, Tuple, Generator
+from . import _linalg
 
 
 def linspace(start, stop, num, decimals=18):
+    # type: (float, float, int, int) -> List[float]
     """ Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
@@ -29,6 +41,7 @@ def linspace(start, stop, num, decimals=18):
 
 
 def vector_cross(vector1, vector2):
+    # type: (Sequence[float], Sequence[float]) -> List[float]
     """ Computes the cross-product of the input vectors.
 
     :param vector1: input vector 1
@@ -52,14 +65,12 @@ def vector_cross(vector1, vector2):
 
     # Convert 2-D to 3-D, if necessary
     if len(vector1) == 2:
-        v1 = list(vector1)
-        v1.append(0.0)
+        v1 = cast(Sequence, [float(v) for v in vector1] + [0.0])
     else:
         v1 = vector1
 
     if len(vector2) == 2:
-        v2 = list(vector2)
-        v2.append(0.0)
+        v2 = cast(Sequence, [float(v) for v in vector2] + [0.0])
     else:
         v2 = vector2
 
@@ -69,10 +80,11 @@ def vector_cross(vector1, vector2):
                   (v1[0] * v2[1]) - (v1[1] * v2[0])]
 
     # Return the cross product of the input vectors
-    return tuple(vector_out)
+    return vector_out
 
 
 def vector_dot(vector1, vector2):
+    # type: (Sequence[float], Sequence[float]) -> float
     """ Computes the dot-product of the input vectors.
 
     :param vector1: input vector 1
@@ -92,7 +104,7 @@ def vector_dot(vector1, vector2):
         raise
 
     # Compute dot product
-    prod = 0
+    prod = 0.0
     for v1, v2 in zip(vector1, vector2):
         prod += v1 * v2
 
@@ -101,6 +113,7 @@ def vector_dot(vector1, vector2):
 
 
 def vector_multiply(vector_in, scalar):
+    # type: (Sequence[float], float) -> List[float]
     """ Multiplies the vector with a scalar value.
 
     This operation is also called *vector scaling*.
@@ -113,10 +126,11 @@ def vector_multiply(vector_in, scalar):
     :rtype: tuple
     """
     scaled_vector = [v * scalar for v in vector_in]
-    return tuple(scaled_vector)
+    return scaled_vector
 
 
 def vector_sum(vector1, vector2, coeff=1.0):
+    # type: (Sequence[float], Sequence[float], float) -> List[float]
     """ Sums the vectors.
 
     This function computes the result of the vector operation :math:`\\overline{v}_{1} + c * \\overline{v}_{2}`, where
@@ -129,13 +143,14 @@ def vector_sum(vector1, vector2, coeff=1.0):
     :param coeff: multiplier for vector 2
     :type coeff: float
     :return: updated vector
-    :rtype: tuple
+    :rtype: list
     """
     summed_vector = [v1 + (coeff * v2) for v1, v2 in zip(vector1, vector2)]
-    return tuple(summed_vector)
+    return summed_vector
 
 
 def vector_normalize(vector_in, decimals=18):
+    # type: (Sequence[float], int) -> List[float]
     """ Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
@@ -143,7 +158,7 @@ def vector_normalize(vector_in, decimals=18):
     :param decimals: number of significands
     :type decimals: int
     :return: the normalized vector (i.e. the unit vector)
-    :rtype: tuple
+    :rtype: list
     """
     try:
         if vector_in is None or len(vector_in) == 0:
@@ -164,12 +179,13 @@ def vector_normalize(vector_in, decimals=18):
             vector_out.append(vin / magnitude)
 
         # Return the normalized vector and consider the number of significands
-        return tuple([float(("{:." + str(decimals) + "f}").format(vout)) for vout in vector_out])
+        return [float(("{:." + str(decimals) + "f}").format(vout)) for vout in vector_out]
     else:
         raise ValueError("The magnitude of the vector is zero")
 
 
 def vector_generate(start_pt, end_pt, normalize=False):
+    # type: (Sequence[float], Sequence[float], bool) -> List[float]
     """ Generates a vector from 2 input points.
 
     :param start_pt: start point of the vector
@@ -179,7 +195,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
     :param normalize: if True, the generated vector is normalized
     :type normalize: bool
     :return: a vector from start_pt to end_pt
-    :rtype: tuple
+    :rtype: list
     """
     try:
         if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
@@ -196,10 +212,11 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
     if normalize:
         ret_vec = vector_normalize(ret_vec)
-    return tuple(ret_vec)
+    return ret_vec
 
 
 def vector_mean(*args):
+    # type: (*Sequence[float]) -> List[float]
     """ Computes the mean (average) of a list of vectors.
 
     The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
@@ -222,17 +239,18 @@ def vector_mean(*args):
     :param args: list of vectors
     :type args: list, tuple
     :return: mean vector
-    :rtype: tuple
+    :rtype: list
     """
     sz = len(args)
     mean_vector = [0.0 for _ in range(len(args[0]))]
     for input_vector in args:
         mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
     mean_vector = [a / sz for a in mean_vector]
-    return tuple(mean_vector)
+    return mean_vector
 
 
 def vector_magnitude(vector_in):
+    # type: (Sequence[float]) -> float
     """ Computes the magnitude of the input vector.
 
     :param vector_in: input vector
@@ -240,13 +258,14 @@ def vector_magnitude(vector_in):
     :return: magnitude of the vector
     :rtype: float
     """
-    sq_sum = 0
+    sq_sum = 0.0
     for vin in vector_in:
         sq_sum += vin**2
     return math.sqrt(sq_sum)
 
 
 def vector_angle_between(vector1, vector2, **kwargs):
+    # type: (Sequence[float], Sequence[float], **bool) -> float
     """ Computes the angle between the two input vectors.
 
     If the keyword argument ``degrees`` is set to *True*, then the angle will be in degrees. Otherwise, it will be
@@ -271,6 +290,7 @@ def vector_angle_between(vector1, vector2, **kwargs):
 
 
 def vector_is_zero(vector_in, tol=10e-8):
+    # type: (Sequence[float], float) -> bool
     """ Checks if the input vector is a zero vector.
 
     :param vector_in: input vector
@@ -291,6 +311,7 @@ def vector_is_zero(vector_in, tol=10e-8):
 
 
 def point_translate(point_in, vector_in):
+    # type: (Sequence[float], Sequence[float]) -> List[float]
     """ Translates the input points using the input vector.
 
     :param point_in: input point
@@ -298,7 +319,7 @@ def point_translate(point_in, vector_in):
     :param vector_in: input vector
     :type vector_in: list, tuple
     :return: translated point
-    :rtype: tuple
+    :rtype: list
     """
     try:
         if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
@@ -312,10 +333,11 @@ def point_translate(point_in, vector_in):
     # Translate the point using the input vector
     point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
 
-    return tuple(point_out)
+    return point_out
 
 
 def point_distance(pt1, pt2):
+    # type: (Sequence[float], Sequence[float]) -> float
     """ Computes distance between two points.
 
     :param pt1: point 1
@@ -334,14 +356,15 @@ def point_distance(pt1, pt2):
 
 
 def point_mid(pt1, pt2):
-    """ Computes the midpoint of the two points.
+    # type: (Sequence[float], Sequence[float]) -> List[float]
+    """ Computes the midpoint of the input points.
 
     :param pt1: point 1
     :type pt1: list, tuple
     :param pt2: point 2
     :type pt2: list, tuple
     :return: midpoint
-    :rtype: tuple
+    :rtype: list
     """
     if len(pt1) != len(pt2):
         raise ValueError("The input points should have the same dimension")
@@ -352,6 +375,7 @@ def point_mid(pt1, pt2):
 
 
 def matrix_transpose(m):
+    # type: (Sequence[Sequence[float]]) -> Sequence[Sequence[float]]
     """ Transposes the input matrix.
 
     The input matrix :math:`m` is a 2-dimensional array.
@@ -373,6 +397,7 @@ def matrix_transpose(m):
 
 
 def matrix_multiply(m1, m2):
+    # type: (Sequence[Sequence[float]], Sequence[Sequence[float]]) -> Sequence[Sequence[float]]
     """ Matrix multiplication (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
@@ -382,7 +407,7 @@ def matrix_multiply(m1, m2):
     :param m2: 2nd matrix with dimensions :math:`(p \\times m)`
     :type m2: list, tuple
     :return: resultant matrix with dimensions :math:`(n \\times m)`
-    :rtype: list, tuple
+    :rtype: list
     """
     mm = [[0.0 for _ in range(len(m2[0]))] for _ in range(len(m1))]
     for i in range(len(m1)):
@@ -393,6 +418,7 @@ def matrix_multiply(m1, m2):
 
 
 def binomial_coefficient(k, i):
+    # type: (int, int) -> float
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
     Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
@@ -414,21 +440,45 @@ def binomial_coefficient(k, i):
     return float(k_fact / (k_i_fact * i_fact))
 
 
-def lu_decomposition(matrix_in, q=0):
+def lu_decomposition(matrix_a):
+    # type: (Sequence[Sequence[float]]) -> Tuple[Sequence[Sequence[float]], Sequence[Sequence[float]]]
     """ LU-Factorization method using Doolittle's Method for solution of linear systems.
 
     Decomposes the matrix :math:`A` such that :math:`A = LU`.
 
-    The input matrix is represented by a list or a tuple. If the input matrix is 1-dimensional, i.e. a list or tuple of
-    integers and/or floats, then the second function argument ``q`` must be bigger than zero. If the input matrix is
-    2-dimensional, i.e. list of lists of integers and/or floats, then there is no need to input ``q`` as it will be
-    automatically computed.
+    The input matrix is represented by a list or a tuple. The input matrix is **2-dimensional**, i.e. list of lists of
+    integers and/or floats.
+
+    :param matrix_a: Input matrix (must be a square matrix)
+    :type matrix_a: list, tuple
+    :return: a tuple containing matrices L and U
+    :rtype: tuple
+    """
+    # Check if the 2-dimensional input matrix is a square matrix
+    q = len(matrix_a)
+    for idx, m_a in enumerate(matrix_a):
+        if len(m_a) != q:
+            raise ValueError("The input must be a square matrix. " +
+                             "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
+
+    # Return L and U matrices
+    return _linalg.doolittle_2d(matrix_a)
+
+
+def lu_decomposition_1d(matrix_in, q):
+    # type: (Sequence[float], int) -> Tuple[Sequence[float], Sequence[float]]
+    """ LU-Factorization method using Doolittle's Method for solution of linear systems.
+
+    Decomposes the matrix :math:`A` such that :math:`A = LU`.
+
+    The input matrix is represented by a list or a tuple. The input matrix is **1-dimensional**, i.e. a list or tuple
+    of integers and/or floats; therefore, the second argument ``q`` must be bigger than zero.
 
     :param matrix_in: Input matrix (must be a square matrix)
     :type matrix_in: list, tuple
-    :param q: matrix size (not used if the input matrix is 2-dimensional)
+    :param q: matrix size, :math:`q \\times q`
     :type q: int
-    :return: a tuple containing matrices (L,U)
+    :return: a tuple containing matrices L and U
     :rtype: tuple
     """
     if not isinstance(q, int):
@@ -437,63 +487,31 @@ def lu_decomposition(matrix_in, q=0):
     if q < 0:
         raise ValueError("Matrix size should be bigger than zero")
 
-    # Flag for converting return values into 1-dimensional list
-    convert_res = False
-    if q > 0:
-        # Check if the 1-dimensional input matrix is a square matrix
-        if len(matrix_in) != q ** 2:
-            raise ValueError("The input matrix must be a square matrix")
+    # Check if the 1-dimensional input matrix is a square matrix
+    if len(matrix_in) != q ** 2:
+        raise ValueError("The input matrix must be a square matrix")
 
-        # Convert 1-dimensional matrix to 2-dimensional
-        matrix_a = [[0.0 for _ in range(q)] for _ in range(q)]
-        for i in range(0, q):
-            for j in range(0, q):
-                matrix_a[i][j] = matrix_in[j + (q * i)]
-
-        # The input is 1-dimensional, so the return values should be
-        convert_res = True
-    else:
-        matrix_a = matrix_in
-        # Check if the 2-dimensional input matrix is a square matrix
-        q = len(matrix_a)
-        for idx, m_a in enumerate(matrix_a):
-            if len(m_a) != q:
-                raise ValueError("The input must be a square matrix. " +
-                                 "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
-
-    # Initialize L and U matrices
-    matrix_u = [[0.0 for _ in range(q)] for _ in range(q)]
-    matrix_l = [[0.0 for _ in range(q)] for _ in range(q)]
-
-    # Doolittle Method
+    # Convert 1-dimensional matrix to 2-dimensional
+    matrix_a = [[0.0 for _ in range(q)] for _ in range(q)]
     for i in range(0, q):
-        for k in range(i, q):
-            # Upper triangular (U) matrix
-            matrix_u[i][k] = float(matrix_a[i][k] - sum([matrix_l[i][j] * matrix_u[j][k] for j in range(0, i)]))
-            # Lower triangular (L) matrix
-            if i == k:
-                matrix_l[i][i] = 1.0
-            else:
-                matrix_l[k][i] = float(matrix_a[k][i] - sum([matrix_l[k][j] * matrix_u[j][i] for j in range(0, i)]))
-                # Handle zero division error
-                try:
-                    matrix_l[k][i] /= float(matrix_u[i][i])
-                except ZeroDivisionError:
-                    matrix_l[k][i] = 0.0
+        for j in range(0, q):
+            matrix_a[i][j] = matrix_in[j + (q * i)]
+
+    # Apply Doolittle's Method
+    matrix_l, matrix_u = _linalg.doolittle_2d(matrix_a)
 
     # Prepare and return the L and U matrices
-    if convert_res:
-        m_u = []
-        m_l = []
-        for upper, lower in zip(matrix_u, matrix_l):
-            m_u.extend(upper)
-            m_l.extend(lower)
-        return m_l, m_u
-    return matrix_l, matrix_u
+    m_u = []  # type: List[float]
+    m_l = []  # type: List[float]
+    for upper, lower in zip(matrix_u, matrix_l):
+        m_u.extend(upper)
+        m_l.extend(lower)
+    return m_l, m_u
 
 
 def forward_substitution(matrix_l, matrix_b):
-    """ Forward substitution method for solution of linear systems.
+    # type: (Sequence[Sequence[float]], Sequence[float]) -> Sequence[float]
+    """ Forward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ly = b` using forward substitution method
     where :math:`L` is a lower triangular matrix and :math:`b` is a column matrix.
@@ -515,7 +533,8 @@ def forward_substitution(matrix_l, matrix_b):
 
 
 def backward_substitution(matrix_u, matrix_y):
-    """ Backward substitution method for solution of linear systems.
+    # type: (Sequence[Sequence[float]], Sequence[float]) -> Sequence[float]
+    """ Backward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ux = y` using backward substitution method
     where :math:`U` is a upper triangular matrix and :math:`y` is a column matrix.
@@ -537,6 +556,7 @@ def backward_substitution(matrix_u, matrix_y):
 
 
 def frange(start, stop, step=1.0):
+    # type: (float, float, float) -> Generator
     """ Implementation of Python's ``range()`` function which works with floats.
 
     Reference to this implementation: https://stackoverflow.com/a/36091634
