@@ -1,6 +1,6 @@
-# NURBS-Python Changelog
+# Changelog
 
-## 5.0b1 released on 2018-12-21
+## v5.0b1 released on 2018-12-21
 
 * Simplified `abstract` module and moved all abstract classes to their relevant modules
 * Removed `curvept` and `surfpt` methods. Use `evaluate_single` instead.
@@ -20,15 +20,15 @@
 * `VisVoxel` and `VisVolume` classes for volume visualization
 * `VisVTK` visualization module
 
-## 4.4.4 released on 2018-12-20
+## v4.4.4 released on 2018-12-20
 
 * Fix PyPI description
 
-## 4.4.3 released on 2018-12-20
+## v4.4.3 released on 2018-12-20
 
 * Prepare for NURBS-Python v5 release
 
-## 4.4.2 released on 2018-12-18
+## v4.4.2 released on 2018-12-18
 
 * Fix bugs in `export_csv` and `export_smesh` functions
 
@@ -38,7 +38,7 @@
 * Major documentation update with more examples and API descriptions
 * Added DockerFiles
 
-## 4.4.0 released on 2018-11-10
+## v4.4.0 released on 2018-11-10
 
 * Added and updated import and export methods. Unfortunately, this update breaks .cfg exports prior to v4.4.x; therefore, you might need to re-export your .cfg exports.
   * `export_cfg`, `import_cfg`
@@ -46,22 +46,22 @@
   * `export_json`, `import_json`
 * `exchange` module code optimizations
 
-## 4.3.8 released on 2018-11-08
+## v4.3.8 released on 2018-11-08
 
 * Fixed a bug in bounding box computation
 * Added bounding box plotting option to the visualization module (still WIP)
 
-## 4.3.7 released on 2018-11-07
+## v4.3.7 released on 2018-11-07
 
 * Added `bbox` property to `Multi`-type classes
 * Documentation updates
 
-## 4.3.6 released on 2018-11-04
+## v4.3.6 released on 2018-11-04
 
 * Added `evalpts` property to `Multi` type of classes
 * Updated conda-build recipe
 
-## 4.3.5 released on 2018-11-03
+## v4.3.5 released on 2018-11-03
 
 * Updated `delta` and `sample_size` properties of `MultiCurve` and `MultiSurface` classes. They are now compatible with `Curve` and `Surface` classes.
 * Added `exchange.export_yaml` function (experimental, designed to be used with [geomdl_cli](https://github.com/orbingol/geomdl-cli))
@@ -69,17 +69,17 @@
 * Minor bug fixes
 * Documentation updates
 
-## 4.3.4 released on 2018-11-01
+## v4.3.4 released on 2018-11-01
 
 * Updated `operations.translate()` function to make it compatible with multi curves and surfaces
 * Added conda-build recipe
 
-## 4.3.3 released on 2018-10-31
+## v4.3.3 released on 2018-10-31
 
 * Fixed a typo in evaluated points definition of `VisMPL.VisSurfWireframe()` class
 * Documentation updates
 
-## 4.3.2 released on 2018-10-19
+## v4.3.2 released on 2018-10-19
 
 * Hodograph curve and surface computation: `operations.derivative_curve()` and `operations.derivative_surface()`
 * LU-Factorization and Forward-Backward Substitution functions in `utilities` module
@@ -89,13 +89,13 @@
 * Documentation updates
 * Minor code improvements
 
-## 4.3.1 released on 2018-10-06
+## v4.3.1 released on 2018-10-06
 
 * Fixed a bug causing Plotly surface visualization module to show extra lines
 * Added `exchange.export_smesh()` function
 * Minor bug fixes and documentation updates
 
-## 4.3.0 released on 2018-10-01
+## v4.3.0 released on 2018-10-01
 
 * Added `Tessellate` class for customization of the surface tessellation algorithms
 * Basic trimmed surface support (still work in progress)
@@ -178,7 +178,7 @@ This is the official release of NURBS-Python (geomdl) v4.0.0. The following list
 * Bug fixes, code cleaning and compatibility updates
 * New unit and function tests with [codecov.io](https://codecov.io/gh/orbingol/NURBS-Python) integration
 
-## v4.0-beta10 released on 2018-07-03
+## v4.0b10 released on 2018-07-03
 
 * Fix a bug in surface generator causing miscalculation of the grid boundaries when users add padding via `base_adjust` argument
 * Renamed surface control points row order changing functions (flipping)
@@ -186,47 +186,47 @@ This is the official release of NURBS-Python (geomdl) v4.0.0. The following list
 * Minor updates in error messages and exceptions
 * Documentation updates
 
-## v4.0-beta9 released on 2018-07-02
+## v4.0b9 released on 2018-07-02
 
 * Bug fix release for Surface Generator module
 
-## v4.0-beta8 released on 2018-07-01
+## v4.0b8 released on 2018-07-01
 
 * Bug fix release (surface generator)
 
-## v4.0-beta7 released on 2018-07-01
+## v4.0b7 released on 2018-07-01
 
 * `NURBS.ctrlptsw` now returns a tuple
 * Algorithm and compatibility updates to surface grid generator
 * Add more tests
 
-## v4.0-beta6 released on 2018-06-29
+## v4.0b6 released on 2018-06-29
 
 * Fixed an issue which causes figure display problems during rendering curves and surfaces in `Multi`-type classes
 * Coding improvements in `utilities` module
 * Added more tests, increasing the code coverage to 47%
 
-## v4.0-beta5 released on 2018-06-22
+## v4.0b5 released on 2018-06-22
 
 * New feature: Exporting plots as image files
 * Documentation: Added [exporting plots](http://nurbs-python.readthedocs.io/en/latest/visualization_export.html) section with code examples
 * Documentation: Updated [load-save](http://nurbs-python.readthedocs.io/en/latest/load_save.html) section with some code examples
 
-## v4.0-beta4 released on 2018-06-20
+## v4.0b4 released on 2018-06-20
 
 * Bug fix: The sample generator function was not considering the starting value
 
-## v4.0-beta3 released on 2018-06-16
+## v4.0b3 released on 2018-06-16
 
 * `exchange` module updates
 * Documentation updates
 
-## v4.0-beta2 released on 2018-06-14
+## v4.0b2 released on 2018-06-14
 
 * Several bug fixes and compatibility updates
 * Documentation updates
 
-## v4.0-beta1 released on 2018-06-04
+## v4.0b1 released on 2018-06-04
 
 This is the first **beta version** of NURBS-Python v4.x series. 
 
@@ -559,12 +559,12 @@ Currently, `VisMPL` has the following classes:
 * Initial stable release of NURBS-Python v3.0.0
 * Added the library to Python Package Index (PyPI).
 
-## v3.0-beta3 released on 2018-01-09
+## v3.0b3 released on 2018-01-09
 
 * Bug fixes
 * Update visualization component
 
-## v3.0-beta2 released on 2018-01-08
+## v3.0b2 released on 2018-01-08
 
 * Added visualization module.
 
@@ -578,7 +578,7 @@ Please see the following  for usage examples:
 * [ex_curve3d01.py](https://github.com/orbingol/NURBS-Python_Examples/blob/master/curve3d/ex_curve3d01.py) - 3D curve
 * Surface visualization component is also complete but currently there are no examples. Please check the [examples repository](https://github.com/orbingol/NURBS-Python_Examples) for more details.
 
-## v3.0-beta1 released on 2018-01-07
+## v3.0b1 released on 2018-01-07
 
 This is the first beta release of NURBS-Python after a huge set of new features and updates. Unfortunately, there has been some API changes between _v2.x_ and _v3.x_ series but these changes are not too big, so you might only need to change the import statements to make things working again.
 
@@ -631,7 +631,7 @@ Please check it out here: https://github.com/orbingol/NURBS-Python_Examples
 * Added `read_ctrlptsw()` method to the `Curve` class
 * Some minor documentation updates
 
-## v2.3 released on 2017-05-09
+## v2.3.0 released on 2017-05-09
 
 * Added a 2D grid generator
 * Minor bug fixes
