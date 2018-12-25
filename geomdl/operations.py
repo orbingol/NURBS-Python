@@ -481,7 +481,7 @@ def translate(obj, vec, **kwargs):
     change the input shape but returns a new instance of the same shape with the updated data.
 
     :param obj: Curve(s) or surface(s) to be translated
-    :type obj: abstract.Curve, abstract.Surface or abstract.Multi
+    :type obj: abstract.Curve, abstract.Surface or multi.AbstractContainer
     :param vec: translation vector
     :type vec: list, tuple
     """

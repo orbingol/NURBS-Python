@@ -845,7 +845,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @evaluator.setter
     def evaluator(self, value):
         if not isinstance(value, AbstractEvaluator):
-            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+            raise TypeError("The evaluator must be an instance of AbstractEvaluator")
         value._span_func = self._span_func
         self._evaluator = value
 
@@ -1366,7 +1366,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     @tessellator.setter
     def tessellator(self, value):
         if not isinstance(value, AbstractTessellate):
-            warnings.warn("Tessellation component must be an instance of Abstract.Tessellate class")
+            warnings.warn("Tessellation component must be an instance of AbstractTessellate class")
             return
 
         self._tsl_component = value
@@ -1905,7 +1905,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     @evaluator.setter
     def evaluator(self, value):
         if not isinstance(value, AbstractEvaluator):
-            raise TypeError("The evaluator must be an instance of Abstract.Evaluator")
+            raise TypeError("The evaluator must be an instance of AbstractEvaluator")
         value._span_func = self._span_func
         self._evaluator = value
 

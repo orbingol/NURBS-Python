@@ -70,7 +70,7 @@ def export_polydata(obj, file_name, point_type='evalpts', **kwargs):
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
     :param obj: a curve or a surface object
-    :type obj: Abstract.Curve, Abstract.Surface
+    :type obj: abstract.Curve, abstract.Surface
     :param file_name: output file name
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
