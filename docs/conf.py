@@ -61,9 +61,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'NURBS-Python'
-copyright = u'2016-2018, Onur Rauf Bingol'
+copyright = u'2016-2019, Onur Rauf Bingol'
 author = u'Onur Rauf Bingol'
-description = u'NURBS curve and surface evaluation library in pure Python'
+description = u'Object-oriented B-Spline and NURBS evaluation library in pure Python'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
