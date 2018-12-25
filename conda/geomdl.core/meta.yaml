@@ -40,7 +40,7 @@ about:
   home: https://onurraufbingol.com/NURBS-Python/
   license: MIT
   license_file: ../../LICENSE
-  summary: Object-oriented NURBS curve and surface evaluation library
+  summary: Object-oriented B-Spline and NURBS evaluation library
   description: "Self-contained, object-oriented, pure Python B-Spline and NURBS evaluation library with knot vector and surface grid generators."
   doc_url: "http://nurbs-python.readthedocs.io/"
   dev_url: "https://github.com/orbingol/NURBS-Python"
