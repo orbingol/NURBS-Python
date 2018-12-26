@@ -211,7 +211,7 @@ def extract_surfaces(pvol):
 
 
 def extract_isosurface(pvol):
-    """ Extracts isosurface from a parametric volume.
+    """ Extracts the largest isosurface from a volume.
 
     The following example illustrates one of the usage scenarios:
 
