@@ -8,9 +8,7 @@
 """
 
 import struct
-from functools import partial
-from . import linalg
-from ._mp import pool_context
+from . import _voxelize
 
 
 def voxelize(obj, **kwargs):
@@ -41,11 +39,11 @@ def voxelize(obj, **kwargs):
     # Should also work with multi surfaces and volumes
     for o in obj:
         # Generate voxel grid
-        grid_temp = _generate_voxel_grid(o.bbox, *grid_size)
+        grid_temp = _voxelize.generate_voxel_grid(o.bbox, *grid_size)
         args = [grid_temp, o.evalpts]
 
         # Find in-outs
-        filled_temp = _voxelize_mp(*args, **kwargs) if use_mp else _voxelize_st(*args, **kwargs)
+        filled_temp = _voxelize.find_inouts_mp(*args, **kwargs) if use_mp else _voxelize.find_inouts_st(*args, **kwargs)
 
         # Add to result arrays
         grid += grid_temp
@@ -55,52 +53,31 @@ def voxelize(obj, **kwargs):
     return grid, filled
 
 
-def _voxelize_st(voxel_grid, datapts, **kwargs):
-    """ Single-threaded in-out finding (default)
-
-    :param voxel_grid: voxel grid
-    :param datapts: data points
-    :return: in-outs
-    """
-    padding = kwargs.get('padding', 10e-8)
-    filled = [0 for _ in range(len(voxel_grid))]
-    for idx, bb in enumerate(voxel_grid):
-        pts_inside = _find_points_inside_voxel(bb, datapts, padding=padding)
-        if pts_inside:
-            filled[idx] = 1
-    return filled
-
-
-def _voxelize_mp(voxel_grid, datapts, **kwargs):
-    """ Multi-threaded in-out finding (using multiprocessing)
-
-    :param voxel_grid: voxel grid
-    :param datapts: data points
-    :return: in-outs
-    """
-    padding = kwargs.get('padding', 10e-8)
-    num_procs = kwargs.get('num_procs', 4)
-    with pool_context(processes=num_procs) as pool:
-        filled = pool.map(partial(_find_points_inside_voxel, ptarr=datapts, padding=padding), voxel_grid)
-    return filled
-
-
 def generate_faces(voxel_grid):
-    """ Converts bounding box min and max coordinates to faces.
+    """ Converts a voxel grid defined by min and max coordinates to a voxel grid defined by faces.
 
-    :param voxel_grid: voxel grid with bounding box data
+    :param voxel_grid: voxel grid defined by the bounding box of all voxels
     :return: voxel grid with face data
     """
     new_vg = []
     for v in voxel_grid:
-        p1 = v[0]; p2 = [v[1][0], v[0][1], v[0][2]]; p3 = [v[1][0], v[1][1], v[0][2]]; p4 = [v[0][0], v[1][1], v[0][2]]
-        p5 = [v[0][0], v[0][1], v[1][2]]; p6 = [v[1][0], v[0][1], v[1][2]]; p7 = v[1]; p8 = [v[0][0], v[1][1], v[1][2]]
+        # Vertices
+        p1 = v[0]
+        p2 = [v[1][0], v[0][1], v[0][2]]
+        p3 = [v[1][0], v[1][1], v[0][2]]
+        p4 = [v[0][0], v[1][1], v[0][2]]
+        p5 = [v[0][0], v[0][1], v[1][2]]
+        p6 = [v[1][0], v[0][1], v[1][2]]
+        p7 = v[1]
+        p8 = [v[0][0], v[1][1], v[1][2]]
+        # Faces
         fb = [p1, p2, p3, p4]  # bottom face
         ft = [p5, p6, p7, p8]  # top face
         fs1 = [p1, p2, p6, p5]  # side face 1
         fs2 = [p2, p3, p7, p6]  # side face 2
         fs3 = [p3, p4, p8, p7]  # side face 3
         fs4 = [p4, p1, p5, p8]  # side face 4
+        # Append to return list
         new_vg.append([ft, fs1, fs2, fs3, fs4, fb])
     return new_vg
 
@@ -108,7 +85,7 @@ def generate_faces(voxel_grid):
 def save(voxel_grid, file_name):
     """ Saves binary voxel grid as a binary file.
 
-    The binary file would be structured in little-endian unsigned int format.
+    The binary file is structured in little-endian unsigned int format.
 
     :param voxel_grid: binary voxel grid
     :type voxel_grid: list, tuple
@@ -124,92 +101,3 @@ def save(voxel_grid, file_name):
         raise e
     except Exception:
         raise
-
-
-def _generate_voxel_grid(bbox, size_u, size_v, size_w):
-    """ Generates the voxel grid with the desired size.
-
-    :param bbox: bounding box
-    :type bbox: list, tuple
-    :param size_u: size in x-direction
-    :type size_u: int
-    :param size_v: size in y-direction
-    :type size_v: int
-    :param size_w: size in z-direction
-    :type size_w: int
-    :return: voxel grid
-    :rtype: list
-    """
-    if size_u <= 1 or size_v <= 1 or size_w <= 1:
-        raise ValueError("Size values must be bigger than 1")
-
-    # Find step size
-    step_u = float(bbox[1][0] - bbox[0][0]) / float(size_u - 1)
-    step_v = float(bbox[1][1] - bbox[0][1]) / float(size_v - 1)
-    step_w = float(bbox[1][2] - bbox[0][2]) / float(size_w - 1)
-
-    # Find range
-    range_u = linalg.linspace(bbox[1][0], bbox[0][0], size_u)
-    range_v = linalg.linspace(bbox[1][1], bbox[0][1], size_v)
-    range_w = linalg.linspace(bbox[1][2], bbox[0][2], size_w)
-
-    voxel_grid = []
-    for u in range_u:
-        for v in range_v:
-            for w in range_w:
-                bbmin = [u, v, w]
-                bbmax = [u + step_u, v + step_v, w + step_w]
-                voxel_grid.append([bbmin, bbmax])
-    return voxel_grid
-
-
-def _find_points_inside_voxel(bbox, ptarr, **kwargs):
-    """ Finds the points contained inside the voxel boundaries.
-
-    Ref: https://math.stackexchange.com/a/1552579
-
-    :param bbox: bounding box of the voxel
-    :type bbox: list, tuple
-    :param ptarr: points to be checked
-    :type ptarr: list, tuple
-    :return: list of points inside the voxel
-    :rtype: list
-    """
-    # Get keyword arguments
-    padding = kwargs.get('padding', 10e-8)
-    get_inout = kwargs.get('inout', True)
-
-    # Make bounding box vertices more readable
-    bbmin = [b - padding for b in bbox[0]]
-    bbmax = [b + padding for b in bbox[1]]
-
-    # Initialize an empty list
-    points_inside = []
-
-    # Find basis vectors
-    i = [bbmax[0] - bbmin[0], 0, 0]
-    j = [0, bbmax[1] - bbmin[1], 0]
-    k = [0, 0, bbmax[2] - bbmin[2]]
-
-    # Find dot products
-    idi = linalg.vector_dot(i, i)
-    jdj = linalg.vector_dot(j, j)
-    kdk = linalg.vector_dot(k, k)
-
-    for pt in ptarr:
-        v = [p - b for p, b in zip(pt, bbmin)]
-        # Bigger than and equal to will include the border and,
-        # since we have a padding on the boundary box, we only
-        # need to include the lower boundary below
-        vdi = linalg.vector_dot(v, i)
-        vdj = linalg.vector_dot(v, j)
-        vdk = linalg.vector_dot(v, k)
-        if idi > vdi >= 0.0 and jdj > vdj >= 0.0 and kdk > vdk >= 0.0:
-            if get_inout:
-                return 1
-            else:
-                points_inside.append(pt)
-
-    if get_inout:
-        return 0
-    return points_inside
