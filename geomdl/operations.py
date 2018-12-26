@@ -26,8 +26,8 @@ def split_curve(obj, u, **kwargs):
     curve objects and returns them. It does not modify the input curve.
 
     :param obj: Curve to be split
-    :type obj: BSpline.Curve or NURBS.Curve
-    :param u: parametric coordinate
+    :type obj: abstract.Curve
+    :param u: parameter
     :type u: float
     :return: a list of curves as the split pieces of the initial curve
     :rtype: multi.CurveContainer
@@ -39,9 +39,8 @@ def split_curve(obj, u, **kwargs):
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     # Validate input data
-    if u == 0.0 or u == 1.0:
+    if u == obj.knotvector[0] or u == obj.knotvector[-1]:
         raise ValueError("Cannot split on the corner points")
-    utilities.check_params([u])
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), u) - obj.degree + 1
@@ -93,7 +92,7 @@ def decompose_curve(obj, **kwargs):
     This operation does not modify the input curve, instead it returns the split curve segments.
 
     :param obj: Curve to be decomposed
-    :type obj: BSpline.Curve or NURBS.Curve
+    :type obj: abstract.Curve
     :return: a list of curve objects arranged in Bezier curve segments
     :rtype: multi.CurveContainer
     """
@@ -128,7 +127,7 @@ def derivative_curve(obj):
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of abstract.Curve class")
 
-    # Unfortunately, rational curves do not have this property
+    # Unfortunately, rational curves do NOT have this property
     # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
     if obj.rational:
         warnings.warn("Cannot compute hodograph curve for a rational curve")
@@ -181,7 +180,7 @@ def add_dimension(obj, **kwargs):
     Useful when converting a 2-dimensional curve to a 3-dimensional curve.
 
     :param obj: Curve
-    :type obj: BSpline.Curve or NURBS.Curve
+    :type obj: abstract.Curve
     :return: updated Curve
     :rtype: BSpline.Curve or NURBS.Curve
     """
@@ -215,19 +214,18 @@ def split_surface_u(obj, t, **kwargs):
     generates two different surface objects and returns them. It does not modify the input surface.
 
     :param obj: surface
-    :type obj: BSpline.Surface or NURBS.Surface
-    :param t: parametric coordinate on the u-direction
+    :type obj: abstract.Surface
+    :param t: parameter for the u-direction
     :type t: float
     :return: a list of surface as the split pieces of the initial surface
     :rtype: multi.SurfaceContainer
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of any Surface class")
+        raise TypeError("Input shape must be an instance of abstract.Surface class")
 
-    if t == 0.0 or t == 1.0:
-        raise ValueError("Cannot split on the corner points")
-    utilities.check_params([t])
+    if t == obj.knotvector_u[0] or t == obj.knotvector_u[-1]:
+        raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
@@ -287,19 +285,18 @@ def split_surface_v(obj, t, **kwargs):
     generates two different surface objects and returns them. It does not modify the input surface.
 
     :param obj: surface
-    :type obj: BSpline.Surface or NURBS.Surface
-    :param t: parametric coordinate on the v-direction
+    :type obj: abstract.Surface
+    :param t: parameter for the v-direction
     :type t: float
     :return: a list of surface as the split pieces of the initial surface
     :rtype: multi.SurfaceContainer
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of any Surface class")
+        raise TypeError("Input shape must be an instance of abstract.Surface class")
 
-    if t == 0.0 or t == 1.0:
-        raise ValueError("Cannot split on the corner points")
-    utilities.check_params([t])
+    if t == obj.knotvector_v[0] or t == obj.knotvector_v[-1]:
+        raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
@@ -364,13 +361,13 @@ def decompose_surface(obj, **kwargs):
     This operation does not modify the input surface, instead it returns the surface patches.
 
     :param obj: surface
-    :type obj: BSpline.Surface or NURBS.Surface
+    :type obj: abstract.Surface
     :return: a list of surface objects arranged as Bezier surface patches
     :rtype: multi.SurfaceContainer
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of any Surface class")
+        raise TypeError("Input shape must be an instance of abstract.Surface class")
 
     # Work with an identical copy
     surf = copy.deepcopy(obj)
@@ -584,7 +581,6 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     :return: control points; 1-dimensional array for curve, 2-dimensional array for surface
     :rtype: list
     """
-    utilities.check_params([u, v])
     if isinstance(obj, abstract.Curve):
         return _operations.find_ctrlpts_curve(u, obj, **kwargs)
     elif isinstance(obj, abstract.Surface):
