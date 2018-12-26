@@ -122,7 +122,6 @@ def derivative_curve(obj):
     :param obj: input curve
     :type obj: abstract.Curve
     :return: derivative curve
-    :rtype: abstract.Curve
     """
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of abstract.Curve class")
@@ -603,7 +602,6 @@ def rotate(obj, angle, **kwargs):
     :param angle: angle of rotation (in degrees)
     :type angle: float
     :return: rotated curve or surface
-    :rtype: abstract.Curve or abstract.Surface
     """
     def rotate_x(ncs, opt, alpha):
         # Generate translation vector
@@ -700,7 +698,6 @@ def scale(obj, multiplier, **kwargs):
     :param multiplier: scaling multiplier
     :type multiplier: float
     :return: scaled curve or surface
-    :rtype: abstract.Curve or abstract.Surface
     """
     # Input validity checks
     if not isinstance(multiplier, (int, float)):
@@ -723,7 +720,7 @@ def transpose(surf, **kwargs):
     :param surf: input surface
     :type surf: abstract.Surface
     :return: transposed surface
-    :rtype: abstract.Surface()
+    :rtype: abstract.Surface
     """
     if not isinstance(surf, abstract.Surface):
         raise TypeError("Can only transpose single surfaces")
