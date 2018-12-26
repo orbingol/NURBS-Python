@@ -187,7 +187,7 @@ def test_nurbs_curve2d_insert_knot2(nurbs_curve2):
     u = 0.2
 
     # Insert knot
-    nurbs_curve2.insert_knot(u, 3)
+    nurbs_curve2.insert_knot(u, r=3)
 
     # Evaluate curve at the given parameter
     evalpt = nurbs_curve2.evaluate_single(u)

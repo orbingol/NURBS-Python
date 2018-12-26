@@ -640,10 +640,14 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param param: parameter
+        :param param: parameter (u)
         """
-        # Check all parameters are set before the evaluation
+        # Check all variables are set before the evaluation
         self._check_variables()
+
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([param])
 
         # Should implement the evaluation functionality
         pass
@@ -677,11 +681,12 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :param order: derivative order
         :type order: int
         """
-        # Check all parameters are set before the curve evaluation
+        # Check all variables are set before the curve evaluation
         self._check_variables()
 
-        # Check u parameters are correct
-        utilities.check_params(u)
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([u])
 
         # Should implement the derivatives functionality
         pass
@@ -1706,8 +1711,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         :param param: parameter (u, v)
         """
-        # Check all parameters are set before the evaluation
+        # Check all variables are set before the evaluation
         self._check_variables()
+
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params(param)
 
         # Should implement the evaluation functionality
         pass
@@ -1743,11 +1752,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         :param order: derivative order
         :type order: int
         """
-        # Check all parameters are set before the evaluation
+        # Check all variables are set before the evaluation
         self._check_variables()
 
-        # Check u and v parameters are correct
-        utilities.check_params(u, v)
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([u, v])
 
         # Should implement the derivatives functionality here
         pass
@@ -2822,6 +2832,10 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
+
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params(param)
 
         # Should implement the evaluation functionality
         pass

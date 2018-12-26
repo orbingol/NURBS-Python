@@ -161,9 +161,9 @@ class Curve(abstract.Curve):
         start = kwargs.get('start', self.knotvector[self.degree])
         stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
 
-        # Check if the input parameters are in the range
-        utilities.check_params(start)
-        utilities.check_params(stop)
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([start, stop])
 
         # Clean up the curve points
         self.reset(evalpts=True)
@@ -187,8 +187,9 @@ class Curve(abstract.Curve):
         # Call parent method
         super(Curve, self).evaluate_single(param)
 
-        # Check param parameters are correct
-        utilities.check_params(param)
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([param])
 
         # Evaluate
         return self._evaluator.evaluate_single(parameter=param, degree=self._degree, knotvector=self._knot_vector,
@@ -206,14 +207,14 @@ class Curve(abstract.Curve):
         # Call parent method
         super(Curve, self).evaluate_list(param_list)
 
-        # Tolerance value
-        tol = 10e-8
-
-        # Evaluate (u,v) list
+        # Evaluate parameter list
         res = []
-        for u in param_list:
-            if 0.0 + tol < u < 1.0 - tol:
-                res.append(self.evaluate_single(u))
+        for prm in param_list:
+            if self._kv_normalize:
+                if utilities.check_params([prm]):
+                    res.append(self.evaluate_single(prm))
+            else:
+                res.append(self.evaluate_single(prm))
         return tuple(res)
 
     # Evaluates the curve derivative
@@ -236,21 +237,25 @@ class Curve(abstract.Curve):
                                                   dimension=self._dimension)
 
     # Knot insertion
-    def insert_knot(self, u, r=1, check_r=True):
+    def insert_knot(self, u, **kwargs):
         """ Inserts the given knot and updates the control points array and the knot vector.
+
+        Keyword Arguments:
+            * ``r``: Number of knot insertions. *Default: 1*
 
         :param u: knot to be inserted
         :type u: float
-        :param r: number of knot insertions
-        :type r: int
-        :param check_r: enables/disables number of knot insertions check
-        :type check_r: bool
         """
         # Check all parameters are set before the curve evaluation
         self._check_variables()
 
         # Check u parameters are correct
-        utilities.check_params(u)
+        if self._kv_normalize:
+            utilities.check_params([u])
+
+        # Get keyword arguments
+        r = kwargs.get('r', 1)
+        check_r = kwargs.get('check_r', True)
 
         # Check if the number of knot insertions requested is valid
         if not isinstance(r, int) or r < 0:
@@ -612,9 +617,9 @@ class Surface(abstract.Surface):
         start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
         stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
 
-        # Check if all the input parameters are in the range
-        utilities.check_params(start_u, stop_u)
-        utilities.check_params(start_v, stop_v)
+        # Check parameters
+        if self._kv_normalize:
+            utilities.check_params([start_u, stop_u, start_v, stop_v])
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -639,9 +644,6 @@ class Surface(abstract.Surface):
         # Call parent method
         super(Surface, self).evaluate_single(param)
 
-        # Check u and v parameters are correct
-        utilities.check_params(param[0], param[1])
-
         # Evaluate the surface
         spt = self._evaluator.evaluate_single(parameter=param, degree=self._degree, knotvector=self._knot_vector,
                                               ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
@@ -663,7 +665,10 @@ class Surface(abstract.Surface):
         # Evaluate (u,v) list
         res = []
         for prm in param_list:
-            if utilities.check_params(prm[0], prm[1]):
+            if self._kv_normalize:
+                if utilities.check_params(prm):
+                    res.append(self.evaluate_single(prm))
+            else:
                 res.append(self.evaluate_single(prm))
         return tuple(res)
 
@@ -715,8 +720,8 @@ class Surface(abstract.Surface):
         self._check_variables()
 
         # Check if the parameter values are correctly defined
-        if u or v:
-            utilities.check_params(u, v)
+        if self._kv_normalize:
+            utilities.check_params([u, v])
 
         # Get keyword arguments
         ru = kwargs.get('ru', 1)
@@ -909,9 +914,8 @@ class Volume(abstract.Volume):
         stop_w = kwargs.get('stop_w', self.knotvector_w[-(self.degree_w + 1)])
 
         # Check if all the input parameters are in the range
-        utilities.check_params(start_u, stop_u)
-        utilities.check_params(start_v, stop_v)
-        utilities.check_params(start_w, stop_w)
+        if self._kv_normalize:
+            utilities.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w])
 
         # Clean up the evaluated points
         self.reset(evalpts=True)
@@ -936,7 +940,8 @@ class Volume(abstract.Volume):
         super(Volume, self).evaluate_single(param)
 
         # Check if all parameters are in the range
-        utilities.check_params(param[0], param[1], param[2])
+        if self._kv_normalize:
+            utilities.check_params(param)
 
         # Evaluate the volume
         vpt = self._evaluator.evaluate_single(parameter=param,
@@ -960,7 +965,10 @@ class Volume(abstract.Volume):
         # Evaluate (u, v, w) list
         res = []
         for prm in param_list:
-            if utilities.check_params(prm[0], prm[1], prm[2]):
+            if self._kv_normalize:
+                if utilities.check_params(prm):
+                    res.append(self.evaluate_single(prm))
+            else:
                 res.append(self.evaluate_single(prm))
         return tuple(res)
 

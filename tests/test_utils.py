@@ -104,28 +104,28 @@ def test_check_uv1():
     with pytest.raises(ValueError):
         u = -0.1
         v = 0.1
-        utilities.check_params(u, v)
+        utilities.check_params([u, v])
 
 
 def test_check_uv2():
     with pytest.raises(ValueError):
         u = 2
         v = 0.1
-        utilities.check_params(u, v)
+        utilities.check_params([u, v])
 
 
 def test_check_uv3():
     with pytest.raises(ValueError):
         v = -0.1
         u = 0.1
-        utilities.check_params(u, v)
+        utilities.check_params([u, v])
 
 
 def test_check_uv4():
     with pytest.raises(ValueError):
         v = 2
         u = 0.1
-        utilities.check_params(u, v)
+        utilities.check_params([u, v])
 
 
 def test_color_generator():

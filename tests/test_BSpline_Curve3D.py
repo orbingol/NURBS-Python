@@ -173,7 +173,7 @@ def test_bspline_curve3d_insert_knot2(bs_curve):
 
 
 def test_bspline_curve3d_insert_knot3(bs_curve):
-    bs_curve.insert_knot(0.5, 2)
+    bs_curve.insert_knot(0.5, r=2)
 
     # Evaluate curve at u = 0.8
     evalpt = bs_curve.evaluate_single(0.8)
@@ -188,7 +188,7 @@ def test_bspline_curve3d_insert_knot3(bs_curve):
 
 def test_bspline_curve3d_insert_knot4(bs_curve):
     # Insert knot at u = 0.5
-    bs_curve.insert_knot(0.5, 2)
+    bs_curve.insert_knot(0.5, r=2)
 
     assert bs_curve.knotvector[6] == 0.3
     assert bs_curve.knotvector[7] == 0.5

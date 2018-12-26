@@ -170,7 +170,7 @@ def test_bspline_curve2d_insert_knot3(bs_curve):
     u = 0.6
 
     # Insert knot
-    bs_curve.insert_knot(u, 2)
+    bs_curve.insert_knot(u, r=2)
 
     # Evaluate curve at the given parameter
     evalpt = bs_curve.evaluate_single(u)
@@ -187,6 +187,6 @@ def test_bspline_curve2d_insert_knot4(bs_curve):
     u = 0.6
 
     # Insert knot
-    bs_curve.insert_knot(u, 2)
+    bs_curve.insert_knot(u, r=2)
 
     assert bs_curve.knotvector[5] == u
