@@ -694,21 +694,22 @@ class Surface(abstract.Surface):
                                                   dimension=self._dimension)
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates
-    def insert_knot(self, u=None, v=None, ru=1, rv=1, check_r=True):
-        """ Inserts the knot in single dimension, with only u or v input, or multi-dimensions, with a (u,v) pair input.
+    def insert_knot(self, u=None, v=None, **kwargs):
+        """ Inserts knot(s) in u- or v-directions
+
+        If you keep a parameter assigned to ``None``, there will be no knot insertion to that parametric direction.
+
+        Keyword Arguments:
+            * ``ru``: Number of knot insertions on the u-direction. *Default: 1*
+            * ``rv``: Number of knot insertions on the v-direction. *Default: 1*
 
         :param u: Knot to be inserted on the u-direction
         :type u: float
         :param v: Knot to be inserted on the v-direction
         :type v: float
-        :param ru: Number of knot insertions on the u-direction
-        :type ru: int
-        :param rv: Number of knot insertions on the v-direction
-        :type rv: int
-        :param check_r: enables/disables number of knot insertions check
-        :type check_r: bool
         """
-        can_insert_knot = True
+        can_insert_knot_u = True
+        can_insert_knot_v = True
 
         # Check all parameters are set before the curve evaluation
         self._check_variables()
@@ -716,6 +717,11 @@ class Surface(abstract.Surface):
         # Check if the parameter values are correctly defined
         if u or v:
             utilities.check_params(u, v)
+
+        # Get keyword arguments
+        ru = kwargs.get('ru', 1)
+        rv = kwargs.get('rv', 1)
+        check_r = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
 
         if not isinstance(ru, int) or ru < 0:
             raise ValueError("Number of insertions on the u-direction must be a positive integer")
@@ -730,13 +736,14 @@ class Surface(abstract.Surface):
             # Check if it is possible add that many number of knots
             if check_r and ru > self.degree_u - s_u:
                 warnings.warn("Cannot insert " + str(ru) + " knots on the u-direction")
-                can_insert_knot = False
+                can_insert_knot_u = False
 
-            if can_insert_knot:
-                UQ, Q = self._evaluator.insert_knot_u(parameter=u, r=ru, s=s_u, degree=self.degree_u,
-                                                      knotvector=self.knotvector_u,
-                                                      ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
-                                                      ctrlpts=self._control_points)
+            if can_insert_knot_u:
+                args_dict = dict(
+                    parameter=u, r=ru, s=s_u, degree=self.degree_u, knotvector=self.knotvector_u,
+                    ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v), ctrlpts=self._control_points
+                )
+                UQ, Q = self._evaluator.insert_knot("u", **args_dict)
 
                 # Update class variables after knot insertion
                 self._knot_vector[0] = UQ
@@ -749,13 +756,14 @@ class Surface(abstract.Surface):
             # Check if it is possible add that many number of knots
             if check_r and rv > self.degree_v - s_v:
                 warnings.warn("Cannot insert " + str(rv) + " knots on the v-direction")
-                can_insert_knot = False
+                can_insert_knot_v = False
 
-            if can_insert_knot:
-                VQ, Q = self._evaluator.insert_knot_v(parameter=v, r=rv, s=s_v, degree=self.degree_v,
-                                                      knotvector=self.knotvector_v,
-                                                      ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v),
-                                                      ctrlpts=self._control_points)
+            if can_insert_knot_v:
+                args_dict = dict(
+                    parameter=v, r=rv, s=s_v, degree=self.degree_v, knotvector=self.knotvector_v,
+                    ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v), ctrlpts=self._control_points
+                )
+                VQ, Q = self._evaluator.insert_knot("v", **args_dict)
 
                 # Update class variables after knot insertion
                 self._knot_vector[1] = VQ

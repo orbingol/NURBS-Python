@@ -12,10 +12,11 @@ import abc
 import six
 from . import linalg
 from . import helpers
+from . import _evaluators
 
 
 class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Evaluator abstract base class.
+    """ Abstract base class for implementations of fundamental spline algorithms.
 
     The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
     The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
@@ -52,14 +53,9 @@ class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         """ Abstract method for computation of derivatives at a single parameter. """
         pass
 
-    @abc.abstractmethod
-    def derivatives(self, **kwargs):
-        """ Abstract method for computation of derivatives over a range of parameters. """
-        pass
 
-
-class AbstractCurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Curve customizations for Evaluator abstract base class. """
+class AdvancedEvaluator(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class for implementations of advanced spline algorithms. """
 
     def __init__(self, **kwargs):
         self._span_func = kwargs.get('find_span_func', None)
@@ -70,24 +66,7 @@ class AbstractCurveEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class AbstractSurfaceEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Surface customizations for the Evaluator abstract base class. """
-
-    def __init__(self, **kwargs):
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @abc.abstractmethod
-    def insert_knot_u(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm on the u-direction. """
-        pass
-
-    @abc.abstractmethod
-    def insert_knot_v(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm on the v-direction. """
-        pass
-
-
-class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
+class CurveEvaluator(AbstractEvaluator, AdvancedEvaluator):
     """ Sequential B-Spline curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -181,14 +160,6 @@ class CurveEvaluator(AbstractEvaluator, AbstractCurveEvaluator):
 
         # Return the derivatives
         return CK
-
-    def derivatives(self, **kwargs):
-        """ Evaluates n-th order curve derivatives over a range of parameters. """
-        # Call parent method
-        super(CurveEvaluator, self).derivatives(**kwargs)
-
-        # Not implemented, yet...
-        raise NotImplementedError("This functionality is not implemented at the moment")
 
     def insert_knot(self, **kwargs):
         """ Insert knot multiple times at a single parameter. """
@@ -395,7 +366,7 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return CK
 
 
-class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
+class SurfaceEvaluator(AbstractEvaluator, AdvancedEvaluator):
     """ Sequential B-Spline surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -511,119 +482,17 @@ class SurfaceEvaluator(AbstractEvaluator, AbstractSurfaceEvaluator):
 
         return SKL
 
-    def derivatives(self, **kwargs):
-        """ Evaluates n-th order surface derivatives over a range of (u,v) parameters. """
+    def insert_knot(self, direction, **kwargs):
         # Call parent method
-        super(SurfaceEvaluator, self).derivatives(**kwargs)
+        super(SurfaceEvaluator, self).insert_knot(**kwargs)
 
-        # Not implemented, yet
-        raise NotImplementedError("This functionality is not implemented at the moment")
-
-    def _compute_knot_vector(self, knotvector, r, param, span):
-        kv_new = [0.0 for _ in range(len(knotvector) + r)]
-        for i in range(0, span + 1):
-            kv_new[i] = knotvector[i]
-        for i in range(1, r + 1):
-            kv_new[span + i] = param
-        for i in range(span + 1, len(knotvector)):
-            kv_new[i + r] = knotvector[i]
-        return kv_new
-
-    def insert_knot_u(self, **kwargs):
-        """ Inserts knot(s) in u-direction. """
-        # Call parent method
-        super(SurfaceEvaluator, self).insert_knot_u(**kwargs)
-
-        param = kwargs.get('parameter')
-        r = kwargs.get('r')
-        s = kwargs.get('s')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-
-        # Algorithm A5.3
-        span = self._span_func(degree, knotvector, ctrlpts_size[0], param)
-
-        # Compute new know vector
-        UQ = self._compute_knot_vector(knotvector, r, param, span)
-
-        # Initialize new control points array (control points can be weighted or not)
-        Q = [[] for _ in range((ctrlpts_size[0] + r) * ctrlpts_size[1])]
-        # Initialize a local array of length p + 1
-        R = [[] for _ in range(degree + 1)]
-
-        # Update control points
-        for row in range(0, ctrlpts_size[1]):
-            for i in range(0, span - degree + 1):
-                Q[row + (ctrlpts_size[1] * i)] = ctrlpts[row + (ctrlpts_size[1] * i)]
-            for i in range(span - s, ctrlpts_size[0]):
-                Q[row + (ctrlpts_size[1] * (i + r))] = ctrlpts[row + (ctrlpts_size[1] * i)]
-            # Load auxiliary control points
-            for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(ctrlpts[row + (ctrlpts_size[1] * (span - degree + i))])
-            # Insert the knot r times
-            for j in range(1, r + 1):
-                L = span - degree + j
-                for i in range(0, degree - j - s + 1):
-                    alpha = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
-                    R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
-                Q[row + (ctrlpts_size[1] * L)] = copy.deepcopy(R[0])
-                Q[row + (ctrlpts_size[1] * (span + r - j - s))] = copy.deepcopy(R[degree - j - s])
-            # Load the remaining control points
-            L = span - degree + r
-            for i in range(L + 1, span - s):
-                Q[row + (ctrlpts_size[1] * i)] = copy.deepcopy(R[i - L])
-
-        return UQ, Q
-
-    def insert_knot_v(self, **kwargs):
-        """ Inserts knot(s) in v-direction. """
-        # Call parent method
-        super(SurfaceEvaluator, self).insert_knot_v(**kwargs)
-
-        param = kwargs.get('parameter')
-        r = kwargs.get('r')
-        s = kwargs.get('s')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-
-        # Algorithm A5.3
-        span = self._span_func(degree, knotvector, ctrlpts_size[1], param)
-
-        # Compute new know vector
-        VQ = self._compute_knot_vector(knotvector, r, param, span)
-
-        # Initialize new control points array (control points can be weighted or not)
-        Q = [[] for _ in range(ctrlpts_size[0] * (ctrlpts_size[1] + r))]
-        # Initialize a local array of length q + 1
-        R = [[] for _ in range(degree + 1)]
-
-        # Update control points
-        for col in range(0, ctrlpts_size[0]):
-            for i in range(0, span - degree + 1):
-                Q[i + ((ctrlpts_size[1] + r) * col)] = ctrlpts[i + (ctrlpts_size[1] * col)]
-            for i in range(span - s, ctrlpts_size[1]):
-                Q[i + r + ((ctrlpts_size[1] + r) * col)] = ctrlpts[i + (ctrlpts_size[1] * col)]
-            # Load auxiliary control points
-            for i in range(0, degree - s + 1):
-                R[i] = copy.deepcopy(ctrlpts[span - degree + i + (ctrlpts_size[1] * col)])
-            # Insert the knot r times
-            for j in range(1, r + 1):
-                L = span - degree + j
-                for i in range(0, degree - j - s + 1):
-                    alpha = (param - knotvector[L + i]) / (knotvector[i + span + 1] - knotvector[L + i])
-                    R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
-                Q[L + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[0])
-                Q[span + r - j - s + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[degree - j - s])
-            # Load the remaining control points
-            L = span - degree + r
-            for i in range(L + 1, span - s):
-                Q[i + ((ctrlpts_size[1] + r) * col)] = copy.deepcopy(R[i - L])
-
-        return VQ, Q
+        # Insert knot
+        if direction == "u":
+            return _evaluators.insert_knot_u(self._span_func, **kwargs)
+        elif direction == "v":
+            return _evaluators.insert_knot_v(self._span_func, **kwargs)
+        else:
+            raise ValueError("Can only work on u- and v-directions")
 
 
 class SurfaceEvaluator2(SurfaceEvaluator):
@@ -898,9 +767,6 @@ class VolumeEvaluator(AbstractEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        pass
-
-    def derivatives(self, **kwargs):
         pass
 
 
