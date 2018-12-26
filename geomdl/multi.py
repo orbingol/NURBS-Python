@@ -332,14 +332,10 @@ class CurveContainer(AbstractContainer):
             # Color selection
             color = _select_color(cpcolor, evalcolor, idx=idx)
 
-            self._vis_component.add(ptsarr=elem.ctrlpts,
-                                    name="Control Points for " + elem.name,
-                                    color=color[0],
-                                    plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.evalpts,
-                                    name=elem.name,
-                                    color=color[1],
-                                    plot_type='evalpts')
+            self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)", color=color[0], plot_type='ctrlpts')
+            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
+
+        # Render curves
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
@@ -621,13 +617,13 @@ class SurfaceContainer(AbstractContainer):
 
             # Add control points
             if self._vis_component.plot_types['ctrlpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
+                self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
                                         color=color[0], plot_type='ctrlpts')
 
             # Add control points as quads
             if self._vis_component.plot_types['ctrlpts'] == 'quads':
                 ctrlpts_quads = utilities.make_quad(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
-                self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points for " + elem.name,
+                self._vis_component.add(ptsarr=ctrlpts_quads, name=elem.name + " (CP)",
                                         color=color[0], plot_type='ctrlpts')
 
             # Add surface points
@@ -651,6 +647,7 @@ class SurfaceContainer(AbstractContainer):
                                         name="Trim Curve " + str(itc + 1),
                                         color=trimcolor, plot_type='trimcurve')
 
+        # Render surfaces
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
