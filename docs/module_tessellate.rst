@@ -32,7 +32,7 @@ Abstract Tessellator
 Triangular Tessellator
 ======================
 
-.. automodule:: geomdl.tessellate.TriangularTessellate
+.. autoclass:: geomdl.tessellate.TriangularTessellate
     :members:
     :undoc-members:
     :inherited-members:
