@@ -193,7 +193,7 @@ class VisVolume(vis.VisAbstract):
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
-                temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=plot['color'], d3d=True)
+                temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=True)
                 vtk_actors.append(temp_actor)
 
         # Render actors
