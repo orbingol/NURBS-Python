@@ -8,8 +8,7 @@
 """
 
 import math
-from . import abstract, multi
-from . import NURBS, compatibility
+from . import abstract, NURBS, multi, compatibility, utilities
 
 
 def process_template(file_src):
@@ -18,17 +17,17 @@ def process_template(file_src):
     :param file_src: file contents
     :type file_src: str
     """
-    def t_sqrt(val):
-        """ Square-root of the input value """
-        return math.sqrt(val)
+    def tmpl_sqrt(x):
+        """ Square-root of 'x' """
+        return math.sqrt(x)
 
-    def t_cubert(val):
-        """ Cube-root of the input value """
-        return val**(1.0 / 3.0) if val >= 0 else -(-val)**(1.0 / 3.0)
+    def tmpl_cubert(x):
+        """ Cube-root of 'x' """
+        return x ** (1.0 / 3.0) if x >= 0 else -(-x) ** (1.0 / 3.0)
 
-    def t_pow(val, pow):
-        """ 'val' to the power 'pow' """
-        return math.pow(val, pow)
+    def tmpl_pow(x, y):
+        """ 'x' to the power 'y' """
+        return math.pow(x, y)
 
     # Check if it is possible to import 'jinja2'
     try:
@@ -50,9 +49,10 @@ def process_template(file_src):
 
     # Load custom functions into the Jinja2 environment
     template_funcs = dict(
-        sqrt=t_sqrt,
-        cubert=t_cubert,
-        pow=t_pow,
+        knot_vector=utilities.generate_knot_vector,
+        sqrt=tmpl_sqrt,
+        cubert=tmpl_cubert,
+        pow=tmpl_pow,
     )
     for k, v in template_funcs.items():
         env.globals[k] = v
