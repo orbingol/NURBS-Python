@@ -1,4 +1,4 @@
-Command-Line Application
+Command-line Application
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can use geomdl with the command-line application `geomdl-cli <https://pypi.org/project/geomdl.cli/>`_. The
