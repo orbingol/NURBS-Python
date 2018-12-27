@@ -10,8 +10,9 @@
 import os
 import struct
 import json
+from io import StringIO
 from . import abstract, NURBS, multi, compatibility, operations, utilities, convert
-from . import _exchange
+from . import _exchange as exch
 
 
 def import_txt(file_name, two_dimensional=False, **kwargs):
@@ -69,18 +70,18 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     :raises IOError: an error occurred reading the file
     """
     # Read file
-    content = _exchange.read_file(file_name)
+    content = exch.read_file(file_name)
 
     # Are we using a Jinja2 template?
     j2tmpl = kwargs.get('jinja2', False)
     if j2tmpl:
-        content = _exchange.process_template(content)
+        content = exch.process_template(content)
 
     # File delimiters
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    return _exchange.import_text_data(content, sep, col_sep, two_dimensional)
+    return exch.import_text_data(content, sep, col_sep, two_dimensional)
 
 
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
@@ -113,8 +114,8 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    content = _exchange.export_text_data(obj, sep, col_sep, two_dimensional)
-    return _exchange.write_file(file_name, content)
+    content = exch.export_text_data(obj, sep, col_sep, two_dimensional)
+    return exch.write_file(file_name, content)
 
 
 def import_csv(file_name, **kwargs):
@@ -143,8 +144,8 @@ def import_csv(file_name, **kwargs):
     # File delimiters
     sep = kwargs.get('separator', ",")
 
-    content = _exchange.read_file(file_name, skip_lines=1)
-    return _exchange.import_text_data(content, sep)
+    content = exch.read_file(file_name, skip_lines=1)
+    return exch.import_text_data(content, sep)
 
 
 def export_csv(obj, file_name, point_type='evalpts', **kwargs):
@@ -181,7 +182,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
         line += ",".join([str(p) for p in pt]) + "\n"
 
     # Write to file
-    return _exchange.write_file(file_name, line)
+    return exch.write_file(file_name, line)
 
 
 def import_cfg(file_name, **kwargs):
@@ -191,14 +192,16 @@ def import_cfg(file_name, **kwargs):
 
         Requires `libconf <https://pypi.org/project/libconf/>`_ package.
 
+    Use ``jinja2=True`` to activate Jinja2 template processing. Please refer to the documentation for details.
+
     :param file_name: name of the input file
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
     :raises IOError: an error occurred writing the file
     """
-    def callback(fp):
-        return libconf.load(fp)
+    def callback(data):
+        return libconf.loads(data)
 
     # Check if it is possible to import 'libconf'
     try:
@@ -209,9 +212,13 @@ def import_cfg(file_name, **kwargs):
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
+    use_template = kwargs.get('jinja2', False)
+
+    # Read file
+    file_src = exch.read_file(file_name)
 
     # Import data
-    return _exchange.import_dict(file_name, delta, callback)
+    return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
 def export_cfg(obj, file_name):
@@ -231,8 +238,8 @@ def export_cfg(obj, file_name):
     :raises IOError: an error occurred writing the file
     """
 
-    def callback(fp, data):
-        fp.write(libconf.dumps(data))
+    def callback(data):
+        return libconf.dumps(data)
 
     # Check if it is possible to import 'libconf'
     try:
@@ -241,8 +248,11 @@ def export_cfg(obj, file_name):
         print("Please install 'libconf' package to use libconfig format: pip install libconf")
         return
 
-    # Export data as a file
-    _exchange.export_dict(obj, file_name, callback)
+    # Export data
+    exported_data = exch.export_dict_str(obj=obj, callback=callback)
+
+    # Write to file
+    return exch.write_file(file_name, exported_data)
 
 
 def import_yaml(file_name, **kwargs):
@@ -252,15 +262,17 @@ def import_yaml(file_name, **kwargs):
 
         Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
 
+    Use ``jinja2=True`` to activate Jinja2 template processing. Please refer to the documentation for details.
+
     :param file_name: name of the input file
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
     :raises IOError: an error occurred reading the file
     """
-    def callback(fp):
+    def callback(data):
         yaml = YAML()
-        return yaml.load(fp)
+        return yaml.load(data)
 
     # Check if it is possible to import 'ruamel.yaml'
     try:
@@ -271,9 +283,13 @@ def import_yaml(file_name, **kwargs):
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
+    use_template = kwargs.get('jinja2', False)
+
+    # Read file
+    file_src = exch.read_file(file_name)
 
     # Import data
-    return _exchange.import_dict(file_name, delta, callback)
+    return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
 def export_yaml(obj, file_name):
@@ -292,9 +308,12 @@ def export_yaml(obj, file_name):
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    def callback(fp, data):
+    def callback(data):
+        # Ref: https://yaml.readthedocs.io/en/latest/example.html#output-of-dump-as-a-string
+        stream = StringIO()
         yaml = YAML()
-        yaml.dump(data, fp)
+        yaml.dump(data, stream)
+        return stream.getvalue()
 
     # Check if it is possible to import 'ruamel.yaml'
     try:
@@ -303,12 +322,17 @@ def export_yaml(obj, file_name):
         print("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
         return
 
-    # Export data as a file
-    _exchange.export_dict(obj, file_name, callback)
+    # Export data
+    exported_data = exch.export_dict_str(obj=obj, callback=callback)
+
+    # Write to file
+    return exch.write_file(file_name, exported_data)
 
 
 def import_json(file_name, **kwargs):
     """ Imports curves and surfaces from files in JSON format.
+
+    Use ``jinja2=True`` to activate Jinja2 template processing. Please refer to the documentation for details.
 
     :param file_name: name of the input file
     :type file_name: str
@@ -316,14 +340,18 @@ def import_json(file_name, **kwargs):
     :rtype: list
     :raises IOError: an error occurred reading the file
     """
-    def callback(fp):
-        return json.load(fp)
+    def callback(data):
+        return json.loads(data)
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
+    use_template = kwargs.get('jinja2', False)
+
+    # Read file
+    file_src = exch.read_file(file_name)
 
     # Import data
-    return _exchange.import_dict(file_name, delta, callback)
+    return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
 def export_json(obj, file_name):
@@ -338,11 +366,14 @@ def export_json(obj, file_name):
     :type file_name: str
     :raises IOError: an error occurred writing the file
     """
-    def callback(fp, data):
-        fp.write(json.dumps(data, indent=4))
+    def callback(data):
+        return json.dumps(data, indent=4)
 
-    # Export data as a file
-    _exchange.export_dict(obj, file_name, callback)
+    # Export data
+    exported_data = exch.export_dict_str(obj=obj, callback=callback)
+
+    # Write to file
+    return exch.write_file(file_name, exported_data)
 
 
 def export_obj(surface, file_name, **kwargs):
@@ -360,7 +391,7 @@ def export_obj(surface, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     content = export_obj_str(surface, **kwargs)
-    return _exchange.write_file(file_name, content)
+    return exch.write_file(file_name, content)
 
 
 def export_obj_str(surface, **kwargs):
@@ -465,7 +496,7 @@ def export_stl(surface, file_name, **kwargs):
     if 'binary' in kwargs:
         kwargs.pop('binary')
     content = export_stl_str(surface, binary=binary, **kwargs)
-    return _exchange.write_file(file_name, content, binary=binary)
+    return exch.write_file(file_name, content, binary=binary)
 
 
 def export_stl_str(surface, **kwargs):
@@ -546,7 +577,7 @@ def export_off(surface, file_name, **kwargs):
     :raises IOError: an error occurred writing the file
     """
     content = export_off_str(surface, **kwargs)
-    return _exchange.write_file(file_name, content)
+    return exch.write_file(file_name, content)
 
 
 def export_off_str(surface, **kwargs):
@@ -643,12 +674,12 @@ def import_smesh(file):
     :raises IOError: an error occurred reading the file
     """
     if os.path.isfile(file):
-        return _exchange.import_smesh_single(file)
+        return exch.import_smesh_single(file)
     elif os.path.isdir(file):
         files = sorted([os.path.join(file, f) for f in os.listdir(file)])
         surf = multi.SurfaceContainer()
         for f in files:
-            surf.add(_exchange.import_smesh_single(f))
+            surf.add(exch.import_smesh_single(f))
         return surf
     else:
         raise IOError("Input is not a file or a directory")
@@ -695,7 +726,7 @@ def export_smesh(surface, file_name, **kwargs):
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
-        _exchange.write_file(fname_curr + fext, line)
+        exch.write_file(fname_curr + fext, line)
 
 
 def export_vmesh(volume, file_name, **kwargs):
@@ -742,7 +773,7 @@ def export_vmesh(volume, file_name, **kwargs):
 
         # Write to file
         fname_curr = fname + "." + str(idx + 1)
-        _exchange.write_file(fname_curr + fext, line)
+        exch.write_file(fname_curr + fext, line)
 
 
 def import_3dm(file_name, **kwargs):

@@ -64,12 +64,12 @@ def process_template(file_src):
 def read_file(file_name, **kwargs):
     binary = kwargs.get('binary', False)
     skip_lines = kwargs.get('skip_lines', 0)
-    fp_callback = kwargs.get('callback', None)
+    callback = kwargs.get('callback', None)
     try:
         with open(file_name, 'rb' if binary else 'r') as fp:
             for _ in range(skip_lines):
                 next(fp)
-            content = fp.read() if fp_callback is None else fp_callback(fp)
+            content = fp.read() if callback is None else callback(fp)
         return content
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
@@ -277,16 +277,19 @@ def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
     return result
 
 
-def import_dict(file_name, delta, callback):
-    type_map = {'curve': import_dict_crv, 'surface': import_dict_surf}
+def import_dict_str(file_src, delta, callback, tmpl):
+    mapping = {'curve': import_dict_crv, 'surface': import_dict_surf}
 
-    # Callback function
-    imported_data = read_file(file_name, callback=callback)
+    # Process template
+    if tmpl:
+        file_src = process_template(file_src)
+    # Execute callback function
+    imported_data = callback(file_src)
 
     # Process imported data
     ret_list = []
     for data in imported_data['shape']['data']:
-        temp = type_map[imported_data['shape']['type']](data)
+        temp = mapping[imported_data['shape']['type']](data)
         if 0.0 < delta < 1.0:
             temp.delta = delta
         ret_list.append(temp)
@@ -295,7 +298,7 @@ def import_dict(file_name, delta, callback):
     return ret_list
 
 
-def export_dict(obj, file_name, callback):
+def export_dict_str(obj, callback):
     count = 1
     if isinstance(obj, abstract.Curve):
         export_type = "curve"
@@ -323,4 +326,7 @@ def export_dict(obj, file_name, callback):
         )
     )
 
-    return write_file(file_name, data, callback=callback)
+    # Execute callback function
+    exported_data = callback(data)
+
+    return exported_data
