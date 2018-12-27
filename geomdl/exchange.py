@@ -705,6 +705,9 @@ def export_smesh(surface, file_name, **kwargs):
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
 
+    # Enumerate file name only if we are working with multiple surfaces
+    numerate_file = True if len(surface) > 1 else False
+
     for idx, s in enumerate(surface):
         if not s.rational:
             surf = convert.bspline_to_nurbs(s)
@@ -725,7 +728,7 @@ def export_smesh(surface, file_name, **kwargs):
         line += "1\n"
 
         # Write to file
-        fname_curr = fname + "." + str(idx + 1)
+        fname_curr = fname + "." + str(idx + 1) if numerate_file else fname
         exch.write_file(fname_curr + fext, line)
 
 
@@ -746,6 +749,9 @@ def export_vmesh(volume, file_name, **kwargs):
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
+
+    # Enumerate file name only if we are working with multiple volumes
+    numerate_file = True if len(volume) > 1 else False
 
     for idx, v in enumerate(volume):
         if not v.rational:
@@ -772,7 +778,7 @@ def export_vmesh(volume, file_name, **kwargs):
         line += "1\n"
 
         # Write to file
-        fname_curr = fname + "." + str(idx + 1)
+        fname_curr = fname + "." + str(idx + 1) if numerate_file else fname
         exch.write_file(fname_curr + fext, line)
 
 
