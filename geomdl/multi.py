@@ -616,27 +616,33 @@ class SurfaceContainer(AbstractContainer):
             color = _select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
-            if self._vis_component.plot_types['ctrlpts'] == 'points':
+            if self._vis_component.mconf['ctrlpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
                                         color=color[0], plot_type='ctrlpts')
 
             # Add control points as quads
-            if self._vis_component.plot_types['ctrlpts'] == 'quads':
+            if self._vis_component.mconf['ctrlpts'] == 'quads':
                 ctrlpts_quads = utilities.make_quad(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
                 self._vis_component.add(ptsarr=ctrlpts_quads, name=elem.name + " (CP)",
                                         color=color[0], plot_type='ctrlpts')
 
+            # Add control points as a quad mesh
+            if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
+                ctrlpts_quads = utilities.make_quad_mesh(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
+                self._vis_component.add(ptsarr=ctrlpts_quads, name=elem.name + " (CP)",
+                                        color=color[0], plot_type='ctrlpts')
+
             # Add surface points
-            if self._vis_component.plot_types['evalpts'] == 'points':
+            if self._vis_component.mconf['evalpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as quads
-            if self._vis_component.plot_types['evalpts'] == 'quads':
+            if self._vis_component.mconf['evalpts'] == 'quads':
                 evalpts_quads = utilities.make_quad(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
                 self._vis_component.add(ptsarr=evalpts_quads, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as vertices and triangles
-            if self._vis_component.plot_types['evalpts'] == 'triangles':
+            if self._vis_component.mconf['evalpts'] == 'triangles':
                 elem.tessellate()
                 self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.triangles],
                                         name=elem.name, color=color[1], plot_type='evalpts')
@@ -875,16 +881,16 @@ class VolumeContainer(SurfaceContainer):
             color = _select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
-            if self._vis_component.plot_types['ctrlpts'] == 'points':
+            if self._vis_component.mconf['ctrlpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
                                         color=color[0], plot_type='ctrlpts')
 
             # Add evaluated points
-            if self._vis_component.plot_types['evalpts'] == 'points':
+            if self._vis_component.mconf['evalpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add evaluated points as voxels
-            if self._vis_component.plot_types['evalpts'] == 'voxels':
+            if self._vis_component.mconf['evalpts'] == 'voxels':
                 grid, filled = voxelize.voxelize(elem, **kwargs)
                 polygrid = voxelize.generate_faces(grid)
                 self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type='evalpts')

@@ -9,6 +9,6 @@ Class Reference
 .. automodule:: geomdl.visualization.VisMPL
     :members:
     :undoc-members:
-    :exclude-members: VisSurface2
+    :exclude-members: VisSurface2, mconf
     :inherited-members:
     :show-inheritance:

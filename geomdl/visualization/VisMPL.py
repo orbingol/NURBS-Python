@@ -124,26 +124,26 @@ class VisCurve2D(vis.VisAbstract):
         legend_names = []
 
         # Draw control points polygon and the curve
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = fig.gca()
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 cpplot, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
                 legend_proxy.append(cpplot)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 bboxplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='--')
                 legend_proxy.append(bboxplt)
                 legend_names.append(plot['name'])
@@ -156,19 +156,19 @@ class VisCurve2D(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             plt.legend(legend_proxy, legend_names)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set aspect ratio
-        if self._config.axes_equal:
+        if self.vconf.axes_equal:
             ax.set_aspect('equal')
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
 
@@ -180,10 +180,10 @@ class VisCurve2D(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisCurve3D(vis.VisAbstract):
@@ -201,33 +201,33 @@ class VisCurve3D(vis.VisAbstract):
         legend_names = []
 
         # Draw control points polygon and the 3D curve
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
 
             # Try not to fail if the input is 2D
             if pts.shape[1] == 2:
                 pts = np.c_[pts, np.zeros(pts.shape[0])]
 
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
@@ -242,19 +242,19 @@ class VisCurve3D(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -267,10 +267,10 @@ class VisCurve3D(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurface(vis.VisAbstract):
@@ -281,8 +281,8 @@ class VisSurface(vis.VisAbstract):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "quads"
-        self._plot_types['evalpts'] = "triangles"
+        self._module_config['ctrlpts'] = "quads"
+        self._module_config['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -307,15 +307,15 @@ class VisSurface(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         surf_count = 0
         # Start plotting
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -323,7 +323,7 @@ class VisSurface(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 # Use internal triangulation algorithm instead of Qhull (MPL default)
                 verts = plot['ptsarr'][0]
                 tris = plot['ptsarr'][1]
@@ -331,7 +331,7 @@ class VisSurface(vis.VisAbstract):
                 tri_idxs = [tri.vertex_ids_zero for tri in tris]
                 # Extract vertex coordinates
                 vert_coords = [vert.data for vert in verts]
-                pts = np.array(vert_coords, dtype=self._config.dtype)
+                pts = np.array(vert_coords, dtype=self.vconf.dtype)
                 # Create MPL Triangulation object
                 triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
 
@@ -353,26 +353,26 @@ class VisSurface(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
-            if self._config.display_trims:
+            if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
-                               s=self._config.trim_size, depthshade=False)
+                               s=self.vconf.trim_size, depthshade=False)
                     plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
             # Plot extras
             if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
                         color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
@@ -380,19 +380,19 @@ class VisSurface(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -405,10 +405,10 @@ class VisSurface(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 # VisSurfTriangle is an alias for VisSurface class
@@ -422,8 +422,8 @@ class VisSurfWireframe(vis.VisAbstract):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfWireframe, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "points"
-        self._plot_types['evalpts'] = "quads"
+        self._module_config['ctrlpts'] = "points"
+        self._module_config['evalpts'] = "quads"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -435,14 +435,14 @@ class VisSurfWireframe(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.scatter(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], s=25, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -450,34 +450,34 @@ class VisSurfWireframe(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
-            if self._config.display_trims:
+            if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
-                               s=self._config.trim_size, depthshade=False)
+                               s=self.vconf.trim_size, depthshade=False)
                     plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
             # Plot extras
             if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
                         color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
@@ -485,19 +485,19 @@ class VisSurfWireframe(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -510,10 +510,10 @@ class VisSurfWireframe(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurfScatter(vis.VisAbstract):
@@ -523,8 +523,8 @@ class VisSurfScatter(vis.VisAbstract):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurfScatter, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "quads"
-        self._plot_types['evalpts'] = "points"
+        self._module_config['ctrlpts'] = "quads"
+        self._module_config['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -536,14 +536,14 @@ class VisSurfScatter(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -551,34 +551,34 @@ class VisSurfScatter(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
-            if self._config.display_trims:
+            if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
-                               s=self._config.trim_size, depthshade=False)
+                               s=self.vconf.trim_size, depthshade=False)
                     plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
             # Plot extras
             if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
                         color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
@@ -586,19 +586,19 @@ class VisSurfScatter(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -611,18 +611,18 @@ class VisSurfScatter(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "points"
-        self._plot_types['evalpts'] = "points"
+        self._module_config['ctrlpts'] = "points"
+        self._module_config['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
@@ -634,28 +634,28 @@ class VisVolume(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
@@ -670,19 +670,19 @@ class VisVolume(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -695,18 +695,18 @@ class VisVolume(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisVoxel(vis.VisAbstract):
     """ Matplotlib visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVoxel, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "points"
-        self._plot_types['evalpts'] = "voxels"
+        self._module_config['ctrlpts'] = "points"
+        self._module_config['evalpts'] = "voxels"
 
     def render(self, **kwargs):
         """ Displays the voxels and the control points. """
@@ -718,23 +718,23 @@ class VisVoxel(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='^', s=20, depthshade=True)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
-                grid = np.array(plot['ptsarr'][0], dtype=self._config.dtype)
-                filled = np.array(plot['ptsarr'][1], dtype=self._config.dtype)
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+                grid = np.array(plot['ptsarr'][0], dtype=self.vconf.dtype)
+                filled = np.array(plot['ptsarr'][1], dtype=self.vconf.dtype)
                 # Find filled voxels
                 grid_filled = np.concatenate(grid[filled == 1.0])
                 # Create a single Poly3DCollection object
@@ -752,7 +752,7 @@ class VisVoxel(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
@@ -767,19 +767,19 @@ class VisVoxel(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -792,18 +792,18 @@ class VisVoxel(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurface2(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces (testing) """
     def __init__(self, config=VisConfig()):
         super(VisSurface2, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "quads"
-        self._plot_types['evalpts'] = "triangles"
+        self._module_config['ctrlpts'] = "quads"
+        self._module_config['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -815,14 +815,14 @@ class VisSurface2(vis.VisAbstract):
         legend_names = []
 
         # Start plotting of the surface and the control points grid
-        fig = plt.figure(figsize=self._config.figure_size, dpi=self._config.figure_dpi)
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
         ax = Axes3D(fig)
 
         # Start plotting
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
@@ -830,36 +830,36 @@ class VisSurface2(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 tris = plot['ptsarr'][1]
                 for tri in tris:
-                    pts = np.array(tri.vertices_raw, dtype=self._config.dtype)
+                    pts = np.array(tri.vertices_raw, dtype=self.vconf.dtype)
                     ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='--')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='--', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
 
             # Plot trim curves
-            if self._config.display_trims:
+            if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o',
-                               s=self._config.trim_size, depthshade=False)
+                               s=self.vconf.trim_size, depthshade=False)
                     plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                     legend_proxy.append(plot_proxy)
                     legend_names.append(plot['name'])
 
             # Plot extras
             if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 ax.plot(pts[:, 0], pts[:, 1], pts[:, 2],
                         color=plot['color'][0], linestyle='-', linewidth=plot['color'][1])
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'][0])
@@ -867,19 +867,19 @@ class VisSurface2(vis.VisAbstract):
                 legend_names.append(plot['name'])
 
         # Add legend to 3D plot, @ref: https://stackoverflow.com/a/20505720
-        if self._config.display_legend:
+        if self.vconf.display_legend:
             ax.legend(legend_proxy, legend_names, numpoints=1)
 
         # Remove axes
-        if not self._config.display_axes:
+        if not self.vconf.display_axes:
             plt.axis('off')
 
         # Set axes equal
-        if self._config.axes_equal:
-            self._config.set_axes_equal(ax)
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
 
         # Axis labels
-        if self._config.display_labels:
+        if self.vconf.display_labels:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
@@ -891,7 +891,7 @@ class VisSurface2(vis.VisAbstract):
         if fig_display:
             plt.show()
         else:
-            fig_filename = self._config.figure_image_filename if fig_filename is None else fig_filename
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
 
         # Save the figure
-        self._config.save_figure_as(fig, fig_filename)
+        self.vconf.save_figure_as(fig, fig_filename)

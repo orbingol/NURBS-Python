@@ -10,4 +10,5 @@ Class Reference
     :members:
     :undoc-members:
     :inherited-members:
+    :exclude-members: mconf
     :show-inheritance:

@@ -13,7 +13,7 @@ from typing import Any, Sequence, List
 
 
 class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for visualization configuration
+    """ Abstract base class for user configuration of the visualization module
 
     Defines an abstract base for NURBS-Python visualization configuration.
     """
@@ -33,12 +33,12 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, config):
-        # type: (VisConfigAbstract) -> None
+        # type: (VisConfigAbstract()) -> None
         if not isinstance(config, VisConfigAbstract):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
-        self._config = config
+        self._user_config = config
+        self._module_config = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
         self._plots = []  # type: List[dict]
-        self._plot_types = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
         self._ctrlpts_offset = 0.0
 
     def clear(self):
@@ -67,18 +67,22 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         self._plots.append(elem)
 
     @property
-    def plot_types(self):
-        # type: () -> dict
-        """ Plot types
+    def vconf(self):
+        # type: () -> VisConfigAbstract()
+        """ User configuration class for visualization
 
-        :getter: Gets the plot types
-        :type: tuple
+        :getter: Gets the user configuration class
+        :type: vis.VisConfigAbstract
         """
-        return self._plot_types
+        return self._user_config
 
-    def set_plot_type(self, plot_type, type_value):
-        # type: (str, str) -> None
-        """ Sets the plot type.
+    @property
+    def mconf(self):
+        # type: () -> dict
+        """ Visualization module internal configuration directives
+
+        This property controls the internal configuration of the visualization module. It is for advanced use and
+        testing only.
 
         The visualization module is mainly designed to plot the control points (*ctrlpts*) and the surface points
         (*evalpts*). These are called as *plot types*. However, there is more than one way to plot the control points
@@ -92,42 +96,51 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
 
         By default, the following plot types and values are available:
 
-        **Curve**:
+        Curve:
+            * For control points (*ctrlpts*): points
+            * For evaluated points (*evalpts*): points
 
-        * For control points (*ctrlpts*): points
-        * For evaluated points (*evalpts*): points
+        Surface:
+            * For control points (*ctrlpts*): points, quads, quadmesh
+            * For evaluated points (*evalpts*): points, quads, triangles
 
-        **Surface**:
+        Volume:
+            * For control points (*ctrlpts*): points
+            * For evaluated points (*evalpts*): points, voxels
 
-        * For control points (*ctrlpts*): points, quads, quadmesh
-        * For evaluated points (*evalpts*): points, quads, triangles
-
-        **Volume**:
-
-        * For control points (*ctrlpts*): points
-        * For evaluated points (*evalpts*): points, voxels
-
-        :param plot_type: plot type
-        :type plot_type: str
-        :param type_value: type value
-        :type type_value: str
+        :getter: Gets the visualization module configuration
+        :setter: Sets the visualization module configuration
         """
-        if not isinstance(plot_type, str) or not isinstance(type_value, str):
+        return self._module_config
+
+    @mconf.setter
+    def mconf(self, value):
+        # type: (Sequence[str]) -> None
+        if not isinstance(value[0], str) or not isinstance(value[1], str):
             raise TypeError("Plot type and its value should be string type")
 
-        if plot_type not in self._plot_types.keys():
-            raise KeyError(plot_type + " is not a type. Possible types: " +
-                           ", ".join([k for k in self._plot_types.keys()]))
+        if value[0] not in self._module_config.keys():
+            raise KeyError(value[0] + " is not a configuration directive. Possible directives: " +
+                           ", ".join([k for k in self._module_config.keys()]))
 
-        self._plot_types[plot_type] = type_value
+        self._module_config[value[0]] = value[1]
 
-    def set_ctrlpts_offset(self, offset_value):
-        # type: (float) -> None
-        """ Sets an offset value for the control points plots.
+    @property
+    def ctrlpts_offset(self):
+        # type: () -> float
+        """ Defines an offset value for the control points grid plots
 
-        :param offset_value: offset value
-        :type offset_value: float
+        Only makes sense to use with surfaces with dense control points grid.
+
+        :getter: Gets the offset value
+        :setter: Sets the offset value
+        :type: float
         """
+        return self._ctrlpts_offset
+
+    @ctrlpts_offset.setter
+    def ctrlpts_offset(self, offset_value):
+        # type: (float) -> None
         self._ctrlpts_offset = float(offset_value)
 
     @abc.abstractmethod

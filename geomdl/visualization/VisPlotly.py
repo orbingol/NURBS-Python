@@ -105,10 +105,10 @@ class VisCurve2D(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
 
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -116,14 +116,14 @@ class VisCurve2D(vis.VisAbstract):
                     mode='lines+markers',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dash'
                     )
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -131,20 +131,20 @@ class VisCurve2D(vis.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width
+                        width=self.vconf.line_width
                     )
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     name=plot['name'],
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dashdot',
                     )
                 )
@@ -161,29 +161,29 @@ class VisCurve2D(vis.VisAbstract):
                         color=plot['color'][0],
                         size=plot['color'][1],
                         line=dict(
-                            width=self._config.line_width
+                            width=self.vconf.line_width
                         )
                     )
                 )
                 plot_data.append(figure)
 
         plot_layout = dict(
-            width=self._config.figure_size[0],
-            height=self._config.figure_size[1],
+            width=self.vconf.figure_size[0],
+            height=self.vconf.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend,
+            showlegend=self.vconf.display_legend,
             yaxis=dict(
                 scaleanchor="x",
-                showgrid=self._config.display_axes,
-                showline=self._config.display_axes,
-                zeroline=self._config.display_axes,
-                showticklabels=self._config.display_axes,
+                showgrid=self.vconf.display_axes,
+                showline=self.vconf.display_axes,
+                zeroline=self.vconf.display_axes,
+                showticklabels=self.vconf.display_axes,
             ),
             xaxis=dict(
-                showgrid=self._config.display_axes,
-                showline=self._config.display_axes,
-                zeroline=self._config.display_axes,
-                showticklabels=self._config.display_axes,
+                showgrid=self.vconf.display_axes,
+                showline=self.vconf.display_axes,
+                zeroline=self.vconf.display_axes,
+                showticklabels=self.vconf.display_axes,
             )
         )
 
@@ -197,19 +197,19 @@ class VisCurve2D(vis.VisAbstract):
         # Prepare plot configuration
         plotfn_dict = {
             'show_link': False,
-            'filename': self._config.figure_filename,
-            'image': None if fig_display else self._config.figure_image_format,
+            'filename': self.vconf.figure_filename,
+            'image': None if fig_display else self.vconf.figure_image_format,
         }
-        if self._config.no_ipython:
+        if self.vconf.no_ipython:
             plotfn_dict_extra = {
-                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
                 'auto_open': fig_display,
             }
             # Python < 3.5 does not support starred expressions inside dicts
             plotfn_dict.update(plotfn_dict_extra)
 
         # Display the plot
-        self._config.plotfn(fig, **plotfn_dict)
+        self.vconf.plotfn(fig, **plotfn_dict)
 
 
 class VisCurve3D(vis.VisAbstract):
@@ -226,10 +226,10 @@ class VisCurve3D(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
 
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -238,18 +238,18 @@ class VisCurve3D(vis.VisAbstract):
                     mode='lines+markers',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dash'
                     ),
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width * 2,
+                        size=self.vconf.line_width * 2,
                     )
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -258,13 +258,13 @@ class VisCurve3D(vis.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width
+                        width=self.vconf.line_width
                     ),
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -273,7 +273,7 @@ class VisCurve3D(vis.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dashdot',
                     ),
                 )
@@ -291,44 +291,44 @@ class VisCurve3D(vis.VisAbstract):
                         color=plot['color'][0],
                         size=plot['color'][1],
                         line=dict(
-                            width=self._config.line_width
+                            width=self.vconf.line_width
                         )
                     )
                 )
                 plot_data.append(figure)
 
         plot_layout = dict(
-            width=self._config.figure_size[0],
-            height=self._config.figure_size[1],
+            width=self.vconf.figure_size[0],
+            height=self.vconf.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend,
+            showlegend=self.vconf.display_legend,
             scene=dict(
                 xaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 yaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 zaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
             ),
         )
 
         # Set aspect ratio
-        if self._config.axes_equal:
+        if self.vconf.axes_equal:
             plot_layout['scene']['aspectmode'] = 'data'
 
         # Generate the figure
@@ -341,19 +341,19 @@ class VisCurve3D(vis.VisAbstract):
         # Prepare plot configuration
         plotfn_dict = {
             'show_link': False,
-            'filename': self._config.figure_filename,
-            'image': None if fig_display else self._config.figure_image_format,
+            'filename': self.vconf.figure_filename,
+            'image': None if fig_display else self.vconf.figure_image_format,
         }
-        if self._config.no_ipython:
+        if self.vconf.no_ipython:
             plotfn_dict_extra = {
-                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
                 'auto_open': fig_display,
             }
             # Python < 3.5 does not support starred expressions inside dicts
             plotfn_dict.update(plotfn_dict_extra)
 
         # Display the plot
-        self._config.plotfn(fig, **plotfn_dict)
+        self.vconf.plotfn(fig, **plotfn_dict)
 
 
 class VisSurface(vis.VisAbstract):
@@ -363,8 +363,8 @@ class VisSurface(vis.VisAbstract):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "quads"
-        self._plot_types['evalpts'] = "triangles"
+        self._module_config['ctrlpts'] = "quads"
+        self._module_config['evalpts'] = "triangles"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -376,8 +376,8 @@ class VisSurface(vis.VisAbstract):
 
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 cp_z = pts[:, 2] + self._ctrlpts_offset
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
@@ -387,24 +387,24 @@ class VisSurface(vis.VisAbstract):
                     mode='lines+markers',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='solid'
                     ),
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width * 2,
+                        size=self.vconf.line_width * 2,
                     )
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 vertices = plot['ptsarr'][0]
                 triangles = plot['ptsarr'][1]
                 pts = [v.data for v in vertices]
                 tri = [t.vertex_ids_zero for t in triangles]
-                pts = np.array(pts, dtype=self._config.dtype)
-                tri = np.array(tri, dtype=self._config.dtype)
+                pts = np.array(pts, dtype=self.vconf.dtype)
+                tri = np.array(tri, dtype=self.vconf.dtype)
                 figure = graph_objs.Mesh3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -419,8 +419,8 @@ class VisSurface(vis.VisAbstract):
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -429,16 +429,16 @@ class VisSurface(vis.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dashdot',
                     ),
                 )
                 plot_data.append(figure)
 
             # Plot trim curves
-            if self._config.display_trims:
+            if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                     figure = graph_objs.Scatter3d(
                         x=pts[:, 0],
                         y=pts[:, 1],
@@ -447,14 +447,14 @@ class VisSurface(vis.VisAbstract):
                         mode='markers',
                         marker=dict(
                             color=plot['color'],
-                            size=self._config.trim_size * 2,
+                            size=self.vconf.trim_size * 2,
                         ),
                     )
                     plot_data.append(figure)
 
             # Plot extras
             if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -465,44 +465,44 @@ class VisSurface(vis.VisAbstract):
                         color=plot['color'][0],
                         size=plot['color'][1],
                         line=dict(
-                            width=self._config.line_width
+                            width=self.vconf.line_width
                         )
                     )
                 )
                 plot_data.append(figure)
 
         plot_layout = dict(
-            width=self._config.figure_size[0],
-            height=self._config.figure_size[1],
+            width=self.vconf.figure_size[0],
+            height=self.vconf.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend,
+            showlegend=self.vconf.display_legend,
             scene=dict(
                 xaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 yaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 zaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
             ),
         )
 
         # Set aspect ratio
-        if self._config.axes_equal:
+        if self.vconf.axes_equal:
             plot_layout['scene']['aspectmode'] = 'data'
 
         # Generate the figure
@@ -515,27 +515,27 @@ class VisSurface(vis.VisAbstract):
         # Prepare plot configuration
         plotfn_dict = {
             'show_link': False,
-            'filename': self._config.figure_filename,
-            'image': None if fig_display else self._config.figure_image_format,
+            'filename': self.vconf.figure_filename,
+            'image': None if fig_display else self.vconf.figure_image_format,
         }
-        if self._config.no_ipython:
+        if self.vconf.no_ipython:
             plotfn_dict_extra = {
-                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
                 'auto_open': fig_display,
             }
             # Python < 3.5 does not support starred expressions inside dicts
             plotfn_dict.update(plotfn_dict_extra)
 
         # Display the plot
-        self._config.plotfn(fig, **plotfn_dict)
+        self.vconf.plotfn(fig, **plotfn_dict)
 
 
 class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
-        self._plot_types['ctrlpts'] = "points"
-        self._plot_types['evalpts'] = "points"
+        self._module_config['ctrlpts'] = "points"
+        self._module_config['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the evaluated and the control points. """
@@ -546,9 +546,9 @@ class VisVolume(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self._config.dtype)
+            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self._config.display_ctrlpts:
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -557,13 +557,13 @@ class VisVolume(vis.VisAbstract):
                     mode='markers',
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width,
+                        size=self.vconf.line_width,
                     )
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self._config.display_evalpts:
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -572,13 +572,13 @@ class VisVolume(vis.VisAbstract):
                     mode='markers',
                     marker=dict(
                         color=plot['color'],
-                        size=self._config.line_width * 2,
+                        size=self.vconf.line_width * 2,
                     )
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self._config.display_bbox:
+            if plot['type'] == 'bbox' and self.vconf.display_bbox:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
@@ -587,7 +587,7 @@ class VisVolume(vis.VisAbstract):
                     mode='lines',
                     line=dict(
                         color=plot['color'],
-                        width=self._config.line_width,
+                        width=self.vconf.line_width,
                         dash='dashdot',
                     ),
                 )
@@ -605,44 +605,44 @@ class VisVolume(vis.VisAbstract):
                         color=plot['color'][0],
                         size=plot['color'][1],
                         line= dict(
-                            width=self._config.line_width
+                            width=self.vconf.line_width
                         )
                     )
                 )
                 plot_data.append(figure)
 
         plot_layout = dict(
-            width=self._config.figure_size[0],
-            height=self._config.figure_size[1],
+            width=self.vconf.figure_size[0],
+            height=self.vconf.figure_size[1],
             autosize=False,
-            showlegend=self._config.display_legend,
+            showlegend=self.vconf.display_legend,
             scene=dict(
                 xaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 yaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
                 zaxis=dict(
-                    showgrid=self._config.display_axes,
-                    showline=self._config.display_axes,
-                    zeroline=self._config.display_axes,
-                    showticklabels=self._config.display_axes,
+                    showgrid=self.vconf.display_axes,
+                    showline=self.vconf.display_axes,
+                    zeroline=self.vconf.display_axes,
+                    showticklabels=self.vconf.display_axes,
                     title='',
                 ),
             ),
         )
 
         # Set aspect ratio
-        if self._config.axes_equal:
+        if self.vconf.axes_equal:
             plot_layout['scene']['aspectmode'] = 'data'
 
         # Generate the figure
@@ -655,16 +655,16 @@ class VisVolume(vis.VisAbstract):
         # Prepare plot configuration
         plotfn_dict = {
             'show_link': False,
-            'filename': self._config.figure_filename,
-            'image': None if fig_display else self._config.figure_image_format,
+            'filename': self.vconf.figure_filename,
+            'image': None if fig_display else self.vconf.figure_image_format,
         }
-        if self._config.no_ipython:
+        if self.vconf.no_ipython:
             plotfn_dict_extra = {
-                'image_filename': self._config.figure_image_filename if fig_filename is None else fig_filename,
+                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
                 'auto_open': fig_display,
             }
             # Python < 3.5 does not support starred expressions inside dicts
             plotfn_dict.update(plotfn_dict_extra)
 
         # Display the plot
-        self._config.plotfn(fig, **plotfn_dict)
+        self.vconf.plotfn(fig, **plotfn_dict)

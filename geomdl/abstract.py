@@ -570,8 +570,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
                                         color=(ep['color'], ep['size']), plot_type='extras')
 
         # Data requested by the visualization module
-        if self._vis_component.plot_types['others']:
-            vis_other = self._vis_component.plot_types['others'].split(",")
+        if self._vis_component.mconf['others']:
+            vis_other = self._vis_component.mconf['others'].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
@@ -1567,30 +1567,30 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.clear()
 
         # Add control points
-        if self._vis_component.plot_types['ctrlpts'] == 'points':
+        if self._vis_component.mconf['ctrlpts'] == 'points':
             self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as quads
-        if self._vis_component.plot_types['ctrlpts'] == 'quads':
+        if self._vis_component.mconf['ctrlpts'] == 'quads':
             ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as a quad mesh
-        if self._vis_component.plot_types['ctrlpts'] == 'quadmesh':
+        if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
             ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
-        if self._vis_component.plot_types['evalpts'] == 'points':
+        if self._vis_component.mconf['evalpts'] == 'points':
             self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as quads
-        if self._vis_component.plot_types['evalpts'] == 'quads':
+        if self._vis_component.mconf['evalpts'] == 'quads':
             evalpts_quads = utilities.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
             self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles
-        if self._vis_component.plot_types['evalpts'] == 'triangles':
+        if self._vis_component.mconf['evalpts'] == 'triangles':
             self.tessellate()
             self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.triangles],
                                     name=self.name, color=evalcolor, plot_type='evalpts')
@@ -1610,8 +1610,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
                                         color=(ep['color'], ep['size']), plot_type='extras')
 
         # Data requested by the visualization module
-        if self._vis_component.plot_types['others']:
-            vis_other = self._vis_component.plot_types['others'].split(",")
+        if self._vis_component.mconf['others']:
+            vis_other = self._vis_component.mconf['others'].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
@@ -2767,15 +2767,15 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self._vis_component.clear()
 
         # Add control points
-        if self._vis_component.plot_types['ctrlpts'] == 'points':
+        if self._vis_component.mconf['ctrlpts'] == 'points':
             self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add evaluated points
-        if self._vis_component.plot_types['evalpts'] == 'points':
+        if self._vis_component.mconf['evalpts'] == 'points':
             self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add evaluated points as voxels
-        if self._vis_component.plot_types['evalpts'] == 'voxels':
+        if self._vis_component.mconf['evalpts'] == 'voxels':
             grid, filled = voxelize.voxelize(self, **kwargs)
             polygrid = voxelize.generate_faces(grid)
             self._vis_component.add(ptsarr=[polygrid, filled], name=self.name, color=evalcolor, plot_type='evalpts')
@@ -2790,8 +2790,8 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
                                         color=(ep['color'], ep['size']), plot_type='extras')
 
         # Data requested by the visualization module
-        if self._vis_component.plot_types['others']:
-            vis_other = self._vis_component.plot_types['others'].split(",")
+        if self._vis_component.mconf['others']:
+            vis_other = self._vis_component.mconf['others'].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module

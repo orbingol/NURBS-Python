@@ -284,7 +284,7 @@ def test_surf_ctrlpts_offset(bspline_surface):
     vis = VisMPL.VisSurface(config=conf)
 
     # Set control points grid offset
-    vis.set_ctrlpts_offset(3.5)
+    vis.ctrlpts_offset = 3.5
 
     fname = "test-surface.png"
 
