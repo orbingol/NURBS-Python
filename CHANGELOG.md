@@ -1,5 +1,12 @@
 # Changelog
 
+## v5.0b2 released on 2018-12-26
+
+* Added `construct.extract_isosurface` function
+* Updated `VisVTK` module
+* Updated `vis.VisAbstract` class
+* Minor fixes and updates
+
 ## v5.0b1 released on 2018-12-21
 
 * Simplified `abstract` module and moved all abstract classes to their relevant modules
