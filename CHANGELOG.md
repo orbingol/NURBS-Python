@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.0b3 released on 2018-12-28
+
+* Added [Jinja2](http://jinja.pocoo.org/) template support to JSON, YAML and CFG importers
+* Documentation updates and bug fixes
+
 ## v5.0b2 released on 2018-12-26
 
 * Added `construct.extract_isosurface` function
