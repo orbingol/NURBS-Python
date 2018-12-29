@@ -261,3 +261,33 @@ languages.
 
 NURBS-Python exports data in the way that allows processing any number of curves or surfaces with a simple for loop.
 This approach simplifies implementation of file reading routines for different systems and programming languages.
+
+Using Templates
+===============
+
+NURBS-Python v5.x supports `Jinja2 <http://jinja.pocoo.org/>`_ templates with the following functions:
+
+* :py:func:`.import_txt()`
+* :py:func:`.import_cfg()`
+* :py:func:`.import_json()`
+* :py:func:`.import_yaml()`
+
+To import files formatted as Jinja2 templates, an additional ``jinja2=True`` keyword argument should be passed to the
+functions. For instance:
+
+.. code-block:: python
+
+    from geomdl import exchange
+
+    # Importing a .yaml file formatted as a Jinja2 template
+    data = exchange.import_yaml("surface.yaml", jinja2=True)
+
+NURBS-Python also provides some custom Jinja2 template functions for user convenience. These are:
+
+* ``knot_vector(d, np)``: generates a uniform knot vector. *d*: degree, *np*: number of control points
+* ``sqrt(x)``:  square root of *x*
+* ``cubert(x)``: cube root of *x*
+* ``pow(x, y)``: *x* to the power of *y*
+
+Please see ``ex_cylinder_tmpl.py`` and ``ex_cylinder_tmpl.cptw`` files in the :doc:`Examples repository <examples_repo>`
+for details on using Jinja2 templates with control point text files.
