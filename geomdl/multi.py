@@ -28,13 +28,17 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
     * :py:meth:`evalpts`
     * :py:meth:`bbox`
     * :py:meth:`vis`
+    * :py:meth:`delta`
+    * :py:meth:`sample_size`
     """
 
     def __init__(self, *args, **kwargs):
-        self._elements = []  # elements contained
-        self._vis_component = None  # visualization component
+        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
+        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # delta initialization value
+        self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
         self._iter_index = 0  # iterator index
-        self._delta = None  # evaluation delta
+        self._elements = []  # list of elements contained
+        self._vis_component = None  # visualization component
         self._instance = None  # type of the initial element
 
     def __iter__(self):
@@ -135,16 +139,111 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component
-        :type: float
         """
         return self._vis_component
 
     @vis.setter
     def vis(self, value):
         if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of the abstract class")
+            warnings.warn("Visualization component is NOT an instance of the vis.VisAbstract class")
             return
         self._vis_component = value
+
+    @property
+    def delta(self):
+        """ Evaluation delta (for all parametric directions).
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta value, smoother the shape.
+
+        The following figure illustrates the working principles of the delta property:
+
+        .. math::
+
+            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta value
+        :setter: Sets the delta value
+        """
+        return self._delta[0] if self._pdim == 1 else self._delta
+
+    @delta.setter
+    def delta(self, value):
+        if self._pdim == 1 and isinstance(value, (int, float)):
+            delta_vals = [value]
+        else:
+            if isinstance(value, (list, tuple)):
+                if len(value) != self._pdim:
+                    raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
+                delta_vals = value
+            elif isinstance(value, (int, float)):
+                delta_vals = [value for _ in range(self._pdim)]
+            else:
+                raise TypeError("Unsupported input type for evaluation delta. Use float, list or tuple")
+
+        # Set delta values
+        for idx, dval in enumerate(delta_vals):
+            self._delta_setter_common(idx, dval)
+
+    def _delta_setter_common(self, idx, value):
+        # Check and set the delta value corresponding to the idx-th parametric dimension
+        if float(value) <= 0 or float(value) >= 1:
+            raise ValueError("Evaluation delta should be between 0.0 and 1.0. You are trying to set it to " + str(value)
+                             + " for the " + str(idx + 1) + "st parametric dimension.")
+        self._delta[idx] = float(value)
+
+    @property
+    def sample_size(self):
+        """ Sample size (for all parametric directions).
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
+
+        The following figure illustrates the working principles of sample size property:
+
+        .. math::
+
+            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size
+        :setter: Sets sample size
+        """
+        ssz = [self._sample_size_getter_common(idx) for idx in range(self._pdim)]
+        return ssz[0] if self._pdim == 1 else ssz
+
+    @sample_size.setter
+    def sample_size(self, value):
+        if self._pdim == 1 and isinstance(value, (int, float)):
+            ssz = [value]
+        else:
+            if isinstance(value, (list, tuple)):
+                if len(value) != self._pdim:
+                    raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
+                ssz = value
+            elif isinstance(value, (int, float)):
+                ssz = [value for _ in range(self._pdim)]
+            else:
+                raise TypeError("Unsupported input type for sample size. Use float, list or tuple")
+
+        # Set sample size
+        for idx, sval in enumerate(ssz):
+            self._sample_size_setter_common(idx, sval)
+
+    def _sample_size_getter_common(self, idx):
+        return int(1 / self._delta[idx]) + 1
+
+    def _sample_size_setter_common(self, idx, value):
+        # Check and set the delta value corresponding to the idx-th parametric dimension
+        if not isinstance(value, int):
+            raise ValueError("Sample size must be an integer value bigger than 2")
+        if value < 2:
+            raise ValueError("Sample size must be an integer value bigger than 2")
+        self._delta[idx] = 1.0 / float(value - 1)
 
     def add(self, element):
         """ Adds shapes to the container.
@@ -181,10 +280,6 @@ class CurveContainer(AbstractContainer):
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
 
-    Rendering depends on the visualization instance, e.g. if you are using ``VisMPL`` module,
-    you can visualize a 3D curve using a ``VisCurve2D`` instance
-    but you cannot visualize a 2D curve with a ``VisCurve3D`` instance.
-
     This class provides the following properties:
 
     * :py:attr:`dimension`
@@ -192,7 +287,9 @@ class CurveContainer(AbstractContainer):
     * :py:attr:`bbox`
     * :py:attr:`vis`
     * :py:attr:`delta`
+    * :py:attr:`delta_u`
     * :py:attr:`sample_size`
+    * :py:attr:`sample_size_u`
 
     The following code example illustrates the usage of the Python properties:
 
@@ -212,70 +309,57 @@ class CurveContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
+        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
+        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(CurveContainer, self).__init__(*args, **kwargs)
-        self._delta = 0.01  # evaluation delta
         self._instance = abstract.Curve
         for arg in args:
             self.add(arg)
 
     @property
-    def delta(self):
-        """ Evaluation delta.
+    def delta_u(self):
+        """ Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
-        Therefore; smaller the delta value, smoother the shape.
+        Therefore; smaller the delta, smoother the shape.
 
-        The following figure illustrates the working principles of the delta property:
-
-        .. math::
-
-            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta value
-        :setter: Sets the delta value
+        :getter: Gets the delta value for the u-direction
+        :setter: Sets the delta value for the u-direction
         :type: float
         """
-        return self._delta
+        return self._delta[0]
 
-    @delta.setter
-    def delta(self, value):
-        # Delta value for surface evaluation should be between 0 and 1
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Curve evaluation delta should be between 0.0 and 1.0")
-        self._delta = float(value)
+    @delta_u.setter
+    def delta_u(self, value):
+        self._delta_setter_common(0, value)
 
     @property
-    def sample_size(self):
-        """ Sample size.
+    def sample_size_u(self):
+        """ Sample size for the u-direction.
 
-        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
-
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets sample size
-        :setter: Sets sample size
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
         :type: int
         """
-        return int(1 / self.delta) + 1
+        return self._sample_size_getter_common(0)
 
-    @sample_size.setter
-    def sample_size(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta = 1.0 / float(value - 1)
+    @sample_size_u.setter
+    def sample_size_u(self, value):
+        self._sample_size_setter_common(0, value)
 
     def render(self, **kwargs):
-        """ Renders the multi-curve the using the visualization component.
+        """ Renders the curves.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -330,7 +414,7 @@ class CurveContainer(AbstractContainer):
             elem.evaluate()
 
             # Color selection
-            color = _select_color(cpcolor, evalcolor, idx=idx)
+            color = select_color(cpcolor, evalcolor, idx=idx)
 
             self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)", color=color[0], plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
@@ -339,7 +423,7 @@ class CurveContainer(AbstractContainer):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-class SurfaceContainer(AbstractContainer):
+class SurfaceContainer(CurveContainer):
     """ Container class for storing multiple surfaces.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -376,109 +460,12 @@ class SurfaceContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
+        self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
+        self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(SurfaceContainer, self).__init__(*args, **kwargs)
-        self._delta = [0.05, 0.05]  # evaluation delta
         self._instance = abstract.Surface
         for arg in args:
             self.add(arg)
-
-    @property
-    def sample_size_u(self):
-        """ Sample size for the u-direction.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size for the u-direction
-        :setter: Sets sample size for the u-direction
-        :type: int
-        """
-        return int(1.0 / self.delta_u) + 1
-
-    @sample_size_u.setter
-    def sample_size_u(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta_u = 1.0 / float(value - 1)
-
-    @property
-    def sample_size_v(self):
-        """ Sample size for the v-direction.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size for the v-direction
-        :setter: Sets sample size for the v-direction
-        :type: int
-        """
-        return int(1.0 / self.delta_v) + 1
-
-    @sample_size_v.setter
-    def sample_size_v(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta_v = 1.0 / float(value - 1)
-
-    @property
-    def sample_size(self):
-        """ Sample size for all parametric directions.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
-
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size values as a tuple of values corresponding to all parametric directions
-        :setter: Sets the same sample size value for all parametric directions
-        :type: int
-        """
-        sample_size = []
-        for d in self._delta:
-            sample_size.append(int(1.0 / d) + 1)
-        return tuple(sample_size)
-
-    @sample_size.setter
-    def sample_size(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta_u = 1.0 / float(value - 1)
-        self.delta_v = 1.0 / float(value - 1)
-
-    @property
-    def delta_u(self):
-        """ Evaluation delta for the u-direction.
-
-        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
-        Therefore; smaller the delta, smoother the shape.
-
-        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
-        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the delta value for the u-direction
-        :setter: Sets the delta value for the u-direction
-        :type: float
-        """
-        return self._delta[0]
-
-    @delta_u.setter
-    def delta_u(self, value):
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Evaluation delta (u-direction) must be between 0.0 and 1.0")
-        self._delta[0] = float(value)
 
     @property
     def delta_v(self):
@@ -501,51 +488,29 @@ class SurfaceContainer(AbstractContainer):
 
     @delta_v.setter
     def delta_v(self, value):
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Evaluation delta (v-direction) should be between 0.0 and 1.0")
-        self._delta[1] = float(value)
+        self._delta_setter_common(1, value)
 
     @property
-    def delta(self):
-        """ Evaluation delta for all parametric directions.
+    def sample_size_v(self):
+        """ Sample size for the v-direction.
 
-        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
-        Therefore; smaller the delta, smoother the shape.
-
-        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
-        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
-
-        The following figure illustrates the working principles of the delta property:
-
-        .. math::
-
-            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+        Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta values as a tuple of values corresponding to all parametric directions
-        :setter: Sets the same delta value for all parametric directions
-        :type: float
+        :getter: Gets sample size for the v-direction
+        :setter: Sets sample size for the v-direction
+        :type: int
         """
-        return tuple(self._delta)
+        return self._sample_size_getter_common(1)
 
-    @delta.setter
-    def delta(self, value):
-        if isinstance(value, (int, float)):
-            self.delta_u = value
-            self.delta_v = value
-        elif isinstance(value, (list, tuple)):
-            if len(value) == 2:
-                self.delta_u = value[0]
-                self.delta_v = value[1]
-            else:
-                raise ValueError("Surface requires 2 delta values")
-        else:
-            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 2 numeric values")
+    @sample_size_v.setter
+    def sample_size_v(self, value):
+        self._sample_size_setter_common(1, value)
 
     def render(self, **kwargs):
-        """ Renders the multi-surface the using the visualization component.
+        """ Renders the surfaces.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -613,7 +578,7 @@ class SurfaceContainer(AbstractContainer):
             elem.evaluate()
 
             # Color selection
-            color = _select_color(cpcolor, evalcolor, idx=idx)
+            color = select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
             if self._vis_component.mconf['ctrlpts'] == 'points':
@@ -696,64 +661,13 @@ class VolumeContainer(SurfaceContainer):
     """
 
     def __init__(self, *args, **kwargs):
+        self._pdim = 3 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
+        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(VolumeContainer, self).__init__()
         self._delta = [0.1, 0.1, 0.1]  # evaluation delta
         self._instance = abstract.Volume
         for arg in args:
             self.add(arg)
-
-    @property
-    def sample_size_w(self):
-        """ Sample size for the w-direction.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta_w`` property.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size for the w-direction
-        :setter: Sets sample size for the w-direction
-        :type: int
-        """
-        return int(1.0 / self.delta_w) + 1
-
-    @sample_size_w.setter
-    def sample_size_w(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta_w = 1.0 / float(value - 1)
-
-    @property
-    def sample_size(self):
-        """ Sample size for all parametric directions.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
-
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size values as a tuple of values corresponding to all parametric directions
-        :setter: Sets the same sample size value for all parametric directions
-        :type: int
-        """
-        sample_size = []
-        for d in self._delta:
-            sample_size.append(int(1.0 / d) + 1)
-        return tuple(sample_size)
-
-    @sample_size.setter
-    def sample_size(self, value):
-        if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value")
-        self.delta_u = 1.0 / float(value - 1)
-        self.delta_v = 1.0 / float(value - 1)
-        self.delta_w = 1.0 / float(value - 1)
 
     @property
     def delta_w(self):
@@ -776,53 +690,29 @@ class VolumeContainer(SurfaceContainer):
 
     @delta_w.setter
     def delta_w(self, value):
-        if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Evaluation delta (w-direction) should be between 0.0 and 1.0")
-        self._delta[2] = float(value)
+        self._delta_setter_common(2, value)
 
     @property
-    def delta(self):
-        """ Evaluation delta for all parametric directions.
+    def sample_size_w(self):
+        """ Sample size for the w-direction.
 
-        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
-        Therefore; smaller the delta, smoother the shape.
-
-        Please note that ``delta`` and ``sample_size`` properties correspond to the same variable with different
-        descriptions. Therefore, setting ``delta`` will also set ``sample_size``.
-
-        The following figure illustrates the working principles of the delta property:
-
-        .. math::
-
-            \\left[{{u_{0}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
+        Sample size defines the number of points to evaluate. It also sets the ``delta_w`` property.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the delta values as a tuple of values corresponding to all parametric directions
-        :setter: Sets the same delta value for all parametric directions
-        :type: float
+        :getter: Gets sample size for the w-direction
+        :setter: Sets sample size for the w-direction
+        :type: int
         """
-        return tuple(self._delta)
+        return self._sample_size_getter_common(2)
 
-    @delta.setter
-    def delta(self, value):
-        if isinstance(value, (int, float)):
-            self.delta_u = value
-            self.delta_v = value
-            self.delta_w = value
-        elif isinstance(value, (list, tuple)):
-            if len(value) == 3:
-                self.delta_u = value[0]
-                self.delta_v = value[1]
-                self.delta_w = value[2]
-            else:
-                raise ValueError("Volume requires 3 delta values")
-        else:
-            raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 3 numeric values")
+    @sample_size_w.setter
+    def sample_size_w(self, value):
+        self._sample_size_setter_common(2, value)
 
     def render(self, **kwargs):
-        """ Renders the multi-volume the using the visualization component.
+        """ Renders the volumes.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -878,7 +768,7 @@ class VolumeContainer(SurfaceContainer):
             elem.evaluate()
 
             # Color selection
-            color = _select_color(cpcolor, evalcolor, idx=idx)
+            color = select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
             if self._vis_component.mconf['ctrlpts'] == 'points':
@@ -898,7 +788,7 @@ class VolumeContainer(SurfaceContainer):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-def _select_color(cpcolor, evalcolor, idx=0):
+def select_color(cpcolor, evalcolor, idx=0):
     """ Selects item color for plotting.
 
     :param cpcolor: color for control points grid item
