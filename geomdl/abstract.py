@@ -230,12 +230,22 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Abstract method for spline evaluation """
+        """ Abstract method for spline evaluation.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
     @abc.abstractmethod
     def render(self, **kwargs):
-        """ Abstract method for spline rendering """
+        """ Abstract method for spline rendering and visualization.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
 
