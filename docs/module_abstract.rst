@@ -31,6 +31,19 @@ Abstract Volume
 Low Level API
 =============
 
+The following classes provide the low level API for the geometry abstract base.
+
+* :py:class:`.Geometry`
+* :py:class:`.SplineGeometry`
+
+:py:class:`.Geometry` abstract base class can be used for implementation of any geometry object, whereas
+:py:class:`.SplineGeometry` abstract base class is designed specifically for spline geometries, including basis splines.
+
+.. autoclass:: geomdl.abstract.Geometry
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
 .. autoclass:: geomdl.abstract.SplineGeometry
     :members:
     :inherited-members:

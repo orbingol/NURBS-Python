@@ -19,27 +19,14 @@ from . import utilities
 from . import voxelize
 
 
-class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for defining spline geometries. """
+class Geometry(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class (ABC) for defining geometry elements. """
 
     def __init__(self, **kwargs):
-        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
-        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        self._name = "B-spline geometry object"  # descriptor field
-        self._rational = False  # defines whether the B-spline object is rational or not
-        self._dimension = 0  # spatial dimension
-        self._degree = [0 for _ in range(self._pdim)]  # degree
-        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
-        self._control_points = self._init_array(self._array_type)  # control points
-        self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
-        self._eval_points = self._init_array(self._array_type)  # evaluated points
-        self._bounding_box = self._init_array(self._array_type)  # bounding box
-        self._evaluator = None  # evaluator instance
-        self._vis_component = None  # visualization component
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._kv_normalize = kwargs.get('normalize_kv', True)  # flag to control knot vector normalization
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
+        self._eval_points = self._init_array()  # evaluated points
+        self._name = "Geometry object"  # descriptor field
         self._iter_index = 0  # iterator index
         self._cache = {}  # cache dictionary
 
@@ -82,19 +69,15 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
 
     __repr__ = __str__
 
-    def _init_array(self, arr_type):
-        """ Initializes the arrays.
-
-        :param arr_type: array type
-        """
-        if callable(arr_type):
-            return arr_type()
-        else:
-            return None
+    def _init_array(self):
+        """ Initializes the arrays. """
+        if callable(self._array_type):
+            return self._array_type()
+        return list()
 
     @property
     def name(self):
-        """ Descriptor field for storing the shape identification data, such as names or IDs.
+        """ Descriptor field for storing the shape identification data, such as names, ID numbers, etc.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -107,6 +90,50 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the coordinates of the evaluated points
+        """
+        if self._eval_points is None or len(self._eval_points) == 0:
+            self.evaluate()
+
+        return self._eval_points
+
+    @abc.abstractmethod
+    def evaluate(self, **kwargs):
+        """ Abstract method for the implementation of evaluation algorithm.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
+        pass
+
+
+class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
+    """ Abstract base class (ABC) for defining spline geometries. """
+
+    def __init__(self, **kwargs):
+        super(SplineGeometry, self).__init__(**kwargs)
+        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
+        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._rational = False  # defines whether the B-spline object is rational or not
+        self._dimension = 0  # spatial dimension
+        self._degree = [0 for _ in range(self._pdim)]  # degree
+        self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
+        self._control_points = self._init_array()  # control points
+        self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
+        self._bounding_box = self._init_array()  # bounding box
+        self._evaluator = None  # evaluator instance
+        self._vis_component = None  # visualization component
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
+        self._kv_normalize = kwargs.get('normalize_kv', True)  # flag to control knot vector normalization
 
     @property
     def rational(self):
@@ -155,20 +182,6 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
     @ctrlpts.setter
     def ctrlpts(self, value):
         self._control_points = value
-
-    @property
-    def evalpts(self):
-        """ Evaluated points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the coordinates of the evaluated points
-        """
-        if self._eval_points is None or len(self._eval_points) == 0:
-            self.evaluate()
-
-        return self._eval_points
 
     @property
     def bbox(self):
@@ -227,16 +240,6 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
             warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
-
-    @abc.abstractmethod
-    def evaluate(self, **kwargs):
-        """ Abstract method for spline evaluation.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
 
     @abc.abstractmethod
     def render(self, **kwargs):
@@ -628,11 +631,11 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         reset_evalpts = kwargs.get('evalpts', False)
 
         if reset_ctrlpts:
-            self._control_points = self._init_array(self._array_type)
-            self._bounding_box = self._init_array(self._array_type)
+            self._control_points = self._init_array()
+            self._bounding_box = self._init_array()
 
         if reset_evalpts:
-            self._eval_points = self._init_array(self._array_type)
+            self._eval_points = self._init_array()
 
     # Checks whether the curve evaluation is possible or not
     def _check_variables(self):
@@ -779,9 +782,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         super(Surface, self).__init__(**kwargs)
         self._name = "Surface"  # descriptor field
         self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
-        self._control_points2D = self._init_array(self._array_type)  # control points, 2-D array [u][v]
+        self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._tsl_component = None  # tessellation component
-        self._trims = self._init_array(self._array_type)  # trim curves
+        self._trims = self._init_array()  # trim curves
 
     @property
     def order_u(self):
@@ -1487,14 +1490,14 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         reset_evalpts = kwargs.get('evalpts', False)
 
         if reset_ctrlpts:
-            self._control_points = self._init_array(self._array_type)
-            self._control_points2D = self._init_array(self._array_type)
+            self._control_points = self._init_array()
+            self._control_points2D = self._init_array()
             self._control_points_size[0] = 0
             self._control_points_size[1] = 0
-            self._bounding_box = self._init_array(self._array_type)
+            self._bounding_box = self._init_array()
 
         if reset_evalpts:
-            self._eval_points = self._init_array(self._array_type)
+            self._eval_points = self._init_array()
 
         # Reset vertices and triangles
         self._tsl_component.reset()
@@ -2289,12 +2292,12 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         reset_evalpts = kwargs.get('evalpts', False)
 
         if reset_ctrlpts:
-            self._control_points = self._init_array(self._array_type)
+            self._control_points = self._init_array()
             self._control_points_size = [0, 0, 0]
-            self._bounding_box = self._init_array(self._array_type)
+            self._bounding_box = self._init_array()
 
         if reset_evalpts:
-            self._eval_points = self._init_array(self._array_type)
+            self._eval_points = self._init_array()
 
     def _check_variables(self):
         """ Checks whether the evaluation is possible or not. """
