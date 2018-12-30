@@ -19,72 +19,28 @@ from . import utilities
 from . import voxelize
 
 
-class Curve(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for parametric curves.
-
-    The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
-    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
-    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
-
-    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
-    allows users to use some of the functions as if they are class fields. You can also consider properties as a
-    pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
-    these properties.
-
-    The Curve ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func`` keyword
-    as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the FindSpan
-    function in the ``helpers`` module.
-    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
-
-    Code segment below illustrates a possible implementation of Curve abstract base class:
-
-    .. code-block:: python
-
-        from geomdl import abstract
-
-        class MyCurveClass(abstract.Curve):
-            def __init__(self, **kwargs):
-            super(MyCurveClass, self).__init__(**kwargs)
-            # Add your constructor code here
-
-            def evaluate(self, **kwargs):
-                # Implement this function
-                pass
-
-            def evaluate_single(self, uv):
-                # Implement this function
-                pass
-
-            def evaluate_list(self, uv_list):
-                # Implement this function
-                pass
-
-            def derivatives(self, u, v, order, **kwargs):
-                # Implement this function
-                pass
-
-    The properties and functions defined in the abstract base class will be automatically available in the subclasses.
-    """
+class BSplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class for defining B-spline geometries """
 
     def __init__(self, **kwargs):
-        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
-        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
+        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        self._iter_index = 0  # iterator index
-        self._name = "Curve"  # descriptor field
-        self._rational = False  # defines whether the curve is rational or not
+        self._name = "B-spline geometry object"  # descriptor field
+        self._rational = False  # defines whether the B-spline object is rational or not
+        self._dimension = 0  # spatial dimension
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
         self._control_points = self._init_array(self._array_type)  # control points
         self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
         self._eval_points = self._init_array(self._array_type)  # evaluated points
-        self._dimension = 0  # dimension of the curve
-        self._vis_component = None  # visualization component
         self._bounding_box = self._init_array(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
-        self._precision = 18  # number of decimal places to round to
+        self._vis_component = None  # visualization component
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
-        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vector
+        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
+        self._kv_normalize = kwargs.get('normalize_kv', True)  # flag to control knot vector normalization
+        self._iter_index = 0  # iterator index
         self._cache = {}  # cache dictionary
 
     def __iter__(self):
@@ -138,17 +94,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def name(self):
-        """ Curve descriptor (as a string or a number).
-
-        Descriptor field allows users to assign an identification to the curve object. The identification can be a
-        string or a number.
+        """ Descriptor field for storing the shape identification data, such as names or IDs.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
         :getter: Gets the descriptor
         :setter: Sets the descriptor
-        :type: str or int
         """
         return self._name
 
@@ -157,8 +109,87 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._name = value
 
     @property
+    def rational(self):
+        """ Defines the rational and non-rational B-spline shapes.
+
+        Rational shapes use homogeneous coordinates which includes a weight alongside with the Cartesian coordinates.
+        Rational B-splines are also named as NURBS (Non-uniform rational basis spline) and non-rational B-splines are
+        sometimes named as NUBS (Non-uniform basis spline) or directly as B-splines.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Returns True is the B-spline object is rational (NURBS)
+        :type: bool
+        """
+        return self._rational
+
+    @property
+    def dimension(self):
+        """ Spatial dimension.
+
+        Spatial dimension will be automatically estimated from the first element of the control points array.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
+        :type: integer
+        """
+        if self._rational:
+            return self._dimension - 1
+        return self._dimension
+
+    @property
+    def ctrlpts(self):
+        """ 1-dimensional array of control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        """
+        return self._control_points
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        self._control_points = value
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the coordinates of the evaluated points
+        """
+        if self._eval_points is None or len(self._eval_points) == 0:
+            self.evaluate()
+
+        return self._eval_points
+
+    @property
+    def bbox(self):
+        """ Bounding box.
+
+        Evaluates the bounding box and returns the minimum and maximum coordinates.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets bounding box
+        :type: tuple
+        """
+        if self._bounding_box is None or len(self._bounding_box) == 0:
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
+
+        return tuple(self._bounding_box)
+
+    @property
     def evaluator(self):
-        """ Curve evaluator.
+        """ Evaluator instance.
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
@@ -167,7 +198,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         on using this class member.
 
         :getter: Gets the current Evaluator instance
-        :setter: Sets the evaluator
+        :setter: Sets the Evaluator instance
         """
         return self._evaluator
 
@@ -179,32 +210,88 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._evaluator = value
 
     @property
-    def rational(self):
-        """ True if the curve is rational.
+    def vis(self):
+        """ Visualization component.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Returns True is the curve is rational (NURBS)
-        :type: bool
+        :getter: Gets the visualization component
+        :setter: Sets the visualization component
         """
-        return self._rational
+        return self._vis_component
 
-    @property
-    def dimension(self):
-        """ Dimension of the curve.
+    @vis.setter
+    def vis(self, value):
+        if not isinstance(value, vis.VisAbstract):
+            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
+            return
+        self._vis_component = value
 
-        Dimension will be automatically estimated from the first element of the control points array.
+    @abc.abstractmethod
+    def evaluate(self, **kwargs):
+        """ Abstract method for spline evaluation """
+        pass
 
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
+    @abc.abstractmethod
+    def render(self, **kwargs):
+        """ Abstract method for spline rendering """
+        pass
 
-        :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
-        :type: integer
-        """
-        if self._rational:
-            return self._dimension - 1
-        return self._dimension
+
+class Curve(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
+    """ Abstract base class (ABC) for parametric curves.
+
+    The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
+    ``six`` to set metaclass allows users to use the abstract classes in a correct way.
+
+    The abstract base classes in this module are implemented using a feature called Python Properties. This feature
+    allows users to use some of the functions as if they are class fields. You can also consider properties as a
+    pythonic way to set getters and setters. You will see "getter" and "setter" descriptions on the documentation of
+    these properties.
+
+    The Curve ABC allows users to set the *FindSpan* function to be used in evaluations with ``find_span_func`` keyword
+    as an input to the class constructor. NURBS-Python includes a binary and a linear search variation of the FindSpan
+    function in the ``helpers`` module.
+    You may also implement and use your own *FindSpan* function. Please see the ``helpers`` module for details.
+
+    Code segment below illustrates a possible implementation of Curve abstract base class:
+
+    .. code-block:: python
+
+        from geomdl import abstract
+
+        class MyCurveClass(abstract.Curve):
+            def __init__(self, **kwargs):
+            super(MyCurveClass, self).__init__(**kwargs)
+            # Add your constructor code here
+
+            def evaluate(self, **kwargs):
+                # Implement this function
+                pass
+
+            def evaluate_single(self, uv):
+                # Implement this function
+                pass
+
+            def evaluate_list(self, uv_list):
+                # Implement this function
+                pass
+
+            def derivatives(self, u, v, order, **kwargs):
+                # Implement this function
+                pass
+
+    The properties and functions defined in the abstract base class will be automatically available in the subclasses.
+    """
+
+    def __init__(self, **kwargs):
+        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
+        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
+        super(Curve, self).__init__(**kwargs)  # Call parent function
+        self._name = "Curve"  # descriptor field
 
     @property
     def order(self):
@@ -282,42 +369,12 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
             if self._kv_normalize else value
 
     @property
-    def ctrlpts(self):
-        """ Control points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        self._control_points = value
-
-    @property
     def ctrlpts_size(self):
         """ Number of control points.
 
         :getter: Gets number of control points
         """
         return len(self._control_points)
-
-    @property
-    def evalpts(self):
-        """ Evaluated points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the coordinates of the evaluated points
-        """
-        if self._eval_points is None or len(self._eval_points) == 0:
-            self.evaluate()
-
-        return self._eval_points
 
     @property
     def sample_size(self):
@@ -390,42 +447,6 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         # Set new delta value
         self._delta[0] = float(value)
-
-    @property
-    def vis(self):
-        """ Visualization component.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
-            return
-        self._vis_component = value
-
-    @property
-    def bbox(self):
-        """ Bounding box.
-
-        Evaluates the bounding box of the curve and returns the minimum and maximum coordinates.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets bounding box
-        :type: tuple
-        """
-        if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
-
-        return tuple(self._bounding_box)
 
     @property
     def data(self):
@@ -621,7 +642,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the parametric curve.
+        """ Evaluates the curve.
 
         .. note::
 
@@ -636,7 +657,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_single(self, param):
-        """ Evaluates the parametric curve at the given parameter.
+        """ Evaluates the curve at the given parameter.
 
         .. note::
 
@@ -656,7 +677,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
-        """ Evaluates the parametric curve for an input range of parameters.
+        """ Evaluates the curve for an input range of parameters.
 
         .. note::
 
@@ -672,13 +693,13 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
-        """ Evaluates the derivatives of the parametric curve at parameter u.
+        """ Evaluates the derivatives of the curve at parameter u.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
 
-        :param u: parameter value
+        :param u: parameter (u)
         :type u: float
         :param order: derivative order
         :type order: int
@@ -694,7 +715,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class Surface(six.with_metaclass(abc.ABCMeta, object)):
+class Surface(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
     """ Abstract base class (ABC) for parametric surfaces.
 
     The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
@@ -745,146 +766,12 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
         self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        self._iter_index = 0  # iterator index
-        self._degree = [0 for _ in range(self._pdim)]  # degree
-        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
-        self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
-        self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
+        super(Surface, self).__init__(**kwargs)
         self._name = "Surface"  # descriptor field
-        self._rational = False  # defines whether the surface is rational or not
-        self._control_points = self._init_array(self._array_type)  # control points, 1-D array (v-order)
+        self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
         self._control_points2D = self._init_array(self._array_type)  # control points, 2-D array [u][v]
-        self._eval_points = self._init_array(self._array_type)  # evaluated points
-        self._dimension = 0  # dimension of the surface
-        self._vis_component = None  # visualization component
         self._tsl_component = None  # tessellation component
-        self._bounding_box = self._init_array(self._array_type)  # bounding box
-        self._evaluator = None  # evaluator instance
-        self._precision = 18  # number of decimal places to round to
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
-        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
-        self._cache = {}  # cache dictionary
-        # Advanced functionality
         self._trims = self._init_array(self._array_type)  # trim curves
-
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
-    def __next__(self):
-        if self._iter_index > 0:
-            raise StopIteration
-        self._iter_index += 1
-        return self
-
-    def __len__(self):
-        return 1
-
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(dict)
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
-    def _init_array(self, arr_type, **kwargs):
-        """ Initializes the arrays.
-
-        :param arr_type: array type
-        """
-        if callable(arr_type):
-            return arr_type()
-        else:
-            return None
-
-    @property
-    def name(self):
-        """ Surface descriptor (as a string or a number).
-
-        Descriptor field allows users to assign an identification to the surface object. The identification can be a
-        string or a number.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the descriptor
-        :setter: Sets the descriptor
-        :type: str or int
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def evaluator(self):
-        """ Surface evaluator.
-
-        Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
-        documentation on ``Evaluator`` classes.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Prints the name of the evaluator and returns the current Evaluator instance
-        :setter: Sets the evaluator
-        """
-        return self._evaluator
-
-    @evaluator.setter
-    def evaluator(self, value):
-        if not isinstance(value, AbstractEvaluator):
-            raise TypeError("The evaluator must be an instance of AbstractEvaluator")
-        value._span_func = self._span_func
-        self._evaluator = value
-
-    @property
-    def rational(self):
-        """ True if the surface is rational.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Returns True if the surface is rational (NURBS)
-        :type: bool
-        """
-        return self._rational
-
-    @property
-    def dimension(self):
-        """ Dimension of the surface.
-
-        Dimension will be automatically estimated from the first element of the control points array.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the dimension of the surface
-        :type: integer
-        """
-        if self._rational:
-            return self._dimension - 1
-        return self._dimension
 
     @property
     def order_u(self):
@@ -1033,22 +920,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             if self._kv_normalize else value
 
     @property
-    def ctrlpts(self):
-        """ 1-dimensional array of control points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        self._control_points = value
-
-    @property
     def ctrlpts2d(self):
         """ 2-dimensional control points.
 
@@ -1119,20 +990,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         # Assume that user is doing this right
         self._control_points_size[1] = value
-
-    @property
-    def evalpts(self):
-        """ Evaluated surface points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the coordinates of the evaluated points
-        """
-        if self._eval_points is None or len(self._eval_points) == 0:
-            self.evaluate()
-
-        return self._eval_points
 
     @property
     def sample_size_u(self):
@@ -1341,26 +1198,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 2 numeric values")
 
     @property
-    def vis(self):
-        """ Visualization component.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component must be an instance of VisAbstract class")
-            return
-
-        self._vis_component = value
-
-    @property
     def tessellator(self):
         """ Tessellation component.
 
@@ -1379,22 +1216,6 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             return
 
         self._tsl_component = value
-
-    @property
-    def bbox(self):
-        """ Bounding box.
-
-        Evaluates the bounding box of the surface and returns the minimum and maximum coordinates.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the surface bounding box
-        """
-        if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
-
-        return tuple(self._bounding_box)
 
     @property
     def trims(self):
@@ -1767,8 +1588,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class Volume(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for parametric volumes.
+class Volume(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
+    """ Abstract base class (ABC) for spline volumes.
 
     The Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -1814,23 +1635,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         self._pdim = 3 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        self._iter_index = 0  # iterator index
-        self._degree = [0 for _ in range(self._pdim)]  # degree
-        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
+        super(Volume, self).__init__(**kwargs)
         self._control_points_size = [0 for _ in range(self._pdim)]   # control points length
-        self._delta = [self._dinit for _ in range(self._pdim)]   # evaluation delta
         self._name = "Volume"  # descriptor field
-        self._rational = False  # defines whether the surface is rational or not
-        self._control_points = self._init_array(self._array_type)  # control points, 1-D array (w-order)
-        self._eval_points = self._init_array(self._array_type)  # evaluated points
-        self._dimension = 0  # dimension of the volume
-        self._vis_component = None  # visualization component
-        self._bounding_box = self._init_array(self._array_type)  # bounding box
-        self._evaluator = None  # evaluator instance
-        self._precision = 18  # number of decimal places to round to
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
-        self._kv_normalize = kwargs.get('normalize_kv', True)  # normalize knot vectors
-        self._cache = {}  # cache dictionary
 
     def __iter__(self):
         self._iter_index = 0
@@ -1870,86 +1677,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
         return self.name
 
     __repr__ = __str__
-
-    def _init_array(self, arr_type, **kwargs):
-        """ Initializes the arrays.
-
-        :param arr_type: array type
-        """
-        if callable(arr_type):
-            return arr_type()
-        else:
-            return None
-
-    @property
-    def name(self):
-        """ Volume descriptor (as a string or a number).
-
-        Descriptor field allows users to assign an identification to the volume object. The identification can be a
-        string or a number.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the descriptor
-        :setter: Sets the descriptor
-        :type: str or int
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def evaluator(self):
-        """ Volume evaluator.
-
-        Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
-        documentation on ``Evaluator`` classes.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Prints the name of the evaluator and returns the current Evaluator instance
-        :setter: Sets the evaluator
-        """
-        return self._evaluator
-
-    @evaluator.setter
-    def evaluator(self, value):
-        if not isinstance(value, AbstractEvaluator):
-            raise TypeError("The evaluator must be an instance of AbstractEvaluator")
-        value._span_func = self._span_func
-        self._evaluator = value
-
-    @property
-    def rational(self):
-        """ True if the volume is rational.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Returns True if the surface is rational (NURBS)
-        :type: bool
-        """
-        return self._rational
-
-    @property
-    def dimension(self):
-        """ Dimension of the volume.
-
-        Dimension will be automatically estimated from the first element of the control points array.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the dimension of the surface
-        :type: integer
-        """
-        if self._rational:
-            return self._dimension - 1
-        return self._dimension
 
     @property
     def order_u(self):
@@ -2171,22 +1898,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
             if self._kv_normalize else value
 
     @property
-    def ctrlpts(self):
-        """ Control points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        self._control_points = value
-
-    @property
     def ctrlpts_size(self):
         """ Total number of control points.
 
@@ -2263,20 +1974,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
 
         # Assume that user is doing this right
         self._control_points_size[2] = value
-
-    @property
-    def evalpts(self):
-        """ Evaluated points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the coordinates of the evaluated points
-        """
-        if self._eval_points is None or len(self._eval_points) == 0:
-            self.evaluate()
-
-        return self._eval_points
 
     @property
     def sample_size_u(self):
@@ -2553,42 +2250,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
                 raise ValueError("Surface requires 3 delta values")
         else:
             raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 3 numeric values")
-
-    @property
-    def bbox(self):
-        """ Bounding box.
-
-        Evaluates the bounding box of the volume and returns the minimum and maximum coordinates.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the volume bounding box
-        """
-        if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
-
-        return tuple(self._bounding_box)
-
-    @property
-    def vis(self):
-        """ Visualization component.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component must be an instance of VisAbstract class")
-            return
-
-        self._vis_component = value
 
     @property
     def data(self):

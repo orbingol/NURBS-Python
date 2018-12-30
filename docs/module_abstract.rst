@@ -27,3 +27,11 @@ Abstract Volume
     :members:
     :inherited-members:
     :show-inheritance:
+
+Low Level API
+=============
+
+.. autoclass:: geomdl.abstract.BSplineGeometry
+    :members:
+    :inherited-members:
+    :show-inheritance:
