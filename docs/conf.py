@@ -38,7 +38,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.githubpages',
-              'sphinx.ext.autosummary']
+              'sphinx.ext.autosummary',
+              'sphinx.ext.graphviz',
+              'sphinx.ext.inheritance_diagram']
 
 # List of modules to be mocked
 autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
