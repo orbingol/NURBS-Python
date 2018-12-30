@@ -63,8 +63,8 @@ class Curve(BSpline.Curve):
         return result
 
     def init_cache(self):
-        self._cache['ctrlpts'] = self._init_var(self._array_type)
-        self._cache['weights'] = self._init_var(self._array_type)
+        self._cache['ctrlpts'] = self._init_array(self._array_type)
+        self._cache['weights'] = self._init_array(self._array_type)
 
     @property
     def ctrlptsw(self):
@@ -162,8 +162,8 @@ class Curve(BSpline.Curve):
 
         if reset_ctrlpts:
             # Delete the caches
-            self._cache['ctrlpts'] = self._init_var(self._array_type)
-            self._cache['weights'][:] = self._init_var(self._array_type)
+            self._cache['ctrlpts'] = self._init_array(self._array_type)
+            self._cache['weights'][:] = self._init_array(self._array_type)
 
 
 class Surface(BSpline.Surface):

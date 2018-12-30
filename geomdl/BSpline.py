@@ -96,11 +96,11 @@ class Curve(abstract.Curve):
         :raises IOError: an error occurred writing the file
         """
         # Create a dictionary from the curve data
-        expdata = {'rational': self._rational,
-                   'degree': self._degree,
-                   'knotvector': self._knot_vector,
+        expdata = {'rational': self.rational,
+                   'degree': self.degree,
+                   'knotvector': self.knotvector,
                    'ctrlpts': self._control_points,
-                   'dimension': self._dimension}
+                   'dimension': self.dimension}
 
         save_pickle(expdata, file_name)
 
@@ -113,17 +113,16 @@ class Curve(abstract.Curve):
         """
         impdata = read_pickle(file_name)
 
-        if self._rational != impdata['rational']:
-            raise TypeError("Curve types are not compatible (NURBS-BSpline mismatch)")
+        if self.rational != impdata['rational']:
+            raise TypeError("Curve types are not compatible (rational vs. non-rational mismatch)")
 
         # Clean control points and evaluated points
         self.reset(ctrlpts=True, evalpts=True)
 
         # Set the curve data
-        self._degree = impdata['degree']
-        self._knot_vector = impdata['knotvector']
-        self._dimension = impdata['dimension']
-        self._control_points = impdata['ctrlpts']
+        self.degree = impdata['degree']
+        self.set_ctrlpts(impdata['ctrlpts'])
+        self.knotvector = impdata['knotvector']
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -170,11 +169,11 @@ class Curve(abstract.Curve):
 
         # Evaluate
         cpts = self._evaluator.evaluate(start=start, stop=stop,
-                                        degree=self._degree, knotvector=self._knot_vector,
+                                        degree=self.degree, knotvector=self.knotvector,
                                         ctrlpts=self._control_points, sample_size=self.sample_size,
                                         dimension=self._dimension, precision=self._precision)
 
-        self._curve_points = cpts
+        self._eval_points = cpts
 
     def evaluate_single(self, param):
         """ Evaluates the curve at the input parameter.
@@ -192,7 +191,7 @@ class Curve(abstract.Curve):
             utilities.check_params([param])
 
         # Evaluate
-        return self._evaluator.evaluate_single(parameter=param, degree=self._degree, knotvector=self._knot_vector,
+        return self._evaluator.evaluate_single(parameter=param, degree=self.degree, knotvector=self.knotvector,
                                                ctrlpts=self._control_points, dimension=self._dimension,
                                                precision=self._precision)
 
@@ -232,8 +231,8 @@ class Curve(abstract.Curve):
         super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
-        return self._evaluator.derivatives_single(parameter=u, deriv_order=order, degree=self._degree,
-                                                  knotvector=self._knot_vector, ctrlpts=self._control_points,
+        return self._evaluator.derivatives_single(parameter=u, deriv_order=order, degree=self.degree,
+                                                  knotvector=self.knotvector, ctrlpts=self._control_points,
                                                   dimension=self._dimension)
 
     # Knot insertion
@@ -264,18 +263,18 @@ class Curve(abstract.Curve):
         s = helpers.find_multiplicity(u, self.knotvector)
 
         # Check if it is possible add that many number of knots
-        if check_r and r > self._degree - s:
+        if check_r and r > self.degree - s:
             raise ValueError("Cannot insert " + str(r) + " number of knots")
 
         UQ, Q = self._evaluator.insert_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
                                             ctrlpts=self._control_points, dimension=self._dimension)
 
         # Update class variables
-        self._knot_vector = UQ
+        self._knot_vector[0] = UQ
         self._control_points = Q
 
         # Evaluate curve again if it has already been evaluated before knot insertion
-        if check_r and self._curve_points:
+        if check_r and self._eval_points:
             self.evaluate()
 
     def tangent(self, param, **kwargs):
@@ -545,7 +544,7 @@ class Surface(abstract.Surface):
                    'ctrlpts_size_u': self.ctrlpts_size_u,
                    'ctrlpts_size_v': self.ctrlpts_size_v,
                    'ctrlpts': self._control_points,
-                   'dimension': self._dimension}
+                   'dimension': self.dimension}
 
         save_pickle(expdata, file_name)
 
@@ -559,8 +558,8 @@ class Surface(abstract.Surface):
         impdata = read_pickle(file_name)
 
         # Check if we have loaded the correct type of surface
-        if self._rational != impdata['rational']:
-            raise TypeError("Surface types are not compatible (NURBS-BSpline mismatch)")
+        if self.rational != impdata['rational']:
+            raise TypeError("Surface types are not compatible (rational vs. non-rational mismatch)")
 
         # Clean control points and evaluated points
         self.reset(ctrlpts=True, evalpts=True)
@@ -568,10 +567,7 @@ class Surface(abstract.Surface):
         # Set the surface data
         self.degree_u = impdata['degree_u']
         self.degree_v = impdata['degree_v']
-        self.ctrlpts_size_u = impdata['ctrlpts_size_u']
-        self.ctrlpts_size_v = impdata['ctrlpts_size_v']
-        self._dimension = impdata['dimension']
-        self._control_points = impdata['ctrlpts']
+        self.set_ctrlpts(impdata['ctrlpts'], impdata['ctrlpts_size_u'], impdata['ctrlpts_size_v'])
         self.knotvector_u = impdata['knotvector_u']
         self.knotvector_v = impdata['knotvector_v']
 
@@ -631,7 +627,7 @@ class Surface(abstract.Surface):
                                         sample_size=self.sample_size, dimension=self._dimension,
                                         precision=self._precision)
 
-        self._surface_points = spts
+        self._eval_points = spts
 
     def evaluate_single(self, param):
         """ Evaluates the surface at the input (u, v) parameter pair.
@@ -776,7 +772,7 @@ class Surface(abstract.Surface):
                 self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
         # Evaluate surface again if it has already been evaluated before knot insertion
-        if check_r and self._surface_points:
+        if check_r and self._eval_points:
             self.evaluate()
 
     def tangent(self, parpos, **kwargs):
@@ -887,6 +883,54 @@ class Volume(abstract.Volume):
         if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
             raise ValueError("Please set the number of control points on the u-, v- and w-directions")
         self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
+
+    def save(self, file_name):
+        """ Saves the volume as a pickled file.
+
+        :param file_name: name of the file to be saved
+        :type file_name: str
+        :raises IOError: an error occurred writing the file
+        """
+        # Create a dictionary from the surface data
+        expdata = {'rational': self.rational,
+                   'degree_u': self.degree_u,
+                   'degree_v': self.degree_v,
+                   'degree_w': self.degree_w,
+                   'knotvector_u': self.knotvector_u,
+                   'knotvector_v': self.knotvector_v,
+                   'knotvector_w': self.knotvector_w,
+                   'ctrlpts_size_u': self.ctrlpts_size_u,
+                   'ctrlpts_size_v': self.ctrlpts_size_v,
+                   'ctrlpts_size_w': self.ctrlpts_size_w,
+                   'ctrlpts': self._control_points,
+                   'dimension': self.dimension}
+
+        save_pickle(expdata, file_name)
+
+    def load(self, file_name):
+        """ Loads the volume from a pickled file.
+
+        :param file_name: name of the file to be loaded
+        :type file_name: str
+        :raises IOError: an error occurred reading the file
+        """
+        idata = read_pickle(file_name)
+
+        # Check if we have loaded the correct type of surface
+        if self.rational != idata['rational']:
+            raise TypeError("Volume types are not compatible (rational vs. non-rational mismatch)")
+
+        # Clean control points and evaluated points
+        self.reset(ctrlpts=True, evalpts=True)
+
+        # Set the surface data
+        self.degree_u = idata['degree_u']
+        self.degree_v = idata['degree_v']
+        self.degree_w = idata['degree_w']
+        self.set_ctrlpts(idata['ctrlpts'], idata['ctrlpts_size_u'], idata['ctrlpts_size_v'], idata['ctrlpts_size_w'])
+        self.knotvector_u = idata['knotvector_u']
+        self.knotvector_v = idata['knotvector_v']
+        self.knotvector_w = idata['knotvector_w']
 
     def evaluate(self, **kwargs):
         """ Evaluates the volume.

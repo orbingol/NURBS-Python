@@ -67,18 +67,20 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        self._array_type = list
+        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
+        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._iter_index = 0  # iterator index
         self._name = "Curve"  # descriptor field
         self._rational = False  # defines whether the curve is rational or not
-        self._degree = 0  # degree
-        self._knot_vector = self._init_var(self._array_type)  # knot vector
-        self._control_points = self._init_var(self._array_type)  # control points
-        self._delta = 0.01  # evaluation delta
-        self._curve_points = self._init_var(self._array_type)  # evaluated points
+        self._degree = [0 for _ in range(self._pdim)]  # degree
+        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
+        self._control_points = self._init_array(self._array_type)  # control points
+        self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
+        self._eval_points = self._init_array(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the curve
         self._vis_component = None  # visualization component
-        self._bounding_box = self._init_var(self._array_type)  # bounding box
+        self._bounding_box = self._init_array(self._array_type)  # bounding box
         self._evaluator = None  # evaluator instance
         self._precision = 18  # number of decimal places to round to
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
@@ -124,7 +126,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
     __repr__ = __str__
 
-    def _init_var(self, arr_type):
+    def _init_array(self, arr_type):
         """ Initializes the arrays.
 
         :param arr_type: array type
@@ -234,7 +236,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the degree
         :type: integer
         """
-        return self._degree
+        return self._degree[0]
 
     @degree.setter
     def degree(self, value):
@@ -246,7 +248,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set degree
-        self._degree = val
+        self._degree[0] = val
 
     @property
     def knotvector(self):
@@ -261,7 +263,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :getter: Gets the knot vector
         :setter: Sets the knot vector
         """
-        return tuple(self._knot_vector)
+        return tuple(self._knot_vector[0])
 
     @knotvector.setter
     def knotvector(self, value):
@@ -276,7 +278,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector = utilities.normalize_knot_vector(value, decimals=self._precision) \
+        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
             if self._kv_normalize else value
 
     @property
@@ -312,10 +314,10 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the coordinates of the evaluated points
         """
-        if self._curve_points is None or len(self._curve_points) == 0:
+        if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
 
-        return self._curve_points
+        return self._eval_points
 
     @property
     def sample_size(self):
@@ -375,7 +377,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         :setter: Sets the delta value
         :type: float
         """
-        return self._delta
+        return self._delta[0]
 
     @delta.setter
     def delta(self, value):
@@ -387,7 +389,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self.reset(evalpts=True)
 
         # Set new delta value
-        self._delta = float(value)
+        self._delta[0] = float(value)
 
     @property
     def vis(self):
@@ -437,7 +439,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
-            size=self.ctrlpts_size,
+            size=[self.ctrlpts_size],
             control_points=self._control_points
         )
 
@@ -548,7 +550,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         self._check_variables()
 
         # Check if the curve has been evaluated
-        if self._curve_points is None or len(self._curve_points) == 0:
+        if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
 
         # Clear the visualization component
@@ -595,11 +597,11 @@ class Curve(six.with_metaclass(abc.ABCMeta, object)):
         reset_evalpts = kwargs.get('evalpts', False)
 
         if reset_ctrlpts:
-            self._control_points = self._init_var(self._array_type)
-            self._bounding_box = self._init_var(self._array_type)
+            self._control_points = self._init_array(self._array_type)
+            self._bounding_box = self._init_array(self._array_type)
 
         if reset_evalpts:
-            self._curve_points = self._init_var(self._array_type)
+            self._eval_points = self._init_array(self._array_type)
 
     # Checks whether the curve evaluation is possible or not
     def _check_variables(self):
@@ -740,17 +742,19 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        self._array_type = list
+        self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
+        self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._iter_index = 0  # iterator index
-        self._degree = [0, 0]  # degree
-        self._knot_vector = [self._init_array(self._array_type), self._init_array(self._array_type)]  # knot vector
-        self._control_points_size = [0, 0]  # control points array length
-        self._delta = [0.05, 0.05]  # evaluation delta
+        self._degree = [0 for _ in range(self._pdim)]  # degree
+        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
+        self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
+        self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
         self._name = "Surface"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._control_points = self._init_array(self._array_type)  # control points, 1-D array (v-order)
         self._control_points2D = self._init_array(self._array_type)  # control points, 2-D array [u][v]
-        self._surface_points = self._init_array(self._array_type)  # evaluated points
+        self._eval_points = self._init_array(self._array_type)  # evaluated points
         self._dimension = 0  # dimension of the surface
         self._vis_component = None  # visualization component
         self._tsl_component = None  # tessellation component
@@ -1125,10 +1129,10 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the coordinates of the evaluated points
         """
-        if self._surface_points is None or len(self._surface_points) == 0:
+        if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
 
-        return self._surface_points
+        return self._eval_points
 
     @property
     def sample_size_u(self):
@@ -1560,7 +1564,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
         self._check_variables()
 
         # Check if the surface has been evaluated
-        if self._surface_points is None or len(self._surface_points) == 0:
+        if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
 
         # Clear the visualization component
@@ -1659,7 +1663,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, object)):
             self._bounding_box = self._init_array(self._array_type)
 
         if reset_evalpts:
-            self._surface_points = self._init_array(self._array_type)
+            self._eval_points = self._init_array(self._array_type)
 
         # Reset vertices and triangles
         self._tsl_component.reset()
@@ -1807,14 +1811,14 @@ class Volume(six.with_metaclass(abc.ABCMeta, object)):
     """
 
     def __init__(self, **kwargs):
-        self._array_type = list
+        self._pdim = 3 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
+        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._iter_index = 0  # iterator index
-        self._degree = [0, 0, 0]  # degree
-        self._knot_vector = [self._init_array(self._array_type),
-                             self._init_array(self._array_type),
-                             self._init_array(self._array_type)]  # knot vector
-        self._control_points_size = [0, 0, 0]  # control points array length
-        self._delta = [0.1, 0.1, 0.1]  # evaluation delta
+        self._degree = [0 for _ in range(self._pdim)]  # degree
+        self._knot_vector = [self._init_array(self._array_type) for _ in range(self._pdim)]  # knot vector
+        self._control_points_size = [0 for _ in range(self._pdim)]   # control points length
+        self._delta = [self._dinit for _ in range(self._pdim)]   # evaluation delta
         self._name = "Volume"  # descriptor field
         self._rational = False  # defines whether the surface is rational or not
         self._control_points = self._init_array(self._array_type)  # control points, 1-D array (w-order)

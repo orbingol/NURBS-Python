@@ -8,7 +8,7 @@
 """
 
 import copy
-from geomdl import linalg, helpers
+from . import linalg, helpers
 
 
 def translate_single(obj, vec, **kwargs):
