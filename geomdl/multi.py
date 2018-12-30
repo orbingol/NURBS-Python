@@ -287,9 +287,7 @@ class CurveContainer(AbstractContainer):
     * :py:attr:`bbox`
     * :py:attr:`vis`
     * :py:attr:`delta`
-    * :py:attr:`delta_u`
     * :py:attr:`sample_size`
-    * :py:attr:`sample_size_u`
 
     The following code example illustrates the usage of the Python properties:
 
@@ -315,48 +313,6 @@ class CurveContainer(AbstractContainer):
         self._instance = abstract.Curve
         for arg in args:
             self.add(arg)
-
-    @property
-    def delta_u(self):
-        """ Evaluation delta for the u-direction.
-
-        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
-        Therefore; smaller the delta, smoother the shape.
-
-        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
-        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the delta value for the u-direction
-        :setter: Sets the delta value for the u-direction
-        :type: float
-        """
-        return self._delta[0]
-
-    @delta_u.setter
-    def delta_u(self, value):
-        self._delta_setter_common(0, value)
-
-    @property
-    def sample_size_u(self):
-        """ Sample size for the u-direction.
-
-        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets sample size for the u-direction
-        :setter: Sets sample size for the u-direction
-        :type: int
-        """
-        return self._sample_size_getter_common(0)
-
-    @sample_size_u.setter
-    def sample_size_u(self, value):
-        self._sample_size_setter_common(0, value)
 
     def render(self, **kwargs):
         """ Renders the curves.
@@ -423,7 +379,7 @@ class CurveContainer(AbstractContainer):
         self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-class SurfaceContainer(CurveContainer):
+class SurfaceContainer(AbstractContainer):
     """ Container class for storing multiple surfaces.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -468,6 +424,29 @@ class SurfaceContainer(CurveContainer):
             self.add(arg)
 
     @property
+    def delta_u(self):
+        """ Evaluation delta for the u-direction.
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
+
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta value for the u-direction
+        :setter: Sets the delta value for the u-direction
+        :type: float
+        """
+        return self._delta[0]
+
+    @delta_u.setter
+    def delta_u(self, value):
+        self._delta_setter_common(0, value)
+
+    @property
     def delta_v(self):
         """ Evaluation delta for the v-direction.
 
@@ -489,6 +468,25 @@ class SurfaceContainer(CurveContainer):
     @delta_v.setter
     def delta_v(self, value):
         self._delta_setter_common(1, value)
+
+    @property
+    def sample_size_u(self):
+        """ Sample size for the u-direction.
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
+        :type: int
+        """
+        return self._sample_size_getter_common(0)
+
+    @sample_size_u.setter
+    def sample_size_u(self, value):
+        self._sample_size_setter_common(0, value)
 
     @property
     def sample_size_v(self):
