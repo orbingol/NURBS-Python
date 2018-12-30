@@ -1652,45 +1652,6 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         self._control_points_size = [0 for _ in range(self._pdim)]   # control points length
         self._name = "Volume"  # descriptor field
 
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
-    def __next__(self):
-        if self._iter_index > 0:
-            raise StopIteration
-        self._iter_index += 1
-        return self
-
-    def __len__(self):
-        return 1
-
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(dict)
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
     @property
     def order_u(self):
         """ Order for the u-direction.
