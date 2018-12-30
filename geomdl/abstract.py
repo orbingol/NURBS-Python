@@ -19,8 +19,8 @@ from . import utilities
 from . import voxelize
 
 
-class BSplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for defining B-spline geometries """
+class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
+    """ Abstract base class (ABC) for defining spline geometries. """
 
     def __init__(self, **kwargs):
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
@@ -239,8 +239,8 @@ class BSplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class Curve(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
-    """ Abstract base class (ABC) for parametric curves.
+class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
+    """ Abstract base class (ABC) for defining spline curves.
 
     The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -715,8 +715,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
         pass
 
 
-class Surface(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
-    """ Abstract base class (ABC) for parametric surfaces.
+class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
+    """ Abstract base class (ABC) for defining spline surfaces.
 
     The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -1588,7 +1588,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
         pass
 
 
-class Volume(six.with_metaclass(abc.ABCMeta, BSplineGeometry)):
+class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
     """ Abstract base class (ABC) for spline volumes.
 
     The Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to

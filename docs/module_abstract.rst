@@ -31,7 +31,7 @@ Abstract Volume
 Low Level API
 =============
 
-.. autoclass:: geomdl.abstract.BSplineGeometry
+.. autoclass:: geomdl.abstract.SplineGeometry
     :members:
     :inherited-members:
     :show-inheritance:
