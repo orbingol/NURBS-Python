@@ -133,7 +133,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the dimension of the curve, e.g. 2D, 3D, etc.
+        :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
         :type: integer
         """
         if self._rational:
@@ -179,7 +179,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, object)):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets bounding box
+        :getter: Gets the bounding box
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
