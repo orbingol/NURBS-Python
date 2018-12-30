@@ -1,7 +1,13 @@
 NURBS Geometry
 ^^^^^^^^^^^^^^
 
-``NURBS`` module provides data storage and evaluation functions for rational parametric shapes.
+``NURBS`` module provides data storage and evaluation functions for rational spline geometries.
+
+Inheritance Diagram
+===================
+
+.. inheritance-diagram:: geomdl.NURBS
+    :top-classes: geomdl.abstract.SplineGeometry
 
 NURBS Curve
 ===========
