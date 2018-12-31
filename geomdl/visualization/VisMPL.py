@@ -333,8 +333,6 @@ class VisSurface(vis.VisAbstract):
                 # Extract vertex coordinates
                 vert_coords = [vert.data for vert in verts]
                 pts = np.array(vert_coords, dtype=self.vconf.dtype)
-                # Create MPL Triangulation object
-                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
 
                 # Determine the color or the colormap of the triangulated plot
                 trisurf_params = {}
@@ -347,8 +345,11 @@ class VisSurface(vis.VisAbstract):
                 else:
                     trisurf_params['color'] = plot['color']
 
+                # Create MPL Triangulation object
+                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
                 # Use custom Triangulation object and the choice of color/colormap to plot the surface
                 ax.plot_trisurf(triangulation, pts[:, 2], **trisurf_params)
+                # Add to legend
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
