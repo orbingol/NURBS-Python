@@ -1,7 +1,7 @@
 """
 .. module:: construct
     :platform: Unix, Windows
-    :synopsis: Contains functions for constructing parametric surfaces and volumes
+    :synopsis: Contains functions for constructing and extracting spline geometries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -14,7 +14,7 @@ from . import convert
 
 
 def construct_surface(*args, **kwargs):
-    """ Generates NURBS surfaces from parametric curves.
+    """ Generates surfaces from curves.
 
     :return: NURBS surface
     :rtype: NURBS.Surface
@@ -52,7 +52,7 @@ def construct_surface(*args, **kwargs):
 
 
 def construct_volume(*args, **kwargs):
-    """ Generates NURBS volumes from parametric surfaces.
+    """ Generates volumes from surfaces.
 
     :return: NURBS volume
     :rtype: NURBS.Volume
@@ -93,7 +93,7 @@ def construct_volume(*args, **kwargs):
 
 
 def extract_curves(psurf):
-    """ Extracts curves from a parametric surface.
+    """ Extracts curves from a surface.
 
     :param psurf: input surface
     :type psurf: abstract.Surface
@@ -140,7 +140,7 @@ def extract_curves(psurf):
 
 
 def extract_surfaces(pvol):
-    """ Extracts surfaces from a parametric volume.
+    """ Extracts surfaces from a volume.
 
     :param pvol: input volume
     :type pvol: abstract.Volume
@@ -224,7 +224,7 @@ def extract_isosurface(pvol):
         # Assuming that "myvol" variable stores your spline volume information
         isosrf = construct.extract_isosurface(myvol)
 
-        # Create a surface container
+        # Create a surface container to store extracted isosurface
         msurf = multi.SurfaceContainer(isosrf)
 
         # Set visualization components
