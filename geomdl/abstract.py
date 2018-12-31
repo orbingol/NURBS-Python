@@ -84,6 +84,7 @@ class Geometry(six.with_metaclass(abc.ABCMeta, object)):
 
         :getter: Gets the descriptor
         :setter: Sets the descriptor
+        :type: str
         """
         return self._name
 
@@ -99,10 +100,10 @@ class Geometry(six.with_metaclass(abc.ABCMeta, object)):
         on using this class member.
 
         :getter: Gets the coordinates of the evaluated points
+        :type: list
         """
         if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
-
         return self._eval_points
 
     @abc.abstractmethod
@@ -161,11 +162,51 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
         on using this class member.
 
         :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
-        :type: integer
+        :type: int
         """
         if self._rational:
             return self._dimension - 1
         return self._dimension
+
+    @property
+    def pdimension(self):
+        """ Parametric dimension.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the parametric dimension
+        :type: int
+        """
+        return self._pdim
+
+    @property
+    def degree(self):
+        """ Degree
+
+        :getter: Gets the degree
+        :setter: Sets the degree
+        :type: list
+        """
+        return self._degree
+
+    @degree.setter
+    def degree(self, value):
+        self._degree = value
+
+    @property
+    def knotvector(self):
+        """ Knot vector
+
+        :getter: Gets the knot vector
+        :setter: Sets the knot vector
+        :type: list
+        """
+        return self._knot_vector
+
+    @knotvector.setter
+    def knotvector(self, value):
+        self._knot_vector = value
 
     @property
     def ctrlpts(self):
@@ -176,6 +217,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
 
         :getter: Gets the control points
         :setter: Sets the control points
+        :type: list
         """
         return self._control_points
 
@@ -197,8 +239,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
             self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
-
-        return tuple(self._bounding_box)
+        return self._bounding_box
 
     @property
     def evaluator(self):
@@ -212,6 +253,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
 
         :getter: Gets the current Evaluator instance
         :setter: Sets the Evaluator instance
+        :type: evaluators.AbstractEvaluator
         """
         return self._evaluator
 
@@ -231,6 +273,7 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
 
         :getter: Gets the visualization component
         :setter: Sets the visualization component
+        :type: vis.VisAbstract
         """
         return self._vis_component
 
@@ -317,7 +360,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the order
         :setter: Sets the order
-        :type: integer
+        :type: int
         """
         return self.degree + 1
 
@@ -334,7 +377,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the degree
         :setter: Sets the degree
-        :type: integer
+        :type: int
         """
         return self._degree[0]
 
@@ -362,8 +405,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
+        :type: list
         """
-        return tuple(self._knot_vector[0])
+        return self._knot_vector[0]
 
     @knotvector.setter
     def knotvector(self, value):
@@ -386,6 +430,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         """ Number of control points.
 
         :getter: Gets number of control points
+        :type: int
         """
         return len(self._control_points)
 
@@ -797,7 +842,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets order for the u-direction
         :setter: Sets order for the u-direction
-        :type: integer
+        :type: int
         """
         return self.degree_u + 1
 
@@ -816,13 +861,30 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets surface order for the v-direction
         :setter: Sets surface order for the v-direction
-        :type: integer
+        :type: int
         """
         return self.degree_v + 1
 
     @order_v.setter
     def order_v(self, value):
         self.degree_v = value - 1
+
+    @property
+    def degree(self):
+        """ Degree for u- and v-directions
+
+        :getter: Gets the degree
+        :setter: Sets the degree
+        :type: list
+        """
+        return self._degree
+
+    @degree.setter
+    def degree(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("Please input a list with a length of " + str(self.pdimension))
+        self.degree_u = value[0]
+        self.degree_v = value[1]
 
     @property
     def degree_u(self):
@@ -833,7 +895,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets degree for the u-direction
         :setter: Sets degree for the u-direction
-        :type: integer
+        :type: int
         """
         return self._degree[0]
 
@@ -856,7 +918,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets degree for the v-direction
         :setter: Sets degree for the v-direction
-        :type: integer
+        :type: int
         """
         return self._degree[1]
 
@@ -871,6 +933,23 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         self._degree[1] = val
 
     @property
+    def knotvector(self):
+        """ Knot vector for u- and v-directions
+
+        :getter: Gets the knot vector
+        :setter: Sets the knot vector
+        :type: list
+        """
+        return self._knot_vector
+
+    @knotvector.setter
+    def knotvector(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("Please input a list with a length of " + str(self.pdimension))
+        self.knotvector_u = value[0]
+        self.knotvector_v = value[1]
+
+    @property
     def knotvector_u(self):
         """ Knot vector for the u-direction.
 
@@ -882,8 +961,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets knot vector for the u-direction
         :setter: Sets knot vector for the u-direction
+        :type: list
         """
-        return tuple(self._knot_vector[0])
+        return self._knot_vector[0]
 
     @knotvector_u.setter
     def knotvector_u(self, value):
@@ -913,8 +993,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets knot vector for the v-direction
         :setter: Sets knot vector for the v-direction
+        :type: list
         """
-        return tuple(self._knot_vector[1])
+        return self._knot_vector[1]
 
     @knotvector_v.setter
     def knotvector_v(self, value):
@@ -1663,7 +1744,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the surface order for u-direction
         :setter: Sets the surface order for u-direction
-        :type: integer
+        :type: int
         """
         return self.degree_u + 1
 
@@ -1682,7 +1763,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the surface order for v-direction
         :setter: Sets the surface order for v-direction
-        :type: integer
+        :type: int
         """
         return self.degree_v + 1
 
@@ -1701,13 +1782,31 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets the surface order for v-direction
         :setter: Sets the surface order for v-direction
-        :type: integer
+        :type: int
         """
         return self.degree_w + 1
 
     @order_w.setter
     def order_w(self, value):
         self.degree_w = value - 1
+
+    @property
+    def degree(self):
+        """ Degree for u-, v- and w-directions
+
+        :getter: Gets the degree
+        :setter: Sets the degree
+        :type: list
+        """
+        return self._degree
+
+    @degree.setter
+    def degree(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("Please input a list with a length of " + str(self.pdimension))
+        self.degree_u = value[0]
+        self.degree_v = value[1]
+        self.degree_w = value[2]
 
     @property
     def degree_u(self):
@@ -1718,7 +1817,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets degree for the u-direction
         :setter: Sets degree for the u-direction
-        :type: integer
+        :type: int
         """
         return self._degree[0]
 
@@ -1741,7 +1840,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets degree for the v-direction
         :setter: Sets degree for the v-direction
-        :type: integer
+        :type: int
         """
         return self._degree[1]
 
@@ -1764,7 +1863,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets degree for the w-direction
         :setter: Sets degree for the w-direction
-        :type: integer
+        :type: int
         """
         return self._degree[2]
 
@@ -1779,6 +1878,24 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         self._degree[2] = val
 
     @property
+    def knotvector(self):
+        """ Knot vector for u-, v- and w-directions
+
+        :getter: Gets the knot vector
+        :setter: Sets the knot vector
+        :type: list
+        """
+        return self._knot_vector
+
+    @knotvector.setter
+    def knotvector(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("Please input a list with a length of " + str(self.pdimension))
+        self.knotvector_u = value[0]
+        self.knotvector_v = value[1]
+        self.knotvector_w = value[2]
+
+    @property
     def knotvector_u(self):
         """ Knot vector for the u-direction.
 
@@ -1790,8 +1907,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets knot vector for the u-direction
         :setter: Sets knot vector for the u-direction
+        :type: list
         """
-        return tuple(self._knot_vector[0])
+        return self._knot_vector[0]
 
     @knotvector_u.setter
     def knotvector_u(self, value):
@@ -1821,8 +1939,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets knot vector for the v-direction
         :setter: Sets knot vector for the v-direction
+        :type: list
         """
-        return tuple(self._knot_vector[1])
+        return self._knot_vector[1]
 
     @knotvector_v.setter
     def knotvector_v(self, value):
@@ -1852,8 +1971,9 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
         :getter: Gets knot vector for the w-direction
         :setter: Sets knot vector for the w-direction
+        :type: list
         """
-        return tuple(self._knot_vector[2])
+        return self._knot_vector[2]
 
     @knotvector_w.setter
     def knotvector_w(self, value):

@@ -98,9 +98,9 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['ctrlpts'])
+        return self._cache['ctrlpts']
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -130,9 +130,9 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['weights'])
+        return self._cache['weights']
 
     @weights.setter
     def weights(self, value):
@@ -244,10 +244,7 @@ class Surface(BSpline.Surface):
         :getter: Gets weighted control points
         :setter: Sets weighted control points
         """
-        ret_list = []
-        for pt in self._control_points:
-            ret_list.append(tuple(pt))
-        return tuple(ret_list)
+        return self._control_points
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
@@ -267,9 +264,9 @@ class Surface(BSpline.Surface):
         """
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['ctrlpts'])
+        return self._cache['ctrlpts']
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -298,9 +295,9 @@ class Surface(BSpline.Surface):
         """
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['weights'])
+        return self._cache['weights']
 
     @weights.setter
     def weights(self, value):
@@ -428,10 +425,7 @@ class Volume(BSpline.Volume):
         :getter: Gets weighted control points
         :setter: Sets weighted control points
         """
-        ret_list = []
-        for pt in self._control_points:
-            ret_list.append(tuple(pt))
-        return tuple(ret_list)
+        return self._control_points
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
@@ -451,9 +445,9 @@ class Volume(BSpline.Volume):
         """
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['ctrlpts'])
+        return self._cache['ctrlpts']
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -482,9 +476,9 @@ class Volume(BSpline.Volume):
         """
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [tuple(crd) for crd in c]
+            self._cache['ctrlpts'] = [crd for crd in c]
             self._cache['weights'] = w
-        return tuple(self._cache['weights'])
+        return self._cache['weights']
 
     @weights.setter
     def weights(self, value):

@@ -41,12 +41,12 @@ def test_bspline_curve_degree(bs_curve):
 
 
 def test_bspline_curve_ctrlpts(bs_curve):
-    assert bs_curve.ctrlpts == ((5.0, 5.0), (10.0, 10.0), (20.0, 15.0), (35.0, 15.0), (45.0, 10.0), (50.0, 5.0))
+    assert bs_curve.ctrlpts == [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
     assert bs_curve.dimension == 2
 
 
 def test_bspline_curve_knot_vector(bs_curve):
-    assert bs_curve.knotvector == (0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0)
+    assert bs_curve.knotvector == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
 
 def test_bspline_curve2d_eval1(bs_curve):

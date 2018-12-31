@@ -116,7 +116,7 @@ def test_nurbs_surface_ctrlpts1():
     surf.ctrlptsw = ctrlpts
 
     # Check assignment
-    assert surf.ctrlpts2d[1][1] == (2.0, 2.0, 14.0, 1.0)
+    assert surf.ctrlpts2d[1][1] == [2.0, 2.0, 14.0, 1.0]
     assert surf.dimension == 3
 
 
@@ -141,7 +141,7 @@ def test_nurbs_surface_ctrlpts2():
     surf.ctrlptsw = ctrlpts
 
     # Check assignment
-    assert surf.ctrlpts2d[2][1] == (3.0, 2.0, 17.0, 1.0)
+    assert surf.ctrlpts2d[2][1] == [3.0, 2.0, 17.0, 1.0]
 
 
 def test_nurbs_surface_ctrlpts3():
@@ -165,7 +165,7 @@ def test_nurbs_surface_ctrlpts3():
     surf.ctrlptsw = ctrlpts
 
     # Check assignment
-    assert surf.ctrlpts[4] == (4.0, 4.0, 28.0)
+    assert surf.ctrlpts[4] == [4.0, 4.0, 28.0]
 
 
 def test_nurbs_surface_weights1():
@@ -262,7 +262,7 @@ def test_nurbs_surface_knot_vector_u():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
 
-    assert surf.knotvector_u == (0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0)
+    assert surf.knotvector_u == [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]
 
 
 def test_nurbs_surface_knot_vector_v():
@@ -287,7 +287,7 @@ def test_nurbs_surface_knot_vector_v():
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]
     surf.knotvector_v = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
 
-    assert surf.knotvector_v == (0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+    assert surf.knotvector_v == [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
 
 
 def test_nurbs_surface_name_property(nurbs_surface):

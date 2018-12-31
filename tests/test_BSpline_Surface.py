@@ -83,20 +83,20 @@ def test_bspline_surface_degree_v(bs_surface2):
 
 
 def test_bspline_surface_ctrlpts1(bs_surface2):
-    assert bs_surface2.ctrlpts2d[1][1] == (2.0, 2.0, 14.0)
+    assert bs_surface2.ctrlpts2d[1][1] == [2.0, 2.0, 14.0]
     assert bs_surface2.dimension == 3
 
 
 def test_bspline_surface_ctrlpts2(bs_surface2):
-    assert bs_surface2.ctrlpts2d[2][1] == (3.0, 2.0, 17.0)
+    assert bs_surface2.ctrlpts2d[2][1] == [3.0, 2.0, 17.0]
 
 
 def test_bspline_surface_knot_vector_u(bs_surface):
-    assert bs_surface.knotvector_u == (0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0)
+    assert bs_surface.knotvector_u == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
 
 def test_bspline_surface_knot_vector_v(bs_surface):
-    assert bs_surface.knotvector_v == (0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0)
+    assert bs_surface.knotvector_v == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
 
 def test_bspline_surface_eval1(bs_surface):

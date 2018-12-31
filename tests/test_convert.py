@@ -43,7 +43,7 @@ def test_convert_curve():
     assert not curve_bs.rational
     assert curve_nurbs.rational
     assert curve_nurbs.evalpts == res
-    assert curve_nurbs.weights == tuple(res_weights)
+    assert curve_nurbs.weights == res_weights
 
 
 def test_convert_surface():
@@ -73,4 +73,4 @@ def test_convert_surface():
     assert not surf_bs.rational
     assert surf_nurbs.rational
     assert surf_nurbs.evalpts == res
-    assert surf_nurbs.weights == tuple(res_weights)
+    assert surf_nurbs.weights == res_weights

@@ -79,10 +79,7 @@ class Curve(abstract.Curve):
         :setter: Sets the control points
         :type: list
         """
-        ret_list = []
-        for pt in self._control_points:
-            ret_list.append(tuple(pt))
-        return tuple(ret_list)
+        return self._control_points
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -151,7 +148,6 @@ class Curve(abstract.Curve):
 
             # Get the evaluated points
             curve_points = curve.evalpts
-
         """
         # Call parent method
         super(Curve, self).evaluate(**kwargs)
@@ -201,7 +197,7 @@ class Curve(abstract.Curve):
         :param param_list: list of parameters
         :type param_list: list, tuple
         :return: evaluated surface points at the input parameters
-        :rtype: tuple
+        :rtype: list
         """
         # Call parent method
         super(Curve, self).evaluate_list(param_list)
@@ -214,7 +210,7 @@ class Curve(abstract.Curve):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
-        return tuple(res)
+        return res
 
     # Evaluates the curve derivative
     def derivatives(self, u, order=0, **kwargs):
@@ -427,10 +423,7 @@ class Surface(abstract.Surface):
         :setter: Sets the control points
         :type: list
         """
-        ret_list = []
-        for pt in self._control_points:
-            ret_list.append(tuple(pt))
-        return tuple(ret_list)
+        return self._control_points
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -495,13 +488,7 @@ class Surface(abstract.Surface):
         :setter: Sets the control points as a 2-dimensional array in [u][v] format
         :type: list
         """
-        ret_list = []
-        for u in range(0, self.ctrlpts_size_u):
-            ret_list_v = []
-            for v in range(0, self.ctrlpts_size_v):
-                ret_list_v.append(tuple(self._control_points2D[u][v]))
-            ret_list.append(tuple(ret_list_v))
-        return tuple(ret_list)
+        return self._control_points2D
 
     @ctrlpts2d.setter
     def ctrlpts2d(self, value):
@@ -666,7 +653,7 @@ class Surface(abstract.Surface):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
-        return tuple(res)
+        return res
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u, v, order=0, **kwargs):
@@ -873,10 +860,7 @@ class Volume(abstract.Volume):
         :setter: Sets the control points
         :type: list
         """
-        ret_list = []
-        for pt in self._control_points:
-            ret_list.append(tuple(pt))
-        return tuple(ret_list)
+        return self._control_points
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -1014,7 +998,7 @@ class Volume(abstract.Volume):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
-        return tuple(res)
+        return res
 
 
 def save_pickle(data_dict, file_name):

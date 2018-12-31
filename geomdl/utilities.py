@@ -20,7 +20,7 @@ def evaluate_bounding_box(ctrlpts):
     :param ctrlpts: points
     :type ctrlpts: list, tuple
     :return: bounding box in the format [min, max]
-    :rtype: list
+    :rtype: tuple
     """
     # Estimate dimension from the first element of the control points
     dimension = len(ctrlpts[0])
@@ -36,7 +36,7 @@ def evaluate_bounding_box(ctrlpts):
             if arr[0] > arr[1]:
                 bbmax[i] = arr[0]
 
-    return [tuple(bbmin), tuple(bbmax)]
+    return tuple(bbmin), tuple(bbmax)
 
 
 # Changes linearly ordered list of points into a zig-zag shape
@@ -313,7 +313,7 @@ def polygon_triangulate(tri_idx, *args):
     :param tri_idx: triangle numbering start value
     :type tri_idx: int
     :param args: list of Vertex objects
-    :type args: tuple
+    :type args: elements.Vertex
     :return: list of Triangle objects
     :rtype: list
     """
@@ -441,7 +441,7 @@ def make_quadtree(points, size_u, size_v, **kwargs):
                     temp.append(translated_point)
             qtree.append(tuple(temp))
 
-    # Return the array generated.
+    # Return generated quad-tree
     return tuple(qtree)
 
 

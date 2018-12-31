@@ -286,9 +286,9 @@ def test_export_import_txt_curve(bspline_curve3d):
 
     res_array = []
     for res in result:
-        res_array.append(tuple(res))
+        res_array.append(res)
 
-    assert tuple(res_array) == bspline_curve3d.ctrlpts
+    assert res_array == bspline_curve3d.ctrlpts
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
@@ -306,9 +306,9 @@ def test_export_import_txt_surface1(bspline_surface):
 
     res_array = []
     for res in result:
-        res_array.append(tuple(res))
+        res_array.append(res)
 
-    assert tuple(res_array) == bspline_surface.ctrlpts
+    assert res_array == bspline_surface.ctrlpts
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
@@ -326,9 +326,9 @@ def test_export_import_txt_surface2(bspline_surface):
 
     res_array = []
     for res in result:
-        res_array.append(tuple(res))
+        res_array.append(res)
 
-    assert tuple(res_array) == bspline_surface.ctrlpts
+    assert res_array == bspline_surface.ctrlpts
     assert size_u == bspline_surface.ctrlpts_size_u
     assert size_v == bspline_surface.ctrlpts_size_v
 
@@ -543,9 +543,9 @@ def test_compatibility_generate_ctrlptsw2d_file2(nurbs_surface):
 
     res_array = []
     for res in ctrlptsw:
-        res_array.append(tuple(res))
+        res_array.append(res)
 
-    assert nurbs_surface.ctrlptsw == tuple(res_array)
+    assert nurbs_surface.ctrlptsw == res_array
     assert nurbs_surface.ctrlpts_size_u == size_u
     assert nurbs_surface.ctrlpts_size_v == size_v
 
