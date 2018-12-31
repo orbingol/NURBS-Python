@@ -542,7 +542,7 @@ def normal(obj, params, **kwargs):
         if isinstance(params[0], float):
             return _operations.normal_surface_single(obj, params, normalize)
         else:
-            return _operations._normal_surface_single_list(obj, params, normalize)
+            return _operations.normal_surface_single_list(obj, params, normalize)
 
 
 def binormal(obj, params, **kwargs):

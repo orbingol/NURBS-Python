@@ -246,7 +246,7 @@ def normal_surface_single(obj, uv, normalize):
     return tuple(point), tuple(vector)
 
 
-def _normal_surface_single_list(obj, param_list, normalize):
+def normal_surface_single_list(obj, param_list, normalize):
     """ Evaluates the surface normal vectors at the given list of parameter values.
 
     :param obj: input surface
