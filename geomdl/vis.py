@@ -143,6 +143,21 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         # type: (float) -> None
         self._ctrlpts_offset = float(offset_value)
 
+    def size(self, plot_type):
+        # type: (str) -> int
+        """ Returns the number of plots defined by the plot type.
+
+        :param plot_type: plot type
+        :type plot_type: str
+        :return: number of plots defined by the plot type
+        :rtype: int
+        """
+        count = 0
+        for plot in self._plots:
+            if plot['type'] == plot_type:
+                count += 1
+        return count
+
     def animate(self, **kwargs):
         # type: (**Any) -> None
         """ Generates animated plots (if supported).
