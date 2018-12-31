@@ -186,7 +186,7 @@ class VisVolume(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
-                temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=plot['color'])
+                temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor_pts)
 
             # Plot evaluated points
