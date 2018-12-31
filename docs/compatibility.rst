@@ -8,6 +8,7 @@ sets into NURBS-Python compatible ones.
 The following example illustrates the usage of :doc:`compatibility <module_compatibility>` module:
 
 .. code-block:: python
+    :linenos:
 
     from geomdl import NURBS
     from geomdl import utilities as utils

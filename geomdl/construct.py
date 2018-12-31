@@ -216,6 +216,7 @@ def extract_isosurface(pvol):
     The following example illustrates one of the usage scenarios:
 
     .. code-block:: python
+        :linenos:
 
         from geomdl import construct, multi
         from geomdl.visualization import VisMPL

@@ -5,6 +5,7 @@ The ``tessellate`` module provides tessellation algorithms for surfaces. The fol
 scenario of the tessellation algorithms with surfaces.
 
 .. code-block:: python
+    :linenos:
 
     from geomdl import NURBS
     from geomdl import tessellate

@@ -141,6 +141,7 @@ directory.
 After the successful execution of the command, the you can import and use the compiled library as follows:
 
 .. code-block:: python
+    :linenos:
 
     # Importing NURBS module
     from geomdl.core import NURBS

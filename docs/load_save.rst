@@ -19,6 +19,7 @@ any special library.
 The following example demonstrates the save functionality on a curve:
 
 .. code-block:: python
+    :linenos:
 
     from geomdl import BSpline
     from geomdl import utilities
@@ -42,6 +43,7 @@ The following example demonstrates the save functionality on a curve:
 The saved curve can be loaded from the file with the following simple code segment:
 
 .. code-block:: python
+    :linenos:
 
     from geomdl import BSpline
 
@@ -55,6 +57,7 @@ Since the load-save functionality implements Python's ``pickle`` module, the sav
 without using the NURBS-Python library.
 
 .. code-block:: python
+    :linenos:
 
     import pickle
 

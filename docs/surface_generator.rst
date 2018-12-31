@@ -12,6 +12,7 @@ they are documented under :doc:`Core Libraries <modules>`.
 The following example illustrates a sample usage of the B-Spline surface generator:
 
 .. code-block:: python
+    :linenos:
 
     from geomdl import CPGen
     from geomdl import BSpline

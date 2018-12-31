@@ -21,6 +21,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     The following code examples illustrate importing different types of text files for curves and surfaces:
 
     .. code-block:: python
+        :linenos:
 
         # Import curve control points from a text file
         curve_ctrlpts = exchange.import_txt(file_name="control_points.txt")
@@ -51,6 +52,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     The following code examples illustrate the usage of the keyword arguments discussed above.
 
     .. code-block:: python
+        :linenos:
 
         # Import curve control points from a text file delimited with space
         curve_ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
@@ -125,6 +127,7 @@ def import_csv(file_name, **kwargs):
     illustrates the usage of ``separator`` keyword argument.
 
     .. code-block:: python
+        :linenos:
 
         # By default, import_csv uses 'comma' as the value separator
         ctrlpts = exchange.import_csv("control_points.csv")

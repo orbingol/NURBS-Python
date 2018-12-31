@@ -374,6 +374,7 @@ class Surface(abstract.Surface):
     The following code segment illustrates the usage of Surface class:
 
     .. code-block:: python
+        :linenos:
 
         from geomdl import BSpline
 
@@ -441,6 +442,7 @@ class Surface(abstract.Surface):
         The following example can be used to traverse 2D control points:
 
         .. code-block:: python
+            :linenos:
 
             # Create a BSpline surface
             surf_bs = BSpline.Surface()
@@ -580,6 +582,7 @@ class Surface(abstract.Surface):
         The following examples illustrate the usage of the keyword arguments.
 
         .. code-block:: python
+            :linenos:
 
             # Start evaluating in range u=[0, 0.7] and v=[0.1, 1]
             surf.evaluate(stop_u=0.7, start_v=0.1)

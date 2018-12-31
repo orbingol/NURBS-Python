@@ -12,6 +12,7 @@ The following example script illustrates creating a 3-dimensional Bézier curve 
 the name of the file to be saved and ``plot`` flag controls the visibility of the plot window.
 
 .. code-block:: python
+    :linenos:
 
     import os
     from geomdl import BSpline

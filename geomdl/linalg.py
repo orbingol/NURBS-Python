@@ -223,6 +223,7 @@ def vector_mean(*args):
     integers or floating point numbers.
 
     .. code-block:: python
+        :linenos:
 
         # Import geomdl.utilities module
         from geomdl import utilities

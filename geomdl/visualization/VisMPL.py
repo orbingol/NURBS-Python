@@ -43,6 +43,7 @@ class VisConfig(vis.VisConfigAbstract):
     The following example illustrates the usage of the configuration class.
 
     .. code-block:: python
+        :linenos:
 
         # Create a curve (or a surface) instance
         curve = NURBS.Curve()

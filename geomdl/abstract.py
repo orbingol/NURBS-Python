@@ -342,6 +342,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
     Code segment below illustrates a possible implementation of Curve abstract base class:
 
     .. code-block:: python
+        :linenos:
 
         from geomdl import abstract
 
@@ -564,6 +565,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         The following example illustrates a way to use a NumPy array with this method.
 
         .. code-block:: python
+            :linenos:
 
             # Import numpy
             import numpy as np
@@ -625,6 +627,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         in the format described below:
 
         .. code-block:: python
+            :linenos:
 
             [
                 dict(  # line plot 1
@@ -820,6 +823,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
     Code segment below illustrates a possible implementation of Surface abstract base class:
 
     .. code-block:: python
+        :linenos:
 
         from geomdl import abstract
 
@@ -1466,6 +1470,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         in the format described below:
 
         .. code-block:: python
+            :linenos:
 
             [
                 dict(  # line plot 1
@@ -1729,6 +1734,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
     Code segment below illustrates a possible implementation of Volume abstract base class:
 
     .. code-block:: python
+        :linenos:
 
         from geomdl import abstract
 
@@ -2515,6 +2521,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         in the format described below:
 
         .. code-block:: python
+            :linenos:
 
             [
                 dict(  # line plot 1
