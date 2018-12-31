@@ -617,6 +617,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
             * ``extras``: adds line plots to the figure. *Default: None*
+            * ``animate``: activates animation (if supported). *Default: False*
 
         ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -654,6 +655,7 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
         extra_plots = kwargs.get('extras', None)
+        animate_plot = kwargs.get('animate', False)
 
         # Check all parameters are set
         self._check_variables()
@@ -691,8 +693,11 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
                     midpt = self.evaluate_single(midprm)
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
-        # Plot the curve
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        # Display the figure
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -1459,6 +1464,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
             * ``extras``: adds line plots to the figure. *Default: None*
+            * ``animate``: activates animation (if supported). *Default: False*
             * ``colormap``: sets the colormap of the surface
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
@@ -1502,6 +1508,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
         extra_plots = kwargs.get('extras', None)
+        animate_plot = kwargs.get('animate', False)
 
         # Get colormap and convert to a list
         surf_cmap = kwargs.get('colormap', None)
@@ -1572,8 +1579,11 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
                     midpt = self.evaluate_single((midprm_u, midprm_v))
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
-        # Plot the surface
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+        # Display the figure
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def tessellate(self, **kwargs):
         """ Tessellates the surface.
@@ -2515,6 +2525,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``filename``: saves the plot with the input name
             * ``plot``: a flag to control displaying the plot window. *Default: True*
             * ``extras``: adds line plots to the figure. *Default: None*
+            * ``animate``: activates animation (if supported). *Default: False*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
             * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
@@ -2555,6 +2566,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
         extra_plots = kwargs.get('extras', None)
+        animate_plot = kwargs.get('animate', False)
 
         # Check all parameters are set
         self._check_variables()
@@ -2602,8 +2614,11 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
                     midpt = self.evaluate_single((midprm_u, midprm_v, midprm_w))
                     self._vis_component.add(ptsarr=[midpt], plot_type=vo_clean)
 
-        # Plot the volume
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        # Display the figure
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):

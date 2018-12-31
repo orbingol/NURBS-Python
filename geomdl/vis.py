@@ -143,6 +143,16 @@ class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
         # type: (float) -> None
         self._ctrlpts_offset = float(offset_value)
 
+    def animate(self, **kwargs):
+        # type: (**Any) -> None
+        """ Generates animated plots (if supported).
+
+        If the implemented visualization module supports animations, this function will create an animated figure.
+        Otherwise, it will call :py:meth:`render` method by default.
+        """
+        # Call render() by default
+        self.render(**kwargs)
+
     @abc.abstractmethod
     def render(self, **kwargs):
         # type: (**Any) -> None
