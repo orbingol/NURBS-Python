@@ -16,13 +16,16 @@ from . import _evaluators
 
 
 class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for implementations of fundamental spline algorithms.
+    """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
 
-    The methods ``evaluate`` and ``derivative`` is intended to be used for computation over a range of values.
-    The suggested usage of ``evaluate_single`` and ``derivative_single`` methods are computation of a single value.
+    **Abstract Methods**:
+
+    * ``evaluate`` is used for computation of the complete spline shape
+    * ``evaluate_single`` is used for computation of one single point on the spline shape
+    * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
 
     Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see ``helpers`` module for details.
+    function implementation. Please see :py:mod:`helpers` module for details.
     """
 
     def __init__(self, **kwargs):
@@ -31,7 +34,7 @@ class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def name(self):
-        """ Evaluator name (as a string).
+        """ Evaluator name.
 
         :getter: Gets the name of the evaluator
         :type: str
@@ -40,34 +43,65 @@ class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def evaluate_single(self, **kwargs):
-        """ Abstract method for computation of a single point at a single parameter. """
+        """ Abstract method for computation of a single point at a single parameter.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Abstract method for computation of points over a range of parameters. """
+        """ Abstract method for computation of points over a range of parameters.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
     @abc.abstractmethod
     def derivatives_single(self, **kwargs):
-        """ Abstract method for computation of derivatives at a single parameter. """
+        """ Abstract method for computation of derivatives at a single parameter.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
 
-class AdvancedEvaluator(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class for implementations of advanced spline algorithms. """
+class AbstractEvaluatorExtended(six.with_metaclass(abc.ABCMeta, AbstractEvaluator)):
+    """ Abstract base class for implementations of extended spline algorithms.
+
+    **Abstract Methods**:
+
+    * ``evaluate`` is used for computation of the complete spline shape
+    * ``evaluate_single`` is used for computation of one single point on the spline shape
+    * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
+    * ``insert_knot`` is used for implementation of knot insertion algorithm
+
+    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
+    function implementation. Please see :py:mod:`helpers` module for details.
+    """
 
     def __init__(self, **kwargs):
-        self._span_func = kwargs.get('find_span_func', None)
+        super(AbstractEvaluatorExtended, self).__init__(**kwargs)
 
     @abc.abstractmethod
     def insert_knot(self, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm. """
+        """ Abstract method for implementation of knot insertion algorithm.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
 
-class CurveEvaluator(AbstractEvaluator, AdvancedEvaluator):
-    """ Sequential B-Spline curve evaluation algorithms.
+class CurveEvaluator(AbstractEvaluatorExtended):
+    """ Sequential curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -132,9 +166,8 @@ class CurveEvaluator(AbstractEvaluator, AdvancedEvaluator):
 
         return eval_points
 
-    # Evaluates the curve derivative using "CurveDerivsAlg1" algorithm
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order curve derivatives at a single parameter. """
+        """ Evaluates the derivatives at the input parameter. """
         # Call parent method
         super(CurveEvaluator, self).derivatives_single(**kwargs)
 
@@ -162,7 +195,7 @@ class CurveEvaluator(AbstractEvaluator, AdvancedEvaluator):
         return CK
 
     def insert_knot(self, **kwargs):
-        """ Insert knot multiple times at a single parameter. """
+        """ Inserts a knot multiple times. """
         # Call parent method
         super(CurveEvaluator, self).insert_knot(**kwargs)
 
@@ -223,7 +256,7 @@ class CurveEvaluator(AbstractEvaluator, AdvancedEvaluator):
 
 
 class CurveEvaluator2(CurveEvaluator):
-    """ Sequential B-Spline curve evaluation algorithms (alternative).
+    """ Sequential curve evaluation algorithms (alternative).
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -240,7 +273,6 @@ class CurveEvaluator2(CurveEvaluator):
         super(CurveEvaluator2, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    # Computes the control points of all derivative curves up to and including the {degree}-th derivative
     @staticmethod
     def derivatives_ctrlpts(**kwargs):
         """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
@@ -274,9 +306,8 @@ class CurveEvaluator2(CurveEvaluator):
         # Return a 2-dimensional list of control points
         return PK
 
-    # Evaluates the curve derivative using "CurveDerivsAlg2" algorithm
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order curve derivatives at a single parameter. """
+        """ Evaluates the derivatives at the input parameter. """
         # Call parent method
         super(CurveEvaluator2, self).derivatives_single(**kwargs)
 
@@ -312,8 +343,8 @@ class CurveEvaluator2(CurveEvaluator):
         return CK
 
 
-class NURBSCurveEvaluator(CurveEvaluator):
-    """ Sequential NURBS curve evaluation algorithms.
+class CurveEvaluatorRational(CurveEvaluator):
+    """ Sequential rational curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -327,15 +358,15 @@ class NURBSCurveEvaluator(CurveEvaluator):
     """
 
     def __init__(self, **kwargs):
-        super(NURBSCurveEvaluator, self).__init__(**kwargs)
+        super(CurveEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate(self, **kwargs):
-        """ Evaluates the curve. """
+        """ Evaluates the rational curve. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.1
-        crvptw = super(NURBSCurveEvaluator, self).evaluate(**kwargs)
+        crvptw = super(CurveEvaluatorRational, self).evaluate(**kwargs)
 
         # Divide by weight
         eval_points = []
@@ -346,12 +377,12 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order curve derivatives at a single parameter. """
+        """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        CKw = super(NURBSCurveEvaluator, self).derivatives_single(**kwargs)
+        CKw = super(CurveEvaluatorRational, self).derivatives_single(**kwargs)
 
         # Algorithm A4.2
         CK = [[0.0 for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
@@ -366,8 +397,8 @@ class NURBSCurveEvaluator(CurveEvaluator):
         return CK
 
 
-class SurfaceEvaluator(AbstractEvaluator, AdvancedEvaluator):
-    """ Sequential B-Spline surface evaluation algorithms.
+class SurfaceEvaluator(AbstractEvaluatorExtended):
+    """ Sequential surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -443,7 +474,7 @@ class SurfaceEvaluator(AbstractEvaluator, AdvancedEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order surface derivatives at a (u,v) parameter. """
+        """ Evaluates the derivatives at the input parameter. """
         # Call parent method
         super(SurfaceEvaluator, self).derivatives_single(**kwargs)
 
@@ -483,6 +514,7 @@ class SurfaceEvaluator(AbstractEvaluator, AdvancedEvaluator):
         return SKL
 
     def insert_knot(self, direction, **kwargs):
+        """ Inserts a knot multiple times. """
         # Call parent method
         super(SurfaceEvaluator, self).insert_knot(**kwargs)
 
@@ -496,7 +528,7 @@ class SurfaceEvaluator(AbstractEvaluator, AdvancedEvaluator):
 
 
 class SurfaceEvaluator2(SurfaceEvaluator):
-    """ Sequential B-Spline surface evaluation algorithms.
+    """ Sequential surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -576,12 +608,8 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         return PKL
 
-    # Evaluates the surface derivatives using "SurfaceDerivsAlg2"
     def derivatives_single(self, **kwargs):
-        """ Evaluates the n-th order surface derivatives at (u,v) parameters.
-
-        Output is SKL[k][l], derivative of the surface k times with respect to U and l times with respect to V
-        """
+        """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         param = kwargs.get('parameter')
         degree = kwargs.get('degree')
@@ -623,8 +651,8 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         return SKL
 
 
-class NURBSSurfaceEvaluator(SurfaceEvaluator):
-    """ Sequential NURBS surface evaluation algorithms.
+class SurfaceEvaluatorRational(SurfaceEvaluator):
+    """ Sequential rational surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
@@ -638,15 +666,15 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
     """
 
     def __init__(self, **kwargs):
-        super(NURBSSurfaceEvaluator, self).__init__(**kwargs)
+        super(SurfaceEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate(self, **kwargs):
-        """ Evaluates the surface. """
+        """ Evaluates the rational surface. """
         dimension = kwargs.get('dimension')
 
         # Algorithm A4.3
-        cptw = super(NURBSSurfaceEvaluator, self).evaluate(**kwargs)
+        cptw = super(SurfaceEvaluatorRational, self).evaluate(**kwargs)
 
         # Divide by weight
         eval_points = []
@@ -657,12 +685,12 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
-        """ Evaluates n-th order surface derivatives at a (u, v) parameter. """
+        """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        SKLw = super(NURBSSurfaceEvaluator, self).derivatives_single(**kwargs)
+        SKLw = super(SurfaceEvaluatorRational, self).derivatives_single(**kwargs)
 
         # Generate an empty list of derivatives
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
@@ -692,7 +720,7 @@ class NURBSSurfaceEvaluator(SurfaceEvaluator):
 
 
 class VolumeEvaluator(AbstractEvaluator):
-    """ Sequential B-Spline volume evaluation algorithms.
+    """ Sequential volume evaluation algorithms.
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -722,7 +750,7 @@ class VolumeEvaluator(AbstractEvaluator):
         return spt[0]
 
     def evaluate(self, **kwargs):
-        """ Evaluates the shape. """
+        """ Evaluates the volume. """
         # Call parent method
         super(VolumeEvaluator, self).evaluate(**kwargs)
 
@@ -767,11 +795,12 @@ class VolumeEvaluator(AbstractEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
+        """ Evaluates the derivative at the given parametric coordinate. """
         pass
 
 
-class NURBSVolumeEvaluator(VolumeEvaluator):
-    """ Sequential NURBS volume evaluation algorithms.
+class VolumeEvaluatorRational(VolumeEvaluator):
+    """ Sequential rational volume evaluation algorithms.
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -779,14 +808,14 @@ class NURBSVolumeEvaluator(VolumeEvaluator):
     """
 
     def __init__(self, **kwargs):
-        super(NURBSVolumeEvaluator, self).__init__(**kwargs)
+        super(VolumeEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     def evaluate(self, **kwargs):
-        """ Evaluates the surface. """
+        """ Evaluates the rational volume. """
         dimension = kwargs.get('dimension')
 
-        cptw = super(NURBSVolumeEvaluator, self).evaluate(**kwargs)
+        cptw = super(VolumeEvaluatorRational, self).evaluate(**kwargs)
 
         # Divide by weight
         eval_points = []
@@ -797,4 +826,5 @@ class NURBSVolumeEvaluator(VolumeEvaluator):
         return eval_points
 
     def derivatives_single(self, **kwargs):
+        """ Evaluates the derivatives at the input parameter. """
         pass

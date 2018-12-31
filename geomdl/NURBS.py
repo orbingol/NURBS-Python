@@ -52,7 +52,7 @@ class Curve(BSpline.Curve):
     def __init__(self, **kwargs):
         super(Curve, self).__init__(**kwargs)
         self._rational = True
-        self._evaluator = evaluators.NURBSCurveEvaluator(find_span_func=self._span_func)
+        self._evaluator = evaluators.CurveEvaluatorRational(find_span_func=self._span_func)
         # Variables for caching
         self.init_cache()
 
@@ -219,7 +219,7 @@ class Surface(BSpline.Surface):
     def __init__(self, **kwargs):
         super(Surface, self).__init__(**kwargs)
         self._rational = True
-        self._evaluator = evaluators.NURBSSurfaceEvaluator(find_span_func=self._span_func)
+        self._evaluator = evaluators.SurfaceEvaluatorRational(find_span_func=self._span_func)
         # Variables for caching
         self.init_cache()
 
@@ -381,7 +381,7 @@ class Volume(BSpline.Volume):
     def __init__(self, **kwargs):
         super(Volume, self).__init__(**kwargs)
         self._rational = True
-        self._evaluator = evaluators.NURBSVolumeEvaluator(find_span_func=self._span_func)
+        self._evaluator = evaluators.VolumeEvaluatorRational(find_span_func=self._span_func)
         # Variables for caching
         self.init_cache()
 
