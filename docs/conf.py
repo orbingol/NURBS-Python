@@ -42,6 +42,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.graphviz',
               'sphinx.ext.inheritance_diagram']
 
+# Inheritance diagram configuration
+inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
+
 # List of modules to be mocked
 autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
 
