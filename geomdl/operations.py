@@ -13,7 +13,6 @@ import warnings
 from . import abstract
 from . import multi
 from . import helpers
-from . import utilities
 from . import evaluators
 from . import linalg
 from . import _operations
@@ -32,15 +31,18 @@ def split_curve(obj, u, **kwargs):
     :return: a list of curves as the split pieces of the initial curve
     :rtype: multi.CurveContainer
     """
+    # Validate input
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of any Curve class")
+        raise TypeError("Input shape must be an instance of abstract.Curve class")
+
+    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
+        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
+
+    if u == obj.knotvector[0] or u == obj.knotvector[-1]:
+        raise ValueError("Cannot split on the corner points")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    # Validate input data
-    if u == obj.knotvector[0] or u == obj.knotvector[-1]:
-        raise ValueError("Cannot split on the corner points")
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), u) - obj.degree + 1
@@ -97,7 +99,7 @@ def decompose_curve(obj, **kwargs):
     :rtype: multi.CurveContainer
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of any Curve class")
+        raise TypeError("Input shape must be an instance of abstract.Curve class")
 
     curve_list = multi.CurveContainer()
     curve = copy.deepcopy(obj)
@@ -184,7 +186,7 @@ def add_dimension(obj, **kwargs):
     :rtype: BSpline.Curve or NURBS.Curve
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of any Curve class")
+        raise TypeError("Input shape must be an instance of abstract.Curve class")
 
     # Keyword arguments
     inplace = kwargs.get('inplace', False)
@@ -222,6 +224,9 @@ def split_surface_u(obj, t, **kwargs):
     # Validate input
     if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of abstract.Surface class")
+
+    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
+        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
 
     if t == obj.knotvector_u[0] or t == obj.knotvector_u[-1]:
         raise ValueError("Cannot split on the edge")
@@ -293,6 +298,9 @@ def split_surface_v(obj, t, **kwargs):
     # Validate input
     if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of abstract.Surface class")
+
+    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
+        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
 
     if t == obj.knotvector_v[0] or t == obj.knotvector_v[-1]:
         raise ValueError("Cannot split on the edge")
