@@ -325,7 +325,8 @@ class CurveContainer(AbstractContainer):
         * ``cpcolor``: sets the color of the control points grid
         * ``evalcolor``: sets the color of the surface
         * ``filename``: saves the plot with the input name
-        * ``plot``: a flag to control displaying the plot window. *Default: True*
+        * ``plot``: controls plot window visibility. *Default: True*
+        * ``animate``: activates animation (if supported). *Default: False*
         * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
@@ -347,6 +348,7 @@ class CurveContainer(AbstractContainer):
         evalcolor = kwargs.get('evalcolor')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
 
@@ -376,8 +378,11 @@ class CurveContainer(AbstractContainer):
             self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)", color=color[0], plot_type='ctrlpts')
             self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
 
-        # Render curves
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        # Display the figures
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
 class SurfaceContainer(AbstractContainer):
@@ -517,7 +522,8 @@ class SurfaceContainer(AbstractContainer):
             * ``cpcolor``: sets the color of the control points grids
             * ``evalcolor``: sets the color of the surface
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``plot``: controls plot window visibility. *Default: True*
+            * ``animate``: activates animation (if supported). *Default: False*
             * ``colormap``: sets the colormap of the surfaces
             * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
 
@@ -547,6 +553,7 @@ class SurfaceContainer(AbstractContainer):
         trimcolor = kwargs.get('trimcolor', 'black')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
 
@@ -617,8 +624,11 @@ class SurfaceContainer(AbstractContainer):
                                         name="Trim Curve " + str(itc + 1),
                                         color=trimcolor, plot_type='trimcurve')
 
-        # Render surfaces
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
+        # Display the figures
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
 class VolumeContainer(SurfaceContainer):
@@ -719,7 +729,8 @@ class VolumeContainer(SurfaceContainer):
             * ``cpcolor``: sets the color of the control points plot
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. *Default: True*
+            * ``plot``: controls plot window visibility. *Default: True*
+            * ``animate``: activates animation (if supported). *Default: False*
             * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
@@ -743,6 +754,7 @@ class VolumeContainer(SurfaceContainer):
         evalcolor = kwargs.get('evalcolor')
         filename = kwargs.get('filename', None)
         plot_visible = kwargs.get('plot', True)
+        animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
 
@@ -784,7 +796,11 @@ class VolumeContainer(SurfaceContainer):
                 polygrid = voxelize.generate_faces(grid)
                 self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type='evalpts')
 
-        self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+        # Display the figures
+        if animate_plot:
+            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+        else:
+            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
 def select_color(cpcolor, evalcolor, idx=0):

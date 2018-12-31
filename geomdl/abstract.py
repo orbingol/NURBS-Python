@@ -615,9 +615,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``evalcolor``: sets the color of the curve
             * ``bboxcolor``: sets the color of the bounding box
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. *Default: True*
-            * ``extras``: adds line plots to the figure. *Default: None*
+            * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
+            * ``extras``: adds line plots to the figure. *Default: None*
 
         ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
@@ -1462,9 +1462,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``evalcolor``: sets the color of the surface
             * ``trimcolor``: sets the color of the trim curves
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. *Default: True*
-            * ``extras``: adds line plots to the figure. *Default: None*
+            * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
+            * ``extras``: adds line plots to the figure. *Default: None*
             * ``colormap``: sets the colormap of the surface
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
@@ -2523,8 +2523,7 @@ class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
             * ``cpcolor``: sets the color of the control points
             * ``evalcolor``: sets the color of the volume
             * ``filename``: saves the plot with the input name
-            * ``plot``: a flag to control displaying the plot window. *Default: True*
-            * ``extras``: adds line plots to the figure. *Default: None*
+            * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
