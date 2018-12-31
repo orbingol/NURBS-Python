@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.0b4 released on 2018-12-31
+
+* Added `abstract.Geometry` and `abstract.SplineGeometry` classes
+* Improved `multi` module reusability
+* Added animate option to visualization component
+* Minor bug fixes and staability improvements
+* Documentation updates
+
 ## v5.0b3 released on 2018-12-28
 
 * Added [Jinja2](http://jinja.pocoo.org/) template support to JSON, YAML and CFG importers
