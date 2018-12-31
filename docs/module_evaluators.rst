@@ -6,6 +6,11 @@ that are used to evaluate curves, surfaces and volumes, take derivatives, knot a
 Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
 or extend existing ones.
 
+Inheritance Diagram
+===================
+
+.. inheritance-diagram:: geomdl.evaluators
+
 Abstract Base
 =============
 
