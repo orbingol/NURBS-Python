@@ -15,6 +15,7 @@ try:
     from mpl_toolkits.mplot3d import Axes3D
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import matplotlib.pyplot as plt
+    from matplotlib import animation
 except ImportError:
     print("Please install Matplotlib before using VisMPL visualization module")
     exit(0)
@@ -284,6 +285,109 @@ class VisSurface(vis.VisAbstract):
         super(VisSurface, self).__init__(config=config)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
+
+    def animate(self, **kwargs):
+        """ Animates the surface.
+
+        This function only animates the triangulated surface. There will be no other elements, such as control points
+        grid or bounding box.
+
+        Keyword arguments:
+            * ``colormap``: applies colormap to the surface
+
+        Colormaps are a visualization feature of Matplotlib. They can be used for several types of surface plots via
+        the following import statement: ``from matplotlib import cm``
+
+        The following link displays the list of Matplolib colormaps and some examples on colormaps:
+        https://matplotlib.org/tutorials/colors/colormaps.html
+        """
+        # Calling parent render function
+        super(VisSurface, self).render(**kwargs)
+
+        # Colormaps
+        surf_cmaps = kwargs.get('colormap', None)
+
+        # Initialize variables
+        tri_idxs = []
+        vert_coords = []
+        trisurf_params = []
+        frames = []
+        frames_tris = []
+        num_vertices = 0
+
+        # Start plotting of the surface and the control points grid
+        fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
+        ax = Axes3D(fig)
+
+        # Start plotting
+        surf_count = 0
+        for plot in self._plots:
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+                # Use internal triangulation algorithm instead of Qhull (MPL default)
+                verts = plot['ptsarr'][0]
+                tris = plot['ptsarr'][1]
+                # Extract zero-indexed vertex number list
+                tri_idxs += [[ti + num_vertices for ti in tri.vertex_ids_zero] for tri in tris]
+                # Extract vertex coordinates
+                vert_coords += [vert.data for vert in verts]
+                # Update number of vertices
+                num_vertices = len(vert_coords)
+
+                # Determine the color or the colormap of the triangulated plot
+                params = {}
+                if surf_cmaps:
+                    try:
+                        params['cmap'] = surf_cmaps[surf_count]
+                        surf_count += 1
+                    except IndexError:
+                        params['color'] = plot['color']
+                else:
+                    params['color'] = plot['color']
+                trisurf_params += [params for _ in range(len(tris))]
+
+        # Pre-processing for the animation
+        pts = np.array(vert_coords, dtype=self.vconf.dtype)
+
+        # Create the frames (Artists)
+        for tidx, pidx in zip(tri_idxs, trisurf_params):
+            frames_tris.append(tidx)
+            # Create MPL Triangulation object
+            triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=frames_tris)
+            # Use custom Triangulation object and the choice of color/colormap to plot the surface
+            p3df = ax.plot_trisurf(triangulation, pts[:, 2], **pidx)
+            # Add to frames list
+            frames.append([p3df])
+
+        # Create MPL ArtistAnimation
+        ani = animation.ArtistAnimation(fig, frames, interval=100, blit=True, repeat_delay=1000)
+
+        # Remove axes
+        if not self.vconf.display_axes:
+            plt.axis('off')
+
+        # Set axes equal
+        if self.vconf.axes_equal:
+            self.vconf.set_axes_equal(ax)
+
+        # Axis labels
+        if self.vconf.display_labels:
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
+
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        # Display the plot
+        if fig_display:
+            plt.show()
+        else:
+            fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
+
+        # Save the figure
+        self.vconf.save_figure_as(fig, fig_filename)
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
