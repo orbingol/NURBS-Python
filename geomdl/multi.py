@@ -24,12 +24,12 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
 
     This class provides the following properties:
 
-    * :py:meth:`dimension`
-    * :py:meth:`evalpts`
-    * :py:meth:`bbox`
-    * :py:meth:`vis`
-    * :py:meth:`delta`
-    * :py:meth:`sample_size`
+    * :py:attr:`dimension`
+    * :py:attr:`evalpts`
+    * :py:attr:`bbox`
+    * :py:attr:`vis`
+    * :py:attr:`delta`
+    * :py:attr:`sample_size`
     """
 
     def __init__(self, *args, **kwargs):
@@ -88,14 +88,15 @@ class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
     def evalpts(self):
         """ Evaluated points.
 
-        Since there are multiple shapes contained in the Multi objects, the evaluated points will be returned in the
+        Since there are multiple shapes contained in the multi objects, the evaluated points will be returned in the
         format of list of individual evaluated points which is also a list of Cartesian coordinates.
 
         The following code example illustrates these details:
 
         .. code-block:: python
+            :linenos:
 
-            multi_obj = Multi.SurfaceContainer()  # it can be Multi.CurveContainer() too
+            multi_obj = multi.SurfaceContainer()  # it can also be multi.CurveContainer()
             # Add shapes to multi_obj via multi_obj.add() method
             # Then, the following loop will print all the evaluated points of the Multi object
             for idx, mpt in enumerate(multi_obj.evalpts):

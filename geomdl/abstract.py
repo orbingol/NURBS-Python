@@ -20,7 +20,16 @@ from . import voxelize
 
 
 class Geometry(six.with_metaclass(abc.ABCMeta, object)):
-    """ Abstract base class (ABC) for defining geometry elements. """
+    """ Abstract base class for defining geometry elements.
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to
+
+    This class provides the following properties:
+
+    * :py:attr:`name`
+    * :py:attr:`evalpts`
+    """
 
     def __init__(self, **kwargs):
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
@@ -118,7 +127,25 @@ class Geometry(six.with_metaclass(abc.ABCMeta, object)):
 
 
 class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
-    """ Abstract base class (ABC) for defining spline geometries. """
+    """ Abstract base class for defining spline geometries.
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to
+
+    This class provides the following properties:
+
+    * :py:attr:`name`
+    * :py:attr:`rational`
+    * :py:attr:`dimension`
+    * :py:attr:`pdimension`
+    * :py:attr:`degree`
+    * :py:attr:`knotvector`
+    * :py:attr:`ctrlpts`
+    * :py:attr:`evalpts`
+    * :py:attr:`bbox`
+    * :py:attr:`evaluator`
+    * :py:attr:`vis`
+    """
 
     def __init__(self, **kwargs):
         super(SplineGeometry, self).__init__(**kwargs)
@@ -296,9 +323,9 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
 
 
 class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
-    """ Abstract base class (ABC) for defining spline curves.
+    """ Abstract base class for defining spline curves.
 
-    The Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
     ``six`` to set metaclass allows users to use the abstract classes in a correct way.
 
@@ -774,9 +801,9 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
 
 class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
-    """ Abstract base class (ABC) for defining spline surfaces.
+    """ Abstract base class for defining spline surfaces.
 
-    The Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
     ``six`` to set metaclass allows users to use the abstract classes in a correct way.
 
@@ -1683,9 +1710,9 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
 
 
 class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
-    """ Abstract base class (ABC) for spline volumes.
+    """ Abstract base class for defining spline volumes.
 
-    The Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
+    Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
     ``six`` to set metaclass allows users to use the abstract classes in a correct way.
 
