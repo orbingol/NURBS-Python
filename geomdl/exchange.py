@@ -444,7 +444,7 @@ def export_obj_str(surface, **kwargs):
         # Tessellate surface
         srf.tessellate(vertex_spacing=vertex_spacing)
         vertices = srf.tessellator.vertices
-        triangles = srf.tessellator.triangles
+        triangles = srf.tessellator.faces
 
         # Collect vertices
         for vert in vertices:
@@ -538,7 +538,7 @@ def export_stl_str(surface, **kwargs):
 
         # Tessellate surface
         srf.tessellate(vertex_spacing=vertex_spacing)
-        triangles = srf.tessellator.triangles
+        triangles = srf.tessellator.faces
 
         triangles_list += triangles
 
@@ -625,7 +625,7 @@ def export_off_str(surface, **kwargs):
         # Tessellate surface
         srf.tessellate(vertex_spacing=vertex_spacing)
         vertices = srf.tessellator.vertices
-        triangles = srf.tessellator.triangles
+        triangles = srf.tessellator.faces
 
         # Collect vertices
         for vert in vertices:

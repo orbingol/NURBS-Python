@@ -1543,7 +1543,7 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         # Add surface points as vertices and triangles
         if self._vis_component.mconf['evalpts'] == 'triangles':
             self.tessellate()
-            self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.triangles],
+            self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.faces],
                                     name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Visualize the trim curve
@@ -1581,11 +1581,18 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         Keyword arguments are directly passed to the tessellation component.
         """
         # No need to re-tessellate if we have already tessellated the surface
-        if self._tsl_component.vertices is not None and self._tsl_component.triangles is not None:
+        if self._tsl_component.is_tessellated():
             return
 
+        # Remove duplicate elements from the kwargs dictionary
+        kwlist = ["size_u", "size_v", "trims"]
+        for kw in kwlist:
+            if kw in kwargs:
+                kwargs.pop(kw)
+
         # Call tessellation component for vertex and triangle generation
-        self._tsl_component.tessellate(self.evalpts, self.sample_size_u, self.sample_size_v, trims=self.trims, **kwargs)
+        self._tsl_component.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v,
+                                       trims=self.trims, **kwargs)
 
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):

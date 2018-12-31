@@ -608,7 +608,7 @@ class SurfaceContainer(AbstractContainer):
             # Add surface points as vertices and triangles
             if self._vis_component.mconf['evalpts'] == 'triangles':
                 elem.tessellate()
-                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.triangles],
+                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
                                         name=elem.name, color=color[1], plot_type='evalpts')
 
             # Visualize the trim curve

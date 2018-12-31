@@ -16,8 +16,8 @@ class AbstractTessellate(six.with_metaclass(abc.ABCMeta, object)):
     """ Abstract base class for tessellation algorithms. """
 
     def __init__(self, **kwargs):
-        self._vertices = None
-        self._triangles = None
+        self._vertices = []
+        self._faces = []
         self._arguments = None
 
     @property
@@ -25,16 +25,18 @@ class AbstractTessellate(six.with_metaclass(abc.ABCMeta, object)):
         """ Vertex objects generated after tessellation.
 
         :getter: Gets the vertices
+        :type: elements.AbstractEntity
         """
         return self._vertices
 
     @property
-    def triangles(self):
-        """ Triangle objects generated after tessellation.
+    def faces(self):
+        """ Objects generated after tessellation.
 
-        :getter: Gets the triangles
+        :getter: Gets the faces
+        :type: elements.AbstractEntity
         """
-        return self._triangles
+        return self._faces
 
     @property
     def arguments(self):
@@ -54,19 +56,29 @@ class AbstractTessellate(six.with_metaclass(abc.ABCMeta, object)):
         self._arguments = value
 
     def reset(self):
-        """ Clears stored vertices and triangles. """
-        self._vertices = None
-        self._triangles = None
+        """ Clears stored vertices and faces. """
+        self._vertices[:] = []
+        self._faces[:] = []
+
+    def is_tessellated(self):
+        """ Checks if vertices and faces are generated.
+
+        :return: tessellation status
+        :rtype: bool
+        """
+        return all((self.vertices, self.faces))
 
     @abc.abstractmethod
-    def tessellate(self, points, size_u, size_v, **kwargs):
+    def tessellate(self, points, **kwargs):
         """ Abstract method for the implementation of the tessellation algorithm.
 
-        This algorithm should update :py:attr:`~vertices` and :py:attr:`~triangles` properties.
+        This algorithm should update :py:attr:`~vertices` and :py:attr:`~faces` properties.
 
-        :param points: 1-dimensional array of surface points
-        :param size_u: number of surface points on the u-direction
-        :param size_v: number of surface points on the v-direction
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+
+        :param points: points to be tessellated
         """
         pass
 
@@ -80,18 +92,20 @@ class TriangularTessellate(AbstractTessellate):
     def __init__(self, **kwargs):
         super(TriangularTessellate, self).__init__(**kwargs)
 
-    def tessellate(self, points, size_u, size_v, **kwargs):
-        """  Applies triangular tessellation.
+    def tessellate(self, points, **kwargs):
+        """ Applies triangular tessellation.
 
-        :param points: points to be triangulated
-        :type points: list, tuple
-        :param size_u: number of points on the u-direction
-        :type size_u: int
-        :param size_v: number of points on the v-direction
-        :type size_v: int
+        This function does not check if the points have already been tessellated.
+
+        Keyword Arguments:
+            * ``size_u``: number of points on the u-direction
+            * ``size_v``: number of points on the v-direction
+
+        :param points: list of points
+        :type points: list or tuple
         """
         # Call parent function
-        super(TriangularTessellate, self).tessellate(points, size_u, size_v, **kwargs)
+        super(TriangularTessellate, self).tessellate(points, **kwargs)
 
         # Apply default triangular mesh generator function
-        self._vertices, self._triangles = utilities.make_triangle_mesh(points, size_u, size_v, **kwargs)
+        self._vertices, self._faces = utilities.make_triangle_mesh(points, **kwargs)
