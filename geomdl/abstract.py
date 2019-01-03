@@ -19,7 +19,8 @@ from . import utilities
 from . import voxelize
 
 
-class Geometry(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class Geometry(object):
     """ Abstract base class for defining geometry elements.
 
     Keyword Arguments:
@@ -126,7 +127,8 @@ class Geometry(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
+@six.add_metaclass(abc.ABCMeta)
+class SplineGeometry(Geometry):
     """ Abstract base class for defining spline geometries.
 
     Keyword Arguments:
@@ -322,7 +324,8 @@ class SplineGeometry(six.with_metaclass(abc.ABCMeta, Geometry)):
         pass
 
 
-class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
+@six.add_metaclass(abc.ABCMeta)
+class Curve(SplineGeometry):
     """ Abstract base class for defining spline curves.
 
     Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
@@ -808,7 +811,8 @@ class Curve(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         pass
 
 
-class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
+@six.add_metaclass(abc.ABCMeta)
+class Surface(SplineGeometry):
     """ Abstract base class for defining spline surfaces.
 
     Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
@@ -1731,7 +1735,8 @@ class Surface(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
         pass
 
 
-class Volume(six.with_metaclass(abc.ABCMeta, SplineGeometry)):
+@six.add_metaclass(abc.ABCMeta)
+class Volume(SplineGeometry):
     """ Abstract base class for defining spline volumes.
 
     Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to

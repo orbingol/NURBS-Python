@@ -15,7 +15,8 @@ from . import helpers
 from . import _evaluators
 
 
-class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractEvaluator(object):
     """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
 
     **Abstract Methods**:
@@ -72,7 +73,8 @@ class AbstractEvaluator(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class AbstractEvaluatorExtended(six.with_metaclass(abc.ABCMeta, AbstractEvaluator)):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractEvaluatorExtended(AbstractEvaluator):
     """ Abstract base class for implementations of extended spline algorithms.
 
     **Abstract Methods**:

@@ -12,7 +12,8 @@ import six
 from . import utilities
 
 
-class AbstractTessellate(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractTessellate(object):
     """ Abstract base class for tessellation algorithms. """
 
     def __init__(self, **kwargs):

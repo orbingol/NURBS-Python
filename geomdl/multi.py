@@ -16,7 +16,8 @@ from . import voxelize
 from . import utilities
 
 
-class AbstractContainer(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractContainer(object):
     """ Abstract class for curve and surface containers.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in

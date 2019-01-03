@@ -12,8 +12,8 @@ import copy
 import six
 
 
-# Abstract base class for geometric entities
-class AbstractEntity(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self, *args, **kwargs):
         self._id = int(kwargs.get('id', 0))  # element identifier

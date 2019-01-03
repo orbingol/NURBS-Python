@@ -12,7 +12,8 @@ import six
 from typing import Any, Sequence, List
 
 
-class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class VisConfigAbstract(object):
     """ Abstract base class for user configuration of the visualization module
 
     Defines an abstract base for NURBS-Python visualization configuration.
@@ -23,7 +24,8 @@ class VisConfigAbstract(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class VisAbstract(six.with_metaclass(abc.ABCMeta, object)):
+@six.add_metaclass(abc.ABCMeta)
+class VisAbstract(object):
     """ Abstract base class for visualization
 
     Defines an abstract base for NURBS-Python visualization modules.
