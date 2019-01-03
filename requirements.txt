@@ -1,6 +1,18 @@
+# Python requirements for CI test runs and Docker image building
+
+# Python packaging tools
+setuptools>=40.6.3
+
+# For Python 2 and 3 compatibility
 six>=1.9.0
+
+# Modules ported to older Python versions
 enum34>=1.1.6; python_version < '3.4'
 typing; python_version < '3.5'
-cython
+
+# For compiling geomdl.core module
+cython; platform_python_implementation != 'PyPy'
+
+# Visualization modules
 matplotlib==2.2.3
 plotly

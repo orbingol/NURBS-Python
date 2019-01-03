@@ -1,37 +1,45 @@
 # https://travis-ci.org/orbingol/NURBS-Python
 
+dist: xenial
+sudo: false
+
 language: python
 
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-#  - "pypy3.5"
-
-# branch safelist
+# branches to build
 branches:
   only:
-    - master
-    - 3.x
-    - 2.x
-    - devmaster
+    - master  # latest stable version
+    - devmaster  # latest development version
+    - 4.x  # v4.x series
+    - 3.x  # v3.x series
+    - 2.x  # v2.x series
+    - travis-ci-tox  # Travis-CI testing
 
-# define environment variables
-env:
-  - MPLBACKEND="Agg"
+# build matrix
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=full-py27,core-py27,codecov
 
-# install required packages
+    - python: 3.4
+      env: TOXENV=full-py34,core-py34
+
+    - python: 3.5
+      env: TOXENV=full-py35,core-py35
+
+    - python: 3.6
+      env: TOXENV=full-py36,core-py36
+
+    - python: 3.7
+      env: TOXENV=full-py37,core-py37,codecov
+
+    - python: pypy3.5
+      env: TOXENV=full-pypy3
+
+# install packages
 install:
-  - pip install setuptools --upgrade
-  - pip install numpy matplotlib
-  - pip install pytest pytest-cov
-  - pip install codecov
+  - pip install tox
 
-# install package and run tests
-# script: "python setup.py develop && pytest --cov=./"
-script: 'python setup.py develop && python setup.py test -a "--cov=./"'
-
-# call at the end of CI build
-after_success:
-  - codecov
+# run tox
+script:
+  - tox
