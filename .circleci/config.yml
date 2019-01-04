@@ -1,11 +1,5 @@
 # https://circleci.com/gh/orbingol/NURBS-Python
 
-# Define anchor "defbase"
-defbase: &defbase
-  docker:
-    - image: circleci/buildpack-deps:bionic
-  working_directory: ~/nurbslib  # creates /home/circleci/nurbslib
-
 # Define anchor "defsteps"
 defsteps: &defsteps
   steps:
@@ -15,33 +9,68 @@ defsteps: &defsteps
     - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
     - run: docker build -t $IMAGE docker/$TAG
     - run: |
-        echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
-        docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
-        docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+        echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+        docker tag $IMAGE $DOCKER_HUB_ORGANIZATION/$DOCKER_HUB_REPO:$TAG
+        docker push $DOCKER_HUB_ORGANIZATION/$DOCKER_HUB_REPO
+
+# Define executors
+executors:
+  python_executor:
+    docker:
+      - image: circleci/python:3.7
+    working_directory: /tmp/nurbslib
+
+  docker_executor:
+    docker:
+      - image: circleci/buildpack-deps:bionic
+    working_directory: ~/nurbslib  # creates /home/circleci/nurbslib
 
 # Define build jobs
-version: 2
+version: 2.1
 jobs:
-  docker_py27:
-    <<: *defbase
+  # Run pytest
+  python_test:
+    executor: python_executor
+    steps:
+      - checkout
+      - run: pip install --user --upgrade pytest
+      - run: pip install --user -r requirements.txt
+      - run: pip install --user .
+      - run: python setup.py test
+
+  # Run setuptools to generate distributions
+  python_deploy:
+    executor: python_executor
+    steps:
+      - checkout
+      - run: pip install --user setuptools wheel twine
+      - run: python setup.py sdist bdist_wheel
+      - run: python -m twine upload --skip-existing dist/*
+
+  # Build Docker image for Python v2.7
+  docker_build_py27:
+    executor: docker_executor
     environment:
       TAG: py27  # Docker tag as an environmental variable
     <<: *defsteps
 
-  docker_py35:
-    <<: *defbase
+  # Build Docker image for Python v3.5
+  docker_build_py35:
+    executor: docker_executor
     environment:
       TAG: py35  # Docker tag as an environmental variable
     <<: *defsteps
 
-  docker_py36:
-    <<: *defbase
+  # Build Docker image for Python v3.6
+  docker_build_py36:
+    executor: docker_executor
     environment:
       TAG: py36  # Docker tag as an environmental variable
     <<: *defsteps
 
-  docker_py37:
-    <<: *defbase
+  # Build Docker image for Python v3.7
+  docker_build_py37:
+    executor: docker_executor
     environment:
       TAG: py37  # Docker tag as an environmental variable
     <<: *defsteps
@@ -51,25 +80,47 @@ workflows:
   version: 2
   build_docker:
     jobs:
-      - docker_py27:
+      - python_test:
           filters:
             branches:
               only:
                 - master
                 - circle-ci-testing
-      - docker_py35:
+      - python_deploy:
+          requires:
+            - python_test
           filters:
             branches:
               only:
                 - master
                 - circle-ci-testing
-      - docker_py36:
+      - docker_build_py27:
+          requires:
+            - python_deploy
           filters:
             branches:
               only:
                 - master
                 - circle-ci-testing
-      - docker_py37:
+      - docker_build_py35:
+          requires:
+            - python_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_build_py36:
+          requires:
+            - python_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_build_py37:
+          requires:
+            - python_deploy
           filters:
             branches:
               only:
