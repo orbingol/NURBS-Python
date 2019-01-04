@@ -1,4 +1,4 @@
-# geomdl DockerFile for Python v3.6
+# geomdl Dockerfile for Python v3.6
 FROM python:3.6-slim
 
 USER root

@@ -1,10 +1,12 @@
-# geomdl DockerFile for Python v3.7
-FROM python:3.7-alpine
+# geomdl Dockerfile for Python v2.7
+FROM python:2.7-slim
 
 USER root
 WORKDIR /nurbs
 
-RUN apk add --no-cache build-base wget git freetype-dev openblas-dev bash
+RUN apt-get update \
+    && apt-get install -y gcc git \
+    && apt-get clean
 
 RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
@@ -16,7 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir
     && python setup.py bdist_wheel --use-cython \
     && pip install dist/* \
     && python setup.py clean --all \
-    && rm -rf dist/ \
     && python -c "import geomdl" \
     && python -c "import geomdl.core"
 
@@ -26,10 +27,15 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && pip install --no-cache-dir . \
     && python -c "import geomdl.cli"
 
-WORKDIR /root
+RUN useradd -ms /bin/bash nurbs \
+    && chown -R nurbs:nurbs /nurbs
 
-COPY matplotlibrc .config/matplotlib/matplotlibrc
-COPY README.md .
+USER nurbs
+WORKDIR /home/nurbs
+
+COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
+COPY --chown=nurbs:nurbs README.md .
+
 RUN echo "cat README.md" >> .bashrc
 
 ENTRYPOINT ["/bin/bash", "-i"]

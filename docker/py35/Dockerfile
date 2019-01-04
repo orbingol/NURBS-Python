@@ -1,5 +1,5 @@
-# geomdl DockerFile for Python v2.7
-FROM python:2.7-slim
+# geomdl Dockerfile for Python v3.5
+FROM python:3.5-slim
 
 USER root
 WORKDIR /nurbs

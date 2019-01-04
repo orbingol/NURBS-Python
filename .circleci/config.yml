@@ -1,0 +1,175 @@
+# CircleCI Configuration
+
+# Define anchors and aliases (from YAML v1.2 spec)
+defaults: &defaults
+  docker:
+    - image: circleci/buildpack-deps:bionic
+
+# Define build jobs
+version: 2
+jobs:
+  docker_py27:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py27' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py27_alpine:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py27-alpine' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py35:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py35' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py35_alpine:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py35-alpine' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py36:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py36' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py36_alpine:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py36-alpine' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py37:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py37' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+  docker_py37_alpine:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo 'export TAG=py37-alpine' >> $BASH_ENV
+      - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
+      - run: docker build -t $IMAGE docker/$TAG
+      - run: |
+          echo $DOCKER_HUB_PASSWD | docker login -u $DOCKER_HUB_USERID --password-stdin
+          docker tag $IMAGE $DOCKER_HUB_ORG/$DOCKER_HUB_REPO:$TAG
+          docker push $DOCKER_HUB_ORG/$DOCKER_HUB_REPO
+
+# Define workflows
+workflows:
+  version: 2
+  build_docker:
+    jobs:
+      - docker_py27:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py27_alpine:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py35:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py35_alpine:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py36:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py36_alpine:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py37:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
+      - docker_py37_alpine:
+          filters:
+            branches:
+              only:
+                - master
+                - circle-ci-testing
