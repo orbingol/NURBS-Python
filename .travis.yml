@@ -8,12 +8,12 @@ language: python
 # branches to build
 branches:
   only:
-    - master  # latest stable version
+    - master  # latest version
     - devmaster  # latest development version
     - 4.x  # v4.x series
     - 3.x  # v3.x series
     - 2.x  # v2.x series
-    - travis-ci-tox  # Travis-CI testing
+    - travis-ci-testing  # Travis-CI testing
 
 # build matrix
 matrix:
