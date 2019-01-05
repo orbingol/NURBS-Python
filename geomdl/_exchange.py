@@ -232,6 +232,58 @@ def export_dict_surf(obj):
         # Not a NURBS shape
         pass
     return data
+
+
+def import_dict_vol(data):
+    shape = NURBS.Volume()
+
+    # Mandatory keys
+    try:
+        shape.degree_u = data['degree_u']
+        shape.degree_v = data['degree_v']
+        shape.degree_w = data['degree_w']
+        shape.ctrlpts_size_u = data['size_u']
+        shape.ctrlpts_size_v = data['size_v']
+        shape.ctrlpts_size_w = data['size_w']
+        shape.ctrlpts = data['control_points']['points']
+        shape.knotvector_u = data['knotvector_u']
+        shape.knotvector_v = data['knotvector_v']
+        shape.knotvector_w = data['knotvector_w']
+    except KeyError as e:
+        raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
+
+    # Optional keys
+    if 'weights' in data['control_points']:
+        shape.weights = data['control_points']['weights']
+    if 'delta' in data:
+        shape.delta = data['delta']
+    if 'name' in data:
+        shape.name = data['name']
+
+    # Return volume
+    return shape
+
+
+def export_dict_vol(obj):
+    data = dict(
+        degree_u=obj.degree_u,
+        degree_v=obj.degree_v,
+        degree_w=obj.degree_w,
+        knotvector_u=list(obj.knotvector_u),
+        knotvector_v=list(obj.knotvector_v),
+        knotvector_w=list(obj.knotvector_w),
+        size_u=obj.ctrlpts_size_u,
+        size_v=obj.ctrlpts_size_v,
+        size_w=obj.ctrlpts_size_w,
+        control_points=dict(
+            points=obj.ctrlpts
+        ),
+        delta=obj.delta
+    )
+    try:
+        data['control_points']['weights'] = list(obj.weights)
+    except AttributeError:
+        # Not a NURBS shape
         pass
     return data
 
@@ -298,7 +350,7 @@ def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
 
 
 def import_dict_str(file_src, delta, callback, tmpl):
-    mapping = {'curve': import_dict_crv, 'surface': import_dict_surf}
+    mapping = {'curve': import_dict_crv, 'surface': import_dict_surf, 'volume': import_dict_vol}
 
     # Process template
     if tmpl:
@@ -326,6 +378,9 @@ def export_dict_str(obj, callback):
     elif isinstance(obj, abstract.Surface):
         export_type = "surface"
         data = [export_dict_surf(obj)]
+    elif isinstance(obj, abstract.Volume):
+        export_type = "volume"
+        data = [export_dict_vol(obj)]
     elif isinstance(obj, multi.CurveContainer):
         export_type = "curve"
         data = [export_dict_crv(o) for o in obj]
@@ -333,6 +388,10 @@ def export_dict_str(obj, callback):
     elif isinstance(obj, multi.SurfaceContainer):
         export_type = "surface"
         data = [export_dict_surf(o) for o in obj]
+        count = len(obj)
+    elif isinstance(obj, multi.VolumeContainer):
+        export_type = "volume"
+        data = [export_dict_vol(o) for o in obj]
         count = len(obj)
     else:
         raise NotADirectoryError("Object type is not defined for dict export")
