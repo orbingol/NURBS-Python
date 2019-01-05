@@ -148,15 +148,24 @@ def import_smesh_single(file_name):
 
 def import_dict_crv(data):
     shape = NURBS.Curve()
-    shape.degree = data['degree']
-    shape.ctrlpts = data['control_points']['points']
+
+    # Mandatory keys
+    try:
+        shape.degree = data['degree']
+        shape.ctrlpts = data['control_points']['points']
+        shape.knotvector = data['knotvector']
+    except KeyError as e:
+        raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
+
+    # Optional keys
     if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
-    shape.knotvector = data['knotvector']
     if 'delta' in data:
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+
+    # Return curve
     return shape
 
 
@@ -172,26 +181,35 @@ def export_dict_crv(obj):
     try:
         data['control_points']['weights'] = list(obj.weights)
     except AttributeError:
-        # Not a NURBS curve
+        # Not a NURBS shape
         pass
     return data
 
 
 def import_dict_surf(data):
     shape = NURBS.Surface()
-    shape.degree_u = data['degree_u']
-    shape.degree_v = data['degree_v']
-    shape.ctrlpts_size_u = data['size_u']
-    shape.ctrlpts_size_v = data['size_v']
-    shape.ctrlpts = data['control_points']['points']
+
+    # Mandatory keys
+    try:
+        shape.degree_u = data['degree_u']
+        shape.degree_v = data['degree_v']
+        shape.ctrlpts_size_u = data['size_u']
+        shape.ctrlpts_size_v = data['size_v']
+        shape.ctrlpts = data['control_points']['points']
+        shape.knotvector_u = data['knotvector_u']
+        shape.knotvector_v = data['knotvector_v']
+    except KeyError as e:
+        raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
+
+    # Optional keys
     if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
-    shape.knotvector_u = data['knotvector_u']
-    shape.knotvector_v = data['knotvector_v']
     if 'delta' in data:
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+
+    # Return surface
     return shape
 
 
@@ -211,7 +229,9 @@ def export_dict_surf(obj):
     try:
         data['control_points']['weights'] = list(obj.weights)
     except AttributeError:
-        # Not a NURBS curve
+        # Not a NURBS shape
+        pass
+    return data
         pass
     return data
 
