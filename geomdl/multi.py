@@ -264,6 +264,9 @@ class AbstractContainer(object):
         else:
             raise TypeError("Cannot add the element to the container")
 
+    # Make container look like a list
+    append = add
+
     # Runs visualization component to render the surface
     @abc.abstractmethod
     def render(self):
