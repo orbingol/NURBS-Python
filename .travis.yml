@@ -13,7 +13,7 @@ branches:
     - 4.x  # v4.x series
     - 3.x  # v3.x series
     - 2.x  # v2.x series
-    - travis-ci-testing  # Travis-CI testing
+    - travisci-testing  # Travis-CI testing
 
 # build matrix
 matrix:

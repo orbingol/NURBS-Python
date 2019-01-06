@@ -3,7 +3,8 @@
 # Define anchor "defsteps"
 defsteps: &defsteps
   steps:
-    - checkout
+    - attach_workspace:
+        at: ~/
     - setup_remote_docker:
         docker_layer_caching: true
     - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
@@ -14,12 +15,20 @@ defsteps: &defsteps
 
 # Define executors
 executors:
+  # for testing and packaging the python module
   python_executor:
     docker:
       - image: circleci/python:3.7
-    working_directory: /tmp/nurbslib
+    working_directory: ~/nurbslib  # creates /home/circleci/nurbslib
 
-  docker_executor:
+  # for conda-build
+  conda_executor:
+    docker:
+      - image: continuumio/miniconda3
+    working_directory: ~/nurbslib  # creates /home/circleci/nurbslib
+
+  # for Docker Hub publishing
+  docker_build_executor:
     docker:
       - image: circleci/buildpack-deps:bionic
     working_directory: ~/nurbslib  # creates /home/circleci/nurbslib
@@ -36,40 +45,55 @@ jobs:
       - run: pip install --user -r requirements.txt
       - run: pip install --user .
       - run: python setup.py test
+      - persist_to_workspace:  # reuse git checkout
+          root: ~/
+          paths:
+            - nurbslib
 
   # Run setuptools to generate distributions
   pypi_deploy:
     executor: python_executor
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/
       - run: pip install --user setuptools wheel twine
       - run: python setup.py sdist bdist_wheel
       - run: python -m twine upload --skip-existing dist/*
 
+  anaconda_deploy:
+    executor: conda_executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: conda install -y conda-build conda-verify anaconda-client
+      - run: conda build conda/geomdl
+      - run: echo 'export GEOMDL_CONDA_PKG=`conda build conda/geomdl --output`' >> $BASH_ENV
+      - run: anaconda --token $ANACONDA_TOKEN upload --skip-existing $GEOMDL_CONDA_PKG
+
   # Build Docker image for Python v2.7
   docker_build_py27:
-    executor: docker_executor
+    executor: docker_build_executor
     environment:
       TAG: py27  # Docker tag as an environmental variable
     <<: *defsteps
 
   # Build Docker image for Python v3.5
   docker_build_py35:
-    executor: docker_executor
+    executor: docker_build_executor
     environment:
       TAG: py35  # Docker tag as an environmental variable
     <<: *defsteps
 
   # Build Docker image for Python v3.6
   docker_build_py36:
-    executor: docker_executor
+    executor: docker_build_executor
     environment:
       TAG: py36  # Docker tag as an environmental variable
     <<: *defsteps
 
   # Build Docker image for Python v3.7
   docker_build_py37:
-    executor: docker_executor
+    executor: docker_build_executor
     environment:
       TAG: py37  # Docker tag as an environmental variable
     <<: *defsteps
@@ -84,7 +108,7 @@ workflows:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
       - pypi_deploy:
           requires:
             - python_test
@@ -92,36 +116,48 @@ workflows:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
+      - anaconda_deploy:
+          requires:
+            - python_test
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
       - docker_build_py27:
           requires:
             - pypi_deploy
+            - anaconda_deploy
           filters:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
       - docker_build_py35:
           requires:
             - pypi_deploy
+            - anaconda_deploy
           filters:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
       - docker_build_py36:
           requires:
             - pypi_deploy
+            - anaconda_deploy
           filters:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
       - docker_build_py37:
           requires:
             - pypi_deploy
+            - anaconda_deploy
           filters:
             branches:
               only:
                 - master
-                - circle-ci-testing
+                - circleci-testing
