@@ -92,29 +92,22 @@ def write_file(file_name, content, **kwargs):
         raise
 
 
-def import_smesh_single(file_name):
-    """ Generates a NURBS surface from a surface mesh file.
+def import_surf_mesh(file_name):
+    """ Generates a NURBS surface object from a mesh file.
 
-    :param file_name: smesh file to read
+    :param file_name: input mesh file
     :type file_name: str
     :return: a NURBS surface
     :rtype: NURBS.Surface
     """
-    try:
-        with open(file_name, 'r') as fp:
-            content = fp.readlines()
-            content = [x.strip().split() for x in content]
-    except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+    content = read_file(file_name)
+    content = [x.strip().split() for x in content]
 
     # 1st line defines the dimension and it must be 3
     if int(content[0][0]) != 3:
-        raise TypeError("Input smesh file" + str(file_name) + " is not a surface")
+        raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
 
-    # Create a NURBS surface instance and fill with the data read from smesh file
+    # Create a NURBS surface instance and fill with the data read from mesh file
     surf = NURBS.Surface()
 
     # 2nd line is the degrees
@@ -124,15 +117,15 @@ def import_smesh_single(file_name):
     # 3rd line is the number of weighted control points in u and v directions
     dim_u = int(content[2][0])
     dim_v = int(content[2][1])
-    ctrlpts_end = 5 + (dim_u * dim_v)
 
     # Starting from 6th line, we have the weighted control points
-    ctrlpts_smesh = content[5:ctrlpts_end]
+    ctrlpts_end = 5 + (dim_u * dim_v)
+    ctrlpts_mesh = content[5:ctrlpts_end]
 
-    # smesh files have the control points in u-row order format
-    ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_smesh, dim_u, dim_v)
+    # mesh files have the control points in u-row order format
+    ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_mesh, dim_u, dim_v)
 
-    # smesh files store control points in format (x, y, z, w) -- Rhino format
+    # mesh files store control points in format (x, y, z, w)
     ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
 
     # Set control points
@@ -144,6 +137,59 @@ def import_smesh_single(file_name):
 
     # Return the surface instance
     return surf
+
+
+def import_vol_mesh(file_name):
+    """ Generates a NURBS volume object from a mesh file.
+
+    :param file_name: input mesh file
+    :type file_name: str
+    :return: a NURBS volume
+    :rtype: NURBS.Volume
+    """
+    content = read_file(file_name)
+    content = [x.strip().split() for x in content]
+
+    # 1st line defines the dimension and it must be 3
+    if int(content[0][0]) != 3:
+        raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
+
+    # Create a NURBS surface instance and fill with the data read from mesh file
+    vol = NURBS.Volume()
+
+    # 2nd line is the degrees
+    vol.degree_u = int(content[1][0])
+    vol.degree_v = int(content[1][1])
+    vol.degree_w = int(content[1][2])
+
+    # 3rd line is the number of weighted control points in u, v, w directions
+    dim_u = int(content[2][0])
+    dim_v = int(content[2][1])
+    dim_w = int(content[2][2])
+
+    # Starting from 7th line, we have the weighted control points
+    surf_cpts = dim_u * dim_v
+    ctrlpts_end = 6 + (surf_cpts * dim_w)
+    ctrlpts_mesh = content[6:ctrlpts_end]
+
+    # mesh files have the control points in u-row order format
+    ctrlpts = []
+    for i in range(dim_w - 1):
+        ctrlpts += compatibility.flip_ctrlpts_u(ctrlpts_mesh[surf_cpts * i:surf_cpts * (i + 1)], dim_u, dim_v)
+
+    # mesh files store control points in format (x, y, z, w)
+    ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
+
+    # Set control points
+    vol.set_ctrlpts(ctrlptsw, dim_u, dim_v, dim_w)
+
+    # 4th, 5th and 6th lines are knot vectors
+    vol.knotvector_u = [float(u) for u in content[3]]
+    vol.knotvector_v = [float(v) for v in content[4]]
+    vol.knotvector_w = [float(w) for w in content[5]]
+
+    # Return the volume instance
+    return vol
 
 
 def import_dict_crv(data):

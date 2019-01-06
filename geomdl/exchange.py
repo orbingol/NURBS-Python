@@ -670,22 +670,22 @@ def import_smesh(file):
     where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
     the surface inside the complete object.
 
-    :param file: path to a directory containing smesh files or a single smesh file
+    :param file: path to a directory containing mesh files or a single mesh file
     :type file: str
-    :return: NURBS surface(s)
-    :rtype: NURBS.Surface or multi.SurfaceContainer
+    :return: list of NURBS surfaces
+    :rtype: list
     :raises IOError: an error occurred reading the file
     """
+    imported_elements = []
     if os.path.isfile(file):
-        return exch.import_smesh_single(file)
+        imported_elements.append(exch.import_surf_mesh(file))
     elif os.path.isdir(file):
         files = sorted([os.path.join(file, f) for f in os.listdir(file)])
-        surf = multi.SurfaceContainer()
         for f in files:
-            surf.add(exch.import_smesh_single(f))
-        return surf
+            imported_elements.append(exch.import_surf_mesh(f))
     else:
         raise IOError("Input is not a file or a directory")
+    return imported_elements
 
 
 def export_smesh(surface, file_name, **kwargs):
@@ -733,6 +733,27 @@ def export_smesh(surface, file_name, **kwargs):
         # Write to file
         fname_curr = fname + "." + str(idx + 1) if numerate_file else fname
         exch.write_file(fname_curr + fext, line)
+
+
+def import_vmesh(file):
+    """ Imports NURBS volume(s) from volume mesh (vmesh) file(s).
+
+    :param file: path to a directory containing mesh files or a single mesh file
+    :type file: str
+    :return: list of NURBS volumes
+    :rtype: list
+    :raises IOError: an error occurred reading the file
+    """
+    imported_elements = []
+    if os.path.isfile(file):
+        imported_elements.append(exch.import_vol_mesh(file))
+    elif os.path.isdir(file):
+        files = sorted([os.path.join(file, f) for f in os.listdir(file)])
+        for f in files:
+            imported_elements.append(exch.import_vol_mesh(f))
+    else:
+        raise IOError("Input is not a file or a directory")
+    return imported_elements
 
 
 def export_vmesh(volume, file_name, **kwargs):
