@@ -2,50 +2,60 @@
 
 # Partly inspired from
 #   http://tjelvarolsson.com/blog/how-to-continuously-test-your-python-code-on-windows-using-appveyor/
+#   https://packaging.python.org/guides/supporting-windows-using-appveyor
 #   https://github.com/ogrisel/python-appveyor-demo
 #   https://www.appveyor.com/docs/appveyor-yml/
 
 version: 1.0.{build}
 
-## Build tags only
-#skip_non_tags: true
-
 # Fetch repository as a zip archive
 shallow_clone: true
 
-# branches to build
+# Branch configuration
 branches:
-  # whitelist
   only:
     - master
+    - 4.x
     - 3.x
-#    - devmaster
-
-  # blacklist
-  except:
-    - gh-pages
     - 2.x
-    - 2.x-json
+    - appveyor-testing
 
+# Build environment
 environment:
   global:
     MPLBACKEND: "Agg"
 
   matrix:
-    - PYTHON: "C:\\Python27-x64"
-      PYTHON_VERSION: "2.7.15"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      PYTHON: "C:\\Python27"
+      PYTHON_ARCH: "32"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python35"
+      PYTHON_ARCH: "32"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python36"
+      PYTHON_ARCH: "32"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python37"
+      PYTHON_ARCH: "32"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      PYTHON: "C:\\Python27-x64"
       PYTHON_ARCH: "64"
 
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_VERSION: "3.4.4"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python35-x64"
       PYTHON_ARCH: "64"
 
-    - PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5.3"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python36-x64"
       PYTHON_ARCH: "64"
 
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6.6"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: "C:\\Python37-x64"
       PYTHON_ARCH: "64"
 
 # PR settings
@@ -63,53 +73,34 @@ install:
         Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
           throw "There are newer queued builds for this pull request, failing early." }
 
-  # Install Python (from the official .msi of http://python.org) and pip when
-  # not already installed.
-  - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
+  # Print Python version
+  - cmd: "%PYTHON%\\python -c \"import sys; print(sys.version)\""
 
-  # Prepend newly installed Python to the PATH of this build (this cannot be
-  # done from inside the PowerShell script as it would require to restart
-  # the parent CMD process).
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
+  - cmd: "%PYTHON%\\python -m pip install --disable-pip-version-check --upgrade pip"
 
-  # Upgrade to the latest version of pip to avoid it displaying warnings
-  # about it being out of date.
-  - "python -m pip install --disable-pip-version-check --upgrade pip"
-
-  # Upgrade setuptools
-  - "python -m pip install --upgrade setuptools"
-
-  # Install numpy & matplotlib
-  - "python -m pip install numpy matplotlib"
+  # Upgrade setuptools and wheel
+  - cmd: "%PYTHON%\\python -m pip install --upgrade setuptools wheel"
 
   # Install pytest
-  - "python -m pip install pytest"
+  - cmd: "%PYTHON%\\python -m pip install pytest"
 
-#  # Install wheel
-#  - "python -m pip install wheel"
+# Install requirements before the build
+before_build:
+  - cmd: "%PYTHON%\\python -m pip install -r requirements.txt"
 
-# Install the python module
+# Build and install
 build_script:
-  - cmd: '%CMD_IN_ENV% python setup.py develop'
+  - cmd: "%PYTHON%\\python setup.py install --use-cython"
 
-# Run the project tests
+# Test using pytest
 test_script:
-  - cmd: '%CMD_IN_ENV% python setup.py test'
+  - cmd: "%PYTHON%\\python setup.py test"
 
-#after_test:
-#  # If tests are successful, create binary packages for the project.
-#  - "%CMD_IN_ENV% python setup.py bdist_wheel"
-#  - "%CMD_IN_ENV% python setup.py bdist_wininst -p win32"
-#  - "%CMD_IN_ENV% python setup.py bdist_wininst -p win-amd64"
-#  - "%CMD_IN_ENV% python setup.py bdist_msi -p win32"
-#  - "%CMD_IN_ENV% python setup.py bdist_msi -p win-amd64"
-#
-#artifacts:
-#  # Archive the generated packages in the ci.appveyor.com build report.
-#  - path: dist\*
+# Build the wheel package
+after_test:
+  - cmd: "%PYTHON%\\python setup.py bdist_wheel --use-source"
 
-#on_success:
-  # Upload the content of dist/*.whl to a public wheelhouse
-  # - "do uploading operations here"
-
-deploy: off
+# Push binary wheels as artifacts
+artifacts:
+  - path: dist\*
