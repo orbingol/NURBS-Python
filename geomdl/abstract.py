@@ -764,9 +764,12 @@ class Curve(SplineGeometry):
         # Check all variables are set before the evaluation
         self._check_variables()
 
+        if isinstance(param, (int, float)):
+            param = [float(param) for _ in range(self.pdimension)]
+
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([param])
+            utilities.check_params(param)
 
         # Should implement the evaluation functionality
         pass
@@ -1685,6 +1688,9 @@ class Surface(SplineGeometry):
         """
         # Check all variables are set before the evaluation
         self._check_variables()
+
+        if isinstance(param, (int, float)):
+            param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
         if self._kv_normalize:
@@ -2651,6 +2657,9 @@ class Volume(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
+
+        if isinstance(param, (int, float)):
+            param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
         if self._kv_normalize:
