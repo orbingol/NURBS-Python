@@ -9,9 +9,10 @@
 import os
 import pytest
 
-import geomdl.exchange_vtk
 from geomdl import BSpline, NURBS
+from geomdl import multi
 from geomdl import exchange
+from geomdl import exchange_vtk
 from geomdl import compatibility
 from geomdl import operations
 
@@ -197,7 +198,8 @@ def test_export_stl_ascii_single(nurbs_surface):
 def test_export_obj_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".obj"
 
-    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
+    data = operations.decompose_surface(nurbs_surface_decompose)
+    nurbs_multi = multi.SurfaceContainer(data)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_obj(nurbs_multi, fname)
@@ -214,7 +216,8 @@ def test_export_obj_multi(nurbs_surface_decompose):
 def test_export_off_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".off"
 
-    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
+    data = operations.decompose_surface(nurbs_surface_decompose)
+    nurbs_multi = multi.SurfaceContainer(data)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_off(nurbs_multi, fname)
@@ -231,7 +234,8 @@ def test_export_off_multi(nurbs_surface_decompose):
 def test_export_stl_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".stl"
 
-    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
+    data = operations.decompose_surface(nurbs_surface_decompose)
+    nurbs_multi = multi.SurfaceContainer(data)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_stl(nurbs_multi, fname)
@@ -248,7 +252,8 @@ def test_export_stl_multi(nurbs_surface_decompose):
 def test_export_stl_ascii_multi(nurbs_surface_decompose):
     fname = FILE_NAME + ".stl"
 
-    nurbs_multi = operations.decompose_surface(nurbs_surface_decompose)
+    data = operations.decompose_surface(nurbs_surface_decompose)
+    nurbs_multi = multi.SurfaceContainer(data)
 
     nurbs_multi.sample_size = SAMPLE_SIZE
     exchange.export_stl(nurbs_multi, fname, binary=False)
@@ -341,7 +346,7 @@ def test_export_vtk_curve_ctrlpts(bspline_curve3d):
     fname = FILE_NAME + ".vtk"
 
     bspline_curve3d.sample_size = SAMPLE_SIZE
-    geomdl.exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="ctrlpts")
+    exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="ctrlpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -355,7 +360,7 @@ def test_export_vtk_surface_ctrlpts(bspline_surface):
     fname = FILE_NAME + ".vtk"
 
     bspline_surface.sample_size = SAMPLE_SIZE
-    geomdl.exchange_vtk.export_polydata(bspline_surface, fname, point_type="ctrlpts")
+    exchange_vtk.export_polydata(bspline_surface, fname, point_type="ctrlpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -369,7 +374,7 @@ def test_export_vtk_curve_evalpts(bspline_curve3d):
     fname = FILE_NAME + ".vtk"
 
     bspline_curve3d.sample_size = SAMPLE_SIZE
-    geomdl.exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="evalpts")
+    exchange_vtk.export_polydata(bspline_curve3d, fname, point_type="evalpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -383,7 +388,7 @@ def test_export_vtk_surface_evalpts(bspline_surface):
     fname = FILE_NAME + ".vtk"
 
     bspline_surface.sample_size = SAMPLE_SIZE
-    geomdl.exchange_vtk.export_polydata(bspline_surface, fname, point_type="evalpts")
+    exchange_vtk.export_polydata(bspline_surface, fname, point_type="evalpts")
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0

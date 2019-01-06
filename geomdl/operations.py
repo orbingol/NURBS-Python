@@ -28,8 +28,8 @@ def split_curve(obj, u, **kwargs):
     :type obj: abstract.Curve
     :param u: parameter
     :type u: float
-    :return: a list of curves as the split pieces of the initial curve
-    :rtype: multi.CurveContainer
+    :return: list of curves as the split pieces of the initial curve
+    :rtype: list
     """
     # Validate input
     if not isinstance(obj, abstract.Curve):
@@ -79,12 +79,8 @@ def split_curve(obj, u, **kwargs):
     curve2.set_ctrlpts(curve2_ctrlpts)
     curve2.knotvector = curve2_kv
 
-    # Create a CurveContainer
-    ret_val = multi.CurveContainer()
-    ret_val.add(curve1)
-    ret_val.add(curve2)
-
-    # Return the new curves as a CurveContainer object
+    # Return the split curves
+    ret_val = [curve1, curve2]
     return ret_val
 
 
@@ -96,23 +92,23 @@ def decompose_curve(obj, **kwargs):
     :param obj: Curve to be decomposed
     :type obj: abstract.Curve
     :return: a list of curve objects arranged in Bezier curve segments
-    :rtype: multi.CurveContainer
+    :rtype: list
     """
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of abstract.Curve class")
 
-    curve_list = multi.CurveContainer()
+    curves = []
     curve = copy.deepcopy(obj)
     knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
     while knots:
         knot = knots[0]
         curves = split_curve(curve, u=knot, **kwargs)
-        curve_list.add(curves[0])
+        curves.append(curves[0])
         curve = curves[1]
         knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
-    curve_list.add(curve)
+    curves.append(curve)
 
-    return curve_list
+    return curves
 
 
 def derivative_curve(obj):
@@ -218,8 +214,8 @@ def split_surface_u(obj, t, **kwargs):
     :type obj: abstract.Surface
     :param t: parameter for the u-direction
     :type t: float
-    :return: a list of surface as the split pieces of the initial surface
-    :rtype: multi.SurfaceContainer
+    :return: list of surface as the split pieces of the initial surface
+    :rtype: list
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
@@ -273,12 +269,8 @@ def split_surface_u(obj, t, **kwargs):
     surf2.knotvector_u = surf2_kv
     surf2.knotvector_v = temp_obj.knotvector_v
 
-    # Create a SurfaceContainer
-    ret_val = multi.SurfaceContainer()
-    ret_val.add(surf1)
-    ret_val.add(surf2)
-
     # Return the new surfaces
+    ret_val = [surf1, surf2]
     return ret_val
 
 
@@ -292,8 +284,8 @@ def split_surface_v(obj, t, **kwargs):
     :type obj: abstract.Surface
     :param t: parameter for the v-direction
     :type t: float
-    :return: a list of surface as the split pieces of the initial surface
-    :rtype: multi.SurfaceContainer
+    :return: list of surface as the split pieces of the initial surface
+    :rtype: list
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
@@ -353,12 +345,8 @@ def split_surface_v(obj, t, **kwargs):
     surf2.knotvector_v = surf2_kv
     surf2.knotvector_u = temp_obj.knotvector_u
 
-    # Create a SurfaceContainer
-    ret_val = multi.SurfaceContainer()
-    ret_val.add(surf1)
-    ret_val.add(surf2)
-
     # Return the new surfaces
+    ret_val = [surf1, surf2]
     return ret_val
 
 
@@ -392,16 +380,16 @@ def decompose_surface(obj, **kwargs):
     surf_list.append(surf)
 
     # Process v-direction
-    multi_surf = multi.SurfaceContainer()
+    multi_surf = []
     for surf in surf_list:
         knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
         while knots_v:
             knot = knots_v[0]
             surfs = split_surface_v(surf, t=knot, **kwargs)
-            multi_surf.add(surfs[0])
+            multi_surf.append(surfs[0])
             surf = surfs[1]
             knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
-        multi_surf.add(surf)
+        multi_surf.append(surf)
 
     return multi_surf
 
@@ -479,21 +467,22 @@ def derivative_surface(obj):
 
 
 def translate(obj, vec, **kwargs):
-    """ Translates single or multi curves and surface by the input vector.
+    """ Translates curves, surface or volumes by the input vector.
 
     If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
     change the input shape but returns a new instance of the same shape with the updated data.
 
-    :param obj: Curve(s) or surface(s) to be translated
-    :type obj: abstract.Curve, abstract.Surface or multi.AbstractContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry or multi.AbstractContainer
     :param vec: translation vector
     :type vec: list, tuple
+    :return: translated geometry object
     """
     # Input validity checks
     if not vec or not isinstance(vec, (tuple, list)):
         raise TypeError("The input must be a list or a tuple")
 
-    if isinstance(obj, (abstract.Curve, abstract.Surface)):
+    if isinstance(obj, abstract.SplineGeometry):
         return _operations.translate_single(obj, vec, **kwargs)
     elif isinstance(obj, multi.AbstractContainer):
         return _operations.translate_multi(obj, vec, **kwargs)
@@ -533,7 +522,7 @@ def normal(obj, params, **kwargs):
     This function is designed to evaluate normal vectors of the B-Spline and NURBS shapes at single or
     multiple parameter positions.
 
-    :param obj: input shape
+    :param obj: input geometry
     :type obj: abstract.Curve or abstract.Surface
     :param params: parameters
     :type params: float, list or tuple
@@ -599,17 +588,17 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
 
 
 def rotate(obj, angle, **kwargs):
-    """ Rotates the curves and surfaces about the chosen axis.
+    """ Rotates curves, surfaces or volumes about the chosen axis.
 
     Keyword Arguments:
         * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively.
         * ``inplace``: if True, the input shape is modified. *Default: False*
 
-    :param obj: input curve or surface
-    :type obj: abstract.Curve or abstract.Surface
+    :param obj: input geometry
+    :type obj: abstract.Curve, abstract.Surface or abstract.Volume
     :param angle: angle of rotation (in degrees)
     :type angle: float
-    :return: rotated curve or surface
+    :return: rotated geometry object
     """
     def rotate_x(ncs, opt, alpha):
         # Generate translation vector
@@ -667,12 +656,10 @@ def rotate(obj, angle, **kwargs):
         # Finally, translate back to the starting location
         translate(ncs, [-o for o in opt])
 
-    if isinstance(obj, abstract.Curve):
+    if isinstance(obj, (abstract.Curve, abstract.Surface, abstract.Volume)):
         origin = obj.evaluate_single(0.0)
-    elif isinstance(obj, abstract.Surface):
-        origin = obj.evaluate_single((0.0, 0.0))
     else:
-        raise TypeError("Can only work with single curves and surfaces")
+        raise TypeError("Can only work with a single curve, surface or volume")
 
     axis = 2 if obj.dimension == 2 else kwargs.get('axis', 2)
     inplace = kwargs.get('inplace', False)
@@ -696,22 +683,22 @@ def rotate(obj, angle, **kwargs):
 
 
 def scale(obj, multiplier, **kwargs):
-    """ Scales the curves and surfaces by the input multiplier.
+    """ Scales curves, surfaces or volumes by the input multiplier.
 
     Keyword Arguments:
         * ``inplace``: if True, the input shape is modified. *Default: False*
 
-    :param obj: input curve or surface
-    :type obj: abstract.Curve or abstract.Surface
+    :param obj: input geometry
+    :type obj: abstract.Curve, abstract.Surface or abstract.Volume
     :param multiplier: scaling multiplier
     :type multiplier: float
-    :return: scaled curve or surface
+    :return: scaled geometry object
     """
     # Input validity checks
     if not isinstance(multiplier, (int, float)):
         raise TypeError("The multiplier must be a float or an integer")
 
-    if isinstance(obj, (abstract.Curve, abstract.Surface)):
+    if isinstance(obj, abstract.SplineGeometry):
         return _operations.scale_single(obj, multiplier, **kwargs)
     elif isinstance(obj, multi.AbstractContainer):
         return _operations.scale_multi(obj, multiplier, **kwargs)

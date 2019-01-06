@@ -5,9 +5,11 @@
 
     Tests visualization modules. Requires "pytest" to run.
 """
+
 import os
 import pytest
 from geomdl import BSpline
+from geomdl import multi
 from geomdl import operations
 
 import matplotlib
@@ -139,9 +141,10 @@ def test_curve2d_multi_fig_nowindow(bspline_curve2d):
 
     fname = conf.figure_image_filename
 
-    multi = operations.decompose_curve(bspline_curve2d)
-    multi.vis = vis
-    multi.render(plot=False)
+    data = operations.decompose_curve(bspline_curve2d)
+    multi_shape = multi.CurveContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -158,9 +161,10 @@ def test_curve2d_multi_fig_save(bspline_curve2d):
 
     fname = "test-multi_curve.png"
 
-    multi = operations.decompose_curve(bspline_curve2d)
-    multi.vis = vis
-    multi.render(filename=fname, plot=False)
+    data = operations.decompose_curve(bspline_curve2d)
+    multi_shape = multi.CurveContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(filename=fname, plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -211,9 +215,10 @@ def test_curve3d_multi_fig_nowindow(bspline_curve3d):
     conf = VisMPL.VisConfig()
     vis = VisMPL.VisCurve3D(config=conf)
 
-    multi = operations.decompose_curve(bspline_curve3d)
-    multi.vis = vis
-    multi.render(plot=False)
+    data = operations.decompose_curve(bspline_curve3d)
+    multi_shape = multi.CurveContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(plot=False)
 
     assert os.path.isfile(conf.figure_image_filename)
     assert os.path.getsize(conf.figure_image_filename) > 0
@@ -230,9 +235,10 @@ def test_curve3d_multi_fig_save(bspline_curve3d):
 
     fname = "test-multi_curve.png"
 
-    multi = operations.decompose_curve(bspline_curve3d)
-    multi.vis = vis
-    multi.render(filename=fname, plot=False)
+    data = operations.decompose_curve(bspline_curve3d)
+    multi_shape = multi.CurveContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(filename=fname, plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -306,9 +312,10 @@ def test_surf_multi_fig_nowindow(bspline_surface):
 
     fname = conf.figure_image_filename
 
-    multi = operations.decompose_surface(bspline_surface)
-    multi.vis = vis
-    multi.render(plot=False)
+    data = operations.decompose_surface(bspline_surface)
+    multi_shape = multi.SurfaceContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -325,9 +332,10 @@ def test_surf_multi_fig_save(bspline_surface):
 
     fname = "test-multi_surface.png"
 
-    multi = operations.decompose_surface(bspline_surface)
-    multi.vis = vis
-    multi.render(filename=fname, plot=False)
+    data = operations.decompose_surface(bspline_surface)
+    multi_shape = multi.SurfaceContainer(data)
+    multi_shape.vis = vis
+    multi_shape.render(filename=fname, plot=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
