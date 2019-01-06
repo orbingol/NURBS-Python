@@ -3,7 +3,7 @@ NURBS-Python (geomdl)
 
 |DOI|_ |PYPIDL|_ |ANACONDA|_
 
-|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CODECOV|_
+|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_ |CODECOV|_
 
 |WAFFLEIO|_
 
@@ -13,13 +13,18 @@ Introduction
 NURBS-Python (geomdl) is a pure Python, object-oriented B-Spline and NURBS library. It is compatible with Python
 versions 2.7.x, 3.4.x and later.
 
-Further Reading
+Further reading
 ===============
 
 * Documentation: https://nurbs-python.readthedocs.io/
 * Examples: https://github.com/orbingol/NURBS-Python_Examples
 * Wiki: https://github.com/orbingol/NURBS-Python/wiki
 * Development: https://github.com/orbingol/NURBS-Python
+
+Command-line application
+========================
+
+Please refer to `geomdl-cli project page <https://pypi.org/project/geomdl.cli>`_ for details.
 
 License
 =======
@@ -41,6 +46,9 @@ NURBS-Python is licensed under the MIT License.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
+.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/master.svg?style=shield
+.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/master
 
 .. |PYPIDL| image:: https://img.shields.io/pypi/dm/geomdl.svg
 .. _PYPIDL: https://pypi.org/project/geomdl/

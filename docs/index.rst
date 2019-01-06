@@ -3,6 +3,8 @@ NURBS-Python v5 Documentation
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 
+|TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_
+
 .. note::
 
     These documentation pages are for v5 release of NURBS-Python (geomdl) library.
@@ -72,3 +74,12 @@ NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ a
 
 .. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
 .. _ANACONDA: https://anaconda.org/orbingol/geomdl
+
+.. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
+.. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
+
+.. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
+.. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
+.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/master.svg?style=shield
+.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/master

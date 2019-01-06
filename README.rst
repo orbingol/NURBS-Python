@@ -3,7 +3,7 @@ NURBS-Python (geomdl)
 
 |DOI|_ |PYPI|_ |PYPIDL|_ |ANACONDA|_
 
-|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CODECOV|_
+|RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_ |CODECOV|_
 
 |WAFFLEIO|_
 
@@ -43,8 +43,7 @@ of the documentation.
 Contributions and Issues
 ------------------------
 
-All contributions (new algorithms, examples, tests, improving documentation, PR a task from the issue tracker, ...)
-are welcomed. For details, please see the
+All contributions are welcome. For details, please see the
 `Issues and Reporting <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_ section of the
 documentation.
 
@@ -82,6 +81,9 @@ supporting this project.
 
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=master&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
+
+.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/master.svg?style=shield
+.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/master
 
 .. |PYPI| image:: https://img.shields.io/pypi/v/geomdl.svg
 .. _PYPI: https://pypi.org/project/geomdl/
