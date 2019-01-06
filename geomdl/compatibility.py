@@ -243,7 +243,6 @@ def separate_ctrlpts_weights(ctrlptsw):
     return [ctrlpts, weights]
 
 
-# Reads 2D control points file, flips it and saves it
 def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
     """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
 
@@ -263,7 +262,6 @@ def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-# Generates weighted control points from unweighted ones
 def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
     """ Generates weighted control points from unweighted ones in 2-D.
 
@@ -291,7 +289,6 @@ def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-# Generates unweighted control points from weighted ones
 def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
     """ Generates unweighted control points from weighted ones in 2-D.
 

@@ -10,6 +10,10 @@
 from copy import deepcopy
 
 
+# Initialize an empty __all__ for controlling imports
+__all__ = []
+
+
 def compute_knot_vector(knotvector, r, param, span):
     kv_new = [0.0 for _ in range(len(knotvector) + r)]
     for i in range(0, span + 1):

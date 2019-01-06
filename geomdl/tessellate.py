@@ -10,6 +10,7 @@
 import abc
 import six
 from . import utilities
+from ._utilities import export
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -84,6 +85,7 @@ class AbstractTessellate(object):
         pass
 
 
+@export
 class TriangularTessellate(AbstractTessellate):
     """  Triangular tessellation algorithm for surfaces.
 

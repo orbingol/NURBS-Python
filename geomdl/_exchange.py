@@ -11,6 +11,10 @@ import math
 from . import abstract, NURBS, multi, compatibility, utilities
 
 
+# Initialize an empty __all__ for controlling imports
+__all__ = []
+
+
 def process_template(file_src):
     """ Process Jinja2 template input
 

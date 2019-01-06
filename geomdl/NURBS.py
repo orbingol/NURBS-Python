@@ -10,8 +10,10 @@
 from . import BSpline
 from . import compatibility
 from . import evaluators
+from ._utilities import export
 
 
+@export
 class Curve(BSpline.Curve):
     """ Data storage and evaluation class for n-variate NURBS (rational) curves.
 
@@ -166,6 +168,7 @@ class Curve(BSpline.Curve):
             self._cache['weights'][:] = self._init_array()
 
 
+@export
 class Surface(BSpline.Surface):
     """ Data storage and evaluation class for NURBS (rational) surfaces.
 
@@ -330,6 +333,7 @@ class Surface(BSpline.Surface):
             self.init_cache()
 
 
+@export
 class Volume(BSpline.Volume):
     """ Data storage and evaluation class for NURBS (rational) volumes.
 

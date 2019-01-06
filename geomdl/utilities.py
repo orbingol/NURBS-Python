@@ -10,6 +10,7 @@
 import random
 from .linalg import linspace, vector_cross, vector_generate, point_translate
 from .elements import Vertex, Triangle, Quad
+from ._utilities import export
 
 
 def evaluate_bounding_box(ctrlpts):
@@ -490,7 +491,7 @@ def normalize_knot_vector(knot_vector, decimals=18):
     return knot_vector_out
 
 
-# Generates a uniform knot vector using the given degree and the number of control points
+@export
 def generate_knot_vector(degree, num_ctrlpts, **kwargs):
     """ Generates an equally spaced knot vector.
 

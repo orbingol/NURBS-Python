@@ -13,6 +13,7 @@ import six
 from . import linalg
 from . import helpers
 from . import _evaluators
+from ._utilities import export
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -102,6 +103,7 @@ class AbstractEvaluatorExtended(AbstractEvaluator):
         pass
 
 
+@export
 class CurveEvaluator(AbstractEvaluatorExtended):
     """ Sequential curve evaluation algorithms.
 
@@ -345,6 +347,7 @@ class CurveEvaluator2(CurveEvaluator):
         return CK
 
 
+@export
 class CurveEvaluatorRational(CurveEvaluator):
     """ Sequential rational curve evaluation algorithms.
 
@@ -399,6 +402,7 @@ class CurveEvaluatorRational(CurveEvaluator):
         return CK
 
 
+@export
 class SurfaceEvaluator(AbstractEvaluatorExtended):
     """ Sequential surface evaluation algorithms.
 
@@ -653,6 +657,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         return SKL
 
 
+@export
 class SurfaceEvaluatorRational(SurfaceEvaluator):
     """ Sequential rational surface evaluation algorithms.
 
@@ -721,6 +726,7 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         return SKL
 
 
+@export
 class VolumeEvaluator(AbstractEvaluator):
     """ Sequential volume evaluation algorithms.
 
@@ -801,6 +807,7 @@ class VolumeEvaluator(AbstractEvaluator):
         pass
 
 
+@export
 class VolumeEvaluatorRational(VolumeEvaluator):
     """ Sequential rational volume evaluation algorithms.
 

@@ -12,6 +12,10 @@ import six
 from typing import Any, Sequence, List
 
 
+# Initialize an empty __all__ for controlling imports
+__all__ = []
+
+
 @six.add_metaclass(abc.ABCMeta)
 class VisConfigAbstract(object):
     """ Abstract base class for user configuration of the visualization module

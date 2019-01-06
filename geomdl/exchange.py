@@ -13,8 +13,10 @@ import json
 from io import StringIO
 from . import abstract, NURBS, multi, compatibility, operations, utilities, convert
 from . import _exchange as exch
+from ._utilities import export
 
 
+@export
 def import_txt(file_name, two_dimensional=False, **kwargs):
     """ Reads control points from a text file and generates a 1-dimensional list of control points.
 
@@ -86,6 +88,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     return exch.import_text_data(content, sep, col_sep, two_dimensional)
 
 
+@export
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     """ Exports control points as a text file.
 
@@ -120,6 +123,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     return exch.write_file(file_name, content)
 
 
+@export
 def import_csv(file_name, **kwargs):
     """ Reads control points from a CSV file and generates a 1-dimensional list of control points.
 
@@ -151,6 +155,7 @@ def import_csv(file_name, **kwargs):
     return exch.import_text_data(content, sep)
 
 
+@export
 def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     """ Exports control points or evaluated points as a CSV file.
 
@@ -188,6 +193,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     return exch.write_file(file_name, line)
 
 
+@export
 def import_cfg(file_name, **kwargs):
     """ Imports curves and surfaces from files in libconfig format.
 
@@ -224,6 +230,7 @@ def import_cfg(file_name, **kwargs):
     return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
+@export
 def export_cfg(obj, file_name):
     """ Exports curves and surfaces in libconfig format.
 
@@ -258,6 +265,7 @@ def export_cfg(obj, file_name):
     return exch.write_file(file_name, exported_data)
 
 
+@export
 def import_yaml(file_name, **kwargs):
     """ Imports curves and surfaces from files in YAML format.
 
@@ -295,6 +303,7 @@ def import_yaml(file_name, **kwargs):
     return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
+@export
 def export_yaml(obj, file_name):
     """ Exports curves and surfaces in YAML format.
 
@@ -332,6 +341,7 @@ def export_yaml(obj, file_name):
     return exch.write_file(file_name, exported_data)
 
 
+@export
 def import_json(file_name, **kwargs):
     """ Imports curves and surfaces from files in JSON format.
 
@@ -357,6 +367,7 @@ def import_json(file_name, **kwargs):
     return exch.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
 
 
+@export
 def export_json(obj, file_name):
     """ Exports curves and surfaces in JSON format.
 
@@ -379,6 +390,7 @@ def export_json(obj, file_name):
     return exch.write_file(file_name, exported_data)
 
 
+@export
 def export_obj(surface, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
@@ -481,6 +493,7 @@ def export_obj_str(surface, **kwargs):
     return line
 
 
+@export
 def export_stl(surface, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
@@ -566,6 +579,7 @@ def export_stl_str(surface, **kwargs):
     return line
 
 
+@export
 def export_off(surface, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
@@ -657,6 +671,7 @@ def export_off_str(surface, **kwargs):
     return line
 
 
+@export
 def import_smesh(file):
     """ Generates NURBS surface(s) from surface mesh (smesh) file(s).
 
@@ -688,6 +703,7 @@ def import_smesh(file):
     return imported_elements
 
 
+@export
 def export_smesh(surface, file_name, **kwargs):
     """ Exports surface(s) as surface mesh (smesh) files.
 
@@ -735,6 +751,7 @@ def export_smesh(surface, file_name, **kwargs):
         exch.write_file(fname_curr + fext, line)
 
 
+@export
 def import_vmesh(file):
     """ Imports NURBS volume(s) from volume mesh (vmesh) file(s).
 
@@ -756,6 +773,7 @@ def import_vmesh(file):
     return imported_elements
 
 
+@export
 def export_vmesh(volume, file_name, **kwargs):
     """ Exports volume(s) as volume mesh (vmesh) files.
 
@@ -806,6 +824,7 @@ def export_vmesh(volume, file_name, **kwargs):
         exch.write_file(fname_curr + fext, line)
 
 
+@export
 def import_3dm(file_name, **kwargs):
     """ Imports Rhinoceros/OpenNURBS .3dm file format.
 
@@ -851,6 +870,7 @@ def import_3dm(file_name, **kwargs):
     return res
 
 
+@export
 def export_3dm(obj, file_name, **kwargs):
     """ Exports NURBS curves and surfaces in Rhinoceros/OpenNURBS .3dm format.
 

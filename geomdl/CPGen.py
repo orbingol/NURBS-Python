@@ -9,8 +9,10 @@
 
 import random
 import warnings
+from ._utilities import export
 
 
+@export
 class Grid(object):
     """ Simple control points grid generator to use with non-rational surfaces.
 
@@ -242,6 +244,7 @@ class Grid(object):
                     self._grid_points[i][j][2] = height
 
 
+@export
 class GridWeighted(Grid):
     """ Simple control points grid generator to use with rational surfaces.
 

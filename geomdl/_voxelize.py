@@ -9,7 +9,11 @@
 
 from functools import partial
 from . import linalg
-from . import _mp
+from ._utilities import pool_context
+
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
 def find_inouts_st(voxel_grid, datapts, **kwargs):
@@ -37,7 +41,7 @@ def find_inouts_mp(voxel_grid, datapts, **kwargs):
     """
     padding = kwargs.get('padding', 10e-8)
     num_procs = kwargs.get('num_procs', 4)
-    with _mp.pool_context(processes=num_procs) as pool:
+    with pool_context(processes=num_procs) as pool:
         filled = pool.map(partial(is_point_inside_voxel, ptarr=datapts, padding=padding), voxel_grid)
     return filled
 

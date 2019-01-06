@@ -10,6 +10,7 @@
 import abc
 import copy
 import six
+from ._utilities import export
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -66,7 +67,7 @@ class AbstractEntity(object):
         self._id = value
 
 
-# Vertex entity
+@export
 class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self, *args, **kwargs):
@@ -275,7 +276,7 @@ class Vertex(AbstractEntity):
         self._data = [float(val) for val in value]
 
 
-# Triangle entity
+@export
 class Triangle(AbstractEntity):
     """ Triangle entity which represents a triangle composed of vertices. """
     def __init__(self, *args, **kwargs):
@@ -395,7 +396,7 @@ class Triangle(AbstractEntity):
         self._data = res
 
 
-# Quad entity
+@export
 class Quad(AbstractEntity):
     """ Quad entity which represents a quadrilateral structure composed of vertices. """
 
@@ -443,7 +444,7 @@ class Quad(AbstractEntity):
         self._data = res
 
 
-# Face entity
+@export
 class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
@@ -477,7 +478,7 @@ class Face(AbstractEntity):
         self._data = res
 
 
-# Body entity
+@export
 class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):

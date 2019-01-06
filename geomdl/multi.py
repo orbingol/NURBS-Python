@@ -797,7 +797,7 @@ class VolumeContainer(SurfaceContainer):
             # Add evaluated points as voxels
             if self._vis_component.mconf['evalpts'] == 'voxels':
                 grid, filled = voxelize.voxelize(elem, **kwargs)
-                polygrid = voxelize.generate_faces(grid)
+                polygrid = voxelize.convert_bb_to_faces(grid)
                 self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type='evalpts')
 
         # Display the figures

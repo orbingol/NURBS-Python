@@ -12,8 +12,10 @@ from typing import Any, Sequence, List, Tuple
 from . import BSpline
 from . import helpers
 from . import linalg
+from ._utilities import export
 
 
+@export
 def interpolate_curve(points, degree, **kwargs):
     # type: (Sequence[Sequence[float]], int, **Any) -> BSpline.Curve
     """ Curve interpolation through the data points.
@@ -55,6 +57,7 @@ def interpolate_curve(points, degree, **kwargs):
     return curve
 
 
+@export
 def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # type: (Sequence[Sequence[float]], int, int, int, int, **Any) -> BSpline.Surface
     """ Surface interpolation through the data points.
@@ -114,6 +117,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     return surf
 
 
+@export
 def approximate_curve(points, degree, **kwargs):
     # type: (Sequence[Sequence[float]], int, **Any) -> BSpline.Curve
     """ Curve approximation using least squares method with fixed number of control points.
@@ -210,6 +214,7 @@ def approximate_curve(points, degree, **kwargs):
     return curve
 
 
+@export
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     # type: (Sequence[Sequence[float]], int, int, int, int, **Any) -> BSpline.Surface
     """ Surface approximation using least squares method with fixed number of control points.

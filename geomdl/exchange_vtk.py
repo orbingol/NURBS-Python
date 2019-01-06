@@ -9,6 +9,7 @@
 
 import warnings
 from geomdl import abstract, _exchange
+from ._utilities import export
 
 
 def export_polydata_str(obj, point_type='evalpts', **kwargs):
@@ -64,6 +65,7 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
     return line
 
 
+@export
 def export_polydata(obj, file_name, point_type='evalpts', **kwargs):
     """ Exports control points or evaluated points in VTK Polydata format.
 

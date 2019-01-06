@@ -9,8 +9,10 @@
 
 import struct
 from . import _voxelize
+from ._utilities import export
 
 
+@export
 def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surfaces and volumes.
 
@@ -53,7 +55,7 @@ def voxelize(obj, **kwargs):
     return grid, filled
 
 
-def generate_faces(voxel_grid):
+def convert_bb_to_faces(voxel_grid):
     """ Converts a voxel grid defined by min and max coordinates to a voxel grid defined by faces.
 
     :param voxel_grid: voxel grid defined by the bounding box of all voxels
@@ -82,7 +84,8 @@ def generate_faces(voxel_grid):
     return new_vg
 
 
-def save(voxel_grid, file_name):
+@export
+def save_voxel_grid(voxel_grid, file_name):
     """ Saves binary voxel grid as a binary file.
 
     The binary file is structured in little-endian unsigned int format.

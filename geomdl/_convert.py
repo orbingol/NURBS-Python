@@ -7,6 +7,9 @@
 
 """
 
+# Initialize an empty __all__ for controlling imports
+__all__ = []
+
 
 def convert_curve(incrv, outtype):
     outcrv = outtype.Curve()

@@ -15,8 +15,10 @@ from . import helpers
 from . import evaluators
 from . import operations
 from . import tessellate
+from ._utilities import export
 
 
+@export
 class Curve(abstract.Curve):
     """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
 
@@ -337,6 +339,7 @@ class Curve(abstract.Curve):
         return operations.binormal(self, parpos, **kwargs)
 
 
+@export
 class Surface(abstract.Surface):
     """ Data storage and evaluation class for B-spline (non-rational) surfaces.
 
@@ -810,6 +813,7 @@ class Surface(abstract.Surface):
         return operations.normal(self, parpos, **kwargs)
 
 
+@export
 class Volume(abstract.Volume):
     """ Data storage and evaluation class for B-spline (non-rational) volumes.
 

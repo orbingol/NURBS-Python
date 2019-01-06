@@ -9,8 +9,10 @@
 
 from enum import Enum
 from . import linalg
+from ._utilities import export
 
 
+@export
 class Ray(object):
     """ Representation of a n-dimensional ray generated from 2 points.
 
@@ -94,6 +96,7 @@ class Ray(object):
         return linalg.point_translate(self.p, linalg.vector_multiply(self.d, t))
 
 
+@export
 class RayIntersection(Enum):
     """ The status of the ray intersection operation """
     INTERSECT = 1  # only one solution
@@ -101,6 +104,7 @@ class RayIntersection(Enum):
     SKEW = 3  # neither parallel nor intersecting
 
 
+@export
 def intersect(ray1, ray2, **kwargs):
     """ Finds intersection of 2 rays.
 
