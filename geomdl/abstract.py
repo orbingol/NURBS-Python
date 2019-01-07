@@ -158,6 +158,7 @@ class SplineGeometry(Geometry):
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
         self._control_points = self._init_array()  # control points
+        self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
         self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
         self._bounding_box = self._init_array()  # bounding box
         self._evaluator = None  # evaluator instance
@@ -255,6 +256,18 @@ class SplineGeometry(Geometry):
         self._control_points = value
 
     @property
+    def ctrlpts_size(self):
+        """ Total number of control points.
+
+        :getter: Gets the total number of control points
+        :type: int
+        """
+        res = 1
+        for sz in self._control_points_size:
+            res *= sz
+        return res
+
+    @property
     def bbox(self):
         """ Bounding box.
 
@@ -312,6 +325,65 @@ class SplineGeometry(Geometry):
             warnings.warn("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
+
+    def set_ctrlpts(self, ctrlpts, *args, **kwargs):
+        """ Sets control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        It accepts a keyword argument ``array_init`` which defaults to a ``list`` of size ``len(ctrlpts)``
+        where ``ctrlpts`` is the input list of control points. ``array_init`` keyword argument may be used to input
+        other types of arrays to this method.
+
+        The following example illustrates a way to use a NumPy array with this method.
+
+        .. code-block:: python
+            :linenos:
+
+            # Import numpy
+            import numpy as np
+
+            # Assuming that "ctrlpts" is a NumPy array of a shape (x,y) where x == len(ctrlpts) and y == len(ctrlpts[0])
+            curve.set_ctrlpts(ctrlpts, array_init=np.zeros(ctrlpts.shape, dtype=np.float32))
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        """
+        def validate_and_clean(pts_in, check_for, dimension, pts_out, **kws):
+            for idx, cpt in enumerate(pts_in):
+                if not isinstance(cpt, check_for):
+                    raise ValueError("Element number " + str(idx) + " is not a valid input")
+                if len(cpt) != dimension:
+                    raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
+                                     " is not a valid control point")
+                # Convert to list of floats
+                pts_out[idx] = [float(coord) for coord in cpt]
+            return pts_out
+
+        # Argument validation
+        if len(args) == 0:
+            args = [len(ctrlpts)]
+        if len(args) != self._pdim:
+            raise ValueError("Number of arguments after ctrlpts must be " + str(self._pdim))
+
+        # Keyword arguments
+        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+        array_check_for = kwargs.get('array_check_for', (list, tuple))
+        callback_func = kwargs.get('callback', validate_and_clean)
+        self._dimension = kwargs.get('dimension', len(ctrlpts[0]))
+
+        # Pop existing keywords from kwargs dict
+        existing_kws = ['array_init', 'array_check_for', 'callback', 'dimension']
+        for ekw in existing_kws:
+            if ekw in kwargs:
+                kwargs.pop(ekw)
+
+        # Set control points and sizes
+        self._control_points = callback_func(ctrlpts, array_check_for, self._dimension, array_init, **kwargs)
+        self._control_points_size = [int(arg) for arg in args]
 
     @abc.abstractmethod
     def render(self, **kwargs):
@@ -457,15 +529,6 @@ class Curve(SplineGeometry):
             if self._kv_normalize else value
 
     @property
-    def ctrlpts_size(self):
-        """ Number of control points.
-
-        :getter: Gets number of control points
-        :type: int
-        """
-        return len(self._control_points)
-
-    @property
     def sample_size(self):
         """ Sample size.
 
@@ -586,28 +649,12 @@ class Curve(SplineGeometry):
         if len(ctrlpts) < self.degree + 1:
             raise ValueError("Number of control points should be at least degree + 1")
 
-        # Keyword arguments
-        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
-
         # Clean up the curve and control points lists
         self.reset(ctrlpts=True, evalpts=True)
 
-        # Estimate dimension by checking the size of the first element
-        self._dimension = len(ctrlpts[0])
+        # Call parent function
+        super(Curve, self).set_ctrlpts(ctrlpts, **kwargs)
 
-        ctrlpts_float = array_init
-        for idx, cpt in enumerate(ctrlpts):
-            if not isinstance(cpt, (list, tuple)):
-                raise ValueError("Element number " + str(idx) + " is not a list")
-            if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                 " is not a valid control point")
-            # Convert to list of floats
-            ctrlpts_float[idx] = [float(coord) for coord in cpt]
-
-        self._control_points = ctrlpts_float
-
-    # Runs visualization component to render the curve
     def render(self, **kwargs):
         """ Renders the curve using the visualization component
 
@@ -869,7 +916,6 @@ class Surface(SplineGeometry):
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Surface, self).__init__(**kwargs)
         self._name = "Surface"  # descriptor field
-        self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
         self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._tsl_component = None  # tessellation component
         self._trims = self._init_array()  # trim curves
@@ -1071,18 +1117,6 @@ class Surface(SplineGeometry):
     @ctrlpts2d.setter
     def ctrlpts2d(self, value):
         self._control_points2D = value
-
-    @property
-    def ctrlpts_size(self):
-        """ Total number of control points.
-
-        :getter: Gets the total number of control points
-        :type: int
-        """
-        res = 1
-        for sz in self._control_points_size:
-            res *= sz
-        return res
 
     @property
     def ctrlpts_size_u(self):
@@ -1389,7 +1423,7 @@ class Surface(SplineGeometry):
             control_points=self._control_points
         )
 
-    def set_ctrlpts(self, ctrlpts, size_u, size_v, **kwargs):
+    def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
@@ -1409,56 +1443,34 @@ class Surface(SplineGeometry):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
-        :param size_u: number of control points for the u-direction
-        :type size_u: int
-        :param size_v: number of control points for the v-direction
-        :type size_v: int
         """
         # Degrees must be set before setting the control points
         if self.degree_u <= 0 or self.degree_v <= 0:
             raise ValueError("Set the degrees first")
 
         # Check array size validity
-        if size_u < self.degree_u + 1:
+        if args[0] < self.degree_u + 1:
             raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if size_v < self.degree_v + 1:
+        if args[1] < self.degree_v + 1:
             raise ValueError("Number of control points on the v-direction should be at least degree + 1")
-
-        # Keyword arguments
-        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
-        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(size_v)] for _ in range(size_u)])
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
 
-        # Estimate dimension by checking the size of the first element
-        self._dimension = len(ctrlpts[0])
+        # Call parent function
+        super(Surface, self).set_ctrlpts(ctrlpts, *args, **kwargs)
 
-        # Check the dimensions of the input control points array and type cast to float
-        ctrlpts_float = array_init
-        for idx, cpt in enumerate(ctrlpts):
-            if not isinstance(cpt, (list, tuple)):
-                raise ValueError("Element number " + str(idx) + " is not a list")
-            if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                 " is not a valid control point")
-            ctrlpts_float[idx] = [float(coord) for coord in cpt]
+        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(args[1])] for _ in range(args[0])])
 
         # Generate a 2-dimensional list of control points
         ctrlpts_float2d = array_init2d
-        for i in range(0, size_u):
-            for j in range(0, size_v):
-                ctrlpts_float2d[i][j] = ctrlpts_float[j + (i * size_v)]
+        for i in range(0, self.ctrlpts_size_u):
+            for j in range(0, self.ctrlpts_size_v):
+                ctrlpts_float2d[i][j] = self._control_points[j + (i * self.ctrlpts_size_v)]
 
-        # Set the new control points
-        self._control_points = ctrlpts_float
+        # Set the new 2-dimension control points
         self._control_points2D = ctrlpts_float2d
 
-        # Set u and v sizes
-        self.ctrlpts_size_u = size_u
-        self.ctrlpts_size_v = size_v
-
-    # Runs visualization component to render the surface
     def render(self, **kwargs):
         """ Renders the surface using the visualization component.
 
@@ -1791,7 +1803,6 @@ class Volume(SplineGeometry):
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Volume, self).__init__(**kwargs)
-        self._control_points_size = [0 for _ in range(self._pdim)]   # control points length
         self._name = "Volume"  # descriptor field
 
     @property
@@ -2051,18 +2062,6 @@ class Volume(SplineGeometry):
         # Set knot vector
         self._knot_vector[2] = utilities.normalize_knot_vector(value, decimals=self._precision) \
             if self._kv_normalize else value
-
-    @property
-    def ctrlpts_size(self):
-        """ Total number of control points.
-
-        :getter: Gets the total number of control points
-        :type: int
-        """
-        res = 1
-        for sz in self._control_points_size:
-            res *= sz
-        return res
 
     @property
     def ctrlpts_size_u(self):
@@ -2469,7 +2468,7 @@ class Volume(SplineGeometry):
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
-    def set_ctrlpts(self, ctrlpts, size_u, size_v, size_w, **kwargs):
+    def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
@@ -2479,51 +2478,24 @@ class Volume(SplineGeometry):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
-        :param size_u: number of control points for the u-direction
-        :type size_u: int
-        :param size_v: number of control points for the v-direction
-        :type size_v: int
-        :param size_w: number of control points for the w-direction
-        :type size_w: int
         """
         # Degrees must be set before setting the control points
         if self.degree_u <= 0 or self.degree_v <= 0 or self.degree_w <= 0:
             raise ValueError("Set the degrees first")
 
         # Check array size validity
-        if size_u < self.degree_u + 1:
+        if args[0] < self.degree_u + 1:
             raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if size_v < self.degree_v + 1:
+        if args[1] < self.degree_v + 1:
             raise ValueError("Number of control points on the v-direction should be at least degree + 1")
-        if size_w < self.degree_w + 1:
+        if args[2] < self.degree_w + 1:
             raise ValueError("Number of control points on the w-direction should be at least degree + 1")
-
-        # Keyword arguments
-        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
 
-        # Estimate dimension by checking the size of the first element
-        self._dimension = len(ctrlpts[0])
-
-        # Check the dimensions of the input control points array and type cast to float
-        ctrlpts_float = array_init
-        for idx, cpt in enumerate(ctrlpts):
-            if not isinstance(cpt, (list, tuple)):
-                raise ValueError("Element number " + str(idx) + " is not a list")
-            if len(cpt) is not self._dimension:
-                raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                 " is not a valid control point")
-            ctrlpts_float[idx] = [float(coord) for coord in cpt]
-
-        # Set new control points
-        self._control_points = ctrlpts_float
-
-        # Set number of control points
-        self.ctrlpts_size_u = size_u
-        self.ctrlpts_size_v = size_v
-        self.ctrlpts_size_w = size_w
+        # Call parent function
+        super(Volume, self).set_ctrlpts(ctrlpts, *args, **kwargs)
 
     def render(self, **kwargs):
         """ Renders the volume using the visualization component.
