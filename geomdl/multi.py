@@ -257,7 +257,7 @@ class AbstractContainer(object):
         if isinstance(element, self._instance):
             self._elements.append(element)
         elif isinstance(element, self.__class__):
-            self + element
+            self.__add__(element)
         elif isinstance(element, (list, tuple)):
             for elem in element:
                 self.add(elem)
