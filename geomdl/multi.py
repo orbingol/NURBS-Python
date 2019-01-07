@@ -269,7 +269,7 @@ class AbstractContainer(object):
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
-    def render(self):
+    def render(self, **kwargs):
         """ Renders plots using the visualization component.
 
         .. note::

@@ -812,9 +812,6 @@ class Curve(SplineGeometry):
         # Check all parameters are set before the curve evaluation
         self._check_variables()
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_single(self, param):
         """ Evaluates the curve at the given parameter.
@@ -835,9 +832,6 @@ class Curve(SplineGeometry):
         if self._kv_normalize:
             utilities.check_params(param)
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_list(self, param_list):
         """ Evaluates the curve for an input range of parameters.
@@ -850,9 +844,6 @@ class Curve(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
-
-        # Should implement the evaluation functionality
-        pass
 
     @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
@@ -873,9 +864,6 @@ class Curve(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             utilities.check_params([u])
-
-        # Should implement the derivatives functionality
-        pass
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -1691,9 +1679,6 @@ class Surface(SplineGeometry):
         # Check all parameters are set before the evaluation
         self._check_variables()
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_single(self, param):
         """ Evaluates the parametric surface at the given (u, v) parameter.
@@ -1714,9 +1699,6 @@ class Surface(SplineGeometry):
         if self._kv_normalize:
             utilities.check_params(param)
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_list(self, param_list):
         """ Evaluates the parametric surface for an input range of (u, v) parameters.
@@ -1729,9 +1711,6 @@ class Surface(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
-
-        # Should implement the evaluation functionality
-        pass
 
     @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
@@ -1754,9 +1733,6 @@ class Surface(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             utilities.check_params([u, v])
-
-        # Should implement the derivatives functionality here
-        pass
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -2636,9 +2612,6 @@ class Volume(SplineGeometry):
         # Check all parameters are set before the evaluation
         self._check_variables()
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_single(self, param):
         """ Evaluates the parametric surface at the given (u, v, w) parameter.
@@ -2659,9 +2632,6 @@ class Volume(SplineGeometry):
         if self._kv_normalize:
             utilities.check_params(param)
 
-        # Should implement the evaluation functionality
-        pass
-
     @abc.abstractmethod
     def evaluate_list(self, param_list):
         """ Evaluates the parametric volume for an input range of (u, v, w) parameter pairs.
@@ -2674,6 +2644,3 @@ class Volume(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
-
-        # Should implement the evaluation functionality
-        pass

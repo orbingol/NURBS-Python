@@ -184,6 +184,3 @@ class VisAbstract(object):
         # We need something to plot
         if self._plots is None or len(self._plots) == 0:
             raise ValueError("Nothing to plot")
-
-        # Remaining should be implemented
-        pass

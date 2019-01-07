@@ -87,7 +87,10 @@ def write_file(file_name, content, **kwargs):
     callback = kwargs.get('callback', None)
     try:
         with open(file_name, 'wb' if binary else 'w') as fp:
-            fp.write(content) if callback is None else callback(fp, content)
+            if callback is None:
+                fp.write(content)
+            else:
+                callback(fp, content)
         return True
     except IOError as e:
         print("An error occurred: {}".format(e.args[-1]))
