@@ -8,7 +8,8 @@
 """
 
 import warnings
-from geomdl import abstract, _exchange
+from geomdl import abstract
+from . import _exchange as exch
 from ._utilities import export
 
 
@@ -80,4 +81,4 @@ def export_polydata(obj, file_name, point_type='evalpts', **kwargs):
     :raises IOError: an error occurred writing the file
     """
     content = export_polydata_str(obj, point_type, **kwargs)
-    return _exchange.write_file(file_name, content)
+    return exch.write_file(file_name, content)
