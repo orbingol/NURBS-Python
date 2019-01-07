@@ -334,23 +334,16 @@ class SplineGeometry(Geometry):
         The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
         will be an array of 3 elements representing *(x, y, z)* coordinates.
 
-        It accepts a keyword argument ``array_init`` which defaults to a ``list`` of size ``len(ctrlpts)``
-        where ``ctrlpts`` is the input list of control points. ``array_init`` keyword argument may be used to input
-        other types of arrays to this method.
-
-        The following example illustrates a way to use a NumPy array with this method.
-
-        .. code-block:: python
-            :linenos:
-
-            # Import numpy
-            import numpy as np
-
-            # Assuming that "ctrlpts" is a NumPy array of a shape (x,y) where x == len(ctrlpts) and y == len(ctrlpts[0])
-            curve.set_ctrlpts(ctrlpts, array_init=np.zeros(ctrlpts.shape, dtype=np.float32))
+        Keyword Arguments:
+            * ``array_init``: initializes the control points array in the instance
+            * ``array_check_for``: defines the types for input validation
+            * ``callback``: defines the callback function for processing input points
+            * ``dimension``: defines the spatial dimension of the input points
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
+        :param args: number of control points corresponding to each parametric dimension
+        :type args: tuple
         """
         def validate_and_clean(pts_in, check_for, dimension, pts_out, **kws):
             for idx, cpt in enumerate(pts_in):
@@ -1447,6 +1440,8 @@ class Surface(SplineGeometry):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
+        :param args: number of control points corresponding to each parametric dimension
+        :type args: tuple[int, int]
         """
         # Degrees must be set before setting the control points
         if self.degree_u <= 0 or self.degree_v <= 0:
@@ -2489,6 +2484,8 @@ class Volume(SplineGeometry):
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
+        :param args: number of control points corresponding to each parametric dimension
+        :type args: tuple[int, int, int]
         """
         # Degrees must be set before setting the control points
         if self.degree_u <= 0 or self.degree_v <= 0 or self.degree_w <= 0:
