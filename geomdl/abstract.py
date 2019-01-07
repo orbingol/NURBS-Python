@@ -143,6 +143,8 @@ class SplineGeometry(Geometry):
     * :py:attr:`degree`
     * :py:attr:`knotvector`
     * :py:attr:`ctrlpts`
+    * :py:attr:`ctrlpts_size`
+    * :py:attr:`weights` (for completeness with the rational spline implementations)
     * :py:attr:`evalpts`
     * :py:attr:`bbox`
     * :py:attr:`evaluator`
@@ -240,7 +242,7 @@ class SplineGeometry(Geometry):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional array of control points.
+        """ Control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -266,6 +268,22 @@ class SplineGeometry(Geometry):
         for sz in self._control_points_size:
             res *= sz
         return res
+
+    @property
+    def weights(self):
+        """ Weights.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the weights
+        :setter: Sets the weights
+        """
+        return None
+
+    @weights.setter
+    def weights(self, value):
+        pass
 
     @property
     def bbox(self):
