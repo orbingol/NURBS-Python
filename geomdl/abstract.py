@@ -626,7 +626,7 @@ class Curve(SplineGeometry):
             control_points=self._control_points
         )
 
-    def set_ctrlpts(self, ctrlpts, **kwargs):
+    def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
@@ -637,12 +637,16 @@ class Curve(SplineGeometry):
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
         """
-        # Degree must be set before setting the control points
-        if self.degree <= 0:
-            raise ValueError("Set the degree first")
+        # It is not necessary to input args for curves
+        if not args:
+            args = [len(ctrlpts)]
 
-        if len(ctrlpts) < self.degree + 1:
-            raise ValueError("Number of control points should be at least degree + 1")
+        # Validate input
+        for arg, degree in zip(args, self._degree):
+            if degree <= 0:
+                raise ValueError("Set the degree first")
+            if arg < degree + 1:
+                raise ValueError("Number of control points should be at least degree + 1")
 
         # Clean up the curve and control points lists
         self.reset(ctrlpts=True, evalpts=True)
@@ -1443,15 +1447,12 @@ class Surface(SplineGeometry):
         :param args: number of control points corresponding to each parametric dimension
         :type args: tuple[int, int]
         """
-        # Degrees must be set before setting the control points
-        if self.degree_u <= 0 or self.degree_v <= 0:
-            raise ValueError("Set the degrees first")
-
-        # Check array size validity
-        if args[0] < self.degree_u + 1:
-            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if args[1] < self.degree_v + 1:
-            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
+        # Validate input
+        for arg, degree in zip(args, self._degree):
+            if degree <= 0:
+                raise ValueError("Set the degree first")
+            if arg < degree + 1:
+                raise ValueError("Number of control points should be at least degree + 1")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
@@ -2487,17 +2488,12 @@ class Volume(SplineGeometry):
         :param args: number of control points corresponding to each parametric dimension
         :type args: tuple[int, int, int]
         """
-        # Degrees must be set before setting the control points
-        if self.degree_u <= 0 or self.degree_v <= 0 or self.degree_w <= 0:
-            raise ValueError("Set the degrees first")
-
-        # Check array size validity
-        if args[0] < self.degree_u + 1:
-            raise ValueError("Number of control points on the u-direction should be at least degree + 1")
-        if args[1] < self.degree_v + 1:
-            raise ValueError("Number of control points on the v-direction should be at least degree + 1")
-        if args[2] < self.degree_w + 1:
-            raise ValueError("Number of control points on the w-direction should be at least degree + 1")
+        # Validate input
+        for arg, degree in zip(args, self._degree):
+            if degree <= 0:
+                raise ValueError("Set the degree first")
+            if arg < degree + 1:
+                raise ValueError("Number of control points should be at least degree + 1")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
