@@ -228,11 +228,8 @@ def export_dict_crv(obj):
         ),
         delta=obj.delta
     )
-    try:
+    if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
-    except AttributeError:
-        # Not a NURBS shape
-        pass
     return data
 
 
@@ -276,11 +273,8 @@ def export_dict_surf(obj):
         ),
         delta=obj.delta
     )
-    try:
+    if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
-    except AttributeError:
-        # Not a NURBS shape
-        pass
     return data
 
 
@@ -330,11 +324,8 @@ def export_dict_vol(obj):
         ),
         delta=obj.delta
     )
-    try:
+    if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
-    except AttributeError:
-        # Not a NURBS shape
-        pass
     return data
 
 
