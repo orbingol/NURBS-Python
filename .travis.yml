@@ -19,22 +19,32 @@ branches:
 matrix:
   include:
     - python: 2.7
-      env: TOXENV=full-py27,core-py27,codecov
+      env: TOXENV=py27,test,codecov
 
     - python: 3.4
-      env: TOXENV=full-py34,core-py34
+      env: TOXENV=py34,test
 
     - python: 3.5
-      env: TOXENV=full-py35,core-py35
+      env: TOXENV=py35,test
 
     - python: 3.6
-      env: TOXENV=full-py36,core-py36
+      env: TOXENV=py36,test
 
     - python: 3.7
-      env: TOXENV=full-py37,core-py37,codecov
+      env: TOXENV=py37,test,codecov
 
     - python: pypy3.5
-      env: TOXENV=full-pypy3
+      env: TOXENV=pypy3,test
+
+    - name: "Performance testing on Python 3.5"
+      python: 3.5
+      env: TOXENV=py35,performance-full
+      if: branch = master OR branch = travisci-testing
+
+    - name: "Performance testing on PyPy 3.5"
+      python: pypy3.5
+      env: TOXENV=pypy3,performance
+      if: branch = master OR branch = travisci-testing
 
 # install packages
 install:
