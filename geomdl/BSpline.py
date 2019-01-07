@@ -70,23 +70,6 @@ class Curve(abstract.Curve):
         super(Curve, self).__init__(**kwargs)
         self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
-    @property
-    def ctrlpts(self):
-        """ Control points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        :type: list
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        self.set_ctrlpts(value)
-
     def save(self, file_name):
         """  Saves the curve as a pickled file.
 
@@ -408,32 +391,9 @@ class Surface(abstract.Surface):
 
     def __init__(self, **kwargs):
         super(Surface, self).__init__(**kwargs)
+        self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
-
-    @property
-    def ctrlpts(self):
-        """ 1-dimensional array of control points.
-
-        .. note::
-
-            The v index varies first. That is, a row of v control points for the first u value is found first.
-            Then, the row of v control points for the next u value.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        :type: list
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0:
-            raise ValueError("Please set the number of control points on the u- and v-directions")
-        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
     @property
     def ctrlpts2d(self):
@@ -519,6 +479,53 @@ class Surface(abstract.Surface):
 
         # Set control points
         self.set_ctrlpts(ctrlpts, size_u, size_v)
+
+    def set_ctrlpts(self, ctrlpts, *args, **kwargs):
+        """ Sets the control points and checks if the data is consistent.
+
+        This method is designed to provide a consistent way to set control points whether they are weighted or not.
+        It directly sets the control points member of the class, and therefore it doesn't return any values.
+        The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
+        will be an array of 3 elements representing *(x, y, z)* coordinates.
+
+        This method also generates 2D control points in *[u][v]* format which can be accessed via :py:attr:`~ctrlpts2d`.
+
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
+
+        :param ctrlpts: input control points as a list of coordinates
+        :type ctrlpts: list
+        """
+        # Call parent function
+        super(Surface, self).set_ctrlpts(ctrlpts, *args, **kwargs)
+
+        # Generate a 2-dimensional list of control points
+        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(args[1])] for _ in range(args[0])])
+        ctrlpts_float2d = array_init2d
+        for i in range(0, self.ctrlpts_size_u):
+            for j in range(0, self.ctrlpts_size_v):
+                ctrlpts_float2d[i][j] = self._control_points[j + (i * self.ctrlpts_size_v)]
+
+        # Set the new 2-dimension control points
+        self._control_points2D = ctrlpts_float2d
+
+    def reset(self, **kwargs):
+        """ Resets control points and/or evaluated points.
+
+        Keyword Arguments:
+            * ``evalpts``: if True, then resets evaluated points
+            * ``ctrlpts`` if True, then resets control points
+
+        """
+        # Call parent function
+        super(Surface, self).reset(**kwargs)
+
+        # Reset ctrlpts2d
+        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        if reset_ctrlpts:
+            self._control_points2D = self._init_array()
 
     def save(self, file_name):
         """ Saves the surface as a pickled file.
@@ -855,25 +862,6 @@ class Volume(abstract.Volume):
     def __init__(self, **kwargs):
         super(Volume, self).__init__(**kwargs)
         self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
-
-    @property
-    def ctrlpts(self):
-        """ 1-dimensional array of control points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the control points
-        :setter: Sets the control points
-        :type: list
-        """
-        return self._control_points
-
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
-            raise ValueError("Please set the number of control points on the u-, v- and w-directions")
-        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
 
     def save(self, file_name):
         """ Saves the volume as a pickled file.

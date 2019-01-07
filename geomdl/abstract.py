@@ -529,6 +529,23 @@ class Curve(SplineGeometry):
             if self._kv_normalize else value
 
     @property
+    def ctrlpts(self):
+        """ Control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        :type: list
+        """
+        return self._control_points
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        self.set_ctrlpts(value)
+
+    @property
     def sample_size(self):
         """ Sample size.
 
@@ -623,21 +640,6 @@ class Curve(SplineGeometry):
         It directly sets the control points member of the class, and therefore it doesn't return any values.
         The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
         will be an array of 3 elements representing *(x, y, z)* coordinates.
-
-        It accepts a keyword argument ``array_init`` which defaults to a ``list`` of size ``len(ctrlpts)``
-        where ``ctrlpts`` is the input list of control points. ``array_init`` keyword argument may be used to input
-        other types of arrays to this method.
-
-        The following example illustrates a way to use a NumPy array with this method.
-
-        .. code-block:: python
-            :linenos:
-
-            # Import numpy
-            import numpy as np
-
-            # Assuming that "ctrlpts" is a NumPy array of a shape (x,y) where x == len(ctrlpts) and y == len(ctrlpts[0])
-            curve.set_ctrlpts(ctrlpts, array_init=np.zeros(ctrlpts.shape, dtype=np.float32))
 
         :param ctrlpts: input control points as a list of coordinates
         :type ctrlpts: list
@@ -916,7 +918,6 @@ class Surface(SplineGeometry):
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Surface, self).__init__(**kwargs)
         self._name = "Surface"  # descriptor field
-        self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._tsl_component = None  # tessellation component
         self._trims = self._init_array()  # trim curves
 
@@ -1103,20 +1104,28 @@ class Surface(SplineGeometry):
             if self._kv_normalize else value
 
     @property
-    def ctrlpts2d(self):
-        """ 2-dimensional control points.
+    def ctrlpts(self):
+        """ 1-dimensional array of control points.
+
+        .. note::
+
+            The v index varies first. That is, a row of v control points for the first u value is found first.
+            Then, the row of v control points for the next u value.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the control points as a 2-dimensional array in [u][v] format
-        :setter: Sets the control points as a 2-dimensional array in [u][v] format
+        :getter: Gets the control points
+        :setter: Sets the control points
+        :type: list
         """
-        return self._control_points2D
+        return self._control_points
 
-    @ctrlpts2d.setter
-    def ctrlpts2d(self, value):
-        self._control_points2D = value
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0:
+            raise ValueError("Please set the number of control points on the u- and v-directions")
+        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
     @property
     def ctrlpts_size_u(self):
@@ -1431,11 +1440,6 @@ class Surface(SplineGeometry):
         The input will be an array of coordinates. If you are working in the 3-dimensional space, then your coordinates
         will be an array of 3 elements representing *(x, y, z)* coordinates.
 
-        This method also generates 2D control points in *[u][v]* format which can be accessed via :py:attr:`~ctrlpts2d`.
-
-        You may initialize the 1-dimensional and 2-dimensional arrays via ``array_init`` and ``array_init2d`` keyword
-        arguments. Please see :py:meth:`.Curve.set_ctrlpts()` for details.
-
         .. note::
 
             The v index varies first. That is, a row of v control points for the first u value is found first.
@@ -1459,17 +1463,6 @@ class Surface(SplineGeometry):
 
         # Call parent function
         super(Surface, self).set_ctrlpts(ctrlpts, *args, **kwargs)
-
-        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(args[1])] for _ in range(args[0])])
-
-        # Generate a 2-dimensional list of control points
-        ctrlpts_float2d = array_init2d
-        for i in range(0, self.ctrlpts_size_u):
-            for j in range(0, self.ctrlpts_size_v):
-                ctrlpts_float2d[i][j] = self._control_points[j + (i * self.ctrlpts_size_v)]
-
-        # Set the new 2-dimension control points
-        self._control_points2D = ctrlpts_float2d
 
     def render(self, **kwargs):
         """ Renders the surface using the visualization component.
@@ -1640,7 +1633,6 @@ class Surface(SplineGeometry):
 
         if reset_ctrlpts:
             self._control_points = self._init_array()
-            self._control_points2D = self._init_array()
             self._control_points_size[0] = 0
             self._control_points_size[1] = 0
             self._bounding_box = self._init_array()
@@ -1661,13 +1653,13 @@ class Surface(SplineGeometry):
         if self.degree_v == 0:
             works = False
             param_list.append('degree_v')
-        if self._control_points is None or len(self._control_points) == 0:
+        if len(self._control_points) == 0:
             works = False
             param_list.append('ctrlpts')
-        if self.knotvector_u is None or len(self.knotvector_u) == 0:
+        if len(self.knotvector_u) == 0:
             works = False
             param_list.append('knotvector_u')
-        if self.knotvector_v is None or len(self.knotvector_v) == 0:
+        if len(self.knotvector_v) == 0:
             works = False
             param_list.append('knotvector_v')
         if not works:
@@ -2062,6 +2054,25 @@ class Volume(SplineGeometry):
         # Set knot vector
         self._knot_vector[2] = utilities.normalize_knot_vector(value, decimals=self._precision) \
             if self._kv_normalize else value
+
+    @property
+    def ctrlpts(self):
+        """ 1-dimensional array of control points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the control points
+        :setter: Sets the control points
+        :type: list
+        """
+        return self._control_points
+
+    @ctrlpts.setter
+    def ctrlpts(self, value):
+        if self.ctrlpts_size_u <= 0 or self.ctrlpts_size_v <= 0 or self.ctrlpts_size_w <= 0:
+            raise ValueError("Please set the number of control points on the u-, v- and w-directions")
+        self.set_ctrlpts(value, self.ctrlpts_size_u, self.ctrlpts_size_v, self.ctrlpts_size_w)
 
     @property
     def ctrlpts_size_u(self):
