@@ -1,25 +1,30 @@
 Examples Repository
 ^^^^^^^^^^^^^^^^^^^
 
-Using NURBS-Python is very easy: set degrees, control points and knot vectors, and you are all good. To give you a
-head-start on working with NURBS-Python, the authors also provide an Examples_ repository describing some basic usage of
-the library and its modules.
+Although using NURBS-Python is straight-forward, it is always confusing to do the initial start with a new library.
+To give you a headstart on working with NURBS-Python, an Examples_ repository over 50 example scripts which describe
+usage scenarios of the library and its modules is provided. You can run the scripts from the command line, inside from
+favorite IDE or copy them to a Jupyter notebook.
 
-The Examples_ repository contains examples on the following:
+The Examples_ repository contains examples on
 
 * Bézier curves and surfaces
-* B-Spline & NURBS curves and surfaces
-* Control points grid generation for ``Surface`` classes
-* Automatic knot vector generation for curves and surfaces
-* Visualization components (Matplotlib and Plotly)
-* Automatic NURBS curve and surface generation
-* Curve & surface splitting and Bézier decomposition
-* Exporting curves and surfaces using ``exchange`` module
+* B-Spline & NURBS curves, surfaces and volumes
+* Spline algorithms, e.g. knot insertion and removal, degree elevation and reduction
+* Curve & surface splitting and Bézier decomposition (:doc:`info <visualization_splitting>`)
+* Surface and curve fitting using interpolation and least squares approximation (:doc:`docs <module_fitting>`)
+* Geometrical operations, e.g. tangent, normal, binormal (:doc:`docs <module_operations>`)
+* Importing & exporting B-Spline and NURBS shapes (:doc:`docs <module_exchange>`)
+* Compatibility module for converting control points into various structures (:doc:`docs <module_compatibility>`)
+* Surface grid generators (:doc:`info <surface_generator>` and :doc:`docs <module_cpgen>`)
+* Shape containers (:doc:`docs <module_container>`)
+* Automatic uniform knot vector generation via :py:func:`utilities.generate_knot_vector`
+* Visualization components (:doc:`info <visualization>`, :doc:`Matplotlib <module_vis_mpl>`, :doc:`Plotly <module_vis_plotly>` and :doc:`VTK <module_vis_vtk>`)
+* Ray operations (:doc:`docs <module_ray>`)
+* Voxelization (:doc:`docs <module_voxelize>`)
 
-.. note::
-
-    Please see :doc:`Visualization <visualization>` section of the documentation for sample curve and surface figures
-    generated using the scripts on the Examples_ repository.
-
+Matplotlib and Plotly visualization modules are compatible with Jupyter notebooks but VTK visualization module is not.
+Please refer to the `NURBS-Python wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-the-library-with-Jupyter-notebooks>`_
+for more details on using NURBS-Python Matplotlib and Plotly visualization modules with Jupyter notebooks.
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
