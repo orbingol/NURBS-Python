@@ -18,7 +18,7 @@ The Examples_ repository contains examples on
 * Compatibility module for converting control points into various structures (:doc:`docs <module_compatibility>`)
 * Surface grid generators (:doc:`info <surface_generator>` and :doc:`docs <module_cpgen>`)
 * Shape containers (:doc:`docs <module_container>`)
-* Automatic uniform knot vector generation via :py:func:`utilities.generate_knot_vector`
+* Automatic uniform knot vector generation via :py:func:`.utilities.generate_knot_vector`
 * Visualization components (:doc:`info <visualization>`, :doc:`Matplotlib <module_vis_mpl>`, :doc:`Plotly <module_vis_plotly>` and :doc:`VTK <module_vis_vtk>`)
 * Ray operations (:doc:`docs <module_ray>`)
 * Voxelization (:doc:`docs <module_voxelize>`)
