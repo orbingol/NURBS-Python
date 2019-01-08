@@ -4,6 +4,7 @@ dist: xenial
 sudo: false
 
 language: python
+cache: pip
 
 # branches to build
 branches:
