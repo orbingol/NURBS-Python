@@ -7,18 +7,14 @@
 
 """
 
-from geomdl import vis
 from . import np
-try:
-    import matplotlib as mpl
-    import matplotlib.tri as mpltri
-    from mpl_toolkits.mplot3d import Axes3D
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-    import matplotlib.pyplot as plt
-    from matplotlib import animation
-except ImportError:
-    print("Please install Matplotlib before using VisMPL visualization module")
-    exit(0)
+from geomdl import vis
+import matplotlib as mpl
+import matplotlib.tri as mpltri
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from matplotlib import animation
 
 
 class VisConfig(vis.VisConfigAbstract):

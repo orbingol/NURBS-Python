@@ -7,14 +7,10 @@
 
 """
 
-from geomdl import vis
 from . import np
-try:
-    import plotly
-    from plotly import graph_objs
-except ImportError:
-    print("Please install Plotly for Python before using VisPlotly visualization module")
-    exit(0)
+from geomdl import vis
+import plotly
+from plotly import graph_objs
 
 
 class VisConfig(vis.VisConfigAbstract):

@@ -7,16 +7,7 @@
 
 """
 
-try:
-    import vtk
-    from vtk.util.numpy_support import numpy_to_vtk
-except ImportError:
-    print("Please install VTK with its Python wrappers before using VisVTK visualization module")
-    exit(0)
-
-
-# Define float
-FLOAT = vtk.VTK_FLOAT
+import vtk
 
 
 def create_render_window(actors, callbacks, **kwargs):

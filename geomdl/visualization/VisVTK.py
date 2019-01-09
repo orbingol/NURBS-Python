@@ -8,8 +8,10 @@
 """
 
 from . import np
-from geomdl import vis
 from . import vtk_helpers as vtkh
+from geomdl import vis
+from vtk.util.numpy_support import numpy_to_vtk
+from vtk import VTK_FLOAT
 
 
 class VisConfig(vis.VisConfigAbstract):
@@ -74,7 +76,7 @@ class VisCurve2D(vis.VisAbstract):
                 # Handle 2-dimensional data
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor_pts)
                 # Lines
@@ -88,7 +90,7 @@ class VisCurve2D(vis.VisAbstract):
                 # Handle 2-dimensional data
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
                                                        size=self.vconf.line_width * 2)
                 vtk_actors.append(temp_actor)
@@ -136,7 +138,7 @@ class VisSurface(vis.VisAbstract):
                 quads = [q.data for q in plot['ptsarr'][1]]
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor_pts)
                 # Quad mesh
@@ -149,7 +151,7 @@ class VisSurface(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=False)
                 vtk_actors.append(temp_actor)
 
@@ -185,14 +187,14 @@ class VisVolume(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor_pts)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = vtkh.numpy_to_vtk(pts, deep=False, array_type=vtkh.FLOAT)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=True)
                 vtk_actors.append(temp_actor)
 
