@@ -11,5 +11,5 @@ formats:
 
 # Python options
 python:
-  version: 3
+  version: 3.5
   use_system_site_packages: true  # needed for numpy, matplotlib, etc.
