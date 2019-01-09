@@ -120,7 +120,6 @@ Surfaces
 .. plot::
 
     from geomdl import NURBS
-    from geomdl import construct
     from geomdl.visualization import VisMPL
 
     ctrlpts = [
@@ -145,26 +144,9 @@ Surfaces
     # Set evaluation delta
     surf.delta = 0.05
 
-    # Extract curves from the surface
-    surf_curves = construct.extract_curves(surf)
-    plot_extras = [
-        dict(
-            points=surf_curves['u'][0].evalpts,
-            name="u",
-            color="cyan",
-            size=15
-        ),
-        dict(
-            points=surf_curves['v'][0].evalpts,
-            name="v",
-            color="magenta",
-            size=5
-        )
-    ]
-
     # Plot the control point grid and the evaluated surface
     surf.vis = VisMPL.VisSurface()
-    surf.render(extras=plot_extras)
+    surf.render()
 
 Advanced Visualization Examples
 -------------------------------
