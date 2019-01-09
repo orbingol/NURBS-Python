@@ -64,15 +64,19 @@ class VisConfig(vis.VisConfigAbstract):
         self.figure_image_format = "png"
         self.figure_filename = "temp-plot.html"
 
+        # Enable online plotting (default is offline plotting as it works perfectly without any issues)
+        # @see: https://plot.ly/python/getting-started/#initialization-for-online-plotting
+        online_plotting = kwargs.get('online', False)
+
         # Detect jupyter and/or ipython environment
         try:
             get_ipython
             from plotly.offline import download_plotlyjs, init_notebook_mode
             init_notebook_mode(connected=True)
-            self.plotfn = plotly.offline.iplot
+            self.plotfn = plotly.plotly.iplot if online_plotting else plotly.offline.iplot
             self.no_ipython = False
         except NameError:
-            self.plotfn = plotly.offline.plot
+            self.plotfn = plotly.plotly.plot if online_plotting else plotly.offline.plot
             self.no_ipython = True
 
         # Get keyword arguments
