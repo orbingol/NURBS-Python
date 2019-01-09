@@ -7,9 +7,9 @@
 
 """
 
-from . import np
+from . import vis
 from . import vtk_helpers as vtkh
-from geomdl import vis
+import numpy as np
 from vtk.util.numpy_support import numpy_to_vtk
 from vtk import VTK_FLOAT
 

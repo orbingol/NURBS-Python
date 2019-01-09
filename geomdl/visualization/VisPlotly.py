@@ -7,8 +7,8 @@
 
 """
 
-from . import np
-from geomdl import vis
+from . import vis
+import numpy as np
 import plotly
 from plotly import graph_objs
 

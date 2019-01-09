@@ -7,8 +7,8 @@
 
 """
 
-from . import np
 from geomdl import vis
+import numpy as np
 import matplotlib as mpl
 import matplotlib.tri as mpltri
 import matplotlib.pyplot as plt

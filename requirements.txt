@@ -1,3 +1,4 @@
+# requirements.txt
 # Python requirements for CI test runs and Docker image building
 
 # Python packaging tools
@@ -13,6 +14,7 @@ typing; python_version < '3.5'
 # For compiling geomdl.core module
 cython; platform_python_implementation != 'PyPy'
 
-# Visualization modules
+# Required packages for visualization
+numpy
 matplotlib==2.2.3
 plotly

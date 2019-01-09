@@ -217,9 +217,6 @@ data = dict(
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=packages,
     install_requires=['six>=1.9.0'] + required,
-    extras_require={
-        'visualization': ['matplotlib', 'plotly'],
-    },
     tests_require=["pytest>=3.0.0"],
     cmdclass={"test": PyTest, 'clean': CythonClean},
     ext_modules=ext_modules,
