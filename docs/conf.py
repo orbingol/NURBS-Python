@@ -48,7 +48,7 @@ inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
 
 # List of modules to be mocked
 # autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
-autodoc_mock_imports = ['plotly', 'vtk']
+autodoc_mock_imports = ['vtk']
 
 # Set MPL backend for visualization
 os.environ['MPLBACKEND'] = "Agg"
