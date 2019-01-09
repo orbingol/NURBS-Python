@@ -49,6 +49,9 @@ inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
 # autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
 autodoc_mock_imports = ['plotly', 'vtk']
 
+# Set MPL backend for visualization
+os.environ['MPLBACKEND'] = "Agg"
+
 # # Order of functions in the documentation; default is 'alphabetical'
 # autodoc_member_order = 'bysource'
 autosummary_generate = False
