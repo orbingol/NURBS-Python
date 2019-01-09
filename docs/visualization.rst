@@ -5,8 +5,9 @@ NURBS-Python comes with the following visualization modules for direct plotting 
 
 * :doc:`VisMPL <module_vis_mpl>` module for `Matplotlib <https://matplotlib.org>`_
 * :doc:`VisPlotly <module_vis_plotly>` module for `Plotly <https://plot.ly/python/>`_
+* :doc:`VisVTK <module_vis_vtk>` module for `VTK <https://vtk.org>`_
 
-Examples_ repository contains examples on how to use the visualization components with surfaces and curves. Please see
+Examples_ repository contains over 40 examples on how to use the visualization components in various ways. Please see
 :doc:`Visualization Modules Documentation <modules_visualization>` for more details.
 
 Examples
@@ -14,6 +15,60 @@ Examples
 
 The following figures illustrate some example 2D/3D curves and surfaces that can be generated and directly visualized
 using NURBS-Python.
+
+Curves
+------
+
+.. plot::
+
+    from geomdl import BSpline
+    from geomdl import utilities
+    from geomdl.visualization import VisMPL
+
+    # Create a B-Spline curve
+    curve = BSpline.Curve()
+
+    # Set up the curve
+    curve.degree = 4
+    curve.ctrlpts = [[5.0, 10.0], [15.0, 25.0], [30.0, 30.0], [45.0, 5.0], [55.0, 5.0], [70.0, 40.0], [60.0, 60.0], [35.0, 60.0], [20.0, 40.0]]
+
+    # Auto-generate knot vector
+    curve.knotvector = utilities.generate_knot_vector(curve.degree, len(curve.ctrlpts))
+
+    # Set evaluation delta
+    curve.delta = 0.01
+
+    # Plot the control point polygon and the evaluated curve
+    curve.vis = VisMPL.VisCurve2D()
+    curve.render()
+
+-----
+
+.. plot::
+
+    from geomdl import BSpline
+    from geomdl import utilities
+    from geomdl.visualization import VisMPL
+
+    ctrlpts = [[5.0, 5.0, 0.0], [5.0, 10.0, 0.0], [10.0, 10.0, 5.0], [10.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 10.0, 10.0], [10.0, 10.0, 10.0], [10.0, 5.0, 10.0], [5.0, 5.0, 15.0], [5.0, 10.0, 15.0], [10.0, 10.0, 15.0], [10.0, 5.0, 20.0], [5.0, 5.0, 20.0]]
+
+    # Create a B-Spline curve instance
+    curve = BSpline.Curve()
+
+    # Set up curve
+    curve.degree = 3
+    curve.ctrlpts = ctrlpts
+
+    # Auto-generate knot vector
+    curve.knotvector = utilities.generate_knot_vector(curve.degree, curve.ctrlpts_size)
+
+    # Set evaluation delta
+    curve.delta = 0.01
+
+    # Plot the control point polygon and the evaluated curve
+    curve.vis = VisMPL.VisCurve3D()
+    curve.render()
+
 
 Surfaces
 --------
@@ -62,95 +117,57 @@ Surfaces
 
 -----
 
-.. image:: images/ex_surface01_plotly.png
-    :alt: Surface example 1 with Plotly
+.. plot::
 
------
+    from geomdl import NURBS
+    from geomdl import construct
+    from geomdl.visualization import VisMPL
 
-.. image:: images/ex_surface01_mpl_wf.png
-    :alt: Surface example 1 - wireframe model
+    ctrlpts = [
+        [[1.0, 0.0, 0.0, 1.0], [0.7071, 0.7071, 0.0, 0.7071], [0.0, 1.0, 0.0, 1.0], [-0.7071, 0.7071, 0.0, 0.7071], [-1.0, 0.0, 0.0, 1.0], [-0.7071, -0.7071, 0.0, 0.7071], [0.0, -1.0, 0.0, 1.0], [0.7071, -0.7071, 0.0, 0.7071], [1.0, 0.0, 0.0, 1.0]],
+        [[1.0, 0.0, 1.0, 1.0], [0.7071, 0.7071, 0.7071, 0.7071], [0.0, 1.0, 1.0, 1.0], [-0.7071, 0.7071, 0.7071, 0.7071], [-1.0, 0.0, 1.0, 1.0], [-0.7071, -0.7071, 0.7071, 0.7071], [0.0, -1.0, 1.0, 1.0], [0.7071, -0.7071, 0.7071, 0.7071], [1.0, 0.0, 1.0, 1.0]]
+    ]
 
-ex_surface02.py
-~~~~~~~~~~~~~~~
+    # Create a NURBS surface
+    surf = NURBS.Surface()
 
-.. image:: images/ex_surface02_mpl.png
-    :alt: Surface example 2 with Matplotlib
+    # Set degrees
+    surf.degree_u = 1
+    surf.degree_v = 2
 
------
+    # Set control points
+    surf.ctrlpts2d = ctrlpts
 
-.. image:: images/ex_surface02_plotly.png
-    :alt: Surface example 2 with Plotly
+    # Set knot vectors
+    surf.knotvector_u = [0, 0, 1, 1]
+    surf.knotvector_v = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
 
-ex_surface03.py
-~~~~~~~~~~~~~~~
+    # Set evaluation delta
+    surf.delta = 0.05
 
-.. image:: images/ex_surface03_mpl.png
-    :alt: Surface example 3 with Matplotlib
+    # Extract curves from the surface
+    surf_curves = construct.extract_curves(surf)
+    plot_extras = [
+        dict(
+            points=surf_curves['u'][0].evalpts,
+            name="u",
+            color="cyan",
+            size=15
+        ),
+        dict(
+            points=surf_curves['v'][0].evalpts,
+            name="v",
+            color="magenta",
+            size=5
+        )
+    ]
 
------
+    # Plot the control point grid and the evaluated surface
+    surf.vis = VisMPL.VisSurface()
+    surf.render(extras=plot_extras)
 
-.. image:: images/ex_surface03_plotly.png
-    :alt: Surface example 3 with Plotly
-
-mpl_trisurf_vectors.py
-~~~~~~~~~~~~~~~~~~~~~~
-
-The following figure illustrates tangent and normal vectors on ``ex_surface02.py`` example.
-The example script can be found in Examples_ repository under the ``visualization`` directory.
-
-.. image:: images/ex_surface02_mpl_vectors.png
-    :alt: Surface example 2 with tangent and normal vectors
-
-2D Curves
----------
-
-ex_curve01.py
-~~~~~~~~~~~~~
-
-.. image:: images/ex_curve01_vis.png
-    :alt: 2D curve example 1
-
-ex_curve02.py
-~~~~~~~~~~~~~
-
-.. image:: images/ex_curve02_vis.png
-    :alt: 2D curve example 2
-
-ex_curve03.py
-~~~~~~~~~~~~~
-
-.. image:: images/ex_curve03_vis.png
-    :alt: 2D curve example 3
-
-ex_curve04.py
-~~~~~~~~~~~~~
-
-.. image:: images/ex_curve04_vis.png
-    :alt: 2D curve example 4
-
-
-3D Curves
----------
-
-ex_curve3d01.py
-~~~~~~~~~~~~~~~
-
-.. image:: images/ex_curve3d01_vis.png
-    :alt: 3D curve example 1
-
-ex_curve3d02.py
-~~~~~~~~~~~~~~~
-
-.. image:: images/ex_curve3d02_vis.png
-    :alt: 3D curve example 2 with Matplotlib
-
------
-
-.. image:: images/ex_curve3d02_plotly.png
-    :alt: 3D curve example 2 with Plotly
-
-Advanced Visualization for 2D/3D Curves
----------------------------------------
+Advanced Visualization Examples
+-------------------------------
 
 The following example scripts can be found in Examples_ repository under the ``visualization`` directory.
 
@@ -180,6 +197,14 @@ alongside with the control points grid and the evaluated curve.
 
 .. image:: images/ex_curve3d02_mpl.png
     :alt: 3D curve example 2 with tangent, normal and binormal vector quiver plots
+
+mpl_trisurf_vectors.py
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following figure illustrates tangent and normal vectors on ``ex_surface02.py`` example.
+
+.. image:: images/ex_surface02_mpl_vectors.png
+    :alt: Surface example 2 with tangent and normal vectors
 
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples
