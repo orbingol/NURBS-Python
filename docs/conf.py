@@ -46,7 +46,8 @@ extensions = ['sphinx.ext.autodoc',
 inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
 
 # List of modules to be mocked
-autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
+# autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
+autodoc_mock_imports = ['vtk']
 
 # # Order of functions in the documentation; default is 'alphabetical'
 # autodoc_member_order = 'bysource'

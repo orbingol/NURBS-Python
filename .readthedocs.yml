@@ -11,8 +11,5 @@ formats:
 
 # Python options
 python:
-  version: 3.5
-  setup_py_install: false
-  pip_install: false  # extra_requirements only works when pip_install is true
-#  extra_requirements:
-#    - visualization
+  version: 3
+  use_system_site_packages: true  # needed for numpy, matplotlib, etc.
