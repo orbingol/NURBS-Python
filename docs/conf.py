@@ -40,7 +40,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',
               'sphinx.ext.autosummary',
               'sphinx.ext.graphviz',
-              'sphinx.ext.inheritance_diagram']
+              'sphinx.ext.inheritance_diagram',
+              'matplotlib.sphinxext.plot_directive']
 
 # Inheritance diagram configuration
 inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
