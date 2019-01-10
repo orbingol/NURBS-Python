@@ -13,8 +13,8 @@ Examples_ repository contains over 40 examples on how to use the visualization c
 Examples
 ========
 
-The following figures illustrate some example 2D/3D curves and surfaces that can be generated and directly visualized
-using NURBS-Python.
+The following figures illustrate some example NURBS and B-spline shapes that can be generated and directly visualized
+via NURBS-Python.
 
 Curves
 ------
@@ -237,8 +237,8 @@ mpl_curve2d_tangents.py
 This example illustrates a more advanced visualization option for plotting the 2D curve tangents alongside with the
 control points grid and the evaluated curve.
 
-.. image:: images/ex_curve03_mpl.png
-    :alt: 2D curve example 2 with tangent vector quiver plots
+.. image:: images/mpl_curve2d_tangents.png
+    :alt: 2D curve example with tangent vector quiver plots
 
 mpl_curve3d_tangents.py
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,8 +246,8 @@ mpl_curve3d_tangents.py
 This example illustrates a more advanced visualization option for plotting the 3D curve tangents alongside with the
 control points grid and the evaluated curve.
 
-.. image:: images/ex_curve3d01_mpl.png
-    :alt: 3D curve example 1 with tangent vector quiver plots
+.. image:: images/mpl_curve3d_tangents.png
+    :alt: 3D curve example with tangent vector quiver plots
 
 mpl_curve3d_vectors.py
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -255,16 +255,16 @@ mpl_curve3d_vectors.py
 This example illustrates a visualization option for plotting the 3D curve tangent, normal and binormal vectors
 alongside with the control points grid and the evaluated curve.
 
-.. image:: images/ex_curve3d02_mpl.png
-    :alt: 3D curve example 2 with tangent, normal and binormal vector quiver plots
+.. image:: images/mpl_curve3d_vectors.png
+    :alt: 3D curve example with tangent, normal and binormal vector quiver plots
 
 mpl_trisurf_vectors.py
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The following figure illustrates tangent and normal vectors on ``ex_surface02.py`` example.
 
-.. image:: images/ex_surface02_mpl_vectors.png
-    :alt: Surface example 2 with tangent and normal vectors
+.. image:: images/mpl_trisurf_vectors.png
+    :alt: Surface example with tangent and normal vectors
 
 
 .. _Examples: https://github.com/orbingol/NURBS-Python_Examples

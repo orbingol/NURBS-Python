@@ -14,13 +14,9 @@ the name of the file to be saved and ``plot`` flag controls the visibility of th
 .. code-block:: python
     :linenos:
 
-    import os
     from geomdl import BSpline
     from geomdl import utilities
     from geomdl.visualization import VisMPL
-
-    # Fix file path
-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     # Create a 3D B-Spline curve instance (Bezier Curve)
     curve = BSpline.Curve()
