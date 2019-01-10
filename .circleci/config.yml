@@ -98,6 +98,13 @@ jobs:
       TAG: py37  # Docker tag as an environmental variable
     <<: *defsteps
 
+  # Build Docker image for PyPy3
+  docker_build_pypy3:
+    executor: docker_build_executor
+    environment:
+      TAG: pypy3  # Docker tag as an environmental variable
+    <<: *defsteps
+
 # Define workflows
 workflows:
   version: 2
@@ -153,6 +160,15 @@ workflows:
                 - master
                 - circleci-testing
       - docker_build_py37:
+          requires:
+            - pypi_deploy
+            - anaconda_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
+      - docker_build_pypy3:
           requires:
             - pypi_deploy
             - anaconda_deploy
