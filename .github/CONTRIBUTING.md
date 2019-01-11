@@ -63,22 +63,12 @@ include classes capable of visualization of surfaces and 2- and 3-dimensional cu
 I would be glad if you could follow these standards while developing for NURBS-Python. Failure to follow may cause
 rejection of your contributions (as pull requests or other methods).
 
-## Feature requests
-
-It could be always possible to add new features and the same rules are effective as if you have found a bug.
-**I would be very much glad if you could directly develop the new features and make a pull request
-instead of asking me to implement them** :)
-
 ## Pull requests
 
-It would be suggested to [create pull requests](https://help.github.com/articles/creating-a-pull-request/)
-against relevant branch as descibed below:
+It is suggested to [create pull requests](https://help.github.com/articles/creating-a-pull-request/)
+against relevant branch as described on the [wiki page](https://github.com/orbingol/NURBS-Python/wiki).
 
-* NURBS-Python v4.x, PR against `devmaster` (`master`, if it does not exist)
-* NURBS-Python v3.x, PR against `3.x-dev` (`3.x`, if it does not exist)
-* NURBS-Python v2.x is not maintained anymore
-
-CI tools are set to test every pull request. The test results will become accessible in a short while under the 
+CI tools are set to test every pull request. The test results will become accessible in a short while under the
 pull request page. If your code does not follow the standards as described under **Coding Standards** section, your PR
 will not be considered for review at all.
 

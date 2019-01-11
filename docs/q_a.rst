@@ -33,8 +33,8 @@ approach also allows users to debug and extend the library in a convenient way.
 Who uses NURBS-Python?
 ======================
 
-Please `e-mail me <https://onurraufbingol.com/#contact>`_ your project or research group name and website and I will
-add you to the list.
+Please `e-mail me <https://onurraufbingol.com/#contact>`_ your research group name and website and I will add you to
+the list.
 
 Why two packages on PyPI?
 =========================
@@ -53,7 +53,7 @@ Minimum Requirements
 
 NURBS-Python is tested on Python versions 2.7.x and 3.4.x+. The core library does not depend on any additional packages
 or require any compilation steps; therefore, you can run it on a plain python installation as well as on a distribution,
-such as Anaconda (or Miniconda).
+such as Anaconda.
 
 Help and Support
 ================
@@ -82,18 +82,12 @@ a solution for the problem that you encountered but it would be good if you woul
 to reproduce it. You may directly upload any data files required for testing to the issue tracker or email me if you
 feel that is more convenient for you.
 
-Please note that the issue tracker is public and all written text and all uploaded files will be visible to everybody.
-
 Comments, Questions and Feature Requests
 ----------------------------------------
 
 You are encouraged to use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_
 for your questions and comments. I would be glad if you could use the appropriate label
 (``comment``, ``question`` or ``feature request``) to label your questions or comments on the issue tracker.
-
-I also would like to leave the email communication open for NURBS-Python users. The issue tracker will stay as the
-preferred method for communication but I know some users don't feel confident asking questions
-or commenting on a public system. I will try my best to reply back to your emails as soon as possible.
 
 API Changes
 ===========
