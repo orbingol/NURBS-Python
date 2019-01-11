@@ -15,26 +15,18 @@ Les A. Piegl and Wayne Tiller.
 Why NURBS-Python?
 =================
 
-The main purpose is implementing the well-known NURBS algorithms in native Python in an organized way and without using
-any converters or wrappers, like `SWIG <http://www.swig.org/>`_ or `Boost.Python <https://github.com/boostorg/python>`_.
+NURBS-Python started as a term project for *M E 625 Surface Modeling* course offered in 2016 Spring semester at Iowa
+State University. The main purpose of the project was development of an open-source, object-oriented, pure Python NURBS
+library and releasing on the public domain. As an added challenge to the project, everything was developed using
+Python Standard Library but no other external modules. This challenge was specifically added as we were struggling with
+installing & compiling external modules for embedded Python distributions.
 
-Although these wrappers are lifesavers by means of converting C++ code to Python when there are too many deadlines,
-their support on the source language might be limited or you might need to learn the wrapper's own language to get the
-things done in your way. Personally speaking, I had to learn a part of Python's C API to understand how SWIG's typemap
-system works. It takes so much time if you are not well-acquainted with the low-level programming or not willing to
-learn the inner details of the programming languages (and their interpreters, compilers, etc.).
+In years, NURBS-Python has grown up to a self-contained and extensible general-purpose pure Python spline library with
+support for various computational geometry and linear algebra algorithms. Apart from the computational side, user
+experience was also improved by introduction of visualization and CAD exchange modules.
 
-On the other hand, NURBS-Python is designed to get the things done in a fast way. I used object-oriented approach
-throughout the library and tried to make the code look more pythonic and optimized. Since all the code is implemented
-in Python natively with no external dependencies, it is possible to use this library in every platform which core python
-programming language is supported or integrate into embedded systems/distributions. Using native implementation
-approach also allows users to debug and extend the library in a convenient way.
-
-Who uses NURBS-Python?
-======================
-
-Please `e-mail me <https://onurraufbingol.com/#contact>`_ your research group name and website and I will add you to
-the list.
+NURBS-Python is **not** *an another NURBS library* but it is mostly considered as one of its kind. Please see the
+:doc:`Motivation <introduction>` page for more details.
 
 Why two packages on PyPI?
 =========================

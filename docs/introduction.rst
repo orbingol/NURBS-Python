@@ -7,20 +7,20 @@ structures for storing curve, surface and volume descriptions.
 
 Some significant features of NURBS-Python are:
 
-* Fully object-oriented API with an abstract interface
-* Data structures for storing curve, surface and volume descriptions
-* Helper functions, such as automatic uniform knot vector generator and many more
-* Curve and surface fitting using interpolation and least squares approximation
-* Integrated surface grid generator
-* Visualization modules for plotting of curves, surfaces and volumes at runtime
-* Shapes component for generation common surfaces and curves
-* CAD exchange functionality to export and import shape data
+* Self-contained, object-oriented, extensible and highly customizable API
+* Convenient data structures for storing curve, surface and volume descriptions
+* Surface and curve fitting with interpolation and least squares approximation
+* Knot vector and surface grid generators
+* Customizable visualization and animation options with Matplotlib, Plotly and VTK modules
+* Exporting curve, surface and volume data into various file formats, such as JSON, YAML, Libconfig, STL, OBJ and VTK
 * Support for common algorithms: tessellation, voxelization, ray intersection, etc.
+* Shapes component for generation common surfaces and curves
+* Pure Python, no external C/C++ or FORTRAN library dependencies
 * Python compatibility: 2.7.x, 3.4.x and later
-* No external C/C++ or FORTRAN library dependencies
-* No compilation steps are necessary, everything is implemented in pure python
-* Easy to install via pip: ``pip install geomdl``
-* Conda packages are also available for installation: ``conda install -c orbingol geomdl``
+* No compilation steps are necessary, everything is implemented in pure Python
+* For higher performance, optional *Compile with Cython* options are also available via ``setup.py``
+* Easy to install via **pip**: ``pip install geomdl`` or **conda**: ``conda install -c orbingol geomdl``
+* `Docker images <https://hub.docker.com/r/idealabisu/nurbs-python>`_ are available
 
 References
 ==========
