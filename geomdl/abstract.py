@@ -286,6 +286,30 @@ class SplineGeometry(Geometry):
         pass
 
     @property
+    def domain(self):
+        """ Domain.
+
+        Domain is determined using the knot vector(s).
+
+        :getter: Gets the domain
+        """
+        retval = []
+        for idx, kv in enumerate(self._knot_vector):
+            retval.append((kv[self._degree[idx]], kv[-(self._degree[idx]) + 1]))
+        return retval[0] if self._pdim == 1 else retval
+
+    @property
+    def range(self):
+        """ Domain range.
+
+        :getter: Gets the range
+        """
+        retval = []
+        for idx, kv in enumerate(self._knot_vector):
+            retval.append(kv[-(self._degree[idx]) + 1] - kv[self._degree[idx]])
+        return retval[0] if self._pdim == 1 else retval
+
+    @property
     def bbox(self):
         """ Bounding box.
 
