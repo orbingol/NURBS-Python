@@ -1,114 +1,65 @@
 """
     Tests for the NURBS-Python package
     Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018 Onur Rauf Bingol
+    Copyright (c) 2018-2019 Onur Rauf Bingol
 
-    Tests geomdl.BSpline.Curve module. Requires "pytest" to run.
+    Requires "pytest" to run.
 """
 
-import pytest
+from pytest import fixture, mark
 from geomdl import BSpline
 from geomdl import evaluators
+from geomdl import helpers
 
 GEOMDL_DELTA = 0.001
 
 
-@pytest.fixture
-def bs_curve():
-    """ Creates a 3rd order 2D B-spline Curve instance """
-    # Create a curve instance
+@fixture
+def spline_curve():
+    """ Creates a spline Curve """
     curve = BSpline.Curve()
-
-    # Set curve degree
     curve.degree = 3
-
-    # Set control points
     curve.ctrlpts = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
-
-    # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
-
     return curve
 
 
-def test_bspline_curve_name(bs_curve):
-    bs_curve.name = "Testing"
-    assert bs_curve.name == "Testing"
+def test_bspline_curve_name(spline_curve):
+    spline_curve.name = "Curve Testing"
+    assert spline_curve.name == "Curve Testing"
 
 
-def test_bspline_curve_degree(bs_curve):
-    assert bs_curve.degree == 3
+def test_bspline_curve_degree(spline_curve):
+    assert spline_curve.degree == 3
 
 
-def test_bspline_curve_ctrlpts(bs_curve):
-    assert bs_curve.ctrlpts == [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
-    assert bs_curve.dimension == 2
+def test_bspline_curve_ctrlpts(spline_curve):
+    assert spline_curve.ctrlpts == [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
+    assert spline_curve.dimension == 2
 
 
-def test_bspline_curve_knot_vector(bs_curve):
-    assert bs_curve.knotvector == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+def test_bspline_curve_knot_vector(spline_curve):
+    assert spline_curve.knotvector == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
 
-def test_bspline_curve2d_eval1(bs_curve):
-    # Evaluate curve
-    evalpt = bs_curve.evaluate_single(0.0)
-
-    # Evaluation result
-    res = [5.0, 5.0]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_eval2(bs_curve):
-    # Evaluate curve
-    evalpt = bs_curve.evaluate_single(0.3)
-
-    # Evaluation result
-    res = [18.617, 13.377]
+@mark.parametrize("param, res", [
+    (0.0, (5.0, 5.0)),
+    (0.3, (18.617, 13.377)),
+    (0.5, (27.645, 14.691)),
+    (0.6, (32.143, 14.328)),
+    (1.0, (50.0, 5.0))
+])
+def test_bspline_curve2d_eval(spline_curve, param, res):
+    evalpt = spline_curve.evaluate_single(param)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
-def test_bspline_curve2d_eval3(bs_curve):
-    # Evaluate curve
-    evalpt = bs_curve.evaluate_single(0.5)
-
-    # Evaluation result
-    res = [27.645, 14.691]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_eval4(bs_curve):
-    # Evaluate curve
-    evalpt = bs_curve.evaluate_single(0.6)
-
-    # Evaluation result
-    res = [32.143, 14.328]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_eval5(bs_curve):
-    # Evaluate curve
-    evalpt = bs_curve.evaluate_single(1.0)
-
-    # Evaluation result
-    res = [50.0, 5.0]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_deriv1(bs_curve):
-    # Take the derivative
-    der1 = bs_curve.derivatives(u=0.35, order=2)
-    bs_curve.evaluator = evaluators.CurveEvaluator2()
-    der2 = bs_curve.derivatives(u=0.35, order=2)
+def test_bspline_curve2d_deriv(spline_curve):
+    der1 = spline_curve.derivatives(u=0.35, order=2)
+    spline_curve.evaluator = evaluators.CurveEvaluator2()
+    der2 = spline_curve.derivatives(u=0.35, order=2)
 
     assert abs(der1[0][0] - der2[0][0]) < GEOMDL_DELTA
     assert abs(der1[0][1] - der2[0][1]) < GEOMDL_DELTA
@@ -118,12 +69,11 @@ def test_bspline_curve2d_deriv1(bs_curve):
     assert abs(der1[2][1] - der2[2][1]) < GEOMDL_DELTA
 
 
-def test_bspline_curve2d_deriv2(bs_curve):
-    # Take the derivative
-    evalpt = bs_curve.evaluate_single(0.35)
-    der1 = bs_curve.derivatives(u=0.35)
-    bs_curve.evaluator = evaluators.CurveEvaluator2()
-    der2 = bs_curve.derivatives(u=0.35)
+def test_bspline_curve2d_deriv_eval(spline_curve):
+    evalpt = spline_curve.evaluate_single(0.35)
+    der1 = spline_curve.derivatives(u=0.35)
+    spline_curve.evaluator = evaluators.CurveEvaluator2()
+    der2 = spline_curve.derivatives(u=0.35)
 
     assert abs(der1[0][0] - evalpt[0]) < GEOMDL_DELTA
     assert abs(der1[0][1] - evalpt[1]) < GEOMDL_DELTA
@@ -131,62 +81,25 @@ def test_bspline_curve2d_deriv2(bs_curve):
     assert abs(der2[0][1] - evalpt[1]) < GEOMDL_DELTA
 
 
-def test_bspline_curve2d_insert_knot1(bs_curve):
-    # Set evaluation parameter
-    u = 0.3
-
-    # Insert knot
-    bs_curve.insert_knot(u)
-
-    # Evaluate curve at the given parameter
-    evalpt = bs_curve.evaluate_single(u)
-
-    # Evaluation result
-    res = [18.617, 13.377]
+@mark.parametrize("param, num_insert, res", [
+    (0.3, 1, (18.617, 13.377)),
+    (0.6, 1, (32.143, 14.328)),
+    (0.6, 2, (32.143, 14.328))
+])
+def test_bspline_curve2d_insert_knot(spline_curve, param, num_insert, res):
+    s_pre = helpers.find_multiplicity(param, spline_curve.knotvector)
+    spline_curve.insert_knot(param, r=num_insert)
+    s_post = helpers.find_multiplicity(param, spline_curve.knotvector)
+    evalpt = spline_curve.evaluate_single(param)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+    assert s_pre + num_insert == s_post
 
 
-def test_bspline_curve2d_insert_knot2(bs_curve):
-    # Set evaluation parameter
-    u = 0.6
+def test_bspline_curve2d_insert_knot_kv(spline_curve):
+    spline_curve.insert_knot(0.66, r=2)
+    s = helpers.find_multiplicity(0.66, spline_curve.knotvector)
 
-    # Insert knot
-    bs_curve.insert_knot(u)
-
-    # Evaluate curve at the given parameter
-    evalpt = bs_curve.evaluate_single(u)
-
-    # Evaluation result
-    res = [32.143, 14.328]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_insert_knot3(bs_curve):
-    # Set evaluation parameter
-    u = 0.6
-
-    # Insert knot
-    bs_curve.insert_knot(u, r=2)
-
-    # Evaluate curve at the given parameter
-    evalpt = bs_curve.evaluate_single(u)
-
-    # Evaluation result
-    res = [32.143, 14.328]
-
-    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
-    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
-
-
-def test_bspline_curve2d_insert_knot4(bs_curve):
-    # Set evaluation parameter
-    u = 0.6
-
-    # Insert knot
-    bs_curve.insert_knot(u, r=2)
-
-    assert bs_curve.knotvector[5] == u
+    assert spline_curve.knotvector[5] == 0.66
+    assert s == 3
