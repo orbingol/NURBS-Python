@@ -10,6 +10,7 @@ from pytest import fixture, mark
 from geomdl import BSpline
 from geomdl import evaluators
 from geomdl import helpers
+from geomdl import convert
 
 GEOMDL_DELTA = 0.001
 
@@ -103,3 +104,25 @@ def test_bspline_curve2d_insert_knot_kv(spline_curve):
 
     assert spline_curve.knotvector[5] == 0.66
     assert s == 3
+
+
+@fixture
+def nurbs_curve(spline_curve):
+    curve = convert.bspline_to_nurbs(spline_curve)
+    curve.weights = [0.5, 1.0, 0.75, 1.0, 0.25, 1.0]
+    return curve
+
+
+@mark.parametrize("param, res", [
+    (0.0, (5.0, 5.0)),
+    (0.2, (13.8181, 11.5103)),
+    (0.5, (28.1775, 14.7858)),
+    (0.95, (48.7837, 6.0022))
+])
+def test_nurbs_curve2d_eval(nurbs_curve, param, res):
+    evalpt = nurbs_curve.evaluate_single(param)
+
+    print(evalpt)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
