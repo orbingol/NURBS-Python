@@ -98,6 +98,34 @@ jobs:
       TAG: py37  # Docker tag as an environmental variable
     <<: *defsteps
 
+  # Build Docker image for Python v2.7 w/ Alpine Linux
+  docker_build_py27_alpine:
+    executor: docker_build_executor
+    environment:
+      TAG: py27-alpine  # Docker tag as an environmental variable
+    <<: *defsteps
+
+  # Build Docker image for Python v3.5 w/ Alpine Linux
+  docker_build_py35_alpine:
+    executor: docker_build_executor
+    environment:
+      TAG: py35-alpine  # Docker tag as an environmental variable
+    <<: *defsteps
+
+  # Build Docker image for Python v3.6 w/ Alpine Linux
+  docker_build_py36_alpine:
+    executor: docker_build_executor
+    environment:
+      TAG: py36-alpine  # Docker tag as an environmental variable
+    <<: *defsteps
+
+  # Build Docker image for Python v3.7 w/ Alpine Linux
+  docker_build_py37_alpine:
+    executor: docker_build_executor
+    environment:
+      TAG: py37-alpine  # Docker tag as an environmental variable
+    <<: *defsteps
+
   # Build Docker image for PyPy3
   docker_build_pypy3:
     executor: docker_build_executor
@@ -160,6 +188,42 @@ workflows:
                 - master
                 - circleci-testing
       - docker_build_py37:
+          requires:
+            - pypi_deploy
+            - anaconda_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
+      - docker_build_py27_alpine:
+          requires:
+            - pypi_deploy
+            - anaconda_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
+      - docker_build_py35_alpine:
+          requires:
+            - pypi_deploy
+            - anaconda_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
+      - docker_build_py36_alpine:
+          requires:
+            - pypi_deploy
+            - anaconda_deploy
+          filters:
+            branches:
+              only:
+                - master
+                - circleci-testing
+      - docker_build_py37_alpine:
           requires:
             - pypi_deploy
             - anaconda_deploy
