@@ -11,6 +11,7 @@ from geomdl import BSpline
 from geomdl import evaluators
 from geomdl import helpers
 from geomdl import convert
+from geomdl import operations
 
 GEOMDL_DELTA = 0.001
 
@@ -104,6 +105,17 @@ def test_bspline_curve2d_insert_knot_kv(spline_curve):
 
     assert spline_curve.knotvector[5] == 0.66
     assert s == 3
+
+
+@fixture
+def spline_curve3d(spline_curve):
+    curve3d = operations.add_dimension(spline_curve, offset=1.0)
+    return curve3d
+
+
+def test_bspline_curve3d_ctrlpts(spline_curve3d):
+    assert spline_curve3d.ctrlpts == [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0], [50.0, 5.0, 1.0]]
+    assert spline_curve3d.dimension == 3
 
 
 @fixture
