@@ -29,7 +29,7 @@ RUN python setup.py bdist_wheel --use-cython \
 
 WORKDIR /home/nurbs/app
 
-RUN pip install --user --no-cache-dir -r requirements.txt \
+RUN pip install --user --no-cache-dir -r requirements.txt
 
 RUN pip install --user --no-cache-dir .
 

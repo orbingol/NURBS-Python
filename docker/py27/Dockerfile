@@ -28,8 +28,10 @@ RUN pip install --user --no-cache-dir -r requirements.txt \
 
 WORKDIR /home/nurbs/app
 
-RUN pip install --user --no-cache-dir -r requirements.txt \
-    && pip install --user --no-cache-dir .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+RUN pip install --user --no-cache-dir .
+
 
 WORKDIR /home/nurbs
 
