@@ -128,3 +128,17 @@ def test_nurbs_curve2d_eval(nurbs_curve, param, res):
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+
+
+@mark.parametrize("param, order, res", [
+    (0.0, 1, ((5.0, 5.0), (90.9090, 90.9090))),
+    (0.2, 2, ((13.8181, 11.5103), (40.0602, 17.3878), (104.4062, -29.3672))),
+    (0.5, 3, ((28.1775, 14.7858), (39.7272, 2.2562), (-116.9254, -49.7367), (125.5276, 196.8865))),
+    (0.95, 1, ((48.7837, 6.0022), (39.5178, -29.9962)))
+])
+def test_nurbs_curve2d_deriv(nurbs_curve, param, order, res):
+    deriv = nurbs_curve.derivatives(u=param, order=order)
+
+    for computed, expected in zip(deriv, res):
+        for c, e in zip(computed, expected):
+            assert abs(c - e) < GEOMDL_DELTA
