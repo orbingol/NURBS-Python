@@ -1,4 +1,4 @@
-# geomdl pypy3 image
+# geomdl pypy3 Docker image
 
 Welcome to geomdl, a pure Python B-spline and NURBS library!
 
@@ -6,7 +6,7 @@ This image provides geomdl module and geomdl-cli command line application.
 
 You can find the examples under the following directory:
 
-    /nurbs/examples
+    /home/nurbs/examples
 
 Command line application help:
 
@@ -14,4 +14,4 @@ Command line application help:
 
 Please see the documentation for details.
 
-Note: Use "pypy3" command to run the Python interpreter.
+Note: Type "pypy3" to run the Python interpreter.

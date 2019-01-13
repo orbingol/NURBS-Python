@@ -2,36 +2,40 @@
 FROM python:3.7-slim
 
 USER root
-WORKDIR /nurbs
 
-RUN apt-get update \
-    && apt-get install -y gcc git \
+RUN apt-get update -q -y \
+    && apt-get install -q -y gcc git \
     && apt-get clean
+
+RUN useradd -ms /bin/bash nurbs
+
+USER nurbs
+WORKDIR /home/nurbs
 
 RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
     && git clone https://github.com/orbingol/geomdl-cli.git app
 
-WORKDIR /nurbs/library
+ENV PATH="/home/nurbs/.local/bin:${PATH}"
 
-RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir tornado \
-    && python setup.py bdist_wheel --use-cython \
-    && pip install dist/* \
-    && python setup.py clean --all \
-    && python -c "import geomdl" \
-    && python -c "import geomdl.core"
+WORKDIR /home/nurbs/library
 
-WORKDIR /nurbs/app
+RUN pip install --user --no-cache-dir -r requirements.txt \
+    && pip install --user --no-cache-dir tornado
 
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir . \
-    && python -c "import geomdl.cli"
+RUN python setup.py bdist_wheel --use-cython \
+    && pip install --user dist/* \
+    && python setup.py clean --all
 
-RUN useradd -ms /bin/bash nurbs \
-    && chown -R nurbs:nurbs /nurbs
+WORKDIR /home/nurbs/app
 
-USER nurbs
+RUN pip install --user --no-cache-dir -r requirements.txt \
+
+RUN pip install --user --no-cache-dir .
+
 WORKDIR /home/nurbs
+
+RUN python -c "import geomdl; import geomdl.core; import geomdl.cli"
 
 COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
 COPY --chown=nurbs:nurbs README.md .

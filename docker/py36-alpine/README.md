@@ -1,4 +1,4 @@
-# geomdl py3.6-alpine image
+# geomdl py3.6-alpine Docker image
 
 Welcome to geomdl, a pure Python B-spline and NURBS library!
 
@@ -11,7 +11,7 @@ and geomdl-cli command line application.
 
 You can find the examples under the following directory:
 
-    /nurbs/examples
+    /home/nurbs/examples
 
 Command line application help:
 

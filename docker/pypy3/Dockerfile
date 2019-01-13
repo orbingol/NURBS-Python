@@ -2,37 +2,42 @@
 FROM pypy:3
 
 USER root
-WORKDIR /nurbs
 
-RUN apt-get update \
-    && apt-get install -y gcc git \
+RUN apt-get update -q -y \
+    && apt-get install -q -y gcc git \
     && apt-get clean
+
+RUN useradd -ms /bin/bash nurbs
+
+USER nurbs
+WORKDIR /home/nurbs
 
 RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
     && git clone https://github.com/orbingol/geomdl-cli.git app
 
-WORKDIR /nurbs/library
+ENV PATH="/home/nurbs/.local/bin:${PATH}"
+
+WORKDIR /home/nurbs/library
 
 RUN pypy3 -m ensurepip
 
-RUN pypy3 -m pip install --no-cache-dir -r requirements.txt && pypy3 -m pip install --no-cache-dir tornado \
-    && pypy3 setup.py bdist_wheel \
-    && pypy3 -m pip install dist/* \
-    && pypy3 setup.py clean --all \
-    && pypy3 -c "import geomdl"
+RUN pypy3 -m pip install --user --no-cache-dir -r requirements.txt \
+    && pypy3 -m pip install --user --no-cache-dir tornado
 
-WORKDIR /nurbs/app
+RUN pypy3 setup.py bdist_wheel \
+    && pypy3 -m pip install --user dist/* \
+    && pypy3 setup.py clean --all
 
-RUN pypy3 -m pip install --no-cache-dir -r requirements.txt \
-    && pypy3 -m pip install --no-cache-dir . \
-    && pypy3 -c "import geomdl.cli"
+WORKDIR /home/nurbs/app
 
-RUN useradd -ms /bin/bash nurbs \
-    && chown -R nurbs:nurbs /nurbs
+RUN pypy3 -m pip install --user --no-cache-dir -r requirements.txt
 
-USER nurbs
+RUN pypy3 -m pip install --user --no-cache-dir .
+
 WORKDIR /home/nurbs
+
+RUN pypy3 -c "import geomdl; import geomdl.cli"
 
 COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
 COPY --chown=nurbs:nurbs README.md .
