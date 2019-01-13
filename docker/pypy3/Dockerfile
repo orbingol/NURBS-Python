@@ -1,5 +1,5 @@
 # geomdl Dockerfile for PyPy3
-FROM pypy:3
+FROM pypy:3-slim
 
 USER root
 
