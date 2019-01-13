@@ -113,6 +113,10 @@ def nurbs_curve(spline_curve):
     return curve
 
 
+def test_nurbs_curve2d_weights(nurbs_curve):
+    assert nurbs_curve.weights == [0.5, 1.0, 0.75, 1.0, 0.25, 1.0]
+
+
 @mark.parametrize("param, res", [
     (0.0, (5.0, 5.0)),
     (0.2, (13.8181, 11.5103)),
@@ -121,8 +125,6 @@ def nurbs_curve(spline_curve):
 ])
 def test_nurbs_curve2d_eval(nurbs_curve, param, res):
     evalpt = nurbs_curve.evaluate_single(param)
-
-    print(evalpt)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
