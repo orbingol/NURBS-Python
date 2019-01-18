@@ -106,7 +106,7 @@ class SetuptoolsClean(clean_command):
     """ Cleans Cython-generated source files and setuptools-generated directories """
     def run(self):
         # Call parent method
-        super(SetuptoolsClean, self).run()
+        clean_command.run(self)
 
         # Clean setuptools-generated directories
         st_dirs = ['dist', 'build', 'geomdl.egg-info']
