@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.0b5 released on 2019-01-17
+
+* Minor API updates and fixes
+* Added more convenience methods to spline geometry classes
+* Minor fixes and updates in `exchange` module
+* Documentation updates
+* Added volume support to dict-based import and exports, i.e. cfg, yaml, json
+* Updated CI configurations
+  * Added CircleCI support for automation of deployment to PyPI, Anaconda Cloud and Docker Hub
+  * Updated TravisCI support to use tox and tox environments
+  * Updated AppVeyor support to generate Cython-compiled versions of geomdl as artifacts
+* Added support for star imports, i.e. `from geomdl import *`
+
 ## v5.0b4 released on 2018-12-31
 
 * Added `abstract.Geometry` and `abstract.SplineGeometry` classes
