@@ -11,17 +11,34 @@ Introduction
 ============
 
 NURBS-Python (geomdl) is an object-oriented B-Spline and NURBS surface and curve library for Python with
-implementations of advanced computation algorithms in an extensible way.
-It comes with on-the-fly shape visualization options, knot vector and surface grid generators, and more.
+implementations of advanced computation algorithms in an extensible way. It comes with various features, such as
+on-the-fly visualization options, knot vector and surface grid generators, tessellation, voxelization and more.
 
 NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
-steps during installation. It is tested with Python v2.7.x, Python v3.4.x and later.
+steps during installation. A Cython-compiled option also is provided for better performance. Moreover, the core library
+is self-contained; and therefore, it can be easily used with systems using embedded Python.
 
-Citing
-------
+NURBS-Python is tested with Python v2.7.x, Python v3.4.x and later.
 
-The citation options (BiBTeX entry, DOI name and others) can be found on the
-`Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation.
+Citing NURBS-Python
+-------------------
+
+The following article outlines the design and features of NURBS-Python (geomdl). I would be glad if you would cite it
+if you have used NURBS-Python (geomdl) in your research::
+
+    @article{bingol2019geomdl,
+      title={{NURBS-Python}: An open-source object-oriented {NURBS} modeling framework in {Python}},
+      author={Bingol, Onur Rauf and Krishnamurthy, Adarsh},
+      journal={{SoftwareX}},
+      volume={9},
+      pages={85--94},
+      year={2019},
+      publisher={Elsevier},
+      doi={https://doi.org/10.1016/j.softx.2018.12.005}
+    }
+
+Please refer to the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation
+for more details.
 
 Examples, Documentation and Extras
 ----------------------------------
@@ -30,6 +47,7 @@ Examples, Documentation and Extras
 * **Documentation**: http://nurbs-python.readthedocs.io/
 * **Wiki**: https://github.com/orbingol/NURBS-Python/wiki
 * **Command line application**: https://github.com/orbingol/geomdl-cli
+* **rw3dm**: https://github.com/orbingol/rw3dm
 
 Using NURBS-Python (geomdl)
 ===========================
@@ -37,15 +55,15 @@ Using NURBS-Python (geomdl)
 Installation and Testing
 ------------------------
 
-Please see the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
-of the documentation.
+Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
+of the documentation for details.
 
 Contributions and Issues
 ------------------------
 
-All contributions are welcome. For details, please see the
+All contributions are welcome. For details, please refer to the
 `Issues and Reporting <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_ section of the
-documentation.
+documentation for details.
 
 Author
 ======
