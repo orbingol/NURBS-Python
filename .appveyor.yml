@@ -99,7 +99,7 @@ test_script:
 
 # Build the wheel package
 after_test:
-  - cmd: "%PYTHON%\\python setup.py bdist_wheel --use-source"
+  - cmd: "%PYTHON%\\python setup.py bdist_wheel --use-cython"
 
 # Push binary wheels as artifacts
 artifacts:
