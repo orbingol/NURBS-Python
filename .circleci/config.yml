@@ -1,0 +1,7 @@
+version: 2
+jobs:
+    build:
+        branches:
+            ignore:
+                - 4.x
+                - gh-pages
