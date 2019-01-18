@@ -15,6 +15,6 @@ typing; python_version < '3.5'
 cython; platform_python_implementation != 'PyPy'
 
 # Required packages for visualization
-numpy
+numpy==1.15.4
 matplotlib==2.2.3
 plotly
