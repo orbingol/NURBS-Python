@@ -91,7 +91,7 @@ before_build:
 
 # Build and install
 build_script:
-  - cmd: "%PYTHON%\\python setup.py install --use-cython"
+  - cmd: "%PYTHON%\\python -m pip install . --install-option=\"--use-cython\""
 
 # Test using pytest
 test_script:
