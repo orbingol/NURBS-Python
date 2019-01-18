@@ -111,32 +111,28 @@ Compile with Cython
 ===================
 
 To improve performance, the :doc:`Core Library <modules>` of NURBS-Python can be compiled and installed using the
-following command:
+following command along with the pure Python version.
 
 .. code-block:: console
 
-    $ python setup.py install --use-cython
+    $ pip install . --install-option="--use-cython"
 
-This command generates .c files (i.e. cythonize) and compile the .c files into binary Python modules.
+This command will generate .c files (i.e. cythonization) and compile the .c files into binary Python modules.
 
-The following command can be used to directly compile the generated .c files skipping the cythonization step and
-install the compiled binaries:
-
-.. code-block:: console
-
-    $ python setup.py install --use-source
-
-To update the compiled module with the latest changes from GitHub, you have to recythonize and compile the code.
-
-To enable development mode;
+The following command can be used to directly compile and install from the existing .c files, skipping the cythonization
+step:
 
 .. code-block:: console
 
-    $ python setup.py develop
+    $ pip install . --install-option="--use-source"
+
+To update the compiled module with the latest changes, you need to re-cythonize the code.
+
+To enable Cython-compiled module in development mode;
+
+.. code-block:: console
+
     $ python setup.py build_ext --use-cython --inplace
-
-As described above, these commands create a symbolic link to the repo directory and compile the module in the repo
-directory.
 
 After the successful execution of the command, the you can import and use the compiled library as follows:
 

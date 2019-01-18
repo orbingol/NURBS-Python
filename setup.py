@@ -38,12 +38,17 @@
 
 from setuptools import setup
 from setuptools import Extension
-from setuptools.command.test import test as TestCommand
-from distutils.command.clean import clean as CleanCommand
+from setuptools.command.install import install as install_command
+from setuptools.command.test import test as test_command
+from distutils.command.clean import clean as clean_command
 import sys
 import os
 import re
 import shutil
+
+# Global variables to control generation of optional Cython-compiled library core module
+BUILD_FROM_CYTHON = False
+BUILD_FROM_SOURCE = False
 
 
 def read(file_name):
@@ -56,13 +61,35 @@ def get_property(prop, project):
     return result.group(1)
 
 
+class InstallCommand(install_command):
+    """ Overrides pip install command to control generation of optional Cython-compiled library core module """
+    user_options = install_command.user_options + [
+        ('use-cython', None, 'Cythonize and compile geomdl.core'),
+        ('use-source', None, 'Compile geomdl.core from the source files'),
+    ]
+
+    def initialize_options(self):
+        install_command.initialize_options(self)
+        self.use_cython = 0
+        self.use_source = 0
+
+    def finalize_options(self):
+        install_command.finalize_options(self)
+
+    def run(self):
+        global BUILD_FROM_CYTHON, BUILD_FROM_SOURCE
+        BUILD_FROM_CYTHON = True if self.use_cython > 0 else False
+        BUILD_FROM_SOURCE = True if self.use_source > 0 else False
+        install_command.run(self)
+
+
 # Reference: https://docs.pytest.org/en/latest/goodpractices.html
-class PyTest(TestCommand):
+class PyTest(test_command):
     """ Allows test command to call py.test """
     user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
 
     def initialize_options(self):
-        TestCommand.initialize_options(self)
+        test_command.initialize_options(self)
         self.pytest_args = ""
 
     def run_tests(self):
@@ -75,11 +102,19 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-class CythonClean(CleanCommand):
-    """ Adds cleaning option for Cython generated .c files inside the module directory. """
+class SetuptoolsClean(clean_command):
+    """ Cleans Cython-generated source files and setuptools-generated directories """
     def run(self):
         # Call parent method
-        CleanCommand.run(self)
+        super(SetuptoolsClean, self).run()
+
+        # Clean setuptools-generated directories
+        st_dirs = ['dist', 'build', 'geomdl.egg-info']
+
+        print("Removing setuptools-generated directories")
+        for d in st_dirs:
+            d_path = os.path.join(os.path.dirname(__file__), d)
+            shutil.rmtree(d_path, ignore_errors=True)
 
         # Find list of files with .c extension
         flist, flist_path = read_files("geomdl", ".c")
@@ -138,12 +173,13 @@ def make_dir(project, gen_init_py=True):
 def in_argv(arg_list):
     """ Checks if any of the elements of the input list is in sys.argv array. """
     for arg in sys.argv:
-        if arg in arg_list:
-            return True
+        for parg in arg_list:
+            if parg == arg or arg.startswith(parg):
+                return True
     return False
 
 
-possible_cmds = ['install', 'build_ext', 'bdist_wheel']
+possible_cmds = ['install', 'build', 'bdist']
 packages = ['geomdl', 'geomdl.visualization', 'geomdl.shapes']
 
 # Cython and compiled C module options
@@ -151,8 +187,6 @@ packages = ['geomdl', 'geomdl.visualization', 'geomdl.shapes']
 if in_argv(possible_cmds) and '--use-source' in sys.argv:
     BUILD_FROM_SOURCE = True
     sys.argv.remove('--use-source')
-else:
-    BUILD_FROM_SOURCE = False
 
 if in_argv(possible_cmds) and '--use-cython' in sys.argv:
     # Try to import Cython
@@ -163,8 +197,6 @@ if in_argv(possible_cmds) and '--use-cython' in sys.argv:
 
     BUILD_FROM_CYTHON = True
     sys.argv.remove('--use-cython')
-else:
-    BUILD_FROM_CYTHON = False
 
 # We don't want to include any compiled files with the distribution
 ext_modules = []
@@ -218,8 +250,9 @@ data = dict(
     packages=packages,
     install_requires=['six>=1.9.0'] + required,
     tests_require=["pytest>=3.0.0"],
-    cmdclass={"test": PyTest, 'clean': CythonClean},
+    cmdclass={"install": InstallCommand, "test": PyTest, 'clean': SetuptoolsClean},
     ext_modules=ext_modules,
+    zip_safe=False,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
