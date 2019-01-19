@@ -1,14 +1,15 @@
 """
     Tests for the NURBS-Python package
     Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018 Onur Rauf Bingol
+    Copyright (c) 2018-2019 Onur Rauf Bingol
 
-    Tests geomdl.helpers module.
+    Requires "pytest" to run.
 """
 
 from geomdl import helpers
 
 GEOMDL_DELTA = 10e-8
+
 
 def test_find_span_binsearch():
 	degree = 2
@@ -20,6 +21,7 @@ def test_find_span_binsearch():
 	result = 4  # Value from The Nurbs Book p.68
 
 	assert to_check == result
+
 
 def test_basis_function():
 	degree = 2
@@ -33,6 +35,7 @@ def test_basis_function():
 	assert abs(to_check[0] - result[0]) < GEOMDL_DELTA
 	assert abs(to_check[1] - result[1]) < GEOMDL_DELTA
 	assert abs(to_check[2] - result[2]) < GEOMDL_DELTA
+
 
 def test_basis_functions():
 	degree = 2
@@ -55,6 +58,7 @@ def test_basis_functions():
 	assert abs(to_check[2][1] - result[2][1]) < GEOMDL_DELTA
 	assert abs(to_check[2][2] - result[2][2]) < GEOMDL_DELTA
 
+
 def test_basis_function_all():
 	degree = 2
 	knot_vector = [0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5]
@@ -63,19 +67,20 @@ def test_basis_function_all():
 
 	to_check = helpers.basis_function_all(degree, knot_vector, span, knot)
 	interm = [helpers.basis_function(_, knot_vector, span, knot) + [None] * (degree - _) for _ in range(0, degree + 1)]
-	result = [list(_) for _ in zip(*interm)]  # Tranposing to the same format as to_check
+	result = [list(_) for _ in zip(*interm)]  # Transposing to the same format as to_check
 
 	assert abs(to_check[0][0] - result[0][0]) < GEOMDL_DELTA
 	assert abs(to_check[0][1] - result[0][1]) < GEOMDL_DELTA
 	assert abs(to_check[0][2] - result[0][2]) < GEOMDL_DELTA
 
-	assert to_check[1][0] == result[1][0]  # NoneType can't be substracted
+	assert to_check[1][0] == result[1][0]  # NoneType can't be subtracted
 	assert abs(to_check[1][1] - result[1][1]) < GEOMDL_DELTA
 	assert abs(to_check[1][2] - result[1][2]) < GEOMDL_DELTA
 
 	assert to_check[2][0] == result[2][0]  # None
 	assert to_check[2][1] == result[2][1]  # None
 	assert abs(to_check[2][2] - result[2][2]) < GEOMDL_DELTA
+
 
 def test_basis_function_ders():
 	degree = 2
@@ -99,6 +104,7 @@ def test_basis_function_ders():
 	assert abs(to_check[2][1] - result[2][1]) < GEOMDL_DELTA
 	assert abs(to_check[2][2] - result[2][2]) < GEOMDL_DELTA
 
+
 def test_find_multiplicity():
 	knot_vector = [0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5]
 	knots = [0.5, 2, 4, 5]
@@ -107,6 +113,7 @@ def test_find_multiplicity():
 	result = [0, 1, 2, 3]
 
 	assert to_check == result
+
 
 def test_basis_function_one():
 	degree = 2
@@ -121,6 +128,7 @@ def test_basis_function_one():
 	assert abs(to_check[0] - result[0]) < GEOMDL_DELTA
 	assert abs(to_check[1] - result[1]) < GEOMDL_DELTA
 	assert abs(to_check[2] - result[2]) < GEOMDL_DELTA
+
 
 def test_basis_function_ders_one():
 	degree = 2
