@@ -3,7 +3,7 @@
     Released under The MIT License. See LICENSE file for details.
     Copyright (c) 2018 Onur Rauf Bingol
 
-    Tests B-Spline curve and surface evaluations. Requires "pytest" to run.
+    Requires "pytest" to run.
 """
 
 from geomdl import BSpline

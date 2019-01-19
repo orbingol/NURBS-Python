@@ -93,7 +93,7 @@ class AbstractEvaluatorExtended(AbstractEvaluator):
         super(AbstractEvaluatorExtended, self).__init__(**kwargs)
 
     @abc.abstractmethod
-    def insert_knot(self, **kwargs):
+    def insert_knot(self, direction, **kwargs):
         """ Abstract method for implementation of knot insertion algorithm.
 
         .. note::
@@ -198,10 +198,10 @@ class CurveEvaluator(AbstractEvaluatorExtended):
         # Return the derivatives
         return CK
 
-    def insert_knot(self, **kwargs):
+    def insert_knot(self, direction="u", **kwargs):
         """ Inserts a knot multiple times. """
         # Call parent method
-        super(CurveEvaluator, self).insert_knot(**kwargs)
+        super(CurveEvaluator, self).insert_knot(direction, **kwargs)
 
         param = kwargs.get('parameter')
         r = kwargs.get('r')  # number of knot insertions
@@ -522,7 +522,7 @@ class SurfaceEvaluator(AbstractEvaluatorExtended):
     def insert_knot(self, direction, **kwargs):
         """ Inserts a knot multiple times. """
         # Call parent method
-        super(SurfaceEvaluator, self).insert_knot(**kwargs)
+        super(SurfaceEvaluator, self).insert_knot(direction, **kwargs)
 
         # Insert knot
         if direction == "u":

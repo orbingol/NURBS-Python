@@ -692,7 +692,7 @@ class Surface(abstract.Surface):
         return self._evaluator.derivatives_single(parameter=(u, v), deriv_order=order,
                                                   degree=self._degree, knotvector=self._knot_vector,
                                                   ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                                  dimension=self._dimension)
+                                                  dimension=self.dimension)
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates
     def insert_knot(self, u=None, v=None, **kwargs):
