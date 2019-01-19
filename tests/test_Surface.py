@@ -186,7 +186,7 @@ def test_nurbs_surface_deriv(nurbs_surf, param, order, res):
                 assert abs(c - e) < GEOMDL_DELTA
 
 
-def test_bspline_surface_bbox(spline_surf):
+def test_surface_bounding_box(spline_surf):
     # Evaluate bounding box
     to_check = spline_surf.bbox
 
