@@ -106,6 +106,9 @@ def find_spans(degree, knot_vector, num_ctrlpts, knots, func=find_span_linear):
 def find_multiplicity(knot, knot_vector, **kwargs):
     """ Finds knot multiplicity over the knot vector.
 
+    Keyword Arguments:
+        * ``tol``: tolerance (delta) value for equality checking
+
     :param knot: knot or parameter, :math:`u`
     :type knot: float
     :param knot_vector: knot vector, :math:`U`
@@ -114,7 +117,7 @@ def find_multiplicity(knot, knot_vector, **kwargs):
     :rtype: int
     """
     # Get tolerance value
-    tol = kwargs.get('tol', 0.001)
+    tol = kwargs.get('tol', 10e-8)
 
     mult = 0  # initial multiplicity
 
