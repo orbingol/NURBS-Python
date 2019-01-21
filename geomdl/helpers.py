@@ -466,3 +466,25 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
         ders[k] = ND[0]
 
     return ders
+
+
+def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
+    """ Removes knot from the parametrically 1-dimensional spline shape.
+
+    Implementation of Algorithm A5.8 from The NURBS Book by Piegl & Tiller
+
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param ctrlpts: control points
+    :type ctrlpts: list
+    :param u: knot to be removed
+    :type u: float
+    :return: updated knot vector and control points
+    """
+    num = kwargs.get('num', 1)  # number of same knot removals
+    r = kwargs.get('knot_idx', 0)  # if multiple knots, which one? => 0 <= r < s
+
+    # To be implemented later...
+    pass
