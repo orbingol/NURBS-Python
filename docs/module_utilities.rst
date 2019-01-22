@@ -1,5 +1,5 @@
-Utilities and Helpers
-^^^^^^^^^^^^^^^^^^^^^
+Utility Functions
+^^^^^^^^^^^^^^^^^
 
 These modules contain common utility and helper functions for B-Spline / NURBS curve and surface evaluation operations.
 
@@ -32,4 +32,13 @@ advantage, especially the point and vector manipulation and generation functions
 manipulation have ``point_`` prefix and the ones related to vectors have ``vector_`` prefix.
 
 .. automodule:: geomdl.linalg
+    :members:
+
+
+Knot Vector
+===========
+
+The ``knotvector`` module provides utility functions related to knot vector generation and validation.
+
+.. automodule:: geomdl.knotvector
     :members:
