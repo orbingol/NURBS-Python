@@ -5,14 +5,14 @@ This module allows users to export/import NURBS shapes in common CAD exchange fo
 *import_* are used for generating B-spline and NURBS objects from the input files. The functions starting with
 *export_* are used for saving B-spline and NURBS objects as files.
 
-The following functions can only **import/export control points** or **export evaluated points**:
+The following functions **import/export control points** or **export evaluated points**:
 
 * :py:func:`.exchange.import_txt()`
 * :py:func:`.exchange.export_txt()`
 * :py:func:`.exchange.import_csv()`
 * :py:func:`.exchange.export_csv()`
 
-The following functions can only work with **single or multiple surfaces**:
+The following functions work with **single or multiple surfaces**:
 
 * :py:func:`.exchange.export_obj()`
 * :py:func:`.exchange.export_stl()`
@@ -20,8 +20,12 @@ The following functions can only work with **single or multiple surfaces**:
 * :py:func:`.exchange.import_smesh()`
 * :py:func:`.exchange.export_smesh()`
 
+The following functions work with **single or multiple volumes**:
 
-The following functions can be used to **import/export complete NURBS shapes**:
+* :py:func:`.exchange.import_vmesh()`
+* :py:func:`.exchange.export_vmesh()`
+
+The following functions can be used to **import/export rational or non-rational spline geometries**:
 
 * :py:func:`.exchange.import_yaml()`
 * :py:func:`.exchange.export_yaml()`
@@ -29,6 +33,11 @@ The following functions can be used to **import/export complete NURBS shapes**:
 * :py:func:`.exchange.export_cfg()`
 * :py:func:`.exchange.import_json()`
 * :py:func:`.exchange.export_json()`
+
+The following functions work with **single or multiple curves and surfaces**:
+
+* :py:func:`.exchange.import_3dm()`
+* :py:func:`.exchange.export_3dm()`
 
 Function Reference
 ==================
