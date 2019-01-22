@@ -451,8 +451,9 @@ def export_obj(surface, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
-        * ``vertex_normals``: if True, compute vertex normals. *Default: False*
+        * ``vertex_spacing``: size of the triangle edge in terms of surface points sampled. *Default: 2*
+        * ``vertex_normals``: if True, then computes vertex normals. *Default: False*
+        * ``parametric_vertices``: if True, then adds parameter space vertices. *Default: False*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
@@ -469,7 +470,7 @@ def export_obj_str(surface, **kwargs):
     """ Exports surface(s) as a .obj file (string).
 
     Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``vertex_spacing``: size of the triangle edge in terms of surface points sampled. *Default: 2*
         * ``vertex_normals``: if True, then computes vertex normals. *Default: False*
         * ``parametric_vertices``: if True, then adds parameter space vertices. *Default: False*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
