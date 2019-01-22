@@ -394,11 +394,30 @@ def export_json(obj, file_name):
 def import_obj(file_name, **kwargs):
     """ Reads .obj files and generates faces.
 
+    Keyword Arguments:
+        * ``callback``: reference to the function that processes the faces for customized output
+
+    The structure of the callback function is shown below:
+
+    .. code-block:: python
+
+        def my_callback_function(face_list):
+            # "face_list" will be a list of elements.Face class instances
+            # The function should return a list
+            return list()
+
     :param file_name: file name
     :type file_name: str
-    :return: list of faces
+    :return: output of the callback function (default is a list of faces)
     :rtype: list
     """
+    def default_callback(face_list):
+        return face_list
+
+    # Keyword arguments
+    callback_func = kwargs.get('callback', default_callback)
+
+    # Read and process the input file
     content = exch.read_file(file_name)
     content_arr = content.split("\n")
 
@@ -442,8 +461,8 @@ def import_obj(file_name, **kwargs):
         face = elements.Face(*triangles, id=face_idx)
         faces.append(face)
 
-    # Return list of faces
-    return faces
+    # Return the output of the callback function
+    return callback_func(faces)
 
 
 @export
