@@ -15,13 +15,13 @@ from ._utilities import export
 def generate(degree, num_ctrlpts, **kwargs):
     """ Generates an equally spaced knot vector.
 
-    It uses the following equation to generate knot vector:
-
-    m = n + p + 1
+    It uses the following equality to generate knot vector: :math:`m = n + p + 1`
 
     where;
 
-    p: degree, n+1: number of control points, m+1: number of knots
+    * :math:`p`, degree
+    * :math:`n + 1`, number of control points
+    * :math:`m + 1`, number of knots
 
     Keyword Arguments:
 
@@ -65,6 +65,7 @@ def generate(degree, num_ctrlpts, **kwargs):
     return knot_vector
 
 
+@export
 def normalize(knot_vector, decimals=18):
     """ Normalizes the input knot vector to [0, 1] domain.
 
@@ -94,6 +95,7 @@ def normalize(knot_vector, decimals=18):
     return knot_vector_out
 
 
+@export
 def check(degree, knot_vector, num_ctrlpts):
     """ Checks the validity of the input knot vector.
 
