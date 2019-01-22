@@ -14,6 +14,7 @@ The following functions **import/export control points** or **export evaluated p
 
 The following functions work with **single or multiple surfaces**:
 
+* :py:func:`.exchange.import_obj()`
 * :py:func:`.exchange.export_obj()`
 * :py:func:`.exchange.export_stl()`
 * :py:func:`.exchange.export_off()`
