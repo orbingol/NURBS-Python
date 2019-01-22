@@ -72,7 +72,7 @@ class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
-        self.data = args if args else [0.0, 0.0, 0.0]  # spatial coordinates
+        self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._inside = False  # flag for trimming
 
@@ -282,6 +282,8 @@ class Triangle(AbstractEntity):
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
         self._inside = False  # flag for trimming
+        if args:
+            self.add_vertex(*args)
 
     def __str__(self):
         return "Triangle " + str(self._id)
@@ -449,6 +451,8 @@ class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
+        if args:
+            self.add_triangle(*args)
 
     def __str__(self):
         return "Face " + str(self._id)
@@ -483,6 +487,8 @@ class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
+        if args:
+            self.add_face(*args)
 
     def __str__(self):
         return "Body " + str(self._id)
