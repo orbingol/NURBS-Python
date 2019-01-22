@@ -7,6 +7,10 @@
 
 """
 
+from copy import deepcopy
+from . import linalg
+from .exceptions import *
+
 
 def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     """ Finds the span of the knot over the input knot vector using binary search.
@@ -469,9 +473,9 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
 
 def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
-    """ Removes knot from the parametrically 1-dimensional spline shape.
+    """ Removes knot from the parametrically 1-dimensional rational/non-rational spline shape.
 
-    Implementation of Algorithm A5.8 from The NURBS Book by Piegl & Tiller
+    Implementation based on Algorithm A5.8 and Equation 5.28 of The NURBS Book by Piegl & Tiller
 
     :param degree: degree
     :type degree: int
@@ -483,8 +487,92 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     :type u: float
     :return: updated knot vector and control points
     """
+    tol = kwargs.get('tol', 10e-4)  # Refer to Eq 5.30 for the meaning
     num = kwargs.get('num', 1)  # number of same knot removals
-    r = kwargs.get('knot_idx', 0)  # if multiple knots, which one? => 0 <= r < s
 
-    # To be implemented later...
-    pass
+    # It is impossible to remove knots if num > s
+    s = find_multiplicity(u, knotvector)
+    if num > s:
+        # Raise a custom exception and let the caller handle exception
+        raise GeomdlNotPossibleException("Cannot remove " + str(num) + " of knot " + str(u))
+
+    # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
+    r = find_span_linear(degree, knotvector, len(ctrlpts), u)
+    r += s - 1
+
+    order = degree + 1
+    first = r - degree
+    last = r - s
+
+    # Don't change inputs
+    ctrlpts_new = deepcopy(ctrlpts)
+    knotvector_new = deepcopy(knotvector)
+
+    # Initialize temp array for storing new control points
+    temp = [[] for _ in range(2 * degree + 1)]
+
+    # Loop for Eqs 5.28 & 5.29
+    for t in range(0, num):
+        temp[0] = ctrlpts[first - 1]
+        temp[last - first + 2] = ctrlpts[last + 1]
+        i = first
+        j = last
+        ii = 1
+        jj = last - first + 1
+        remflag = False
+
+        # Compute control points for one removal step
+        while j - i > t:
+            alpha_i = (u - knotvector[i]) / (knotvector[i + order + t] - knotvector[i])
+            alpha_j = (u - knotvector[j - t]) / (knotvector[j + order] - knotvector[j - t])
+            temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
+            temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
+            i += 1
+            j -= 1
+            ii += 1
+            jj -= 1
+
+        # Check if the knot is removable
+        if j - i < t:
+            if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
+                remflag = True
+        else:
+            alpha_i = (u - knotvector[i]) / (knotvector[i + order + t] - knotvector[i])
+            ptn = (alpha_i * temp[ii + t + 1]) + ((1.0 - alpha_i) * temp[ii - 1])
+            if linalg.point_distance(ctrlpts[i], ptn) <= tol:
+                remflag = True
+
+        # Check if we can remove the knot and update new control points array
+        if remflag:
+            i = first
+            j = last
+            while j - i > t:
+                ctrlpts_new[i] = temp[i - first + 1]
+                ctrlpts_new[j] = temp[j - first + 1]
+                i += 1
+                j -= 1
+
+        # Update indices
+        first -= 1
+        last += 1
+
+    # Shift knots
+    for k in range(r + 1, len(knotvector)):
+        knotvector_new[k - t] = knotvector[k]
+
+    # Shift control points (refer to p183 of The NURBS Book, 2nd Edition)
+    j = int((2*r - s - degree) / 2)  # first control point out
+    i = j
+    for k in range(1, t):
+        if k % 2 == 1:
+            i += 1
+        else:
+            j -= 1
+    for k in range(i+1, len(ctrlpts)):
+        ctrlpts_new[j] = ctrlpts[k]
+
+    # Slice to get new knot vector and control points
+    knotvector_new = knotvector_new[0:-t]
+    ctrlpts_new =  ctrlpts_new[0:-t]
+
+    return knotvector_new, ctrlpts_new
