@@ -11,7 +11,7 @@ import os
 import struct
 import json
 from io import StringIO
-from . import abstract, NURBS, multi, compatibility, operations, utilities, convert
+from . import abstract, NURBS, multi, compatibility, operations, utilities, convert, elements
 from . import _exchange as exch
 from ._utilities import export
 
@@ -388,6 +388,62 @@ def export_json(obj, file_name):
 
     # Write to file
     return exch.write_file(file_name, exported_data)
+
+
+@export
+def import_obj(file_name, **kwargs):
+    """ Reads .obj files and generates faces.
+
+    :param file_name: file name
+    :type file_name: str
+    :return: list of faces
+    :rtype: list
+    """
+    content = exch.read_file(file_name)
+    content_arr = content.split("\n")
+
+    # Initialize variables
+    on_face = False
+    vertices = []
+    triangles = []
+    faces = []
+
+    # Index values
+    vert_idx = 1
+    tri_idx = 1
+    face_idx = 1
+
+    # Loop through the data
+    for carr in content_arr:
+        carr = carr.strip()
+        data = carr.split(" ")
+        data = [d.strip() for d in data]
+        if data[0] == "v":
+            if on_face:
+                on_face = not on_face
+                face = elements.Face(*triangles, id=face_idx)
+                faces.append(face)
+                face_idx += 1
+                vertices[:] = []
+                triangles[:] = []
+                vert_idx = 1
+                tri_idx = 1
+            vertex = elements.Vertex(*data[1:], id=vert_idx)
+            vertices.append(vertex)
+            vert_idx += 1
+        if data[0] == "f":
+            on_face = True
+            triangle = elements.Triangle(*[vertices[int(fidx) - 1] for fidx in data[1:]], id=tri_idx)
+            triangles.append(triangle)
+            tri_idx += 1
+
+    # Process he final face
+    if triangles:
+        face = elements.Face(*triangles, id=face_idx)
+        faces.append(face)
+
+    # Return list of faces
+    return faces
 
 
 @export
