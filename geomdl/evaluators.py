@@ -92,6 +92,16 @@ class AbstractEvaluatorExtended(AbstractEvaluator):
         """
         pass
 
+    @abc.abstractmethod
+    def remove_knot(self, direction, **kwargs):
+        """ Abstract method for implementation of knot removal algorithm.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
+        pass
+
 
 @export
 class CurveEvaluator(AbstractEvaluatorExtended):
@@ -229,6 +239,9 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         # Return updated knot vector and control points
         return UQ, Q
+
+    def remove_knot(self, direction, **kwargs):
+        pass
 
 
 class CurveEvaluator2(CurveEvaluator):
@@ -485,6 +498,9 @@ class SurfaceEvaluator(AbstractEvaluatorExtended):
             return _evaluators.insert_knot_v(self._span_func, **kwargs)
         else:
             raise ValueError("Can only work on u- and v-directions")
+
+    def remove_knot(self, direction, **kwargs):
+        pass
 
 
 class SurfaceEvaluator2(SurfaceEvaluator):
