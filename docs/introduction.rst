@@ -5,7 +5,7 @@ NURBS-Python (geomdl) is a self-contained, object-oriented pure Python B-Spline 
 of curve, surface and volume generation and evaluation algorithms. It also provides convenient and easy-to-use data
 structures for storing curve, surface and volume descriptions.
 
-Some significant features of NURBS-Python are:
+Some significant features of NURBS-Python (geomdl):
 
 * Self-contained, object-oriented, extensible and highly customizable API
 * Convenient data structures for storing curve, surface and volume descriptions
@@ -21,6 +21,15 @@ Some significant features of NURBS-Python are:
 * For higher performance, optional *Compile with Cython* options are also available via ``setup.py``
 * Easy to install via **pip**: ``pip install geomdl`` or **conda**: ``conda install -c orbingol geomdl``
 * `Docker images <https://hub.docker.com/r/idealabisu/nurbs-python>`_ are available
+
+NURBS-Python (geomdl) contains the following fundamental geometric algorithms:
+
+* Point evaluation
+* Derivative evaluation
+* Knot insertion
+* Knot removal
+* Degree elevation
+* Degree reduction
 
 References
 ==========
