@@ -571,6 +571,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             j -= 1
     for k in range(i+1, len(ctrlpts)):
         ctrlpts_new[j] = ctrlpts[k]
+        j += 1
 
     # Slice to get new knot vector and control points
     knotvector_new = knotvector_new[0:-t]
