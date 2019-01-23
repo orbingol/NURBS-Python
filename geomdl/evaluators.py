@@ -44,16 +44,6 @@ class AbstractEvaluator(object):
         return self._name
 
     @abc.abstractmethod
-    def evaluate_single(self, **kwargs):
-        """ Abstract method for computation of a single point at a single parameter.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
-
-    @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Abstract method for computation of points over a range of parameters.
 
@@ -64,7 +54,7 @@ class AbstractEvaluator(object):
         pass
 
     @abc.abstractmethod
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Abstract method for computation of derivatives at a single parameter.
 
         .. note::
@@ -122,24 +112,6 @@ class CurveEvaluator(AbstractEvaluatorExtended):
         super(CurveEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate_single(self, **kwargs):
-        """ Evaluates a single curve point. """
-        # Call parent method
-        super(CurveEvaluator, self).evaluate_single(**kwargs)
-
-        param = kwargs.get('parameter')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
-
-        # Algorithm A3.1
-        crvpt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector,
-                              ctrlpts=ctrlpts, sample_size=1, dimension=dimension, precision=precision)
-
-        return crvpt[0]
-
     def evaluate(self, **kwargs):
         """ Evaluates the curve. """
         # Call parent method
@@ -170,10 +142,10 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         # Call parent method
-        super(CurveEvaluator, self).derivatives_single(**kwargs)
+        super(CurveEvaluator, self).derivatives(**kwargs)
 
         param = kwargs.get('parameter')
         deriv_order = kwargs.get('deriv_order', 0)
@@ -310,10 +282,10 @@ class CurveEvaluator2(CurveEvaluator):
         # Return a 2-dimensional list of control points
         return PK
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         # Call parent method
-        super(CurveEvaluator2, self).derivatives_single(**kwargs)
+        super(CurveEvaluator2, self).derivatives(**kwargs)
 
         param = kwargs.get('parameter')
         deriv_order = kwargs.get('deriv_order', 0)
@@ -381,13 +353,13 @@ class CurveEvaluatorRational(CurveEvaluator):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        CKw = super(CurveEvaluatorRational, self).derivatives_single(**kwargs)
+        CKw = super(CurveEvaluatorRational, self).derivatives(**kwargs)
 
         # Algorithm A4.2
         CK = [[0.0 for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
@@ -420,24 +392,6 @@ class SurfaceEvaluator(AbstractEvaluatorExtended):
     def __init__(self, **kwargs):
         super(SurfaceEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    def evaluate_single(self, **kwargs):
-        """ Evaluates a single surface point. """
-        # Call parent method
-        super(SurfaceEvaluator, self).evaluate_single(**kwargs)
-
-        param = kwargs.get('parameter')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
-
-        spt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
-                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1), dimension=dimension, precision=precision)
-
-        return spt[0]
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface. """
@@ -479,10 +433,10 @@ class SurfaceEvaluator(AbstractEvaluatorExtended):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         # Call parent method
-        super(SurfaceEvaluator, self).derivatives_single(**kwargs)
+        super(SurfaceEvaluator, self).derivatives(**kwargs)
 
         deriv_order = kwargs.get('deriv_order')
         param = kwargs.get('parameter')
@@ -614,7 +568,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         return PKL
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         param = kwargs.get('parameter')
@@ -691,13 +645,13 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         deriv_order = kwargs.get('deriv_order')
         dimension = kwargs.get('dimension')
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        SKLw = super(SurfaceEvaluatorRational, self).derivatives_single(**kwargs)
+        SKLw = super(SurfaceEvaluatorRational, self).derivatives(**kwargs)
 
         # Generate an empty list of derivatives
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
@@ -738,24 +692,6 @@ class VolumeEvaluator(AbstractEvaluator):
     def __init__(self, **kwargs):
         super(VolumeEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    def evaluate_single(self, **kwargs):
-        """ Evaluates a single point. """
-        # Call parent method
-        super(VolumeEvaluator, self).evaluate_single(**kwargs)
-
-        param = kwargs.get('parameter')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
-
-        spt = self.evaluate(start=param, stop=param, degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
-                            ctrlpts_size=ctrlpts_size, sample_size=(1, 1, 1), dimension=dimension, precision=precision)
-
-        return spt[0]
 
     def evaluate(self, **kwargs):
         """ Evaluates the volume. """
@@ -802,7 +738,7 @@ class VolumeEvaluator(AbstractEvaluator):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivative at the given parametric coordinate. """
         pass
 
@@ -834,6 +770,6 @@ class VolumeEvaluatorRational(VolumeEvaluator):
 
         return eval_points
 
-    def derivatives_single(self, **kwargs):
+    def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         pass

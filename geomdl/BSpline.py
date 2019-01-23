@@ -171,10 +171,13 @@ class Curve(abstract.Curve):
         if self._kv_normalize:
             utilities.check_params([param])
 
-        # Evaluate
-        return self._evaluator.evaluate_single(parameter=param, degree=self.degree, knotvector=self.knotvector,
-                                               ctrlpts=self._control_points, dimension=self._dimension,
-                                               precision=self._precision)
+        # Evaluate the curve point
+        pt = self._evaluator.evaluate(start=param, stop=param,
+                                      degree=self.degree, knotvector=self.knotvector,
+                                      ctrlpts=self._control_points, sample_size=self.sample_size,
+                                      dimension=self._dimension, precision=self._precision)
+
+        return pt[0]
 
     def evaluate_list(self, param_list):
         """ Evaluates the curve for an input range of parameters.
@@ -212,9 +215,9 @@ class Curve(abstract.Curve):
         super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
-        return self._evaluator.derivatives_single(parameter=u, deriv_order=order, degree=self.degree,
-                                                  knotvector=self.knotvector, ctrlpts=self._control_points,
-                                                  dimension=self._dimension)
+        return self._evaluator.derivatives(parameter=u, deriv_order=order, degree=self.degree,
+                                           knotvector=self.knotvector, ctrlpts=self._control_points,
+                                           dimension=self._dimension)
 
     # Knot insertion
     def insert_knot(self, u, **kwargs):
@@ -640,12 +643,14 @@ class Surface(abstract.Surface):
         # Call parent method
         super(Surface, self).evaluate_single(param)
 
-        # Evaluate the surface
-        spt = self._evaluator.evaluate_single(parameter=param, degree=self._degree, knotvector=self._knot_vector,
-                                              ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                              dimension=self._dimension, precision=self._precision)
+        # Evaluate the surface point
+        pt = self._evaluator.evaluate(start=param, stop=param,
+                                      degree=self._degree, knotvector=self._knot_vector,
+                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
+                                      sample_size=self.sample_size, dimension=self._dimension,
+                                      precision=self._precision)
 
-        return spt
+        return pt[0]
 
     def evaluate_list(self, param_list):
         """ Evaluates the surface for a given list of (u, v) parameters.
@@ -689,10 +694,10 @@ class Surface(abstract.Surface):
         super(Surface, self).derivatives(u=u, v=v, order=order, **kwargs)
 
         # Evaluate and return the derivatives
-        return self._evaluator.derivatives_single(parameter=(u, v), deriv_order=order,
-                                                  degree=self._degree, knotvector=self._knot_vector,
-                                                  ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                                  dimension=self.dimension)
+        return self._evaluator.derivatives(parameter=(u, v), deriv_order=order,
+                                           degree=self._degree, knotvector=self._knot_vector,
+                                           ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
+                                           dimension=self.dimension)
 
     # Insert knot 'r' times at the given (u, v) parametric coordinates
     def insert_knot(self, u=None, v=None, **kwargs):
@@ -966,13 +971,14 @@ class Volume(abstract.Volume):
         if self._kv_normalize:
             utilities.check_params(param)
 
-        # Evaluate the volume
-        vpt = self._evaluator.evaluate_single(parameter=param,
-                                              degree=self._degree, knotvector=self._knot_vector,
-                                              ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                              dimension=self._dimension, precision=self._precision)
+        # Evaluate the volume point
+        pt = self._evaluator.evaluate(start=param, stop=param,
+                                      degree=self._degree, knotvector=self._knot_vector,
+                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
+                                      sample_size=self.sample_size, dimension=self._dimension,
+                                      precision=self._precision)
 
-        return vpt
+        return pt[0]
 
     def evaluate_list(self, param_list):
         """ Evaluates the volume for a given list of (u, v, w) parameters.
