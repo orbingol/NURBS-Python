@@ -538,7 +538,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
                 remflag = True
         else:
             alpha_i = (u - knotvector[i]) / (knotvector[i + order + t] - knotvector[i])
-            ptn = (alpha_i * temp[ii + t + 1]) + ((1.0 - alpha_i) * temp[ii - 1])
+            ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
 
