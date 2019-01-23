@@ -492,7 +492,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
     # It is impossible to remove knots if num > s
     s = find_multiplicity(u, knotvector)
-    if num > s:
+    if num > s or num <= 0:
         # Raise a custom exception and let the caller handle exception
         raise GeomdlException("Knot " + str(u) + " cannot be removed " + str(num) + " times",
                               data=dict(knot=u, num=num, multiplicity=s))
