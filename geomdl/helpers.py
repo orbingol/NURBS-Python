@@ -499,7 +499,6 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
     r = find_span_linear(degree, knotvector, len(ctrlpts), u)
 
-    order = degree + 1
     first = r - degree
     last = r - s
 
@@ -508,7 +507,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     knotvector_new = deepcopy(knotvector)
 
     # Initialize temp array for storing new control points
-    temp = [[] for _ in range(2 * degree + 1)]
+    temp = [[] for _ in range((2 * degree) + 1)]
 
     # Loop for Eqs 5.28 & 5.29
     for t in range(0, num):
@@ -522,8 +521,8 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
         # Compute control points for one removal step
         while j - i > t:
-            alpha_i = (u - knotvector[i]) / (knotvector[i + order + t] - knotvector[i])
-            alpha_j = (u - knotvector[j - t]) / (knotvector[j + order] - knotvector[j - t])
+            alpha_i = (u - knotvector[i]) / (knotvector[i + degree + 1 + t] - knotvector[i])
+            alpha_j = (u - knotvector[j - t]) / (knotvector[j + degree + 1] - knotvector[j - t])
             temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
             temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
             i += 1
@@ -536,7 +535,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
                 remflag = True
         else:
-            alpha_i = (u - knotvector[i]) / (knotvector[i + order + t] - knotvector[i])
+            alpha_i = (u - knotvector[i]) / (knotvector[i + degree + 1 + t] - knotvector[i])
             ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
@@ -575,6 +574,6 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
     # Slice to get new knot vector and control points
     knotvector_new = knotvector_new[0:-t]
-    ctrlpts_new =  ctrlpts_new[0:-t]
+    ctrlpts_new = ctrlpts_new[0:-t]
 
     return knotvector_new, ctrlpts_new
