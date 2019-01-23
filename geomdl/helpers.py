@@ -494,7 +494,8 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     s = find_multiplicity(u, knotvector)
     if num > s:
         # Raise a custom exception and let the caller handle exception
-        raise GeomdlNotPossibleException("Cannot remove " + str(num) + " of knot " + str(u))
+        raise GeomdlException("Knot " + str(u) + " cannot be removed " + str(num) + " times",
+                              data=dict(knot=u, num=num, multiplicity=s))
 
     # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
     r = find_span_linear(degree, knotvector, len(ctrlpts), u)
