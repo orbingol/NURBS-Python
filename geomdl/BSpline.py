@@ -16,7 +16,7 @@ from . import evaluators
 from . import operations
 from . import tessellate
 from ._utilities import export
-
+from .exceptions import GeomdlException
 
 @export
 class Curve(abstract.Curve):
@@ -282,8 +282,12 @@ class Curve(abstract.Curve):
         if not isinstance(r, int) or r < 0:
             raise ValueError('Number of removals (r) must be a positive integer value')
 
-        UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, degree=self.degree, knotvector=self.knotvector,
-                                            ctrlpts=self._control_points, dimension=self._dimension)
+        try:
+            UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, degree=self.degree, knotvector=self.knotvector,
+                                                ctrlpts=self._control_points, dimension=self._dimension)
+        except GeomdlException as e:
+            print(e)
+            return
 
         # Update class variables
         self._knot_vector[0] = UQ
