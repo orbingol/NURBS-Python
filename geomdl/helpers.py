@@ -498,7 +498,6 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
     # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
     r = find_span_linear(degree, knotvector, len(ctrlpts), u)
-    r += s - 1
 
     order = degree + 1
     first = r - degree
@@ -555,6 +554,9 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         # Update indices
         first -= 1
         last += 1
+
+    # Fix indexing
+    t += 1
 
     # Shift knots
     for k in range(r + 1, len(knotvector)):
