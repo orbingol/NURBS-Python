@@ -181,7 +181,7 @@ class CurveEvaluator(AbstractEvaluatorExtended):
         return CK
 
     def insert_knot(self, direction="u", **kwargs):
-        """ Inserts a knot multiple times. """
+        """ Inserts a single knot multiple times. """
         # Call parent method
         super(CurveEvaluator, self).insert_knot(direction, **kwargs)
 
@@ -240,8 +240,18 @@ class CurveEvaluator(AbstractEvaluatorExtended):
         # Return updated knot vector and control points
         return UQ, Q
 
-    def remove_knot(self, direction, **kwargs):
-        pass
+    def remove_knot(self, direction="u", **kwargs):
+        """ Removes a single knot multiple times """
+        # Call parent method
+        super(CurveEvaluator, self).insert_knot(direction, **kwargs)
+
+        param = kwargs.get('parameter')
+        r = kwargs.get('r')  # number of knot removals
+        degree = kwargs.get('degree')
+        knotvector = kwargs.get('knotvector')
+        ctrlpts = kwargs.get('ctrlpts')
+
+        return helpers.knot_removal(degree=degree, knotvector=knotvector, ctrlpts=ctrlpts, u=param, num=r)
 
 
 class CurveEvaluator2(CurveEvaluator):

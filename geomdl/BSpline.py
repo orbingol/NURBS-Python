@@ -200,7 +200,6 @@ class Curve(abstract.Curve):
                 res.append(self.evaluate_single(prm))
         return res
 
-    # Evaluates the curve derivative
     def derivatives(self, u, order=0, **kwargs):
         """ Evaluates n-th order curve derivatives at the given parameter value.
 
@@ -219,9 +218,8 @@ class Curve(abstract.Curve):
                                            knotvector=self.knotvector, ctrlpts=self._control_points,
                                            dimension=self._dimension)
 
-    # Knot insertion
     def insert_knot(self, u, **kwargs):
-        """ Inserts the given knot and updates the control points array and the knot vector.
+        """ Inserts the knot and updates the control points array and the knot vector.
 
         Keyword Arguments:
             * ``r``: Number of knot insertions. *Default: 1*
@@ -259,6 +257,40 @@ class Curve(abstract.Curve):
 
         # Evaluate curve again if it has already been evaluated before knot insertion
         if check_r and self._eval_points:
+            self.evaluate()
+
+    def remove_knot(self, u, **kwargs):
+        """ Removes the knot and updates the control points array and the knot vector.
+
+        Keyword Arguments:
+            * ``r``: Number of knot removals. *Default: 1*
+
+        :param u: knot to be removed
+        :type u: float
+        """
+        # Check all parameters are set before the curve evaluation
+        self._check_variables()
+
+        # Check u parameters are correct
+        if self._kv_normalize:
+            utilities.check_params([u])
+
+        # Get keyword arguments
+        r = kwargs.get('r', 1)
+
+        # Check if the number of knot removals requested is valid
+        if not isinstance(r, int) or r < 0:
+            raise ValueError('Number of removals (r) must be a positive integer value')
+
+        UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, degree=self.degree, knotvector=self.knotvector,
+                                            ctrlpts=self._control_points, dimension=self._dimension)
+
+        # Update class variables
+        self._knot_vector[0] = UQ
+        self._control_points = Q
+
+        # Evaluate curve again if it has already been evaluated before knot removal
+        if self._eval_points:
             self.evaluate()
 
     def tangent(self, param, **kwargs):
