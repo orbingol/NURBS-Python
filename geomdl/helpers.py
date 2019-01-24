@@ -473,7 +473,7 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
 
 def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
-    """ Removes knot from the parametrically 1-dimensional rational/non-rational spline shape.
+    """ Computes the knot vector and the control points of the rational/non-rational spline shape after knot removal.
 
     Implementation based on Algorithm A5.8 and Equation 5.28 of The NURBS Book by Piegl & Tiller
 
@@ -583,12 +583,14 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
 
 def degree_elevation(degree, ctrlpts, **kwargs):
-    """ Computes the control points of the degree-elevated parametrically 1-dimensional shape
+    """ Computes the control points of the rational/non-rational spline shape after degree elevation.
 
     Implementation of Eq. 5.36 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.205
 
     Keyword Arguments:
         * ``num``: number of degree elevations
+
+    Please note that degree elevation algorithm can only operate on Bezier shapes, i.e. curves, surfaces, volumes.
 
     :param degree: degree
     :type degree: int
@@ -601,7 +603,7 @@ def degree_elevation(degree, ctrlpts, **kwargs):
     check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
 
     if check_ctrlpts and degree + 1 != len(ctrlpts):
-        raise GeomdlException("Degree elevation can only work with Bezier curves")
+        raise GeomdlException("Degree elevation can only work with Bezier shapes")
 
     if num <= 0:
         raise GeomdlException("Cannot degree elevate " + str(num) + " times")
@@ -610,13 +612,14 @@ def degree_elevation(degree, ctrlpts, **kwargs):
     num_pts_elev = degree + 1 + num
     pts_elev = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(num_pts_elev)]
 
-    # Compute control points of degree-elevated shape
+    # Compute control points of degree-elevated 1-dimensional shape
     for i in range(0, num_pts_elev):
         start = max(0, (i - num))
         end = min(degree, i)
         for j in range(start, end + 1):
-            coeff = linalg.binomial_coefficient(degree, j) * linalg.binomial_coefficient(num, (i - j)) / linalg.binomial_coefficient((degree + num), i)
+            coeff = linalg.binomial_coefficient(degree, j) * linalg.binomial_coefficient(num, (i - j))
+            coeff /= linalg.binomial_coefficient((degree + num), i)
             pts_elev[i] = [p1 + (coeff * p2) for p1, p2 in zip(pts_elev[i], ctrlpts[j])]
 
-    # Return computed control points
+    # Return computed control points after degree elevation
     return pts_elev
