@@ -486,6 +486,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     :param u: knot to be removed
     :type u: float
     :return: updated knot vector and control points
+    :rtype: tuple
     """
     tol = kwargs.get('tol', 10e-4)  # Refer to Eq 5.30 for the meaning
     num = kwargs.get('num', 1)  # number of same knot removals
@@ -579,3 +580,43 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     ctrlpts_new = ctrlpts_new[0:-t]
 
     return knotvector_new, ctrlpts_new
+
+
+def degree_elevation(degree, ctrlpts, **kwargs):
+    """ Computes the control points of the degree-elevated parametrically 1-dimensional shape
+
+    Implementation of Eq. 5.36 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.205
+
+    Keyword Arguments:
+        * ``num``: number of degree elevations
+
+    :param degree: degree
+    :type degree: int
+    :param ctrlpts: control points
+    :type ctrlpts: list, tuple
+    :return: control points of the degree-elevated shape
+    :rtype: list
+    """
+    num = kwargs.get('num', 1)  # number of degree elevations
+    check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
+
+    if check_ctrlpts and degree + 1 != len(ctrlpts):
+        raise GeomdlException("Degree elevation can only work with Bezier curves")
+
+    if num <= 0:
+        raise GeomdlException("Cannot degree elevate " + str(num) + " times")
+
+    # Initialize variables
+    num_pts_elev = degree + 1 + num
+    pts_elev = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(num_pts_elev)]
+
+    # Compute control points of degree-elevated shape
+    for i in range(0, num_pts_elev):
+        start = max(0, (i - num))
+        end = min(degree, i)
+        for j in range(start, end + 1):
+            coeff = linalg.binomial_coefficient(degree, j) * linalg.binomial_coefficient(num, (i - j)) / linalg.binomial_coefficient((degree + num), i)
+            pts_elev[i] = [p1 + (coeff * p2) for p1, p2 in zip(pts_elev[i], ctrlpts[j])]
+
+    # Return computed control points
+    return pts_elev
