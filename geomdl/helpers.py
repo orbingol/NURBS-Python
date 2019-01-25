@@ -523,8 +523,8 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
         # Compute control points for one removal step
         while j - i > t:
-            alpha_i = (u - knotvector[i]) / (knotvector[i + degree + 1 + t] - knotvector[i])
-            alpha_j = (u - knotvector[j - t]) / (knotvector[j + degree + 1] - knotvector[j - t])
+            alpha_i = knot_removal_alpha_i(u, degree, knotvector, t, i)
+            alpha_j = knot_removal_alpha_j(u, degree, knotvector, t, j)
             temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
             temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
             i += 1
@@ -537,7 +537,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
                 remflag = True
         else:
-            alpha_i = (u - knotvector[i]) / (knotvector[i + degree + 1 + t] - knotvector[i])
+            alpha_i = knot_removal_alpha_i(u, degree, knotvector, t, i)
             ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
@@ -580,6 +580,48 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     ctrlpts_new = ctrlpts_new[0:-t]
 
     return knotvector_new, ctrlpts_new
+
+
+def knot_removal_alpha_i(u, degree, knotvector, num, idx):
+    """ Compute :math:`\\alpha_{i}` coefficient for knot removal algorithm.
+
+    Please refer to Eq. 5.29 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.184 for details.
+
+    :param u: knot
+    :type u: float
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param num: knot removal index
+    :type num: int
+    :param idx: iterator index
+    :type idx: int
+    :return: coefficient value
+    :rtype: float
+    """
+    return (u - knotvector[idx]) / (knotvector[idx + degree + 1 + num] - knotvector[idx])
+
+
+def knot_removal_alpha_j(u, degree, knotvector, num, idx):
+    """ Compute :math:`\\alpha_{j}` coefficient for knot removal algorithm.
+
+    Please refer to Eq. 5.29 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.184 for details.
+
+    :param u: knot
+    :type u: float
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param num: knot removal index
+    :type num: int
+    :param idx: iterator index
+    :type idx: int
+    :return: coefficient value
+    :rtype: float
+    """
+    return (u - knotvector[idx - num]) / (knotvector[idx + degree + 1] - knotvector[idx - num])
 
 
 def degree_elevation(degree, ctrlpts, **kwargs):
