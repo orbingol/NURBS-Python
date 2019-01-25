@@ -472,10 +472,10 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     return ders
 
 
-def knot_insertion_ctrlpts(degree, knotvector, ctrlpts, u, **kwargs):
+def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
     """ Computes the control points of the rational/non-rational spline shape after knot insertion.
 
-    Implementation of Algorithm A5.1 of The NURBS Book by Piegl & Tiller, 2nd Edition.
+    Part of Algorithm A5.1 of The NURBS Book by Piegl & Tiller, 2nd Edition.
 
     Keyword Arguments:
         * ``num``: number of knot insertions. *Default: 1*
@@ -554,8 +554,10 @@ def knot_insertion_alpha(u, knotvector, span, idx, leg):
     return (u - knotvector[leg + idx]) / (knotvector[idx + span + 1] - knotvector[leg + idx])
 
 
-def knot_insertion_knotvector(knotvector, u, span, r):
+def knot_insertion_kv(knotvector, u, span, r):
     """ Computes the knot vector of the rational/non-rational spline shape after knot insertion.
+
+    Part of Algorithm A5.1 of The NURBS Book by Piegl & Tiller, 2nd Edition.
 
     :param knotvector: knot vector
     :type knotvector: list, tuple
