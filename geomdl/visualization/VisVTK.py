@@ -39,7 +39,11 @@ class VisConfig(vis.VisConfigAbstract):
         self.line_width = kwargs.get('line_width', 1.0)
 
     def keypress_callback(self, obj, ev):
-        """ VTK callback for keypress events """
+        """ VTK callback for keypress events.
+
+        Available custom keypress events:
+            * ``b``: change background color
+        """
         key = obj.GetKeySym()
         # Change background
         if key == 'b':
@@ -51,6 +55,7 @@ class VisConfig(vis.VisConfigAbstract):
 
 
 class VisCurve2D(vis.VisAbstract):
+    """ VTK visualization module for curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
         self._module_config['others'] = "midpt"
