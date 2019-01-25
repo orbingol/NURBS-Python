@@ -226,12 +226,16 @@ if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
     # Add Cython-compiled module to the packages list
     packages.append('geomdl.core')
 
-# Required packages
+# Required packages for older Python versions
 required = []
 
 # Add Enum type support for Python versions < 3.4
 if sys.version_info[:2] < (3, 4):
     required += ['enum34']
+
+# Add LRU cache support for Python versions < 3.3
+if sys.version_info[:2] < (3, 3):
+    required += ['backports.functools_lru_cache']
 
 # Add type hints support for Python versions < 3.5
 if sys.version_info[:2] < (3, 5):
