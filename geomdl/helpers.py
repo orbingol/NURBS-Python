@@ -521,7 +521,7 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
     for j in range(1, num + 1):
         L = k - degree + j
         for i in range(0, degree - j - s + 1):
-            alpha = (u - knotvector[L + i]) / (knotvector[i + k + 1] - knotvector[L + i])
+            alpha = knot_insertion_alpha(u, tuple(knotvector), k, i, L)
             temp[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(temp[i], temp[i + 1])]
         ctrlpts_new[L] = deepcopy(temp[0])
         ctrlpts_new[k + num - j - s] = deepcopy(temp[degree - j - s])
@@ -541,7 +541,7 @@ def knot_insertion_alpha(u, knotvector, span, idx, leg):
     :param u: knot
     :type u: float
     :param knotvector: knot vector
-    :type knotvector: list, tuple
+    :type knotvector: tuple
     :param span: knot span
     :type span: int
     :param idx: index value (degree-dependent)
@@ -640,8 +640,8 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
         # Compute control points for one removal step
         while j - i > t:
-            alpha_i = knot_removal_alpha_i(u, degree, knotvector, t, i)
-            alpha_j = knot_removal_alpha_j(u, degree, knotvector, t, j)
+            alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
+            alpha_j = knot_removal_alpha_j(u, degree, tuple(knotvector), t, j)
             temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
             temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
             i += 1
@@ -654,7 +654,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
                 remflag = True
         else:
-            alpha_i = knot_removal_alpha_i(u, degree, knotvector, t, i)
+            alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
             ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
@@ -709,7 +709,7 @@ def knot_removal_alpha_i(u, degree, knotvector, num, idx):
     :param degree: degree
     :type degree: int
     :param knotvector: knot vector
-    :type knotvector: list, tuple
+    :type knotvector: tuple
     :param num: knot removal index
     :type num: int
     :param idx: iterator index
@@ -730,7 +730,7 @@ def knot_removal_alpha_j(u, degree, knotvector, num, idx):
     :param degree: degree
     :type degree: int
     :param knotvector: knot vector
-    :type knotvector: list, tuple
+    :type knotvector: tuple
     :param num: knot removal index
     :type num: int
     :param idx: iterator index
