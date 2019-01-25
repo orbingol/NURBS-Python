@@ -473,7 +473,7 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
 
 def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
-    """ Computes the control points of the rational/non-rational spline shape after knot insertion.
+    """ Computes the control points of the rational/non-rational spline after knot insertion.
 
     Part of Algorithm A5.1 of The NURBS Book by Piegl & Tiller, 2nd Edition.
 
@@ -536,7 +536,7 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
 
 
 def knot_insertion_alpha(u, knotvector, span, idx, leg):
-    """ Computes :math:`\\alpha` coefficient for knot insertion.
+    """ Computes :math:`\\alpha` coefficient for knot insertion algorithm.
 
     :param u: knot
     :type u: float
@@ -555,7 +555,7 @@ def knot_insertion_alpha(u, knotvector, span, idx, leg):
 
 
 def knot_insertion_kv(knotvector, u, span, r):
-    """ Computes the knot vector of the rational/non-rational spline shape after knot insertion.
+    """ Computes the knot vector of the rational/non-rational spline after knot insertion.
 
     Part of Algorithm A5.1 of The NURBS Book by Piegl & Tiller, 2nd Edition.
 
@@ -587,7 +587,7 @@ def knot_insertion_kv(knotvector, u, span, r):
 
 
 def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
-    """ Computes the knot vector and the control points of the rational/non-rational spline shape after knot removal.
+    """ Computes the knot vector and the control points of the rational/non-rational spline after knot removal.
 
     Implementation based on Algorithm A5.8 and Equation 5.28 of The NURBS Book by Piegl & Tiller
 
@@ -742,7 +742,7 @@ def knot_removal_alpha_j(u, degree, knotvector, num, idx):
 
 
 def degree_elevation(degree, ctrlpts, **kwargs):
-    """ Computes the control points of the rational/non-rational spline shape after degree elevation.
+    """ Computes the control points of the rational/non-rational spline after degree elevation.
 
     Implementation of Eq. 5.36 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.205
 
@@ -786,7 +786,7 @@ def degree_elevation(degree, ctrlpts, **kwargs):
 
 
 def degree_reduction(degree, ctrlpts, **kwargs):
-    """ Computes the control points of the rational/non-rational spline shape after degree reduction.
+    """ Computes the control points of the rational/non-rational spline after degree reduction.
 
     Implementation of Eqs. 5.41 and 5.42 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.220
 
