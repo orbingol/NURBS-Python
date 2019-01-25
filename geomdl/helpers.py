@@ -599,6 +599,7 @@ def degree_elevation(degree, ctrlpts, **kwargs):
     :return: control points of the degree-elevated shape
     :rtype: list
     """
+    # Get keyword arguments
     num = kwargs.get('num', 1)  # number of degree elevations
     check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
 
@@ -623,3 +624,59 @@ def degree_elevation(degree, ctrlpts, **kwargs):
 
     # Return computed control points after degree elevation
     return pts_elev
+
+
+def degree_reduction(degree, ctrlpts, **kwargs):
+    """ Computes the control points of the rational/non-rational spline shape after degree reduction.
+
+    Implementation of Eqs. 5.41 and 5.42 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.220
+
+    Please note that degree reduction algorithm can only operate on Bezier shapes, i.e. curves, surfaces, volumes and
+    this implementation does NOT compute the maximum error tolerance as described via Eqs. 5.45 and 5.46 of The NURBS
+    Book by Piegl & Tiller, 2nd Edition, p.221 to determine whether the shape is degree reducible or not.
+
+    :param degree: degree
+    :type degree: int
+    :param ctrlpts: control points
+    :type ctrlpts: list, tuple
+    :return: control points of the degree-reduced shape
+    :rtype: list
+    """
+    # Get keyword arguments
+    check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
+
+    if check_ctrlpts and degree + 1 != len(ctrlpts):
+        raise GeomdlException("Degree reduction can only work with Bezier shapes")
+
+    if degree < 2:
+        raise GeomdlException("Input shape must have degree > 1")
+
+    # Initialize variables
+    pts_red = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(degree)]
+
+    # Fix start and end control points
+    pts_red[0] = ctrlpts[0]
+    pts_red[-1] = ctrlpts[-1]
+
+    # Find if the degree is an even or an odd number
+    p_is_odd = False if degree % 2 == 0 else True
+
+    # Compute control points of degree-reduced 1-dimensional shape
+    r = int((degree - 1) / 2)
+    r1 = r - 1 if p_is_odd else r
+    for i in range(1, r1 + 1):
+        alpha = float(i) / float(degree)
+        pts_red[i] = [(c1 - (alpha * c2)) / (1 - alpha) for c1, c2 in zip(ctrlpts[i], pts_red[i - 1])]
+    for i in range(degree - 2, r1 + 2):
+        alpha = float(i + 1) / float(degree)
+        pts_red[i] = [(c1 - ((1 - alpha) * c2)) / alpha for c1, c2 in zip(ctrlpts[i + 1], pts_red[i + 1])]
+
+    if p_is_odd:
+        alpha = float(r) / float(degree)
+        left = [(c1 - (alpha * c2)) / (1 - alpha) for c1, c2 in zip(ctrlpts[r], pts_red[r - 1])]
+        alpha = float(r + 1) / float(degree)
+        right = [(c1 - ((1 - alpha) * c2)) / alpha for c1, c2 in zip(ctrlpts[r + 1], pts_red[r + 1])]
+        pts_red[r] = [0.5 * (pl + pr) for pl, pr in zip(left, right)]
+
+    # Return computed control points after degree reduction
+    return pts_red
