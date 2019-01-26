@@ -295,7 +295,7 @@ class SplineGeometry(Geometry):
         """
         retval = []
         for idx, kv in enumerate(self._knot_vector):
-            retval.append((kv[self._degree[idx]], kv[-(self._degree[idx]) + 1]))
+            retval.append((kv[self._degree[idx]], kv[-(self._degree[idx] + 1)]))
         return retval[0] if self._pdim == 1 else retval
 
     @property
