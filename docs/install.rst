@@ -17,10 +17,15 @@ commands will download and install NURBS-Python from `Python Package Index <http
 
 Upgrading to the latest version:
 
-
 .. code-block:: console
 
     $ pip install geomdl --upgrade
+
+Installing a specific version:
+
+.. code-block:: console
+
+    $ pip install geomdl==4.4.4
 
 Install via Conda
 =================
@@ -28,13 +33,13 @@ Install via Conda
 NURBS-Python can also be installed/upgraded via `conda <https://conda.io/>`_ package manager from the
 `Anaconda Cloud <https://anaconda.org/orbingol/geomdl>`_ repository.
 
-To install:
+Installing:
 
 .. code-block:: console
 
     $ conda install -c orbingol geomdl
 
-To upgrade:
+Upgrading to the latest version:
 
 .. code-block:: console
 
@@ -51,11 +56,11 @@ The initial step of the manual install is cloning the repository via ``git`` or 
 which will take care of the installation and automatically copy/link the required files to your Python distribution's
 *site-packages* directory.
 
-To install NURBS-Python manually
+The most convenient method to install NURBS-Python manually is using ``pip``:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ pip install .
 
 To upgrade, please pull the latest commits from the repository via ``git pull --rebase`` and then execute the above
 command.
@@ -68,16 +73,10 @@ repository to your Python distribution's *site-packages* directory:
 
 .. code-block:: console
 
-    $ python setup.py develop
+    $ pip install -e .
 
 Since this command only generates a link to the library directory, pulling the latest commits from the repository
 would be enough to update the library to the latest version.
-
-To disable development mode:
-
-.. code-block:: console
-
-    $ python setup.py develop --uninstall
 
 Checking Installation
 =====================
