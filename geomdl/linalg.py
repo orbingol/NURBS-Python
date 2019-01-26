@@ -7,9 +7,14 @@
 
 """
 
+import os
 import math
 from typing import cast, Sequence, List, Tuple, Generator
 from . import _linalg
+try:
+    from functools import lru_cache
+except ImportError:
+    from backports.functools_lru_cache import lru_cache
 
 
 def linspace(start, stop, num, decimals=18):
@@ -418,6 +423,7 @@ def matrix_multiply(m1, m2):
     return mm
 
 
+@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def binomial_coefficient(k, i):
     # type: (int, int) -> float
     """ Computes the binomial coefficient (denoted by *k choose i*).

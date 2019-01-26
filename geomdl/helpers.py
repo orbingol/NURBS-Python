@@ -7,9 +7,14 @@
 
 """
 
+import os
 from copy import deepcopy
 from . import linalg
 from .exceptions import *
+try:
+    from functools import lru_cache
+except ImportError:
+    from backports.functools_lru_cache import lru_cache
 
 
 def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
@@ -535,6 +540,7 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
     return ctrlpts_new
 
 
+@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def knot_insertion_alpha(u, knotvector, span, idx, leg):
     """ Computes :math:`\\alpha` coefficient for knot insertion algorithm.
 
@@ -699,6 +705,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     return knotvector_new, ctrlpts_new
 
 
+@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def knot_removal_alpha_i(u, degree, knotvector, num, idx):
     """ Compute :math:`\\alpha_{i}` coefficient for knot removal algorithm.
 
@@ -720,6 +727,7 @@ def knot_removal_alpha_i(u, degree, knotvector, num, idx):
     return (u - knotvector[idx]) / (knotvector[idx + degree + 1 + num] - knotvector[idx])
 
 
+@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def knot_removal_alpha_j(u, degree, knotvector, num, idx):
     """ Compute :math:`\\alpha_{j}` coefficient for knot removal algorithm.
 
