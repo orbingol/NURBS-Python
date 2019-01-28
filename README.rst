@@ -47,7 +47,7 @@ libraries. Please refer to the `documentation <http://nurbs-python.readthedocs.i
 Installation
 ============
 
-The easiest way to install NURBS-Python (geomdl) is using `pip`:
+The easiest way to install NURBS-Python (geomdl) is using ``pip``:
 
 .. code-block:: console
 
@@ -68,7 +68,7 @@ Examples, Documentation and Extras
 Author
 ======
 
-* Onur Rauf Bingol (`@orbingol <https://github.com/orbingol>`_)
+* Onur R. Bingol (`@orbingol <https://github.com/orbingol>`_)
 
 License
 =======
