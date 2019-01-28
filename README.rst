@@ -10,18 +10,8 @@ NURBS-Python (geomdl)
 Introduction
 ============
 
-NURBS-Python (geomdl) is an object-oriented B-Spline and NURBS surface and curve library for Python with
-implementations of advanced computation algorithms in an extensible way. It comes with various features, such as
-on-the-fly visualization options, knot vector and surface grid generators, tessellation, voxelization and more.
-
-NURBS-Python is a pure Python library, therefore there are no external C/C++ or FORTRAN dependencies or any compilation
-steps during installation. A Cython-compiled option also is provided for better performance. Moreover, the core library
-is self-contained; and therefore, it can be easily used with systems using embedded Python.
-
-NURBS-Python is tested with Python v2.7.x, Python v3.4.x and later.
-
-Citing NURBS-Python
--------------------
+NURBS-Python (geomdl) is a pure Python, self-contained, object-oriented B-Spline and NURBS spline library.
+The library is compatible with Python versions 2.7.x, 3.4.x and later.
 
 The following article outlines the design and features of NURBS-Python (geomdl). I would be glad if you would cite it
 if you have used NURBS-Python (geomdl) in your research::
@@ -37,33 +27,43 @@ if you have used NURBS-Python (geomdl) in your research::
       doi={https://doi.org/10.1016/j.softx.2018.12.005}
     }
 
-Please refer to the `Citing <http://nurbs-python.readthedocs.io/en/latest/citing.html>`_ section of the documentation
-for more details.
+Features
+========
+
+NURBS-Python (geomdl) provides convenient data structures and highly customizable API for rational and non-rational
+splines along with the efficient implementations of the following algorithms:
+
+* Spline evaluation
+* Derivative
+* Knot insertion
+* Knot removal
+* Degree elevation
+* Degree reduction
+* Curve and surface interpolation and least squares approximation
+
+NURBS-Python (geomdl) also provides customizable visualization and animation options via Matplotlib, Plotly and VTK
+libraries. Please refer to the `documentation <http://nurbs-python.readthedocs.io/>`_ for more details.
+
+Installation
+============
+
+The easiest way to install NURBS-Python (geomdl) is using `pip`:
+
+.. code-block:: console
+
+    $ pip install geomdl
+
+Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
+of the documentation for alternative installation methods.
 
 Examples, Documentation and Extras
-----------------------------------
+==================================
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
 * **Documentation**: http://nurbs-python.readthedocs.io/
 * **Wiki**: https://github.com/orbingol/NURBS-Python/wiki
 * **Command line application**: https://github.com/orbingol/geomdl-cli
 * **rw3dm**: https://github.com/orbingol/rw3dm
-
-Using NURBS-Python (geomdl)
-===========================
-
-Installation and Testing
-------------------------
-
-Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
-of the documentation for details.
-
-Contributions and Issues
-------------------------
-
-All contributions are welcome. For details, please refer to the
-`Issues and Reporting <http://nurbs-python.readthedocs.io/en/latest/q_a.html#issues-and-reporting>`_ section of the
-documentation for details.
 
 Author
 ======
