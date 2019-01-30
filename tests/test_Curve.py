@@ -154,3 +154,25 @@ def test_nurbs_curve2d_deriv(nurbs_curve, param, order, res):
     for computed, expected in zip(deriv, res):
         for c, e in zip(computed, expected):
             assert abs(c - e) < GEOMDL_DELTA
+
+
+@fixture
+def spline_curve2():
+    """ Creates a spline Curve without knot vector normalization """
+    curve = BSpline.Curve(normalize_kv=False)
+    curve.degree = 3
+    curve.ctrlpts = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
+    return curve
+
+
+@mark.parametrize("param, res", [
+    (0.0, (5.0, 5.0)),
+    (1.5, (27.5, 14.687)),
+    (3.0, (50.0, 5.0))
+])
+def test_bspline_curve2d_eval2(spline_curve2, param, res):
+    evalpt = spline_curve2.evaluate_single(param)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
