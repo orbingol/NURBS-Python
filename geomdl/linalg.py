@@ -36,6 +36,8 @@ def linspace(start, stop, num, decimals=18):
     """
     start = float(start)
     stop = float(stop)
+    if abs(start - stop) <= 10e-8:
+        return [start]
     num = int(num)
     if num > 1:
         div = num - 1
