@@ -157,7 +157,31 @@ def test_nurbs_curve2d_deriv(nurbs_curve, param, order, res):
 
 
 @fixture
-def spline_curve2():
+def spline_curve_kv_norm1():
+    """ Creates a spline Curve with knot vector normalization """
+    curve = BSpline.Curve(normalize_kv=True)
+    curve.degree = 3
+    curve.ctrlpts = [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]
+    curve.knotvector = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
+    return curve
+
+
+@mark.parametrize("param, res", [
+    (0.0, (5.0, 5.0)),
+    (0.33333, (19.9998, 13.7499)),
+    (0.5, (27.5, 14.687)),
+    (0.66666, (34.9997, 13.75)),
+    (1.0, (50.0, 5.0))
+])
+def test_bspline_curve2d_eval_kv_norm1(spline_curve_kv_norm1, param, res):
+    evalpt = spline_curve_kv_norm1.evaluate_single(param)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+
+
+@fixture
+def spline_curve_kv_norm2():
     """ Creates a spline Curve without knot vector normalization """
     curve = BSpline.Curve(normalize_kv=False)
     curve.degree = 3
@@ -168,11 +192,13 @@ def spline_curve2():
 
 @mark.parametrize("param, res", [
     (0.0, (5.0, 5.0)),
+    (1.0, (19.9998, 13.7499)),
     (1.5, (27.5, 14.687)),
+    (2.0, (34.9997, 13.75)),
     (3.0, (50.0, 5.0))
 ])
-def test_bspline_curve2d_eval2(spline_curve2, param, res):
-    evalpt = spline_curve2.evaluate_single(param)
+def test_bspline_curve2d_eval_kv_norm2(spline_curve_kv_norm2, param, res):
+    evalpt = spline_curve_kv_norm2.evaluate_single(param)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
