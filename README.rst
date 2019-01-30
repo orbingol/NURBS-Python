@@ -78,11 +78,7 @@ NURBS-Python (geomdl) is a free and open-source software and it is licensed unde
 Acknowledgments
 ===============
 
-I would like to thank my PhD adviser, `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/?user_page=adarsh>`_,
-for his guidance and supervision throughout the course of this project.
-
-In addition, I would like to thank `all NURBS-Python contributors <CONTRIBUTORS.rst>`_ for their time and effort in
-supporting this project.
+Please see `CONTRIBUTORS.rst <CONTRIBUTORS.rst>`_ file for the acknowledgements.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
