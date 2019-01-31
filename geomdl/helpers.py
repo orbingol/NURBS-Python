@@ -500,9 +500,9 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
     # Get keyword arguments
     num = kwargs.get('num', 1)  # number of knot insertions
     s = kwargs.get('s', find_multiplicity(u, knotvector))  # multiplicity
+    k = kwargs.get('span', find_span_linear(degree, knotvector, len(ctrlpts), u))  # knot span
 
     # Initialize variables
-    k = find_span_linear(degree, knotvector, len(ctrlpts), u)
     np = len(ctrlpts)
     nq = np + num
 
