@@ -187,58 +187,19 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         param = kwargs.get('parameter')
         r = kwargs.get('r')  # number of knot insertions
-        s = kwargs.get('s')  # multiplicity
         degree = kwargs.get('degree')
         knotvector = kwargs.get('knotvector')
         ctrlpts = kwargs.get('ctrlpts')
 
+        # Find knot span
+        span = self._span_func(degree, knotvector, len(ctrlpts), param)
+
         # Algorithm A5.1
-        k = self._span_func(degree, knotvector, len(ctrlpts), param)
-        mp = len(knotvector)
-        np = len(ctrlpts)
-        nq = np + r
+        kv_new = helpers.knot_insertion_kv(knotvector, param, span, r)
+        ctrlpts_new = helpers.knot_insertion(degree, knotvector, ctrlpts, param, num=r, span=span)
 
-        # Initialize new knot vector array
-        UQ = [0.0 for _ in range(mp + r)]
-        # Initialize new control points array (control points may be weighted or not)
-        Q = [[] for _ in range(nq)]
-        # Initialize a local array of length p + 1
-        R = [[] for _ in range(degree + 1)]
-
-        # Load new knot vector
-        for i in range(0, k + 1):
-            UQ[i] = knotvector[i]
-        for i in range(1, r + 1):
-            UQ[k + i] = param
-        for i in range(k + 1, mp):
-            UQ[i + r] = knotvector[i]
-
-        # Save unaltered control points
-        for i in range(0, k - degree + 1):
-            Q[i] = ctrlpts[i]
-        for i in range(k - s, np):
-            Q[i + r] = ctrlpts[i]
-
-        # The algorithm uses R array to update control points
-        for i in range(0, degree - s + 1):
-            R[i] = copy.deepcopy(ctrlpts[k - degree + i])
-
-        # Insert the knot r times
-        for j in range(1, r + 1):
-            L = k - degree + j
-            for i in range(0, degree - j - s + 1):
-                alpha = (param - knotvector[L + i]) / (knotvector[i + k + 1] - knotvector[L + i])
-                R[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(R[i], R[i + 1])]
-            Q[L] = copy.deepcopy(R[0])
-            Q[k + r - j - s] = copy.deepcopy(R[degree - j - s])
-
-        # Load remaining control points
-        L = k - degree + r
-        for i in range(L + 1, k - s):
-            Q[i] = copy.deepcopy(R[i - L])
-
-        # Return updated knot vector and control points
-        return UQ, Q
+        # Return new knot vector and control points
+        return kv_new, ctrlpts_new
 
     def remove_knot(self, direction="u", **kwargs):
         """ Removes a single knot multiple times """
