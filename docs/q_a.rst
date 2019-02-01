@@ -5,12 +5,18 @@ What is NURBS?
 ==============
 
 NURBS is an acronym for *Non-Uniform Rational Basis Spline* and it represents a mathematical model for generation of
-curves and surfaces in a flexible way. It is a well-accepted industry standard and used as a basis for nearly all of
-the 3D modeling and CAD/CAM software packages as well as modeling and visualization frameworks.
+geometric shapes in a flexible way. It is a well-accepted industry standard and used as a basis for nearly all of
+the 3-dimensional modeling and CAD/CAM software packages as well as modeling and visualization frameworks.
 
-Please see the `related Wikipedia article <https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline>`_
-or `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_, a very nice and informative book written by
-Les A. Piegl and Wayne Tiller.
+Although the mathematical theory of behind the splines dates back to early 1900s, the spline theory in the way we know
+is coined by `Isaac (Iso) Schoenberg <http://pages.cs.wisc.edu/~deboor/hat/people/schoenberg.html>`_ and developed
+further by various researchers around the world.
+
+The following books are recommended for individuals who prefer to investigate the technical details of NURBS:
+
+* `A Practical Guide to Splines <https://www.springer.com/us/book/9780387953663>`_
+* `The NURBS Book <http://www.springer.com/gp/book/9783642973857>`_
+* `Geometric Modeling with Splines: An Introduction <https://www.crcpress.com/p/book/9781568811376>`_
 
 Why NURBS-Python?
 =================
@@ -56,30 +62,18 @@ NURBS-Python users to ask questions, request new features and submit any other c
 Issues and Reporting
 ====================
 
-Contributions to NURBS-Python
------------------------------
+Bugs and Feature Requests
+-------------------------
+
+Please use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_ for bug reporting and
+requesting a new feature.
+
+Contributions
+-------------
 
 All contributions to NURBS-Python are welcomed and I appreciate your time and efforts in advance. I have posted some
 `guidelines for contributing <https://github.com/orbingol/NURBS-Python/blob/master/.github/CONTRIBUTING.md>`_ and
 I would be really happy if you could follow these guidelines if you would like to contribute to NURBS-Python.
-
-Bugs and Issues
----------------
-
-Please use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_
-for reporting bugs and other related issues.
-
-I would be glad if you could provide as much detail as you can for pinpointing the problem. You don't have to provide
-a solution for the problem that you encountered but it would be good if you would provide steps (preferably, as a list)
-to reproduce it. You may directly upload any data files required for testing to the issue tracker or email me if you
-feel that is more convenient for you.
-
-Comments, Questions and Feature Requests
-----------------------------------------
-
-You are encouraged to use the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_
-for your questions and comments. I would be glad if you could use the appropriate label
-(``comment``, ``question`` or ``feature request``) to label your questions or comments on the issue tracker.
 
 API Changes
 ===========

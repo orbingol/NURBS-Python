@@ -44,11 +44,4 @@ References
 Author
 ======
 
-Onur Rauf Bingol
-
-* E-mail: contact@onurbingol.net
-* Twitter: https://twitter.com/orbingol
-* LinkedIn: https://www.linkedin.com/in/onurraufbingol/
-
-
-.. _DOI: https://doi.org/10.5281/zenodo.815010
+* Onur R. Bingol (`@orbingol <https://github.com/orbingol>`_)
