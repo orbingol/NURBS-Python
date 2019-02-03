@@ -59,7 +59,6 @@ This documentation is organized into a couple sections:
 
     modules
     modules_visualization
-    modules_experimental
 
 
 NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released under the
