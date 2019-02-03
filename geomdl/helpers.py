@@ -614,21 +614,14 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     """
     tol = kwargs.get('tol', 10e-4)  # Refer to Eq 5.30 for the meaning
     num = kwargs.get('num', 1)  # number of same knot removals
+    s = kwargs.get('s', find_multiplicity(u, knotvector))  # multiplicity
+    r = kwargs.get('span', find_span_linear(degree, knotvector, len(ctrlpts), u))  # knot span
 
-    # It is impossible to remove knots if num > s
-    s = find_multiplicity(u, knotvector)
-    if num > s or num <= 0:
-        # Raise a custom exception and let the caller handle exception
-        raise GeomdlException("Knot " + str(u) + " cannot be removed " + str(num) + " times",
-                              data=dict(knot=u, num=num, multiplicity=s))
-
-    # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
-    r = find_span_linear(degree, knotvector, len(ctrlpts), u)
-
+    # Initialize variables
     first = r - degree
     last = r - s
 
-    # Don't change inputs
+    # Don't change input variables, prepare new ones for updating
     ctrlpts_new = deepcopy(ctrlpts)
     knotvector_new = deepcopy(knotvector)
 

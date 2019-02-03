@@ -209,11 +209,20 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         param = kwargs.get('parameter')
         r = kwargs.get('r')  # number of knot removals
+        s = kwargs.get('s')  # multiplicity
         degree = kwargs.get('degree')
         knotvector = kwargs.get('knotvector')
         ctrlpts = kwargs.get('ctrlpts')
 
-        return helpers.knot_removal(degree=degree, knotvector=knotvector, ctrlpts=ctrlpts, u=param, num=r)
+        # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
+        span = self._span_func(degree, knotvector, len(ctrlpts), param)
+
+        # Algorithm A5.8
+        kv_new, ctrlpts_new = helpers.knot_removal(degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
+                                                   u=param, num=r, s=s, span=span)
+
+        # Return new knot vector and control points
+        return kv_new, ctrlpts_new
 
 
 class CurveEvaluator2(CurveEvaluator):

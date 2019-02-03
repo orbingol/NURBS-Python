@@ -18,6 +18,7 @@ from . import tessellate
 from ._utilities import export
 from .exceptions import GeomdlException
 
+
 @export
 class Curve(abstract.Curve):
     """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
@@ -235,19 +236,23 @@ class Curve(abstract.Curve):
             utilities.check_params([u])
 
         # Get keyword arguments
-        r = kwargs.get('r', 1)
-        check_r = kwargs.get('check_r', True)
+        r = kwargs.get('r', 1)  # number of knot insertions
+        check_r = kwargs.get('check_r', True)  # can be set to False when the caller checks number of insertions
 
         # Check if the number of knot insertions requested is valid
-        if not isinstance(r, int) or r < 0:
-            raise ValueError('Number of insertions (r) must be a positive integer value')
+        if not isinstance(r, int) or r <= 0:
+            raise GeomdlException('Number of insertions (r) must be a positive integer value',
+                                  data=dict(r=r))
 
+        # Find knot multiplicity
         s = helpers.find_multiplicity(u, self.knotvector)
 
         # Check if it is possible add that many number of knots
         if check_r and r > self.degree - s:
-            raise ValueError("Cannot insert " + str(r) + " number of knots")
+            raise GeomdlException("Cannot insert " + str(r) + " number of knots",
+                                  data=dict(knot=u, num=r, multiplicity=s))
 
+        # Insert knot
         UQ, Q = self._evaluator.insert_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
                                             ctrlpts=self._control_points, dimension=self._dimension)
 
@@ -276,25 +281,32 @@ class Curve(abstract.Curve):
             utilities.check_params([u])
 
         # Get keyword arguments
-        r = kwargs.get('r', 1)
+        r = kwargs.get('r', 1)  # number of knot removals
+        check_r = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
 
         # Check if the number of knot removals requested is valid
-        if not isinstance(r, int) or r < 0:
-            raise ValueError('Number of removals (r) must be a positive integer value')
+        if not isinstance(r, int) or r <= 0:
+            raise GeomdlException('Number of removals (r) must be a positive integer value',
+                                  data=dict(r=r))
 
-        try:
-            UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, degree=self.degree, knotvector=self.knotvector,
-                                                ctrlpts=self._control_points, dimension=self._dimension)
-        except GeomdlException as e:
-            print(e)
-            return
+        # Find knot multiplicity
+        s = helpers.find_multiplicity(u, self.knotvector)
+
+        # It is impossible to remove knots if num > s
+        if check_r and r > s:
+            raise GeomdlException("Knot " + str(u) + " cannot be removed " + str(r) + " times",
+                                  data=dict(knot=u, num=r, multiplicity=s))
+
+        # Remove knot
+        UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
+                                            ctrlpts=self._control_points, dimension=self._dimension)
 
         # Update class variables
         self._knot_vector[0] = UQ
         self._control_points = Q
 
         # Evaluate curve again if it has already been evaluated before knot removal
-        if self._eval_points:
+        if check_r and self._eval_points:
             self.evaluate()
 
     def tangent(self, param, **kwargs):
