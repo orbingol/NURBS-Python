@@ -42,7 +42,6 @@ This documentation is organized into a couple sections:
 
     install
     examples_repo
-    cli_application
     load_save
     file_formats
     compatibility
@@ -59,10 +58,7 @@ This documentation is organized into a couple sections:
 
     modules
     modules_visualization
-
-
-NURBS-Python is developed by `Onur Rauf Bingol <https://github.com/orbingol>`_ and all the code released under the
-`MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
+    modules_cli
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
