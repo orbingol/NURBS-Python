@@ -180,7 +180,7 @@ def in_argv(arg_list):
 
 
 possible_cmds = ['install', 'build', 'bdist']
-packages = ['geomdl', 'geomdl.visualization', 'geomdl.shapes']
+packages = ['geomdl', 'geomdl.visualization']
 
 # Cython and compiled C module options
 # Ref: https://gist.github.com/ctokheim/6c34dc1d672afca0676a
