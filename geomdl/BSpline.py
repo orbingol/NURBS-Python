@@ -139,7 +139,7 @@ class Curve(abstract.Curve):
 
         # Find evaluation start and stop parameter values
         start = kwargs.get('start', self.knotvector[self.degree])
-        stop = kwargs.get('stop', self.knotvector[-(self.degree+1)])
+        stop = kwargs.get('stop', self.knotvector[-(self.degree + 1)])
 
         # Check parameters
         if self._kv_normalize:
@@ -648,9 +648,9 @@ class Surface(abstract.Surface):
 
         # Find evaluation start and stop parameter values
         start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
-        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u + 1)])
         start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
-        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v + 1)])
 
         # Check parameters
         if self._kv_normalize:
@@ -971,9 +971,9 @@ class Volume(abstract.Volume):
 
         # Find evaluation start and stop parameter values
         start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
-        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u+1)])
+        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u + 1)])
         start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
-        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v+1)])
+        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v + 1)])
         start_w = kwargs.get('start_w', self.knotvector_w[self.degree_w])
         stop_w = kwargs.get('stop_w', self.knotvector_w[-(self.degree_w + 1)])
 

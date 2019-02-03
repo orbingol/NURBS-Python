@@ -485,6 +485,7 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
     Keyword Arguments:
         * ``num``: number of knot insertions. *Default: 1*
         * ``s``: multiplicity of the knot. *Default: computed via :func:`.find_multiplicity`*
+        * ``span``: knot span. *Default: computed via :func:`.find_span_linear`*
 
     :param degree: degree
     :type degree: int

@@ -187,6 +187,7 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         param = kwargs.get('parameter')
         r = kwargs.get('r')  # number of knot insertions
+        s = kwargs.get('s')  # multiplicity
         degree = kwargs.get('degree')
         knotvector = kwargs.get('knotvector')
         ctrlpts = kwargs.get('ctrlpts')
@@ -196,7 +197,7 @@ class CurveEvaluator(AbstractEvaluatorExtended):
 
         # Algorithm A5.1
         kv_new = helpers.knot_insertion_kv(knotvector, param, span, r)
-        ctrlpts_new = helpers.knot_insertion(degree, knotvector, ctrlpts, param, num=r, span=span)
+        ctrlpts_new = helpers.knot_insertion(degree, knotvector, ctrlpts, param, num=r, s=s, span=span)
 
         # Return new knot vector and control points
         return kv_new, ctrlpts_new
