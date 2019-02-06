@@ -609,8 +609,8 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     :type ctrlpts: list
     :param u: knot to be removed
     :type u: float
-    :return: updated knot vector and control points
-    :rtype: tuple
+    :return: updated control points
+    :rtype: list
     """
     tol = kwargs.get('tol', 10e-4)  # Refer to Eq 5.30 for the meaning
     num = kwargs.get('num', 1)  # number of same knot removals
@@ -623,7 +623,6 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
     # Don't change input variables, prepare new ones for updating
     ctrlpts_new = deepcopy(ctrlpts)
-    knotvector_new = deepcopy(knotvector)
 
     # Initialize temp array for storing new control points
     temp = [[] for _ in range((2 * degree) + 1)]
@@ -676,10 +675,6 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     # Fix indexing
     t += 1
 
-    # Shift knots
-    for k in range(r + 1, len(knotvector)):
-        knotvector_new[k - t] = knotvector[k]
-
     # Shift control points (refer to p183 of The NURBS Book, 2nd Edition)
     j = int((2*r - s - degree) / 2)  # first control point out
     i = j
@@ -692,11 +687,10 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         ctrlpts_new[j] = ctrlpts[k]
         j += 1
 
-    # Slice to get new knot vector and control points
-    knotvector_new = knotvector_new[0:-t]
+    # Slice to get the new control points
     ctrlpts_new = ctrlpts_new[0:-t]
 
-    return knotvector_new, ctrlpts_new
+    return ctrlpts_new
 
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
@@ -741,6 +735,34 @@ def knot_removal_alpha_j(u, degree, knotvector, num, idx):
     :rtype: float
     """
     return (u - knotvector[idx - num]) / (knotvector[idx + degree + 1] - knotvector[idx - num])
+
+
+def knot_removal_kv(knotvector, span, r):
+    """ Computes the knot vector of the rational/non-rational spline after knot removal.
+
+    Part of Algorithm A5.8 of The NURBS Book by Piegl & Tiller, 2nd Edition.
+
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param span: knot span
+    :type span: int
+    :param r: number of knot removals
+    :type r: int
+    :return: updated knot vector
+    :rtype: list
+    """
+    # Create a deep copy of the input knot  vector
+    kv_updated = deepcopy(knotvector)
+
+    # Shift knots
+    for k in range(span + 1, len(knotvector)):
+        kv_updated[k - r] = knotvector[k]
+
+    # Slice to get the new knot vector
+    kv_updated = kv_updated[0:-r]
+
+    # Return the new knot vector
+    return kv_updated
 
 
 def degree_elevation(degree, ctrlpts, **kwargs):
