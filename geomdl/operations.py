@@ -98,8 +98,8 @@ def insert_knot(obj, param, direction, num, **kwargs):
                 ctrlpts_new += ctrlpts_tmp
 
             # Update the surface after knot insertion
-            obj.ctrlpts_size_u += num[0]
-            obj.ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v)
+            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v),
+                            obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
             obj.knotvector_u = kv_u
 
         if direction == 'v':
@@ -127,8 +127,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
                 ctrlpts_new += ctrlpts_tmp
 
             # Update the surface after knot insertion
-            obj.ctrlpts_size_v += num[1]
-            obj.ctrlpts = ctrlpts_new
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v + num[1])
             obj.knotvector_v = kv_v
 
     if isinstance(obj, abstract.Volume):
