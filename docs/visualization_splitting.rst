@@ -47,7 +47,7 @@ finally resulting 3 surfaces.
 Bézier Decomposition
 ====================
 
-The following figures illustrate Bézier cecomposition capabilities of NURBS-Python. Let's start with the most obvious
+The following figures illustrate Bézier decomposition capabilities of NURBS-Python. Let's start with the most obvious
 one, a full circle with 9 control points. It also is possible to directly  generate this shape via ``geomdl.shapes``
 module.
 
