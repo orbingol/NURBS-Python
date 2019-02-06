@@ -143,8 +143,18 @@ def construct_volume(*args, **kwargs):
     return nv
 
 
-def extract_curves(psurf):
+def extract_curves(psurf, **kwargs):
     """ Extracts curves from a surface.
+
+    The return value is a ``dict`` object containing the following keys:
+
+    * ``u``: the curves which generate u-direction (or which lie on the v-direction)
+    * ``v``: the curves which generate v-direction (or which lie on the u-direction)
+
+    As an example; if a curve lies on the u-direction, then its knotvector is equal to surface's knotvector on the
+    v-direction and vice versa.
+
+    The curve extraction process can be controlled via ``extract_u`` and ``extract_v`` boolean keyword arguments.
 
     :param psurf: input surface
     :type psurf: abstract.Surface
@@ -153,6 +163,10 @@ def extract_curves(psurf):
     """
     if not isinstance(psurf, BSpline.abstract.Surface):
         raise TypeError("The input should be an instance of abstract.Surface")
+
+    # Get keyword arguments
+    extract_u = kwargs.get('extract_u', True)
+    extract_v = kwargs.get('extract_v', True)
 
     # Get data from the surface object
     surf_data = psurf.data
@@ -170,21 +184,23 @@ def extract_curves(psurf):
 
     # v-direction
     crvlist_v = []
-    for u in range(size_u):
-        curve = obj()
-        curve.degree = degree_v
-        curve.set_ctrlpts([cpts[v + (size_v * u)] for v in range(size_v)])
-        curve.knotvector = kv_v
-        crvlist_v.append(curve)
+    if extract_v:
+        for u in range(size_u):
+            curve = obj()
+            curve.degree = degree_v
+            curve.set_ctrlpts([cpts[v + (size_v * u)] for v in range(size_v)])
+            curve.knotvector = kv_v
+            crvlist_v.append(curve)
 
     # u-direction
     crvlist_u = []
-    for v in range(size_v):
-        curve = obj()
-        curve.degree = degree_u
-        curve.set_ctrlpts([cpts[v + (size_v * u)] for u in range(size_u)])
-        curve.knotvector = kv_u
-        crvlist_u.append(curve)
+    if extract_u:
+        for v in range(size_v):
+            curve = obj()
+            curve.degree = degree_u
+            curve.set_ctrlpts([cpts[v + (size_v * u)] for u in range(size_u)])
+            curve.knotvector = kv_u
+            crvlist_u.append(curve)
 
     # Return shapes as a dict object
     return dict(u=crvlist_u, v=crvlist_v)
