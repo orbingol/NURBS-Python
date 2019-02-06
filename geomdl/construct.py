@@ -11,43 +11,94 @@ from . import BSpline
 from . import NURBS
 from . import utilities
 from . import convert
+from . import compatibility
+from .exceptions import GeomdlException
 
 
-def construct_surface(*args, **kwargs):
+def construct_surface(direction, *args, **kwargs):
     """ Generates surfaces from curves.
 
-    :return: NURBS surface
-    :rtype: NURBS.Surface
-    """
-    # Get keyword arguments
-    degree_v = kwargs.get('degree', 2)
+    Arguments:
+        * ``args``: a list of curve instances
 
-    size_v = len(args)
-    if size_v < 2:
+    Keyword Arguments (optional):
+        * ``degree``: degree of the other parametric direction
+        * ``knotvector``: knot vector of the other parametric direction
+        * ``rational``: flag to generate rational surfaces from rational curves
+
+    :param direction: the direction that the input curves lies
+    :type direction: str
+    :return: Surface constructed from the curves on the given parametric direction
+    """
+    # Input validation
+    possible_dirs = ['u', 'v']
+    if direction not in possible_dirs:
+        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
+                              data=dict(input_dir=direction))
+
+    size_other = len(args)
+    if size_other < 2:
         raise ValueError("You need to input at least 2 curves")
 
+    # Get keyword arguments
+    degree_other = kwargs.get('degree', 2)
+    knotvector_other = kwargs.get('knotvector', utilities.generate_knot_vector(degree_other, size_other))
+    rational = kwargs.get('rational', args[0].rational)
+
     # Construct the control points of the new surface
-    degree_u = args[0].degree
-    size_u = args[0].ctrlpts_size
-    new_ctrlptsw = []
-    for arg in args:
-        if degree_u != arg.degree:
-            raise ValueError("Input curves must have the same degrees")
-        if size_u != arg.ctrlpts_size:
-            raise ValueError("Input curves must have the same number of control points")
-        nc = arg if arg.rational else convert.bspline_to_nurbs(arg)
-        new_ctrlptsw += list(nc.ctrlptsw)
+    degree = args[0].degree
+    num_ctrlpts = args[0].ctrlpts_size
+    new_ctrlpts = []
+    new_weights = []
+    for idx, arg in enumerate(args):
+        if degree != arg.degree:
+            raise GeomdlException("Input curves must have the same degrees",
+                                  data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
+        if num_ctrlpts != arg.ctrlpts_size:
+            raise GeomdlException("Input curves must have the same number of control points",
+                                  data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size))
+        new_ctrlpts += list(arg.ctrlpts)
+        if rational:
+            if arg.weights is None:
+                raise GeomdlException("Expecting a rational curve",
+                                      data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
+            new_weights += list(arg.weights)
+
+    # Set variables w.r.t. input direction
+    if direction == 'u':
+        degree_u = degree_other
+        degree_v = degree
+        knotvector_u = knotvector_other
+        knotvector_v = args[0].knotvector
+        size_u = size_other
+        size_v = num_ctrlpts
+    else:
+        degree_u = degree
+        degree_v = degree_other
+        knotvector_u = args[0].knotvector
+        knotvector_v = knotvector_other
+        size_u = num_ctrlpts
+        size_v = size_other
+        if rational:
+            ctrlptsw = compatibility.combine_ctrlpts_weights(new_ctrlpts, new_weights)
+            ctrlptsw = compatibility.flip_ctrlpts_u(ctrlptsw, size_u, size_v)
+            new_ctrlpts, new_weights = compatibility.separate_ctrlpts_weights(ctrlptsw)
+        else:
+            new_ctrlpts = compatibility.flip_ctrlpts_u(new_ctrlpts, size_u, size_v)
 
     # Generate the surface
-    ns = NURBS.Surface()
+    ns = NURBS.Surface() if rational else BSpline.Surface()
     ns.degree_u = degree_u
     ns.degree_v = degree_v
     ns.ctrlpts_size_u = size_u
     ns.ctrlpts_size_v = size_v
-    ns.ctrlptsw = new_ctrlptsw
-    ns.knotvector_u = args[0].knotvector
-    ns.knotvector_v = utilities.generate_knot_vector(degree_v, size_v)
+    ns.ctrlpts = new_ctrlpts
+    if rational:
+        ns.weights = new_weights
+    ns.knotvector_u = knotvector_u
+    ns.knotvector_v = knotvector_v
 
+    # Return constructed surface
     return ns
 
 
