@@ -10,6 +10,7 @@
 import abc
 import six
 from . import utilities
+from . import _tessellate
 from ._utilities import export
 
 
@@ -104,11 +105,37 @@ class TriangularTessellate(AbstractTessellate):
             * ``size_u``: number of points on the u-direction
             * ``size_v``: number of points on the v-direction
 
-        :param points: list of points
-        :type points: list or tuple
+        :param points: array of points
+        :type points: list, tuple
         """
         # Call parent function
         super(TriangularTessellate, self).tessellate(points, **kwargs)
 
         # Apply default triangular mesh generator function
         self._vertices, self._faces = utilities.make_triangle_mesh(points, **kwargs)
+
+
+class TrimTessellate(AbstractTessellate):
+    """  Triangular tessellation algorithm for trimmed surfaces. """
+
+    def __init__(self, **kwargs):
+        super(TrimTessellate, self).__init__(**kwargs)
+
+    def tessellate(self, points, **kwargs):
+        """ Applies triangular tessellation w/ trimming curves.
+
+        Keyword Arguments:
+            * ``size_u``: number of points on the u-direction
+            * ``size_v``: number of points on the v-direction
+
+        :param points: array of points
+        :type points: list, tuple
+        """
+        # Call parent function
+        super(TrimTessellate, self).tessellate(points, **kwargs)
+
+        # Apply default triangular mesh generator function with trimming customization
+        self._vertices, self._faces = utilities.make_triangle_mesh(points,
+                                                                   tessellate_func=_tessellate.surface_trim_tessellate,
+                                                                   tessellate_args=self.arguments,
+                                                                   **kwargs)
