@@ -15,7 +15,7 @@ from . import multi
 from . import helpers
 from . import evaluators
 from . import linalg
-from . import construct
+from . import compatibility
 from . import _operations
 from ._utilities import export
 from .exceptions import GeomdlException
@@ -89,18 +89,18 @@ def insert_knot(obj, param, direction, num, **kwargs):
             kv_u = helpers.knot_insertion_kv(obj.knotvector_u, param[0], span_u, num[0])
 
             # Get curves
-            curves = construct.extract_curves(obj, extract_v=False)
-            curves_u = curves['u']
-            for idx, crv in enumerate(curves_u):
-                # Compute new control points
-                cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-                ctrlpts_new = helpers.knot_insertion(crv.degree, crv.knotvector, cpts, param[0],
+            ctrlpts_new = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for v in range(obj.ctrlpts_size_v):
+                ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
+                ctrlpts_tmp = helpers.knot_insertion(obj.degree_u, obj.knotvector_u, ccu, param[0],
                                                      num=num[0], s=s_u, span=span_u)
-                curves_u[idx].set_ctrlpts(ctrlpts_new)
-                curves_u[idx].knotvector = kv_u
+                ctrlpts_new += ctrlpts_tmp
 
-            # Construct the surface after knot insertion
-            obj = construct.construct_surface('u', *curves_u, degree=obj.degree_v, knotvector=obj.knotvector_v)
+            # Update the surface after knot insertion
+            obj.ctrlpts_size_u += num[0]
+            obj.ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v)
+            obj.knotvector_u = kv_u
 
         if direction == 'v':
             # Find knot multiplicity
@@ -118,18 +118,18 @@ def insert_knot(obj, param, direction, num, **kwargs):
             kv_v = helpers.knot_insertion_kv(obj.knotvector_v, param[1], span_v, num[1])
 
             # Get curves
-            curves = construct.extract_curves(obj, extract_u=False)
-            curves_v = curves['v']
-            for idx, crv in enumerate(curves_v):
-                # Compute new control points
-                cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-                ctrlpts_new = helpers.knot_insertion(crv.degree, crv.knotvector, cpts, param[1],
+            ctrlpts_new = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for u in range(obj.ctrlpts_size_u):
+                ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
+                ctrlpts_tmp = helpers.knot_insertion(obj.degree_v, obj.knotvector_v, ccv, param[1],
                                                      num=num[1], s=s_v, span=span_v)
-                curves_v[idx].set_ctrlpts(ctrlpts_new)
-                curves_v[idx].knotvector = kv_v
+                ctrlpts_new += ctrlpts_tmp
 
-            # Construct the surface after knot insertion
-            obj = construct.construct_surface('v', *curves_v, degree=obj.degree_u, knotvector=obj.knotvector_u)
+            # Update the surface after knot insertion
+            obj.ctrlpts_size_v += num[1]
+            obj.ctrlpts = ctrlpts_new
+            obj.knotvector_v = kv_v
 
     if isinstance(obj, abstract.Volume):
         if direction not in dir_mapping['volume']:
@@ -141,6 +141,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
 
     # Return updated spline geometry
     return obj
+
 
 @export
 def split_curve(obj, u, **kwargs):
