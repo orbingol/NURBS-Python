@@ -15,9 +15,134 @@ from . import multi
 from . import helpers
 from . import evaluators
 from . import linalg
+from . import construct
 from . import _operations
+from ._utilities import export
+from .exceptions import GeomdlException
 
 
+def insert_knot(obj, param, direction, num, **kwargs):
+    # Get keyword arguments
+    check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of insertions
+
+    # Check the validity of number of insertions
+    if not isinstance(num, (list, tuple)):
+        raise GeomdlException("The number of insertions must be a list or a tuple",
+                              data=dict(num=num))
+
+    if len(num) != obj.pdim:
+        raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
+                              data=dict(pdim=obj.pdim, num_len=len(num)))
+
+    for idx, val in enumerate(num):
+        if val < 0:
+            raise GeomdlException('Number of insertions must be a positive integer value',
+                                  data=dict(idx=idx, num=val))
+
+    # Start knot insertion
+    dir_mapping = dict(curve=('u',), surface=('u', 'v'), volume=('u', 'v', 'w'))
+    if isinstance(obj, abstract.Curve):
+        if direction not in dir_mapping['curve']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['curve']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        # Find knot multiplicity
+        s = helpers.find_multiplicity(param[0], obj.knotvector)
+
+        # Check if it is possible add that many number of knots
+        if check_num and num[0] > obj.degree - s:
+            raise GeomdlException("Cannot insert " + str(num[0]) + " number of knots",
+                                  data=dict(knot=param[0], num=num[0], multiplicity=s))
+
+        # Find knot span
+        span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
+
+        # Compute new knot vector
+        kv_new = helpers.knot_insertion_kv(obj.knotvector, param[0], span, num[0])
+
+        # Compute new control points
+        ctrlpts_new = helpers.knot_insertion(obj.degree, obj.knotvector, obj.ctrlpts, param[0],
+                                             num=num[0], s=s, span=span)
+
+        # Update curve
+        obj.ctrlpts = ctrlpts_new
+        obj.knotvector = kv_new
+
+    if isinstance(obj, abstract.Surface):
+        if direction not in dir_mapping['surface']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['surface']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        if direction == 'u':
+            # Find knot multiplicity
+            s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
+
+            # Check if it is possible add that many number of knots
+            if check_num and num[0] > obj.degree_u - s_u:
+                raise GeomdlException("Cannot insert " + str(num[0]) + " number of knots on the u-direction",
+                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+
+            # Find knot span
+            span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
+
+            # Compute new knot vector
+            kv_u = helpers.knot_insertion_kv(obj.knotvector_u, param[0], span_u, num[0])
+
+            # Get curves
+            curves = construct.extract_curves(obj, extract_v=False)
+            curves_u = curves['u']
+            for idx, crv in enumerate(curves_u):
+                # Compute new control points
+                cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+                ctrlpts_new = helpers.knot_insertion(crv.degree, crv.knotvector, cpts, param[0],
+                                                     num=num[0], s=s_u, span=span_u)
+                curves_u[idx].set_ctrlpts(ctrlpts_new)
+                curves_u[idx].knotvector = kv_u
+
+            # Construct the surface after knot insertion
+            obj = construct.construct_surface('u', *curves_u, degree=obj.degree_v, knotvector=obj.knotvector_v)
+
+        if direction == 'v':
+            # Find knot multiplicity
+            s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
+
+            # Check if it is possible add that many number of knots
+            if check_num and num[1] > obj.degree_v - s_v:
+                raise GeomdlException("Cannot insert " + str(num[1]) + " number of knots on the v-direction",
+                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+
+            # Find knot span
+            span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
+
+            # Compute new knot vector
+            kv_v = helpers.knot_insertion_kv(obj.knotvector_v, param[1], span_v, num[1])
+
+            # Get curves
+            curves = construct.extract_curves(obj, extract_u=False)
+            curves_v = curves['v']
+            for idx, crv in enumerate(curves_v):
+                # Compute new control points
+                cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+                ctrlpts_new = helpers.knot_insertion(crv.degree, crv.knotvector, cpts, param[1],
+                                                     num=num[1], s=s_v, span=span_v)
+                curves_v[idx].set_ctrlpts(ctrlpts_new)
+                curves_v[idx].knotvector = kv_v
+
+            # Construct the surface after knot insertion
+            obj = construct.construct_surface('v', *curves_v, degree=obj.degree_u, knotvector=obj.knotvector_u)
+
+    if isinstance(obj, abstract.Volume):
+        if direction not in dir_mapping['volume']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['volume']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        # Not implemented yet
+        pass
+
+    # Return updated spline geometry
+    return obj
+
+@export
 def split_curve(obj, u, **kwargs):
     """ Splits the curve at the input parametric coordinate.
 
@@ -84,6 +209,7 @@ def split_curve(obj, u, **kwargs):
     return ret_val
 
 
+@export
 def decompose_curve(obj, **kwargs):
     """ Decomposes the curve into Bezier curve segments of the same degree.
 
@@ -111,6 +237,7 @@ def decompose_curve(obj, **kwargs):
     return curves
 
 
+@export
 def derivative_curve(obj):
     """ Computes the hodograph (first derivative) curve of the input curve.
 
@@ -149,6 +276,7 @@ def derivative_curve(obj):
     return curve
 
 
+@export
 def length_curve(obj):
     """ Computes the approximate length of the parametric curve.
 
@@ -168,6 +296,7 @@ def length_curve(obj):
     return length
 
 
+@export
 def add_dimension(obj, **kwargs):
     """ Converts x-dimensional curve to a (x+1)-dimensional curve.
 
@@ -205,6 +334,7 @@ def add_dimension(obj, **kwargs):
         return ret
 
 
+@export
 def split_surface_u(obj, t, **kwargs):
     """ Splits the surface at the input parametric coordinate on the u-direction.
 
@@ -275,6 +405,7 @@ def split_surface_u(obj, t, **kwargs):
     return ret_val
 
 
+@export
 def split_surface_v(obj, t, **kwargs):
     """ Splits the surface at the input parametric coordinate on the v-direction.
 
@@ -351,6 +482,7 @@ def split_surface_v(obj, t, **kwargs):
     return ret_val
 
 
+@export
 def decompose_surface(obj, **kwargs):
     """ Decomposes the surface into Bezier surface patches of the same degree.
 
@@ -395,6 +527,7 @@ def decompose_surface(obj, **kwargs):
     return multi_surf
 
 
+@export
 def derivative_surface(obj):
     """ Computes the hodograph (first derivative) surface of the input surface.
 
