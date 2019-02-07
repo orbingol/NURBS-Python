@@ -143,6 +143,129 @@ def insert_knot(obj, param, direction, num, **kwargs):
     return obj
 
 
+def remove_knot(obj, param, direction, num, **kwargs):
+    # Get keyword arguments
+    check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of removals
+
+    # Check the validity of number of insertions
+    if not isinstance(num, (list, tuple)):
+        raise GeomdlException("The number of removals must be a list or a tuple",
+                              data=dict(num=num))
+
+    if len(num) != obj.pdim:
+        raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
+                              data=dict(pdim=obj.pdim, num_len=len(num)))
+
+    for idx, val in enumerate(num):
+        if val < 0:
+            raise GeomdlException('Number of removals  must be a positive integer value',
+                                  data=dict(idx=idx, num=val))
+
+    # Start curve knot removal
+    dir_mapping = dict(curve=('u',), surface=('u', 'v'), volume=('u', 'v', 'w'))
+    if isinstance(obj, abstract.Curve):
+        if direction not in dir_mapping['curve']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['curve']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        # Find knot multiplicity
+        s = helpers.find_multiplicity(param[0], obj.knotvector)
+
+        # It is impossible to remove knots if num > s
+        if check_num and num[0] > s:
+            raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times",
+                                  data=dict(knot=param[0], num=num[0], multiplicity=s))
+
+        # Find knot span
+        span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
+
+        # Compute new control points
+        cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+        ctrlpts_new = helpers.knot_removal(obj.degree, obj.knotvector, cpts, param[0], num=num[0], s=s, span=span)
+
+        # Compute new knot vector
+        kv_new = helpers.knot_removal_kv(obj.knotvector, span, num[0])
+
+        # Update curve
+        obj.set_ctrlpts(ctrlpts_new)
+        obj.knotvector = kv_new
+
+    # Start surface knot removal
+    if isinstance(obj, abstract.Surface):
+        if direction not in dir_mapping['surface']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['surface']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        if direction == 'u':
+            # Find knot multiplicity
+            s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
+
+            # Check if it is possible add that many number of knots
+            if check_num and num[0] > s_u:
+                raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times (u-dir)",
+                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+
+            # Find knot span
+            span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
+
+            # Get curves
+            ctrlpts_new = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for v in range(obj.ctrlpts_size_v):
+                ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
+                ctrlpts_tmp = helpers.knot_removal(obj.degree_u, obj.knotvector_u, ccu, param[0],
+                                                   num=num[0], s=s_u, span=span_u)
+                ctrlpts_new += ctrlpts_tmp
+
+            # Compute new knot vector
+            kv_u = helpers.knot_removal_kv(obj.knotvector_u, span_u, num[0])
+
+            # Update the surface after knot insertion
+            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v),
+                            obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
+            obj.knotvector_u = kv_u
+
+        if direction == 'v':
+            # Find knot multiplicity
+            s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
+
+            # Check if it is possible add that many number of knots
+            if check_num and num[1] > s_v:
+                raise GeomdlException("Knot " + str(param[1]) + " cannot be removed " + str(num[1]) + " times (v-dir)",
+                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+
+            # Find knot span
+            span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
+
+            # Get curves
+            ctrlpts_new = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for u in range(obj.ctrlpts_size_u):
+                ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
+                ctrlpts_tmp = helpers.knot_removal(obj.degree_v, obj.knotvector_v, ccv, param[1],
+                                                   num=num[1], s=s_v, span=span_v)
+                ctrlpts_new += ctrlpts_tmp
+
+            # Compute new knot vector
+            kv_v = helpers.knot_removal_kv(obj.knotvector_v, span_v, num[1])
+
+            # Update the surface after knot insertion
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v + num[1])
+            obj.knotvector_v = kv_v
+
+    # Start volume knot removal
+    if isinstance(obj, abstract.Volume):
+        if direction not in dir_mapping['volume']:
+            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['volume']),
+                                  data=dict(obj=obj.__class__.__name__, direction=direction))
+
+        # Not implemented yet
+        pass
+
+    # Return updated spline geometry
+    return obj
+
+
 @export
 def split_curve(obj, u, **kwargs):
     """ Splits the curve at the input parametric coordinate.
