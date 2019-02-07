@@ -219,94 +219,66 @@ class Curve(abstract.Curve):
                                            knotvector=self.knotvector, ctrlpts=self._control_points,
                                            dimension=self._dimension)
 
-    def insert_knot(self, u, **kwargs):
+    def insert_knot(self, param, **kwargs):
         """ Inserts the knot and updates the control points array and the knot vector.
 
         Keyword Arguments:
-            * ``r``: Number of knot insertions. *Default: 1*
+            * ``num``: Number of knot insertions. *Default: 1*
 
-        :param u: knot to be inserted
-        :type u: float
+        :param param: knot to be inserted
+        :type param: float
         """
-        # Check all parameters are set before the curve evaluation
+        # Check if all required parameters are set before the evaluation
         self._check_variables()
 
-        # Check u parameters are correct
+        # Check parameters are correct
         if self._kv_normalize:
-            utilities.check_params([u])
+            utilities.check_params([param])
 
         # Get keyword arguments
-        r = kwargs.get('r', 1)  # number of knot insertions
-        check_r = kwargs.get('check_r', True)  # can be set to False when the caller checks number of insertions
-
-        # Check if the number of knot insertions requested is valid
-        if not isinstance(r, int) or r <= 0:
-            raise GeomdlException('Number of insertions (r) must be a positive integer value',
-                                  data=dict(r=r))
-
-        # Find knot multiplicity
-        s = helpers.find_multiplicity(u, self.knotvector)
-
-        # Check if it is possible add that many number of knots
-        if check_r and r > self.degree - s:
-            raise GeomdlException("Cannot insert " + str(r) + " number of knots",
-                                  data=dict(knot=u, num=r, multiplicity=s))
+        num = kwargs.get('num', 1)  # number of knot insertions
+        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of insertions
 
         # Insert knot
-        UQ, Q = self._evaluator.insert_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
-                                            ctrlpts=self._control_points, dimension=self._dimension)
-
-        # Update class variables
-        self._knot_vector[0] = UQ
-        self._control_points = Q
+        try:
+            operations.insert_knot(self, [param], [num], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
 
         # Evaluate curve again if it has already been evaluated before knot insertion
-        if check_r and self._eval_points:
+        if check_num and self._eval_points:
             self.evaluate()
 
-    def remove_knot(self, u, **kwargs):
+    def remove_knot(self, param, **kwargs):
         """ Removes the knot and updates the control points array and the knot vector.
 
         Keyword Arguments:
-            * ``r``: Number of knot removals. *Default: 1*
+            * ``num``: Number of knot removals. *Default: 1*
 
-        :param u: knot to be removed
-        :type u: float
+        :param param: knot to be removed
+        :type param: float
         """
-        # Check all parameters are set before the curve evaluation
+        # Check if all required parameters are set before the evaluation
         self._check_variables()
 
-        # Check u parameters are correct
+        # Check param parameters are correct
         if self._kv_normalize:
-            utilities.check_params([u])
+            utilities.check_params([param])
 
         # Get keyword arguments
-        r = kwargs.get('r', 1)  # number of knot removals
-        check_r = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
-
-        # Check if the number of knot removals requested is valid
-        if not isinstance(r, int) or r <= 0:
-            raise GeomdlException('Number of removals (r) must be a positive integer value',
-                                  data=dict(r=r))
-
-        # Find knot multiplicity
-        s = helpers.find_multiplicity(u, self.knotvector)
-
-        # It is impossible to remove knots if num > s
-        if check_r and r > s:
-            raise GeomdlException("Knot " + str(u) + " cannot be removed " + str(r) + " times",
-                                  data=dict(knot=u, num=r, multiplicity=s))
+        num = kwargs.get('num', 1)  # number of knot removals
+        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
 
         # Remove knot
-        UQ, Q = self._evaluator.remove_knot(parameter=u, r=r, s=s, degree=self.degree, knotvector=self.knotvector,
-                                            ctrlpts=self._control_points, dimension=self._dimension)
-
-        # Update class variables
-        self._knot_vector[0] = UQ
-        self._control_points = Q
+        try:
+            operations.remove_knot(self, [param], [num], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
 
         # Evaluate curve again if it has already been evaluated before knot removal
-        if check_r and self._eval_points:
+        if check_num and self._eval_points:
             self.evaluate()
 
     def tangent(self, param, **kwargs):
@@ -747,85 +719,70 @@ class Surface(abstract.Surface):
                                            ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
                                            dimension=self.dimension)
 
-    # Insert knot 'r' times at the given (u, v) parametric coordinates
-    def insert_knot(self, u=None, v=None, **kwargs):
-        """ Inserts knot(s) in u- or v-directions
-
-        If you keep a parameter assigned to ``None``, there will be no knot insertion to that parametric direction.
+    def insert_knot(self, param, **kwargs):
+        """ Inserts knot(s) on the u- or v-directions
 
         Keyword Arguments:
-            * ``ru``: Number of knot insertions on the u-direction. *Default: 1*
-            * ``rv``: Number of knot insertions on the v-direction. *Default: 1*
+            * ``num_u``: Number of knot insertions on the u-direction. *Default: 1*
+            * ``num_v``: Number of knot insertions on the v-direction. *Default: 1*
 
-        :param u: Knot to be inserted on the u-direction
-        :type u: float
-        :param v: Knot to be inserted on the v-direction
-        :type v: float
+        :param param: (u,v) pair to be inserted
+        :type param: list, tuple
         """
-        can_insert_knot_u = True
-        can_insert_knot_v = True
-
-        # Check all parameters are set before the curve evaluation
+        # Check all parameters are set before the evaluation
         self._check_variables()
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params([u, v])
+            utilities.check_params(param)
 
         # Get keyword arguments
-        ru = kwargs.get('ru', 1)
-        rv = kwargs.get('rv', 1)
-        check_r = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
+        num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
+        num_v = kwargs.get('num_v', 1)  # number of knot insertions on the v-direction
+        check_num = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
 
-        if not isinstance(ru, int) or ru < 0:
-            raise ValueError("Number of insertions on the u-direction must be a positive integer")
-
-        if not isinstance(rv, int) or rv < 0:
-            raise ValueError("Number of insertions on the v-direction must be a positive integer")
-
-        # Algorithm A5.3
-        if u:
-            s_u = helpers.find_multiplicity(u, self.knotvector_u)
-
-            # Check if it is possible add that many number of knots
-            if check_r and ru > self.degree_u - s_u:
-                warnings.warn("Cannot insert " + str(ru) + " knots on the u-direction")
-                can_insert_knot_u = False
-
-            if can_insert_knot_u:
-                args_dict = dict(
-                    parameter=u, r=ru, s=s_u, degree=self.degree_u, knotvector=self.knotvector_u,
-                    ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v), ctrlpts=self._control_points
-                )
-                UQ, Q = self._evaluator.insert_knot("u", **args_dict)
-
-                # Update class variables after knot insertion
-                self._knot_vector[0] = UQ
-                self._control_points_size[0] += ru
-                self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
-
-        if v:
-            s_v = helpers.find_multiplicity(v, self.knotvector_v)
-
-            # Check if it is possible add that many number of knots
-            if check_r and rv > self.degree_v - s_v:
-                warnings.warn("Cannot insert " + str(rv) + " knots on the v-direction")
-                can_insert_knot_v = False
-
-            if can_insert_knot_v:
-                args_dict = dict(
-                    parameter=v, r=rv, s=s_v, degree=self.degree_v, knotvector=self.knotvector_v,
-                    ctrlpts_size=(self.ctrlpts_size_u, self.ctrlpts_size_v), ctrlpts=self._control_points
-                )
-                VQ, Q = self._evaluator.insert_knot("v", **args_dict)
-
-                # Update class variables after knot insertion
-                self._knot_vector[1] = VQ
-                self._control_points_size[1] += rv
-                self.set_ctrlpts(Q, self.ctrlpts_size_u, self.ctrlpts_size_v)
+        # Insert knots
+        try:
+            operations.insert_knot(self, param, [num_u, num_v], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
 
         # Evaluate surface again if it has already been evaluated before knot insertion
-        if check_r and self._eval_points:
+        if check_num and self._eval_points:
+            self.evaluate()
+
+    def remove_knot(self, param, **kwargs):
+        """ Inserts knot(s) on the u- or v-directions
+
+        Keyword Arguments:
+            * ``num_u``: Number of knot removals on the u-direction. *Default: 1*
+            * ``num_v``: Number of knot removals on the v-direction. *Default: 1*
+
+        :param param: (u,v) pair to be removed
+        :type param: list, tuple
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Check if the parameter values are correctly defined
+        if self._kv_normalize:
+            utilities.check_params(param)
+
+        # Get keyword arguments
+        num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
+        num_v = kwargs.get('num_v', 1)  # number of knot removals on the v-direction
+        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
+
+        # Remove knots
+        try:
+            operations.remove_knot(self, param, [num_u, num_v], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
+
+        # Evaluate curve again if it has already been evaluated before knot removal
+        if check_num and self._eval_points:
             self.evaluate()
 
     def tangent(self, parpos, **kwargs):
