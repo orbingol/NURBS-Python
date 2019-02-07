@@ -20,12 +20,6 @@ Abstract Base
     :inherited-members:
     :show-inheritance:
 
-.. autoclass:: geomdl.evaluators.AbstractEvaluatorExtended
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
-
 Curve Evaluators
 ================
 
