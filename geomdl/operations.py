@@ -329,18 +329,18 @@ def decompose_curve(obj, **kwargs):
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of abstract.Curve class")
 
-    curves = []
+    multi_curve = []
     curve = copy.deepcopy(obj)
     knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
     while knots:
         knot = knots[0]
-        curves = split_curve(curve, u=knot, **kwargs)
-        curves.append(curves[0])
+        curves = split_curve(curve, param=knot, **kwargs)
+        multi_curve.append(curves[0])
         curve = curves[1]
         knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
-    curves.append(curve)
+    multi_curve.append(curve)
 
-    return curves
+    return multi_curve
 
 
 @export
