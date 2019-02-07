@@ -12,7 +12,6 @@ import abc
 import six
 from . import linalg
 from . import helpers
-from . import _evaluators
 from ._utilities import export
 
 
@@ -23,7 +22,6 @@ class AbstractEvaluator(object):
     **Abstract Methods**:
 
     * ``evaluate`` is used for computation of the complete spline shape
-    * ``evaluate_single`` is used for computation of one single point on the spline shape
     * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
 
     Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
@@ -64,54 +62,14 @@ class AbstractEvaluator(object):
         pass
 
 
-@six.add_metaclass(abc.ABCMeta)
-class AbstractEvaluatorExtended(AbstractEvaluator):
-    """ Abstract base class for implementations of extended spline algorithms.
-
-    **Abstract Methods**:
-
-    * ``evaluate`` is used for computation of the complete spline shape
-    * ``evaluate_single`` is used for computation of one single point on the spline shape
-    * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
-    * ``insert_knot`` is used for implementation of knot insertion algorithm
-
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see :py:mod:`helpers` module for details.
-    """
-
-    def __init__(self, **kwargs):
-        super(AbstractEvaluatorExtended, self).__init__(**kwargs)
-
-    @abc.abstractmethod
-    def insert_knot(self, direction, **kwargs):
-        """ Abstract method for implementation of knot insertion algorithm.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
-
-    @abc.abstractmethod
-    def remove_knot(self, direction, **kwargs):
-        """ Abstract method for implementation of knot removal algorithm.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
-
-
 @export
-class CurveEvaluator(AbstractEvaluatorExtended):
+class CurveEvaluator(AbstractEvaluator):
     """ Sequential curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
     * Algorithm A3.1: CurvePoint
     * Algorithm A3.2: CurveDerivsAlg1
-    * Algorithm A5.1: CurveKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -180,50 +138,6 @@ class CurveEvaluator(AbstractEvaluatorExtended):
         # Return the derivatives
         return CK
 
-    def insert_knot(self, direction="u", **kwargs):
-        """ Inserts a single knot multiple times. """
-        # Call parent method
-        super(CurveEvaluator, self).insert_knot(direction, **kwargs)
-
-        param = kwargs.get('parameter')
-        r = kwargs.get('r')  # number of knot insertions
-        s = kwargs.get('s')  # multiplicity
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-
-        # Find knot span
-        span = self._span_func(degree, knotvector, len(ctrlpts), param)
-
-        # Algorithm A5.1
-        kv_new = helpers.knot_insertion_kv(knotvector, param, span, r)
-        ctrlpts_new = helpers.knot_insertion(degree, knotvector, ctrlpts, param, num=r, s=s, span=span)
-
-        # Return new knot vector and control points
-        return kv_new, ctrlpts_new
-
-    def remove_knot(self, direction="u", **kwargs):
-        """ Removes a single knot multiple times """
-        # Call parent method
-        super(CurveEvaluator, self).insert_knot(direction, **kwargs)
-
-        param = kwargs.get('parameter')
-        r = kwargs.get('r')  # number of knot removals
-        s = kwargs.get('s')  # multiplicity
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-
-        # Always remove the last possible knot to satisfy the inequality U(r) != U(r+1)
-        span = self._span_func(degree, knotvector, len(ctrlpts), param)
-
-        # Algorithm A5.8
-        kv_new, ctrlpts_new = helpers.knot_removal(degree=degree, knotvector=knotvector, ctrlpts=ctrlpts,
-                                                   u=param, num=r, s=s, span=span)
-
-        # Return new knot vector and control points
-        return kv_new, ctrlpts_new
-
 
 class CurveEvaluator2(CurveEvaluator):
     """ Sequential curve evaluation algorithms (alternative).
@@ -232,7 +146,6 @@ class CurveEvaluator2(CurveEvaluator):
 
     * Algorithm A3.1: CurvePoint
     * Algorithm A3.4: CurveDerivsAlg2
-    * Algorithm A5.1: CurveKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -321,7 +234,6 @@ class CurveEvaluatorRational(CurveEvaluator):
 
     * Algorithm A3.1: CurvePoint
     * Algorithm A4.2: RatCurveDerivs
-    * Algorithm A5.1: CurveKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -369,14 +281,13 @@ class CurveEvaluatorRational(CurveEvaluator):
 
 
 @export
-class SurfaceEvaluator(AbstractEvaluatorExtended):
+class SurfaceEvaluator(AbstractEvaluator):
     """ Sequential surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
 
     * Algorithm A3.5: SurfacePoint
     * Algorithm A3.6: SurfaceDerivsAlg1
-    * Algorithm A5.3: SurfaceKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -467,22 +378,6 @@ class SurfaceEvaluator(AbstractEvaluatorExtended):
 
         return SKL
 
-    def insert_knot(self, direction, **kwargs):
-        """ Inserts a knot multiple times. """
-        # Call parent method
-        super(SurfaceEvaluator, self).insert_knot(direction, **kwargs)
-
-        # Insert knot
-        if direction == "u":
-            return _evaluators.insert_knot_u(self._span_func, **kwargs)
-        elif direction == "v":
-            return _evaluators.insert_knot_v(self._span_func, **kwargs)
-        else:
-            raise ValueError("Can only work on u- and v-directions")
-
-    def remove_knot(self, direction, **kwargs):
-        pass
-
 
 class SurfaceEvaluator2(SurfaceEvaluator):
     """ Sequential surface evaluation algorithms.
@@ -492,7 +387,6 @@ class SurfaceEvaluator2(SurfaceEvaluator):
     * Algorithm A3.5: SurfacePoint
     * Algorithm A3.7: SurfaceDerivCpts
     * Algorithm A3.8: SurfaceDerivsAlg2
-    * Algorithm A5.3: SurfaceKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
@@ -616,7 +510,6 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
 
     * Algorithm A4.3: SurfacePoint
     * Algorithm A4.4: RatSurfaceDerivs
-    * Algorithm A5.3: SurfaceKnotIns
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
     during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
