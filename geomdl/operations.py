@@ -25,19 +25,20 @@ def insert_knot(obj, param, num, **kwargs):
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of insertions
 
-    # Check the validity of number of insertions
-    if not isinstance(num, (list, tuple)):
-        raise GeomdlException("The number of insertions must be a list or a tuple",
-                              data=dict(num=num))
+    if check_num:
+        # Check the validity of number of insertions
+        if not isinstance(num, (list, tuple)):
+            raise GeomdlException("The number of insertions must be a list or a tuple",
+                                  data=dict(num=num))
 
-    if len(num) != obj.pdimension:
-        raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                              data=dict(pdim=obj.pdim, num_len=len(num)))
+        if len(num) != obj.pdimension:
+            raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
+                                  data=dict(pdim=obj.pdim, num_len=len(num)))
 
-    for idx, val in enumerate(num):
-        if val < 0:
-            raise GeomdlException('Number of insertions must be a positive integer value',
-                                  data=dict(idx=idx, num=val))
+        for idx, val in enumerate(num):
+            if val < 0:
+                raise GeomdlException('Number of insertions must be a positive integer value',
+                                      data=dict(idx=idx, num=val))
 
     # Start knot insertion
     if isinstance(obj, abstract.Curve):
@@ -139,19 +140,20 @@ def remove_knot(obj, param, num, **kwargs):
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of removals
 
-    # Check the validity of number of insertions
-    if not isinstance(num, (list, tuple)):
-        raise GeomdlException("The number of removals must be a list or a tuple",
-                              data=dict(num=num))
+    if check_num:
+        # Check the validity of number of insertions
+        if not isinstance(num, (list, tuple)):
+            raise GeomdlException("The number of removals must be a list or a tuple",
+                                  data=dict(num=num))
 
-    if len(num) != obj.pdimension:
-        raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                              data=dict(pdim=obj.pdim, num_len=len(num)))
+        if len(num) != obj.pdimension:
+            raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
+                                  data=dict(pdim=obj.pdim, num_len=len(num)))
 
-    for idx, val in enumerate(num):
-        if val < 0:
-            raise GeomdlException('Number of removals  must be a positive integer value',
-                                  data=dict(idx=idx, num=val))
+        for idx, val in enumerate(num):
+            if val < 0:
+                raise GeomdlException('Number of removals  must be a positive integer value',
+                                      data=dict(idx=idx, num=val))
 
     # Start curve knot removal
     if isinstance(obj, abstract.Curve):
