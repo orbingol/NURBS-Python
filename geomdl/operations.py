@@ -539,9 +539,6 @@ def split_surface_v(obj, param, **kwargs):
     if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of abstract.Surface class")
 
-    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
-        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
-
     if param == obj.knotvector_v[0] or param == obj.knotvector_v[-1]:
         raise ValueError("Cannot split on the edge")
 
