@@ -21,7 +21,7 @@ from ._utilities import export
 from .exceptions import GeomdlException
 
 
-def insert_knot(obj, param, direction, num, **kwargs):
+def insert_knot(obj, param, num, **kwargs):
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of insertions
 
@@ -40,12 +40,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
                                   data=dict(idx=idx, num=val))
 
     # Start knot insertion
-    dir_mapping = dict(curve=('u',), surface=('u', 'v'), volume=('u', 'v', 'w'))
-    if isinstance(obj, abstract.Curve):
-        if direction not in dir_mapping['curve']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['curve']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
+    if isinstance(obj, abstract.Curve) and num[0] > 0:
         # Find knot multiplicity
         s = helpers.find_multiplicity(param[0], obj.knotvector)
 
@@ -69,12 +64,10 @@ def insert_knot(obj, param, direction, num, **kwargs):
         obj.set_ctrlpts(ctrlpts_new)
         obj.knotvector = kv_new
 
+    # Start surface knot insertion
     if isinstance(obj, abstract.Surface):
-        if direction not in dir_mapping['surface']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['surface']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
-        if direction == 'u':
+        # u-direction
+        if num[0] > 0:
             # Find knot multiplicity
             s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
 
@@ -103,7 +96,8 @@ def insert_knot(obj, param, direction, num, **kwargs):
                             obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
             obj.knotvector_u = kv_u
 
-        if direction == 'v':
+        # v-direction
+        if num[1] > 0:
             # Find knot multiplicity
             s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
 
@@ -131,11 +125,8 @@ def insert_knot(obj, param, direction, num, **kwargs):
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v + num[1])
             obj.knotvector_v = kv_v
 
+    # Start volume knot insertion
     if isinstance(obj, abstract.Volume):
-        if direction not in dir_mapping['volume']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['volume']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
         # Not implemented yet
         pass
 
@@ -143,7 +134,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
     return obj
 
 
-def remove_knot(obj, param, direction, num, **kwargs):
+def remove_knot(obj, param, num, **kwargs):
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of removals
 
@@ -162,12 +153,7 @@ def remove_knot(obj, param, direction, num, **kwargs):
                                   data=dict(idx=idx, num=val))
 
     # Start curve knot removal
-    dir_mapping = dict(curve=('u',), surface=('u', 'v'), volume=('u', 'v', 'w'))
-    if isinstance(obj, abstract.Curve):
-        if direction not in dir_mapping['curve']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['curve']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
+    if isinstance(obj, abstract.Curve) and num[0] > 0:
         # Find knot multiplicity
         s = helpers.find_multiplicity(param[0], obj.knotvector)
 
@@ -192,11 +178,8 @@ def remove_knot(obj, param, direction, num, **kwargs):
 
     # Start surface knot removal
     if isinstance(obj, abstract.Surface):
-        if direction not in dir_mapping['surface']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['surface']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
-        if direction == 'u':
+        # u-direction
+        if num[0] > 0:
             # Find knot multiplicity
             s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
 
@@ -225,7 +208,8 @@ def remove_knot(obj, param, direction, num, **kwargs):
                             obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
             obj.knotvector_u = kv_u
 
-        if direction == 'v':
+        # v-direction
+        if num[1] > 0:
             # Find knot multiplicity
             s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
 
@@ -255,10 +239,6 @@ def remove_knot(obj, param, direction, num, **kwargs):
 
     # Start volume knot removal
     if isinstance(obj, abstract.Volume):
-        if direction not in dir_mapping['volume']:
-            raise GeomdlException("Possible directions: " + ",".join(str(val) for val in dir_mapping['volume']),
-                                  data=dict(obj=obj.__class__.__name__, direction=direction))
-
         # Not implemented yet
         pass
 
