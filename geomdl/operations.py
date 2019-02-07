@@ -40,34 +40,35 @@ def insert_knot(obj, param, num, **kwargs):
                                   data=dict(idx=idx, num=val))
 
     # Start knot insertion
-    if isinstance(obj, abstract.Curve) and num[0] > 0:
-        # Find knot multiplicity
-        s = helpers.find_multiplicity(param[0], obj.knotvector)
+    if isinstance(obj, abstract.Curve):
+        if param[0] is not None and num[0] > 0:
+            # Find knot multiplicity
+            s = helpers.find_multiplicity(param[0], obj.knotvector)
 
-        # Check if it is possible add that many number of knots
-        if check_num and num[0] > obj.degree - s:
-            raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
-                                  data=dict(knot=param[0], num=num[0], multiplicity=s))
+            # Check if it is possible add that many number of knots
+            if check_num and num[0] > obj.degree - s:
+                raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
+                                      data=dict(knot=param[0], num=num[0], multiplicity=s))
 
-        # Find knot span
-        span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
+            # Find knot span
+            span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
 
-        # Compute new knot vector
-        kv_new = helpers.knot_insertion_kv(obj.knotvector, param[0], span, num[0])
+            # Compute new knot vector
+            kv_new = helpers.knot_insertion_kv(obj.knotvector, param[0], span, num[0])
 
-        # Compute new control points
-        cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-        ctrlpts_new = helpers.knot_insertion(obj.degree, obj.knotvector, cpts, param[0],
-                                             num=num[0], s=s, span=span)
+            # Compute new control points
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            ctrlpts_new = helpers.knot_insertion(obj.degree, obj.knotvector, cpts, param[0],
+                                                 num=num[0], s=s, span=span)
 
-        # Update curve
-        obj.set_ctrlpts(ctrlpts_new)
-        obj.knotvector = kv_new
+            # Update curve
+            obj.set_ctrlpts(ctrlpts_new)
+            obj.knotvector = kv_new
 
     # Start surface knot insertion
     if isinstance(obj, abstract.Surface):
         # u-direction
-        if num[0] > 0:
+        if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
             s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
 
@@ -92,12 +93,12 @@ def insert_knot(obj, param, num, **kwargs):
                 ctrlpts_new += ctrlpts_tmp
 
             # Update the surface after knot insertion
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v),
+            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v),
                             obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
             obj.knotvector_u = kv_u
 
         # v-direction
-        if num[1] > 0:
+        if param[1] is not None and num[1] > 0:
             # Find knot multiplicity
             s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
 
@@ -153,33 +154,34 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(idx=idx, num=val))
 
     # Start curve knot removal
-    if isinstance(obj, abstract.Curve) and num[0] > 0:
-        # Find knot multiplicity
-        s = helpers.find_multiplicity(param[0], obj.knotvector)
+    if isinstance(obj, abstract.Curve):
+        if param[0] is not None and num[0] > 0:
+            # Find knot multiplicity
+            s = helpers.find_multiplicity(param[0], obj.knotvector)
 
-        # It is impossible to remove knots if num > s
-        if check_num and num[0] > s:
-            raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times",
-                                  data=dict(knot=param[0], num=num[0], multiplicity=s))
+            # It is impossible to remove knots if num > s
+            if check_num and num[0] > s:
+                raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times",
+                                      data=dict(knot=param[0], num=num[0], multiplicity=s))
 
-        # Find knot span
-        span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
+            # Find knot span
+            span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
 
-        # Compute new control points
-        cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-        ctrlpts_new = helpers.knot_removal(obj.degree, obj.knotvector, cpts, param[0], num=num[0], s=s, span=span)
+            # Compute new control points
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            ctrlpts_new = helpers.knot_removal(obj.degree, obj.knotvector, cpts, param[0], num=num[0], s=s, span=span)
 
-        # Compute new knot vector
-        kv_new = helpers.knot_removal_kv(obj.knotvector, span, num[0])
+            # Compute new knot vector
+            kv_new = helpers.knot_removal_kv(obj.knotvector, span, num[0])
 
-        # Update curve
-        obj.set_ctrlpts(ctrlpts_new)
-        obj.knotvector = kv_new
+            # Update curve
+            obj.set_ctrlpts(ctrlpts_new)
+            obj.knotvector = kv_new
 
     # Start surface knot removal
     if isinstance(obj, abstract.Surface):
         # u-direction
-        if num[0] > 0:
+        if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
             s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
 
@@ -203,13 +205,13 @@ def remove_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_u = helpers.knot_removal_kv(obj.knotvector_u, span_u, num[0])
 
-            # Update the surface after knot insertion
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v),
+            # Update the surface after knot removal
+            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v),
                             obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
             obj.knotvector_u = kv_u
 
         # v-direction
-        if num[1] > 0:
+        if param[1] is not None and num[1] > 0:
             # Find knot multiplicity
             s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
 
@@ -233,7 +235,7 @@ def remove_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_v = helpers.knot_removal_kv(obj.knotvector_v, span_v, num[1])
 
-            # Update the surface after knot insertion
+            # Update the surface after knot removal
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v + num[1])
             obj.knotvector_v = kv_v
 

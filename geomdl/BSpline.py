@@ -719,22 +719,24 @@ class Surface(abstract.Surface):
                                            ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
                                            dimension=self.dimension)
 
-    def insert_knot(self, param, **kwargs):
+    def insert_knot(self, u=None, v=None, **kwargs):
         """ Inserts knot(s) on the u- or v-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot insertions on the u-direction. *Default: 1*
             * ``num_v``: Number of knot insertions on the v-direction. *Default: 1*
 
-        :param param: (u,v) pair to be inserted
-        :type param: list, tuple
+        :param u: knot to be inserted on the u-direction
+        :type u: float
+        :param v: knot to be inserted on the v-direction
+        :type v: float
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params(param)
+            utilities.check_params([u, v])
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
@@ -743,7 +745,7 @@ class Surface(abstract.Surface):
 
         # Insert knots
         try:
-            operations.insert_knot(self, param, [num_u, num_v], check_num=check_num)
+            operations.insert_knot(self, [u, v], [num_u, num_v], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -752,22 +754,24 @@ class Surface(abstract.Surface):
         if check_num and self._eval_points:
             self.evaluate()
 
-    def remove_knot(self, param, **kwargs):
+    def remove_knot(self, u=None, v=None, **kwargs):
         """ Inserts knot(s) on the u- or v-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot removals on the u-direction. *Default: 1*
             * ``num_v``: Number of knot removals on the v-direction. *Default: 1*
 
-        :param param: (u,v) pair to be removed
-        :type param: list, tuple
+        :param u: knot to be removed on the u-direction
+        :type u: float
+        :param v: knot to be removed on the v-direction
+        :type v: float
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params(param)
+            utilities.check_params([u, v])
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
@@ -776,7 +780,7 @@ class Surface(abstract.Surface):
 
         # Remove knots
         try:
-            operations.remove_knot(self, param, [num_u, num_v], check_num=check_num)
+            operations.remove_knot(self, [u, v], [num_u, num_v], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
