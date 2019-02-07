@@ -21,15 +21,23 @@ The following books are recommended for individuals who prefer to investigate th
 Why NURBS-Python?
 =================
 
-NURBS-Python started as a term project for *M E 625 Surface Modeling* course offered in 2016 Spring semester at Iowa
-State University. The main purpose of the project was development of an open-source, object-oriented, pure Python NURBS
-library and releasing on the public domain. As an added challenge to the project, everything was developed using
-Python Standard Library but no other external modules. This challenge was specifically added as we were struggling with
-installing & compiling external modules for embedded Python distributions.
+NURBS-Python started as a final project for *M E 625 Surface Modeling* course offered in 2016 Spring semester at Iowa
+State University. The main purpose of the project was development of a free and open-source, object-oriented, pure
+Python NURBS library and releasing it on the public domain. As an added challenge to the project, everything was
+developed using Python Standard Library but no other external modules.
 
 In years, NURBS-Python has grown up to a self-contained and extensible general-purpose pure Python spline library with
 support for various computational geometry and linear algebra algorithms. Apart from the computational side, user
 experience was also improved by introduction of visualization and CAD exchange modules.
+
+NURBS-Python is a user-friendly library, regardless of the mathematical complexity of the splines. To give a head start,
+it comes with 40+ examples for various use cases. It also provides several extension modules for
+
+* Using the library directly from the command-line (useful for non-Python and automated systems)
+* Generating common spline shapes
+* Rhino .3dm file import/export support
+
+Moreover, NURBS-Python and its extensions are free and open-source projects distributed under the MIT license.
 
 NURBS-Python is **not** *an another NURBS library* but it is mostly considered as one of its kind. Please see the
 :doc:`Motivation <introduction>` page for more details.
@@ -52,6 +60,11 @@ Minimum Requirements
 NURBS-Python is tested on Python versions 2.7.x and 3.4.x+. The core library does not depend on any additional packages
 or require any compilation steps; therefore, you can run it on a plain python installation as well as on a distribution,
 such as Anaconda.
+
+Since Python `2.7.x < <https://www.python.org/dev/peps/pep-0373/>>`_ and `v3.4.x <https://www.python.org/dev/peps/pep-0429/>`_
+are reaching their end-of-life very soon, NURBS-Python project will only support Python 3.5+ starting with v6.0.0.
+
+Please see the following page for more details: https://python3statement.org/
 
 Help and Support
 ================
