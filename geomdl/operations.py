@@ -22,6 +22,13 @@ from .exceptions import GeomdlException
 
 
 def insert_knot(obj, param, num, **kwargs):
+    """ Knot insertion for splines.
+
+    :param obj: spline geometry
+    :param param: knot(s) to be inserted
+    :param num: number of knot insertions
+    :return: updated spline geometry
+    """
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of insertions
 
@@ -40,7 +47,7 @@ def insert_knot(obj, param, num, **kwargs):
                 raise GeomdlException('Number of insertions must be a positive integer value',
                                       data=dict(idx=idx, num=val))
 
-    # Start knot insertion
+    # Start curve knot insertion
     if isinstance(obj, abstract.Curve):
         if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
@@ -137,6 +144,13 @@ def insert_knot(obj, param, num, **kwargs):
 
 
 def remove_knot(obj, param, num, **kwargs):
+    """ Knot removal for splines.
+
+    :param obj: spline geometry
+    :param param: knot(s) to be removed
+    :param num: number of knot removals
+    :return: updated spline geometry
+    """
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of removals
 
