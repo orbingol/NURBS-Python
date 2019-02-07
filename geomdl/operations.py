@@ -251,7 +251,7 @@ def remove_knot(obj, param, num, **kwargs):
 
 
 @export
-def split_curve(obj, u, **kwargs):
+def split_curve(obj, param, **kwargs):
     """ Splits the curve at the input parametric coordinate.
 
     This method splits the curve into two pieces at the given parametric coordinate, generates two different
@@ -259,8 +259,8 @@ def split_curve(obj, u, **kwargs):
 
     :param obj: Curve to be split
     :type obj: abstract.Curve
-    :param u: parameter
-    :type u: float
+    :param param: parameter
+    :type param: float
     :return: list of curves as the split pieces of the initial curve
     :rtype: list
     """
@@ -268,33 +268,30 @@ def split_curve(obj, u, **kwargs):
     if not isinstance(obj, abstract.Curve):
         raise TypeError("Input shape must be an instance of abstract.Curve class")
 
-    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
-        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
-
-    if u == obj.knotvector[0] or u == obj.knotvector[-1]:
+    if param == obj.knotvector[0] or param == obj.knotvector[-1]:
         raise ValueError("Cannot split on the corner points")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     # Find multiplicity of the knot and define how many times we need to add the knot
-    ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), u) - obj.degree + 1
-    s = helpers.find_multiplicity(u, obj.knotvector)
+    ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), param) - obj.degree + 1
+    s = helpers.find_multiplicity(param, obj.knotvector)
     r = obj.degree - s
 
     # Create backups of the original curve
     temp_obj = copy.deepcopy(obj)
 
     # Insert knot
-    temp_obj.insert_knot(u, r=r, check_r=False)
+    insert_knot(temp_obj, [param], num=[r], check_num=False)
 
     # Knot vectors
-    knot_span = span_func(temp_obj.degree, temp_obj.knotvector, len(temp_obj.ctrlpts), u) + 1
+    knot_span = span_func(temp_obj.degree, temp_obj.knotvector, len(temp_obj.ctrlpts), param) + 1
     curve1_kv = list(temp_obj.knotvector[0:knot_span])
-    curve1_kv.append(u)
+    curve1_kv.append(param)
     curve2_kv = list(temp_obj.knotvector[knot_span:])
     for _ in range(0, temp_obj.degree + 1):
-        curve2_kv.insert(0, u)
+        curve2_kv.insert(0, param)
 
     # Control points (use private variable due to differences between rational and non-rational curve)
     curve1_ctrlpts = temp_obj._control_points[0:ks + r]
@@ -443,7 +440,7 @@ def add_dimension(obj, **kwargs):
 
 
 @export
-def split_surface_u(obj, t, **kwargs):
+def split_surface_u(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the u-direction.
 
     This method splits the surface into two pieces at the given parametric coordinate on the u-direction,
@@ -451,8 +448,8 @@ def split_surface_u(obj, t, **kwargs):
 
     :param obj: surface
     :type obj: abstract.Surface
-    :param t: parameter for the u-direction
-    :type t: float
+    :param param: parameter for the u-direction
+    :type param: float
     :return: list of surface as the split pieces of the initial surface
     :rtype: list
     """
@@ -460,33 +457,30 @@ def split_surface_u(obj, t, **kwargs):
     if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of abstract.Surface class")
 
-    if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
-        raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
-
-    if t == obj.knotvector_u[0] or t == obj.knotvector_u[-1]:
+    if param == obj.knotvector_u[0] or param == obj.knotvector_u[-1]:
         raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     # Find multiplicity of the knot
-    ks = span_func(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, t) - obj.degree_u + 1
-    s = helpers.find_multiplicity(t, obj.knotvector_u)
+    ks = span_func(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param) - obj.degree_u + 1
+    s = helpers.find_multiplicity(param, obj.knotvector_u)
     r = obj.degree_u - s
 
     # Create backups of the original surface
     temp_obj = copy.deepcopy(obj)
 
     # Split the original surface
-    temp_obj.insert_knot(u=t, ru=r, check_r=False)
+    insert_knot(temp_obj, [param, None], num=[r, 0], check_num=False)
 
     # Knot vectors
-    knot_span = span_func(temp_obj.degree_u, temp_obj.knotvector_u, temp_obj.ctrlpts_size_u, t) + 1
+    knot_span = span_func(temp_obj.degree_u, temp_obj.knotvector_u, temp_obj.ctrlpts_size_u, param) + 1
     surf1_kv = list(temp_obj.knotvector_u[0:knot_span])
-    surf1_kv.append(t)
+    surf1_kv.append(param)
     surf2_kv = list(temp_obj.knotvector_u[knot_span:])
     for _ in range(0, temp_obj.degree_u + 1):
-        surf2_kv.insert(0, t)
+        surf2_kv.insert(0, param)
 
     # Control points
     surf1_ctrlpts = temp_obj.ctrlpts2d[0:ks + r]
@@ -514,7 +508,7 @@ def split_surface_u(obj, t, **kwargs):
 
 
 @export
-def split_surface_v(obj, t, **kwargs):
+def split_surface_v(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the v-direction.
 
     This method splits the surface into two pieces at the given parametric coordinate on the v-direction,
@@ -522,8 +516,8 @@ def split_surface_v(obj, t, **kwargs):
 
     :param obj: surface
     :type obj: abstract.Surface
-    :param t: parameter for the v-direction
-    :type t: float
+    :param param: parameter for the v-direction
+    :type param: float
     :return: list of surface as the split pieces of the initial surface
     :rtype: list
     """
@@ -534,30 +528,30 @@ def split_surface_v(obj, t, **kwargs):
     if not isinstance(obj.evaluator, evaluators.AbstractEvaluatorExtended):
         raise TypeError("The evaluator used must be an instance of evaluators.AbstractEvaluatorExtended")
 
-    if t == obj.knotvector_v[0] or t == obj.knotvector_v[-1]:
+    if param == obj.knotvector_v[0] or param == obj.knotvector_v[-1]:
         raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
     # Find multiplicity of the knot
-    ks = span_func(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, t) - obj.degree_v + 1
-    s = helpers.find_multiplicity(t, obj.knotvector_v)
+    ks = span_func(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param) - obj.degree_v + 1
+    s = helpers.find_multiplicity(param, obj.knotvector_v)
     r = obj.degree_v - s
 
     # Create backups of the original surface
     temp_obj = copy.deepcopy(obj)
 
     # Split the original surface
-    temp_obj.insert_knot(v=t, rv=r, check_r=False)
+    insert_knot(temp_obj, [None, param], num=[0, r], check_num=False)
 
     # Knot vectors
-    knot_span = span_func(temp_obj.degree_v, temp_obj.knotvector_v, temp_obj.ctrlpts_size_v, t) + 1
+    knot_span = span_func(temp_obj.degree_v, temp_obj.knotvector_v, temp_obj.ctrlpts_size_v, param) + 1
     surf1_kv = list(temp_obj.knotvector_v[0:knot_span])
-    surf1_kv.append(t)
+    surf1_kv.append(param)
     surf2_kv = list(temp_obj.knotvector_v[knot_span:])
     for _ in range(0, temp_obj.degree_v + 1):
-        surf2_kv.insert(0, t)
+        surf2_kv.insert(0, param)
 
     # Control points
     surf1_ctrlpts = []
@@ -614,7 +608,7 @@ def decompose_surface(obj, **kwargs):
     knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
     while knots_u:
         knot = knots_u[0]
-        surfs = split_surface_u(surf, t=knot, **kwargs)
+        surfs = split_surface_u(surf, param=knot, **kwargs)
         surf_list.append(surfs[0])
         surf = surfs[1]
         knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
@@ -626,7 +620,7 @@ def decompose_surface(obj, **kwargs):
         knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
         while knots_v:
             knot = knots_v[0]
-            surfs = split_surface_v(surf, t=knot, **kwargs)
+            surfs = split_surface_v(surf, param=knot, **kwargs)
             multi_surf.append(surfs[0])
             surf = surfs[1]
             knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
