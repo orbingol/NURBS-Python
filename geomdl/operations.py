@@ -30,7 +30,7 @@ def insert_knot(obj, param, num, **kwargs):
         raise GeomdlException("The number of insertions must be a list or a tuple",
                               data=dict(num=num))
 
-    if len(num) != obj.pdim:
+    if len(num) != obj.pdimension:
         raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
                               data=dict(pdim=obj.pdim, num_len=len(num)))
 
@@ -143,7 +143,7 @@ def remove_knot(obj, param, num, **kwargs):
         raise GeomdlException("The number of removals must be a list or a tuple",
                               data=dict(num=num))
 
-    if len(num) != obj.pdim:
+    if len(num) != obj.pdimension:
         raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
                               data=dict(pdim=obj.pdim, num_len=len(num)))
 
