@@ -51,7 +51,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
 
         # Check if it is possible add that many number of knots
         if check_num and num[0] > obj.degree - s:
-            raise GeomdlException("Cannot insert " + str(num[0]) + " number of knots",
+            raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
                                   data=dict(knot=param[0], num=num[0], multiplicity=s))
 
         # Find knot span
@@ -61,11 +61,12 @@ def insert_knot(obj, param, direction, num, **kwargs):
         kv_new = helpers.knot_insertion_kv(obj.knotvector, param[0], span, num[0])
 
         # Compute new control points
-        ctrlpts_new = helpers.knot_insertion(obj.degree, obj.knotvector, obj.ctrlpts, param[0],
+        cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+        ctrlpts_new = helpers.knot_insertion(obj.degree, obj.knotvector, cpts, param[0],
                                              num=num[0], s=s, span=span)
 
         # Update curve
-        obj.ctrlpts = ctrlpts_new
+        obj.set_ctrlpts(ctrlpts_new)
         obj.knotvector = kv_new
 
     if isinstance(obj, abstract.Surface):
@@ -79,7 +80,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > obj.degree_u - s_u:
-                raise GeomdlException("Cannot insert " + str(num[0]) + " number of knots on the u-direction",
+                raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
                                       data=dict(knot=param[0], num=num[0], multiplicity=s_u))
 
             # Find knot span
@@ -108,7 +109,7 @@ def insert_knot(obj, param, direction, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > obj.degree_v - s_v:
-                raise GeomdlException("Cannot insert " + str(num[1]) + " number of knots on the v-direction",
+                raise GeomdlException("Knot " + str(param[1]) + " cannot be inserted " + str(num[1]) + " times (v-dir)",
                                       data=dict(knot=param[1], num=num[1], multiplicity=s_v))
 
             # Find knot span
