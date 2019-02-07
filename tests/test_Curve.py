@@ -90,7 +90,7 @@ def test_bspline_curve2d_deriv_eval(spline_curve):
 ])
 def test_bspline_curve2d_insert_knot(spline_curve, param, num_insert, res):
     s_pre = helpers.find_multiplicity(param, spline_curve.knotvector)
-    spline_curve.insert_knot(param, r=num_insert)
+    spline_curve.insert_knot(param, num=num_insert)
     s_post = helpers.find_multiplicity(param, spline_curve.knotvector)
     evalpt = spline_curve.evaluate_single(param)
 
@@ -100,7 +100,7 @@ def test_bspline_curve2d_insert_knot(spline_curve, param, num_insert, res):
 
 
 def test_bspline_curve2d_insert_knot_kv(spline_curve):
-    spline_curve.insert_knot(0.66, r=2)
+    spline_curve.insert_knot(0.66, num=2)
     s = helpers.find_multiplicity(0.66, spline_curve.knotvector)
 
     assert spline_curve.knotvector[5] == 0.66

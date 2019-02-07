@@ -104,8 +104,8 @@ def test_bspline_surface_deriv(spline_surf):
 
 @mark.parametrize("params, uv, res", [
     (dict(u=0.3, v=0.4), (0.3, 0.4), (-7.006, -3.308, -6.265)),
-    (dict(u=0.3, ru=2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
-    (dict(v=0.3, rv=2), (0.3, 0.4), (-7.006, -3.308, -6.265))
+    (dict(u=0.3, num_u=2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+    (dict(v=0.3, num_v=2), (0.3, 0.4), (-7.006, -3.308, -6.265))
 ])
 def test_bspline_surface_insert_knot_eval(spline_surf, params, uv, res):
     # Insert knot
@@ -120,8 +120,8 @@ def test_bspline_surface_insert_knot_eval(spline_surf, params, uv, res):
 
 
 @mark.parametrize("params, idx, val", [
-    (dict(v=0.3, rv=2), 4, 0.3),
-    (dict(v=0.3, rv=2), 6, 0.33)
+    (dict(v=0.3, num_v=2), 4, 0.3),
+    (dict(v=0.3, num_v=2), 6, 0.33)
 ])
 def test_bspline_surface_insert_knot_kv_v(spline_surf, params, idx, val):
     # Insert knot
@@ -131,8 +131,8 @@ def test_bspline_surface_insert_knot_kv_v(spline_surf, params, idx, val):
 
 
 @mark.parametrize("params, idx, val", [
-    (dict(u=0.33, ru=2), 3, 0.0),
-    (dict(u=0.33, ru=1), 6, 0.66)
+    (dict(u=0.33, num_u=2), 3, 0.0),
+    (dict(u=0.33, num_u=1), 6, 0.66)
 ])
 def test_bspline_surface_insert_kv_u(spline_surf, params, idx, val):
     # Insert knot
