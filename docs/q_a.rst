@@ -61,7 +61,7 @@ NURBS-Python is tested on Python versions 2.7.x and 3.4.x+. The core library doe
 or require any compilation steps; therefore, you can run it on a plain python installation as well as on a distribution,
 such as Anaconda.
 
-Since Python `2.7.x < <https://www.python.org/dev/peps/pep-0373/>>`_ and `v3.4.x <https://www.python.org/dev/peps/pep-0429/>`_
+Since Python `2.7.x <https://www.python.org/dev/peps/pep-0373/>`_ and `v3.4.x <https://www.python.org/dev/peps/pep-0429/>`_
 are reaching their end-of-life very soon, NURBS-Python project will only support Python 3.5+ starting with v6.0.0.
 
 Please see the following page for more details: https://python3statement.org/
