@@ -21,11 +21,11 @@ def construct_surface(direction, *args, **kwargs):
         * ``args``: a list of curve instances
 
     Keyword Arguments (optional):
-        * ``degree``: degree of the other parametric direction
-        * ``knotvector``: knot vector of the other parametric direction
-        * ``rational``: flag to generate rational surfaces from rational curves
+        * ``degree``: degree of the 2nd parametric direction
+        * ``knotvector``: knot vector of the 2nd parametric direction
+        * ``rational``: flag to generate rational surfaces
 
-    :param direction: the direction that the input curves lies
+    :param direction: the direction that the input curves lies, i.e. u or v
     :type direction: str
     :return: Surface constructed from the curves on the given parametric direction
     """
