@@ -101,43 +101,107 @@ def construct_surface(direction, *args, **kwargs):
     return ns
 
 
-def construct_volume(*args, **kwargs):
+def construct_volume(direction, *args, **kwargs):
     """ Generates volumes from surfaces.
 
-    :return: NURBS volume
-    :rtype: NURBS.Volume
-    """
-    # Get keyword arguments
-    degree_w = kwargs.get('degree', 1)
+    Arguments:
+        * ``args``: a list of surface instances
 
-    size_w = len(args)
-    if size_w < 2:
+    Keyword Arguments (optional):
+        * ``degree``: degree of the 3rd parametric direction
+        * ``knotvector``: knot vector of the 3rd parametric direction
+        * ``rational``: flag to generate rational volumes
+
+    :param direction: the direction that the input surfaces lies, i.e. u, v, w
+    :type direction: str
+    :return: Volume constructed from the surfaces on the given parametric direction
+    """
+    # Input validation
+    possible_dirs = ['u', 'v', 'w']
+    if direction not in possible_dirs:
+        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
+                              data=dict(input_dir=direction))
+
+    size_other = len(args)
+    if size_other < 2:
         raise ValueError("You need to input at least 2 surfaces")
+
+    # Get keyword arguments
+    degree_other = kwargs.get('degree', 1)
+    knotvector_other = kwargs.get('knotvector', utilities.generate_knot_vector(degree_other, size_other))
+    rational = kwargs.get('rational', args[0].rational)
 
     # Construct the control points of the new volume
     degree_u, degree_v = args[0].degree_u, args[0].degree_v
     size_u, size_v = args[0].ctrlpts_size_u, args[0].ctrlpts_size_v
-    new_ctrlptsw = []
-    for arg in args:
+    new_ctrlpts = []
+    new_weights = []
+    for idx, arg in enumerate(args):
         if degree_u != arg.degree_u or degree_v != arg.degree_v:
-            raise ValueError("Input surfaces must have the same degrees")
+            raise GeomdlException("Input surfaces must have the same degrees",
+                                  data=dict(idx=idx, degree=(degree_u, degree_v), degree_arg=(arg.degree_u, arg.degree_v)))
         if size_u != arg.ctrlpts_size_u or size_v != arg.ctrlpts_size_v:
-            raise ValueError("Input surfaces must have the same number of control points")
-        ns = arg if arg.rational else convert.bspline_to_nurbs(arg)
-        new_ctrlptsw += list(ns.ctrlptsw)
+            raise GeomdlException("Input surfaces must have the same number of control points",
+                                  data=dict(idx=idx, size=(size_u, size_v), size_arg=(arg.ctrlpts_size_u, arg.ctrlpts_size_v)))
+        new_ctrlpts += list(arg.ctrlpts)
+        if rational:
+            if arg.weights is None:
+                raise GeomdlException("Expecting a rational surface",
+                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
+            new_weights += list(arg.weights)
+
+    updated_ctrlpts = []
+    updated_weights = []
+
+    # Set variables w.r.t. input direction
+    if direction == 'u':
+        degree_u, degree_v, degree_w = degree_other, args[0].degree_u, args[0].degree_v
+        size_u, size_v, size_w = size_other, args[0].ctrlpts_size_u, args[0].ctrlpts_size_v
+        kv_u, kv_v, kv_w = knotvector_other, args[0].knotvector_u, args[0].knotvector_v
+        # u => w, v => u, w => v
+        for v in range(0, size_v):
+            for w in range(0, size_w):
+                for u in range(0, size_u):
+                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_w)]
+                    updated_ctrlpts.append(temp_pt)
+                    if rational:
+                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_w)]
+                        updated_weights.append(temp_w)
+    elif direction == 'v':
+        degree_u, degree_v, degree_w = args[0].degree_u, degree_other, args[0].degree_v
+        size_u, size_v, size_w = args[0].ctrlpts_size_u, size_other, args[0].ctrlpts_size_v
+        kv_u, kv_v, kv_w = args[0].knotvector_u, knotvector_other, args[0].knotvector_v
+        # u => u, v => w, w => v
+        for v in range(0, size_v):
+            for u in range(0, size_u):
+                for w in range(0, size_w):
+                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_w)]
+                    updated_ctrlpts.append(temp_pt)
+                    if rational:
+                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_w)]
+                        updated_weights.append(temp_w)
+    else:  # direction == 'w'
+        degree_u, degree_v, degree_w = args[0].degree_u, args[0].degree_v, degree_other
+        size_u, size_v, size_w = args[0].ctrlpts_size_u, args[0].ctrlpts_size_v, size_other
+        kv_u, kv_v, kv_w = args[0].knotvector_u, args[0].knotvector_v, knotvector_other
+        updated_ctrlpts = new_ctrlpts
+        if rational:
+            updated_weights = new_weights
 
     # Generate the volume
-    nv = NURBS.Volume()
+    nv = NURBS.Volume() if rational else BSpline.Volume()
     nv.degree_u = degree_u
     nv.degree_v = degree_v
     nv.degree_w = degree_w
     nv.ctrlpts_size_u = size_u
     nv.ctrlpts_size_v = size_v
     nv.ctrlpts_size_w = size_w
-    nv.ctrlptsw = new_ctrlptsw
-    nv.knotvector_u = args[0].knotvector_u
-    nv.knotvector_v = args[0].knotvector_v
-    nv.knotvector_w = utilities.generate_knot_vector(degree_w, size_w)
+    nv.ctrlpts = updated_ctrlpts
+    if rational:
+        nv.weights = updated_weights
+    nv.knotvector_u = kv_u
+    nv.knotvector_v = kv_v
+    nv.knotvector_w = kv_w
 
     return nv
 
