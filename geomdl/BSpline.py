@@ -7,11 +7,9 @@
 
 """
 
-import warnings
 import pickle
 from . import abstract
 from . import utilities
-from . import helpers
 from . import evaluators
 from . import operations
 from . import tessellate
