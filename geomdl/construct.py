@@ -60,7 +60,7 @@ def construct_surface(direction, *args, **kwargs):
         if rational:
             if arg.weights is None:
                 raise GeomdlException("Expecting a rational curve",
-                                      data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
+                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
             new_weights += list(arg.weights)
 
     # Set variables w.r.t. input direction
