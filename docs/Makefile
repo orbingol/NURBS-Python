@@ -2,7 +2,7 @@
 #
 
 # You can set these variables from the command line.
-SPHINXOPTS    =
+SPHINXOPTS    = -Dhtml_theme=sphinx_rtd_theme
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = NURBS-Python
 SOURCEDIR     = .
