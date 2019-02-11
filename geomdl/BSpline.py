@@ -52,13 +52,13 @@ class Curve(abstract.Curve):
         # Set degree
         curve.degree = 3
 
-        # Set knot points
+        # Set control points
         curve.ctrlpts = [[10, 5, 10], [10, 20, -30], [40, 10, 25], [-10, 5, 0]]
 
         # Set knot vector
         curve.knotvector = [0, 0, 0, 0, 1, 1, 1, 1]
 
-        # Set evaluation delta (control the number of curve points)
+        # Set evaluation delta (controls the number of curve points)
         curve.delta = 0.05
 
         # Get curve points (the curve will be automatically evaluated)
@@ -108,7 +108,7 @@ class Curve(abstract.Curve):
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
 
-        **The evaluated curve points are stored in :py:attr:`~evalpts` property.**
+        The evaluated points are stored in :py:attr:`evalpts` property.
 
         Keyword arguments:
             * ``start``: start parameter
@@ -598,7 +598,7 @@ class Surface(abstract.Surface):
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
 
-        **The evaluated surface points are stored in :py:attr:`~evalpts` property.**
+        The evaluated points are stored in :py:attr:`evalpts` property.
 
         Keyword arguments:
             * ``start_u``: start parameter on the u-direction
@@ -926,7 +926,7 @@ class Volume(abstract.Volume):
     def evaluate(self, **kwargs):
         """ Evaluates the volume.
 
-        **The evaluated points are stored in :py:attr:`~evalpts` property.**
+        The evaluated points are stored in :py:attr:`evalpts` property.
 
         Keyword arguments:
             * ``start_u``: start parameter on the u-direction
