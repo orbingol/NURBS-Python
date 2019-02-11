@@ -10,7 +10,6 @@
 from . import BSpline
 from . import NURBS
 from . import utilities
-from . import convert
 from . import compatibility
 from .exceptions import GeomdlException
 
