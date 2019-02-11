@@ -44,7 +44,7 @@ extensions = ['sphinx.ext.autodoc',
               'matplotlib.sphinxext.plot_directive']
 
 # Inheritance diagram configuration
-inheritance_graph_attrs = dict(rankdir="TB", ratio='compress')
+inheritance_graph_attrs = dict(rankdir="LR", ratio='compress')
 
 # List of modules to be mocked
 # autodoc_mock_imports = ['enum', 'numpy', 'matplotlib', 'mpl_toolkits', 'plotly', 'vtk']
