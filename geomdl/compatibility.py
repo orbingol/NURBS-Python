@@ -42,26 +42,18 @@ def flip_ctrlpts(ctrlpts, size_u, size_v):
 
     :param ctrlpts: control points in v-row order
     :type ctrlpts: list, tuple
-    :param size_u: size in u-direction (row length)
+    :param size_u: size in u-direction
     :type size_u: int
-    :param size_v: size in v-direction (column length)
+    :param size_v: size in v-direction
     :type size_v: int
     :return: control points in u-row order
     :rtype: list
     """
-    ctrlpts2d = []
-    for i in range(0, size_u):
-        ctrlpts_v = []
-        for j in range(0, size_v):
-            ctrlpts_v.append(ctrlpts[j + (i * size_v)])
-        ctrlpts2d.append(ctrlpts_v)
-
-    new_ctrlpts2d = flip_ctrlpts2d(ctrlpts2d, size_u, size_v)
-
     new_ctrlpts = []
     for i in range(0, size_v):
         for j in range(0, size_u):
-            new_ctrlpts.append(new_ctrlpts2d[i][j])
+            temp = [float(c) for c in ctrlpts[i + (j * size_v)]]
+            new_ctrlpts.append(temp)
 
     return new_ctrlpts
 
