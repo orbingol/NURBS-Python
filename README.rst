@@ -56,14 +56,19 @@ The easiest way to install NURBS-Python (geomdl) is using ``pip``:
 Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
 of the documentation for alternative installation methods.
 
-Examples, Documentation and Extras
-==================================
+Examples and Documentation
+==========================
 
 * **Examples**: https://github.com/orbingol/NURBS-Python_Examples
 * **Documentation**: http://nurbs-python.readthedocs.io/
 * **Wiki**: https://github.com/orbingol/NURBS-Python/wiki
+
+Extra Modules
+=============
+
 * **Command line application**: https://github.com/orbingol/geomdl-cli
-* **rw3dm**: https://github.com/orbingol/rw3dm
+* **Rhino importer/exporter**: https://github.com/orbingol/rw3dm
+* **Shapes module**: https://github.com/orbingol/geomdl-shapes
 
 Author
 ======
