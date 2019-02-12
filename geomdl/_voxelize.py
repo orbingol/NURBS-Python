@@ -42,7 +42,7 @@ def find_inouts_mp(voxel_grid, datapts, **kwargs):
     padding = kwargs.get('padding', 10e-8)
     num_procs = kwargs.get('num_procs', 4)
     with pool_context(processes=num_procs) as pool:
-        filled = pool.map(partial(is_point_inside_voxel, ptarr=datapts, padding=padding), voxel_grid)
+        filled = pool.map(partial(is_point_inside_voxel, ptsarr=datapts, padding=padding), voxel_grid)
     return filled
 
 
