@@ -430,7 +430,8 @@ def add_dimension(obj, **kwargs):
     If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
     change the input shape but returns a new instance of the same shape with the updated data.
 
-    Useful when converting a 2-dimensional curve to a 3-dimensional curve.
+    Useful when converting a 2-dimensional curve to a 3-dimensional curve. Please note that this function does not
+    change the parametric dimension but only the spatial dimension.
 
     :param obj: Curve
     :type obj: abstract.Curve
