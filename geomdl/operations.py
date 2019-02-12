@@ -399,6 +399,14 @@ def derivative_curve(obj):
 def length_curve(obj):
     """ Computes the approximate length of the parametric curve.
 
+    Uses the following equation to compute the approximate length:
+
+    .. math::
+
+        \\sum_{i=0}^{n-1} \\sqrt{P_{i + 1}^2-P_{i}^2}
+
+    where :math:`n` is number of evaluated curve points and :math:`P` is the n-dimensional point.
+
     :param obj: input curve
     :type obj: abstract.Curve
     :return: length
