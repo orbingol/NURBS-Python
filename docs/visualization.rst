@@ -215,7 +215,7 @@ Volumes
     surf03.knotvector_v = utilities.generate_knot_vector(surf03.degree_v, surf03.ctrlpts_size_v)
 
     # Construct the parametric volume
-    pvolume = construct.construct_volume(surf01, surf02, surf03, degree=1)
+    pvolume = construct.construct_volume('w', surf01, surf02, surf03, degree=1)
 
     # Construct the isosurface
     surfiso = construct.extract_isosurface(pvolume)
