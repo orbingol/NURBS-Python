@@ -24,7 +24,7 @@ class Geometry(object):
     """ Abstract base class for defining geometry elements.
 
     Keyword Arguments:
-        * ``precision``: number of decimal places to round to
+        * ``precision``: number of decimal places to round to. *Default: 18*
 
     This class provides the following properties:
 
@@ -132,7 +132,9 @@ class SplineGeometry(Geometry):
     """ Abstract base class for defining spline geometries.
 
     Keyword Arguments:
-        * ``precision``: number of decimal places to round to
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``find_span_func``: default knot span finding algorithm. *Default: linear search implementation*
+        * ``normalize_kv``: if True, then the knot vector(s) will be normalized to [0,1] domain. *Default: True*
 
     This class provides the following properties:
 
@@ -478,6 +480,11 @@ class Curve(SplineGeometry):
                 pass
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``find_span_func``: default knot span finding algorithm. *Default: linear search implementation*
+        * ``normalize_kv``: if True, then the knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
 
     def __init__(self, **kwargs):
@@ -937,6 +944,11 @@ class Surface(SplineGeometry):
                 pass
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``find_span_func``: default knot span finding algorithm. *Default: linear search implementation*
+        * ``normalize_kv``: if True, then the knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
 
     def __init__(self, **kwargs):
@@ -1802,6 +1814,11 @@ class Volume(SplineGeometry):
                 pass
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``find_span_func``: default knot span finding algorithm. *Default: linear search implementation*
+        * ``normalize_kv``: if True, then the knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
 
     def __init__(self, **kwargs):
