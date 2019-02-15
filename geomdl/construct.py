@@ -162,10 +162,10 @@ def construct_volume(direction, *args, **kwargs):
         for v in range(0, size_v):
             for w in range(0, size_w):
                 for u in range(0, size_u):
-                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_w)]
+                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_v)]
                     updated_ctrlpts.append(temp_pt)
                     if rational:
-                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_w)]
+                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_v)]
                         updated_weights.append(temp_w)
     elif direction == 'v':
         degree_u, degree_v, degree_w = args[0].degree_u, degree_other, args[0].degree_v
@@ -175,10 +175,10 @@ def construct_volume(direction, *args, **kwargs):
         for v in range(0, size_v):
             for u in range(0, size_u):
                 for w in range(0, size_w):
-                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_w)]
+                    temp_pt = new_ctrlpts[v + (u * size_v) + (w * size_u * size_v)]
                     updated_ctrlpts.append(temp_pt)
                     if rational:
-                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_w)]
+                        temp_w = new_weights[v + (u * size_v) + (w * size_u * size_v)]
                         updated_weights.append(temp_w)
     else:  # direction == 'w'
         degree_u, degree_v, degree_w = args[0].degree_u, args[0].degree_v, degree_other
