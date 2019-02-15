@@ -528,7 +528,12 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
         L = k - degree + j
         for i in range(0, degree - j - s + 1):
             alpha = knot_insertion_alpha(u, tuple(knotvector), k, i, L)
-            temp[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(temp[i], temp[i + 1])]
+            if isinstance(temp[i][0], float):
+                temp[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(temp[i], temp[i + 1])]
+            else:
+                for idx in range(len(temp[i])):
+                    temp[i][idx][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in
+                                       zip(temp[i][idx], temp[i + 1][idx])]
         ctrlpts_new[L] = deepcopy(temp[0])
         ctrlpts_new[k + num - j - s] = deepcopy(temp[degree - j - s])
 
