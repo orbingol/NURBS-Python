@@ -1008,6 +1008,84 @@ class Volume(abstract.Volume):
                 res.append(self.evaluate_single(prm))
         return res
 
+    def insert_knot(self, u=None, v=None, w=None, **kwargs):
+        """ Inserts knot(s) on the u-, v- and w-directions
+
+        Keyword Arguments:
+            * ``num_u``: Number of knot insertions on the u-direction. *Default: 1*
+            * ``num_v``: Number of knot insertions on the v-direction. *Default: 1*
+            * ``num_w``: Number of knot insertions on the w-direction. *Default: 1*
+
+        :param u: knot to be inserted on the u-direction
+        :type u: float
+        :param v: knot to be inserted on the v-direction
+        :type v: float
+        :param w: knot to be inserted on the w-direction
+        :type w: float
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Check if the parameter values are correctly defined
+        if self._kv_normalize:
+            utilities.check_params([u, v, w])
+
+        # Get keyword arguments
+        num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
+        num_v = kwargs.get('num_v', 1)  # number of knot insertions on the v-direction
+        num_w = kwargs.get('num_w', 1)  # number of knot insertions on the w-direction
+        check_num = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
+
+        # Insert knots
+        try:
+            operations.insert_knot(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
+
+        # Evaluate surface again if it has already been evaluated before knot insertion
+        if check_num and self._eval_points:
+            self.evaluate()
+
+    def remove_knot(self, u=None, v=None, w=None, **kwargs):
+        """ Inserts knot(s) on the u-, v- and w-directions
+
+        Keyword Arguments:
+            * ``num_u``: Number of knot removals on the u-direction. *Default: 1*
+            * ``num_v``: Number of knot removals on the v-direction. *Default: 1*
+            * ``num_w``: Number of knot removals on the w-direction. *Default: 1*
+
+        :param u: knot to be removed on the u-direction
+        :type u: float
+        :param v: knot to be removed on the v-direction
+        :type v: float
+        :param w: knot to be removed on the w-direction
+        :type w: float
+        """
+        # Check all parameters are set before the evaluation
+        self._check_variables()
+
+        # Check if the parameter values are correctly defined
+        if self._kv_normalize:
+            utilities.check_params([u, v, w])
+
+        # Get keyword arguments
+        num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
+        num_v = kwargs.get('num_v', 1)  # number of knot removals on the v-direction
+        num_w = kwargs.get('num_w', 1)  # number of knot insertions on the w-direction
+        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
+
+        # Remove knots
+        try:
+            operations.remove_knot(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
+        except GeomdlException as e:
+            print(e)
+            return
+
+        # Evaluate curve again if it has already been evaluated before knot removal
+        if check_num and self._eval_points:
+            self.evaluate()
+
 
 def save_pickle(data_dict, file_name):
     """ Saves the contents of the data dictionary as a pickled file.
