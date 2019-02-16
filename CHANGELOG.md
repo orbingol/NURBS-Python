@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.0b6 released on 2019-02-16
+
+* Added `exchange.import_obj` function
+* Added knot removal, degree elevation and degree reduction algorithms
+* Simplified evaluator API to make implementations easier
+* Added `knotvector` module
+* Added surface trimming algorithm
+* Minor bug fixes and compatibility updates
+* Documentation updates
+
 ## v5.0b5 released on 2019-01-17
 
 * Minor API updates and fixes
