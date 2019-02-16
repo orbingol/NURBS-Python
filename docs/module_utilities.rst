@@ -33,12 +33,3 @@ manipulation have ``point_`` prefix and the ones related to vectors have ``vecto
 
 .. automodule:: geomdl.linalg
     :members:
-
-
-Knot Vector
-===========
-
-The ``knotvector`` module provides utility functions related to knot vector generation and validation.
-
-.. automodule:: geomdl.knotvector
-    :members:

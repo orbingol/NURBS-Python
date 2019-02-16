@@ -12,6 +12,7 @@ The following modules are included in the core library:
     module_evaluators
     module_operations
     module_utilities
+    module_knotvector
     module_convert
     module_construct
     module_container
