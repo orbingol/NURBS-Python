@@ -41,6 +41,7 @@ This documentation is organized into a couple sections:
     :caption: Using the Library
 
     install
+    basics
     examples_repo
     load_save
     file_formats
