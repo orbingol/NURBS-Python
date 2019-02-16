@@ -1,7 +1,7 @@
 """
 .. module:: operations
     :platform: Unix, Windows
-    :synopsis: Provides geometric operations for B-Spline and NURBS shapes
+    :synopsis: Provides geometric operations for spline geometry classes
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
@@ -396,8 +396,8 @@ def remove_knot(obj, param, num, **kwargs):
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
 
-            # Get surfaces
-            pass
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
 
         # v-direction
         if param[1] is not None and num[1] > 0:
@@ -412,8 +412,8 @@ def remove_knot(obj, param, num, **kwargs):
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
 
-            # Get surfaces
-            pass
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
 
         # w-direction
         if param[2] is not None and num[2] > 0:
@@ -422,14 +422,24 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[2] > s_w:
-                raise GeomdlException("Knot " + str(param[2]) + " cannot be removed " + str(num[2]) + " times (v-dir)",
+                raise GeomdlException("Knot " + str(param[2]) + " cannot be removed " + str(num[2]) + " times (w-dir)",
                                       data=dict(knot=param[2], num=num[2], multiplicity=s_w))
 
             # Find knot span
             span_w = helpers.find_span_linear(obj.degree_w, obj.knotvector_w, obj.ctrlpts_size_w, param[2])
 
-            # Get surfaces
-            pass
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+
+            # # Compute new control points
+            # ctrlpts_new = []
+            #
+            # # Compute new knot vector
+            # kv_w = helpers.knot_removal_kv(obj.knotvector_w, span_w, num[2])
+            #
+            # # Update the volume after knot insertion
+            # obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v, obj.ctrlpts_size_w + num[2])
+            # obj.knotvector_w = kv_w
 
     # Return updated spline geometry
     return obj

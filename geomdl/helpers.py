@@ -680,7 +680,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     # Fix indexing
     t += 1
 
-    # Shift control points (refer to p183 of The NURBS Book, 2nd Edition)
+    # Shift control points (refer to p.183 of The NURBS Book, 2nd Edition)
     j = int((2*r - s - degree) / 2)  # first control point out
     i = j
     for k in range(1, t):
