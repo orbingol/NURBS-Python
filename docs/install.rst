@@ -37,13 +37,13 @@ Installing:
 
 .. code-block:: console
 
-    $ conda install -c orbingol geomdl
+    conda install -c orbingol geomdl
 
 Upgrading to the latest version:
 
 .. code-block:: console
 
-    $ conda upgrade -c orbingol geomdl
+    conda upgrade -c orbingol geomdl
 
 If you are experiencing problems with this method, you can try to upgrade ``conda`` package itself before
 installing the NURBS-Python library.
