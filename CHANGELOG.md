@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.0b7 released on 2019-02-17
+
+* Fixed a critical bug in smesh and vmesh importers
+* Added an option to change knot insertion and removal algorithms in the geometry classes
+* Documentation updates
+
 ## v5.0b6 released on 2019-02-16
 
 * Added `exchange.import_obj` function
