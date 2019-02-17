@@ -100,9 +100,11 @@ Testing
 
 The package includes ``tests/`` directory which contains all the automated testing scripts.
 These scripts require `pytest <https://pytest.readthedocs.io/en/latest>`_ installed on your Python distribution.
-After installing the required packages, you may execute the following from your favorite IDE or from the command line:
+Then, you can execute the following from your favorite IDE or from the command line:
 
-``pytest`` or ``py.test``
+.. code-block:: console
+
+    pytest
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
 
@@ -131,7 +133,7 @@ To enable Cython-compiled module in development mode;
 
 .. code-block:: console
 
-    $ python setup.py build_ext --use-cython --inplace
+    python setup.py build_ext --use-cython --inplace
 
 After the successful execution of the command, the you can import and use the compiled library as follows:
 
@@ -170,7 +172,7 @@ prompt to pull the image prepared with Python v3.5:
 
 .. code-block:: console
 
-    $ docker pull idealabisu/nurbs-python:py35
+    docker pull idealabisu/nurbs-python:py35
 
 On the `Docker Repository <https://hub.docker.com/r/idealabisu/nurbs-python/>`_ page, you can find containers tagged for
 Python versions and `Debian <https://www.debian.org/>`_ (no suffix) and `Alpine Linux <https://alpinelinux.org/>`_
@@ -181,7 +183,7 @@ After pulling your preferred image, run the following command:
 
 .. code-block:: console
 
-    $ docker run --rm -it --name geomdl -p 8000:8000 idealabisu/nurbs-python:py35
+    docker run --rm -it --name geomdl -p 8000:8000 idealabisu/nurbs-python:py35
 
 In all images, Matplotlib is set to use ``webagg`` backend by default. Please follow the instructions on the command
 line to view your figures.
