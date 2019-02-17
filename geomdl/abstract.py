@@ -28,8 +28,9 @@ class Geometry(object):
     * :py:attr:`name`
     * :py:attr:`evalpts`
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
     """
 
     def __init__(self, **kwargs):
@@ -147,10 +148,11 @@ class SplineGeometry(Geometry):
     * :py:attr:`evaluator`
     * :py:attr:`vis`
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
-        * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
+    * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
 
     def __init__(self, **kwargs):
@@ -481,10 +483,11 @@ class Curve(SplineGeometry):
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
-        * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
+    * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
 
     def __init__(self, **kwargs):
@@ -945,10 +948,11 @@ class Surface(SplineGeometry):
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
-        * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
+    * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
 
     def __init__(self, **kwargs):
@@ -1815,10 +1819,11 @@ class Volume(SplineGeometry):
 
     The properties and functions defined in the abstract base class will be automatically available in the subclasses.
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
-        * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
+    * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
 
     def __init__(self, **kwargs):

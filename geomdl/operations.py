@@ -17,12 +17,11 @@ from . import evaluators
 from . import linalg
 from . import compatibility
 from . import _operations
-from ._utilities import export
 from .exceptions import GeomdlException
 
 
 def insert_knot(obj, param, num, **kwargs):
-    """ Knot insertion for splines.
+    """ Inserts knots n-times to a spline geometry.
 
     :param obj: spline geometry
     :param param: knot(s) to be inserted
@@ -270,7 +269,7 @@ def insert_knot(obj, param, num, **kwargs):
 
 
 def remove_knot(obj, param, num, **kwargs):
-    """ Knot removal for splines.
+    """ Removes knots n-times from a spline geometry.
 
     :param obj: spline geometry
     :param param: knot(s) to be removed
@@ -445,7 +444,6 @@ def remove_knot(obj, param, num, **kwargs):
     return obj
 
 
-@export
 def split_curve(obj, param, **kwargs):
     """ Splits the curve at the input parametric coordinate.
 
@@ -509,7 +507,6 @@ def split_curve(obj, param, **kwargs):
     return ret_val
 
 
-@export
 def decompose_curve(obj, **kwargs):
     """ Decomposes the curve into Bezier curve segments of the same degree.
 
@@ -537,7 +534,6 @@ def decompose_curve(obj, **kwargs):
     return multi_curve
 
 
-@export
 def derivative_curve(obj):
     """ Computes the hodograph (first derivative) curve of the input curve.
 
@@ -576,7 +572,6 @@ def derivative_curve(obj):
     return curve
 
 
-@export
 def length_curve(obj):
     """ Computes the approximate length of the parametric curve.
 
@@ -604,7 +599,6 @@ def length_curve(obj):
     return length
 
 
-@export
 def add_dimension(obj, **kwargs):
     """ Converts x-dimensional curve to a (x+1)-dimensional curve.
 
@@ -643,7 +637,6 @@ def add_dimension(obj, **kwargs):
         return ret
 
 
-@export
 def split_surface_u(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the u-direction.
 
@@ -711,7 +704,6 @@ def split_surface_u(obj, param, **kwargs):
     return ret_val
 
 
-@export
 def split_surface_v(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the v-direction.
 
@@ -785,7 +777,6 @@ def split_surface_v(obj, param, **kwargs):
     return ret_val
 
 
-@export
 def decompose_surface(obj, **kwargs):
     """ Decomposes the surface into Bezier surface patches of the same degree.
 
@@ -830,7 +821,6 @@ def decompose_surface(obj, **kwargs):
     return multi_surf
 
 
-@export
 def derivative_surface(obj):
     """ Computes the hodograph (first derivative) surface of the input surface.
 

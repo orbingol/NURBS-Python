@@ -60,12 +60,13 @@ class Curve(abstract.Curve):
         # Get curve points (the curve will be automatically evaluated)
         curve_points = curve.evalpts
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: activates knot vector normalization. *Default: True*
-        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
-        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
-        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: activates knot vector normalization. *Default: True*
+    * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+    * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+    * ``remove_knot_func``: sets knot removal implementation. *Default:* :func:`.operations.remove_knot`
 
     Please refer to the :py:class:`.abstract.Curve()` documentation for more details.
     """
@@ -412,12 +413,13 @@ class Surface(abstract.Surface):
         # Get surface points (the surface will be automatically evaluated)
         surface_points = surf.evalpts
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: activates knot vector normalization. *Default: True*
-        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
-        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
-        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: activates knot vector normalization. *Default: True*
+    * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+    * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+    * ``remove_knot_func``: sets knot removal implementation. *Default:* :func:`.operations.remove_knot`
 
     Please refer to the :py:class:`.abstract.Surface()` documentation for more details.
     """
@@ -881,12 +883,13 @@ class Volume(abstract.Volume):
     * :py:attr:`evaluator`
     * :py:attr:`rational`
 
-    Keyword Arguments:
-        * ``precision``: number of decimal places to round to. *Default: 18*
-        * ``normalize_kv``: activates knot vector normalization. *Default: True*
-        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
-        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
-        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``normalize_kv``: activates knot vector normalization. *Default: True*
+    * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+    * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+    * ``remove_knot_func``: sets knot removal implementation. *Default:* :func:`.operations.remove_knot`
 
     Please refer to the :py:class:`.abstract.Volume()` documentation for more details.
     """
