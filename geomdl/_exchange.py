@@ -158,8 +158,12 @@ def import_vol_mesh(file_name):
     :return: a NURBS volume
     :rtype: NURBS.Volume
     """
-    content = read_file(file_name)
-    content = [x.strip().split() for x in content]
+    raw_content = read_file(file_name)
+    raw_content = raw_content.split("\n")
+    content = []
+    for rc in raw_content:
+        temp = rc.strip().split()
+        content.append(temp)
 
     # 1st line defines the dimension and it must be 3
     if int(content[0][0]) != 3:
