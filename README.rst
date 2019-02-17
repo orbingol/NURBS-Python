@@ -51,7 +51,7 @@ The easiest way to install NURBS-Python (geomdl) is using ``pip``:
 
 .. code-block:: console
 
-    $ pip install geomdl
+    pip install geomdl
 
 Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
 of the documentation for alternative installation methods.
