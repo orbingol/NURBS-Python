@@ -36,10 +36,6 @@ class Curve(abstract.Curve):
     * :py:attr:`evaluator`
     * :py:attr:`rational`
 
-    Notes:
-        * Please see the :py:class:`.abstract.Curve()` documentation for details.
-        * This class sets the *FindSpan* implementation to Linear Search by default.
-
     The following code segment illustrates the usage of Curve class:
 
     .. code-block:: python
@@ -63,6 +59,15 @@ class Curve(abstract.Curve):
 
         # Get curve points (the curve will be automatically evaluated)
         curve_points = curve.evalpts
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``normalize_kv``: activates knot vector normalization. *Default: True*
+        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+
+    Please refer to the :py:class:`.abstract.Curve()` documentation for more details.
     """
 
     def __init__(self, **kwargs):
@@ -376,10 +381,6 @@ class Surface(abstract.Surface):
     * :py:attr:`rational`
     * :py:attr:`trims`
 
-    Notes:
-        * Please see the :py:class:`.abstract.Surface()` documentation for details.
-        * This class sets the *FindSpan* implementation to Linear Search by default.
-
     The following code segment illustrates the usage of Surface class:
 
     .. code-block:: python
@@ -410,6 +411,15 @@ class Surface(abstract.Surface):
 
         # Get surface points (the surface will be automatically evaluated)
         surface_points = surf.evalpts
+
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``normalize_kv``: activates knot vector normalization. *Default: True*
+        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+
+    Please refer to the :py:class:`.abstract.Surface()` documentation for more details.
     """
 
     def __init__(self, **kwargs):
@@ -419,6 +429,7 @@ class Surface(abstract.Surface):
         self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
+
 
     @property
     def ctrlpts2d(self):
@@ -870,9 +881,14 @@ class Volume(abstract.Volume):
     * :py:attr:`evaluator`
     * :py:attr:`rational`
 
-    Notes:
-        * Please see the :py:class:`.abstract.Volume()` documentation for details.
-        * This class sets the *FindSpan* implementation to Linear Search by default.
+    Keyword Arguments:
+        * ``precision``: number of decimal places to round to. *Default: 18*
+        * ``normalize_kv``: activates knot vector normalization. *Default: True*
+        * ``find_span_func``: sets knot span search implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: sets knot insertion implementation. *Default:* :func:`.operations.insert_knot`
+        * ``remove_knot_func``: sets remove insertion implementation. *Default:* :func:`.operations.remove_knot`
+
+    Please refer to the :py:class:`.abstract.Volume()` documentation for more details.
     """
 
     def __init__(self, **kwargs):

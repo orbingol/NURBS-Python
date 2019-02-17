@@ -2,9 +2,31 @@ Evaluators
 ^^^^^^^^^^
 
 Evaluators (or geometric evaluation strategies) allow users to change shape evaluation strategy, i.e. the algorithms
-that are used to evaluate curves, surfaces and volumes, take derivatives, knot and degree change operations and more.
+that are used to evaluate curves, surfaces and volumes, take derivatives and more.
 Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
 or extend existing ones.
+
+How to Use
+==========
+
+All geometry classes come with a default specialized ``evaluator`` class, the algorithms are generally different for
+rational and non-rational geometries. The evaluator class instance can be accessed and/or updated using ``evaluator``
+property. For instance, the following code snippet changes the evaluator of a B-Spline curve.
+
+.. code-block:: python
+
+    from geomdl import BSpline
+    from geomdl import evaluators
+
+    crv = BSpline.Curve()
+    cevaltr = evaluators.CurveEvaluator2()
+    crv.evaluator = cevaltr
+
+    # Curve "evaluate" method will use CurveEvaluator2.evaluate() method
+    crv.evaluate()
+
+    # Get evaluated points
+    curve_points = crv.evalpts
 
 Inheritance Diagram
 ===================

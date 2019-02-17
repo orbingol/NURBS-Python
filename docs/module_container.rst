@@ -1,20 +1,31 @@
-Shape Containers
-^^^^^^^^^^^^^^^^
+Geometry Containers
+^^^^^^^^^^^^^^^^^^^
 
-This module provides object containers for curves, surfaces and volumes. A container is a holder object that stores a
-collection of other objects, i.e. its elements. In NURBS-Python, containers can be generated as a result of
+The ``multi`` module provides specialized geometry containers. A container is a holder object that stores a collection
+of other objects, i.e. its elements. In NURBS-Python, containers can be generated as a result of
 
 * A geometric operation, such as **splitting**
 * File import, e.g. reading a file or a set of files containing multiple surfaces
 
-Additionally, they can be used for advanced post-processing, such as visualization or file export.
-
-This module works with ``BSpline`` and ``NURBS`` modules and it contains the following classes:
+The ``multi`` module contains the following classes:
 
 * :py:class:`.AbstractContainer` abstract base class for containers
 * :py:class:`.CurveContainer` for storing multiple curves
 * :py:class:`.SurfaceContainer` for storing multiple surfaces
 * :py:class:`.VolumeContainer` for storing multiple volumes
+
+How to Use
+==========
+
+These containers can be used for many purposes, such as visualization of a multi-component geometry or file export.
+For instance, the following figure shows a heart valve with 3 leaflets:
+
+.. image:: images/heart_valve.png
+    :alt: Figure showing the 3 leaflets of a heart valve as NURBS surfaces
+
+Each leaflet is a NURBS surface added to a :py:class:`.SurfaceContainer` and rendered via Matplotlib visualization
+module. It is possible to input a list of colors to the ``render`` method, otherwise it will automatically pick an
+arbitrary color.
 
 Inheritance Diagram
 ===================
