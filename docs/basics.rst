@@ -217,6 +217,29 @@ The following code snippet generates a B-Spline (non-rational) curve and convert
     # BSpline to NURBS
     crv_rat = convert.bspline_to_nurbs(crv)
 
+Using knot vector generator
+---------------------------
+
+Knot vector generator is located in the :doc:`knotvector <module_knotvector>` module.
+
+.. code-block:: python
+    :linenos:
+
+    from geomdl import BSpline
+    from geomdl import knotvector
+
+    # Create the curve instance
+    crv = BSpline.Curve()
+
+    # Set degree
+    crv.degree = 2
+
+    # Set control points
+    crv.ctrlpts = [[1, 0, 0], [1, 1, 0], [0, 1, 0]]
+
+    # Generate a uniform knot vector
+    crv.knotvector = knotvector.generate(crv.degree, crv.ctrlpts_size)
+
 Please refer to the :doc:`Examples Repository <examples_repo>` for more curve examples.
 
 How to create a surface & a volume
