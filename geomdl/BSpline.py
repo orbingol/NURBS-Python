@@ -67,6 +67,8 @@ class Curve(abstract.Curve):
 
     def __init__(self, **kwargs):
         super(Curve, self).__init__(**kwargs)
+        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
+        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
         self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
     def save(self, file_name):
@@ -239,7 +241,7 @@ class Curve(abstract.Curve):
 
         # Insert knot
         try:
-            operations.insert_knot(self, [param], [num], check_num=check_num)
+            self._insert_knot_func(self, [param], [num], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -270,7 +272,7 @@ class Curve(abstract.Curve):
 
         # Remove knot
         try:
-            operations.remove_knot(self, [param], [num], check_num=check_num)
+            self._remove_knot_func(self, [param], [num], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -412,6 +414,8 @@ class Surface(abstract.Surface):
 
     def __init__(self, **kwargs):
         super(Surface, self).__init__(**kwargs)
+        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
+        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
         self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
@@ -743,7 +747,7 @@ class Surface(abstract.Surface):
 
         # Insert knots
         try:
-            operations.insert_knot(self, [u, v], [num_u, num_v], check_num=check_num)
+            self._insert_knot_func(self, [u, v], [num_u, num_v], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -778,7 +782,7 @@ class Surface(abstract.Surface):
 
         # Remove knots
         try:
-            operations.remove_knot(self, [u, v], [num_u, num_v], check_num=check_num)
+            self._remove_knot_func(self, [u, v], [num_u, num_v], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -873,6 +877,8 @@ class Volume(abstract.Volume):
 
     def __init__(self, **kwargs):
         super(Volume, self).__init__(**kwargs)
+        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
+        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
         self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
 
     def save(self, file_name):
@@ -1038,7 +1044,7 @@ class Volume(abstract.Volume):
 
         # Insert knots
         try:
-            operations.insert_knot(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
+            self._insert_knot_func(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
@@ -1077,7 +1083,7 @@ class Volume(abstract.Volume):
 
         # Remove knots
         try:
-            operations.remove_knot(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
+            self._remove_knot_func(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
         except GeomdlException as e:
             print(e)
             return
