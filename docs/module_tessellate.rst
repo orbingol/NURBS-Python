@@ -38,3 +38,12 @@ Triangular Tessellator
     :undoc-members:
     :inherited-members:
     :show-inheritance:
+
+Trim Tessellator
+================
+
+.. autoclass:: geomdl.tessellate.TrimTessellate
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
