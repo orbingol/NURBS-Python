@@ -450,11 +450,15 @@ def split_curve(obj, param, **kwargs):
     This method splits the curve into two pieces at the given parametric coordinate, generates two different
     curve objects and returns them. It does not modify the input curve.
 
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
     :param obj: Curve to be split
     :type obj: abstract.Curve
     :param param: parameter
     :type param: float
-    :return: list of curves as the split pieces of the initial curve
+    :return: a list of curve segments
     :rtype: list
     """
     # Validate input
@@ -513,9 +517,13 @@ def decompose_curve(obj, **kwargs):
 
     This operation does not modify the input curve, instead it returns the split curve segments.
 
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
     :param obj: Curve to be decomposed
     :type obj: abstract.Curve
-    :return: a list of curve objects arranged in Bezier curve segments
+    :return: a list of Bezier segments
     :rtype: list
     """
     if not isinstance(obj, abstract.Curve):
@@ -644,11 +652,15 @@ def split_surface_u(obj, param, **kwargs):
     This method splits the surface into two pieces at the given parametric coordinate on the u-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
 
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
     :param obj: surface
     :type obj: abstract.Surface
     :param param: parameter for the u-direction
     :type param: float
-    :return: list of surface as the split pieces of the initial surface
+    :return: a list of surface patches
     :rtype: list
     """
     # Validate input
@@ -712,11 +724,15 @@ def split_surface_v(obj, param, **kwargs):
     This method splits the surface into two pieces at the given parametric coordinate on the v-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
 
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
     :param obj: surface
     :type obj: abstract.Surface
     :param param: parameter for the v-direction
     :type param: float
-    :return: list of surface as the split pieces of the initial surface
+    :return: a list of surface patches
     :rtype: list
     """
     # Validate input
@@ -785,10 +801,14 @@ def decompose_surface(obj, **kwargs):
 
     This operation does not modify the input surface, instead it returns the surface patches.
 
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
     :param obj: surface
     :type obj: abstract.Surface
-    :return: a list of surface objects arranged as Bezier surface patches
-    :rtype: multi.SurfaceContainer
+    :return: a list of Bezier patches
+    :rtype: list
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
