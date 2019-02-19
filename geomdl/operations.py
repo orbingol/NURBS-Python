@@ -465,7 +465,8 @@ def split_curve(obj, param, **kwargs):
         raise ValueError("Cannot split on the corner points")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), param) - obj.degree + 1
@@ -476,7 +477,7 @@ def split_curve(obj, param, **kwargs):
     temp_obj = copy.deepcopy(obj)
 
     # Insert knot
-    insert_knot(temp_obj, [param], num=[r], check_num=False)
+    insert_knot_func(temp_obj, [param], num=[r], check_num=False)
 
     # Knot vectors
     knot_span = span_func(temp_obj.degree, temp_obj.knotvector, len(temp_obj.ctrlpts), param) + 1
@@ -658,7 +659,8 @@ def split_surface_u(obj, param, **kwargs):
         raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot
     ks = span_func(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param) - obj.degree_u + 1
@@ -669,7 +671,7 @@ def split_surface_u(obj, param, **kwargs):
     temp_obj = copy.deepcopy(obj)
 
     # Split the original surface
-    insert_knot(temp_obj, [param, None], num=[r, 0], check_num=False)
+    insert_knot_func(temp_obj, [param, None], num=[r, 0], check_num=False)
 
     # Knot vectors
     knot_span = span_func(temp_obj.degree_u, temp_obj.knotvector_u, temp_obj.ctrlpts_size_u, param) + 1
@@ -725,7 +727,8 @@ def split_surface_v(obj, param, **kwargs):
         raise ValueError("Cannot split on the edge")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot
     ks = span_func(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param) - obj.degree_v + 1
@@ -736,7 +739,7 @@ def split_surface_v(obj, param, **kwargs):
     temp_obj = copy.deepcopy(obj)
 
     # Split the original surface
-    insert_knot(temp_obj, [None, param], num=[0, r], check_num=False)
+    insert_knot_func(temp_obj, [None, param], num=[0, r], check_num=False)
 
     # Knot vectors
     knot_span = span_func(temp_obj.degree_v, temp_obj.knotvector_v, temp_obj.ctrlpts_size_v, param) + 1
