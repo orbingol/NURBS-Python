@@ -10,6 +10,8 @@ geomdl.egg-info/*
 docs/_build
 docs/_static
 geomdl/core/*
+geomdl/cli
+geomdl/shapes
 *.pyc
 *.c
 *.cpp
