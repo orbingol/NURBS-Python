@@ -629,8 +629,15 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     # Don't change input variables, prepare new ones for updating
     ctrlpts_new = deepcopy(ctrlpts)
 
+    is_volume = True
+    if isinstance(ctrlpts_new[0][0], float):
+        is_volume = False
+
     # Initialize temp array for storing new control points
-    temp = [[] for _ in range((2 * degree) + 1)]
+    if is_volume:
+        temp = [[[] for _ in range(len(ctrlpts_new[0]))] for _ in range((2 * degree) + 1)]
+    else:
+        temp = [[] for _ in range((2 * degree) + 1)]
 
     # Loop for Eqs 5.28 & 5.29
     for t in range(0, num):
@@ -646,8 +653,15 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         while j - i >= t:
             alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
             alpha_j = knot_removal_alpha_j(u, degree, tuple(knotvector), t, j)
-            temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
-            temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
+            if is_volume:
+                for idx in range(len(ctrlpts[0])):
+                    temp[ii][idx] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti
+                                     in zip(ctrlpts[i][idx], temp[ii - 1][idx])]
+                    temp[jj][idx] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj
+                                     in zip(ctrlpts[j][idx], temp[jj + 1][idx])]
+            else:
+                temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
+                temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
             i += 1
             j -= 1
             ii += 1
@@ -655,11 +669,18 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
         # Check if the knot is removable
         if j - i < t:
-            if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
-                remflag = True
+            if is_volume:
+                if linalg.point_distance(temp[ii - 1][0], temp[jj + 1][0]) <= tol:
+                    remflag = True
+            else:
+                if linalg.point_distance(temp[ii - 1], temp[jj + 1]) <= tol:
+                    remflag = True
         else:
             alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
-            ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
+            if is_volume:
+                ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1][0], temp[ii - 1][0])]
+            else:
+                ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
 
