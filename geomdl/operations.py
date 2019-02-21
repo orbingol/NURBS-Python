@@ -39,6 +39,8 @@ def insert_knot(obj, param, num, **kwargs):
         # Insert knot w=0.5 to a volume 1 time
         operations.insert_knot(volume, [None, None, 0.5], [0, 0, 1])
 
+    Please note that input spline geometry object will always be updated if the knot insertion operation is successful.
+
     Keyword Arguments:
         * ``check_num``: enables/disables operation validity checks. *Default: True*
 
@@ -309,6 +311,8 @@ def remove_knot(obj, param, num, **kwargs):
         # Remove knot w=0.5 from a volume 1 time
         operations.remove_knot(volume, [None, None, 0.5], [0, 0, 1])
 
+    Please note that input spline geometry object will always be updated if the knot removal operation is successful.
+
     Keyword Arguments:
         * ``check_num``: enables/disables operation validity checks. *Default: True*
 
@@ -512,7 +516,7 @@ def remove_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_v = helpers.knot_removal_kv(obj.knotvector_v, span_v, num[1])
 
-            # Update the volume after knot insertion
+            # Update the volume after knot removal
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v - num[1], obj.ctrlpts_size_w)
             obj.knotvector_v = kv_v
 
