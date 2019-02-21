@@ -930,38 +930,52 @@ def decompose_surface(obj, **kwargs):
     :return: a list of Bezier patches
     :rtype: list
     """
+    def decompose(srf, idx, split_func_list, **kws):
+        srf_list = []
+        knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
+        while knots:
+            knot = knots[0]
+            srfs = split_func_list[idx](srf, param=knot, **kws)
+            srf_list.append(srfs[0])
+            srf = srfs[1]
+            knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
+        srf_list.append(srf)
+        return srf_list
+
     # Validate input
     if not isinstance(obj, abstract.Surface):
         raise TypeError("Input shape must be an instance of abstract.Surface class")
 
+    # Get keyword arguments
+    decompose_dir = kwargs.get('decompose_dir', 'uv')  # possible directions: u, v, uv
+    if "decompose_dir" in kwargs:
+        kwargs.pop("decompose_dir")
+
+    # List of split functions
+    split_funcs = [split_surface_u, split_surface_v]
+
     # Work with an identical copy
     surf = copy.deepcopy(obj)
 
-    surf_list = []
+    # Only u-direction
+    if decompose_dir == 'u':
+        return decompose(surf, 0, split_funcs, **kwargs)
 
-    # Process u-direction
-    knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
-    while knots_u:
-        knot = knots_u[0]
-        surfs = split_surface_u(surf, param=knot, **kwargs)
-        surf_list.append(surfs[0])
-        surf = surfs[1]
-        knots_u = surf.knotvector_u[surf.degree_u + 1:-(surf.degree_u + 1)]
-    surf_list.append(surf)
+    # Only v-direction
+    if decompose_dir == 'v':
+        return decompose(surf, 1, split_funcs, **kwargs)
 
-    # Process v-direction
-    multi_surf = []
-    for surf in surf_list:
-        knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
-        while knots_v:
-            knot = knots_v[0]
-            surfs = split_surface_v(surf, param=knot, **kwargs)
-            multi_surf.append(surfs[0])
-            surf = surfs[1]
-            knots_v = surf.knotvector_v[surf.degree_v + 1:-(surf.degree_v + 1)]
-        multi_surf.append(surf)
-
-    return multi_surf
+    # Both u- and v-directions
+    if decompose_dir == 'uv':
+        multi_surf = []
+        # Process u-direction
+        surfs_u = decompose(surf, 0, split_funcs, **kwargs)
+        # Process v-direction
+        for sfu in surfs_u:
+            multi_surf += decompose(sfu, 1, split_funcs, **kwargs)
+        return multi_surf
+    else:
+        raise GeomdlException("Cannot decompose in " + str(decompose_dir) + " direction. Acceptable values: u, v, uv")
 
 
 def derivative_surface(obj):
