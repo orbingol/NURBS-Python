@@ -810,13 +810,13 @@ def degree_elevation(degree, ctrlpts, **kwargs):
     """
     # Get keyword arguments
     num = kwargs.get('num', 1)  # number of degree elevations
-    check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
+    check_op = kwargs.get('check_num', True)  # enable/disable input validation checks
 
-    if check_ctrlpts and degree + 1 != len(ctrlpts):
-        raise GeomdlException("Degree elevation can only work with Bezier shapes")
-
-    if num <= 0:
-        raise GeomdlException("Cannot degree elevate " + str(num) + " times")
+    if check_op:
+        if degree + 1 != len(ctrlpts):
+            raise GeomdlException("Degree elevation can only work with Bezier-type geometries")
+        if num <= 0:
+            raise GeomdlException("Cannot degree elevate " + str(num) + " times")
 
     # Initialize variables
     num_pts_elev = degree + 1 + num
@@ -852,13 +852,13 @@ def degree_reduction(degree, ctrlpts, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    check_ctrlpts = kwargs.get('check_pts', True)  # check if the input is a Bezier-type shape
+    check_op = kwargs.get('check_num', True)  # enable/disable input validation checks
 
-    if check_ctrlpts and degree + 1 != len(ctrlpts):
-        raise GeomdlException("Degree reduction can only work with Bezier shapes")
-
-    if degree < 2:
-        raise GeomdlException("Input shape must have degree > 1")
+    if check_op:
+        if degree + 1 != len(ctrlpts):
+            raise GeomdlException("Degree reduction can only work with Bezier-type geometries")
+        if degree < 2:
+            raise GeomdlException("Input shape must have degree > 1")
 
     # Initialize variables
     pts_red = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(degree)]
