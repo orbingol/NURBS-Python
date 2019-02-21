@@ -610,9 +610,10 @@ def split_curve(obj, param, **kwargs):
     for _ in range(0, temp_obj.degree + 1):
         curve2_kv.insert(0, param)
 
-    # Control points (use private variable due to differences between rational and non-rational curve)
-    curve1_ctrlpts = temp_obj._control_points[0:ks + r]
-    curve2_ctrlpts = temp_obj._control_points[ks + r - 1:]
+    # Control points (use Pw if rational)
+    cpts = temp_obj.ctrlptsw if obj.rational else temp_obj.ctrlpts
+    curve1_ctrlpts = cpts[0:ks + r]
+    curve2_ctrlpts = cpts[ks + r - 1:]
 
     # Create a new curve for the first half
     curve1 = temp_obj.__class__()
