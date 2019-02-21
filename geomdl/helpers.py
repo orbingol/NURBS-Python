@@ -643,7 +643,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         remflag = False
 
         # Compute control points for one removal step
-        while j - i > t:
+        while j - i >= t:
             alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
             alpha_j = knot_removal_alpha_j(u, degree, tuple(knotvector), t, j)
             temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
