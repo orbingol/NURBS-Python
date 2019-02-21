@@ -23,9 +23,31 @@ from .exceptions import GeomdlException
 def insert_knot(obj, param, num, **kwargs):
     """ Inserts knots n-times to a spline geometry.
 
+    The following code snippet illustrates the usage of this function:
+
+    .. code-block:: python
+
+        # Insert knot u=0.5 to a curve 2 times
+        operations.insert_knot(curve, [0.5], [2])
+
+        # Insert knot v=0.25 to a surface 1 time
+        operations.insert_knot(surface, [None, 0.25], [0, 1])
+
+        # Insert knots u=0.75, v=0.25 to a surface 2 and 1 times, respectively
+        operations.insert_knot(surface, [0.75, 0.25], [2, 1])
+
+        # Insert knot w=0.5 to a volume 1 time
+        operations.insert_knot(volume, [None, None, 0.5], [0, 0, 1])
+
+    Keyword Arguments:
+        * ``check_num``: enables/disables operation validity checks. *Default: True*
+
     :param obj: spline geometry
-    :param param: knot(s) to be inserted
-    :param num: number of knot insertions
+    :type obj: abstract.SplineGeometry
+    :param param: knot(s) to be inserted in [u, v, w] format
+    :type param: list, tuple
+    :param num: number of knot insertions in [num_u, num_v, num_w] format
+    :type num: list, tuple
     :return: updated spline geometry
     """
     # Get keyword arguments
@@ -271,9 +293,31 @@ def insert_knot(obj, param, num, **kwargs):
 def remove_knot(obj, param, num, **kwargs):
     """ Removes knots n-times from a spline geometry.
 
+    The following code snippet illustrates the usage of this function:
+
+    .. code-block:: python
+
+        # Remove knot u=0.5 from a curve 2 times
+        operations.remove_knot(curve, [0.5], [2])
+
+        # Remove knot v=0.25 from a surface 1 time
+        operations.remove_knot(surface, [None, 0.25], [0, 1])
+
+        # Remove knots u=0.75, v=0.25 from a surface 2 and 1 times, respectively
+        operations.remove_knot(surface, [0.75, 0.25], [2, 1])
+
+        # Remove knot w=0.5 from a volume 1 time
+        operations.remove_knot(volume, [None, None, 0.5], [0, 0, 1])
+
+    Keyword Arguments:
+        * ``check_num``: enables/disables operation validity checks. *Default: True*
+
     :param obj: spline geometry
-    :param param: knot(s) to be removed
-    :param num: number of knot removals
+    :type obj: abstract.SplineGeometry
+    :param param: knot(s) to be removed in [u, v, w] format
+    :type param: list, tuple
+    :param num: number of knot removals in [num_u, num_v, num_w] format
+    :type num: list, tuple
     :return: updated spline geometry
     """
     # Get keyword arguments
