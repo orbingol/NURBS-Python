@@ -17,6 +17,7 @@ from . import vis
 from . import helpers
 from . import utilities
 from . import voxelize
+from .exceptions import GeomdlException
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -1457,6 +1458,13 @@ class Surface(SplineGeometry):
 
     @trims.setter
     def trims(self, value):
+        # Input validity check
+        for i, v in enumerate(value):
+            if not isinstance(v, Geometry):
+                raise GeomdlException(
+                    "Trim curve must be an instance of abstract.Geometry class",
+                    data=dict(idx=i)
+                )
         self._trims = value
 
     @property
