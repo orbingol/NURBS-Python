@@ -858,7 +858,7 @@ def degree_reduction(degree, ctrlpts, **kwargs):
         if degree + 1 != len(ctrlpts):
             raise GeomdlException("Degree reduction can only work with Bezier-type geometries")
         if degree < 2:
-            raise GeomdlException("Input shape must have degree > 1")
+            raise GeomdlException("Input spline geometry must have degree > 1")
 
     # Initialize variables
     pts_red = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(degree)]
