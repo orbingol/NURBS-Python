@@ -1,5 +1,5 @@
-NURBS-Python (geomdl)
-^^^^^^^^^^^^^^^^^^^^^
+geomdl
+^^^^^^
 
 |DOI|_ |PYPIDL|_ |ANACONDA|_
 
@@ -10,8 +10,25 @@ NURBS-Python (geomdl)
 Introduction
 ============
 
-NURBS-Python (geomdl) is a pure Python, object-oriented B-Spline and NURBS library. It is compatible with Python
-versions 2.7.x, 3.4.x and later.
+**geomdl** is a pure Python, object-oriented B-Spline and NURBS library. It is compatible with Python versions 2.7.x,
+3.4.x and later.
+
+Features
+========
+
+**geomdl** provides convenient data structures and highly customizable API for rational and non-rational splines along
+with the efficient and extensible implementations of the following algorithms:
+
+* Spline evaluation
+* Derivative evaluation
+* Knot insertion
+* Knot removal
+* Degree elevation
+* Degree reduction
+* Curve and surface fitting via interpolation and least squares approximation
+
+**geomdl** also provides customizable visualization and animation options via Matplotlib, Plotly and VTK libraries.
+Please refer to the `documentation <http://nurbs-python.readthedocs.io/>`_ for more details.
 
 Further reading
 ===============
@@ -21,15 +38,16 @@ Further reading
 * Wiki: https://github.com/orbingol/NURBS-Python/wiki
 * Development: https://github.com/orbingol/NURBS-Python
 
-Command-line application
-========================
+Extra Modules
+=============
 
-Please refer to `geomdl-cli project page <https://pypi.org/project/geomdl.cli>`_ for details.
+* `geomdl-cli <https://pypi.org/project/geomdl.cli>`_ for using **geomdl** from the command-line
+* `geomdl-shapes <https://pypi.org/project/geomdl.shapes>`_
 
 License
 =======
 
-NURBS-Python is licensed under the MIT License.
+**geomdl** is licensed under the `MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
