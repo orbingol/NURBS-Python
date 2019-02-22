@@ -2,7 +2,7 @@
 
 ## v5.0.1 released on 2019-02-22
 
-* Fix an issue in setup.py for generating a compatible wheel for Python 2.7
+* Fix an issue in setup.py causing generation of an incompatible wheel for Python 2.7
 * conda-build configuration updates
 * Documentation updates
 
