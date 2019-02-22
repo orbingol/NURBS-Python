@@ -14,7 +14,8 @@ WORKDIR /home/nurbs
 
 RUN git clone https://github.com/orbingol/NURBS-Python.git library \
     && git clone https://github.com/orbingol/NURBS-Python_Examples.git examples \
-    && git clone https://github.com/orbingol/geomdl-cli.git app
+    && git clone https://github.com/orbingol/geomdl-cli.git app \
+    && git clone https://github.com/orbingol/geomdl-shapes.git shapes
 
 ENV PATH="/home/nurbs/.local/bin:${PATH}"
 
@@ -35,9 +36,15 @@ RUN pypy3 -m pip install --user --no-cache-dir -r requirements.txt
 
 RUN pypy3 -m pip install --user --no-cache-dir .
 
+WORKDIR /home/nurbs/shapes
+
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+RUN pip install --user --no-cache-dir .
+
 WORKDIR /home/nurbs
 
-RUN pypy3 -c "import geomdl; import geomdl.cli"
+RUN pypy3 -c "import geomdl; import geomdl.cli; import geomdl.shapes"
 
 COPY --chown=nurbs:nurbs matplotlibrc .config/matplotlib/matplotlibrc
 COPY --chown=nurbs:nurbs README.md .
