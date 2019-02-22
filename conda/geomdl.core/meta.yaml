@@ -20,13 +20,17 @@ requirements:
   host:
     - python {{ python }}
     - setuptools
-    - six
-    - enum34                # [py27]
     - cython
+    - six
+    #- enum34
+    #- functools_lru_cache
+    - typing
   run:
     - python {{ python }}
     - six
-    - enum34                # [py27]
+    #- enum34
+    #- functools_lru_cache
+    - typing
 
 test:
   imports:

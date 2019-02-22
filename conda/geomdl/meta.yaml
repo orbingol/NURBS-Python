@@ -21,11 +21,15 @@ requirements:
     - python
     - setuptools
     - six
-    #- enum34  # required for py27
+    #- enum34
+    #- functools_lru_cache
+    - typing
   run:
     - python
     - six
-    #- enum34  # required for py27
+    #- enum34
+    #- functools_lru_cache
+    - typing
     - numpy
     - matplotlib
 
