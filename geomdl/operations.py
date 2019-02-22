@@ -18,8 +18,10 @@ from . import linalg
 from . import compatibility
 from . import _operations
 from .exceptions import GeomdlException
+from ._utilities import export
 
 
+@export
 def insert_knot(obj, param, num, **kwargs):
     """ Inserts knots n-times to a spline geometry.
 
@@ -292,6 +294,7 @@ def insert_knot(obj, param, num, **kwargs):
     return obj
 
 
+@export
 def remove_knot(obj, param, num, **kwargs):
     """ Removes knots n-times from a spline geometry.
 
@@ -619,6 +622,7 @@ def degree_operations(obj, param, **kwargs):
     return obj
 
 
+@export
 def split_curve(obj, param, **kwargs):
     """ Splits the curve at the input parametric coordinate.
 
@@ -688,6 +692,7 @@ def split_curve(obj, param, **kwargs):
     return ret_val
 
 
+@export
 def decompose_curve(obj, **kwargs):
     """ Decomposes the curve into Bezier curve segments of the same degree.
 
@@ -719,6 +724,7 @@ def decompose_curve(obj, **kwargs):
     return multi_curve
 
 
+@export
 def derivative_curve(obj):
     """ Computes the hodograph (first derivative) curve of the input curve.
 
@@ -757,6 +763,7 @@ def derivative_curve(obj):
     return curve
 
 
+@export
 def length_curve(obj):
     """ Computes the approximate length of the parametric curve.
 
@@ -784,6 +791,7 @@ def length_curve(obj):
     return length
 
 
+@export
 def add_dimension(obj, **kwargs):
     """ Converts x-dimensional curve to a (x+1)-dimensional curve.
 
@@ -822,6 +830,7 @@ def add_dimension(obj, **kwargs):
         return ret
 
 
+@export
 def split_surface_u(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the u-direction.
 
@@ -894,6 +903,7 @@ def split_surface_u(obj, param, **kwargs):
     return ret_val
 
 
+@export
 def split_surface_v(obj, param, **kwargs):
     """ Splits the surface at the input parametric coordinate on the v-direction.
 
@@ -972,6 +982,7 @@ def split_surface_v(obj, param, **kwargs):
     return ret_val
 
 
+@export
 def decompose_surface(obj, **kwargs):
     """ Decomposes the surface into Bezier surface patches of the same degree.
 
@@ -1034,6 +1045,7 @@ def decompose_surface(obj, **kwargs):
         raise GeomdlException("Cannot decompose in " + str(decompose_dir) + " direction. Acceptable values: u, v, uv")
 
 
+@export
 def derivative_surface(obj):
     """ Computes the hodograph (first derivative) surface of the input surface.
 
@@ -1106,6 +1118,7 @@ def derivative_surface(obj):
     return surf_u, surf_v, surf_uv
 
 
+@export
 def translate(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 
@@ -1130,6 +1143,7 @@ def translate(obj, vec, **kwargs):
         raise TypeError("The input shape must be a curve or a surface (single or multi)")
 
 
+@export
 def tangent(obj, params, **kwargs):
     """ Evaluates the tangent vector of the curves or surfaces at the input parameter values.
 
@@ -1156,6 +1170,7 @@ def tangent(obj, params, **kwargs):
             return _operations.tangent_surface_single_list(obj, params, normalize)
 
 
+@export
 def normal(obj, params, **kwargs):
     """ Evaluates the normal vector of the curves or surfaces at the input parameter values.
 
@@ -1182,6 +1197,7 @@ def normal(obj, params, **kwargs):
             return _operations.normal_surface_single_list(obj, params, normalize)
 
 
+@export
 def binormal(obj, params, **kwargs):
     """ Evaluates the binormal vector of the curves or surfaces at the input parameter values.
 
@@ -1205,6 +1221,7 @@ def binormal(obj, params, **kwargs):
         raise NotImplementedError("Binormal vector evaluation for the surfaces is not implemented!")
 
 
+@export
 def find_ctrlpts(obj, u, v=None, **kwargs):
     """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
@@ -1227,6 +1244,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
         raise NotImplementedError("The input must be an instance of abstract.Curve or abstract.Surface")
 
 
+@export
 def rotate(obj, angle, **kwargs):
     """ Rotates curves, surfaces or volumes about the chosen axis.
 
@@ -1322,6 +1340,7 @@ def rotate(obj, angle, **kwargs):
     return _obj
 
 
+@export
 def scale(obj, multiplier, **kwargs):
     """ Scales curves, surfaces or volumes by the input multiplier.
 
@@ -1346,6 +1365,7 @@ def scale(obj, multiplier, **kwargs):
         raise TypeError("The input shape must be a curve or a surface (single or multi)")
 
 
+@export
 def transpose(surf, **kwargs):
     """ Transposes the input surface by swapping u and v parametric directions.
 
