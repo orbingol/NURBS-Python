@@ -865,7 +865,8 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params(param)
+            if not utilities.check_params(param):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
@@ -898,7 +899,8 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([u])
+            if not utilities.check_params([u]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -1745,7 +1747,8 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params(param)
+            if not utilities.check_params(param):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
@@ -1780,7 +1783,8 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([u, v])
+            if not utilities.check_params([u, v]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -2684,7 +2688,8 @@ class Volume(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params(param)
+            if not utilities.check_params(param):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):

@@ -150,7 +150,8 @@ class Curve(abstract.Curve):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([start, stop])
+            if not utilities.check_params([start, stop]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the curve points
         self.reset(evalpts=True)
@@ -176,7 +177,8 @@ class Curve(abstract.Curve):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([param])
+            if not utilities.check_params([param]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the curve point
         pt = self._evaluator.evaluate(start=param, stop=param,
@@ -239,7 +241,8 @@ class Curve(abstract.Curve):
 
         # Check parameters are correct
         if self._kv_normalize:
-            utilities.check_params([param])
+            if not utilities.check_params([param]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num = kwargs.get('num', 1)  # number of knot insertions
@@ -270,7 +273,8 @@ class Curve(abstract.Curve):
 
         # Check param parameters are correct
         if self._kv_normalize:
-            utilities.check_params([param])
+            if not utilities.check_params([param]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num = kwargs.get('num', 1)  # number of knot removals
@@ -653,7 +657,8 @@ class Surface(abstract.Surface):
 
         # Check parameters
         if self._kv_normalize:
-            utilities.check_params([start_u, stop_u, start_v, stop_v])
+            if not utilities.check_params([start_u, stop_u, start_v, stop_v]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -751,7 +756,8 @@ class Surface(abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params([u, v])
+            if not utilities.check_params([u, v]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
@@ -786,7 +792,8 @@ class Surface(abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params([u, v])
+            if not utilities.check_params([u, v]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
@@ -975,7 +982,8 @@ class Volume(abstract.Volume):
 
         # Check if all the input parameters are in the range
         if self._kv_normalize:
-            utilities.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w])
+            if not utilities.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the evaluated points
         self.reset(evalpts=True)
@@ -1001,7 +1009,8 @@ class Volume(abstract.Volume):
 
         # Check if all parameters are in the range
         if self._kv_normalize:
-            utilities.check_params(param)
+            if not utilities.check_params(param):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the volume point
         pt = self._evaluator.evaluate(start=param, stop=param,
@@ -1053,7 +1062,8 @@ class Volume(abstract.Volume):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params([u, v, w])
+            if not utilities.check_params([u, v, w]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
@@ -1092,7 +1102,8 @@ class Volume(abstract.Volume):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            utilities.check_params([u, v, w])
+            if not utilities.check_params([u, v, w]):
+                raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
