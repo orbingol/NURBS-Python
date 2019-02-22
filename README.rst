@@ -31,7 +31,7 @@ Features
 ========
 
 NURBS-Python (geomdl) provides convenient data structures and highly customizable API for rational and non-rational
-splines along with the efficient implementations of the following algorithms:
+splines along with the efficient and extensible implementations of the following algorithms:
 
 * Spline evaluation
 * Derivative evaluation
@@ -39,7 +39,7 @@ splines along with the efficient implementations of the following algorithms:
 * Knot removal
 * Degree elevation
 * Degree reduction
-* Curve and surface interpolation and least squares approximation
+* Curve and surface fitting via interpolation and least squares approximation
 
 NURBS-Python (geomdl) also provides customizable visualization and animation options via Matplotlib, Plotly and VTK
 libraries. Please refer to the `documentation <http://nurbs-python.readthedocs.io/>`_ for more details.
@@ -88,15 +88,15 @@ Author
 
 * Onur R. Bingol (`@orbingol <https://github.com/orbingol>`_)
 
-License
-=======
-
-NURBS-Python (geomdl) is a free and open-source software and it is licensed under the `MIT License <LICENSE>`_.
-
 Acknowledgments
 ===============
 
 Please see `CONTRIBUTORS.rst <CONTRIBUTORS.rst>`_ file for the acknowledgements.
+
+License
+=======
+
+NURBS-Python (geomdl) is a free and open-source software and it is licensed under the `MIT License <LICENSE>`_.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
