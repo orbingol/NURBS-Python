@@ -563,6 +563,62 @@ def remove_knot(obj, param, num, **kwargs):
     return obj
 
 
+def degree_operations(obj, param, **kwargs):
+    """ Applies degree elevation and degree reduction algorithms to spline geometries.
+
+    :param obj: spline geometry
+    :type obj: abstract.SplineGeometry
+    :param param: operation definition
+    :type param: list, tuple
+    :return: updated spline geometry
+    """
+    def validate_reduction(degree):
+        if degree < 2:
+            raise GeomdlException("Input spline geometry must have degree > 1")
+
+    # Start curve degree manipulation operations
+    if isinstance(obj, abstract.Curve):
+        if param[0] is not None and param[0] != 0:
+
+            # If parameter is positive, apply degree elevation. Otherwise, apply degree reduction
+            if param[0] > 0:
+                pass
+
+            else:
+                # Validate degree reduction operation
+                validate_reduction(obj.degree)
+                pass
+
+    # Start surface degree manipulation operations
+    if isinstance(obj, abstract.Surface):
+        # u-direction
+        if param[0] is not None and param[0] != 0:
+
+            # If parameter is positive, apply degree elevation. Else, apply degree reduction
+            if param[0] > 0:
+                pass
+            else:
+                # Apply degree reduction operation
+                validate_reduction(obj.degree_u)
+
+        # v-direction
+        if param[1] is not None and param[1] != 0:
+
+            # If parameter is positive, apply degree elevation. Otherwise, apply degree reduction
+            if param[1] > 0:
+                pass
+            else:
+                # Validate degree reduction operation
+                validate_reduction(obj.degree_v)
+
+    # Start surface degree manipulation operations
+    if isinstance(obj, abstract.Volume):
+        raise GeomdlException("Degree manipulation operations are not available for spline volumes")
+
+    # Return updated spline geometry
+    return obj
+
+
 def split_curve(obj, param, **kwargs):
     """ Splits the curve at the input parametric coordinate.
 
