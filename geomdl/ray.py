@@ -7,7 +7,6 @@
 
 """
 
-from enum import Enum
 from . import linalg
 from ._utilities import export
 
@@ -97,7 +96,7 @@ class Ray(object):
 
 
 @export
-class RayIntersection(Enum):
+class RayIntersection(object):
     """ The status of the ray intersection operation """
     INTERSECT = 1  # only one solution
     COLINEAR = 2  # no solution (parallel) or infinitely many solutions (coincident)

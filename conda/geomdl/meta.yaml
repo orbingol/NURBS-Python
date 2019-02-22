@@ -21,13 +21,11 @@ requirements:
     - python
     - setuptools
     - six
-    #- enum34
     #- functools_lru_cache
     - typing
   run:
     - python
     - six
-    #- enum34
     #- functools_lru_cache
     - typing
     - numpy

@@ -121,11 +121,11 @@ Please refer to the following issue on pip issue tracker for more details: https
 Conda Package on Python 2.7
 ===========================
 
-Please install ``enum34`` and ``functools_lru_cache`` modules if you are using a Python 2.7 distribution managed via
+You need to install ``functools_lru_cache`` module manually if you are using a Python 2.7 distribution managed via
 ``conda`` package manager (e.g. Anaconda, Miniconda).
 
 The following command will install these packages in your active Python environment:
 
 .. code-block:: console
 
-    $ conda install enum34 functools_lru_cache
+    $ conda install functools_lru_cache

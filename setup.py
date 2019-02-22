@@ -229,10 +229,6 @@ if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
 # # Required packages for older Python versions
 # required = []
 #
-# # Add Enum type support for Python versions < 3.4
-# if sys.version_info[:2] < (3, 4):
-#     required += ['enum34']
-#
 # # Add LRU cache support for Python versions < 3.3
 # if sys.version_info[:2] < (3, 3):
 #     required += ['backports.functools_lru_cache']
@@ -252,7 +248,7 @@ data = dict(
     url='https://github.com/orbingol/NURBS-Python',
     keywords='NURBS B-Spline curve surface CAD modeling visualization surface-generator',
     packages=packages,
-    install_requires=['six>=1.9.0', 'enum34>=1.1.6', 'backports.functools_lru_cache', 'typing'],
+    install_requires=['six>=1.9.0', 'backports.functools_lru_cache', 'typing'],
     tests_require=["pytest>=3.6.0"],
     cmdclass={"install": InstallCommand, "test": PyTest, 'clean': SetuptoolsClean},
     ext_modules=ext_modules,
