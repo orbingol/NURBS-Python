@@ -10,7 +10,7 @@ The easiest method to install is via ``pip``.
 
 .. code-block:: console
 
-    pip install geomdl.shapes
+    $ pip install geomdl.shapes
 
 Please refer to `geomdl-shapes documentation </projects/shapes>`_ for more installation options.
 

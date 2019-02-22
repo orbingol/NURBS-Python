@@ -52,7 +52,7 @@ whenever a new version is released. The simplest way to check if you are using t
 
 .. code-block:: console
 
-    pip list --outdated
+    $ pip list --outdated
 
 Minimum Requirements
 ====================
@@ -106,13 +106,13 @@ to installation of ``six`` package on Mac OS, please use the following command t
 
 .. code-block:: console
 
-    pip install geomdl --ignore-installed six
+    $ pip install geomdl --ignore-installed six
 
 and to upgrade NURBS-Python (geomdl):
 
 .. code-block:: console
 
-    pip install geomdl --upgrade --ignore-installed six
+    $ pip install geomdl --upgrade --ignore-installed six
 
 or alternatively, you can use :doc:`conda <install>`.
 

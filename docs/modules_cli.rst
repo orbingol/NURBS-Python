@@ -17,7 +17,7 @@ The easiest method to install is via ``pip``. It will install all the required m
 
 .. code-block:: console
 
-    pip install geomdl.cli
+    $ pip install geomdl.cli
 
 Please refer to `geomdl-cli documentation </projects/cli>`_ for more installation options.
 

@@ -13,19 +13,19 @@ commands will download and install NURBS-Python from `Python Package Index <http
 
 .. code-block:: console
 
-    pip install geomdl
+    $ pip install geomdl
 
 Upgrading to the latest version:
 
 .. code-block:: console
 
-    pip install geomdl --upgrade
+    $ pip install geomdl --upgrade
 
 Installing a specific version:
 
 .. code-block:: console
 
-    pip install geomdl==4.4.4
+    $ pip install geomdl==5.0.0
 
 Install via Conda
 =================
@@ -37,13 +37,13 @@ Installing:
 
 .. code-block:: console
 
-    conda install -c orbingol geomdl
+    $ conda install -c orbingol geomdl
 
 Upgrading to the latest version:
 
 .. code-block:: console
 
-    conda upgrade -c orbingol geomdl
+    $ conda upgrade -c orbingol geomdl
 
 If you are experiencing problems with this method, you can try to upgrade ``conda`` package itself before
 installing the NURBS-Python library.
@@ -60,7 +60,7 @@ The most convenient method to install NURBS-Python manually is using ``pip``:
 
 .. code-block:: console
 
-    pip install .
+    $ pip install .
 
 To upgrade, please pull the latest commits from the repository via ``git pull --rebase`` and then execute the above
 command.
@@ -73,7 +73,7 @@ repository to your Python distribution's *site-packages* directory:
 
 .. code-block:: console
 
-    pip install -e .
+    $ pip install -e .
 
 Since this command only generates a link to the library directory, pulling the latest commits from the repository
 would be enough to update the library to the latest version.
@@ -104,7 +104,7 @@ Then, you can execute the following from your favorite IDE or from the command l
 
 .. code-block:: console
 
-    pytest
+    $ pytest
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
 
@@ -116,7 +116,7 @@ following command along with the pure Python version.
 
 .. code-block:: console
 
-    pip install . --install-option="--use-cython"
+    $ pip install . --install-option="--use-cython"
 
 This command will generate .c files (i.e. cythonization) and compile the .c files into binary Python modules.
 
@@ -125,7 +125,7 @@ step:
 
 .. code-block:: console
 
-    pip install . --install-option="--use-source"
+    $ pip install . --install-option="--use-source"
 
 To update the compiled module with the latest changes, you need to re-cythonize the code.
 
@@ -133,7 +133,7 @@ To enable Cython-compiled module in development mode;
 
 .. code-block:: console
 
-    python setup.py build_ext --use-cython --inplace
+    $ python setup.py build_ext --use-cython --inplace
 
 After the successful execution of the command, the you can import and use the compiled library as follows:
 
@@ -172,7 +172,7 @@ prompt to pull the image prepared with Python v3.5:
 
 .. code-block:: console
 
-    docker pull idealabisu/nurbs-python:py35
+    $ docker pull idealabisu/nurbs-python:py35
 
 On the `Docker Repository <https://hub.docker.com/r/idealabisu/nurbs-python/>`_ page, you can find containers tagged for
 Python versions and `Debian <https://www.debian.org/>`_ (no suffix) and `Alpine Linux <https://alpinelinux.org/>`_
@@ -183,7 +183,7 @@ After pulling your preferred image, run the following command:
 
 .. code-block:: console
 
-    docker run --rm -it --name geomdl -p 8000:8000 idealabisu/nurbs-python:py35
+    $ docker run --rm -it --name geomdl -p 8000:8000 idealabisu/nurbs-python:py35
 
 In all images, Matplotlib is set to use ``webagg`` backend by default. Please follow the instructions on the command
 line to view your figures.
