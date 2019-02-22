@@ -1,5 +1,9 @@
 # geomdl Changelog
 
+## v5.0.3 released on 2019-02-22
+
+* Fixed CI config which was failing to generate `geomdl.core` binaries for v5.0.2 and version bumped for user convenience
+
 ## v5.0.2 released on 2019-02-22
 
 * Removed dependency `enum34` since it was causing problems with Python 3
