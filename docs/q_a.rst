@@ -117,3 +117,15 @@ and to upgrade NURBS-Python (geomdl):
 or alternatively, you can use :doc:`conda <install>`.
 
 Please refer to the following issue on pip issue tracker for more details: https://github.com/pypa/pip/issues/3165
+
+Conda Package on Python 2.7
+===========================
+
+Please install ``enum34`` and ``functools_lru_cache`` modules if you are using a Python 2.7 distribution managed via
+``conda`` package manager (e.g. Anaconda, Miniconda).
+
+The following command will install these packages in your active Python environment:
+
+.. code-block:: console
+
+    $ conda install enum34 functools_lru_cache
