@@ -1,5 +1,10 @@
 # geomdl Changelog
 
+## v5.0.2 released on 2019-02-22
+
+* Removed dependency `enum34` since it was causing problems with Python 3
+* Fixed some minor bugs
+
 ## v5.0.1 released on 2019-02-22
 
 * Fix an issue in setup.py causing generation of an incompatible wheel for Python 2.7
