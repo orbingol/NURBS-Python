@@ -1,4 +1,13 @@
-# Changelog
+# geomdl Changelog
+
+## v5.0.0 released on 2019-02-21
+
+* Includes all updates from v5.0b1 to v5.0b7
+* Added knot removal for spline volumes
+* Added `operations.degree_operations` function for degree elevation and reduction (still WIP)
+* Added more surface decomposition options to `operations.decompose_surface` function
+* Minor coding improvements and fixes
+* Documentation updates
 
 ## v5.0b7 released on 2019-02-17
 
