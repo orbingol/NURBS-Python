@@ -566,6 +566,65 @@ def remove_knot(obj, param, num, **kwargs):
     return obj
 
 
+@export
+def refine_knotvector(obj, param, **kwargs):
+    """ Refines the knot vector(s) of a spline geometry.
+
+    :param obj: spline geometry
+    :type obj: abstract.SplineGeometry
+    :param param: parametric dimensions to be refined in [u, v, w] format
+    :type param: list, tuple
+    :return: updated spline geometry
+    """
+    # Start curve knot refinement
+    if isinstance(obj, abstract.Curve):
+        if param[0] is True:
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            new_cpts, new_kv = helpers.knot_refinement(obj.degree, obj.knotvector, cpts, **kwargs)
+            obj.set_ctrlpts(new_cpts)
+            obj.knotvector = new_kv
+
+    # Start surface knot refinement
+    if isinstance(obj, abstract.Surface):
+        # u-direction
+        if param[0] is True:
+            # Get curves
+            new_cpts = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for v in range(obj.ctrlpts_size_v):
+                ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
+                ptmp, new_kv = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, ccu, **kwargs)
+                new_cpts_size = len(ptmp)
+                new_cpts += ptmp
+
+            # Update the surface after knot refinement
+            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(new_cpts, new_cpts_size, obj.ctrlpts_size_v),
+                            new_cpts_size, obj.ctrlpts_size_v)
+            obj.knotvector_u = new_kv
+
+        # v-direction
+        if param[1] is True:
+            # Get curves
+            new_cpts = []
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            for u in range(obj.ctrlpts_size_u):
+                ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
+                ptmp, new_kv = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, ccv, **kwargs)
+                new_cpts_size = len(ptmp)
+                new_cpts += ptmp
+
+            # Update the surface after knot refinement
+            obj.set_ctrlpts(new_cpts, obj.ctrlpts_size_u, new_cpts_size)
+            obj.knotvector_v = new_kv
+
+    # Start volume knot refinement
+    if isinstance(obj, abstract.Volume):
+        raise GeomdlException("Knot refinement is not available for spline volumes")
+
+    # Return updated spline geometry
+    return obj
+
+
 def degree_operations(obj, param, **kwargs):
     """ Applies degree elevation and degree reduction algorithms to spline geometries.
 
