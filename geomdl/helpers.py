@@ -791,6 +791,85 @@ def knot_removal_kv(knotvector, span, r):
     return kv_updated
 
 
+def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
+    """ Computes the knot vector and the control points of the rational/non-rational spline after knot refinement.
+
+    Implementation of Algorithm A5.4 of The NURBS Book by Piegl & Tiller, 2nd Edition.
+
+    :param degree: degree
+    :type degree: int
+    :param knotvector: knot vector
+    :type knotvector: list, tuple
+    :param ctrlpts: control points
+    :return: updated control points and knot vector
+    :rtype: tuple
+    """
+    # Get keyword arguments
+    tol = kwargs.get('tol', 10e-8)
+
+    # Find how many knot insertions are necessary
+    midknots = knotvector[degree + 1:-(degree + 1)]
+    X = []
+    for mk in midknots:
+        s = find_multiplicity(mk, knotvector)
+        r = degree - s
+        X += [mk for _ in range(r)]
+
+    # Initialize common variables
+    r = len(X) - 1
+    n = len(ctrlpts) - 1
+    m = n + degree + 1
+    a = find_span_linear(degree, knotvector, n, X[0])
+    b = find_span_linear(degree, knotvector, n, X[r]) + 1
+
+    # Initialize new control points array
+    new_ctrlpts = [[] for _ in range(n + r + 2)]
+
+    # Fill unchanged control points
+    for j in range(0, a - degree + 1):
+        new_ctrlpts[j] = ctrlpts[j]
+    for j in range(b - 1, n + 1):
+        new_ctrlpts[j + r + 1] = ctrlpts[j]
+
+    # Initialize new knot vector array
+    new_kv = [0.0 for _ in range(m + r + 2)]
+
+    # Fill unchanged knots
+    for j in range(0, a + 1):
+        new_kv[j] = knotvector[j]
+    for j in range(b + degree, m + 1):
+        new_kv[j + r + 1] = knotvector[j]
+
+    # Initialize variables for knot refinement
+    i = b + degree - 1
+    k = b + degree + r
+    j = r
+
+    # Apply knot refinement
+    while j >= 0:
+        while X[j] <= knotvector[i] and i > a:
+            new_ctrlpts[k - degree - 1] = ctrlpts[i - degree - 1]
+            new_kv[k] = knotvector[i]
+            k -= 1
+            i -= 1
+        new_ctrlpts[k - degree - 1] = new_ctrlpts[k - degree]
+        for l in range(1, degree + 1):
+            idx = k - degree + l
+            alpha = new_kv[k + l] - X[j]
+            if abs(alpha) < tol:
+                new_ctrlpts[idx - 1] = new_ctrlpts[idx]
+            else:
+                alpha = alpha / (new_kv[k + l] - knotvector[i - degree + l])
+                new_ctrlpts[idx - 1] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
+                                        zip(new_ctrlpts[idx - 1], new_ctrlpts[idx])]
+        new_kv[k] = X[j]
+        k = k - 1
+        j -= 1
+
+    # Return control points and knot vector after refinement
+    return new_ctrlpts, new_kv
+
+
 def degree_elevation(degree, ctrlpts, **kwargs):
     """ Computes the control points of the rational/non-rational spline after degree elevation.
 
