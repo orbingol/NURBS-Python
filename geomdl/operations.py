@@ -342,7 +342,7 @@ def remove_knot(obj, param, num, **kwargs):
 
         for idx, val in enumerate(num):
             if val < 0:
-                raise GeomdlException('Number of removals  must be a positive integer value',
+                raise GeomdlException('Number of removals must be a positive integer value',
                                       data=dict(idx=idx, num=val))
 
     # Start curve knot removal
@@ -576,6 +576,17 @@ def refine_knotvector(obj, param, **kwargs):
     :type param: list, tuple
     :return: updated spline geometry
     """
+    # Get keyword arguments
+    check_num = kwargs.get('check_num', True)  # enables/disables input validity checks
+
+    if check_num:
+        if not isinstance(param, (list, tuple)):
+            raise GeomdlException("Parametric dimensions argument (param) must be a list or a tuple")
+
+        if len(param) != obj.pdimension:
+            raise GeomdlException("The length of the param array must be equal to the number of parametric dimensions",
+                                  data=dict(pdim=obj.pdim, param_len=len(param)))
+
     # Start curve knot refinement
     if isinstance(obj, abstract.Curve):
         if param[0] is True:
