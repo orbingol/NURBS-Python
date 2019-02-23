@@ -619,7 +619,92 @@ def refine_knotvector(obj, param, **kwargs):
 
     # Start volume knot refinement
     if isinstance(obj, abstract.Volume):
-        raise GeomdlException("Knot refinement is not available for spline volumes")
+        # u-direction
+        if param[0] is True:
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+
+            # Construct 2-dimensional structure
+            cpt2d = []
+            for u in range(obj.ctrlpts_size_u):
+                temp_surf = []
+                for w in range(obj.ctrlpts_size_w):
+                    for v in range(obj.ctrlpts_size_v):
+                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                        temp_surf.append(temp_pt)
+                cpt2d.append(temp_surf)
+
+            # Apply knot refinement
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, cpt2d, **kwargs)
+            new_cpts_size = len(ctrlpts_tmp)
+
+            # Flatten to 1-dimensional structure
+            ctrlpts_new = []
+            for w in range(obj.ctrlpts_size_w):
+                for u in range(new_cpts_size):
+                    for v in range(obj.ctrlpts_size_v):
+                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size_v)]
+                        ctrlpts_new.append(temp_pt)
+
+            # Update the volume after knot removal
+            obj.set_ctrlpts(ctrlpts_new, new_cpts_size, obj.ctrlpts_size_v, obj.ctrlpts_size_w)
+            obj.knotvector_u = kv_new
+
+        # v-direction
+        if param[1] is True:
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+
+            # Construct 2-dimensional structure
+            cpt2d = []
+            for v in range(obj.ctrlpts_size_v):
+                temp_surf = []
+                for w in range(obj.ctrlpts_size_w):
+                    for u in range(obj.ctrlpts_size_u):
+                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                        temp_surf.append(temp_pt)
+                cpt2d.append(temp_surf)
+
+            # Apply knot refinement
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, cpt2d, **kwargs)
+            new_cpts_size = len(ctrlpts_tmp)
+
+            # Flatten to 1-dimensional structure
+            ctrlpts_new = []
+            for w in range(obj.ctrlpts_size_w):
+                for u in range(obj.ctrlpts_size_u):
+                    for v in range(new_cpts_size):
+                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size_u)]
+                        ctrlpts_new.append(temp_pt)
+
+            # Update the volume after knot removal
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, new_cpts_size, obj.ctrlpts_size_w)
+            obj.knotvector_v = kv_new
+
+        # w-direction
+        if param[2] is True:
+            # Use Pw if rational
+            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+
+            # Construct 2-dimensional structure
+            cpt2d = []
+            for w in range(obj.ctrlpts_size_w):
+                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
+                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                cpt2d.append(temp_surf)
+
+            # Apply knot refinement
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_w, obj.knotvector_w, cpt2d, **kwargs)
+            new_cpts_size = len(ctrlpts_tmp)
+
+            # Flatten to 1-dimensional structure
+            ctrlpts_new = []
+            for w in range(new_cpts_size):
+                ctrlpts_new += ctrlpts_tmp[w]
+
+            # Update the volume after knot removal
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v, new_cpts_size)
+            obj.knotvector_w = kv_new
 
     # Return updated spline geometry
     return obj
