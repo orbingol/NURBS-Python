@@ -827,7 +827,10 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     b = find_span_linear(degree, knotvector, n, X[r]) + 1
 
     # Initialize new control points array
-    new_ctrlpts = [[] for _ in range(n + r + 2)]
+    if isinstance(ctrlpts[0], float):
+        new_ctrlpts = [[] for _ in range(n + r + 2)]
+    else:
+        new_ctrlpts = [[[] for _ in range(len(ctrlpts[0]))] for _ in range(n + r + 2)]
 
     # Fill unchanged control points
     for j in range(0, a - degree + 1):
@@ -856,16 +859,21 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
             new_kv[k] = knotvector[i]
             k -= 1
             i -= 1
-        new_ctrlpts[k - degree - 1] = new_ctrlpts[k - degree]
+        new_ctrlpts[k - degree - 1] = deepcopy(new_ctrlpts[k - degree])
         for l in range(1, degree + 1):
             idx = k - degree + l
             alpha = new_kv[k + l] - X[j]
             if abs(alpha) < tol:
-                new_ctrlpts[idx - 1] = new_ctrlpts[idx]
+                new_ctrlpts[idx - 1] = deepcopy(new_ctrlpts[idx])
             else:
                 alpha = alpha / (new_kv[k + l] - knotvector[i - degree + l])
-                new_ctrlpts[idx - 1] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
-                                        zip(new_ctrlpts[idx - 1], new_ctrlpts[idx])]
+                if isinstance(ctrlpts[0], float):
+                    new_ctrlpts[idx - 1] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
+                                            zip(new_ctrlpts[idx - 1], new_ctrlpts[idx])]
+                else:
+                    for idx2 in range(len(ctrlpts[0])):
+                        new_ctrlpts[idx - 1][idx2] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
+                                                      zip(new_ctrlpts[idx - 1][idx2], new_ctrlpts[idx][idx2])]
         new_kv[k] = X[j]
         k = k - 1
         j -= 1
