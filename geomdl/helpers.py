@@ -599,7 +599,7 @@ def knot_insertion_kv(knotvector, u, span, r):
 
 
 def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
-    """ Computes the knot vector and the control points of the rational/non-rational spline after knot removal.
+    """ Computes the control points of the rational/non-rational spline after knot removal.
 
     Implementation based on Algorithm A5.8 and Equation 5.28 of The NURBS Book by Piegl & Tiller
 
@@ -721,7 +721,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def knot_removal_alpha_i(u, degree, knotvector, num, idx):
-    """ Compute :math:`\\alpha_{i}` coefficient for knot removal algorithm.
+    """ Computes :math:`\\alpha_{i}` coefficient for knot removal algorithm.
 
     Please refer to Eq. 5.29 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.184 for details.
 
@@ -743,7 +743,7 @@ def knot_removal_alpha_i(u, degree, knotvector, num, idx):
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def knot_removal_alpha_j(u, degree, knotvector, num, idx):
-    """ Compute :math:`\\alpha_{j}` coefficient for knot removal algorithm.
+    """ Computes :math:`\\alpha_{j}` coefficient for knot removal algorithm.
 
     Please refer to Eq. 5.29 of The NURBS Book by Piegl & Tiller, 2nd Edition, p.184 for details.
 
