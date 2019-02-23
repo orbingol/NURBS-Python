@@ -18,7 +18,7 @@ Some significant features of NURBS-Python (geomdl):
 * Pure Python, no external C/C++ or FORTRAN library dependencies
 * Python compatibility: 2.7.x, 3.4.x and later
 * No compilation steps are necessary, everything is implemented in pure Python
-* For higher performance, optional *Compile with Cython* options are also available via ``setup.py``
+* For higher performance, optional *Compile with Cython* options are also available
 * Easy to install via **pip**: ``pip install geomdl`` or **conda**: ``conda install -c orbingol geomdl``
 * `Docker images <https://hub.docker.com/r/idealabisu/nurbs-python>`_ are available
 
