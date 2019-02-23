@@ -37,7 +37,7 @@ splines along with the efficient and extensible implementations of the following
 * Derivative evaluation
 * Knot insertion
 * Knot removal
-* knot vector refinement
+* Knot vector refinement
 * Degree elevation
 * Degree reduction
 * Curve and surface fitting via interpolation and least squares approximation
