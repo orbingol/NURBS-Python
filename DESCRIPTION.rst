@@ -23,6 +23,7 @@ with the efficient and extensible implementations of the following algorithms:
 * Derivative evaluation
 * Knot insertion
 * Knot removal
+* Knot vector refinement
 * Degree elevation
 * Degree reduction
 * Curve and surface fitting via interpolation and least squares approximation

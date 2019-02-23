@@ -28,6 +28,7 @@ NURBS-Python (geomdl) contains the following fundamental geometric algorithms:
 * Derivative evaluation
 * Knot insertion
 * Knot removal
+* Knot vector refinement
 * Degree elevation
 * Degree reduction
 
