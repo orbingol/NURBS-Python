@@ -570,6 +570,22 @@ def remove_knot(obj, param, num, **kwargs):
 def refine_knotvector(obj, param, **kwargs):
     """ Refines the knot vector(s) of a spline geometry.
 
+    The following code snippet illustrates the usage of this function:
+
+    .. code-block:: python
+
+        # Refines the knot vector of a curve
+        operations.refine_knotvector(curve, [True])
+
+        # Refines the knot vector on the v-direction of a surface
+        operations.refine_knotvector(surface, [False, True])
+
+        # Refines the both knot vectors of a surface
+        operations.refine_knotvector(surface, [True, True])
+
+        # Refines the knot vector on the w-direction of a volume
+        operations.refine_knotvector(volume, [False, False, True])
+
     :param obj: spline geometry
     :type obj: abstract.SplineGeometry
     :param param: parametric dimensions to be refined in [u, v, w] format
