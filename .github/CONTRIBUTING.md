@@ -7,15 +7,6 @@ The development started with the intentions of providing an object-oriented NURB
 scientific and research purposes. The author and all the contributors volunteered their free time to develop and 
 improve this project, and I appreciate your time in using, developing and testing NURBS-Python.
 
-Before you post, I would like to recommend some resources for starters:
-
-* [Code of Conduct](CODE_OF_CONDUCT.md)
-* [README file](../README.rst)
-* [LICENSE file](../LICENSE)
-* [Official Documentation](http://nurbs-python.readthedocs.io/en/latest/)
-* [The NURBS Book](http://www.springer.com/gp/book/9783642973857)
-
-
 ## Before you post, please read!
 
 We have a nice [Code of Conduct](CODE_OF_CONDUCT.md) document and it describes pretty much everything you need to know
@@ -26,12 +17,6 @@ In addition, it would be good to remember the following:
 * Please be kind, respectful and reasonable in your posts
 * Long posts are always appreciated and will be carefully read as long as they are related to the topic
 * Horrible grammar, bad English, etc. are all okay, you will not be judged for these
-
-The following will **NOT** be tolerated in any way:
-
-* Any sort of offensive and harmful behavior or tone in writing, including, but not limited to, contempt, anger, hate, sarcasm in explicit and/or implicit ways
-* Improperly opened tickets on the issue tracker (e.g. no body, no title, unrelated talk)
-* Any kind of behavior against [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## What happens when you found a bug
 
@@ -55,13 +40,9 @@ You must follow the standards below when developing for the
 
 For new [Visualization](http://nurbs-python.readthedocs.io/en/latest/modules_visualization.html) modules or improvements
 to the existing ones, the above list is still valid _with one exception_: You are free to use external libraries,
-including NumPy. You don't need to add them to `setup.py` as direct install requirements but you may add them under 
-`visualization` package list in `extras_require` argument. Please note that all new Visualization modules should extend
+including NumPy. Please note that all new Visualization modules should extend
 the [Visualization Base](http://nurbs-python.readthedocs.io/en/latest/module_vis_abstract.html) classes and should
 include classes capable of visualization of surfaces and 2- and 3-dimensional curves.
-
-I would be glad if you could follow these standards while developing for NURBS-Python. Failure to follow may cause
-rejection of your contributions (as pull requests or other methods).
 
 ## Pull requests
 
