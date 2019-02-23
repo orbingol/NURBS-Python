@@ -815,6 +815,10 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
         r = degree - s
         X += [mk for _ in range(r)]
 
+    # Check if the knot refinement is possible
+    if not X:
+        raise GeomdlException("Cannot refine knot vector on this parametric dimension")
+
     # Initialize common variables
     r = len(X) - 1
     n = len(ctrlpts) - 1
