@@ -211,7 +211,6 @@ value of **3** for the u-direction. No refinement was applied for the v-directio
     from geomdl import NURBS
     from geomdl import operations
     from geomdl.visualization import VisMPL
-    from matplotlib import cm
 
 
     # Control points
@@ -251,7 +250,6 @@ value of **3** for the u-direction. No refinement was applied for the v-directio
     from geomdl import NURBS
     from geomdl import operations
     from geomdl.visualization import VisMPL
-    from matplotlib import cm
 
 
     # Control points
