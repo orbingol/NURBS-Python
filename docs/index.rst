@@ -47,6 +47,7 @@ This documentation is organized into a couple sections:
     file_formats
     compatibility
     surface_generator
+    knot_refinement
     visualization
     visualization_splitting
     visualization_export
