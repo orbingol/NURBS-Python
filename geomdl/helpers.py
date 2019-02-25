@@ -796,6 +796,27 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
 
     Implementation of Algorithm A5.4 of The NURBS Book by Piegl & Tiller, 2nd Edition.
 
+    The algorithm automatically find the knots to be refined, i.e. the middle knots in the knot vector, and their
+    multiplicities, i.e. number of same knots in the knot vector. This is the basis of knot refinement algorithm.
+    This operation can be overridden by providing a list of knots via ``knot_list`` argument. In addition, users can
+    provide a list of additional knots to be inserted in the knot vector via ``add_knot_list`` argument.
+
+    Moreover, a numerical ``density`` argument can be used to automate extra knot insertions. If ``density`` is bigger
+    than 1, then the algorithm finds the middle knots in each internal knot span to increase the number of knots to be
+    refined.
+
+    **Example**: Let the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots from the start and end
+    are removed:
+
+    * If ``density`` is 1, knot vector to be refined is ``[0, 2, 4]``
+    * If ``density`` is 2, knot vector to be refined is ``[0, 1, 2, 3, 4]``
+    * If ``density`` is 3, knot vector to be refined is ``[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]``
+
+    Keyword Arguments:
+        * ``knot_list``: knot list to be refined. *Default: list of internal knots*
+        * ``add_knot_list``: additional list of knots to be refined. *Default: []*
+        * ``density``: Density of the knots. *Default: 1*
+
     :param degree: degree
     :type degree: int
     :param knotvector: knot vector
@@ -805,12 +826,38 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get('tol', 10e-8)  # tolerance value for zero equality checking
+    check_num = kwargs.get('check_num', True)  # enables/disables input validity checking
+    knot_list = kwargs.get('knot_list', knotvector[degree:-degree])
+    add_knot_list = kwargs.get('add_knot_list', list())
+    density = kwargs.get('density', 1)
+
+    # Input validity checking
+    if check_num:
+        if density < 1:
+            raise GeomdlException("Density value cannot be less than 1",
+                                  data=dict(density=density))
+
+    # Add additional knots to be refined
+    if add_knot_list:
+        knot_list += list(add_knot_list)
+
+    # Sort the list and convert to a set to make sure that the values are unique
+    knot_list = sorted(set(knot_list))
+
+    # Increase knot density
+    for d in range(0, density - 1):
+        rknots = []
+        for i in range(len(knot_list) - 1):
+            knot_tmp = knot_list[i] + ((knot_list[i + 1] - knot_list[i]) / 2.0)
+            rknots.append(knot_list[i])
+            rknots.append(knot_tmp)
+        rknots.append(knot_list[i + 1])
+        knot_list = rknots
 
     # Find how many knot insertions are necessary
-    midknots = knotvector[degree + 1:-(degree + 1)]
     X = []
-    for mk in midknots:
+    for mk in knot_list:
         s = find_multiplicity(mk, knotvector)
         r = degree - s
         X += [mk for _ in range(r)]
