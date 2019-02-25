@@ -167,7 +167,7 @@ def make_dir(project, gen_init_py=True):
         with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
             fp.write('__version__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
             fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
-            fp.write('__license__ = "MIT"\n')
+            fp.write('__license__ = "' + str(get_property('__license__', 'geomdl')) + '"\n')
 
 
 def in_argv(arg_list):
