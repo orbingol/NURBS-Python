@@ -594,7 +594,7 @@ def refine_knotvector(obj, param, **kwargs):
 
     * If *density* is 1, knot vector to be refined is ``[0, 2, 4]``
     * If *density* is 2, knot vector to be refined is ``[0, 1, 2, 3, 4]``
-    * IF *density* is 3, knot vector to be refined is ``[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]``
+    * If *density* is 3, knot vector to be refined is ``[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]``
 
     The following code snippet illustrates the usage of knot refinement densities:
 
@@ -606,6 +606,9 @@ def refine_knotvector(obj, param, **kwargs):
         # Refines the knot vectors of a surface with density for
         # u-dir = 2 and v-dir = 3
         operations.refine_knotvector(surface, [2, 3])
+
+        # Refines only the knot vector on the v-direction of a surface with density = 1
+        operations.refine_knotvector(surface, [0, 1])
 
         # Refines the knot vectors of a volume with density for
         # u-dir = 1, v-dir = 3 and w-dir = 2
