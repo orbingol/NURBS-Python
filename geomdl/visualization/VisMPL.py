@@ -36,6 +36,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: [10.67, 8]*
     * ``figure_dpi`` (int): Resolution of the figure in DPI. *Default: 96*
     * ``trim_size`` (int): Size of the trim curves. *Default: 20*
+    * ``alpha`` (float): Opacity of the evaluated points. *Default: 1.0*
 
     The following example illustrates the usage of the configuration class.
 
@@ -76,6 +77,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.figure_size = kwargs.get('figure_size', [10.67, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.trim_size = kwargs.get('trim_size', 20)
+        self.alpha = kwargs.get('alpha', 1.0)
         self.figure_image_filename = "temp-figure.png"
 
     @staticmethod
@@ -136,7 +138,7 @@ class VisCurve2D(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
+                curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-', alpha=self.vconf.alpha)
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
 
@@ -219,7 +221,7 @@ class VisCurve3D(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-')
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-', alpha=self.vconf.alpha)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -351,7 +353,7 @@ class VisSurface(vis.VisAbstract):
             # Create MPL Triangulation object
             triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=frames_tris)
             # Use custom Triangulation object and the choice of color/colormap to plot the surface
-            p3df = ax.plot_trisurf(triangulation, pts[:, 2], **pidx)
+            p3df = ax.plot_trisurf(triangulation, pts[:, 2], alpha=self.vconf.alpha, **pidx)
             # Add to frames list
             frames.append([p3df])
 
@@ -448,7 +450,7 @@ class VisSurface(vis.VisAbstract):
                 # Create MPL Triangulation object
                 triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
                 # Use custom Triangulation object and the choice of color/colormap to plot the surface
-                ax.plot_trisurf(triangulation, pts[:, 2], **trisurf_params)
+                ax.plot_trisurf(triangulation, pts[:, 2], alpha=self.vconf.alpha, **trisurf_params)
                 # Add to legend
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
                 legend_proxy.append(plot_proxy)
@@ -554,7 +556,7 @@ class VisSurfWireframe(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'])
+                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], alpha=self.vconf.alpha)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -655,7 +657,8 @@ class VisSurfScatter(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=50, depthshade=True)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2],
+                           color=plot['color'], s=50, depthshade=True, alpha=self.vconf.alpha)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -751,7 +754,8 @@ class VisVolume(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], marker='o', s=10, depthshade=True)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2],
+                           color=plot['color'], marker='o', s=10, depthshade=True, alpha=self.vconf.alpha)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
