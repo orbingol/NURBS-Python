@@ -1,8 +1,10 @@
 Knot Refinement
 ^^^^^^^^^^^^^^^
 
-Knot refinement is simply the operation of *inserting multiple different knots at the same time*. NURBS-Python (geomdl)
-supports knot refinement operation for curves, surfaces and volumes via :func:`.operations.refine_knotvector` function.
+.. versionadded:: 5.1
+
+Knot refinement is simply the operation of *inserting multiple knots at the same time*. NURBS-Python (geomdl) supports
+knot refinement operation for the curves, surfaces and volumes via :func:`.operations.refine_knotvector` function.
 
 One of the interesting features of the :func:`.operations.refine_knotvector` function is the controlling of
 **knot refinement density**. It can increase the number of knots to be inserted in a knot vector. Therefore, it
