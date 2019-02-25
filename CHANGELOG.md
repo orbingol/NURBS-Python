@@ -1,5 +1,12 @@
 # geomdl Changelog
 
+## v5.1.0 released on 2019-02-25
+
+* Added `alpha` configuration directive to `VisMPL` to control opacity of the evaluated points
+* Added knot refinement operation: `operations.refine_knotvector()`
+* Minor bug fixes and coding improvements
+* Documentation updates
+
 ## v5.0.3 released on 2019-02-22
 
 * Fixed CI config which was failing to generate `geomdl.core` binaries for v5.0.2 and version bumped for user convenience
