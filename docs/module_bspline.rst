@@ -30,6 +30,8 @@ B-Spline Surface
 B-Spline Volume
 ===============
 
+.. versionadded:: 5.0
+
 .. autoclass:: geomdl.BSpline.Volume
     :members:
     :undoc-members:

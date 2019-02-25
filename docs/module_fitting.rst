@@ -1,6 +1,8 @@
 Curve and Surface Fitting
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. versionadded:: 5.0
+
 ``fitting`` module provides functions for interpolating and approximating B-spline curves and surfaces from points.
 It provides functions for global interpolation and approximation to a list of data points.
 Please see the following functions for details:

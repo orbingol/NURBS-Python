@@ -32,6 +32,8 @@ NURBS Surface
 NURBS Volume
 ============
 
+.. versionadded:: 5.0
+
 .. autoclass:: geomdl.NURBS.Volume
     :members:
     :exclude-members: init_cache
