@@ -1,15 +1,9 @@
-NURBS-Python v5 Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NURBS-Python v5.x Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 
 |TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_
-
-.. note::
-
-    These documentation pages are for v5 release of NURBS-Python (geomdl) library.
-    Please see `NURBS-Python 4.x documentation <https://nurbs-python.readthedocs.io/en/4.x/index.html>`_ for the
-    previous stable release.
 
 Welcome to the **NURBS-Python (geomdl) v5.x** documentation! NURBS-Python is a pure Python, object-oriented B-Spline
 and NURBS library. It is compatible with Python versions 2.7.x, 3.4.x and later. It supports rational and non-rational
