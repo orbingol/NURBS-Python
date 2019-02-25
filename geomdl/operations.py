@@ -586,6 +586,36 @@ def refine_knotvector(obj, param, **kwargs):
         # Refines the knot vector on the w-direction of a volume
         operations.refine_knotvector(volume, [False, False, True])
 
+    An optional ``density`` argument can be used to automate extra knot insertions. If ``density`` is bigger than 1,
+    then the algorithm finds the middle knots in each internal knot span to increase the number of knots to be
+    refined.
+
+    **Example**: Let the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots from the start and end
+    are removed:
+
+    * If ``density`` is 1, knot vector to be refined is ``[0, 2, 4]``
+    * If ``density`` is 2, knot vector to be refined is ``[0, 1, 2, 3, 4]``
+    * If ``density`` is 3, knot vector to be refined is ``[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]``
+
+    The following code snippet illustrates the usage of ``density`` argument:
+
+    .. code-block:: python
+
+        # Refines the knot vector of a curve with density = 3
+        operations.refine_knotvector(curve, [True], density=[3])
+
+        # Refines the knot vectors of a surface with density for
+        # u-dir = 2 and v-dir = 3
+        operations.refine_knotvector(surface, [True, True], density=[2, 3])
+
+        # Refines the knot vectors of a volume with density for
+        # u-dir = 1, v-dir = 3 and w-dir = 2
+        operations.refine_knotvector(volume, [True, True, True], density=[1, 3, 2])
+
+    Keyword Arguments:
+        * ``check_num``: enables/disables operation validity checks. *Default: True*
+        * ``density``: Density of the knots to be refined
+
     :param obj: spline geometry
     :type obj: abstract.SplineGeometry
     :param param: parametric dimensions to be refined in [u, v, w] format
@@ -594,10 +624,14 @@ def refine_knotvector(obj, param, **kwargs):
     """
     # Get keyword arguments
     check_num = kwargs.get('check_num', True)  # enables/disables input validity checks
+    density = kwargs.get('density', [1 for _ in range(obj.pdimension)])  # knot refinement density
 
     if check_num:
         if not isinstance(param, (list, tuple)):
             raise GeomdlException("Parametric dimensions argument (param) must be a list or a tuple")
+
+        if not isinstance(density, (list, tuple)):
+            raise GeomdlException("Density argument (param) must be a list or a tuple")
 
         if len(param) != obj.pdimension:
             raise GeomdlException("The length of the param array must be equal to the number of parametric dimensions",
@@ -607,7 +641,7 @@ def refine_knotvector(obj, param, **kwargs):
     if isinstance(obj, abstract.Curve):
         if param[0] is True:
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            new_cpts, new_kv = helpers.knot_refinement(obj.degree, obj.knotvector, cpts, **kwargs)
+            new_cpts, new_kv = helpers.knot_refinement(obj.degree, obj.knotvector, cpts, density=density[0])
             obj.set_ctrlpts(new_cpts)
             obj.knotvector = new_kv
 
@@ -620,7 +654,7 @@ def refine_knotvector(obj, param, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for v in range(obj.ctrlpts_size_v):
                 ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
-                ptmp, new_kv = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, ccu, **kwargs)
+                ptmp, new_kv = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, ccu, density=density[0])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
@@ -636,7 +670,7 @@ def refine_knotvector(obj, param, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for u in range(obj.ctrlpts_size_u):
                 ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
-                ptmp, new_kv = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, ccv, **kwargs)
+                ptmp, new_kv = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, ccv, density=density[1])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
@@ -662,7 +696,7 @@ def refine_knotvector(obj, param, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, cpt2d, **kwargs)
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, cpt2d, density=density[0])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
@@ -693,7 +727,7 @@ def refine_knotvector(obj, param, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, cpt2d, **kwargs)
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, cpt2d, density=density[1])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
@@ -721,7 +755,7 @@ def refine_knotvector(obj, param, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_w, obj.knotvector_w, cpt2d, **kwargs)
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_w, obj.knotvector_w, cpt2d, density=density[2])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
