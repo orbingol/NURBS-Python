@@ -42,6 +42,8 @@ Triangular Tessellator
 Trim Tessellator
 ================
 
+.. versionadded:: 5.0
+
 .. autoclass:: geomdl.tessellate.TrimTessellate
     :members:
     :undoc-members:
