@@ -2,7 +2,7 @@
 
 ## v5.1.1 released on 2019-02-26
 
-* Fix a bug while taking the surface derivative
+* Fixed a bug while computing the surface derivative
 
 ## v5.1.0 released on 2019-02-25
 
