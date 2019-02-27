@@ -1,5 +1,9 @@
 # geomdl Changelog
 
+## v5.1.1 released on 2019-02-26
+
+* Fix a bug while taking the surface derivative
+
 ## v5.1.0 released on 2019-02-25
 
 * Added `alpha` configuration directive to `VisMPL` to control opacity of the evaluated points
