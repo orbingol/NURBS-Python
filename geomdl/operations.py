@@ -1276,11 +1276,10 @@ def derivative_surface(obj):
     d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
     pkl = evaluators.SurfaceEvaluator2.derivatives_ctrlpts(r1=0, r2=obj.ctrlpts_size_u - 1,
                                                            s1=0, s2=obj.ctrlpts_size_v - 1,
-                                                           degree_u=obj.degree_u, degree_v=obj.degree_v,
-                                                           ctrlpts_size_u=obj.ctrlpts_size_u,
-                                                           ctrlpts_size_v=obj.ctrlpts_size_v,
-                                                           knotvector_u=obj.knotvector_u, knotvector_v=obj.knotvector_v,
-                                                           ctrlpts=obj.ctrlpts2d,
+                                                           degree=(obj.degree_u, obj.degree_v),
+                                                           ctrlpts_size=(obj.ctrlpts_size_u,obj.ctrlpts_size_v),
+                                                           knotvector=(obj.knotvector_u, obj.knotvector_v),
+                                                           ctrlpts=obj.ctrlpts,
                                                            dimension=obj.dimension,
                                                            deriv_order=d)
 
