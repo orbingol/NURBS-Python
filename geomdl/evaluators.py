@@ -371,7 +371,8 @@ class SurfaceEvaluator(AbstractEvaluator):
                     temp[s][:] = [tmp + (basisdrv[0][k][r] * cp) for tmp, cp in
                                   zip(temp[s], ctrlpts[cv + (ctrlpts_size[1] * cu)])]
 
-            dd = min(deriv_order - k, d[1])
+            # dd = min(deriv_order - k, d[1])
+            dd = min(deriv_order, d[1])
             for l in range(0, dd + 1):
                 for s in range(0, degree[1] + 1):
                     SKL[k][l][:] = [elem + (basisdrv[1][l][s] * tmp) for elem, tmp in zip(SKL[k][l], temp[s])]
@@ -548,7 +549,8 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
 
         # Algorithm A4.4
         for k in range(0, deriv_order + 1):
-            for l in range(0, deriv_order - k + 1):
+            # for l in range(0, deriv_order - k + 1):
+            for l in range(0, deriv_order + 1):
                 # Deep copying might seem a little overkill but we also want to avoid same pointer issues too
                 v = copy.deepcopy(SKLw[k][l])
 
