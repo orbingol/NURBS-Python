@@ -436,7 +436,6 @@ class Surface(abstract.Surface):
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
 
-
     @property
     def ctrlpts2d(self):
         """ 2-dimensional array of control points.
@@ -737,7 +736,7 @@ class Surface(abstract.Surface):
         return self._evaluator.derivatives(parameter=(u, v), deriv_order=order,
                                            degree=self._degree, knotvector=self._knot_vector,
                                            ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                           dimension=self.dimension)
+                                           dimension=self._dimension)
 
     def insert_knot(self, u=None, v=None, **kwargs):
         """ Inserts knot(s) on the u- or v-directions
