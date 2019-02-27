@@ -56,6 +56,7 @@ This documentation is organized into a couple sections:
     modules_visualization
     modules_cli
     modules_shapes
+    modules_rhino
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
