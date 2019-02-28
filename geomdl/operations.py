@@ -648,6 +648,8 @@ def refine_knotvector(obj, param, **kwargs):
         if param[0] > 0:
             # Get curves
             new_cpts = []
+            new_cpts_size = 0
+            new_kv = []
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for v in range(obj.ctrlpts_size_v):
                 ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
@@ -664,6 +666,8 @@ def refine_knotvector(obj, param, **kwargs):
         if param[1] > 0:
             # Get curves
             new_cpts = []
+            new_cpts_size = 0
+            new_kv = []
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for u in range(obj.ctrlpts_size_u):
                 ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
