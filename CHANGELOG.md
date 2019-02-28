@@ -1,5 +1,10 @@
 # geomdl Changelog
 
+## v5.1.2 released on 2019-02-28
+
+* Updated surface derivative algorithm to fill the return array completely
+* Fixed variable initialization issue causing warnings during cython compilation
+
 ## v5.1.1 released on 2019-02-26
 
 * Fixed a bug while computing the surface derivative
