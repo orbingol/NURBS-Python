@@ -66,6 +66,7 @@ class InstallCommand(install_command):
     user_options = install_command.user_options + [
         ('use-cython', None, 'Cythonize and compile geomdl.core'),
         ('use-source', None, 'Compile geomdl.core from the source files'),
+        ('core-only', None, 'Compile and install geomdl.core only'),
     ]
 
     def initialize_options(self):
@@ -109,7 +110,7 @@ class SetuptoolsClean(clean_command):
         clean_command.run(self)
 
         # Clean setuptools-generated directories
-        st_dirs = ['dist', 'build', 'geomdl.egg-info']
+        st_dirs = ['dist', 'build', 'geomdl.egg-info', 'geomdl.core.egg-info']
 
         print("Removing setuptools-generated directories")
         for d in st_dirs:
@@ -179,15 +180,29 @@ def in_argv(arg_list):
     return False
 
 
+# Define setup.py commands to activate Cython compilation
 possible_cmds = ['install', 'build', 'bdist']
-packages = ['geomdl', 'geomdl.visualization']
 
-# Cython and compiled C module options
+# Use geomdl.core package only
+if "--core-only" in sys.argv:
+    package_name = "geomdl.core"
+    package_dir = "geomdl/core"
+    packages = []
+    sys.argv.remove('--core-only')
+    sys.argv.append('--use-cython')
+else:
+    package_name = package_dir = "geomdl"
+    packages = ['geomdl', 'geomdl.visualization']
+
+# geomdl.core compilation
 # Ref: https://gist.github.com/ctokheim/6c34dc1d672afca0676a
+
+# Use already Cythonized C code
 if in_argv(possible_cmds) and '--use-source' in sys.argv:
     BUILD_FROM_SOURCE = True
     sys.argv.remove('--use-source')
 
+# Use Cython to (re)generate C code (overrides "--use-source")
 if in_argv(possible_cmds) and '--use-cython' in sys.argv:
     # Try to import Cython
     try:
@@ -196,6 +211,7 @@ if in_argv(possible_cmds) and '--use-cython' in sys.argv:
         raise ImportError("Cython is required for this step. Please install it via 'pip install cython'")
 
     BUILD_FROM_CYTHON = True
+    BUILD_FROM_SOURCE = False
     sys.argv.remove('--use-cython')
 
 # We don't want to include any compiled files with the distribution
@@ -226,9 +242,10 @@ if BUILD_FROM_CYTHON or BUILD_FROM_SOURCE:
     # Add Cython-compiled module to the packages list
     packages.append('geomdl.core')
 
+# Input for setuptools.setup
 data = dict(
-    name='geomdl',
-    version=get_property('__version__', 'geomdl'),
+    name=package_name,
+    version=get_property('__version__', package_dir),
     description='Object-oriented B-Spline and NURBS evaluation library',
     long_description=read('DESCRIPTION.rst'),
     license='MIT',
