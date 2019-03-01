@@ -165,8 +165,8 @@ def make_dir(project, gen_init_py=True):
     # We need a __init__.py file inside the directory
     if gen_init_py:
         with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
-            fp.write('__version__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
             fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
+            fp.write('__author__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
             fp.write('__license__ = "' + str(get_property('__license__', 'geomdl')) + '"\n')
 
 
