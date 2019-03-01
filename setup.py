@@ -155,7 +155,7 @@ def copy_files(src, ext, dst):
             shutil.copy(f_path, dst_path)
 
 
-def make_dir(project, gen_init_py=True):
+def make_dir(project):
     """ Creates the project directory for compiled modules. """
     project_path = os.path.join(os.path.dirname(__file__), project)
     # Delete the directory and the files inside it
@@ -164,11 +164,10 @@ def make_dir(project, gen_init_py=True):
     # Create the directory
     os.mkdir(project_path)
     # We need a __init__.py file inside the directory
-    if gen_init_py:
-        with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
-            fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
-            fp.write('__author__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
-            fp.write('__license__ = "' + str(get_property('__license__', 'geomdl')) + '"\n')
+    with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
+        fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
+        fp.write('__author__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
+        fp.write('__license__ = "' + str(get_property('__license__', 'geomdl')) + '"\n')
 
 
 def in_argv(arg_list):
