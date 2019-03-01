@@ -8,6 +8,7 @@ build/
 dist/
 wheelhouse/
 geomdl.egg-info/*
+geomdl.core.egg-info/*
 docs/_build
 docs/_static
 geomdl/core
