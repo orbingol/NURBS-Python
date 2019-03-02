@@ -12,6 +12,7 @@ from . import abstract
 from . import multi
 from . import compatibility
 from . import utilities
+from . import _shortcuts as gen
 from .exceptions import GeomdlException
 
 
@@ -120,7 +121,7 @@ def import_surf_mesh(file_name):
         raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
 
     # Create a NURBS surface instance and fill with the data read from mesh file
-    surf = NURBS.Surface()
+    surf = gen.generate_nurbs_surface()
 
     # 2nd line is the degrees
     surf.degree_u = int(content[1][0])
@@ -171,7 +172,7 @@ def import_vol_mesh(file_name):
         raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
 
     # Create a NURBS surface instance and fill with the data read from mesh file
-    vol = NURBS.Volume()
+    vol = gen.generate_nurbs_volume()
 
     # 2nd line is the degrees
     vol.degree_u = int(content[1][0])
@@ -209,7 +210,7 @@ def import_vol_mesh(file_name):
 
 
 def import_dict_crv(data):
-    shape = NURBS.Curve()
+    shape = gen.generate_nurbs_curve()
 
     # Mandatory keys
     try:
@@ -246,7 +247,7 @@ def export_dict_crv(obj):
 
 
 def import_dict_surf(data):
-    shape = NURBS.Surface()
+    shape = gen.generate_nurbs_surface()
 
     # Mandatory keys
     try:
@@ -291,7 +292,7 @@ def export_dict_surf(obj):
 
 
 def import_dict_vol(data):
-    shape = NURBS.Volume()
+    shape = gen.generate_nurbs_volume()
 
     # Mandatory keys
     try:
