@@ -287,7 +287,7 @@ The following example illustrates a B-spline volume:
 
     shape:
       type: volume  # type of the geometry
-      count: 1  # number of surfaces in "data" list (optional)
+      count: 1  # number of volumes in "data" list (optional)
       data:
         - rational: False  # rational or non-rational (optional)
           degree_u: 1  # degree of the u-direction
