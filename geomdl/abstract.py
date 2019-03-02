@@ -35,6 +35,7 @@ class Geometry(object):
     """
 
     def __init__(self, **kwargs):
+        self._geometry_type = "default"  # geometry type
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._eval_points = self._init_array()  # evaluated points
@@ -86,6 +87,18 @@ class Geometry(object):
         if callable(self._array_type):
             return self._array_type()
         return list()
+
+    @property
+    def type(self):
+        """ Geometry type
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the geometry type
+        :type: str
+        """
+        return self._geometry_type
 
     @property
     def name(self):
