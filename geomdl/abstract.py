@@ -171,6 +171,7 @@ class SplineGeometry(Geometry):
 
     def __init__(self, **kwargs):
         super(SplineGeometry, self).__init__(**kwargs)
+        self._geometry_type = "spline"  # geometry type
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._rational = False  # defines whether the B-spline object is rational or not
