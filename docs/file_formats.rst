@@ -243,29 +243,29 @@ The following example illustrates a NURBS surface:
               - type: spline  # type of the trim curve
                 rational: False  # rational or non-rational (optional)
                 degree: 2  # degree of the 1st trim
-                knotvector: [ ... ]  # knot vector of the 1st trim
+                knotvector: [ ... ]  # knot vector of the 1st trim curve
                 control_points:
-                  points:  # cartesian coordinates of the 2nd trim
-                    - [x1, y1]  # expected to be 2-dimensional
-                    - [x2, y2]
+                  points:  # parametric coordinates of the 1st trim curve
+                    - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
+                    - [u2, v2]
                     - ...
               - type: spline  # type of the 2nd trim curve
                 rational: True  # rational or non-rational (optional)
                 degree: 1  # degree of the 2nd trim
-                knotvector: [ ... ]  # knot vector of the 2nd trim
+                knotvector: [ ... ]  # knot vector of the 2nd trim curve
                 control_points:
-                  points:  # cartesian coordinates of the 2nd trim
-                    - [x1, y1]  # expected to be 2-dimensional
-                    - [x2, y2]
+                  points:  # parametric coordinates of the 2nd trim curve
+                    - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
+                    - [u2, v2]
                     - ...
                   weights:  # weights vector of the 2nd trim
                     - 1.0
                     - 1.0
                     - ...
               - type: freeform  # type of the 3rd trim curve
-                points:  # points that belong of the freeform geometry
-                  - [x1, y1]
-                  - [x2, y2]
+                points:  # parametric coordinates of the 3rd trim curve
+                  - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
+                  - [u2, v2]
                   - ...
 
 * **Shape section:** This section contains the single or multi NURBS data. ``type`` and ``data`` sections are mandatory.
