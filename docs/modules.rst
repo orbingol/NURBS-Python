@@ -7,6 +7,7 @@ The following modules are included in the core library:
     :maxdepth: 1
 
     module_abstract
+    module_freeform
     module_bspline
     module_nurbs
     module_evaluators
