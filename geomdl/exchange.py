@@ -71,7 +71,7 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     :type two_dimensional: bool
     :return: list of control points, if two_dimensional, then also returns size in u- and v-directions
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     # Read file
     content = exch.read_file(file_name)
@@ -104,11 +104,11 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     :type file_name: str
     :param two_dimensional: type of the text file (only works for Surface objects)
     :type two_dimensional: bool
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     # Check if the user has set any control points
     if obj.ctrlpts is None or len(obj.ctrlpts) == 0:
-        raise ValueError("There are no control points to save!")
+        raise exch.GeomdlException("There are no control points to save!")
 
     # Check the usage of two_dimensional flag
     if isinstance(obj, abstract.Curve) and two_dimensional:
@@ -146,7 +146,7 @@ def import_csv(file_name, **kwargs):
     :type file_name: str
     :return: list of control points
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     # File delimiters
     sep = kwargs.get('separator', ",")
@@ -165,10 +165,10 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     if not isinstance(obj, (abstract.Curve, abstract.Surface)):
-        raise ValueError("Input object should be a curve or a surface")
+        raise exch.GeomdlException("Input object should be a curve or a surface")
 
     # Pick correct points from the object
     if point_type == 'ctrlpts':
@@ -176,7 +176,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
         points = obj.evalpts
     else:
-        raise ValueError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
+        raise exch.GeomdlException("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
     # Prepare CSV header
     dim = len(points[0])
@@ -207,7 +207,7 @@ def import_cfg(file_name, **kwargs):
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     def callback(data):
         return libconf.loads(data)
@@ -216,8 +216,7 @@ def import_cfg(file_name, **kwargs):
     try:
         import libconf
     except ImportError:
-        print("Please install 'libconf' package to use libconfig format: pip install libconf")
-        return
+        raise exch.GeomdlException("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -245,9 +244,8 @@ def export_cfg(obj, file_name):
     :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
-
     def callback(data):
         return libconf.dumps(data)
 
@@ -255,8 +253,7 @@ def export_cfg(obj, file_name):
     try:
         import libconf
     except ImportError:
-        print("Please install 'libconf' package to use libconfig format: pip install libconf")
-        return
+        raise exch.GeomdlException("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Export data
     exported_data = exch.export_dict_str(obj=obj, callback=callback)
@@ -279,7 +276,7 @@ def import_yaml(file_name, **kwargs):
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     def callback(data):
         yaml = YAML()
@@ -289,8 +286,7 @@ def import_yaml(file_name, **kwargs):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        print("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
-        return
+        raise exch.GeomdlException("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -318,7 +314,7 @@ def export_yaml(obj, file_name):
     :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     def callback(data):
         # Ref: https://yaml.readthedocs.io/en/latest/example.html#output-of-dump-as-a-string
@@ -331,8 +327,7 @@ def export_yaml(obj, file_name):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        print("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
-        return
+        raise exch.GeomdlException("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
 
     # Export data
     exported_data = exch.export_dict_str(obj=obj, callback=callback)
@@ -351,7 +346,7 @@ def import_json(file_name, **kwargs):
     :type file_name: str
     :return: a list of NURBS curve(s) or surface(s)
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     def callback(data):
         return json.loads(data)
@@ -378,7 +373,7 @@ def export_json(obj, file_name):
     :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     def callback(data):
         return json.dumps(data, indent=4)
@@ -479,7 +474,7 @@ def export_obj(surface, file_name, **kwargs):
     :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     content = export_obj_str(surface, **kwargs)
     return exch.write_file(file_name, content)
@@ -507,9 +502,9 @@ def export_obj_str(surface, **kwargs):
 
     # Input validity checking
     if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
-        raise TypeError("Can only export surfaces")
+        raise exch.GeomdlException("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
-        raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
+        raise exch.GeomdlException("Vertex spacing must be an integer value and it must be bigger than zero")
 
     # Create the string and start adding triangulated surface points
     line = "# Generated by geomdl\n"
@@ -593,7 +588,7 @@ def export_stl(surface, file_name, **kwargs):
     :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     binary = kwargs.get('binary', True)
     if 'binary' in kwargs:
@@ -621,9 +616,9 @@ def export_stl_str(surface, **kwargs):
 
     # Input validity checking
     if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
-        raise TypeError("Can only export surfaces")
+        raise exch.GeomdlException("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
-        raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
+        raise exch.GeomdlException("Vertex spacing must be an integer value and it must be bigger than zero")
 
     triangles_list = []
     for srf in surface:
@@ -678,7 +673,7 @@ def export_off(surface, file_name, **kwargs):
     :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     content = export_off_str(surface, **kwargs)
     return exch.write_file(file_name, content)
@@ -702,9 +697,9 @@ def export_off_str(surface, **kwargs):
 
     # Input validity checking
     if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
-        raise TypeError("Can only export surfaces")
+        raise exch.GeomdlException("Can only export surfaces")
     if vertex_spacing < 1 or not isinstance(vertex_spacing, int):
-        raise ValueError("Vertex spacing must be an integer value and it must be bigger than zero")
+        raise exch.GeomdlException("Vertex spacing must be an integer value and it must be bigger than zero")
 
     # Count the vertices to update the face numbers correctly
     vertex_offset = 0
@@ -776,7 +771,7 @@ def import_smesh(file):
     :type file: str
     :return: list of NURBS surfaces
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     imported_elements = []
     if os.path.isfile(file):
@@ -786,7 +781,7 @@ def import_smesh(file):
         for f in files:
             imported_elements.append(exch.import_surf_mesh(f))
     else:
-        raise IOError("Input is not a file or a directory")
+        raise exch.GeomdlException("Input is not a file or a directory")
     return imported_elements
 
 
@@ -800,10 +795,10 @@ def export_smesh(surface, file_name, **kwargs):
     :type surface: abstract.Surface or multi.SurfaceContainer
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     if not isinstance(surface, (abstract.Surface, multi.SurfaceContainer)):
-        raise TypeError("Can only work with single or multi surfaces")
+        raise exch.GeomdlException("Can only work with single or multi surfaces")
 
     # Get keyword arguments
     decimals = kwargs.get('decimals', 18)
@@ -846,7 +841,7 @@ def import_vmesh(file):
     :type file: str
     :return: list of NURBS volumes
     :rtype: list
-    :raises IOError: an error occurred reading the file
+    :raises GeomdlException: an error occurred reading the file
     """
     imported_elements = []
     if os.path.isfile(file):
@@ -856,7 +851,7 @@ def import_vmesh(file):
         for f in files:
             imported_elements.append(exch.import_vol_mesh(f))
     else:
-        raise IOError("Input is not a file or a directory")
+        raise exch.GeomdlException("Input is not a file or a directory")
     return imported_elements
 
 
@@ -868,10 +863,10 @@ def export_vmesh(volume, file_name, **kwargs):
     :type volume: abstract.Volume
     :param file_name: name of the output file
     :type file_name: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     if not isinstance(volume, abstract.Volume):
-        raise TypeError("Can only work with volumes")
+        raise exch.GeomdlException("Can only work with volumes")
 
     # Get keyword arguments
     decimals = kwargs.get('decimals', 18)

@@ -8,7 +8,11 @@
 """
 
 import math
-from . import abstract, NURBS, multi, compatibility, utilities
+from . import abstract
+from . import multi
+from . import compatibility
+from . import utilities
+from .exceptions import GeomdlException
 
 
 # Initialize an empty __all__ for controlling imports
@@ -37,8 +41,7 @@ def process_template(file_src):
     try:
         import jinja2
     except ImportError:
-        print("Please install 'jinja2' package to use templated input: pip install jinja2")
-        return
+        raise GeomdlException("Please install 'jinja2' package to use templated input: pip install jinja2")
 
     # Replace jinja2 template tags for compatibility
     fsrc = file_src.replace("{%", "<%").replace("%}", "%>").replace("{{", "<{").replace("}}", "}>")
@@ -76,10 +79,9 @@ def read_file(file_name, **kwargs):
             content = fp.read() if callback is None else callback(fp)
         return content
     except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+        raise GeomdlException("An error occurred during reading '{0}': {1}".format(file_name, e.args[-1]))
+    except Exception as e:
+        raise GeomdlException("An error occurred: {0}".format(str(e)))
 
 
 def write_file(file_name, content, **kwargs):
@@ -93,10 +95,9 @@ def write_file(file_name, content, **kwargs):
                 callback(fp, content)
         return True
     except IOError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
+        raise GeomdlException("An error occurred during writing '{0}': {1}".format(file_name, e.args[-1]))
+    except Exception as e:
+        raise GeomdlException("An error occurred: {0}".format(str(e)))
 
 
 def import_surf_mesh(file_name):
@@ -257,7 +258,7 @@ def import_dict_surf(data):
         shape.knotvector_u = data['knotvector_u']
         shape.knotvector_v = data['knotvector_v']
     except KeyError as e:
-        raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
+        raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
 
     # Optional keys
     if 'weights' in data['control_points']:
@@ -305,7 +306,7 @@ def import_dict_vol(data):
         shape.knotvector_v = data['knotvector_v']
         shape.knotvector_w = data['knotvector_w']
     except KeyError as e:
-        raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
+        raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
 
     # Optional keys
     if 'weights' in data['control_points']:
@@ -446,7 +447,7 @@ def export_dict_str(obj, callback):
         data = [export_dict_vol(o) for o in obj]
         count = len(obj)
     else:
-        raise NotADirectoryError("Object type is not defined for dict export")
+        raise GeomdlException("Cannot export input type as a dict")
 
     # Create the dictionary
     data = dict(
