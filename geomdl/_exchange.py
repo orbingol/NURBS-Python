@@ -246,6 +246,23 @@ def export_dict_crv(obj):
     return data
 
 
+def import_dict_ff(data):
+    shape = gen.generate_freeform()
+
+    # Mandatory keys
+    try:
+        shape.evaluate(points=data['points'])
+    except KeyError as e:
+        raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
+
+    return shape
+
+
+def export_dict_ff(obj):
+    data = dict(points=obj.evalpts)
+    return data
+
+
 def import_dict_surf(data):
     shape = gen.generate_nurbs_surface()
 
@@ -269,6 +286,15 @@ def import_dict_surf(data):
     if 'name' in data:
         shape.name = data['name']
 
+    # Trim curves
+    if 'trims' in data:
+        trim_curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff)
+        trim_curves = []
+        for trim in data['trims']['data']:
+            if trim['type'] in trim_curve_typemap:
+                tcurve = trim_curve_typemap[trim['type']](trim)
+                trim_curves.append(tcurve)
+
     # Return surface
     return shape
 
@@ -288,6 +314,17 @@ def export_dict_surf(obj):
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
+
+    # Trim curves
+    if obj.trims:
+        trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff)
+        trim_curves = []
+        for trim in obj.trims:
+            if trim.type in trim_curve_typemap:
+                tdata = trim_curve_typemap[trim.type](trim)
+                trim_curves.append(tdata)
+        data['trims'] = trim_curves
+
     return data
 
 
