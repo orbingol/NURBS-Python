@@ -118,12 +118,22 @@ class SetuptoolsClean(clean_command):
             shutil.rmtree(d_path, ignore_errors=True)
 
         # Find list of files with .c extension
-        flist, flist_path = read_files("geomdl", ".c")
+        flist_c, flist_c_path = read_files("geomdl", ".c")
 
         # Clean files with .c extensions
-        if flist_path:
-            print("Removing Cython-generated source files")
-            for f in flist_path:
+        if flist_c_path:
+            print("Removing Cython-generated source files with .c extension")
+            for f in flist_c_path:
+                f_path = os.path.join(os.path.dirname(__file__), f)
+                os.unlink(f_path)
+
+        # Find list of files with .cpp extension
+        flist_cpp, flist_cpp_path = read_files("geomdl", ".cpp")
+
+        # Clean files with .cpp extensions
+        if flist_cpp_path:
+            print("Removing Cython-generated source files with .cpp extension")
+            for f in flist_cpp_path:
                 f_path = os.path.join(os.path.dirname(__file__), f)
                 os.unlink(f_path)
 
