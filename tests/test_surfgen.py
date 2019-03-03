@@ -5,7 +5,7 @@
 
     Tests geomdl.GPGen module. Requires "pytest" to run.
 """
-import os
+
 import pytest
 from geomdl import CPGen
 

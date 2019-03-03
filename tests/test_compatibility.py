@@ -5,6 +5,7 @@
 
     Tests geomdl.compatibility module. Requires "pytest" to run.
 """
+
 from geomdl import compatibility
 
 P = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
