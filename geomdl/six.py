@@ -752,7 +752,7 @@ if print_ is None:
             if not isinstance(data, basestring):
                 data = str(data)
             # If the file has an encoding, encode unicode with it.
-            if (isinstance(fp, file) and
+            if (hasattr(fp, "read") and
                     isinstance(data, unicode) and
                     fp.encoding is not None):
                 errors = getattr(fp, "errors", None)
@@ -909,7 +909,6 @@ def ensure_text(s, encoding='utf-8', errors='strict'):
         return s
     else:
         raise TypeError("not expecting type '%s'" % type(s))
-
 
 
 def python_2_unicode_compatible(klass):
