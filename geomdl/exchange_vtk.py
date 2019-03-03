@@ -8,7 +8,7 @@
 """
 
 import warnings
-from geomdl import abstract
+from . import abstract
 from . import _exchange as exch
 from ._utilities import export
 
