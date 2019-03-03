@@ -24,12 +24,12 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
     :type point_type: str
     :return: contents of the VTK Polydata file
     :rtype: str
-    :raises ValueError: input object is not an instance of abstract shapes
-    :raises ValueError: point type is not supported
+    :raises GeomdlException: input object is not an instance of abstract shapes
+    :raises GeomdlException: point type is not supported
     :raises UserWarning: file title is bigger than 256 characters
     """
     if not isinstance(obj, (abstract.Curve, abstract.Surface)):
-        raise ValueError("Input object should be a curve or a surface")
+        raise exch.GeomdlException("Input object should be a curve or a surface")
 
     # Define possible point types
     pt_types = dict(
@@ -40,7 +40,8 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
     if point_type in pt_types:
         points = pt_types[point_type]
     else:
-        raise ValueError("Please choose a valid point type option. Possible types:", ", ".join(pt_types.keys()))
+        raise exch.GeomdlException("Please choose a valid point type option. " +
+                                   "Possible types:", ", ".join(pt_types.keys()))
 
     # Get file title
     file_title = kwargs.get('title', repr(obj))
@@ -78,7 +79,7 @@ def export_polydata(obj, file_name, point_type='evalpts', **kwargs):
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
     :type point_type: str
-    :raises IOError: an error occurred writing the file
+    :raises GeomdlException: an error occurred writing the file
     """
     content = export_polydata_str(obj, point_type, **kwargs)
     return exch.write_file(file_name, content)
