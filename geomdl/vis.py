@@ -9,7 +9,6 @@
 
 import abc
 import six
-from typing import Any, Sequence, List
 
 
 # Initialize an empty __all__ for controlling imports
@@ -24,7 +23,6 @@ class VisConfigAbstract(object):
     """
 
     def __init__(self, **kwargs):
-        # type: (**Any) -> None
         pass
 
 
@@ -39,21 +37,18 @@ class VisAbstract(object):
     """
 
     def __init__(self, config):
-        # type: (VisConfigAbstract()) -> None
         if not isinstance(config, VisConfigAbstract):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._user_config = config
         self._module_config = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
-        self._plots = []  # type: List[dict]
+        self._plots = []
         self._ctrlpts_offset = 0.0
 
     def clear(self):
-        # type: () -> None
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
     def add(self, ptsarr, plot_type, name="", color=""):
-        # type: (Sequence[Sequence[float]], str, str, str) -> None
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control or evaluated points
@@ -74,7 +69,6 @@ class VisAbstract(object):
 
     @property
     def vconf(self):
-        # type: () -> VisConfigAbstract()
         """ User configuration class for visualization
 
         :getter: Gets the user configuration class
@@ -84,7 +78,6 @@ class VisAbstract(object):
 
     @property
     def mconf(self):
-        # type: () -> dict
         """ Visualization module internal configuration directives
 
         This property controls the internal configuration of the visualization module. It is for advanced use and
@@ -121,7 +114,6 @@ class VisAbstract(object):
 
     @mconf.setter
     def mconf(self, value):
-        # type: (Sequence[str]) -> None
         if not isinstance(value[0], str) or not isinstance(value[1], str):
             raise TypeError("Plot type and its value should be string type")
 
@@ -133,7 +125,6 @@ class VisAbstract(object):
 
     @property
     def ctrlpts_offset(self):
-        # type: () -> float
         """ Defines an offset value for the control points grid plots
 
         Only makes sense to use with surfaces with dense control points grid.
@@ -146,11 +137,9 @@ class VisAbstract(object):
 
     @ctrlpts_offset.setter
     def ctrlpts_offset(self, offset_value):
-        # type: (float) -> None
         self._ctrlpts_offset = float(offset_value)
 
     def size(self, plot_type):
-        # type: (str) -> int
         """ Returns the number of plots defined by the plot type.
 
         :param plot_type: plot type
@@ -165,7 +154,6 @@ class VisAbstract(object):
         return count
 
     def animate(self, **kwargs):
-        # type: (**Any) -> None
         """ Generates animated plots (if supported).
 
         If the implemented visualization module supports animations, this function will create an animated figure.
@@ -176,7 +164,6 @@ class VisAbstract(object):
 
     @abc.abstractmethod
     def render(self, **kwargs):
-        # type: (**Any) -> None
         """ Abstract method for rendering plots of the point sets.
 
         This method must be implemented in all subclasses of ``VisAbstract`` class.

@@ -40,7 +40,7 @@ class AbstractContainer(object):
         self._iter_index = 0  # iterator index
         self._elements = []  # list of elements contained
         self._vis_component = None  # visualization component
-        self._instance = None  # type of the initial element
+        self._instance = None  # instance type of the elements in the container object
 
     def __iter__(self):
         self._iter_index = 0

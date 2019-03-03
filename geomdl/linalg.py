@@ -9,7 +9,6 @@
 
 import os
 import math
-from typing import cast, Sequence, List, Tuple, Generator
 from . import _linalg
 try:
     from functools import lru_cache
@@ -18,7 +17,6 @@ except ImportError:
 
 
 def linspace(start, stop, num, decimals=18):
-    # type: (float, float, int, int) -> List[float]
     """ Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
@@ -48,7 +46,6 @@ def linspace(start, stop, num, decimals=18):
 
 
 def vector_cross(vector1, vector2):
-    # type: (Sequence[float], Sequence[float]) -> List[float]
     """ Computes the cross-product of the input vectors.
 
     :param vector1: input vector 1
@@ -72,12 +69,12 @@ def vector_cross(vector1, vector2):
 
     # Convert 2-D to 3-D, if necessary
     if len(vector1) == 2:
-        v1 = cast(Sequence, [float(v) for v in vector1] + [0.0])
+        v1 = [float(v) for v in vector1] + [0.0]
     else:
         v1 = vector1
 
     if len(vector2) == 2:
-        v2 = cast(Sequence, [float(v) for v in vector2] + [0.0])
+        v2 = [float(v) for v in vector2] + [0.0]
     else:
         v2 = vector2
 
@@ -91,7 +88,6 @@ def vector_cross(vector1, vector2):
 
 
 def vector_dot(vector1, vector2):
-    # type: (Sequence[float], Sequence[float]) -> float
     """ Computes the dot-product of the input vectors.
 
     :param vector1: input vector 1
@@ -120,7 +116,6 @@ def vector_dot(vector1, vector2):
 
 
 def vector_multiply(vector_in, scalar):
-    # type: (Sequence[float], float) -> List[float]
     """ Multiplies the vector with a scalar value.
 
     This operation is also called *vector scaling*.
@@ -137,7 +132,6 @@ def vector_multiply(vector_in, scalar):
 
 
 def vector_sum(vector1, vector2, coeff=1.0):
-    # type: (Sequence[float], Sequence[float], float) -> List[float]
     """ Sums the vectors.
 
     This function computes the result of the vector operation :math:`\\overline{v}_{1} + c * \\overline{v}_{2}`, where
@@ -157,7 +151,6 @@ def vector_sum(vector1, vector2, coeff=1.0):
 
 
 def vector_normalize(vector_in, decimals=18):
-    # type: (Sequence[float], int) -> List[float]
     """ Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
@@ -192,7 +185,6 @@ def vector_normalize(vector_in, decimals=18):
 
 
 def vector_generate(start_pt, end_pt, normalize=False):
-    # type: (Sequence[float], Sequence[float], bool) -> List[float]
     """ Generates a vector from 2 input points.
 
     :param start_pt: start point of the vector
@@ -223,7 +215,6 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
 
 def vector_mean(*args):
-    # type: (*Sequence[float]) -> List[float]
     """ Computes the mean (average) of a list of vectors.
 
     The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
@@ -258,7 +249,6 @@ def vector_mean(*args):
 
 
 def vector_magnitude(vector_in):
-    # type: (Sequence[float]) -> float
     """ Computes the magnitude of the input vector.
 
     :param vector_in: input vector
@@ -273,7 +263,6 @@ def vector_magnitude(vector_in):
 
 
 def vector_angle_between(vector1, vector2, **kwargs):
-    # type: (Sequence[float], Sequence[float], **bool) -> float
     """ Computes the angle between the two input vectors.
 
     If the keyword argument ``degrees`` is set to *True*, then the angle will be in degrees. Otherwise, it will be
@@ -298,7 +287,6 @@ def vector_angle_between(vector1, vector2, **kwargs):
 
 
 def vector_is_zero(vector_in, tol=10e-8):
-    # type: (Sequence[float], float) -> bool
     """ Checks if the input vector is a zero vector.
 
     :param vector_in: input vector
@@ -319,7 +307,6 @@ def vector_is_zero(vector_in, tol=10e-8):
 
 
 def point_translate(point_in, vector_in):
-    # type: (Sequence[float], Sequence[float]) -> List[float]
     """ Translates the input points using the input vector.
 
     :param point_in: input point
@@ -345,7 +332,6 @@ def point_translate(point_in, vector_in):
 
 
 def point_distance(pt1, pt2):
-    # type: (Sequence[float], Sequence[float]) -> float
     """ Computes distance between two points.
 
     :param pt1: point 1
@@ -364,7 +350,6 @@ def point_distance(pt1, pt2):
 
 
 def point_mid(pt1, pt2):
-    # type: (Sequence[float], Sequence[float]) -> List[float]
     """ Computes the midpoint of the input points.
 
     :param pt1: point 1
@@ -383,7 +368,6 @@ def point_mid(pt1, pt2):
 
 
 def matrix_transpose(m):
-    # type: (Sequence[Sequence[float]]) -> Sequence[Sequence[float]]
     """ Transposes the input matrix.
 
     The input matrix :math:`m` is a 2-dimensional array.
@@ -405,7 +389,6 @@ def matrix_transpose(m):
 
 
 def matrix_multiply(m1, m2):
-    # type: (Sequence[Sequence[float]], Sequence[Sequence[float]]) -> Sequence[Sequence[float]]
     """ Matrix multiplication (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
@@ -427,7 +410,6 @@ def matrix_multiply(m1, m2):
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def binomial_coefficient(k, i):
-    # type: (int, int) -> float
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
     Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
@@ -450,7 +432,6 @@ def binomial_coefficient(k, i):
 
 
 def lu_decomposition(matrix_a):
-    # type: (Sequence[Sequence[float]]) -> Tuple[Sequence[Sequence[float]], Sequence[Sequence[float]]]
     """ LU-Factorization method using Doolittle's Method for solution of linear systems.
 
     Decomposes the matrix :math:`A` such that :math:`A = LU`.
@@ -475,7 +456,6 @@ def lu_decomposition(matrix_a):
 
 
 def forward_substitution(matrix_l, matrix_b):
-    # type: (Sequence[Sequence[float]], Sequence[float]) -> Sequence[float]
     """ Forward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ly = b` using forward substitution method
@@ -498,7 +478,6 @@ def forward_substitution(matrix_l, matrix_b):
 
 
 def backward_substitution(matrix_u, matrix_y):
-    # type: (Sequence[Sequence[float]], Sequence[float]) -> Sequence[float]
     """ Backward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ux = y` using backward substitution method
@@ -521,7 +500,6 @@ def backward_substitution(matrix_u, matrix_y):
 
 
 def frange(start, stop, step=1.0):
-    # type: (float, float, float) -> Generator
     """ Implementation of Python's ``range()`` function which works with floats.
 
     Reference to this implementation: https://stackoverflow.com/a/36091634

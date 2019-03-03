@@ -6,10 +6,7 @@ setuptools>=40.6.3
 
 # For Python 2 and 3 compatibility
 six>=1.9.0
-
-# Modules ported to older Python versions (for Python 2.7 compatibility)
 backports.functools_lru_cache>=1.5
-typing
 
 # For compiling geomdl.core module
 cython; platform_python_implementation != 'PyPy'
