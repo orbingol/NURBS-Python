@@ -9,11 +9,10 @@
 
 import abc
 import copy
-from . import six
-from ._utilities import export
+from ._utilities import add_metaclass, export
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self, *args, **kwargs):

@@ -9,14 +9,14 @@
 
 import abc
 import warnings
-from . import six
 from . import abstract
 from . import vis
 from . import voxelize
 from . import utilities
+from ._utilities import add_metaclass
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class AbstractContainer(object):
     """ Abstract class for curve and surface containers.
 

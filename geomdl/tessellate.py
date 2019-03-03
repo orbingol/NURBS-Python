@@ -8,13 +8,12 @@
 """
 
 import abc
-from . import six
 from . import utilities
 from . import _tessellate
-from ._utilities import export
+from ._utilities import add_metaclass, export
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class AbstractTessellate(object):
     """ Abstract base class for tessellation algorithms. """
 

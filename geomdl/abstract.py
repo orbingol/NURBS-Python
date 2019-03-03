@@ -9,7 +9,6 @@
 
 import copy
 import abc
-from . import six
 import warnings
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
@@ -18,9 +17,10 @@ from . import helpers
 from . import utilities
 from . import voxelize
 from .exceptions import GeomdlException
+from ._utilities import add_metaclass
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Geometry(object):
     """ Abstract base class for defining geometry elements.
 
@@ -142,7 +142,7 @@ class Geometry(object):
         pass
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class SplineGeometry(Geometry):
     """ Abstract base class for defining spline geometries.
 
@@ -450,7 +450,7 @@ class SplineGeometry(Geometry):
         pass
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Curve(SplineGeometry):
     """ Abstract base class for defining spline curves.
 
@@ -917,7 +917,7 @@ class Curve(SplineGeometry):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Surface(SplineGeometry):
     """ Abstract base class for defining spline surfaces.
 
@@ -1801,7 +1801,7 @@ class Surface(SplineGeometry):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Volume(SplineGeometry):
     """ Abstract base class for defining spline volumes.
 

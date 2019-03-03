@@ -16,6 +16,32 @@ from multiprocessing import Pool
 __all__ = []
 
 
+def add_metaclass(metaclass):
+    """ Class decorator for creating a class with a metaclass.
+
+    Taken from ``six`` library version 1.12.0. Copyright (c) 2010-2018 Benjamin Peterson.
+    ``six`` is licensed under the terms of MIT License.
+
+    Please refer to the following GitHub repository for details: https://github.com/benjaminp/six
+
+    :param metaclass: metaclass
+    """
+    def wrapper(cls):
+        orig_vars = cls.__dict__.copy()
+        slots = orig_vars.get('__slots__')
+        if slots is not None:
+            if isinstance(slots, str):
+                slots = [slots]
+            for slots_var in slots:
+                orig_vars.pop(slots_var)
+        orig_vars.pop('__dict__', None)
+        orig_vars.pop('__weakref__', None)
+        if hasattr(cls, '__qualname__'):
+            orig_vars['__qualname__'] = cls.__qualname__
+        return metaclass(cls.__name__, cls.__bases__, orig_vars)
+    return wrapper
+
+
 @contextmanager
 def pool_context(*args, **kwargs):
     """ Context manager for multiprocessing.Pool class (for compatibility with Python 2.7.x) """

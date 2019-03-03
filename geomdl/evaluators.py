@@ -9,13 +9,12 @@
 
 import copy
 import abc
-from . import six
 from . import linalg
 from . import helpers
-from ._utilities import export
+from ._utilities import add_metaclass, export
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class AbstractEvaluator(object):
     """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
 

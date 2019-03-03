@@ -8,14 +8,14 @@
 """
 
 import abc
-from . import six
+from ._utilities import add_metaclass
 
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class VisConfigAbstract(object):
     """ Abstract base class for user configuration of the visualization module
 
@@ -26,7 +26,7 @@ class VisConfigAbstract(object):
         pass
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class VisAbstract(object):
     """ Abstract base class for visualization
 
