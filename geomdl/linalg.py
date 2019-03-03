@@ -13,7 +13,7 @@ from . import _linalg
 try:
     from functools import lru_cache
 except ImportError:
-    from backports.functools_lru_cache import lru_cache
+    from .functools_lru_cache import lru_cache
 
 
 def linspace(start, stop, num, decimals=18):

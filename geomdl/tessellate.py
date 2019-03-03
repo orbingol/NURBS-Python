@@ -8,7 +8,7 @@
 """
 
 import abc
-import six
+from . import six
 from . import utilities
 from . import _tessellate
 from ._utilities import export

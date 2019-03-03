@@ -9,7 +9,7 @@
 
 import abc
 import warnings
-import six
+from . import six
 from . import abstract
 from . import vis
 from . import voxelize

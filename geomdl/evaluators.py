@@ -9,7 +9,7 @@
 
 import copy
 import abc
-import six
+from . import six
 from . import linalg
 from . import helpers
 from ._utilities import export

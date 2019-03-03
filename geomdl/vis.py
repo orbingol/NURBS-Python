@@ -8,7 +8,7 @@
 """
 
 import abc
-import six
+from . import six
 
 
 # Initialize an empty __all__ for controlling imports

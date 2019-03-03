@@ -9,7 +9,7 @@
 
 import copy
 import abc
-import six
+from . import six
 import warnings
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate

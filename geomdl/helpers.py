@@ -14,7 +14,7 @@ from .exceptions import *
 try:
     from functools import lru_cache
 except ImportError:
-    from backports.functools_lru_cache import lru_cache
+    from .functools_lru_cache import lru_cache
 
 
 def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
