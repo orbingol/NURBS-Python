@@ -154,25 +154,26 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                 if isect[0] == idx:
                     isects.append(isect)
 
-            # Find minimum t value and therefore minimum uv value of the intersection
-            t_min = 1.0
-            uv_min = ()
-            for isect in isects:
-                if isect[1] < t_min:
-                    t_min = isect[1]
-                    uv_min = isect[2]
+            if isects:
+                # Find minimum t value and therefore minimum uv value of the intersection
+                t_min = 1.0 + tol
+                uv_min = []
+                for isect in isects:
+                    if isect[1] < t_min:
+                        t_min = isect[1]
+                        uv_min = isect[2]
 
-            # Create a vertex with the minimum uv value
-            vert = elements.Vertex()
-            vert.id = vidx + nvi
-            vert.uv = uv_min
+                # Create a vertex with the minimum uv value
+                vert = elements.Vertex()
+                vert.id = vidx + nvi
+                vert.uv = uv_min
 
-            # Add to lists
-            tris_vertices.append(vert)
-            verts.append(vert)
+                # Add to lists
+                tris_vertices.append(vert)
+                verts.append(vert)
 
-            # Increment local vertex numbering index
-            nvi += 1
+                # Increment local vertex numbering index
+                nvi += 1
 
     # Triangulate vertices
     tris = utilities.polygon_triangulate(tidx, *tris_vertices)
