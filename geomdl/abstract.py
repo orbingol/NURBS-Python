@@ -40,6 +40,7 @@ class Geometry(object):
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._eval_points = self._init_array()  # evaluated points
         self._name = "Geometry object"  # descriptor field
+        self._opt_data = dict()  # dict for storing custom data
         self._iter_index = 0  # iterator index
         self._cache = {}  # cache dictionary
 
@@ -130,6 +131,53 @@ class Geometry(object):
         if self._eval_points is None or len(self._eval_points) == 0:
             self.evaluate()
         return self._eval_points
+
+    @property
+    def opt(self):
+        """ Dictionary for storing custom data in the current geometry object.
+
+        ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
+        You can use ``opt`` property to store custom data inside the geometry object. For instance:
+
+        .. code-block:: python
+
+            geom.opt = ["face_id", 4]  # creates "face_id" key and sets its value to an integer
+            geom.opt = ["contents", "data values"]  # creates "face_id" key and sets its value to a string
+            print(geom.opt)  # will print: {'face_id': 4, 'contents': 'data values'}
+
+            del geom.opt  # deletes the contents of the hash map
+            print(geom.opt)  # will print: {}
+
+            geom.opt = ["body_id", 1]  # creates "body_id" key  and sets its value to 1
+            geom.opt = ["body_id", 12]  # changes the value of "body_id" to 12
+            print(geom.opt)  # will print: {'body_id': 12}
+
+            geom.opt = ["body_id", None]  # deletes "body_id"
+            print(geom.opt)  # will print: {}
+
+        :getter: Gets the dict
+        :setter: Adds key and value pair to the dict
+        :deleter: Deletes the contents of the dict
+        """
+        return self._opt_data
+
+    @opt.setter
+    def opt(self, key_value):
+        if not isinstance(key_value, (list, tuple)):
+            raise GeomdlException("opt input must be a list or a tuple")
+        if len(key_value) != 2:
+            raise GeomdlException("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
+        if not isinstance(key_value[0], str):
+            raise GeomdlException("key must be string")
+
+        if key_value[1] is None:
+            self._opt_data.pop(*key_value)
+        else:
+            self._opt_data[key_value[0]] = key_value[1]
+
+    @opt.deleter
+    def opt(self):
+        self._opt_data = dict()
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
