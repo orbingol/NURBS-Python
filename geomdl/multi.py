@@ -517,6 +517,33 @@ class SurfaceContainer(AbstractContainer):
     def sample_size_v(self, value):
         self._sample_size_setter_common(1, value)
 
+    def set_tessellator(self, tsl):
+        """ Sets the tessellation component of the surfaces inside the container.
+
+        Please refer to :doc:`Tessellation <module_tessellate>` documentation for details.
+
+        .. code-block:: python
+            :linenos:
+
+            from geomdl import multi
+            from geomdl import tessellate
+
+            # Create the surface container
+            surf_container = multi.SurfaceContainer(surf_list)
+
+            # Set tessellator component (use a tessellator type object)
+            surf_container.set_tessellator(tessellate.TrimTessellate)
+
+            # You can also use like the following
+            tsl = tessellator.TrimTessellate()
+            surf_container.set_tessellator(tsl.__class__)
+
+        :param tsl: tessellation component type
+        """
+        # Set tessellation component
+        for idx in range(len(self._elements)):
+            self._elements[idx].tessellator = tsl()
+
     def render(self, **kwargs):
         """ Renders the surfaces.
 
