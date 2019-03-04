@@ -79,7 +79,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     :param trims: trim curves
     :type trims: list, tuple
     :param tessellate_args: tessellation arguments
-    :type tessellate_args: list, tuple
+    :type tessellate_args: dict
     :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
     :type: tuple
     """

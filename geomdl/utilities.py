@@ -171,7 +171,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
     * ``trims``: List of trim curves passed to the tessellation function
     * ``tessellate_func``: Function called for tessellation (default is ``triangular_tessellation``)
-    * ``tessellate_args``: Arguments passed to the tessellation function
+    * ``tessellate_args``: Arguments passed to the tessellation function (as a dict)
 
     The tessellation function is designed to generate triangles from 4 vertices. It takes 4 :py:class:`.Vertex` objects,
     index values for setting the triangle and vertex IDs and additional parameters as its function arguments.
@@ -208,7 +208,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         :param trim_curves: trim curves
         :type: list, tuple
         :param tessellate_args: tessellation arguments
-        :type tessellate_args: list, tuple
+        :type tessellate_args: dict
         :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
         :type: tuple
         """
@@ -248,7 +248,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     tsl_func = kwargs.get('tessellate_func')
     if tsl_func is None:
         tsl_func = triangular_tessellation
-    tsl_args = kwargs.get('tessellate_args', None)
+    tsl_args = kwargs.get('tessellate_args', dict())
 
     # Variable initialization
     vrt_idx = 1  # vertex index numbering start

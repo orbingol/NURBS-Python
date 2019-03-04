@@ -10,6 +10,7 @@
 import abc
 from . import utilities
 from . import _tessellate
+from .exceptions import GeomdlException
 from ._utilities import add_metaclass, export
 
 
@@ -20,7 +21,7 @@ class AbstractTessellate(object):
     def __init__(self, **kwargs):
         self._vertices = []
         self._faces = []
-        self._arguments = None
+        self._arguments = dict()
 
     @property
     def vertices(self):
@@ -48,14 +49,20 @@ class AbstractTessellate(object):
         additional arguments to the tessellation function or change the behavior of the algorithm at runtime. This
         property can be thought as a way to input and store extra data for the tessellation functionality.
 
-        :getter: Gets the tessellation arguments
-        :setter: Sets the tessellation arguments
+        :getter: Gets the tessellation arguments (as a dict)
+        :setter: Sets the tessellation arguments (as a dict)
         """
         return self._arguments
 
     @arguments.setter
     def arguments(self, value):
+        if not isinstance(value, dict):
+            raise GeomdlException("Tessellation arguments must be a dict object")
         self._arguments = value
+
+    @arguments.deleter
+    def arguments(self):
+        self._arguments = dict()
 
     def reset(self):
         """ Clears stored vertices and faces. """
