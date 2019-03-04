@@ -294,7 +294,7 @@ def import_dict_surf(data):
             if trim['type'] in trim_curve_typemap:
                 tcurve = trim_curve_typemap[trim['type']](trim)
                 trim_curves.append(tcurve)
-
+        shape.trims = trim_curves
     # Return surface
     return shape
 
