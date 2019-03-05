@@ -227,6 +227,8 @@ def import_dict_crv(data):
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+    if 'sense' in data:  # trim curve sense
+        shape.opt = ['sense', data['sense']]
 
     # Return curve
     return shape
