@@ -33,7 +33,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``labels`` (bool): Axis labels visibility. *Default: True*
     * ``trims`` (bool): Trim curves visibility. *Default: True*
     * ``axes_equal`` (bool): Enables or disables equal aspect ratio for the axes. *Default: True*
-    * ``figure_size`` (list): Size of the figure in (x, y). *Default: [10.67, 8]*
+    * ``figure_size`` (list): Size of the figure in (x, y). *Default: [10, 8]*
     * ``figure_dpi`` (int): Resolution of the figure in DPI. *Default: 96*
     * ``trim_size`` (int): Size of the trim curves. *Default: 20*
     * ``alpha`` (float): Opacity of the evaluated points. *Default: 1.0*
@@ -74,7 +74,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.display_labels = kwargs.get('labels', True)
         self.display_trims = kwargs.get('trims', True)
         self.axes_equal = kwargs.get('axes_equal', True)
-        self.figure_size = kwargs.get('figure_size', [10.67, 8])
+        self.figure_size = kwargs.get('figure_size', [10, 8])
         self.figure_dpi = kwargs.get('figure_dpi', 96)
         self.trim_size = kwargs.get('trim_size', 20)
         self.alpha = kwargs.get('alpha', 1.0)
