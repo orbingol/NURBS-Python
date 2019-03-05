@@ -88,7 +88,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
 
     # Check if all vertices are inside the trim, and if so, don't generate a triangle
     vertices = [v1, v2, v3, v4]
-    for idx, vertex in enumerate(vertices):
+    for idx in range(len(vertices)):
         for trim in trims:
             if wn_poly(vertices[idx].uv, trim.evalpts):
                 vertices[idx].inside = not trim.opt['sense'] if 'sense' in trim.opt else True
