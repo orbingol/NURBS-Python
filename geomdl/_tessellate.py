@@ -89,17 +89,16 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     # Check if all vertices are inside the trim, and if so, don't generate a triangle
     vertices = [v1, v2, v3, v4]
     for idx, vertex in enumerate(vertices):
-        for trim_curve in trims:
-            # Check if the vertex is inside the trimmed region
-            is_inside_trim = wn_poly(vertex.uv, trim_curve.evalpts)
-            if is_inside_trim:
-                vertex.inside = True
+        for trim in trims:
+            if wn_poly(vertices[idx].uv, trim.evalpts):
+                vertices[idx].inside = not trim.opt['sense'] if 'sense' in trim.opt else True
+            else:
+                vertices[idx].inside = trim.opt['sense'] if 'sense' in trim.opt else vertices[idx].inside
+
+    # Preliminary check
     vertices_inside = [v1.inside, v2.inside, v3.inside, v4.inside]
     if all(vertices_inside):
         return [], []
-
-    # # Generate triangles
-    # return [], utilities.polygon_triangulate(tidx, v1, v2, v3, v4)
 
     # Generate edges as rays
     edge1 = ray.Ray(v1.uv, v2.uv)
@@ -183,7 +182,9 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         tri_center = utilities.triangle_center(tris[idx], uv=True)
         for trim in trims:
             if wn_poly(tri_center, trim.evalpts):
-                tris[idx].inside = True
+                tris[idx].inside = not trim.opt['sense'] if 'sense' in trim.opt else True
+            else:
+                tris[idx].inside = trim.opt['sense'] if 'sense' in trim.opt else tris[idx].inside
 
     # Extract triangles which are not inside the trim
     tris_final = []
