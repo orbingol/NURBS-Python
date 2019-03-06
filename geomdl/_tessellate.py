@@ -386,51 +386,6 @@ def make_quadtree(points, size_u, size_v, **kwargs):
     return tuple(qtree)
 
 
-def is_left(point0, point1, point2):
-    """ Tests if a point is Left|On|Right of an infinite line.
-
-    Ported from the C++ version: on http://geomalgorithms.com/a03-_inclusion.html
-
-    :param point0: Point P0
-    :param point1: Point P1
-    :param point2: Point P2
-    :return:
-        >0 for P2 left of the line through P0 and P1
-        =0 for P2 on the line
-        <0 for P2 right of the line
-    """
-    return ((point1[0] - point0[0]) * (point2[1] - point0[1])) - ((point2[0] - point0[0]) * (point1[1] - point0[1]))
-
-
-def wn_poly(point, vertices):
-    """ Winding number test for a point in a polygon.
-
-    Ported from the C++ version: http://geomalgorithms.com/a03-_inclusion.html
-
-    :param point: point to be tested
-    :type point: list, tuple
-    :param vertices: vertex points of a polygon vertices[n+1] with vertices[n] = vertices[0]
-    :type vertices: list, tuple
-    :return: True if the point is inside the input polygon, False otherwise
-    :rtype: bool
-    """
-    wn = 0  # the winding number counter
-
-    v_size = len(vertices) - 1
-    # loop through all edges of the polygon
-    for i in range(v_size):  # edge from V[i] to V[i+1]
-        if vertices[i][1] <= point[1]:  # start y <= P.y
-            if vertices[i + 1][1] > point[1]:  # an upward crossing
-                if is_left(vertices[i], vertices[i + 1], point) > 0:  # P left of edge
-                    wn += 1  # have a valid up intersect
-        else:  # start y > P.y (no test needed)
-            if vertices[i + 1][1] <= point[1]:  # a downward crossing
-                if is_left(vertices[i], vertices[i + 1], point) < 0:  # P right of edge
-                    wn -= 1  # have a valid down intersect
-    # return wn
-    return bool(wn)
-
-
 def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     """ Trimmed surface tessellation algorithm.
 
@@ -460,7 +415,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     vertices = [v1, v2, v3, v4]
     for idx in range(len(vertices)):
         for trim in trims:
-            if wn_poly(vertices[idx].uv, trim.evalpts):
+            if linalg.wn_poly(vertices[idx].uv, trim.evalpts):
                 if trim.opt['sense']:
                     if vertices[idx].opt_get('trim') is None or not vertices[idx].opt_get('trim'):
                         vertices[idx].inside = False
@@ -559,7 +514,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     for idx in range(len(tris)):
         tri_center = linalg.triangle_center(tris[idx], uv=True)
         for trim in trims:
-            if wn_poly(tri_center, trim.evalpts):
+            if linalg.wn_poly(tri_center, trim.evalpts):
                 if trim.opt['sense']:
                     if tris[idx].opt_get('trim') is None or not tris[idx].opt_get('trim'):
                         tris[idx].inside = False

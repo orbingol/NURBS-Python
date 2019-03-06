@@ -559,3 +559,48 @@ def frange(start, stop, step=1.0):
         yield x
     if stop > x:
         yield stop  # for yielding last value of the knot vector if the step is a large value, like 0.1
+
+
+def is_left(point0, point1, point2):
+    """ Tests if a point is Left|On|Right of an infinite line.
+
+    Ported from the C++ version: on http://geomalgorithms.com/a03-_inclusion.html
+
+    :param point0: Point P0
+    :param point1: Point P1
+    :param point2: Point P2
+    :return:
+        >0 for P2 left of the line through P0 and P1
+        =0 for P2 on the line
+        <0 for P2 right of the line
+    """
+    return ((point1[0] - point0[0]) * (point2[1] - point0[1])) - ((point2[0] - point0[0]) * (point1[1] - point0[1]))
+
+
+def wn_poly(point, vertices):
+    """ Winding number test for a point in a polygon.
+
+    Ported from the C++ version: http://geomalgorithms.com/a03-_inclusion.html
+
+    :param point: point to be tested
+    :type point: list, tuple
+    :param vertices: vertex points of a polygon vertices[n+1] with vertices[n] = vertices[0]
+    :type vertices: list, tuple
+    :return: True if the point is inside the input polygon, False otherwise
+    :rtype: bool
+    """
+    wn = 0  # the winding number counter
+
+    v_size = len(vertices) - 1
+    # loop through all edges of the polygon
+    for i in range(v_size):  # edge from V[i] to V[i+1]
+        if vertices[i][1] <= point[1]:  # start y <= P.y
+            if vertices[i + 1][1] > point[1]:  # an upward crossing
+                if is_left(vertices[i], vertices[i + 1], point) > 0:  # P left of edge
+                    wn += 1  # have a valid up intersect
+        else:  # start y > P.y (no test needed)
+            if vertices[i + 1][1] <= point[1]:  # a downward crossing
+                if is_left(vertices[i], vertices[i + 1], point) < 0:  # P right of edge
+                    wn -= 1  # have a valid down intersect
+    # return wn
+    return bool(wn)
