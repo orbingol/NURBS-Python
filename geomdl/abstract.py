@@ -1765,7 +1765,7 @@ class Surface(SplineGeometry):
 
         # Call tessellation component for vertex and triangle generation
         self._tsl_component.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v,
-                                       trims=self.trims, **kwargs)
+                                       trims=self.trims, surf_bbox=self.bbox, **kwargs)
 
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
