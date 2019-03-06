@@ -131,7 +131,7 @@ class TrimTessellate(AbstractTessellate):
 
     Keyword Arguments:
         * ``tsl_func``: function used for tessellation. *Default:* ``_tessellate.make_triangle_mesh``
-        * ``tsl_trim_func``: function used for trimming and healing. *Default:* ``_tessellate.surface_trim_tessellate``
+        * ``tsl_trim_func``: function used for trimming. *Default:* ``_tessellate.surface_trim_tessellate``
     """
 
     def __init__(self, **kwargs):
