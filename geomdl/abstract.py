@@ -10,12 +10,9 @@
 import copy
 import abc
 import warnings
+from . import vis, helpers, knotvector, voxelize
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
-from . import vis
-from . import helpers
-from . import knotvector
-from . import voxelize
 from .exceptions import GeomdlException
 from . import _utilities as utl
 from . import _tessellate as tsl

@@ -7,10 +7,7 @@
 
 """
 
-from . import BSpline
-from . import NURBS
-from . import utilities
-from . import compatibility
+from . import BSpline, NURBS, knotvector, compatibility
 from .exceptions import GeomdlException
 
 
@@ -41,7 +38,7 @@ def construct_surface(direction, *args, **kwargs):
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 2)
-    knotvector_other = kwargs.get('knotvector', utilities.generate_knot_vector(degree_other, size_other))
+    knotvector_other = kwargs.get('knotvector', knotvector.generate(degree_other, size_other))
     rational = kwargs.get('rational', args[0].rational)
 
     # Construct the control points of the new surface
@@ -128,7 +125,7 @@ def construct_volume(direction, *args, **kwargs):
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 1)
-    knotvector_other = kwargs.get('knotvector', utilities.generate_knot_vector(degree_other, size_other))
+    knotvector_other = kwargs.get('knotvector', knotvector.generate(degree_other, size_other))
     rational = kwargs.get('rational', args[0].rational)
 
     # Construct the control points of the new volume

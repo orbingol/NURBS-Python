@@ -8,11 +8,7 @@
 """
 
 import pickle
-
-from . import abstract
-from . import evaluators
-from . import operations
-from . import tessellate
+from . import abstract, evaluators, operations, tessellate
 from . import _utilities as utl
 from .exceptions import GeomdlException
 

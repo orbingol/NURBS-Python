@@ -10,7 +10,7 @@
 import os
 from copy import deepcopy
 from . import linalg
-from .exceptions import *
+from .exceptions import GeomdlException
 try:
     from functools import lru_cache
 except ImportError:

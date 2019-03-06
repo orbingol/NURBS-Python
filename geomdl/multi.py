@@ -9,10 +9,7 @@
 
 import abc
 import warnings
-from . import abstract
-from . import vis
-from . import voxelize
-from . import utilities
+from . import abstract, vis, voxelize, utilities
 from . import _tessellate as tsl
 from . import _utilities as utl
 

@@ -9,8 +9,7 @@
 
 import copy
 import abc
-from . import linalg
-from . import helpers
+from . import linalg, helpers
 from ._utilities import add_metaclass, export
 
 

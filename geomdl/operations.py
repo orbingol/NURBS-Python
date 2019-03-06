@@ -10,13 +10,7 @@
 import math
 import copy
 import warnings
-from . import abstract
-from . import multi
-from . import helpers
-from . import evaluators
-from . import linalg
-from . import compatibility
-from . import _operations
+from . import abstract, multi, helpers, evaluators, linalg, compatibility,  _operations
 from .exceptions import GeomdlException
 from ._utilities import export
 

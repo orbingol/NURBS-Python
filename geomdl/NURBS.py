@@ -7,9 +7,7 @@
 
 """
 
-from . import BSpline
-from . import compatibility
-from . import evaluators
+from . import BSpline, compatibility, evaluators
 from ._utilities import export
 
 

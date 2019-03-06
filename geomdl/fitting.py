@@ -8,9 +8,7 @@
 """
 
 import math
-from . import BSpline
-from . import helpers
-from . import linalg
+from . import BSpline, helpers, linalg
 from ._utilities import export
 
 
