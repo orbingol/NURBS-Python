@@ -8,17 +8,21 @@
 """
 
 import abc
-from . import utilities
-from . import _tessellate
 from .exceptions import GeomdlException
+from . import _tessellate as tsl
 from ._utilities import add_metaclass, export
 
 
 @add_metaclass(abc.ABCMeta)
 class AbstractTessellate(object):
-    """ Abstract base class for tessellation algorithms. """
+    """ Abstract base class for tessellation algorithms.
+
+    Keyword Arguments:
+        * ``tsl_func``: function used for tessellation. *Default:* ``_tessellate.make_triangle_mesh``
+    """
 
     def __init__(self, **kwargs):
+        self._tsl_func = kwargs.get('tsl_func', tsl.make_triangle_mesh)
         self._vertices = []
         self._faces = []
         self._arguments = dict()
@@ -96,7 +100,8 @@ class AbstractTessellate(object):
 class TriangularTessellate(AbstractTessellate):
     """  Triangular tessellation algorithm for surfaces.
 
-    This class provides the default triangular tessellation algorithm for surfaces.
+    Keyword Arguments:
+        * ``tsl_func``: function used for tessellation. *Default:* ``_tessellate.make_triangle_mesh``
     """
 
     def __init__(self, **kwargs):
@@ -118,14 +123,20 @@ class TriangularTessellate(AbstractTessellate):
         super(TriangularTessellate, self).tessellate(points, **kwargs)
 
         # Apply default triangular mesh generator function
-        self._vertices, self._faces = utilities.make_triangle_mesh(points, **kwargs)
+        self._vertices, self._faces = self._tsl_func(points, **kwargs)
 
 
 class TrimTessellate(AbstractTessellate):
-    """  Triangular tessellation algorithm for trimmed surfaces. """
+    """  Triangular tessellation algorithm for trimmed surfaces.
+
+    Keyword Arguments:
+        * ``tsl_func``: function used for tessellation. *Default:* ``_tessellate.make_triangle_mesh``
+        * ``tsl_trim_func``: function used for trimming and healing. *Default:* ``_tessellate.surface_trim_tessellate``
+    """
 
     def __init__(self, **kwargs):
         super(TrimTessellate, self).__init__(**kwargs)
+        self._tsl_trim_func = kwargs.get('tsl_trim_func', tsl.surface_trim_tessellate)
 
     def tessellate(self, points, **kwargs):
         """ Applies triangular tessellation w/ trimming curves.
@@ -149,7 +160,7 @@ class TrimTessellate(AbstractTessellate):
                 trims[idx].opt = ['sense', 0]
 
         # Apply default triangular mesh generator function with trimming customization
-        self._vertices, self._faces = utilities.make_triangle_mesh(points, trims=trims,
-                                                                   tessellate_func=_tessellate.surface_trim_tessellate,
-                                                                   tessellate_args=self.arguments,
-                                                                   **kwargs)
+        self._vertices, self._faces = self._tsl_func(points, trims=trims,
+                                                     tessellate_func=self._tsl_trim_func,
+                                                     tessellate_args=self.arguments,
+                                                     **kwargs)

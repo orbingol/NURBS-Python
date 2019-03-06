@@ -10,10 +10,194 @@
 from . import elements
 from . import utilities
 from . import ray
+from .elements import Vertex, Triangle
 
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
+
+
+def make_triangle_mesh(points, size_u, size_v, **kwargs):
+    """ Generates a triangular mesh from an array of points.
+
+    This function generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
+    The input is the surface points and the number of points on the parametric dimensions u and v,
+    indicated as row and column sizes in the function signature. This function should operate correctly if row and
+    column sizes are input correctly, no matter what the points are v-ordered or u-ordered. Please see the
+    documentation of ``ctrlpts`` and ``ctrlpts2d`` properties of the Surface class for more details on
+    point ordering for the surfaces.
+
+    This function accepts the following keyword arguments:
+
+    * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
+    * ``trims``: List of trim curves passed to the tessellation function
+    * ``tessellate_func``: Function called for tessellation (default is ``triangular_tessellation``)
+    * ``tessellate_args``: Arguments passed to the tessellation function (as a dict)
+
+    The tessellation function is designed to generate triangles from 4 vertices. It takes 4 :py:class:`.Vertex` objects,
+    index values for setting the triangle and vertex IDs and additional parameters as its function arguments.
+    It returns a tuple of :py:class:`.Vertex` and :py:class:`.Triangle` object lists generated from the input vertices.
+    A default triangle generator is provided as a prototype for implementation in the source code.
+
+    The return value of this function is a tuple containing two lists. First one is the list of vertices and the second
+    one is the list of triangles.
+
+    :param points: input points
+    :type points: list, tuple
+    :param size_u: number of elements on the u-direction
+    :type size_u: int
+    :param size_v: number of elements on the v-direction
+    :type size_v: int
+    :return: a tuple containing lists of vertices and triangles
+    :rtype: tuple
+    """
+    def triangular_tessellation(v1, v2, v3, v4, vidx, tidx, trim_curves, tessellate_args):
+        """ Default tessellation algorithm (triangular tessellation).
+
+        :param v1: vertex 1
+        :type v1: Vertex
+        :param v2: vertex 2
+        :type v2: Vertex
+        :param v3: vertex 3
+        :type v3: Vertex
+        :param v4: vertex 4
+        :type v4: Vertex
+        :param vidx: vertex numbering start value
+        :type vidx: int
+        :param tidx: triangle numbering start value
+        :type tidx: int
+        :param trim_curves: trim curves
+        :type: list, tuple
+        :param tessellate_args: tessellation arguments
+        :type tessellate_args: dict
+        :return: lists of vertex and triangle objects in (vertex_list, triangle_list) format
+        :type: tuple
+        """
+        # Triangulate vertices
+        tris = polygon_triangulate(tidx, v1, v2, v3, v4)
+
+        # Return vertex and triangle lists
+        return [], tris
+
+    def fix_numbering(vertex_list, triangle_list):
+        # Initialize variables
+        final_vertices = []
+
+        # Get all vertices inside the triangle list
+        tri_vertex_ids = []
+        for tri in triangle_list:
+            tri_vertex_ids += tri.vertex_ids
+
+        # Find vertices used in triangles
+        for vertex in vertex_list:
+            if vertex.id in tri_vertex_ids:
+                final_vertices.append(vertex)
+
+        # Fix vertex numbering (automatically fixes triangle vertex numbering)
+        vert_new_id = 1
+        for vertex in final_vertices:
+            vertex.id = vert_new_id
+            vert_new_id += 1
+
+        return final_vertices, triangle_list
+
+    # Vertex spacing for triangulation
+    vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
+    trim_curves = kwargs.get('trims', [])
+
+    # Tessellation algorithm
+    tsl_func = kwargs.get('tessellate_func')
+    if tsl_func is None:
+        tsl_func = triangular_tessellation
+    tsl_args = kwargs.get('tessellate_args', dict())
+
+    # Variable initialization
+    vrt_idx = 1  # vertex index numbering start
+    tri_idx = 1  # triangle index numbering start
+    u_jump = (1.0 / float(size_u - 1)) * vertex_spacing  # for computing vertex parametric u value
+    v_jump = (1.0 / float(size_v - 1)) * vertex_spacing  # for computing vertex parametric v value
+    varr_size_u = int(round((float(size_u) / float(vertex_spacing)) + 10e-8))  # vertex array size on the u-direction
+    varr_size_v = int(round((float(size_v) / float(vertex_spacing)) + 10e-8))  # vertex array size on the v-direction
+
+    # Generate vertices directly from input points (preliminary evaluation)
+    vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
+    u = 0.0
+    for i in range(0, size_u, vertex_spacing):
+        v = 0.0
+        for j in range(0, size_v, vertex_spacing):
+            idx = j + (i * size_v)
+            vertices[vrt_idx - 1].id = vrt_idx
+            vertices[vrt_idx - 1].data = points[idx]
+            vertices[vrt_idx - 1].uv = [u, v]
+            vrt_idx += 1
+            v += v_jump
+        u += u_jump
+
+    #
+    # Organization of vertices in a quad element on the parametric space:
+    #
+    # v4      v3
+    # o-------o         i
+    # |       |          |
+    # |       |          |
+    # |       |          |_ _ _
+    # o-------o                 j
+    # v1      v2
+    #
+
+    # Generate triangles and final vertices
+    triangles = []
+    for i in range(varr_size_u - 1):
+        for j in range(varr_size_v - 1):
+            # Find vertex indices for a quad element
+            vertex1 = vertices[j + (i * varr_size_v)]
+            vertex2 = vertices[j + 1 + (i * varr_size_v)]
+            vertex3 = vertices[j + 1 + ((i + 1) * varr_size_v)]
+            vertex4 = vertices[j + ((i + 1) * varr_size_v)]
+
+            # Call tessellation function
+            vlst, tlst = tsl_func(vertex1, vertex2, vertex3, vertex4, vrt_idx, tri_idx, trim_curves, tsl_args)
+
+            # Add tessellation results to the return lists
+            vertices += vlst
+            triangles += tlst
+
+            # Increment index values
+            vrt_idx += len(vlst)
+            tri_idx += len(tlst)
+
+    # Fix vertex and triangle numbering (ID values)
+    vertices, triangles = fix_numbering(vertices, triangles)
+
+    return vertices, triangles
+
+
+def polygon_triangulate(tri_idx, *args):
+    """ Triangulates a monotone polygon defined by a list of vertices.
+
+    The input vertices must form a convex polygon and must be arranged in counter-clockwise order.
+
+    :param tri_idx: triangle numbering start value
+    :type tri_idx: int
+    :param args: list of Vertex objects
+    :type args: elements.Vertex
+    :return: list of Triangle objects
+    :rtype: list
+    """
+    # Initialize variables
+    tidx = 0
+    triangles = []
+
+    # Generate triangles
+    for idx in range(1, len(args) - 1):
+        tri = Triangle()
+        tri.id = tri_idx + tidx
+        tri.add_vertex(args[0], args[idx], args[idx + 1])
+        triangles.append(tri)
+        tidx += 1
+
+    # Return generated triangles
+    return triangles
 
 
 def is_left(point0, point1, point2):
@@ -183,7 +367,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                 nvi += 1
 
     # Triangulate vertices
-    tris = utilities.polygon_triangulate(tidx, *tris_vertices)
+    tris = polygon_triangulate(tidx, *tris_vertices)
 
     # Check again if the barycentric coordinates of the triangles are inside
     for idx in range(len(tris)):
