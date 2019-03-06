@@ -86,23 +86,24 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     # Tolerance value
     tol = 10e-8
 
-    # Check if all vertices are inside the trim, and if so, don't generate a triangle
+    # Start processing vertices
     vertices = [v1, v2, v3, v4]
     for idx in range(len(vertices)):
         for trim in trims:
             if wn_poly(vertices[idx].uv, trim.evalpts):
                 if trim.opt['sense']:
-                    vertices[idx].inside = False
-                    vertices[idx].opt = ['no_trim', True]
+                    if vertices[idx].opt_get('trim') is None or not vertices[idx].opt_get('trim'):
+                        vertices[idx].inside = False
+                        vertices[idx].opt = ['no_trim', True]  # always triangulate
                 else:
-                    if vertices[idx].opt_get('no_trim') is None or not vertices[idx].opt_get('no_trim'):
-                        vertices[idx].inside = True
+                    vertices[idx].inside = True
+                    vertices[idx].opt = ['trim', True]  # always trim
             else:
                 if trim.opt['sense']:
                     if vertices[idx].opt_get('no_trim') is None or not vertices[idx].opt_get('no_trim'):
                         vertices[idx].inside = True
 
-    # Preliminary check
+    # If all vertices are marked as inside, then don't generate triangles
     vertices_inside = [v1.inside, v2.inside, v3.inside, v4.inside]
     if all(vertices_inside):
         return [], []
@@ -190,11 +191,12 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         for trim in trims:
             if wn_poly(tri_center, trim.evalpts):
                 if trim.opt['sense']:
-                    tris[idx].inside = False
-                    tris[idx].opt = ['no_trim', True]  # do not process with the trimming
+                    if tris[idx].opt_get('trim') is None or not tris[idx].opt_get('trim'):
+                        tris[idx].inside = False
+                        tris[idx].opt = ['no_trim', True]  # always triangulate
                 else:
-                    if tris[idx].opt_get('no_trim') is None or not tris[idx].opt_get('no_trim'):
-                        tris[idx].inside = True
+                    tris[idx].inside = True
+                    tris[idx].opt = ['trim', True]  # always trim
             else:
                 if trim.opt['sense']:
                     if tris[idx].opt_get('no_trim') is None or not tris[idx].opt_get('no_trim'):
