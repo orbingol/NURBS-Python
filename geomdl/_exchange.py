@@ -227,6 +227,8 @@ def import_dict_crv(data):
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+    if 'id' in data:
+        shape.id = data['id']
     if 'sense' in data:  # trim curve sense
         shape.opt = ['sense', data['sense']]
 
@@ -245,6 +247,12 @@ def export_dict_crv(obj):
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
+
+    # For trim curves
+    sense = obj.opt_get('sense')
+    if sense is not None:
+        data['sense'] = sense
+
     return data
 
 
@@ -256,6 +264,13 @@ def import_dict_ff(data):
         shape.evaluate(points=data['points'])
     except KeyError as e:
         raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
+
+    if 'name' in data:
+        shape.name = data['name']
+    if 'id' in data:
+        shape.id = data['id']
+    if 'sense' in data:  # trim curve sense
+        shape.opt = ['sense', data['sense']]
 
     return shape
 
@@ -287,6 +302,8 @@ def import_dict_surf(data):
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+    if 'id' in data:
+        shape.id = data['id']
 
     # Trim curves
     if 'trims' in data:
@@ -355,6 +372,8 @@ def import_dict_vol(data):
         shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
+    if 'id' in data:
+        shape.id = data['id']
 
     # Return volume
     return shape
