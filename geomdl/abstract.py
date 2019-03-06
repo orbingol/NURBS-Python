@@ -132,6 +132,18 @@ class Geometry(object):
             self.evaluate()
         return self._eval_points
 
+    def opt_get(self, value):
+        """ Safely query for the value from the :py:attr:`opt` property.
+
+        :param value: a key in the :py:attr:`opt` property
+        :type value: str
+        :return: the corresponding value, if the key exists. ``None``, otherwise.
+        """
+        try:
+            return self._opt_data[value]
+        except KeyError:
+            return None
+
     @property
     def opt(self):
         """ Dictionary for storing custom data in the current geometry object.
