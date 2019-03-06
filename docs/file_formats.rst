@@ -249,6 +249,7 @@ The following example illustrates a NURBS surface:
                     - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
                     - [u2, v2]
                     - ...
+                sense: 0  # 0: trim inside, 1: trim outside (optional, default is 0)
               - type: spline  # type of the 2nd trim curve
                 rational: True  # rational or non-rational (optional)
                 degree: 1  # degree of the 2nd trim
@@ -262,11 +263,15 @@ The following example illustrates a NURBS surface:
                     - 1.0
                     - 1.0
                     - ...
+                delta: 0.01  # evaluation delta (optional)
+                sense: 1  # 0: trim inside, 1: trim outside (optional, default is 0)
               - type: freeform  # type of the 3rd trim curve
                 points:  # parametric coordinates of the 3rd trim curve
                   - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
                   - [u2, v2]
                   - ...
+                name: "my freeform curve"  # optional
+                sense: 1  # 0: trim inside, 1: trim outside (optional, default is 0)
 
 * **Shape section:** This section contains the single or multi NURBS data. ``type`` and ``data`` sections are mandatory.
 * **Type section:** This section defines the type of the NURBS shape. For NURBS curves, it should be set to *surface*.
