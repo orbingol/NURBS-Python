@@ -7,8 +7,8 @@
 
 """
 
-import abc
 import copy
+import abc
 from .exceptions import GeomdlException
 from ._utilities import add_metaclass, export
 
@@ -17,9 +17,34 @@ from ._utilities import add_metaclass, export
 class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self, *args, **kwargs):
-        self._id = int(kwargs.get('id', 0))  # element identifier
+        self._name = "entity"  # object name
+        self._id = int(kwargs.get('id', 0))  # object ID
+        self._opt_data = dict()  # custom data dict
+        self._cache = {}  # cache dict
         self._data = []  # data storage array
-        self._opt_data = dict()  # dict for storing custom data
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index < len(self._data):
+            result = self._data[self._iter_index]
+            self._iter_index += 1
+            return result
+        raise StopIteration
+
+    def __len__(self):
+        return len(self._data)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __reversed__(self):
+        return reversed(self._data)
 
     def __copy__(self):
         cls = self.__class__
@@ -32,31 +57,27 @@ class AbstractEntity(object):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
         # Copy all other attributes
         for k, v in self.__dict__.items():
             setattr(result, k, copy.deepcopy(v, memo))
         return result
 
-    def __len__(self):
-        return len(self._data)
+    def __str__(self):
+        return self.name
 
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __reversed__(self):
-        return reversed(self._data)
+    __repr__ = __str__
 
     @property
     def id(self):
-        """ Identifier for the geometric entity.
+        """ Object ID (as an integer).
 
-        It must be an integer number, otherwise the setter will raise a *ValueError*.
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
-        :getter: Gets the identifier
-        :setter: Sets the identifier
+        :getter: Gets the object ID
+        :setter: Sets the object ID
         :type: int
         """
         return self._id
@@ -64,20 +85,33 @@ class AbstractEntity(object):
     @id.setter
     def id(self, value):
         if not isinstance(value, int):
-            raise ValueError("Identifier value must be an integer")
+            raise GeomdlException("Identifier value must be an integer")
         self._id = value
 
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
+    @id.deleter
+    def id(self):
+        self._id = 0
 
-        :param value: a key in the :py:attr:`opt` property
-        :type value: str
-        :return: the corresponding value, if the key exists. ``None``, otherwise.
+    @property
+    def name(self):
+        """ Object name (as a string)
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the object name
+        :setter: Sets the object name
+        :type: str
         """
-        try:
-            return self._opt_data[value]
-        except KeyError:
-            return None
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = str(value)
+
+    @name.deleter
+    def name(self):
+        self._name = ""
 
     @property
     def opt(self):
@@ -126,6 +160,18 @@ class AbstractEntity(object):
     def opt(self):
         self._opt_data = dict()
 
+    def opt_get(self, value):
+        """ Safely query for the value from the :py:attr:`opt` property.
+
+        :param value: a key in the :py:attr:`opt` property
+        :type value: str
+        :return: the corresponding value, if the key exists. ``None``, otherwise.
+        """
+        try:
+            return self._opt_data[value]
+        except KeyError:
+            return None
+
 
 @export
 class Vertex(AbstractEntity):
@@ -138,8 +184,6 @@ class Vertex(AbstractEntity):
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._data)
-
-    __repr__ = __str__
 
     def __cmp__(self, other):
         return (self.id > other.id) - (self.id < other.id)
@@ -172,7 +216,7 @@ class Vertex(AbstractEntity):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError("Can only add Vertex objects")
+            raise GeomdlException("Can only add Vertex objects")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] + other.data[idx]
@@ -186,7 +230,7 @@ class Vertex(AbstractEntity):
 
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError("Can only subtract Vertex objects")
+            raise GeomdlException("Can only subtract Vertex objects")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] - other.data[idx]
@@ -203,7 +247,7 @@ class Vertex(AbstractEntity):
 
     def __truediv__(self, other):
         if not isinstance(other, (float, int)):
-            raise TypeError("Can only divide by a float or an integer")
+            raise GeomdlException("Can only divide by a float or an integer")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] / float(other)
@@ -298,9 +342,9 @@ class Vertex(AbstractEntity):
     @uv.setter
     def uv(self, value):
         if not isinstance(value, (list, tuple)):
-            raise TypeError("UV data input must be a list or tuple")
+            raise GeomdlException("UV data input must be a list or tuple")
         if len(value) != 2:
-            raise ValueError("UV must have 2 components")
+            raise GeomdlException("UV must have 2 components")
         self._uv = list(value)
 
     @property
@@ -329,9 +373,9 @@ class Vertex(AbstractEntity):
     @data.setter
     def data(self, value):
         if not isinstance(value, (list, tuple)):
-            raise TypeError("Vertex data must be a list or tuple")
+            raise GeomdlException("Vertex data must be a list or tuple")
         if len(value) != 3:
-            raise ValueError("Vertex can only store 3 components")
+            raise GeomdlException("Vertex can only store 3 components")
         # Convert to float
         self._data = [float(val) for val in value]
 
@@ -347,8 +391,6 @@ class Triangle(AbstractEntity):
 
     def __str__(self):
         return "Triangle " + str(self._id)
-
-    __repr__ = __str__
 
     @property
     def vertices(self):
@@ -448,13 +490,13 @@ class Triangle(AbstractEntity):
         This method takes a single or a list of vertices as its function arguments.
         """
         if len(self._data) > 2:
-            raise ValueError("Cannot add more vertices")
+            raise GeomdlException("Cannot add more vertices")
         res = []
         for arg in args:
             if isinstance(arg, Vertex):
                 res.append(arg)
             else:
-                raise TypeError("Input must be a Vertex object")
+                raise GeomdlException("Input must be a Vertex object")
         self._data = res
 
 
@@ -470,8 +512,6 @@ class Quad(AbstractEntity):
     def __str__(self):
         return "Quad " + str(self._id) + " V: " + str(self._data)
 
-    __repr__ = __str__
-
     @property
     def data(self):
         """ Vertex indices.
@@ -484,9 +524,9 @@ class Quad(AbstractEntity):
     @data.setter
     def data(self, value):
         if not isinstance(value, (list, tuple)):
-            raise TypeError("Input data must be a list or tuple")
+            raise GeomdlException("Input data must be a list or tuple")
         if len(value) != 4:
-            raise ValueError("Quad can only have 4 vertices")
+            raise GeomdlException("Quad can only have 4 vertices")
         # Convert to int
         self._data = [int(val) for val in value]
 
@@ -496,13 +536,13 @@ class Quad(AbstractEntity):
         This method takes a single or a list of vertices as its function arguments.
         """
         if len(self._data) > 3:
-            raise ValueError("Cannot add more vertices")
+            raise GeomdlException("Cannot add more vertices")
         res = []
         for arg in args:
             if isinstance(arg, Vertex):
                 res.append(arg.id)
             else:
-                raise TypeError("Input must be a Vertex object")
+                raise GeomdlException("Input must be a Vertex object")
         self._data = res
 
 
@@ -516,8 +556,6 @@ class Face(AbstractEntity):
 
     def __str__(self):
         return "Face " + str(self._id)
-
-    __repr__ = __str__
 
     @property
     def triangles(self):
@@ -538,7 +576,7 @@ class Face(AbstractEntity):
             if isinstance(arg, Triangle):
                 res.append(arg)
             else:
-                raise TypeError("Input must be a Triangle object")
+                raise GeomdlException("Input must be a Triangle object")
         self._data = res
 
 
@@ -552,8 +590,6 @@ class Body(AbstractEntity):
 
     def __str__(self):
         return "Body " + str(self._id)
-
-    __repr__ = __str__
 
     @property
     def faces(self):
@@ -574,5 +610,5 @@ class Body(AbstractEntity):
             if isinstance(arg, Face):
                 res.append(arg)
             else:
-                raise TypeError("Input must be a Face object")
+                raise GeomdlException("Input must be a Face object")
         self._data = res

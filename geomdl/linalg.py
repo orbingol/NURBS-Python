@@ -408,6 +408,41 @@ def matrix_multiply(m1, m2):
     return mm
 
 
+def triangle_normal(tri):
+    """ Computes the (approximate) normal vector of the input triangle.
+
+    :param tri: triangle object
+    :type tri: elements.Triangle
+    :return: normal vector of the triangle
+    :rtype: tuple
+    """
+    vec1 = vector_generate(tri.vertices[0].data, tri.vertices[1].data)
+    vec2 = vector_generate(tri.vertices[1].data, tri.vertices[2].data)
+    return vector_cross(vec1, vec2)
+
+
+def triangle_center(tri, uv=False):
+    """ Computes the center of mass of the input triangle.
+
+    :param tri: triangle object
+    :type tri: elements.Triangle
+    :param uv: if True, then finds parametric position of the center of mass
+    :type uv: bool
+    :return: center of mass of the triangle
+    :rtype: tuple
+    """
+    if uv:
+        data = tri.vertices_uv
+        mid = [0.0, 0.0]
+    else:
+        data = tri.vertices
+        mid = [0.0, 0.0, 0.0]
+    for vert in data:
+        mid = [m + v for m, v in zip(mid, vert)]
+    mid = [float(m) / 3.0 for m in mid]
+    return tuple(mid)
+
+
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def binomial_coefficient(k, i):
     """ Computes the binomial coefficient (denoted by *k choose i*).

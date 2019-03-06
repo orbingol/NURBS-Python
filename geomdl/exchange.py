@@ -11,7 +11,7 @@ import os
 import struct
 import json
 from io import StringIO
-from . import abstract, NURBS, multi, compatibility, operations, utilities, convert, elements
+from . import abstract, NURBS, multi, compatibility, operations, convert, elements, linalg
 from . import _exchange as exch
 from ._utilities import export
 
@@ -642,14 +642,14 @@ def export_stl_str(surface, **kwargs):
         line = b'\0' * 80  # header
         line += struct.pack('<i', len(triangles_list))  # number of triangles
         for t in triangles_list:
-            line += struct.pack('<3f', *utilities.triangle_normal(t))  # normal
+            line += struct.pack('<3f', *linalg.triangle_normal(t))  # normal
             for v in t.vertices:
                 line += struct.pack('<3f', *v.data)  # vertices
             line += b'\0\0'  # attribute byte count
     else:
         line = "solid Surface\n"
         for t in triangles_list:
-            nvec = utilities.triangle_normal(t)
+            nvec = linalg.triangle_normal(t)
             line += "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
             line += "\t\touter loop\n"
             for v in t.vertices:

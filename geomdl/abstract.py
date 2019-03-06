@@ -14,15 +14,16 @@ from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
 from . import vis
 from . import helpers
-from . import utilities
+from . import knotvector
 from . import voxelize
 from .exceptions import GeomdlException
-from ._utilities import add_metaclass
+from . import _utilities as utl
+from . import _tessellate as tsl
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class Geometry(object):
-    """ Abstract base class for defining geometry elements.
+    """ Abstract base class for defining geometry objects.
 
     This class provides the following properties:
 
@@ -39,10 +40,10 @@ class Geometry(object):
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         self._eval_points = self._init_array()  # evaluated points
-        self._name = "Geometry object"  # descriptor field
-        self._opt_data = dict()  # dict for storing custom data
-        self._iter_index = 0  # iterator index
-        self._cache = {}  # cache dictionary
+        self._name = "geometry object"  # object name
+        self._id = int(kwargs.get('id', 0))  # object ID
+        self._opt_data = dict()  # custom data dict
+        self._cache = {}  # cache dict
 
     def __iter__(self):
         self._iter_index = 0
@@ -102,23 +103,6 @@ class Geometry(object):
         return self._geometry_type
 
     @property
-    def name(self):
-        """ Descriptor field for storing the shape identification data, such as names, ID numbers, etc.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the descriptor
-        :setter: Sets the descriptor
-        :type: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
     def evalpts(self):
         """ Evaluated points.
 
@@ -132,17 +116,49 @@ class Geometry(object):
             self.evaluate()
         return self._eval_points
 
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
+    @property
+    def id(self):
+        """ Object ID (as an integer).
 
-        :param value: a key in the :py:attr:`opt` property
-        :type value: str
-        :return: the corresponding value, if the key exists. ``None``, otherwise.
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the object ID
+        :setter: Sets the object ID
+        :type: int
         """
-        try:
-            return self._opt_data[value]
-        except KeyError:
-            return None
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        if not isinstance(value, int):
+            raise GeomdlException("Identifier value must be an integer")
+        self._id = value
+
+    @id.deleter
+    def id(self):
+        self._id = 0
+
+    @property
+    def name(self):
+        """ Object name (as a string)
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the object name
+        :setter: Sets the object name
+        :type: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = str(value)
+
+    @name.deleter
+    def name(self):
+        self._name = ""
 
     @property
     def opt(self):
@@ -191,6 +207,18 @@ class Geometry(object):
     def opt(self):
         self._opt_data = dict()
 
+    def opt_get(self, value):
+        """ Safely query for the value from the :py:attr:`opt` property.
+
+        :param value: a key in the :py:attr:`opt` property
+        :type value: str
+        :return: the corresponding value, if the key exists. ``None``, otherwise.
+        """
+        try:
+            return self._opt_data[value]
+        except KeyError:
+            return None
+
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Abstract method for the implementation of evaluation algorithm.
@@ -202,9 +230,9 @@ class Geometry(object):
         pass
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class SplineGeometry(Geometry):
-    """ Abstract base class for defining spline geometries.
+    """ Abstract base class for defining spline geometry objects.
 
     This class provides the following properties:
 
@@ -401,7 +429,7 @@ class SplineGeometry(Geometry):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
+            self._bounding_box = utl.evaluate_bounding_box(self.ctrlpts)
         return self._bounding_box
 
     @property
@@ -510,7 +538,7 @@ class SplineGeometry(Geometry):
         pass
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class Curve(SplineGeometry):
     """ Abstract base class for defining spline curves.
 
@@ -570,7 +598,7 @@ class Curve(SplineGeometry):
         self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Curve, self).__init__(**kwargs)  # Call parent function
-        self._name = "Curve"  # descriptor field
+        self._name = "curve"  # default name
 
     @property
     def order(self):
@@ -638,15 +666,14 @@ class Curve(SplineGeometry):
             raise ValueError("Set degree and control points first")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree, value, len(self._control_points)):
+        if not knotvector.check(self.degree, value, len(self._control_points)):
             raise ValueError("Input is not a valid knot vector")
 
         # Clean up the curve points lists
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[0] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def ctrlpts(self):
@@ -939,7 +966,7 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params(param):
+            if not utl.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -973,11 +1000,11 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params([u]):
+            if not utl.check_params([u]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class Surface(SplineGeometry):
     """ Abstract base class for defining spline surfaces.
 
@@ -1037,7 +1064,7 @@ class Surface(SplineGeometry):
         self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Surface, self).__init__(**kwargs)
-        self._name = "Surface"  # descriptor field
+        self._name = "surface"  # object name
         self._tsl_component = None  # tessellation component
         self._trims = self._init_array()  # trim curves
 
@@ -1181,15 +1208,14 @@ class Surface(SplineGeometry):
             raise ValueError("Set degree and control points first for the u-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree_u, value, self.ctrlpts_size_u):
+        if not knotvector.check(self.degree_u, value, self.ctrlpts_size_u):
             raise ValueError("Input is not a valid knot vector for the u-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[0] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def knotvector_v(self):
@@ -1213,15 +1239,14 @@ class Surface(SplineGeometry):
             raise ValueError("Set degree and control points first for the v-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree_v, value, self.ctrlpts_size_v):
+        if not knotvector.check(self.degree_v, value, self.ctrlpts_size_v):
             raise ValueError("Input is not a valid knot vector for the v-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[1] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[1] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def ctrlpts(self):
@@ -1668,12 +1693,12 @@ class Surface(SplineGeometry):
 
         # Add control points as quads
         if self._vis_component.mconf['ctrlpts'] == 'quads':
-            ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            ctrlpts_quads = tsl.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as a quad mesh
         if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
-            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            ctrlpts_quads = tsl.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
@@ -1682,7 +1707,7 @@ class Surface(SplineGeometry):
 
         # Add surface points as quads
         if self._vis_component.mconf['evalpts'] == 'quads':
-            evalpts_quads = utilities.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
+            evalpts_quads = tsl.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
             self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles
@@ -1821,7 +1846,7 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params(param):
+            if not utl.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -1857,11 +1882,11 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params([u, v]):
+            if not utl.check_params([u, v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class Volume(SplineGeometry):
     """ Abstract base class for defining spline volumes.
 
@@ -1917,7 +1942,7 @@ class Volume(SplineGeometry):
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
         super(Volume, self).__init__(**kwargs)
-        self._name = "Volume"  # descriptor field
+        self._name = "volume"  # object name
 
     @property
     def order_u(self):
@@ -2103,15 +2128,14 @@ class Volume(SplineGeometry):
             raise ValueError("Set degree and control points first on the u-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree_u, value, self.ctrlpts_size_u):
+        if not knotvector.check(self.degree_u, value, self.ctrlpts_size_u):
             raise ValueError("Input is not a valid knot vector on the u-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[0] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[0] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def knotvector_v(self):
@@ -2135,15 +2159,14 @@ class Volume(SplineGeometry):
             raise ValueError("Set degree and control points first on the v-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree_v, value, self.ctrlpts_size_v):
+        if not knotvector.check(self.degree_v, value, self.ctrlpts_size_v):
             raise ValueError("Input is not a valid knot vector on the v-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[1] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[1] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def knotvector_w(self):
@@ -2167,15 +2190,14 @@ class Volume(SplineGeometry):
             raise ValueError("Set degree and control points first for the w-direction")
 
         # Check knot vector validity
-        if not utilities.check_knot_vector(self.degree_w, value, self.ctrlpts_size_w):
+        if not knotvector.check(self.degree_w, value, self.ctrlpts_size_w):
             raise ValueError("Input is not a valid knot vector for the w-direction")
 
         # Clean up the surface points
         self.reset(evalpts=True)
 
         # Set knot vector
-        self._knot_vector[2] = utilities.normalize_knot_vector(value, decimals=self._precision) \
-            if self._kv_normalize else value
+        self._knot_vector[2] = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
 
     @property
     def ctrlpts(self):
@@ -2762,7 +2784,7 @@ class Volume(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params(param):
+            if not utl.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod

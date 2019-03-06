@@ -8,6 +8,7 @@
 
 import pytest
 from geomdl import utilities
+from geomdl import _utilities
 
 GEOMDL_DELTA = 10e-6
 
@@ -103,25 +104,25 @@ def test_normalize_knot_vector3():
 def test_check_uv1():
     u = -0.1
     v = 0.1
-    assert not utilities.check_params([u, v])
+    assert not _utilities.check_params([u, v])
 
 
 def test_check_uv2():
     u = 2
     v = 0.1
-    assert not utilities.check_params([u, v])
+    assert not _utilities.check_params([u, v])
 
 
 def test_check_uv3():
     v = -0.1
     u = 0.1
-    assert not utilities.check_params([u, v])
+    assert not _utilities.check_params([u, v])
 
 
 def test_check_uv4():
     v = 2
     u = 0.1
-    assert not utilities.check_params([u, v])
+    assert not _utilities.check_params([u, v])
 
 
 def test_color_generator():

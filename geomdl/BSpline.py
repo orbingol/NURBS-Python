@@ -1,23 +1,23 @@
 """
 .. module:: BSpline
     :platform: Unix, Windows
-    :synopsis: Provides data storage and evaluation functionality for B-spline curves and surfaces
+    :synopsis: Provides data storage and evaluation functionality for B-spline geometries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 
 import pickle
+
 from . import abstract
-from . import utilities
 from . import evaluators
 from . import operations
 from . import tessellate
-from ._utilities import export
+from . import _utilities as utl
 from .exceptions import GeomdlException
 
 
-@export
+@utl.export
 class Curve(abstract.Curve):
     """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
 
@@ -150,7 +150,7 @@ class Curve(abstract.Curve):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params([start, stop]):
+            if not utl.check_params([start, stop]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the curve points
@@ -177,7 +177,7 @@ class Curve(abstract.Curve):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params([param]):
+            if not utl.check_params([param]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the curve point
@@ -203,7 +203,7 @@ class Curve(abstract.Curve):
         res = []
         for prm in param_list:
             if self._kv_normalize:
-                if utilities.check_params([prm]):
+                if utl.check_params([prm]):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
@@ -241,7 +241,7 @@ class Curve(abstract.Curve):
 
         # Check parameters are correct
         if self._kv_normalize:
-            if not utilities.check_params([param]):
+            if not utl.check_params([param]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
@@ -273,7 +273,7 @@ class Curve(abstract.Curve):
 
         # Check param parameters are correct
         if self._kv_normalize:
-            if not utilities.check_params([param]):
+            if not utl.check_params([param]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
@@ -355,7 +355,7 @@ class Curve(abstract.Curve):
         return operations.binormal(self, parpos, **kwargs)
 
 
-@export
+@utl.export
 class Surface(abstract.Surface):
     """ Data storage and evaluation class for B-spline (non-rational) surfaces.
 
@@ -656,7 +656,7 @@ class Surface(abstract.Surface):
 
         # Check parameters
         if self._kv_normalize:
-            if not utilities.check_params([start_u, stop_u, start_v, stop_v]):
+            if not utl.check_params([start_u, stop_u, start_v, stop_v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the surface points
@@ -706,7 +706,7 @@ class Surface(abstract.Surface):
         res = []
         for prm in param_list:
             if self._kv_normalize:
-                if utilities.check_params(prm):
+                if utl.check_params(prm):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
@@ -755,7 +755,7 @@ class Surface(abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            if not utilities.check_params([u, v]):
+            if not utl.check_params([u, v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
@@ -791,7 +791,7 @@ class Surface(abstract.Surface):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            if not utilities.check_params([u, v]):
+            if not utl.check_params([u, v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
@@ -855,7 +855,7 @@ class Surface(abstract.Surface):
         return operations.normal(self, parpos, **kwargs)
 
 
-@export
+@utl.export
 class Volume(abstract.Volume):
     """ Data storage and evaluation class for B-spline (non-rational) volumes.
 
@@ -981,7 +981,7 @@ class Volume(abstract.Volume):
 
         # Check if all the input parameters are in the range
         if self._kv_normalize:
-            if not utilities.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w]):
+            if not utl.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Clean up the evaluated points
@@ -1008,7 +1008,7 @@ class Volume(abstract.Volume):
 
         # Check if all parameters are in the range
         if self._kv_normalize:
-            if not utilities.check_params(param):
+            if not utl.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the volume point
@@ -1035,7 +1035,7 @@ class Volume(abstract.Volume):
         res = []
         for prm in param_list:
             if self._kv_normalize:
-                if utilities.check_params(prm):
+                if utl.check_params(prm):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
@@ -1061,7 +1061,7 @@ class Volume(abstract.Volume):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            if not utilities.check_params([u, v, w]):
+            if not utl.check_params([u, v, w]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
@@ -1101,7 +1101,7 @@ class Volume(abstract.Volume):
 
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
-            if not utilities.check_params([u, v, w]):
+            if not utl.check_params([u, v, w]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
