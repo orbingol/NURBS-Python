@@ -78,7 +78,7 @@ class VisAbstract(object):
 
     @property
     def mconf(self):
-        """ Visualization module internal configuration directives
+        """ Configuration directives for the visualization module (internal).
 
         This property controls the internal configuration of the visualization module. It is for advanced use and
         testing only.

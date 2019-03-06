@@ -102,10 +102,9 @@ def check_params(params):
     :return: True if defined in the domain [0, 1]. False, otherwise.
     :rtype: bool
     """
-    tol = 10e-8
     # Check parameters
     for prm in params:
         if prm is not None:
-            if not (0.0 - tol) <= prm <= (1.0 + tol):
+            if not 0.0 <= prm <= 1.0:
                 return False
     return True

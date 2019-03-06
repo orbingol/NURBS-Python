@@ -1769,7 +1769,10 @@ class Surface(SplineGeometry):
 
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
-            self._tsl_component.vertices[idx].data = self.evaluate_single(self._tsl_component.vertices[idx].uv)
+            uv = self._tsl_component.vertices[idx].uv
+            if self._kv_normalize and not utl.check_params(uv):
+                continue
+            self._tsl_component.vertices[idx].data = self.evaluate_single(uv)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.

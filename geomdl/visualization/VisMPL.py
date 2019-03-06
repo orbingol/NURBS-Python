@@ -448,13 +448,14 @@ class VisSurface(vis.VisAbstract):
                     trisurf_params['color'] = plot['color']
 
                 # Create MPL Triangulation object
-                triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
-                # Use custom Triangulation object and the choice of color/colormap to plot the surface
-                ax.plot_trisurf(triangulation, pts[:, 2], alpha=self.vconf.alpha, **trisurf_params)
-                # Add to legend
-                plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
-                legend_proxy.append(plot_proxy)
-                legend_names.append(plot['name'])
+                if pts.size != 0:
+                    triangulation = mpltri.Triangulation(pts[:, 0], pts[:, 1], triangles=tri_idxs)
+                    # Use custom Triangulation object and the choice of color/colormap to plot the surface
+                    ax.plot_trisurf(triangulation, pts[:, 2], alpha=self.vconf.alpha, **trisurf_params)
+                    # Add to legend
+                    plot_proxy = mpl.lines.Line2D([0], [0], linestyle='none', color=plot['color'], marker='^')
+                    legend_proxy.append(plot_proxy)
+                    legend_names.append(plot['name'])
 
             # Plot bounding box
             if plot['type'] == 'bbox' and self.vconf.display_bbox:
