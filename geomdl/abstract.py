@@ -180,6 +180,9 @@ class Geometry(object):
             geom.opt = ["body_id", None]  # deletes "body_id"
             print(geom.opt)  # will print: {}
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the dict
         :setter: Adds key and value pair to the dict
         :deleter: Deletes the contents of the dict
