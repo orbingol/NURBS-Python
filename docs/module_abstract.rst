@@ -15,6 +15,7 @@ Abstract Curve
 .. autoclass:: geomdl.abstract.Curve
     :members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 Abstract Surface
@@ -23,6 +24,7 @@ Abstract Surface
 .. autoclass:: geomdl.abstract.Surface
     :members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 Abstract Volume
@@ -31,6 +33,7 @@ Abstract Volume
 .. autoclass:: geomdl.abstract.Volume
     :members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 Low Level API
@@ -47,9 +50,11 @@ The following classes provide the low level API for the geometry abstract base.
 .. autoclass:: geomdl.abstract.Geometry
     :members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 .. autoclass:: geomdl.abstract.SplineGeometry
     :members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:

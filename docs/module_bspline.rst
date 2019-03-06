@@ -16,6 +16,7 @@ B-Spline Curve
     :members:
     :undoc-members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 B-Spline Surface
@@ -25,6 +26,7 @@ B-Spline Surface
     :members:
     :undoc-members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
 
 B-Spline Volume
@@ -36,4 +38,5 @@ B-Spline Volume
     :members:
     :undoc-members:
     :inherited-members:
+    :exclude-members: next
     :show-inheritance:
