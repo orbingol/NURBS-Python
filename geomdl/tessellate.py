@@ -151,16 +151,8 @@ class TrimTessellate(AbstractTessellate):
         # Call parent function
         super(TrimTessellate, self).tessellate(points, **kwargs)
 
-        # Extract trims for pre-processing
-        trims = kwargs.pop('trims', [])
-
-        # Add "sense" if it doesn't exist
-        for idx in range(len(trims)):
-            if trims[idx].opt_get('sense') is None:
-                trims[idx].opt = ['sense', 0]
-
         # Apply default triangular mesh generator function with trimming customization
-        self._vertices, self._faces = self._tsl_func(points, trims=trims,
+        self._vertices, self._faces = self._tsl_func(points,
                                                      tessellate_func=self._tsl_trim_func,
                                                      tessellate_args=self.arguments,
                                                      **kwargs)

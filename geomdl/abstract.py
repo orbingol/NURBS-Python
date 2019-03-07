@@ -10,12 +10,11 @@
 import copy
 import abc
 import warnings
-from . import vis, helpers, knotvector, voxelize
+from . import vis, helpers, knotvector, voxelize, utilities
 from .evaluators import AbstractEvaluator
 from .tessellate import AbstractTessellate
 from .exceptions import GeomdlException
 from . import _utilities as utl
-from . import _tessellate as tsl
 
 
 @utl.add_metaclass(abc.ABCMeta)
@@ -429,7 +428,7 @@ class SplineGeometry(Geometry):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utl.evaluate_bounding_box(self.ctrlpts)
+            self._bounding_box = evaluate_bounding_box(self.ctrlpts)
         return self._bounding_box
 
     @property
@@ -780,6 +779,13 @@ class Curve(SplineGeometry):
             control_points=self._control_points
         )
 
+    def reverse(self):
+        """ Reverses the curve """
+        self._control_points = reversed(self._control_points)
+        max_k = self.knotvector[-1]
+        new_kv = [max_k - k for k in self.knotvector]
+        self._knot_vector[0] = reversed(new_kv)
+
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets control points and checks if the data is consistent.
 
@@ -966,7 +972,7 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utl.check_params(param):
+            if not check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -1000,7 +1006,7 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utl.check_params([u]):
+            if not check_params([u]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
@@ -1559,13 +1565,6 @@ class Surface(SplineGeometry):
 
     @trims.setter
     def trims(self, value):
-        # Input validity check
-        for i, v in enumerate(value):
-            if not isinstance(v, Geometry):
-                raise GeomdlException(
-                    "Trim curve must be an instance of abstract.Geometry class",
-                    data=dict(idx=i)
-                )
         self._trims = value
 
     @property
@@ -1693,12 +1692,12 @@ class Surface(SplineGeometry):
 
         # Add control points as quads
         if self._vis_component.mconf['ctrlpts'] == 'quads':
-            ctrlpts_quads = tsl.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as a quad mesh
         if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
-            ctrlpts_quads = tsl.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
+            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
@@ -1707,7 +1706,7 @@ class Surface(SplineGeometry):
 
         # Add surface points as quads
         if self._vis_component.mconf['evalpts'] == 'quads':
-            evalpts_quads = tsl.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
+            evalpts_quads = utilities.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
             self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles
@@ -1765,12 +1764,12 @@ class Surface(SplineGeometry):
 
         # Call tessellation component for vertex and triangle generation
         self._tsl_component.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v,
-                                       trims=self.trims, surf_bbox=self.bbox, **kwargs)
+                                       trims=self.trims, **kwargs)
 
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
             uv = self._tsl_component.vertices[idx].uv
-            if self._kv_normalize and not utl.check_params(uv):
+            if self._kv_normalize and not check_params(uv):
                 continue
             self._tsl_component.vertices[idx].data = self.evaluate_single(uv)
 
@@ -1849,7 +1848,7 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utl.check_params(param):
+            if not check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -1885,7 +1884,7 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utl.check_params([u, v]):
+            if not check_params([u, v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
@@ -2787,7 +2786,7 @@ class Volume(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not utl.check_params(param):
+            if not check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -2802,3 +2801,46 @@ class Volume(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
+
+
+def evaluate_bounding_box(ctrlpts):
+    """ Computes the minimum bounding box of the point set.
+
+    The (minimum) bounding box is the smallest enclosure in which all the input points lie.
+
+    :param ctrlpts: points
+    :type ctrlpts: list, tuple
+    :return: bounding box in the format [min, max]
+    :rtype: tuple
+    """
+    # Estimate dimension from the first element of the control points
+    dimension = len(ctrlpts[0])
+
+    # Evaluate bounding box
+    bbmin = [float('inf') for _ in range(0, dimension)]
+    bbmax = [float('-inf') for _ in range(0, dimension)]
+    for cpt in ctrlpts:
+        for i, arr in enumerate(zip(cpt, bbmin)):
+            if arr[0] < arr[1]:
+                bbmin[i] = arr[0]
+        for i, arr in enumerate(zip(cpt, bbmax)):
+            if arr[0] > arr[1]:
+                bbmax[i] = arr[0]
+
+    return tuple(bbmin), tuple(bbmax)
+
+
+def check_params(params):
+    """ Checks if the parameters are defined in the domain [0, 1].
+
+    :param params: parameters (u, v, w)
+    :type params: list, tuple
+    :return: True if defined in the domain [0, 1]. False, otherwise.
+    :rtype: bool
+    """
+    # Check parameters
+    for prm in params:
+        if prm is not None:
+            if not 0.0 <= prm <= 1.0:
+                return False
+    return True
