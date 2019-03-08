@@ -23,8 +23,12 @@ class Geometry(object):
 
     This class provides the following properties:
 
+    * :py:attr:`type`
+    * :py:attr:`id`
     * :py:attr:`name`
+    * :py:attr:`dimension`
     * :py:attr:`evalpts`
+    * :py:attr:`opt`
 
     **Keyword Arguments:**
 
@@ -32,6 +36,7 @@ class Geometry(object):
     """
 
     def __init__(self, **kwargs):
+        self._dimension = 0  # spatial dimension
         self._geometry_type = "default"  # geometry type
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type
@@ -85,6 +90,18 @@ class Geometry(object):
         if callable(self._array_type):
             return self._array_type()
         return list()
+
+    @property
+    def dimension(self):
+        """ Spatial dimension.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
+        :type: int
+        """
+        return self._dimension
 
     @property
     def type(self):
@@ -262,7 +279,6 @@ class SplineGeometry(Geometry):
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._rational = False  # defines whether the B-spline object is rational or not
-        self._dimension = 0  # spatial dimension
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
         self._control_points = self._init_array()  # control points

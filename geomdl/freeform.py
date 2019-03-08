@@ -24,3 +24,4 @@ class Freeform(abstract.Geometry):
             * ``points``: sets the points
         """
         self._eval_points = kwargs.get('points', self._init_array())
+        self._dimension = len(self._eval_points[0])
