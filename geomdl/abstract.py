@@ -797,10 +797,10 @@ class Curve(SplineGeometry):
 
     def reverse(self):
         """ Reverses the curve """
-        self._control_points = reversed(self._control_points)
+        self._control_points = list(reversed(self._control_points))
         max_k = self.knotvector[-1]
         new_kv = [max_k - k for k in self.knotvector]
-        self._knot_vector[0] = reversed(new_kv)
+        self._knot_vector[0] = list(reversed(new_kv))
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets control points and checks if the data is consistent.
