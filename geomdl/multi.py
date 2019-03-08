@@ -109,9 +109,9 @@ class AbstractContainer(object):
         """
         ret = []
         for elem in self._elements:
-            elem.delta = self._delta
+            elem.delta = self._delta[0] if self._pdim == 1 else self._delta
             evalpts = elem.evalpts
-            ret.append(evalpts)
+            ret += evalpts
         return ret
 
     @property
@@ -262,6 +262,26 @@ class AbstractContainer(object):
 
     # Make container look like a list
     append = add
+
+    @property
+    def opt(self):
+        """ Dictionary for storing custom data in the current geometry object.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the dict
+        """
+        return self._elements[0].opt
+
+    def opt_get(self, value):
+        """ Safely query for the value from the :py:attr:`opt` property.
+
+        :param value: a key in the :py:attr:`opt` property
+        :type value: str
+        :return: the corresponding value, if the key exists. ``None``, otherwise.
+        """
+        return self._elements[0].opt_get(value)
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
