@@ -1328,31 +1328,32 @@ def trim_surface(obj):
     :type obj: abstract.Surface
     :return:
     """
-    # Validate input
-    if not isinstance(obj, abstract.Surface):
-        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
+    # # Validate input
+    # if not isinstance(obj, abstract.Surface):
+    #     raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     # Get trims of the surface
-    trims = obj.trims
-    if not trims:
-        return
+    for o in obj:
+        trims = o.trims
+        if not trims:
+            continue
 
-    # Get parameter space bounding box
-    parbox = _operations.get_par_box(obj.domain, True)
+        # Get parameter space bounding box
+        parbox = _operations.get_par_box(o.domain, True)
 
-    # Check and update trim curves with respect to the underlying surface
-    updated_trims = []
-    for trim in trims:
-        flag, trm = _operations.check_trim_curve(trim, parbox)
-        if flag:
-            if trm:
-                cont = multi.CurveContainer(trm)
-                updated_trims.append(cont)
-            else:
-                updated_trims.append(trim)
+        # Check and update trim curves with respect to the underlying surface
+        updated_trims = []
+        for trim in trims:
+            flag, trm = _operations.check_trim_curve(trim, parbox)
+            if flag:
+                if trm:
+                    cont = multi.CurveContainer(trm)
+                    updated_trims.append(cont)
+                else:
+                    updated_trims.append(trim)
 
-    # Set updated trims
-    obj.trims = updated_trims
+        # Set updated trims
+        obj.trims = updated_trims
 
 
 @export
