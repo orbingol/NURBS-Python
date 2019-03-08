@@ -1318,6 +1318,44 @@ def derivative_surface(obj):
 
 
 @export
+def trim_surface(obj):
+    """ Trims the surface using trim curves defined on the parametric space.
+
+    This is a helper function for trimming and it can fix the trimming issues, e.g. sense issues, open curves, etc.
+    If ``trims`` property of the Surface object returns an empty list, this function does nothing.
+
+    :param obj: input surface
+    :type obj: abstract.Surface
+    :return:
+    """
+    # Validate input
+    if not isinstance(obj, abstract.Surface):
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
+
+    # Get trims of the surface
+    trims = obj.trims
+    if not trims:
+        return
+
+    # Get parameter space bounding box
+    parbox = _operations.get_par_box(obj.domain, True)
+
+    # Check and update trim curves with respect to the underlying surface
+    updated_trims = []
+    for trim in trims:
+        flag, trm = _operations.check_trim_curve(trim, parbox)
+        if flag:
+            if trm:
+                cont = multi.CurveContainer(trm)
+                updated_trims.append(cont)
+            else:
+                updated_trims.append(trim)
+
+    # Set updated trims
+    obj.trims = updated_trims
+
+
+@export
 def translate(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 
