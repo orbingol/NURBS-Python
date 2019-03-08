@@ -304,6 +304,8 @@ def import_dict_surf(data):
         shape.name = data['name']
     if 'id' in data:
         shape.id = data['id']
+    if 'sense' in data:  # surface sense
+        shape.opt = ['sense', data['sense']]
 
     # Trim curves
     if 'trims' in data:
@@ -333,6 +335,11 @@ def export_dict_surf(obj):
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
+
+    # Surface sense
+    sense = obj.opt_get('sense')
+    if sense is not None:
+        data['sense'] = sense
 
     # Trim curves
     if obj.trims:
