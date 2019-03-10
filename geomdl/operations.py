@@ -59,7 +59,7 @@ def insert_knot(obj, param, num, **kwargs):
 
         if len(num) != obj.pdimension:
             raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdim, num_len=len(num)))
+                                  data=dict(pdim=obj.pdimension, num_len=len(num)))
 
         for idx, val in enumerate(num):
             if val < 0:
@@ -332,7 +332,7 @@ def remove_knot(obj, param, num, **kwargs):
 
         if len(num) != obj.pdimension:
             raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdim, num_len=len(num)))
+                                  data=dict(pdim=obj.pdimension, num_len=len(num)))
 
         for idx, val in enumerate(num):
             if val < 0:
@@ -626,7 +626,7 @@ def refine_knotvector(obj, param, **kwargs):
 
         if len(param) != obj.pdimension:
             raise GeomdlException("The length of the param array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdim, param_len=len(param)))
+                                  data=dict(pdim=obj.pdimension, param_len=len(param)))
 
     # Start curve knot refinement
     if isinstance(obj, abstract.Curve):
