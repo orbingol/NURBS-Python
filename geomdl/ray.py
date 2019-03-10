@@ -139,7 +139,7 @@ def intersect(ray1, ray2, **kwargs):
         raise ValueError("Dimensions of the input rays must be the same")
 
     # Keyword arguments
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get('tol', 10e-17)
 
     # Call intersection method
     if ray1.dimension == 2:
@@ -168,11 +168,11 @@ def _intersect2d(ray1, ray2, tol):
 def _intersect3d(ray1, ray2, tol):
     # Check for colinear case
     d_cross = linalg.vector_cross(ray1.d, ray2.d)
-    if linalg.vector_is_zero(d_cross):
+    if linalg.vector_is_zero(d_cross, tol):
         tmp1 = linalg.vector_sum(ray2.p, ray1.p, coeff=-1.0)
-        t1 = tmp1[0] / ray1.d[0]
+        t1 = 0.0 if abs(ray1.d[0]) < tol else tmp1[0] / ray1.d[0]
         tmp2 = linalg.vector_sum(ray1.p, ray2.p, coeff=-1.0)
-        t2 = tmp2[0] / ray2.d[0]
+        t2 = 0.0 if abs(ray2.d[0]) < tol else tmp2[0] / ray2.d[0]
         return t1, t2, RayIntersection.COLINEAR
 
     # Find common values
