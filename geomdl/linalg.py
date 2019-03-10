@@ -9,6 +9,7 @@
 
 import os
 import math
+from functools import reduce
 from . import _linalg
 try:
     from functools import lru_cache
@@ -559,6 +560,37 @@ def frange(start, stop, step=1.0):
         yield x
     if stop > x:
         yield stop  # for yielding last value of the knot vector if the step is a large value, like 0.1
+
+
+def convex_hull(points):
+    """ Returns points on convex hull in counterclockwise order according to Graham's scan algorithm.
+
+    Reference: https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
+
+    :param points: list of 2-dimensional points
+    :type points: list, tuple
+    :return: convex hull of the input points
+    :rtype: list
+    """
+    turn_left, turn_right, turn_none = (1, -1, 0)
+
+    def cmp(a, b):
+        return (a > b) - (a < b)
+
+    def turn(p, q, r):
+        return cmp((q[0] - p[0])*(r[1] - p[1]) - (r[0] - p[0])*(q[1] - p[1]), 0)
+
+    def keep_left(hull, r):
+        while len(hull) > 1 and turn(hull[-2], hull[-1], r) != turn_left:
+            hull.pop()
+        if not len(hull) or hull[-1] != r:
+            hull.append(r)
+        return hull
+
+    points = sorted(points)
+    l = reduce(keep_left, points, [])
+    u = reduce(keep_left, reversed(points), [])
+    return l.extend(u[i] for i in range(1, len(u) - 1)) or l
 
 
 def is_left(point0, point1, point2):
