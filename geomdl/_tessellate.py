@@ -286,7 +286,6 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
 
     # Process vertices and intersections
     tris_vertices = []
-    verts = []
     for idx in range(0, len(vertices) - 1):
         # If two consecutively-ordered vertices are inside the trim, there should be no intersection
         if vertices[idx].inside and vertices[idx + 1].inside:
@@ -321,7 +320,6 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
 
                 # Add to lists
                 tris_vertices.append(vert)
-                verts.append(vert)
 
                 # Increment local vertex numbering index
                 nvi += 1
@@ -352,4 +350,4 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         if not tri.inside:
             tris_final.append(tri)
 
-    return verts, tris_final
+    return tris_vertices, tris_final
