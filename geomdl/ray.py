@@ -113,9 +113,17 @@ def intersect(ray1, ray2, **kwargs):
 
     The intersection operation can encounter 3 different cases:
 
-    * Intersecting: This is the anticipated solution. Returns ``(t_ray1, t_ray2, RayIntersection.INTERSECT)``
-    * Colinear: The rays can be parallel or coincident. Returns ``(-1, -1, RayIntersection.COLINEAR)``
-    * Skew:  The rays are neither parallel nor intersecting. Returns ``(t_ray1, t_ray2, RayIntersection.SKEW)``
+    * Intersecting: This is the anticipated solution. Returns ``(t1, t2, RayIntersection.INTERSECT)``
+    * Colinear: The rays can be parallel or coincident. Returns ``(t1, t2, RayIntersection.COLINEAR)``
+    * Skew:  The rays are neither parallel nor intersecting. Returns ``(t1, t2, RayIntersection.SKEW)``
+
+    For the colinear case, ``t1`` and ``t2`` are the parameter values that give the starting point of the ray2 and ray1,
+    respectively. Therefore;
+
+    .. code-block:: python
+
+        ray1.eval(t1) == ray2.p
+        ray2.eval(t2) == ray1.p
 
     Please note that this operation is only implemented for 2- and 3-dimensional rays.
 
@@ -161,7 +169,11 @@ def _intersect3d(ray1, ray2, tol):
     # Check for colinear case
     d_cross = linalg.vector_cross(ray1.d, ray2.d)
     if linalg.vector_is_zero(d_cross):
-        return -1, -1, RayIntersection.COLINEAR
+        tmp1 = linalg.vector_sum(ray2.p, ray1.p, coeff=-1.0)
+        t1 = tmp1[0] / ray1.d[0]
+        tmp2 = linalg.vector_sum(ray1.p, ray2.p, coeff=-1.0)
+        t2 = tmp2[0] / ray2.d[0]
+        return t1, t2, RayIntersection.COLINEAR
 
     # Find common values
     p_diff = linalg.vector_generate(ray1.p, ray2.p)
