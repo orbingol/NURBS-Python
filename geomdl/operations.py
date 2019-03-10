@@ -1553,7 +1553,7 @@ def rotate(obj, angle, **kwargs):
         translate(ncs, [-o for o in opt])
 
     if isinstance(obj, (abstract.Curve, abstract.Surface, abstract.Volume)):
-        origin = obj.evaluate_single(0.0)
+        origin = obj.evaluate_single([0.0 for _ in range(obj.pdimension)])
     else:
         raise TypeError("Can only work with a single curve, surface or volume")
 
