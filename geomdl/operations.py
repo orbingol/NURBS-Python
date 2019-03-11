@@ -1489,7 +1489,7 @@ def rotate(obj, angle, **kwargs):
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in translate_vector], inplace=True)
+        translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
     def rotate_y(ncs, opt, alpha):
         # Generate translation vector
@@ -1508,7 +1508,7 @@ def rotate(obj, angle, **kwargs):
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in translate_vector], inplace=True)
+        translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
     def rotate_z(ncs, opt, alpha):
         # Generate translation vector
@@ -1527,7 +1527,7 @@ def rotate(obj, angle, **kwargs):
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in translate_vector], inplace=True)
+        translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
     # Set rotation axis
     axis = 2 if obj.dimension == 2 else int(kwargs.get('axis', 2))
