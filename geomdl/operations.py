@@ -1318,43 +1318,26 @@ def derivative_surface(obj):
 
 
 @export
-def translate(obj, vec, **kwargs):
-    """ Translates curves, surface or volumes by the input vector.
+def find_ctrlpts(obj, u, v=None, **kwargs):
+    """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
-    Keyword Arguments:
-        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
-
-    :param obj: input geometry
-    :type obj: abstract.SplineGeometry or multi.AbstractContainer
-    :param vec: translation vector
-    :type vec: list, tuple
-    :return: translated geometry object
+    :param obj: curve or surface
+    :type obj: abstract.Curve or abstract.Surface
+    :param u: parameter (for curve), parameter on the u-direction (for surface)
+    :type u: float
+    :param v: parameter on the v-direction (for surface only)
+    :type v: float
+    :return: control points; 1-dimensional array for curve, 2-dimensional array for surface
+    :rtype: list
     """
-    # Input validity checks
-    if not vec or not isinstance(vec, (tuple, list)):
-        raise GeomdlException("The input must be a list or a tuple")
-
-    # Input validity checks
-    if len(vec) != obj.dimension:
-        raise GeomdlException("The input vector must have " + str(obj.dimension) + " components")
-
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    if not inplace:
-        geom = copy.deepcopy(obj)
+    if isinstance(obj, abstract.Curve):
+        return _operations.find_ctrlpts_curve(u, obj, **kwargs)
+    elif isinstance(obj, abstract.Surface):
+        if v is None:
+            raise ValueError("Parameter value for the v-direction must be set for operating on surfaces")
+        return _operations.find_ctrlpts_surface(u, v, obj, **kwargs)
     else:
-        geom = obj
-
-    # Translate control points
-    for g in geom:
-        new_ctrlpts = []
-        for pt in g.ctrlpts:
-            temp = [v + vec[i] for i, v in enumerate(pt)]
-            new_ctrlpts.append(temp)
-        g.ctrlpts = new_ctrlpts
-
-    return geom
+        raise NotImplementedError("The input must be an instance of abstract.Curve or abstract.Surface")
 
 
 @export
@@ -1436,26 +1419,43 @@ def binormal(obj, params, **kwargs):
 
 
 @export
-def find_ctrlpts(obj, u, v=None, **kwargs):
-    """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
+def translate(obj, vec, **kwargs):
+    """ Translates curves, surface or volumes by the input vector.
 
-    :param obj: curve or surface
-    :type obj: abstract.Curve or abstract.Surface
-    :param u: parameter (for curve), parameter on the u-direction (for surface)
-    :type u: float
-    :param v: parameter on the v-direction (for surface only)
-    :type v: float
-    :return: control points; 1-dimensional array for curve, 2-dimensional array for surface
-    :rtype: list
+    Keyword Arguments:
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
+
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry or multi.AbstractContainer
+    :param vec: translation vector
+    :type vec: list, tuple
+    :return: translated geometry object
     """
-    if isinstance(obj, abstract.Curve):
-        return _operations.find_ctrlpts_curve(u, obj, **kwargs)
-    elif isinstance(obj, abstract.Surface):
-        if v is None:
-            raise ValueError("Parameter value for the v-direction must be set for operating on surfaces")
-        return _operations.find_ctrlpts_surface(u, v, obj, **kwargs)
+    # Input validity checks
+    if not vec or not isinstance(vec, (tuple, list)):
+        raise GeomdlException("The input must be a list or a tuple")
+
+    # Input validity checks
+    if len(vec) != obj.dimension:
+        raise GeomdlException("The input vector must have " + str(obj.dimension) + " components")
+
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    if not inplace:
+        geom = copy.deepcopy(obj)
     else:
-        raise NotImplementedError("The input must be an instance of abstract.Curve or abstract.Surface")
+        geom = obj
+
+    # Translate control points
+    for g in geom:
+        new_ctrlpts = []
+        for pt in g.ctrlpts:
+            temp = [v + vec[i] for i, v in enumerate(pt)]
+            new_ctrlpts.append(temp)
+        g.ctrlpts = new_ctrlpts
+
+    return geom
 
 
 @export
