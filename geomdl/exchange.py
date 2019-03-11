@@ -92,14 +92,13 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     """ Exports control points as a text file.
 
-    For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-D control
-    point output file using ``two_dimensional`` flag. Please see the supported file formats for more details on the
-    text file format.
+    For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-dimensional
+    control point output file using ``two_dimensional``.
 
     Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
 
-    :param obj: a curve or a surface object
-    :type obj: abstract.Curve, abstract.Surface
+    :param obj: a spline geometry object
+    :type obj: abstract.SplineGeometry
     :param file_name: file name of the text file to be saved
     :type file_name: str
     :param two_dimensional: type of the text file (only works for Surface objects)
@@ -159,8 +158,8 @@ def import_csv(file_name, **kwargs):
 def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     """ Exports control points or evaluated points as a CSV file.
 
-    :param obj: a curve or a surface object
-    :type obj: abstract.Curve, abstract.Surface
+    :param obj: a spline geometry object
+    :type obj: abstract.SplineGeometry
     :param file_name: output file name
     :type file_name: str
     :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
@@ -172,8 +171,8 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
 
     # Pick correct points from the object
     if point_type == 'ctrlpts':
-        points = obj.ctrlpts
-    elif point_type == 'evalpts' or point_type == 'curvepts' or point_type == 'surfpts':
+        points = obj.ctrlptsw if obj.rational else obj.ctrlpts
+    elif point_type == 'evalpts':
         points = obj.evalpts
     else:
         raise exch.GeomdlException("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
@@ -205,7 +204,7 @@ def import_cfg(file_name, **kwargs):
 
     :param file_name: name of the input file
     :type file_name: str
-    :return: a list of NURBS curve(s) or surface(s)
+    :return: a list of rational spline geometries
     :rtype: list
     :raises GeomdlException: an error occurred writing the file
     """
@@ -240,8 +239,8 @@ def export_cfg(obj, file_name):
     Libconfig format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
     as a way to input shape data from the command line.
 
-    :param obj: input curve(s) or surface(s)
-    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry, multi.AbstractContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
@@ -274,7 +273,7 @@ def import_yaml(file_name, **kwargs):
 
     :param file_name: name of the input file
     :type file_name: str
-    :return: a list of NURBS curve(s) or surface(s)
+    :return: a list of rational spline geometries
     :rtype: list
     :raises GeomdlException: an error occurred reading the file
     """
@@ -310,8 +309,8 @@ def export_yaml(obj, file_name):
     YAML format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
     as a way to input shape data from the command line.
 
-    :param obj: input curve(s) or surface(s)
-    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry, multi.AbstractContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
@@ -344,7 +343,7 @@ def import_json(file_name, **kwargs):
 
     :param file_name: name of the input file
     :type file_name: str
-    :return: a list of NURBS curve(s) or surface(s)
+    :return: a list of rational spline geometries
     :rtype: list
     :raises GeomdlException: an error occurred reading the file
     """
@@ -369,8 +368,8 @@ def export_json(obj, file_name):
     JSON format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
     as a way to input shape data from the command line.
 
-    :param obj: input curve(s) or surface(s)
-    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer or multi.SurfaceContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry, multi.AbstractContainer
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file

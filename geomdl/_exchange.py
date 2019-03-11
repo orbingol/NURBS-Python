@@ -439,12 +439,13 @@ def import_text_data(content, sep, col_sep=";", two_dimensional=False):
 
 
 def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
+    ctrlpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
     result = ""
     if two_dimensional:
         for i in range(0, obj.ctrlpts_size_u):
             line = ""
             for j in range(0, obj.ctrlpts_size_v):
-                for idx, coord in enumerate(obj.ctrlpts2d[i][j]):
+                for idx, coord in enumerate(ctrlpts[j + (obj.ctrlpts_size_v * i)]):
                     if idx:  # check for the first element
                         line += sep
                     line += str(coord)
@@ -454,11 +455,6 @@ def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
                     line += "\n"
             result += line
     else:
-        # B-spline or NURBS?
-        try:
-            ctrlpts = obj.ctrlptsw
-        except AttributeError:
-            ctrlpts = obj.ctrlpts
         # Loop through points
         for pt in ctrlpts:
             result += sep.join(str(c) for c in pt) + "\n"
