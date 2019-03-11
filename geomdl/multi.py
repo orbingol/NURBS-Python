@@ -10,6 +10,7 @@
 import abc
 import warnings
 from . import vis, voxelize, utilities
+from . import tessellate
 from . import _utilities as utl
 
 
@@ -650,14 +651,9 @@ class SurfaceContainer(AbstractContainer):
 
             # Add control points as quads
             if self._vis_component.mconf['ctrlpts'] == 'quads':
-                ctrlpts_quads = utilities.make_quad(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
-                self._vis_component.add(ptsarr=ctrlpts_quads, name=elem.name + " (CP)",
-                                        color=color[0], plot_type='ctrlpts')
-
-            # Add control points as a quad mesh
-            if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
-                ctrlpts_quads = utilities.make_quad_mesh(elem.ctrlpts, elem.ctrlpts_size_u, elem.ctrlpts_size_v)
-                self._vis_component.add(ptsarr=ctrlpts_quads, name=elem.name + " (CP)",
+                qtsl = tessellate.QuadTessellate()
+                qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
+                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name + " (CP)",
                                         color=color[0], plot_type='ctrlpts')
 
             # Add surface points
@@ -666,8 +662,10 @@ class SurfaceContainer(AbstractContainer):
 
             # Add surface points as quads
             if self._vis_component.mconf['evalpts'] == 'quads':
-                evalpts_quads = utilities.make_quad(elem.evalpts, elem.sample_size_u, elem.sample_size_v)
-                self._vis_component.add(ptsarr=evalpts_quads, name=elem.name, color=color[1], plot_type='evalpts')
+                qtsl = tessellate.QuadTessellate()
+                qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
+                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
+                                        name=elem.name, color=color[1], plot_type='evalpts')
 
             # Add surface points as vertices and triangles
             if self._vis_component.mconf['evalpts'] == 'triangles':

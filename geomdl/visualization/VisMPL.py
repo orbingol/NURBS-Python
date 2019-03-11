@@ -418,9 +418,17 @@ class VisSurface(vis.VisAbstract):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                cp_z = pts[:, 2] + self._ctrlpts_offset
-                ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                vertices = [v.data for v in plot['ptsarr'][0]]
+                faces = [q.data for q in plot['ptsarr'][1]]
+                for q in faces:
+                    el = np.array([vertices[i] for i in q], dtype=self.vconf.dtype)
+                    el[:, 2] += self._ctrlpts_offset
+                    pc3d = Poly3DCollection([el], alpha=0.0, edgecolors=plot['color'], linewidths=1.0, linestyles='-.')
+                    pc3d.set_facecolor(None)
+                    ax.add_collection3d(pc3d)
+                pts = np.array(vertices, dtype=self.vconf.dtype)
+                pts[:, 2] += self._ctrlpts_offset
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -556,8 +564,16 @@ class VisSurfWireframe(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                ax.plot(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], alpha=self.vconf.alpha)
+                vertices = [v.data for v in plot['ptsarr'][0]]
+                faces = [q.data for q in plot['ptsarr'][1]]
+                for q in faces:
+                    el = np.array([vertices[i] for i in q], dtype=self.vconf.dtype)
+                    el[:, 2] += self._ctrlpts_offset
+                    pc3d = Poly3DCollection([el], alpha=0.0, edgecolors=plot['color'], linewidths=0.5, linestyles='-')
+                    pc3d.set_facecolor(None)
+                    ax.add_collection3d(pc3d)
+                pts = np.array(vertices, dtype=self.vconf.dtype)
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], s=5)
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-', color=plot['color'])
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])
@@ -648,9 +664,17 @@ class VisSurfScatter(vis.VisAbstract):
         for plot in self._plots:
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                cp_z = pts[:, 2] + self._ctrlpts_offset
-                ax.plot(pts[:, 0], pts[:, 1], cp_z, color=plot['color'], linestyle='-.', marker='o')
+                vertices = [v.data for v in plot['ptsarr'][0]]
+                faces = [q.data for q in plot['ptsarr'][1]]
+                for q in faces:
+                    el = np.array([vertices[i] for i in q], dtype=self.vconf.dtype)
+                    el[:, 2] += self._ctrlpts_offset
+                    pc3d = Poly3DCollection([el], alpha=0.0, edgecolors=plot['color'], linewidths=1.0, linestyles='-.')
+                    pc3d.set_facecolor(None)
+                    ax.add_collection3d(pc3d)
+                pts = np.array(vertices, dtype=self.vconf.dtype)
+                pts[:, 2] += self._ctrlpts_offset
+                ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], color=plot['color'], linestyle='-.', marker='o')
                 plot_proxy = mpl.lines.Line2D([0], [0], linestyle='-.', color=plot['color'], marker='o')
                 legend_proxy.append(plot_proxy)
                 legend_names.append(plot['name'])

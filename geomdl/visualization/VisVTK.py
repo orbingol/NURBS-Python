@@ -120,7 +120,7 @@ class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._module_config['ctrlpts'] = "quadmesh"
+        self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "points"
         self._module_config['others'] = "midpt"
 

@@ -11,8 +11,8 @@ import copy
 import abc
 import warnings
 from . import vis, helpers, knotvector, voxelize, utilities
+from . import tessellate
 from .evaluators import AbstractEvaluator
-from .tessellate import AbstractTessellate
 from .exceptions import GeomdlException
 from . import _utilities as utl
 
@@ -1558,7 +1558,7 @@ class Surface(SplineGeometry):
 
     @tessellator.setter
     def tessellator(self, value):
-        if not isinstance(value, AbstractTessellate):
+        if not isinstance(value, tessellate.AbstractTessellate):
             warnings.warn("Tessellation component must be an instance of AbstractTessellate class")
             return
 
@@ -1708,13 +1708,10 @@ class Surface(SplineGeometry):
 
         # Add control points as quads
         if self._vis_component.mconf['ctrlpts'] == 'quads':
-            ctrlpts_quads = utilities.make_quad(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
-            self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
-
-        # Add control points as a quad mesh
-        if self._vis_component.mconf['ctrlpts'] == 'quadmesh':
-            ctrlpts_quads = utilities.make_quad_mesh(self.ctrlpts, self.ctrlpts_size_u, self.ctrlpts_size_v)
-            self._vis_component.add(ptsarr=ctrlpts_quads, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+            qtsl = tessellate.QuadTessellate()
+            qtsl.tessellate(self.ctrlpts, size_u=self.ctrlpts_size_u, size_v=self.ctrlpts_size_v)
+            self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
+                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
         if self._vis_component.mconf['evalpts'] == 'points':
@@ -1722,8 +1719,10 @@ class Surface(SplineGeometry):
 
         # Add surface points as quads
         if self._vis_component.mconf['evalpts'] == 'quads':
-            evalpts_quads = utilities.make_quad(self.evalpts, self.sample_size_u, self.sample_size_v)
-            self._vis_component.add(ptsarr=evalpts_quads, name=self.name, color=evalcolor, plot_type='evalpts')
+            qtsl = tessellate.QuadTessellate()
+            qtsl.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v)
+            self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
+                                    name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Add surface points as vertices and triangles
         if self._vis_component.mconf['evalpts'] == 'triangles':

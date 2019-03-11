@@ -87,7 +87,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.display_legend = kwargs.get('legend', True)
         self.display_axes = kwargs.get('axes', True)
         self.axes_equal = kwargs.get('axes_equal', True)
-        self.figure_size = kwargs.get('figure_size', [800, 600])
+        self.figure_size = kwargs.get('figure_size', [1024, 768])
         self.trim_size = kwargs.get('trim_size', 1)
         self.line_width = kwargs.get('line_width', 2)
 
@@ -364,7 +364,7 @@ class VisSurface(vis.VisAbstract):
     """
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
-        self._module_config['ctrlpts'] = "quads"
+        self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "triangles"
 
     def render(self, **kwargs):
@@ -379,18 +379,13 @@ class VisSurface(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
-                cp_z = pts[:, 2] + self._ctrlpts_offset
+                pts[:, 2] += self._ctrlpts_offset
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
-                    z=cp_z,
+                    z=pts[:, 2],
                     name=plot['name'],
-                    mode='lines+markers',
-                    line=dict(
-                        color=plot['color'],
-                        width=self.vconf.line_width,
-                        dash='solid'
-                    ),
+                    mode='markers',
                     marker=dict(
                         color=plot['color'],
                         size=self.vconf.line_width * 2,

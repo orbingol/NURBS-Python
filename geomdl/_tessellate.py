@@ -9,7 +9,7 @@
 
 from . import linalg
 from . import ray
-from .elements import Vertex, Triangle
+from .elements import Vertex, Triangle, Quad
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -168,6 +168,41 @@ def polygon_triangulate(tri_idx, *args):
 
     # Return generated triangles
     return triangles
+
+
+def make_quad_mesh(points, size_u, size_v):
+    """ Generates a mesh of quadrilateral elements.
+
+    :param points: list of points
+    :type points: list, tuple
+    :param size_u: number of points on the u-direction (column)
+    :type size_u: int
+    :param size_v: number of points on the v-direction (row)
+    :return: a tuple containing lists of vertices and quads
+    :rtype: tuple
+    """
+    # Generate vertices
+    vertex_idx = 1
+    vertices = []
+    for pt in points:
+        vrt = Vertex(*pt, id=vertex_idx)
+        vertices.append(vrt)
+        vertex_idx += 1
+
+    # Generate quads
+    quad_idx = 1
+    quads = []
+    for i in range(0, size_u - 1):
+        for j in range(0, size_v - 1):
+            idx1 = j + (size_v * i)
+            idx2 = j + (size_v * (i + 1))
+            idx3 = j + 1 + (size_v * (i + 1))
+            idx4 = j + 1 + (size_v * i)
+            qd = Quad(idx1, idx2, idx3, idx4, id=quad_idx)
+            quads.append(qd)
+            quad_idx += 1
+
+    return vertices, quads
 
 
 def surface_tessellate(v1, v2, v3, v4, vidx, tidx, trim_curves, tessellate_args):
