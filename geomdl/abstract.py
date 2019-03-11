@@ -820,9 +820,15 @@ class Curve(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise ValueError("Set the degree first")
+                raise GeomdlException("Set the degree first")
             if arg < degree + 1:
-                raise ValueError("Number of control points should be at least degree + 1")
+                raise GeomdlException("Number of control points should be at least degree + 1")
+
+        if len(ctrlpts[0]) < 2:
+            raise GeomdlException("A curve should be at least 2-dimensional")
+
+        if self.rational and len(ctrlpts[0]) < 3:
+            raise GeomdlException("Rational curves expect weighted control points, e.g. (x * w, y * w, w)")
 
         # Clean up the curve and control points lists
         self.reset(ctrlpts=True, evalpts=True)
@@ -1620,9 +1626,15 @@ class Surface(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise ValueError("Set the degree first")
+                raise GeomdlException("Set the degree first")
             if arg < degree + 1:
-                raise ValueError("Number of control points should be at least degree + 1")
+                raise GeomdlException("Number of control points should be at least degree + 1")
+
+        if len(ctrlpts[0]) < 3:
+            raise GeomdlException("A surface should be at least 3-dimensional")
+
+        if self.rational and len(ctrlpts[0]) < 4:
+            raise GeomdlException("Rational surfaces expect weighted control points, e.g. (x * w, y * w, z * w, w)")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
@@ -2656,9 +2668,15 @@ class Volume(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise ValueError("Set the degree first")
+                raise GeomdlException("Set the degree first")
             if arg < degree + 1:
-                raise ValueError("Number of control points should be at least degree + 1")
+                raise GeomdlException("Number of control points should be at least degree + 1")
+
+        if len(ctrlpts[0]) < 3:
+            raise GeomdlException("A volume should be at least 3-dimensional")
+
+        if self.rational and len(ctrlpts[0]) < 4:
+            raise GeomdlException("Rational volumes expect weighted control points, e.g. (x * w, y * w, z * w, w)")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
