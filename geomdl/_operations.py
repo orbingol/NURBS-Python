@@ -7,49 +7,10 @@
 
 """
 
-import copy
 from . import linalg, helpers
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
-
-
-def translate_single(obj, vec, **kwargs):
-    # Input validity checks
-    if len(vec) != obj.dimension:
-        raise ValueError("The input must have " + str(obj.dimension) + " elements")
-
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    # Translate control points
-    new_ctrlpts = []
-    for point in obj.ctrlpts:
-        temp = [v + vec[i] for i, v in enumerate(point)]
-        new_ctrlpts.append(temp)
-
-    if inplace:
-        obj.ctrlpts = new_ctrlpts
-        return obj
-    else:
-        ret = copy.deepcopy(obj)
-        ret.ctrlpts = new_ctrlpts
-        return ret
-
-
-def translate_multi(obj, vec, **kwargs):
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    ret = obj.__class__()
-    for o in obj:
-        temp = translate_single(o, vec, **kwargs)
-        ret.add(temp)
-
-    if inplace:
-        return obj
-    else:
-        return ret
 
 
 def tangent_curve_single(obj, u, normalize):
@@ -331,37 +292,3 @@ def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
 
     # Return 2-dimensional control points array
     return surf_ctrlpts
-
-
-def scale_single(obj, multiplier, **kwargs):
-    # Get keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    # Scale control points
-    new_ctrlpts = [[] for _ in range(obj.ctrlpts_size)]
-    for idx, pts in enumerate(obj.ctrlpts):
-        new_ctrlpts[idx] = [p * float(multiplier) for p in pts]
-
-    # Return scaled shape
-    if inplace:
-        obj.ctrlpts = new_ctrlpts
-        return obj
-    else:
-        nobj = copy.deepcopy(obj)
-        nobj.ctrlpts = new_ctrlpts
-        return nobj
-
-
-def scale_multi(obj, multiplier, **kwargs):
-    # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-
-    ret = obj.__class__()
-    for o in obj:
-        temp = scale_single(o, multiplier, **kwargs)
-        ret.add(temp)
-
-    if inplace:
-        return obj
-    else:
-        return ret

@@ -1321,8 +1321,8 @@ def derivative_surface(obj):
 def translate(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 
-    If you pass ``inplace=True`` keyword argument, the input shape will be updated. Otherwise, this function does not
-    change the input shape but returns a new instance of the same shape with the updated data.
+    Keyword Arguments:
+        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
 
     :param obj: input geometry
     :type obj: abstract.SplineGeometry or multi.AbstractContainer
@@ -1332,14 +1332,29 @@ def translate(obj, vec, **kwargs):
     """
     # Input validity checks
     if not vec or not isinstance(vec, (tuple, list)):
-        raise TypeError("The input must be a list or a tuple")
+        raise GeomdlException("The input must be a list or a tuple")
 
-    if isinstance(obj, abstract.SplineGeometry):
-        return _operations.translate_single(obj, vec, **kwargs)
-    elif isinstance(obj, multi.AbstractContainer):
-        return _operations.translate_multi(obj, vec, **kwargs)
+    # Input validity checks
+    if len(vec) != obj.dimension:
+        raise GeomdlException("The input vector must have " + str(obj.dimension) + " components")
+
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    if not inplace:
+        geom = copy.deepcopy(obj)
     else:
-        raise TypeError("The input shape must be a curve or a surface (single or multi)")
+        geom = obj
+
+    # Translate control points
+    for g in geom:
+        new_ctrlpts = []
+        for pt in g.ctrlpts:
+            temp = [v + vec[i] for i, v in enumerate(pt)]
+            new_ctrlpts.append(temp)
+        g.ctrlpts = new_ctrlpts
+
+    return geom
 
 
 @export
@@ -1544,68 +1559,79 @@ def scale(obj, multiplier, **kwargs):
     """ Scales curves, surfaces or volumes by the input multiplier.
 
     Keyword Arguments:
-        * ``inplace``: if True, the input shape is modified. *Default: False*
+        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
 
     :param obj: input geometry
-    :type obj: abstract.Curve, abstract.Surface or abstract.Volume
+    :type obj: abstract.SplineGeometry, multi.AbstractGeometry
     :param multiplier: scaling multiplier
     :type multiplier: float
     :return: scaled geometry object
     """
     # Input validity checks
     if not isinstance(multiplier, (int, float)):
-        raise TypeError("The multiplier must be a float or an integer")
+        raise GeomdlException("The multiplier must be a float or an integer")
 
-    if isinstance(obj, abstract.SplineGeometry):
-        return _operations.scale_single(obj, multiplier, **kwargs)
-    elif isinstance(obj, multi.AbstractContainer):
-        return _operations.scale_multi(obj, multiplier, **kwargs)
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    if not inplace:
+        geom = copy.deepcopy(obj)
     else:
-        raise TypeError("The input shape must be a curve or a surface (single or multi)")
+        geom = obj
+
+    # Scale control points
+    for g in geom:
+        new_ctrlpts = [[] for _ in range(g.ctrlpts_size)]
+        for idx, pts in enumerate(g.ctrlpts):
+            new_ctrlpts[idx] = [p * float(multiplier) for p in pts]
+        g.ctrlpts = new_ctrlpts
+
+    return geom
 
 
 @export
 def transpose(surf, **kwargs):
-    """ Transposes the input surface by swapping u and v parametric directions.
+    """ Transposes the input surface(s) by swapping u and v parametric directions.
 
-    If you pass ``inplace=True`` keyword argument, the input surface will be updated. Otherwise, this function does not
-    change the input surface but returns a new instance of the same surface with the updated data.
+    Keyword Arguments:
+        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
 
-    :param surf: input surface
-    :type surf: abstract.Surface
-    :return: transposed surface
-    :rtype: abstract.Surface
+    :param surf: input surface(s)
+    :type surf: abstract.Surface, multi.SurfaceContainer
+    :return: transposed surface(s)
     """
-    if not isinstance(surf, abstract.Surface):
-        raise TypeError("Can only transpose single surfaces")
+    if surf.pdimension != 2:
+        raise GeomdlException("Can only transpose surfaces")
 
+    # Keyword arguments
     inplace = kwargs.get('inplace', False)
 
-    # Get existing data
-    degree_u_new = surf.degree_v
-    degree_v_new = surf.degree_u
-    kv_u_new = surf.knotvector_v
-    kv_v_new = surf.knotvector_u
-    ctrlpts2d_old = surf.ctrlpts2d
-
-    # Find new control points
-    ctrlpts2d_new = []
-    for v in range(0, surf.ctrlpts_size_v):
-        ctrlpts_u = []
-        for u in range(0, surf.ctrlpts_size_u):
-            temp = ctrlpts2d_old[u][v]
-            ctrlpts_u.append(temp)
-        ctrlpts2d_new.append(ctrlpts_u)
-
-    # Save transposed data
-    if inplace:
-        surf_t = surf
+    if not inplace:
+        geom = copy.deepcopy(surf)
     else:
-        surf_t = surf.__class__()
-    surf_t.degree_u = degree_u_new
-    surf_t.degree_v = degree_v_new
-    surf_t.ctrlpts2d = ctrlpts2d_new
-    surf_t.knotvector_u = kv_u_new
-    surf_t.knotvector_v = kv_v_new
+        geom = surf
 
-    return surf_t
+    for g in geom:
+        # Get existing data
+        degree_u_new = g.degree_v
+        degree_v_new = g.degree_u
+        kv_u_new = g.knotvector_v
+        kv_v_new = g.knotvector_u
+        ctrlpts2d_old = g.ctrlpts2d
+
+        # Find new control points
+        ctrlpts2d_new = []
+        for v in range(0, g.ctrlpts_size_v):
+            ctrlpts_u = []
+            for u in range(0, g.ctrlpts_size_u):
+                temp = ctrlpts2d_old[u][v]
+                ctrlpts_u.append(temp)
+            ctrlpts2d_new.append(ctrlpts_u)
+
+        g.degree_u = degree_u_new
+        g.degree_v = degree_v_new
+        g.ctrlpts2d = ctrlpts2d_new
+        g.knotvector_u = kv_u_new
+        g.knotvector_v = kv_v_new
+
+    return geom
