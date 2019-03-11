@@ -121,7 +121,7 @@ class VisSurface(vis.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisSurface, self).__init__(config=config)
         self._module_config['ctrlpts'] = "quads"
-        self._module_config['evalpts'] = "points"
+        self._module_config['evalpts'] = "triangles"
         self._module_config['others'] = "midpt"
 
     def render(self, **kwargs):
@@ -140,14 +140,14 @@ class VisSurface(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 vertices = [v.data for v in plot['ptsarr'][0]]
-                quads = [q.data for q in plot['ptsarr'][1]]
+                faces = [q.data for q in plot['ptsarr'][1]]
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor_pts)
                 # Quad mesh
-                lines = np.array(quads, dtype=np.int)
+                lines = np.array(faces, dtype=np.int)
                 temp_actor_lines = vtkh.create_actor_mesh(pts=vtkpts, lines=lines,
                                                           color=vtkh.create_color(plot['color']),
                                                           size=self.vconf.line_width)
@@ -155,9 +155,11 @@ class VisSurface(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=False)
+                vertices = [v.data for v in plot['ptsarr'][0]]
+                vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
+                faces = [t.vertex_ids_zero for t in plot['ptsarr'][1]]
+                tris = np.array(faces, dtype=np.int)
+                temp_actor = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor)
 
             # Update camera focal point
@@ -200,7 +202,7 @@ class VisVolume(vis.VisAbstract):
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_tri(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=True)
+                temp_actor = vtkh.create_actor_delaunay(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=True)
                 vtk_actors.append(temp_actor)
 
         # Render actors

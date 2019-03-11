@@ -54,7 +54,7 @@ def create_render_window(actors, callbacks, **kwargs):
     render_window.Render()
 
     # Set window name after render() is called
-    render_window.SetWindowName("NURBS-Python")
+    render_window.SetWindowName("geomdl")
 
     # Start interactor
     window_interactor.Start()
@@ -94,7 +94,7 @@ def create_actor_pts(pts, color, **kwargs):
     points = vtk.vtkPoints()
     points.SetData(pts)
 
-    # Create poly data objects
+    # Create a PolyData object and add points
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
 
@@ -144,7 +144,7 @@ def create_actor_polygon(pts, color, **kwargs):
         line.GetPointIds().SetId(1, i + 1)
         cells.InsertNextCell(line)
 
-    # Create poly data objects
+    # Create a PolyData object and add points & lines
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
     polydata.SetLines(cells)
@@ -191,7 +191,7 @@ def create_actor_mesh(pts, lines, color, **kwargs):
         pline.GetPointIds().SetId(4, line[0])
         cells.InsertNextCell(pline)
 
-    # Create poly data objects
+    # Create a PolyData object and add points & lines
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
     polydata.SetLines(cells)
@@ -210,8 +210,53 @@ def create_actor_mesh(pts, lines, color, **kwargs):
     return actor
 
 
-def create_actor_tri(pts, color, **kwargs):
-    """ Creates a VTK actor for rendering triangulated plots.
+def create_actor_tri(pts, tris, color, **kwargs):
+    """ Creates a VTK actor for rendering triangulated plots using Delaunay triangulation.
+
+    :param pts: points
+    :type pts: vtkFloatArray
+    :param tris: list of triangle indices
+    :type tris: list
+    :param color: actor color
+    :type color: list
+    :return: a VTK actor
+    :rtype: vtkActor
+    """
+    # Create points
+    points = vtk.vtkPoints()
+    points.SetData(pts)
+
+    # Create triangles
+    triangles = vtk.vtkCellArray()
+    for tri in tris:
+        tmp = vtk.vtkTriangle()
+        for i, v in enumerate(tri):
+            tmp.GetPointIds().SetId(i, v)
+        triangles.InsertNextCell(tmp)
+
+    # Create a PolyData object and add points & triangles
+    polydata = vtk.vtkPolyData()
+    polydata.SetPoints(points)
+    polydata.SetPolys(triangles)
+
+    # Map poly data to the graphics primitives
+    mapper = vtk.vtkPolyDataMapper()
+    mapper.SetInputDataObject(polydata)
+
+    # Create an actor and set its properties
+    actor = vtk.vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(*color)
+
+    # Return the actor
+    return actor
+
+
+def create_actor_delaunay(pts, color, **kwargs):
+    """ Creates a VTK actor for rendering triangulated plots using Delaunay triangulation.
+
+    Keyword Arguments:
+        * ``d3d``: flag to choose between Delaunay2D (``False``) and Delaunay3D (``True``). *Default: False*
 
     :param pts: points
     :type pts: vtkFloatArray
@@ -227,7 +272,7 @@ def create_actor_tri(pts, color, **kwargs):
     points = vtk.vtkPoints()
     points.SetData(pts)
 
-    # Convert points to poly data
+    # Create a PolyData object and add points
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
 
