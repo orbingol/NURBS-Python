@@ -15,7 +15,7 @@ class Freeform(abstract.Geometry):
     def __init__(self, **kwargs):
         super(Freeform, self).__init__(**kwargs)
         self._geometry_type = "freeform"
-        self.name = "Freeform geometry"
+        self.name = "freeform geometry"
 
     def evaluate(self, **kwargs):
         """ Sets points that form the geometry.
