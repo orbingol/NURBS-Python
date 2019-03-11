@@ -10,7 +10,8 @@
 import math
 import copy
 import warnings
-from . import abstract, multi, helpers, evaluators, linalg, compatibility,  _operations
+from . import abstract, multi, helpers, evaluators, linalg, compatibility
+from . import _operations as ops
 from .exceptions import GeomdlException
 from ._utilities import export
 
@@ -842,10 +843,10 @@ def split_curve(obj, param, **kwargs):
     """
     # Validate input
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of abstract.Curve class")
+        raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
     if param == obj.knotvector[0] or param == obj.knotvector[-1]:
-        raise ValueError("Cannot split on the corner points")
+        raise GeomdlException("Cannot split on the corner points")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
@@ -908,7 +909,7 @@ def decompose_curve(obj, **kwargs):
     :rtype: list
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of abstract.Curve class")
+        raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
     multi_curve = []
     curve = copy.deepcopy(obj)
@@ -936,7 +937,7 @@ def derivative_curve(obj):
     :return: derivative curve
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of abstract.Curve class")
+        raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
     # Unfortunately, rational curves do NOT have this property
     # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
@@ -981,7 +982,7 @@ def length_curve(obj):
     :rtype: float
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of abstract.Curve class")
+        raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
     length = 0.0
     evalpts = obj.evalpts
@@ -1007,7 +1008,7 @@ def add_dimension(obj, **kwargs):
     :rtype: BSpline.Curve or NURBS.Curve
     """
     if not isinstance(obj, abstract.Curve):
-        raise TypeError("Input shape must be an instance of abstract.Curve class")
+        raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
     # Keyword arguments
     inplace = kwargs.get('inplace', False)
@@ -1050,10 +1051,10 @@ def split_surface_u(obj, param, **kwargs):
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of abstract.Surface class")
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     if param == obj.knotvector_u[0] or param == obj.knotvector_u[-1]:
-        raise ValueError("Cannot split on the edge")
+        raise GeomdlException("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
@@ -1123,10 +1124,10 @@ def split_surface_v(obj, param, **kwargs):
     """
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of abstract.Surface class")
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     if param == obj.knotvector_v[0] or param == obj.knotvector_v[-1]:
-        raise ValueError("Cannot split on the edge")
+        raise GeomdlException("Cannot split on the edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
@@ -1211,7 +1212,7 @@ def decompose_surface(obj, **kwargs):
 
     # Validate input
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of abstract.Surface class")
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     # Get keyword arguments
     decompose_dir = kwargs.get('decompose_dir', 'uv')  # possible directions: u, v, uv
@@ -1264,7 +1265,7 @@ def derivative_surface(obj):
     :rtype: tuple
     """
     if not isinstance(obj, abstract.Surface):
-        raise TypeError("Input shape must be an instance of abstract.Surface class")
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     if obj.rational:
         warnings.warn("Cannot compute hodograph surface for a rational surface")
@@ -1331,13 +1332,13 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
     :rtype: list
     """
     if isinstance(obj, abstract.Curve):
-        return _operations.find_ctrlpts_curve(u, obj, **kwargs)
+        return ops.find_ctrlpts_curve(u, obj, **kwargs)
     elif isinstance(obj, abstract.Surface):
         if v is None:
-            raise ValueError("Parameter value for the v-direction must be set for operating on surfaces")
-        return _operations.find_ctrlpts_surface(u, v, obj, **kwargs)
+            raise GeomdlException("Parameter value for the v-direction must be set for operating on surfaces")
+        return ops.find_ctrlpts_surface(u, v, obj, **kwargs)
     else:
-        raise NotImplementedError("The input must be an instance of abstract.Curve or abstract.Surface")
+        raise GeomdlException("The input must be an instance of abstract.Curve or abstract.Surface")
 
 
 @export
@@ -1357,14 +1358,14 @@ def tangent(obj, params, **kwargs):
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
-            return _operations.tangent_curve_single_list(obj, params, normalize)
+            return ops.tangent_curve_single_list(obj, params, normalize)
         else:
-            return _operations.tangent_curve_single(obj, params, normalize)
+            return ops.tangent_curve_single(obj, params, normalize)
     if isinstance(obj, abstract.Surface):
         if isinstance(params[0], float):
-            return _operations.tangent_surface_single(obj, params, normalize)
+            return ops.tangent_surface_single(obj, params, normalize)
         else:
-            return _operations.tangent_surface_single_list(obj, params, normalize)
+            return ops.tangent_surface_single_list(obj, params, normalize)
 
 
 @export
@@ -1384,14 +1385,14 @@ def normal(obj, params, **kwargs):
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
-            return _operations.normal_curve_single_list(obj, params, normalize)
+            return ops.normal_curve_single_list(obj, params, normalize)
         else:
-            return _operations.normal_curve_single(obj, params, normalize)
+            return ops.normal_curve_single(obj, params, normalize)
     if isinstance(obj, abstract.Surface):
         if isinstance(params[0], float):
-            return _operations.normal_surface_single(obj, params, normalize)
+            return ops.normal_surface_single(obj, params, normalize)
         else:
-            return _operations.normal_surface_single_list(obj, params, normalize)
+            return ops.normal_surface_single_list(obj, params, normalize)
 
 
 @export
@@ -1411,11 +1412,11 @@ def binormal(obj, params, **kwargs):
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
-            return _operations.binormal_curve_single_list(obj, params, normalize)
+            return ops.binormal_curve_single_list(obj, params, normalize)
         else:
-            return _operations.binormal_curve_single(obj, params, normalize)
+            return ops.binormal_curve_single(obj, params, normalize)
     if isinstance(obj, abstract.Surface):
-        raise NotImplementedError("Binormal vector evaluation for the surfaces is not implemented!")
+        raise GeomdlException("Binormal vector evaluation for the surfaces is not implemented!")
 
 
 @export
