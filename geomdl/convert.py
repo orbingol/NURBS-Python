@@ -1,7 +1,7 @@
 """
 .. module:: convert
     :platform: Unix, Windows
-    :synopsis: Provides BSpline to NURBS conversion functionality
+    :synopsis: Provides BSpline and NURBS conversion functionality
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

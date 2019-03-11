@@ -1,7 +1,7 @@
 """
 .. module:: interpolate
     :platform: Unix, Windows
-    :synopsis: Provides global interpolation functions for parametric shapes
+    :synopsis: Provides curve and surface fitting functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

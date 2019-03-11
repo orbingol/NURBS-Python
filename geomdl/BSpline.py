@@ -1,7 +1,7 @@
 """
 .. module:: BSpline
     :platform: Unix, Windows
-    :synopsis: Provides data storage and evaluation functionality for B-spline geometries
+    :synopsis: Provides data storage and evaluation functionality for non-rational spline geometries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

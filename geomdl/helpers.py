@@ -1,7 +1,7 @@
 """
 .. module:: helpers
     :platform: Unix, Windows
-    :synopsis: Evaluation helper functions
+    :synopsis: Provides spline evaluation helper functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

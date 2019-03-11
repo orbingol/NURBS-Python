@@ -1,7 +1,7 @@
 """
 .. module:: _tessellate
     :platform: Unix, Windows
-    :synopsis: Helper functions and algorithms for tessellation operations
+    :synopsis: Helper functions for tessellation operations
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

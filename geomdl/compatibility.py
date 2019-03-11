@@ -1,7 +1,7 @@
 """
 .. module:: compatibility
     :platform: Unix, Windows
-    :synopsis: Contains compatibility functions for CAD interoperability
+    :synopsis: Provides compatibility functions for CAD interoperability
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

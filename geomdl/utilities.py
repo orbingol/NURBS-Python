@@ -1,7 +1,7 @@
 """
 .. module:: utilities
     :platform: Unix, Windows
-    :synopsis: Contains common utility functions for linear algebra, data validation, etc.
+    :synopsis: Provides common utility functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

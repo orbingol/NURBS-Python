@@ -1,7 +1,7 @@
 """
 .. module:: _linalg
     :platform: Unix, Windows
-    :synopsis: Helper functions for linear algebra
+    :synopsis: Helper functions for linear algebra module
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

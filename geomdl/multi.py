@@ -1,7 +1,7 @@
 """
 .. module:: Multi
     :platform: Unix, Windows
-    :synopsis: Container module for storage and visualization of curves and surfaces
+    :synopsis: Provides container classes for spline geoemtries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

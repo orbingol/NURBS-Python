@@ -1,7 +1,7 @@
 """
 .. module:: exchange
     :platform: Unix, Windows
-    :synopsis: CAD exchange and interoperability module for NURBS-Python
+    :synopsis: Provides CAD exchange and interoperability functions
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

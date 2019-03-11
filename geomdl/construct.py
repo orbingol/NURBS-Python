@@ -1,7 +1,7 @@
 """
 .. module:: construct
     :platform: Unix, Windows
-    :synopsis: Contains functions for constructing and extracting spline geometries
+    :synopsis: Provides functions for constructing and extracting spline geometries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 

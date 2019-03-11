@@ -1,7 +1,7 @@
 """
 .. module:: NURBS
     :platform: Unix, Windows
-    :synopsis: Provides data storage and evaluation functionality for NURBS geometries
+    :synopsis: Provides data storage and evaluation functionality for rational spline geometries
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
