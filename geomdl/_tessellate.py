@@ -29,7 +29,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
     * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
     * ``trims``: List of trim curves passed to the tessellation function
-    * ``tessellate_func``: Function called for tessellation. *Default:* ``_tessellate.surface_tessellate``
+    * ``tessellate_func``: Function called for tessellation. *Default:* ``tessellate.surface_tessellate``
     * ``tessellate_args``: Arguments passed to the tessellation function (as a dict)
 
     The tessellation function is designed to generate triangles from 4 vertices. It takes 4 :py:class:`.Vertex` objects,
@@ -178,6 +178,7 @@ def make_quad_mesh(points, size_u, size_v):
     :param size_u: number of points on the u-direction (column)
     :type size_u: int
     :param size_v: number of points on the v-direction (row)
+    :type size_v: int
     :return: a tuple containing lists of vertices and quads
     :rtype: tuple
     """

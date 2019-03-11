@@ -1,5 +1,5 @@
-Tessellation
-^^^^^^^^^^^^
+Tessellation & Trimming
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``tessellate`` module provides tessellation algorithms for surfaces. The following example illustrates the usage
 scenario of the tessellation algorithms with surfaces.
@@ -21,8 +21,11 @@ scenario of the tessellation algorithms with surfaces.
 
 NURBS-Python uses :py:class:`.TriangularTessellate` class for surface tessellation by default.
 
+Class Reference
+===============
+
 Abstract Tessellator
-====================
+--------------------
 
 .. autoclass:: geomdl.tessellate.AbstractTessellate
     :members:
@@ -31,7 +34,7 @@ Abstract Tessellator
     :show-inheritance:
 
 Triangular Tessellator
-======================
+----------------------
 
 .. autoclass:: geomdl.tessellate.TriangularTessellate
     :members:
@@ -40,7 +43,7 @@ Triangular Tessellator
     :show-inheritance:
 
 Trim Tessellator
-================
+----------------
 
 .. versionadded:: 5.0
 
@@ -49,3 +52,30 @@ Trim Tessellator
     :undoc-members:
     :inherited-members:
     :show-inheritance:
+
+Quadrilateral Tessellator
+-------------------------
+
+.. versionadded:: 5.2
+
+.. autoclass:: geomdl.tessellate.QuadTessellate
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+Function Reference
+==================
+
+.. autofunction:: geomdl.tessellate.make_triangle_mesh
+
+.. autofunction:: geomdl.tessellate.polygon_triangulate
+
+.. autofunction:: geomdl.tessellate.make_quad_mesh
+
+Helper Functions
+================
+
+.. autofunction:: geomdl.tessellate.surface_tessellate
+
+.. autofunction:: geomdl.tessellate.surface_trim_tessellate

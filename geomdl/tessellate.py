@@ -16,6 +16,8 @@ from ._utilities import add_metaclass, export
 # Add some aliases
 make_triangle_mesh = tsl.make_triangle_mesh
 make_quad_mesh = tsl.make_quad_mesh
+polygon_triangulate = tsl.polygon_triangulate
+surface_tessellate = tsl.surface_tessellate
 surface_trim_tessellate = tsl.surface_trim_tessellate
 
 
