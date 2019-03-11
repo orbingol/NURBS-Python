@@ -1467,7 +1467,7 @@ def rotate(obj, angle, **kwargs):
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param obj: input geometry
-    :type obj: abstract.Curve, abstract.Surface or abstract.Volume
+    :type obj: abstract.SplineGeometry, multi.AbstractGeometry
     :param angle: angle of rotation (in degrees)
     :type angle: float
     :return: rotated geometry object
@@ -1489,7 +1489,7 @@ def rotate(obj, angle, **kwargs):
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in opt])
+        translate(ncs, [-o for o in translate_vector], inplace=True)
 
     def rotate_y(ncs, opt, alpha):
         # Generate translation vector
@@ -1508,7 +1508,7 @@ def rotate(obj, angle, **kwargs):
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in opt])
+        translate(ncs, [-o for o in translate_vector], inplace=True)
 
     def rotate_z(ncs, opt, alpha):
         # Generate translation vector
@@ -1523,35 +1523,33 @@ def rotate(obj, angle, **kwargs):
         for idx, pt in enumerate(ncs.ctrlpts):
             new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
             new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
+            new_ctrlpts[idx][2] = pt[2]
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
-        translate(ncs, [-o for o in opt])
+        translate(ncs, [-o for o in translate_vector], inplace=True)
 
-    if isinstance(obj, (abstract.Curve, abstract.Surface, abstract.Volume)):
-        origin = obj.evaluate_single([0.0 for _ in range(obj.pdimension)])
-    else:
-        raise TypeError("Can only work with a single curve, surface or volume")
+    # Set rotation axis
+    axis = 2 if obj.dimension == 2 else int(kwargs.get('axis', 2))
+    if not 0 <= axis <= 2:
+        raise GeomdlException("Value of the 'axis' argument should be 0, 1 or 2")
+    rotfunc = (rotate_x, rotate_y, rotate_z)
 
-    axis = 2 if obj.dimension == 2 else kwargs.get('axis', 2)
+    # Operate on a copy or the actual object
     inplace = kwargs.get('inplace', False)
-
-    if inplace:
-        _obj = obj
+    if not inplace:
+        geom = copy.deepcopy(obj)
     else:
-        _obj = copy.deepcopy(obj)
+        geom = obj
 
-    args = [_obj, origin, angle]
-    if axis == 0:
-        rotate_x(*args)
-    elif axis == 1:
-        rotate_y(*args)
-    elif axis == 2:
-        rotate_z(*args)
-    else:
-        raise ValueError("Value of the 'axis' argument should be 0, 1 or 2")
+    # Set a single origin
+    origin = geom[0].evaluate_single([0.0 for _ in range(geom[0].pdimension)])
 
-    return _obj
+    # Start rotation
+    for g in geom:
+        rotfunc[axis](g, origin, angle)
+
+    return geom
 
 
 @export
