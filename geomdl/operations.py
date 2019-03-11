@@ -1322,7 +1322,7 @@ def translate(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 
     Keyword Arguments:
-        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param obj: input geometry
     :type obj: abstract.SplineGeometry or multi.AbstractContainer
@@ -1463,8 +1463,8 @@ def rotate(obj, angle, **kwargs):
     """ Rotates curves, surfaces or volumes about the chosen axis.
 
     Keyword Arguments:
-        * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively.
-        * ``inplace``: if True, the input shape is modified. *Default: False*
+        * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively. *Default: 2*
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param obj: input geometry
     :type obj: abstract.Curve, abstract.Surface or abstract.Volume
@@ -1559,7 +1559,7 @@ def scale(obj, multiplier, **kwargs):
     """ Scales curves, surfaces or volumes by the input multiplier.
 
     Keyword Arguments:
-        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param obj: input geometry
     :type obj: abstract.SplineGeometry, multi.AbstractGeometry
@@ -1594,7 +1594,7 @@ def transpose(surf, **kwargs):
     """ Transposes the input surface(s) by swapping u and v parametric directions.
 
     Keyword Arguments:
-        * ``inplace``: flag to modify the input geometry or a copy of it. *Default: False*
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param surf: input surface(s)
     :type surf: abstract.Surface, multi.SurfaceContainer
