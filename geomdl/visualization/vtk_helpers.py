@@ -56,6 +56,10 @@ def create_render_window(actors, callbacks, **kwargs):
     # Set window name after render() is called
     render_window.SetWindowName("geomdl")
 
+    # Use trackball camera
+    interactor_style = vtk.vtkInteractorStyleTrackballCamera()
+    window_interactor.SetInteractorStyle(interactor_style)
+
     # Start interactor
     window_interactor.Start()
 
