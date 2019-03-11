@@ -1524,7 +1524,6 @@ def rotate(obj, angle, **kwargs):
         for idx, pt in enumerate(ncs.ctrlpts):
             new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
             new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
-            new_ctrlpts[idx][2] = pt[2]
         ncs.ctrlpts = new_ctrlpts
 
         # Finally, translate back to the starting location
@@ -1544,7 +1543,11 @@ def rotate(obj, angle, **kwargs):
         geom = obj
 
     # Set a single origin
-    origin = geom[0].evaluate_single([0.0 for _ in range(geom[0].pdimension)])
+    if geom[0].pdimension == 1:
+        params = geom[0].domain[0]
+    else:
+        params = [geom[0].domain[i][0] for i in range(geom[0].pdimension)]
+    origin = geom[0].evaluate_single(params)
 
     # Start rotation
     for g in geom:
