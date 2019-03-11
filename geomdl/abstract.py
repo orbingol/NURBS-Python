@@ -62,6 +62,9 @@ class Geometry(object):
     def __len__(self):
         return 1
 
+    def __getitem__(self, index):
+        return self
+
     def __copy__(self):
         cls = self.__class__
         result = cls.__new__(cls)
