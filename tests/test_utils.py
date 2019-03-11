@@ -7,7 +7,7 @@
 """
 
 import pytest
-from geomdl.abstract import check_params
+from geomdl import utilities
 from geomdl import knotvector
 from geomdl import utilities
 
@@ -105,25 +105,25 @@ def test_normalize_knot_vector3():
 def test_check_uv1():
     u = -0.1
     v = 0.1
-    assert not check_params([u, v])
+    assert not utilities.check_params([u, v])
 
 
 def test_check_uv2():
     u = 2
     v = 0.1
-    assert not check_params([u, v])
+    assert not utilities.check_params([u, v])
 
 
 def test_check_uv3():
     v = -0.1
     u = 0.1
-    assert not check_params([u, v])
+    assert not utilities.check_params([u, v])
 
 
 def test_check_uv4():
     v = 2
     u = 0.1
-    assert not check_params([u, v])
+    assert not utilities.check_params([u, v])
 
 
 def test_color_generator():

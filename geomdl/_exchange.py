@@ -8,8 +8,6 @@
 """
 
 import math
-from . import abstract
-from . import multi
 from . import compatibility
 from . import utilities
 from . import shortcuts
@@ -491,29 +489,17 @@ def import_dict_str(file_src, delta, callback, tmpl):
 
 def export_dict_str(obj, callback):
     count = 1
-    if isinstance(obj, abstract.Curve):
-        export_type = "curve"
-        data = [export_dict_crv(obj)]
-    elif isinstance(obj, abstract.Surface):
-        export_type = "surface"
-        data = [export_dict_surf(obj)]
-    elif isinstance(obj, abstract.Volume):
-        export_type = "volume"
-        data = [export_dict_vol(obj)]
-    elif isinstance(obj, multi.CurveContainer):
+    if obj.pdimension == 1:
         export_type = "curve"
         data = [export_dict_crv(o) for o in obj]
-        count = len(obj)
-    elif isinstance(obj, multi.SurfaceContainer):
+    elif obj.pdimension == 2:
         export_type = "surface"
         data = [export_dict_surf(o) for o in obj]
-        count = len(obj)
-    elif isinstance(obj, multi.VolumeContainer):
+    elif obj.pdimension == 3:
         export_type = "volume"
         data = [export_dict_vol(o) for o in obj]
-        count = len(obj)
     else:
-        raise GeomdlException("Cannot export input type as a dict")
+        raise GeomdlException("Cannot export input geometry")
 
     # Create the dictionary
     data = dict(

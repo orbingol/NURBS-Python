@@ -444,7 +444,7 @@ class SplineGeometry(Geometry):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = evaluate_bounding_box(self.ctrlpts)
+            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
         return self._bounding_box
 
     @property
@@ -988,7 +988,7 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not check_params(param):
+            if not utilities.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -1022,7 +1022,7 @@ class Curve(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not check_params([u]):
+            if not utilities.check_params([u]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
@@ -1785,7 +1785,7 @@ class Surface(SplineGeometry):
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
             uv = self._tsl_component.vertices[idx].uv
-            if self._kv_normalize and not check_params(uv):
+            if self._kv_normalize and not utilities.check_params(uv):
                 continue
             self._tsl_component.vertices[idx].data = self.evaluate_single(uv)
 
@@ -1864,7 +1864,7 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not check_params(param):
+            if not utilities.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -1900,7 +1900,7 @@ class Surface(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not check_params([u, v]):
+            if not utilities.check_params([u, v]):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
 
@@ -2802,7 +2802,7 @@ class Volume(SplineGeometry):
 
         # Check parameters
         if self._kv_normalize:
-            if not check_params(param):
+            if not utilities.check_params(param):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
@@ -2817,46 +2817,3 @@ class Volume(SplineGeometry):
         """
         # Check all parameters are set before the evaluation
         self._check_variables()
-
-
-def evaluate_bounding_box(ctrlpts):
-    """ Computes the minimum bounding box of the point set.
-
-    The (minimum) bounding box is the smallest enclosure in which all the input points lie.
-
-    :param ctrlpts: points
-    :type ctrlpts: list, tuple
-    :return: bounding box in the format [min, max]
-    :rtype: tuple
-    """
-    # Estimate dimension from the first element of the control points
-    dimension = len(ctrlpts[0])
-
-    # Evaluate bounding box
-    bbmin = [float('inf') for _ in range(0, dimension)]
-    bbmax = [float('-inf') for _ in range(0, dimension)]
-    for cpt in ctrlpts:
-        for i, arr in enumerate(zip(cpt, bbmin)):
-            if arr[0] < arr[1]:
-                bbmin[i] = arr[0]
-        for i, arr in enumerate(zip(cpt, bbmax)):
-            if arr[0] > arr[1]:
-                bbmax[i] = arr[0]
-
-    return tuple(bbmin), tuple(bbmax)
-
-
-def check_params(params):
-    """ Checks if the parameters are defined in the domain [0, 1].
-
-    :param params: parameters (u, v, w)
-    :type params: list, tuple
-    :return: True if defined in the domain [0, 1]. False, otherwise.
-    :rtype: bool
-    """
-    # Check parameters
-    for prm in params:
-        if prm is not None:
-            if not 0.0 <= prm <= 1.0:
-                return False
-    return True

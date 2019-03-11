@@ -9,7 +9,7 @@
 
 import abc
 import warnings
-from . import abstract, vis, voxelize, utilities
+from . import vis, voxelize, utilities
 from . import _utilities as utl
 
 
@@ -36,7 +36,6 @@ class AbstractContainer(object):
         self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
         self._elements = []  # list of elements contained
         self._vis_component = None  # visualization component
-        self._instance = None  # instance type of the elements in the container object
 
     def __iter__(self):
         self._iter_index = 0
@@ -80,6 +79,18 @@ class AbstractContainer(object):
         if self._elements:
             return self._elements[0].dimension
         return 0
+
+    @property
+    def pdimension(self):
+        """ Parametric dimension.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the parametric dimension
+        :type: int
+        """
+        return self._pdim
 
     @property
     def evalpts(self):
@@ -126,7 +137,7 @@ class AbstractContainer(object):
         all_box = []
         for elem in self._elements:
             all_box += list(elem.bbox)
-        return abstract.evaluate_bounding_box(all_box)
+        return utilities.evaluate_bounding_box(all_box)
 
     @property
     def vis(self):
@@ -250,13 +261,14 @@ class AbstractContainer(object):
 
         :param element: shape to be added
         """
-        if isinstance(element, self._instance):
-            self._elements.append(element)
-        elif isinstance(element, self.__class__):
+        if isinstance(element, self.__class__):
             self.__add__(element)
         elif isinstance(element, (list, tuple)):
             for elem in element:
                 self.add(elem)
+        elif hasattr(self, '_pdim'):
+            if element.pdimension == self.pdimension:
+                self._elements.append(element)
         else:
             raise TypeError("Cannot add the element to the container")
 
@@ -331,7 +343,6 @@ class CurveContainer(AbstractContainer):
         self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
         self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(CurveContainer, self).__init__(*args, **kwargs)
-        self._instance = abstract.Curve
         for arg in args:
             self.add(arg)
 
@@ -445,7 +456,6 @@ class SurfaceContainer(AbstractContainer):
         self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
         self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(SurfaceContainer, self).__init__(*args, **kwargs)
-        self._instance = abstract.Surface
         for arg in args:
             self.add(arg)
 
@@ -721,7 +731,6 @@ class VolumeContainer(SurfaceContainer):
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
         super(VolumeContainer, self).__init__()
         self._delta = [0.1, 0.1, 0.1]  # evaluation delta
-        self._instance = abstract.Volume
         for arg in args:
             self.add(arg)
 
