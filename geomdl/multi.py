@@ -32,6 +32,7 @@ class AbstractContainer(object):
     """
 
     def __init__(self, *args, **kwargs):
+        self._geometry_type = "container"
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
         self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # delta initialization value
         self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
@@ -92,6 +93,18 @@ class AbstractContainer(object):
         :type: int
         """
         return self._pdim
+
+    @property
+    def type(self):
+        """ Geometry type
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the geometry type
+        :type: str
+        """
+        return self._geometry_type
 
     @property
     def evalpts(self):
