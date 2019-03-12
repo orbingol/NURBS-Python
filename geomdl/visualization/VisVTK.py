@@ -92,15 +92,15 @@ class VisConfig(vis.VisConfigAbstract):
         render_window.Render()
 
 
-class VisCurve2D(vis.VisAbstract):
+class VisCurve3D(vis.VisAbstract):
     """ VTK visualization module for curves. """
     def __init__(self, config=VisConfig()):
-        super(VisCurve2D, self).__init__(config=config)
+        super(VisCurve3D, self).__init__(config=config)
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         # Calling parent function
-        super(VisCurve2D, self).render(**kwargs)
+        super(VisCurve3D, self).render(**kwargs)
 
         # Initialize a list to store VTK actors
         vtk_actors = []
@@ -138,8 +138,8 @@ class VisCurve2D(vis.VisAbstract):
                                   figure_size=self.vconf.figure_size)
 
 
-# VisCurve3D is an alias for VisCurve2D
-VisCurve3D = VisCurve2D
+# It is easier to plot 2-dimensional curves with VisCurve3D
+VisCurve2D = VisCurve3D
 
 
 class VisSurface(vis.VisAbstract):
