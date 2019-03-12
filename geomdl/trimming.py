@@ -8,24 +8,25 @@
 """
 
 import math
-from . import  multi, linalg
+from . import linalg
+from . import shortcuts
+from .exceptions import GeomdlException
 from ._utilities import export
 
 
 @export
 def trim_surface(obj):
-    """ Trims the surface using trim curves defined on the parametric space.
+    """ Updates the trim curves of a surface.
 
     This is a helper function for trimming and it can fix the trimming issues, e.g. sense issues, open curves, etc.
     If ``trims`` property of the Surface object returns an empty list, this function does nothing.
 
     :param obj: input surface
     :type obj: abstract.Surface
-    :return:
     """
-    # # Validate input
-    # if not isinstance(obj, abstract.Surface):
-    #     raise GeomdlException("Input shape must be an instance of abstract.Surface class")
+    # Validate input
+    if obj.pdimension != 2:
+        raise GeomdlException("Input geometry must be a surface")
 
     # Get trims of the surface
     for o in obj:
@@ -42,7 +43,8 @@ def trim_surface(obj):
             flag, trm = check_trim_curve(trim, parbox)
             if flag:
                 if trm:
-                    cont = multi.CurveContainer(trm)
+                    cont = shortcuts.generate_container_curve()
+                    cont.add(trm)
                     updated_trims.append(cont)
                 else:
                     updated_trims.append(trim)
@@ -52,11 +54,12 @@ def trim_surface(obj):
 
 
 def check_trim_curve(curve, parbox, **kwargs):
-    """
+    """ Checks if the trim curve was closed and sense was set.
 
     :param curve: trim curve
     :param parbox: parameter space bounding box of the underlying surface
-    :return:
+    :return: a tuple containing the status of the operation and list of extra trim curves generated
+    :rtype: tuple
     """
     def next_idx(edge_idx, direction):
         tmp = edge_idx + direction
@@ -75,10 +78,6 @@ def check_trim_curve(curve, parbox, **kwargs):
         # Curve is closed
         return detect_sense(curve, tol), []
     else:
-        # Curve is not closed but it could be on the edge on the parametric domain
-        # Apply ray intersection to find which edge the end points of the curve is on
-        # Connect end points with a line and create a curve container
-
         # Define start and end points of the trim curve
         pt_start = curve.evalpts[0]
         pt_end = curve.evalpts[-1]
@@ -146,7 +145,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                     counter += 1
 
                 # Generate the curve segment
-                crv = curve.__class__()
+                crv = shortcuts.generate_bspline_curve()
                 crv.degree = 1
                 crv.ctrlpts = [pt_end, pt_start]
                 crv.knotvector = [0, 0, 1, 1]
@@ -162,7 +161,15 @@ def check_trim_curve(curve, parbox, **kwargs):
 
 
 def get_par_box(domain, last=False):
-    """ Returns the bounding box of the surface parametric domain in ccw direction. """
+    """ Returns the bounding box of the surface parametric domain in ccw direction.
+
+    :param domain: parametric domain
+    :type domain: list, tuple
+    :param last: if True, adds the first vertex to the end of the return list
+    :type last: bool
+    :return: edges of the parametric domain
+    :rtype: tuple
+    """
     u_range = domain[0]
     v_range = domain[1]
     verts = [(u_range[0], v_range[0]), (u_range[1], v_range[0]), (u_range[1], v_range[1]), (u_range[0], v_range[1])]
@@ -223,7 +230,8 @@ def detect_ccw(pt1, pt2, pt3, tol):
 
 
 def detect_intersection(start_pt, end_pt, test_pt, tol):
-    dist_num = abs(((end_pt[1] - start_pt[1]) * test_pt[0]) - ((end_pt[0] - start_pt[0]) * test_pt[1]) + (end_pt[0] * start_pt[1]) - (end_pt[1] * start_pt[0]))
+    dist_num = abs(((end_pt[1] - start_pt[1]) * test_pt[0]) - ((end_pt[0] - start_pt[0]) * test_pt[1]) +
+                   (end_pt[0] * start_pt[1]) - (end_pt[1] * start_pt[0]))
     dist_denom = math.sqrt(math.pow(end_pt[1] - start_pt[1], 2) + math.pow(end_pt[0] - start_pt[0], 2))
     dist = dist_num / dist_denom
     if abs(dist) < tol:
