@@ -41,7 +41,7 @@ def voxelize(obj, **kwargs):
     # Should also work with multi surfaces and volumes
     for o in obj:
         # Generate voxel grid
-        grid_temp = _voxelize.generate_voxel_grid(o.bbox, *grid_size)
+        grid_temp = _voxelize.generate_voxel_grid(o.bbox, grid_size)
         args = [grid_temp, o.evalpts]
 
         # Find in-outs

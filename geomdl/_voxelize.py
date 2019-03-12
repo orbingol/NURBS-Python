@@ -10,7 +10,7 @@
 from functools import partial
 from . import linalg
 from ._utilities import pool_context
-
+from .exceptions import GeomdlException
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -46,39 +46,31 @@ def find_inouts_mp(voxel_grid, datapts, **kwargs):
     return filled
 
 
-def generate_voxel_grid(bbox, size_u, size_v, size_w):
+def generate_voxel_grid(bbox, szval):
     """ Generates the voxel grid with the desired size.
 
     :param bbox: bounding box
     :type bbox: list, tuple
-    :param size_u: size in x-direction
-    :type size_u: int
-    :param size_v: size in y-direction
-    :type size_v: int
-    :param size_w: size in z-direction
-    :type size_w: int
+    :param szval: size in x-, y-, z-directions
+    :type szval: list, tuple
     :return: voxel grid
     :rtype: list
     """
-    if size_u <= 1 or size_v <= 1 or size_w <= 1:
-        raise ValueError("Size values must be bigger than 1")
+    if szval[0] <= 1 or szval[1] <= 1 or szval[2] <= 1:
+        raise GeomdlException("Size values must be bigger than 1", data=dict(sizevals=szval))
 
     # Find step size
-    step_u = float(bbox[1][0] - bbox[0][0]) / float(size_u - 1)
-    step_v = float(bbox[1][1] - bbox[0][1]) / float(size_v - 1)
-    step_w = float(bbox[1][2] - bbox[0][2]) / float(size_w - 1)
+    steps = [float(bbox[1][idx] - bbox[0][idx]) / float(szval[idx] - 1) for idx in range(0, 3)]
 
     # Find range
-    range_u = linalg.linspace(bbox[1][0], bbox[0][0], size_u)
-    range_v = linalg.linspace(bbox[1][1], bbox[0][1], size_v)
-    range_w = linalg.linspace(bbox[1][2], bbox[0][2], size_w)
+    ranges = [linalg.linspace(bbox[1][idx], bbox[0][idx], szval[idx]) for idx in range(0, 3)]
 
     voxel_grid = []
-    for u in range_u:
-        for v in range_v:
-            for w in range_w:
+    for u in ranges[0]:
+        for v in ranges[1]:
+            for w in ranges[2]:
                 bbmin = [u, v, w]
-                bbmax = [u + step_u, v + step_v, w + step_w]
+                bbmax = [k + l for k, l in zip(bbmin, steps)]
                 voxel_grid.append([bbmin, bbmax])
     return voxel_grid
 
