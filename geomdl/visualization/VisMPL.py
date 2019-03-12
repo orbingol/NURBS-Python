@@ -864,16 +864,16 @@ class VisVoxel(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                grid = np.array(plot['ptsarr'][0], dtype=self.vconf.dtype)
-                filled = np.array(plot['ptsarr'][1], dtype=self.vconf.dtype)
+                faces = np.array(plot['ptsarr'][1], dtype=self.vconf.dtype)
+                filled = np.array(plot['ptsarr'][2], dtype=self.vconf.dtype)
                 # Find filled voxels
-                grid_filled = np.concatenate(grid[filled == 1.0])
+                faces_filled = np.concatenate(faces[filled == 1.0])
                 # Create a single Poly3DCollection object
-                pc3d = Poly3DCollection(grid_filled, facecolors=plot['color'], edgecolors='k')
+                pc3d = Poly3DCollection(faces_filled, facecolors=plot['color'], edgecolors='k')
                 ax.add_collection3d(pc3d)
                 # Set axis limits
-                gf_min = np.amin(grid_filled, axis=(0, 1))
-                gf_max = np.amax(grid_filled, axis=(0, 1))
+                gf_min = np.amin(faces_filled, axis=(0, 1))
+                gf_max = np.amax(faces_filled, axis=(0, 1))
                 ax.set_xlim([gf_min[0], gf_max[0]])
                 ax.set_ylim([gf_min[1], gf_max[1]])
                 ax.set_zlim([gf_min[2], gf_max[2]])

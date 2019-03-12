@@ -2761,8 +2761,8 @@ class Volume(SplineGeometry):
         # Add evaluated points as voxels
         if self._vis_component.mconf['evalpts'] == 'voxels':
             grid, filled = voxelize.voxelize(self, **kwargs)
-            polygrid = voxelize.convert_bb_to_faces(grid)
-            self._vis_component.add(ptsarr=[polygrid, filled], name=self.name, color=evalcolor, plot_type='evalpts')
+            faces = voxelize.convert_bb_to_faces(grid)
+            self._vis_component.add(ptsarr=[grid, faces, filled], name=self.name, color=evalcolor, plot_type='evalpts')
 
         # Bounding box
         self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
