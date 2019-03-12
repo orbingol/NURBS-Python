@@ -17,9 +17,10 @@ def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surfaces and volumes.
 
     Keyword Arguments:
-        * ``grid_size``: size of the voxel grid. *Default: (16, 16, 16)*
+        * ``grid_size``: size of the voxel grid. *Default: (8, 8, 8)*
         * ``padding``: voxel padding for in-outs finding. *Default: 10e-8*
         * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
+        * ``use_cubes``: use cube voxels instead of cuboid ones. *Default: False*
         * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
 
     :param obj: input surface(s) or volume(s)
@@ -28,8 +29,9 @@ def voxelize(obj, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    grid_size = kwargs.get('grid_size', (16, 16, 16))
-    use_mp = kwargs.get('use_mp', False)
+    grid_size = kwargs.pop('grid_size', (8, 8, 8))
+    use_mp = kwargs.pop('use_mp', False)
+    use_cubes = kwargs.pop('use_cubes', False)
 
     if not isinstance(grid_size, (list, tuple)):
         raise TypeError("Grid size must be a list or a tuple of integers")
@@ -41,7 +43,7 @@ def voxelize(obj, **kwargs):
     # Should also work with multi surfaces and volumes
     for o in obj:
         # Generate voxel grid
-        grid_temp = _voxelize.generate_voxel_grid(o.bbox, grid_size)
+        grid_temp = _voxelize.generate_voxel_grid(o.bbox, grid_size, use_cubes=use_cubes)
         args = [grid_temp, o.evalpts]
 
         # Find in-outs

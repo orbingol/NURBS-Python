@@ -46,24 +46,32 @@ def find_inouts_mp(voxel_grid, datapts, **kwargs):
     return filled
 
 
-def generate_voxel_grid(bbox, szval):
+def generate_voxel_grid(bbox, szval, use_cubes=False):
     """ Generates the voxel grid with the desired size.
 
     :param bbox: bounding box
     :type bbox: list, tuple
     :param szval: size in x-, y-, z-directions
     :type szval: list, tuple
+    :param use_cubes: use cube voxels instead of cuboid ones
+    :type use_cubes: bool
     :return: voxel grid
     :rtype: list
     """
+    # Input validation
     if szval[0] <= 1 or szval[1] <= 1 or szval[2] <= 1:
         raise GeomdlException("Size values must be bigger than 1", data=dict(sizevals=szval))
 
-    # Find step size
+    # Find step size for each direction
     steps = [float(bbox[1][idx] - bbox[0][idx]) / float(szval[idx] - 1) for idx in range(0, 3)]
 
-    # Find range
-    ranges = [linalg.linspace(bbox[1][idx], bbox[0][idx], szval[idx]) for idx in range(0, 3)]
+    # It is possible to use cubes instead of cuboids
+    if use_cubes:
+        min_val = min(*steps)
+        steps = [min_val for _ in range(0, 3)]
+
+    # Find range in each direction
+    ranges = [list(linalg.frange(bbox[0][idx], bbox[1][idx], steps[idx])) for idx in range(0, 3)]
 
     voxel_grid = []
     for u in ranges[0]:
