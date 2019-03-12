@@ -17,35 +17,6 @@ except ImportError:
     from .functools_lru_cache import lru_cache
 
 
-def linspace(start, stop, num, decimals=18):
-    """ Returns a list of evenly spaced numbers over a specified interval.
-
-    Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
-
-    :param start: starting value
-    :type start: float
-    :param stop: end value
-    :type stop: float
-    :param num: number of samples to generate
-    :type num: int
-    :param decimals: number of significands
-    :type decimals: int
-    :return: a list of equally spaced numbers
-    :rtype: list
-    """
-    start = float(start)
-    stop = float(stop)
-    if abs(start - stop) <= 10e-8:
-        return [start]
-    num = int(num)
-    if num > 1:
-        div = num - 1
-        delta = stop - start
-        return [float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
-                for x in range(num)]
-    return [float(("{:." + str(decimals) + "f}").format(start))]
-
-
 def vector_cross(vector1, vector2):
     """ Computes the cross-product of the input vectors.
 
@@ -533,6 +504,35 @@ def backward_substitution(matrix_u, matrix_y):
         matrix_x[i] = float(matrix_y[i]) - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
         matrix_x[i] /= float(matrix_u[i][i])
     return matrix_x
+
+
+def linspace(start, stop, num, decimals=18):
+    """ Returns a list of evenly spaced numbers over a specified interval.
+
+    Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
+
+    :param start: starting value
+    :type start: float
+    :param stop: end value
+    :type stop: float
+    :param num: number of samples to generate
+    :type num: int
+    :param decimals: number of significands
+    :type decimals: int
+    :return: a list of equally spaced numbers
+    :rtype: list
+    """
+    start = float(start)
+    stop = float(stop)
+    if abs(start - stop) <= 10e-8:
+        return [start]
+    num = int(num)
+    if num > 1:
+        div = num - 1
+        delta = stop - start
+        return [float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
+                for x in range(num)]
+    return [float(("{:." + str(decimals) + "f}").format(start))]
 
 
 def frange(start, stop, step=1.0):
