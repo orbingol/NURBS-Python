@@ -113,12 +113,12 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
-                vtk_actors.append(temp_actor_pts)
+                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(actor1)
                 # Lines
-                temp_actor_lines = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
-                                                             size=self.vconf.line_width)
-                vtk_actors.append(temp_actor_lines)
+                actor2 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                   size=self.vconf.line_width)
+                vtk_actors.append(actor2)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
@@ -127,9 +127,9 @@ class VisCurve2D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
-                                                       size=self.vconf.line_width * 2)
-                vtk_actors.append(temp_actor)
+                actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                   size=self.vconf.line_width * 2)
+                vtk_actors.append(actor1)
 
         # Render actors
         vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
@@ -164,14 +164,13 @@ class VisSurface(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
-                vtk_actors.append(temp_actor_pts)
+                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(actor1)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
-                temp_actor_lines = vtkh.create_actor_mesh(pts=vtkpts, lines=lines,
-                                                          color=vtkh.create_color(plot['color']),
-                                                          size=self.vconf.line_width)
-                vtk_actors.append(temp_actor_lines)
+                actor2 = vtkh.create_actor_mesh(pts=vtkpts, lines=lines, color=vtkh.create_color(plot['color']),
+                                                size=self.vconf.line_width)
+                vtk_actors.append(actor2)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
@@ -179,8 +178,8 @@ class VisSurface(vis.VisAbstract):
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
                 faces = [t.vertex_ids_zero for t in plot['ptsarr'][1]]
                 tris = np.array(faces, dtype=np.int)
-                temp_actor = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
-                vtk_actors.append(temp_actor)
+                actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(actor1)
 
         # Render actors
         vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
@@ -192,7 +191,7 @@ class VisVolume(vis.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
         self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "voxels"
+        self._module_config['evalpts'] = "points"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
@@ -209,8 +208,45 @@ class VisVolume(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor_pts = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
-                vtk_actors.append(temp_actor_pts)
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(temp_actor)
+
+            # Plot evaluated points
+            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(temp_actor)
+
+        # Render actors
+        vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+                                  figure_size=self.vconf.figure_size)
+
+
+class VisVoxel(vis.VisAbstract):
+    """ VTK visualization module for voxel representation of the volumes. """
+    def __init__(self, config=VisConfig()):
+        super(VisVoxel, self).__init__(config=config)
+        self._module_config['ctrlpts'] = "points"
+        self._module_config['evalpts'] = "voxels"
+
+    def render(self, **kwargs):
+        """ Plots the volume and the control points. """
+        # Calling parent function
+        super(VisVoxel, self).render(**kwargs)
+
+        # Initialize a list to store VTK actors
+        vtk_actors = []
+
+        # Start plotting
+        for plot in self._plots:
+            # Plot control points
+            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+                # Points as spheres
+                pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtk_actors.append(temp_actor)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
