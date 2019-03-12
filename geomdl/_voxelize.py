@@ -23,10 +23,10 @@ def find_inouts_st(voxel_grid, datapts, **kwargs):
     :param datapts: data points
     :return: in-outs
     """
-    padding = kwargs.get('padding', 10e-8)
+    tol = kwargs.get('tol', 10e-8)
     filled = [0 for _ in range(len(voxel_grid))]
     for idx, bb in enumerate(voxel_grid):
-        pts_inside = is_point_inside_voxel(bb, datapts, padding=padding)
+        pts_inside = is_point_inside_voxel(bb, datapts, tol=tol)
         if pts_inside:
             filled[idx] = 1
     return filled
@@ -39,10 +39,10 @@ def find_inouts_mp(voxel_grid, datapts, **kwargs):
     :param datapts: data points
     :return: in-outs
     """
-    padding = kwargs.get('padding', 10e-8)
+    tol = kwargs.get('tol', 10e-8)
     num_procs = kwargs.get('num_procs', 4)
     with pool_context(processes=num_procs) as pool:
-        filled = pool.map(partial(is_point_inside_voxel, ptsarr=datapts, padding=padding), voxel_grid)
+        filled = pool.map(partial(is_point_inside_voxel, ptsarr=datapts, tol=tol), voxel_grid)
     return filled
 
 
@@ -96,11 +96,11 @@ def is_point_inside_voxel(bbox, ptsarr, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    padding = kwargs.get('padding', 10e-8)
+    tol = kwargs.get('tol', 10e-8)  # padding value
 
     # Make bounding box vertices more readable
-    bbmin = [b - padding for b in bbox[0]]
-    bbmax = [b + padding for b in bbox[1]]
+    bbmin = [b - tol for b in bbox[0]]
+    bbmax = [b + tol for b in bbox[1]]
 
     # Find basis vectors
     i = [bbmax[0] - bbmin[0], 0, 0]
@@ -138,11 +138,11 @@ def get_points_inside_voxel(bbox, ptsarr, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    padding = kwargs.get('padding', 10e-8)
+    tol = kwargs.get('tol', 10e-8)
 
     # Make bounding box vertices more readable
-    bbmin = [b - padding for b in bbox[0]]
-    bbmax = [b + padding for b in bbox[1]]
+    bbmin = [b - tol for b in bbox[0]]
+    bbmax = [b + tol for b in bbox[1]]
 
     # Initialize an empty list
     points_inside = []
