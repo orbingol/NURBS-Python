@@ -100,7 +100,7 @@ class VisAbstract(object):
             * For evaluated points (*evalpts*): points
 
         Surface:
-            * For control points (*ctrlpts*): points, quads, quadmesh
+            * For control points (*ctrlpts*): points, quads
             * For evaluated points (*evalpts*): points, quads, triangles
 
         Volume:
