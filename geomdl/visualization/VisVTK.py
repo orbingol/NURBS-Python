@@ -7,6 +7,7 @@
 
 """
 
+from random import random
 from . import vis
 from . import vtk_helpers as vtkh
 import numpy as np
@@ -41,17 +42,52 @@ class VisConfig(vis.VisConfigAbstract):
     def keypress_callback(self, obj, ev):
         """ VTK callback for keypress events.
 
-        Available custom keypress events:
+        Keypress events:
+            * ``e``: exit the application
+            * ``p``: pick object (hover the mouse and then press to pick)
+            * ``l``: change color of the picked object
+            * ``f``: fly to point (click somewhere in the window and press to fly)
+            * ``r``: reset the camera
+            * ``s`` and ``w``: switch between solid and wireframe modes
             * ``b``: change background color
+            * ``arrow keys``: pan the model
+
+        :param obj: render window interactor
+        :type obj: vtkRenderWindowInteractor
+        :param ev: event name
+        :type ev: str
         """
-        key = obj.GetKeySym()
-        # Change background
+        key = obj.GetKeySym()  # pressed key (as str)
+        render_window = obj.GetRenderWindow()  # vtkRenderWindow
+        renderer = render_window.GetRenderers().GetFirstRenderer()  # vtkRenderer
+
+        # Custom keypress events
+        if key == 'Up':
+            camera = renderer.GetActiveCamera()  # vtkCamera
+            camera.Pitch(-2.5)
+        if key == 'Down':
+            camera = renderer.GetActiveCamera()  # vtkCamera
+            camera.Pitch(2.5)
+        if key == 'Left':
+            camera = renderer.GetActiveCamera()  # vtkCamera
+            camera.Yaw(-2.5)
+        if key == 'Right':
+            camera = renderer.GetActiveCamera()  # vtkCamera
+            camera.Yaw(2.5)
         if key == 'b':
             if self._bg_id >= len(self._bg):
                 self._bg_id = 0
-            obj.GetRenderWindow().GetRenderers().GetFirstRenderer().SetBackground(*self._bg[self._bg_id])
+            renderer.SetBackground(*self._bg[self._bg_id])
             self._bg_id += 1
-            obj.GetRenderWindow().Render()
+        if key == 'l':
+            picker = obj.GetPicker()  # vtkPropPicker
+            actor = picker.GetActor()  # vtkActor
+            if actor is not None:
+                actor.GetProperty().SetColor(random(), random(), random())
+            # print(picker.GetSelectionPoint())
+
+        # Update render window
+        render_window.Render()
 
 
 class VisCurve2D(vis.VisAbstract):
