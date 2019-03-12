@@ -9,4 +9,5 @@ __version__ = "2.0.0"
 __license__ = "MIT"
 
 # Import core library visualization module
-from geomdl import vis
+from .. import linalg
+from .. import vis

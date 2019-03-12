@@ -7,7 +7,7 @@
 
 """
 
-from geomdl import linalg
+from . import linalg
 import vtk
 
 
