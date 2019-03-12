@@ -2698,7 +2698,8 @@ class Volume(SplineGeometry):
             * ``filename``: saves the plot with the input name
             * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
-            * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
+            * ``grid_size``: grid size for voxelization. *Default: (8, 8, 8)*
+            * ``use_cubes``: use cube voxels instead of cuboid ones. *Default: False*
             * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
             * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
 
