@@ -221,7 +221,7 @@ def create_actor_mesh(pts, lines, color, **kwargs):
 
 
 def create_actor_tri(pts, tris, color, **kwargs):
-    """ Creates a VTK actor for rendering triangulated plots using Delaunay triangulation.
+    """ Creates a VTK actor for rendering triangulated surface plots.
 
     :param pts: points
     :type pts: vtkFloatArray
