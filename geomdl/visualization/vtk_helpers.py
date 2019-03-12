@@ -7,6 +7,7 @@
 
 """
 
+from geomdl import linalg
 import vtk
 
 
@@ -21,7 +22,12 @@ def create_render_window(actors, callbacks, **kwargs):
     # Get keyword arguments
     figure_size = kwargs.get('figure_size', (800, 600))
     camera_position = kwargs.get('camera_position', (0, 0, 100))
-    camera_focal_point = kwargs.get('camera_focal_point', (0, 0, 0))
+
+    # Find camera focal point
+    center_points = []
+    for actor in actors:
+        center_points.append(actor.GetCenter())
+    camera_focal_point = linalg.vector_mean(*center_points)
 
     # Create camera
     camera = vtk.vtkCamera()

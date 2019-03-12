@@ -58,19 +58,14 @@ class VisCurve2D(vis.VisAbstract):
     """ VTK visualization module for curves. """
     def __init__(self, config=VisConfig()):
         super(VisCurve2D, self).__init__(config=config)
-        self._module_config['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
         # Calling parent function
         super(VisCurve2D, self).render(**kwargs)
-        self._module_config['other'] = "midpt"
 
         # Initialize a list to store VTK actors
         vtk_actors = []
-
-        # Default focal point for VTK camera
-        focal_point = [0, 0, 0]
 
         # Start plotting
         for plot in self._plots:
@@ -100,16 +95,9 @@ class VisCurve2D(vis.VisAbstract):
                                                        size=self.vconf.line_width * 2)
                 vtk_actors.append(temp_actor)
 
-            # Update camera focal point
-            if plot['type'] == 'midpt':
-                focal_point = plot['ptsarr'][0]
-                if len(focal_point) == 2:
-                    focal_point.append(0.0)
-
         # Render actors
         vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size,
-                                  camera_focal_point=focal_point)
+                                  figure_size=self.vconf.figure_size)
 
 
 # VisCurve3D is an alias for VisCurve2D
@@ -122,7 +110,6 @@ class VisSurface(vis.VisAbstract):
         super(VisSurface, self).__init__(config=config)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
-        self._module_config['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -131,9 +118,6 @@ class VisSurface(vis.VisAbstract):
 
         # Initialize a list to store VTK actors
         vtk_actors = []
-
-        # Default focal point for VTK camera
-        focal_point = [0, 0, 0]
 
         # Start plotting
         for plot in self._plots:
@@ -162,14 +146,9 @@ class VisSurface(vis.VisAbstract):
                 temp_actor = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor)
 
-            # Update camera focal point
-            if plot['type'] == 'midpt':
-                focal_point = plot['ptsarr'][0]
-
         # Render actors
         vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size,
-                                  camera_focal_point=focal_point)
+                                  figure_size=self.vconf.figure_size)
 
 
 class VisVolume(vis.VisAbstract):
@@ -178,7 +157,6 @@ class VisVolume(vis.VisAbstract):
         super(VisVolume, self).__init__(config=config)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "points"
-        self._module_config['others'] = "midpt"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
