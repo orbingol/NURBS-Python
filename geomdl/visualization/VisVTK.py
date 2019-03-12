@@ -24,6 +24,7 @@ class VisConfig(vis.VisConfigAbstract):
 
     * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
     * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
+    * ``trims`` (bool): Trim curve visibility. *Default: True*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: (800, 600)*
     * ``line_width`` (int): Thickness of the lines on the figure. *Default: 1.0*
     """
@@ -36,6 +37,7 @@ class VisConfig(vis.VisConfigAbstract):
         self._bg_id = 0  # used for keeping track of the background numbering
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
+        self.display_trims = kwargs.get('trims', True)
         self.figure_size = kwargs.get('figure_size', (800, 600))  # size of the render window
         self.line_width = kwargs.get('line_width', 1.0)
 
@@ -180,6 +182,14 @@ class VisSurface(vis.VisAbstract):
                 tris = np.array(faces, dtype=np.int)
                 actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(actor1)
+
+            # Plot trim curves
+            if self.vconf.display_trims:
+                if plot['type'] == 'trimcurve':
+                    pts = np.array(plot['ptsarr'], dtype=np.float)
+                    vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                    actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                    vtk_actors.append(actor1)
 
         # Render actors
         vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
