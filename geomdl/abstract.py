@@ -883,13 +883,13 @@ class Curve(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.get('cpcolor', 'blue')
-        evalcolor = kwargs.get('evalcolor', 'black')
-        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        extra_plots = kwargs.get('extras', None)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.pop('cpcolor', 'blue')
+        evalcolor = kwargs.pop('evalcolor', 'black')
+        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
+        filename = kwargs.pop('filename', None)
+        plot_visible = kwargs.pop('plot', True)
+        extra_plots = kwargs.pop('extras', None)
+        animate_plot = kwargs.pop('animate', False)
 
         # Check all parameters are set
         self._check_variables()
@@ -1694,14 +1694,14 @@ class Surface(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.get('cpcolor', 'blue')
-        evalcolor = kwargs.get('evalcolor', 'green')
-        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
-        trimcolor = kwargs.get('trimcolor', 'black')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        extra_plots = kwargs.get('extras', None)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.pop('cpcolor', 'blue')
+        evalcolor = kwargs.pop('evalcolor', 'green')
+        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
+        trimcolor = kwargs.pop('trimcolor', 'black')
+        filename = kwargs.pop('filename', None)
+        plot_visible = kwargs.pop('plot', True)
+        extra_plots = kwargs.pop('extras', None)
+        animate_plot = kwargs.pop('animate', False)
 
         # Get colormap and convert to a list
         surf_cmap = kwargs.get('colormap', None)
@@ -2733,13 +2733,13 @@ class Volume(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.get('cpcolor', 'blue')
-        evalcolor = kwargs.get('evalcolor', 'green')
-        bboxcolor = kwargs.get('bboxcolor', 'darkorange')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        extra_plots = kwargs.get('extras', None)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.pop('cpcolor', 'blue')
+        evalcolor = kwargs.pop('evalcolor', 'green')
+        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
+        filename = kwargs.pop('filename', None)
+        plot_visible = kwargs.pop('plot', True)
+        extra_plots = kwargs.pop('extras', None)
+        animate_plot = kwargs.pop('animate', False)
 
         # Check all parameters are set
         self._check_variables()
