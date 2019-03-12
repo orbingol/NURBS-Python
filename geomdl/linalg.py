@@ -567,6 +567,8 @@ def convex_hull(points):
 
     Reference: https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
 
+    .. note:: This implementation only works in 2-dimensional space.
+
     :param points: list of 2-dimensional points
     :type points: list, tuple
     :return: convex hull of the input points
@@ -598,6 +600,8 @@ def is_left(point0, point1, point2):
 
     Ported from the C++ version: on http://geomalgorithms.com/a03-_inclusion.html
 
+    .. note:: This implementation only works in 2-dimensional space.
+
     :param point0: Point P0
     :param point1: Point P1
     :param point2: Point P2
@@ -613,6 +617,8 @@ def wn_poly(point, vertices):
     """ Winding number test for a point in a polygon.
 
     Ported from the C++ version: http://geomalgorithms.com/a03-_inclusion.html
+
+    .. note:: This implementation only works in 2-dimensional space.
 
     :param point: point to be tested
     :type point: list, tuple
