@@ -78,9 +78,9 @@ def convert_bb_to_faces(voxel_grid):
         fs1 = [p1, p2, p6, p5]  # side face 1
         fs2 = [p2, p3, p7, p6]  # side face 2
         fs3 = [p3, p4, p8, p7]  # side face 3
-        fs4 = [p4, p1, p5, p8]  # side face 4
+        fs4 = [p1, p4, p8, p5]  # side face 4
         # Append to return list
-        new_vg.append([ft, fs1, fs2, fs3, fs4, fb])
+        new_vg.append([fb, fs1, fs2, fs3, fs4, ft])
     return new_vg
 
 
