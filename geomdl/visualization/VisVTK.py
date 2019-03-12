@@ -25,7 +25,7 @@ class VisConfig(vis.VisConfigAbstract):
     * ``ctrlpts`` (bool): Control points polygon/grid visibility. *Default: True*
     * ``evalpts`` (bool): Curve/surface points visibility. *Default: True*
     * ``figure_size`` (list): Size of the figure in (x, y). *Default: (800, 600)*
-    * ``line_width`` (int): Thickness of the lines on the figure. *Default: 0.5*
+    * ``line_width`` (int): Thickness of the lines on the figure. *Default: 1.0*
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
