@@ -192,7 +192,7 @@ class VisVolume(vis.VisAbstract):
     def __init__(self, config=VisConfig()):
         super(VisVolume, self).__init__(config=config)
         self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "points"
+        self._module_config['evalpts'] = "voxels"
 
     def render(self, **kwargs):
         """ Plots the volume and the control points. """
@@ -214,9 +214,10 @@ class VisVolume(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_delaunay(pts=vtkpts, color=vtkh.create_color(plot['color']), d3d=True)
+                faces = np.array(plot['ptsarr'][1], dtype=np.float)
+                filled = np.array(plot['ptsarr'][2], dtype=np.int)
+                grid_filled = faces[filled == 1]
+                temp_actor = vtkh.create_actor_hexahedron(grid=grid_filled, color=vtkh.create_color(plot['color']))
                 vtk_actors.append(temp_actor)
 
         # Render actors

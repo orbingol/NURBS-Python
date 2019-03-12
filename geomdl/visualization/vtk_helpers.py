@@ -262,6 +262,50 @@ def create_actor_tri(pts, tris, color, **kwargs):
     return actor
 
 
+def create_actor_hexahedron(grid, color, **kwargs):
+    """ Creates a VTK actor for rendering voxels using hexahedron elements.
+
+    :param grid: grid
+    :type grid: numpy.ndarray
+    :param color: actor color
+    :type color: list
+    :return: a VTK actor
+    :rtype: vtkActor
+    """
+    # Create hexahedron elements
+    points = vtk.vtkPoints()
+    hexarray = vtk.vtkCellArray()
+    for j, pt in enumerate(grid):
+        tmp = vtk.vtkHexahedron()
+        fb = pt[0]
+        for i, v in enumerate(fb):
+            points.InsertNextPoint(v)
+            tmp.GetPointIds().SetId(i, i + (j * 8))
+        ft = pt[-1]
+        for i, v in enumerate(ft):
+            points.InsertNextPoint(v)
+            tmp.GetPointIds().SetId(i + 4, i + 4 + (j * 8))
+        hexarray.InsertNextCell(tmp)
+
+    # Create an unstructured grid object and add points & hexahedron elements
+    ugrid = vtk.vtkUnstructuredGrid()
+    ugrid.SetPoints(points)
+    ugrid.SetCells(tmp.GetCellType(), hexarray)
+    # ugrid.InsertNextCell(tmp.GetCellType(), tmp.GetPointIds())
+
+    # Map unstructured grid to the graphics primitives
+    mapper = vtk.vtkDataSetMapper()
+    mapper.SetInputDataObject(ugrid)
+
+    # Create an actor and set its properties
+    actor = vtk.vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(*color)
+
+    # Return the actor
+    return actor
+
+
 def create_actor_delaunay(pts, color, **kwargs):
     """ Creates a VTK actor for rendering triangulated plots using Delaunay triangulation.
 
