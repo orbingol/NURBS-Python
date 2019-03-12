@@ -853,7 +853,7 @@ def export_vmesh(volume, file_name, **kwargs):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
-    if volume.pdimension != 2:
+    if volume.pdimension != 3:
         raise exch.GeomdlException("Can only export volumes")
 
     # Get keyword arguments
