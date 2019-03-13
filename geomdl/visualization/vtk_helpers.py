@@ -226,7 +226,7 @@ def create_actor_tri(pts, tris, color, **kwargs):
     :param pts: points
     :type pts: vtkFloatArray
     :param tris: list of triangle indices
-    :type tris: list
+    :type tris: ndarray
     :param color: actor color
     :type color: list
     :return: a VTK actor
@@ -266,7 +266,7 @@ def create_actor_hexahedron(grid, color, **kwargs):
     """ Creates a VTK actor for rendering voxels using hexahedron elements.
 
     :param grid: grid
-    :type grid: numpy.ndarray
+    :type grid: ndarray
     :param color: actor color
     :type color: list
     :return: a VTK actor
