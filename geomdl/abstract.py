@@ -293,6 +293,54 @@ class SplineGeometry(Geometry):
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
         self._kv_normalize = kwargs.get('normalize_kv', True)  # flag to control knot vector normalization
 
+    def __eq__(self, other):
+        if not hasattr(other, '_pdim'):
+            return False
+        if not hasattr(other, '_degree') or not hasattr(other, '_knot_vector') or not hasattr(other, '_control_points'):
+            return False
+        if self.pdimension != other.pdimension:
+            return False
+        if self.rational != other.rational:
+            return False
+        try:
+            for s, o in zip(self._control_points_size, other._control_points_size):
+                if s != o:
+                    return False
+            chk_degree = []
+            for s, o in zip(self._degree, other._degree):
+                tmp = True if s == o else False
+                chk_degree.append(tmp)
+            if not all(chk_degree):
+                return False
+            chk_kv = []
+            for sk, ok in zip(self._knot_vector, other._knot_vector):
+                if len(sk) != len(ok):
+                    return False
+                chk = []
+                for s, o in zip(sk, ok):
+                    tmp = True if abs(s - o) < self._precision else False
+                    chk.append(tmp)
+                chk_kv.append(all(chk))
+            if not all(chk_kv):
+                return False
+            chk_ctrlpts = []
+            for sk, ok in zip(self._control_points, other._control_points):
+                if len(sk) != len(ok):
+                    return False
+                chk = []
+                for s, o in zip(sk, ok):
+                    tmp = True if abs(s - o) < self._precision else False
+                    chk.append(tmp)
+                chk_ctrlpts.append(all(chk))
+            if not all(chk_kv):
+                return False
+        except Exception:
+            return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @property
     def rational(self):
         """ Defines the rational and non-rational B-spline shapes.
