@@ -51,10 +51,11 @@ class VisConfig(vis.VisConfigAbstract):
             * ``f``: fly to point (click somewhere in the window and press to fly)
             * ``r``: reset the camera
             * ``s`` and ``w``: switch between solid and wireframe modes
-            * ``b``: change background color
-            * ``arrow keys``: pan the model
-            * ``h``: change object visibility
             * ``d``: print debug information (of picked object, point, etc.)
+            * ``b``: change background color
+            * ``h``: change object visibility
+            * ``n``: reset object visibility
+            * ``arrow keys``: pan the model
 
         Please refer to `vtkInteractorStyle <https://vtk.org/doc/nightly/html/classvtkInteractorStyle.html>`_ class
         reference for more details.
@@ -96,9 +97,14 @@ class VisConfig(vis.VisConfigAbstract):
                 print("Name:", actor.GetMapper().GetArrayName())
                 print("Index:", actor.GetMapper().GetArrayId())
             print("Selected point:", picker.GetSelectionPoint()[0:2])
+            print("# of visible actors:", renderer.VisibleActorCount())
         if key == 'h':
             if actor is not None:
                 actor.SetVisibility(not actor.GetVisibility())
+        if key == 'n':
+            actors = renderer.GetActors()  # vtkActorCollection
+            for actor in actors:
+                actor.VisibilityOn()
 
         # Update render window
         render_window.Render()
