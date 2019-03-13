@@ -902,7 +902,7 @@ class Curve(SplineGeometry):
         self._vis_component.clear()
 
         # Control points
-        self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+        self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
 
         # Evaluated points
         self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
@@ -1719,14 +1719,14 @@ class Surface(SplineGeometry):
 
         # Add control points
         if self._vis_component.mconf['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
 
         # Add control points as quads
         if self._vis_component.mconf['ctrlpts'] == 'quads':
             qtsl = tessellate.QuadTessellate()
             qtsl.tessellate(self.ctrlpts, size_u=self.ctrlpts_size_u, size_v=self.ctrlpts_size_v)
             self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
-                                    name="Control Points", color=cpcolor, plot_type='ctrlpts')
+                                    name="control points", color=cpcolor, plot_type='ctrlpts')
 
         # Add surface points
         if self._vis_component.mconf['evalpts'] == 'points':
@@ -2753,7 +2753,7 @@ class Volume(SplineGeometry):
 
         # Add control points
         if self._vis_component.mconf['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts, name="Control Points", color=cpcolor, plot_type='ctrlpts')
+            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
 
         # Add evaluated points
         if self._vis_component.mconf['evalpts'] == 'points':
