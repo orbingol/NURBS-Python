@@ -68,6 +68,14 @@ def test_vector_cross4():
         linalg.vector_cross(5, 9.7)
 
 
+def test_vector_cross5():
+    result = [0.0, 0.0, 3.0]
+    vec1 = (1, 2)
+    vec2 = (1, 5)
+    to_check = linalg.vector_cross(vec1, vec2)
+    assert to_check == result
+
+
 def test_vector_normalize1():
     with pytest.raises(ValueError):
         vec = ()
@@ -217,3 +225,16 @@ def test_point_mid():
     result = [2.5, 3.5, 4.5]
     computed = linalg.point_mid((1, 2, 3), (4, 5, 6))
     assert result == computed
+
+
+def test_vector_sum():
+    vec1 = (1.0, 2.0, 3.0)
+    vec2 = (4.0, 5.0, 6.0)
+    result = [5.0, 7.0, 9.0]
+    computed = linalg.vector_sum(vec1, vec2)
+    assert  result == computed
+
+
+def test_is_vector_zero():
+    vec = [10e-4 for _ in range(3)]
+    assert linalg.vector_is_zero(vec, 10e-3)
