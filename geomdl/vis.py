@@ -48,7 +48,7 @@ class VisAbstract(object):
         """ Clears the points, colors and names lists. """
         self._plots[:] = []
 
-    def add(self, ptsarr, plot_type, name="", color=""):
+    def add(self, ptsarr, plot_type, name="", color="", idx=0):
         """ Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control or evaluated points
@@ -59,12 +59,14 @@ class VisAbstract(object):
         :type name: str
         :param color: plot color
         :type color: str
+        :param color: plot index
+        :type color: int
         """
         # ptsarr can be a list, a tuple or an array
         if ptsarr is None or len(ptsarr) == 0:
             return
         # Add points, size, plot color and name on the legend
-        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type}
+        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type, 'idx': idx}
         self._plots.append(elem)
 
     @property
