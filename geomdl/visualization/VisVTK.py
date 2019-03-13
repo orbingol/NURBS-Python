@@ -53,6 +53,7 @@ class VisConfig(vis.VisConfigAbstract):
             * ``s`` and ``w``: switch between solid and wireframe modes
             * ``b``: change background color
             * ``arrow keys``: pan the model
+            * ``h``: change object visibility
             * ``d``: print debug information (of picked object, point, etc.)
 
         Please refer to `vtkInteractorStyle <https://vtk.org/doc/nightly/html/classvtkInteractorStyle.html>`_ class
@@ -66,6 +67,8 @@ class VisConfig(vis.VisConfigAbstract):
         key = obj.GetKeySym()  # pressed key (as str)
         render_window = obj.GetRenderWindow()  # vtkRenderWindow
         renderer = render_window.GetRenderers().GetFirstRenderer()  # vtkRenderer
+        picker = obj.GetPicker()  # vtkPropPicker
+        actor = picker.GetActor()  # vtkActor
 
         # Custom keypress events
         if key == 'Up':
@@ -86,17 +89,16 @@ class VisConfig(vis.VisConfigAbstract):
             renderer.SetBackground(*self._bg[self._bg_id])
             self._bg_id += 1
         if key == 'l':
-            picker = obj.GetPicker()  # vtkPropPicker
-            actor = picker.GetActor()  # vtkActor
             if actor is not None:
                 actor.GetProperty().SetColor(random(), random(), random())
         if key == 'd':
-            picker = obj.GetPicker()  # vtkPropPicker
-            actor = picker.GetActor()  # vtkActor
             if actor is not None:
                 print("Name:", actor.GetMapper().GetArrayName())
                 print("Index:", actor.GetMapper().GetArrayId())
             print("Selected point:", picker.GetSelectionPoint()[0:2])
+        if key == 'h':
+            if actor is not None:
+                actor.SetVisibility(not actor.GetVisibility())
 
         # Update render window
         render_window.Render()
