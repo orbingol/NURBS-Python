@@ -115,11 +115,13 @@ class VisCurve3D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtkpts.SetName(plot['name'])
+                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                               name=plot['name'], idx=plot['idx'])
                 vtk_actors.append(actor1)
                 # Lines
                 actor2 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
-                                                   size=self.vconf.line_width)
+                                                   name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
                 vtk_actors.append(actor2)
 
             # Plot evaluated points
@@ -129,8 +131,9 @@ class VisCurve3D(vis.VisAbstract):
                 if pts.shape[1] == 2:
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                vtkpts.SetName(plot['name'])
                 actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
-                                                   size=self.vconf.line_width * 2)
+                                                   name=plot['name'], index=plot['idx'], size=self.vconf.line_width * 2)
                 vtk_actors.append(actor1)
 
         # Render actors
@@ -166,21 +169,25 @@ class VisSurface(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtkpts.SetName(plot['name'])
+                actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                               name=plot['name'], index=plot['idx'])
                 vtk_actors.append(actor1)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
                 actor2 = vtkh.create_actor_mesh(pts=vtkpts, lines=lines, color=vtkh.create_color(plot['color']),
-                                                size=self.vconf.line_width)
+                                                name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
                 vtk_actors.append(actor2)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 vertices = [v.data for v in plot['ptsarr'][0]]
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
+                vtkpts.SetName(plot['name'])
                 faces = [t.vertex_ids_zero for t in plot['ptsarr'][1]]
                 tris = np.array(faces, dtype=np.int)
-                actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']))
+                actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']),
+                                               name=plot['name'], index=plot['idx'])
                 vtk_actors.append(actor1)
 
             # Plot trim curves
@@ -188,7 +195,9 @@ class VisSurface(vis.VisAbstract):
                 if plot['type'] == 'trimcurve':
                     pts = np.array(plot['ptsarr'], dtype=np.float)
                     vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                    actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                    vtkpts.SetName(plot['name'])
+                    actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                       name=plot['name'], index=plot['idx'])
                     vtk_actors.append(actor1)
 
         # Render actors
@@ -218,14 +227,18 @@ class VisVolume(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtkpts.SetName(plot['name'])
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                   name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtkpts.SetName(plot['name'])
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                   name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
         # Render actors
@@ -255,7 +268,9 @@ class VisVoxel(vis.VisAbstract):
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']))
+                vtkpts.SetName(plot['name'])
+                temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
+                                                   name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
             # Plot evaluated points
@@ -263,7 +278,8 @@ class VisVoxel(vis.VisAbstract):
                 faces = np.array(plot['ptsarr'][1], dtype=np.float)
                 filled = np.array(plot['ptsarr'][2], dtype=np.int)
                 grid_filled = faces[filled == 1]
-                temp_actor = vtkh.create_actor_hexahedron(grid=grid_filled, color=vtkh.create_color(plot['color']))
+                temp_actor = vtkh.create_actor_hexahedron(grid=grid_filled, color=vtkh.create_color(plot['color']),
+                                                          name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
         # Render actors

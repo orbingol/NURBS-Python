@@ -97,6 +97,9 @@ def create_actor_pts(pts, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
     point_size = kwargs.get('size', 5)
     point_sphere = kwargs.get('point_as_sphere', True)
 
@@ -115,6 +118,8 @@ def create_actor_pts(pts, color, **kwargs):
     # Map ploy data to the graphics primitives
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputConnection(vertex_filter.GetOutputPort())
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
@@ -137,6 +142,9 @@ def create_actor_polygon(pts, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
     line_width = kwargs.get('size', 1.0)
 
     # Create points
@@ -162,6 +170,8 @@ def create_actor_polygon(pts, color, **kwargs):
     # Map poly data to the graphics primitives
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputDataObject(polydata)
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
@@ -185,6 +195,9 @@ def create_actor_mesh(pts, lines, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
     line_width = kwargs.get('size', 0.5)
 
     # Create points
@@ -209,6 +222,8 @@ def create_actor_mesh(pts, lines, color, **kwargs):
     # Map poly data to the graphics primitives
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputDataObject(polydata)
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
@@ -232,6 +247,10 @@ def create_actor_tri(pts, tris, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
+
     # Create points
     points = vtk.vtkPoints()
     points.SetData(pts)
@@ -252,6 +271,8 @@ def create_actor_tri(pts, tris, color, **kwargs):
     # Map poly data to the graphics primitives
     mapper = vtk.vtkPolyDataMapper()
     mapper.SetInputDataObject(polydata)
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
@@ -272,6 +293,10 @@ def create_actor_hexahedron(grid, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
+
     # Create hexahedron elements
     points = vtk.vtkPoints()
     hexarray = vtk.vtkCellArray()
@@ -296,6 +321,8 @@ def create_actor_hexahedron(grid, color, **kwargs):
     # Map unstructured grid to the graphics primitives
     mapper = vtk.vtkDataSetMapper()
     mapper.SetInputDataObject(ugrid)
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
@@ -319,7 +346,9 @@ def create_actor_delaunay(pts, color, **kwargs):
     :return: a VTK actor
     :rtype: vtkActor
     """
-    # Get keyword arguments
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
     use_delaunay3d = kwargs.get("d3d", False)
 
     # Create points
@@ -337,6 +366,8 @@ def create_actor_delaunay(pts, color, **kwargs):
     # Map triangulated surface to the graphics primitives
     mapper = vtk.vtkDataSetMapper()
     mapper.SetInputConnection(triangulation.GetOutputPort())
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
 
     # Create an actor and set its properties
     actor = vtk.vtkActor()
