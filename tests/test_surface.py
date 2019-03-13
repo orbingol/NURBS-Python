@@ -172,6 +172,22 @@ def test_bspline_surface_remove_knot_v(spline_surf, param, num_remove):
     assert s_pre - num_remove == s_post
 
 
+def test_bspline_surface_remove_knot_kv_u(spline_surf):
+    spline_surf.remove_knot(u=0.66, num_u=1)
+    s = helpers.find_multiplicity(0.66, spline_surf.knotvector_u)
+
+    assert 0.66 not in spline_surf.knotvector_u
+    assert s == 0
+
+
+def test_bspline_surface_remove_knot_kv_v(spline_surf):
+    spline_surf.remove_knot(v=0.33, num_v=1)
+    s = helpers.find_multiplicity(0.33, spline_surf.knotvector_v)
+
+    assert 0.33 not in spline_surf.knotvector_v
+    assert s == 0
+
+
 @fixture
 def nurbs_surf(spline_surf):
     surf = convert.bspline_to_nurbs(spline_surf)
