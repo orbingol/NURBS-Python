@@ -121,9 +121,9 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         for j in range(varr_size_v - 1):
             # Find vertex indices for a quad element
             vertex1 = vertices[j + (i * varr_size_v)]
-            vertex2 = vertices[j + 1 + (i * varr_size_v)]
+            vertex2 = vertices[j + ((i + 1) * varr_size_v)]
             vertex3 = vertices[j + 1 + ((i + 1) * varr_size_v)]
-            vertex4 = vertices[j + ((i + 1) * varr_size_v)]
+            vertex4 = vertices[j + 1 + (i * varr_size_v)]
 
             # Call tessellation function
             vlst, tlst = tsl_func(vertex1, vertex2, vertex3, vertex4, vrt_idx, tri_idx, trim_curves, tsl_args)
