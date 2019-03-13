@@ -53,6 +53,10 @@ class VisConfig(vis.VisConfigAbstract):
             * ``s`` and ``w``: switch between solid and wireframe modes
             * ``b``: change background color
             * ``arrow keys``: pan the model
+            * ``d``: print debug information (of picked object, point, etc.)
+
+        Please refer to `vtkInteractorStyle <https://vtk.org/doc/nightly/html/classvtkInteractorStyle.html>`_ class
+        reference for more details.
 
         :param obj: render window interactor
         :type obj: vtkRenderWindowInteractor
@@ -86,7 +90,13 @@ class VisConfig(vis.VisConfigAbstract):
             actor = picker.GetActor()  # vtkActor
             if actor is not None:
                 actor.GetProperty().SetColor(random(), random(), random())
-            # print(picker.GetSelectionPoint())
+        if key == 'd':
+            picker = obj.GetPicker()  # vtkPropPicker
+            actor = picker.GetActor()  # vtkActor
+            if actor is not None:
+                print("Name:", actor.GetMapper().GetArrayName())
+                print("Index:", actor.GetMapper().GetArrayId())
+            print("Selected point:", picker.GetSelectionPoint()[0:2])
 
         # Update render window
         render_window.Render()
