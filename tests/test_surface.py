@@ -10,6 +10,7 @@ from pytest import fixture, mark
 from geomdl import BSpline
 from geomdl import evaluators
 from geomdl import convert
+from geomdl import helpers
 
 GEOMDL_DELTA = 0.001
 
@@ -139,6 +140,36 @@ def test_bspline_surface_insert_kv_u(spline_surf, params, idx, val):
     spline_surf.insert_knot(**params)
 
     assert spline_surf.knotvector_u[idx] == val
+
+
+@mark.parametrize("param, num_remove", [
+    (0.33, 1),
+    (0.66, 1)
+])
+def test_bspline_surface_remove_knot_u(spline_surf, param, num_remove):
+    s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_u)
+    c_pre = spline_surf.ctrlpts_size_u
+    spline_surf.remove_knot(u=param, num_u=num_remove)
+    s_post = helpers.find_multiplicity(param, spline_surf.knotvector_u)
+    c_post = spline_surf.ctrlpts_size_u
+
+    assert c_pre - num_remove == c_post
+    assert s_pre - num_remove == s_post
+
+
+@mark.parametrize("param, num_remove", [
+    (0.33, 1),
+    (0.66, 1)
+])
+def test_bspline_surface_remove_knot_v(spline_surf, param, num_remove):
+    s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_v)
+    c_pre = spline_surf.ctrlpts_size_v
+    spline_surf.remove_knot(v=param, num_v=num_remove)
+    s_post = helpers.find_multiplicity(param, spline_surf.knotvector_v)
+    c_post = spline_surf.ctrlpts_size_v
+
+    assert c_pre - num_remove == c_post
+    assert s_pre - num_remove == s_post
 
 
 @fixture

@@ -107,6 +107,29 @@ def test_bspline_curve2d_insert_knot_kv(spline_curve):
     assert s == 3
 
 
+@mark.parametrize("param, num_remove", [
+    (0.33, 1),
+    (0.66, 1)
+])
+def test_bspline_curve2d_remove_knot(spline_curve, param, num_remove):
+    s_pre = helpers.find_multiplicity(param, spline_curve.knotvector)
+    c_pre = spline_curve.ctrlpts_size
+    spline_curve.remove_knot(param, num=num_remove)
+    s_post = helpers.find_multiplicity(param, spline_curve.knotvector)
+    c_post = spline_curve.ctrlpts_size
+
+    assert c_pre - num_remove == c_post
+    assert s_pre - num_remove == s_post
+
+
+def test_bspline_curve2d_remove_knot_kv(spline_curve):
+    spline_curve.remove_knot(0.66, num=1)
+    s = helpers.find_multiplicity(0.66, spline_curve.knotvector)
+
+    assert 0.66 not in spline_curve.knotvector
+    assert s == 0
+
+
 @fixture
 def spline_curve3d(spline_curve):
     curve3d = operations.add_dimension(spline_curve, offset=1.0)
