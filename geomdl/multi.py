@@ -420,8 +420,10 @@ class CurveContainer(AbstractContainer):
             # Color selection
             color = select_color(cpcolor, evalcolor, idx=idx)
 
-            self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)", color=color[0], plot_type='ctrlpts')
-            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
+            self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
+                                    color=color[0], plot_type='ctrlpts', idx=idx)
+            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name + str(idx),
+                                    color=color[1], plot_type='evalpts', idx=idx)
 
         # Display the figures
         if animate_plot:
@@ -660,37 +662,37 @@ class SurfaceContainer(AbstractContainer):
             # Add control points
             if self._vis_component.mconf['ctrlpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
-                                        color=color[0], plot_type='ctrlpts')
+                                        color=color[0], plot_type='ctrlpts', idx=idx)
 
             # Add control points as quads
             if self._vis_component.mconf['ctrlpts'] == 'quads':
                 qtsl = tessellate.QuadTessellate()
                 qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
                 self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name + " (CP)",
-                                        color=color[0], plot_type='ctrlpts')
+                                        color=color[0], plot_type='ctrlpts', idx=idx)
 
             # Add surface points
             if self._vis_component.mconf['evalpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
+                                        color=color[1], plot_type='evalpts', idx=idx)
 
             # Add surface points as quads
             if self._vis_component.mconf['evalpts'] == 'quads':
                 qtsl = tessellate.QuadTessellate()
                 qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
-                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
-                                        name=elem.name, color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name,
+                                        color=color[1], plot_type='evalpts', idx=idx)
 
             # Add surface points as vertices and triangles
             if self._vis_component.mconf['evalpts'] == 'triangles':
                 elem.tessellate()
-                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
-                                        name=elem.name, color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces], name=elem.name,
+                                        color=color[1], plot_type='evalpts', idx=idx)
 
             # Visualize the trim curve
             for itc, trim in enumerate(elem.trims):
-                self._vis_component.add(ptsarr=elem.evaluate_list(trim.evalpts),
-                                        name="Trim Curve " + str(itc + 1),
-                                        color=trimcolor, plot_type='trimcurve')
+                self._vis_component.add(ptsarr=elem.evaluate_list(trim.evalpts), name="Trim Curve " + str(itc + 1),
+                                        color=trimcolor, plot_type='trimcurve', idx=idx)
 
         # Display the figures
         if animate_plot:
@@ -851,17 +853,19 @@ class VolumeContainer(SurfaceContainer):
             # Add control points
             if self._vis_component.mconf['ctrlpts'] == 'points':
                 self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
-                                        color=color[0], plot_type='ctrlpts')
+                                        color=color[0], plot_type='ctrlpts', idx=idx)
 
             # Add evaluated points
             if self._vis_component.mconf['evalpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
+                                        color=color[1], plot_type='evalpts', idx=idx)
 
             # Add evaluated points as voxels
             if self._vis_component.mconf['evalpts'] == 'voxels':
                 grid, filled = voxelize.voxelize(elem, **kwargs)
                 polygrid = voxelize.convert_bb_to_faces(grid)
-                self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type='evalpts')
+                self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name,
+                                        color=color[1], plot_type='evalpts', idx=idx)
 
         # Display the figures
         if animate_plot:
