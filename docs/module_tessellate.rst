@@ -21,6 +21,11 @@ scenario of the tessellation algorithms with surfaces.
 
 NURBS-Python uses :py:class:`.TriangularTessellate` class for surface tessellation by default.
 
+.. note::
+
+    To get better results with the surface trimming, you need to use a relatively smaller evaluation delta or a bigger
+    sample size value. Recommended evaluation delta is :math:`d = 0.01`.
+
 Class Reference
 ===============
 
