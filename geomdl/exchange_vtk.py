@@ -51,17 +51,20 @@ def export_polydata_str(obj, **kwargs):
         warnings.warn("VTK standard restricts the file title with 256 characters. New file title is:", file_title)
 
     # Prepare data array
+    tsl_dim = 0
     if point_type == "ctrlpts":
         if tessellate and obj.pdimension == 2:
             tsl = abstract.tessellate.QuadTessellate()
-            tsl.tessellate(obj.ctrlpts, obj.ctrlpts_size_u, obj.ctrlpts_size_v)
-            data_array = ([v.data for v in tsl.vertices], [t.vertex_ids_zero for t in tsl.faces])
+            tsl.tessellate(obj.ctrlpts, size_u=obj.ctrlpts_size_u, size_v=obj.ctrlpts_size_v)
+            data_array = ([v.data for v in tsl.vertices], [q.data for q in tsl.faces])
+            tsl_dim = 4
         else:
             data_array = (obj.ctrlpts, [])
     elif point_type == "evalpts":
         if tessellate and obj.pdimension == 2:
             obj.tessellate()
             data_array = ([v.data for v in obj.tessellator.vertices], [t.vertex_ids_zero for t in obj.tessellator.faces])
+            tsl_dim = 3
         else:
             data_array = (obj.evalpts, [])
     else:
@@ -77,8 +80,24 @@ def export_polydata_str(obj, **kwargs):
 
     # Prepare points data
     line += "POINTS " + str(len(data_array[0])) + " FLOAT\n"
-    for pt in data_array[0]:
+    vert_line = ""
+    for ipt, pt in enumerate(data_array[0]):
         line += " ".join(str(c) for c in pt) + "\n"
+        vert_line += "1 " + str(ipt) + "\n"
+
+    # Add vertices
+    line += "VERTICES " + str(len(data_array[0])) + " " + str(2 * len(data_array[0])) + "\n"
+    line += vert_line
+
+    # Add polygons
+    if data_array[1]:
+        line += "POLYGONS " + str(len(data_array[1])) + " " + str((tsl_dim + 1) * len(data_array[1])) + "\n"
+        for pt in data_array[1]:
+            line += str(tsl_dim) + " " + " ".join(str(c) for c in pt) + "\n"
+
+    # Add dataset attributes
+    line += "POINT_DATA " + str(len(data_array[0])) + "\n"
+    line += "CELL_DATA " + str(len(data_array[1])) + "\n"
 
     # Return generated file content
     return line
