@@ -353,6 +353,13 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                         t_min = isect[1]
                         uv_min = isect[2]
 
+                # Check uv for min max
+                for pi in range(2):
+                    if uv_min[pi] - tol <= 0.0 <= uv_min[pi] + tol:
+                        uv_min[pi] = 0.0
+                    elif uv_min[pi] - tol <= 1.0 <= uv_min[pi] + tol:
+                        uv_min[pi] = 1.0
+
                 # Create a vertex with the minimum uv value
                 vert = Vertex()
                 vert.id = vidx + nvi
