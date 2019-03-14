@@ -265,12 +265,16 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     """
     # Tolerance value
     tol = 10e-8
+    tols = tol ** 2
+    vtol = ((tols, tols), (-tols, tols), (-tols, -tols), (tols, -tols))
 
     # Start processing vertices
     vertices = [v1, v2, v3, v4]
     for idx in range(len(vertices)):
         for trim in trims:
-            if linalg.wn_poly(vertices[idx].uv, trim.evalpts):
+            cf = 1 if trim.opt['sense'] else -1
+            uv = [p + (cf * t) for p, t in zip(vertices[idx].uv, vtol[idx])]
+            if linalg.wn_poly(uv, trim.evalpts):
                 if trim.opt['sense']:
                     if vertices[idx].opt_get('trim') is None or not vertices[idx].opt_get('trim'):
                         vertices[idx].inside = False
