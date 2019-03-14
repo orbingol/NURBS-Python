@@ -13,35 +13,35 @@ from . import _exchange as exch
 from ._utilities import export
 
 
-def export_polydata_str(obj, point_type='evalpts', **kwargs):
+def export_polydata_str(obj, **kwargs):
     """ Exports control points or evaluated points in VTK Polydata format (string).
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
-    :param obj: a B-Spline or NURBS shape
-    :type obj: abstract.Curve, abstract.Surface
-    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
-    :type point_type: str
-    :return: contents of the VTK Polydata file
+    Keyword Arguments:
+        * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
+        * ``tessellate``: tessellates the points (works only for surfaces)
+
+    :param obj: a spline geometry
+    :type obj: abstract.SplineGeometry
+    :return: contents of the VTK file
     :rtype: str
     :raises GeomdlException: input object is not an instance of abstract shapes
     :raises GeomdlException: point type is not supported
     :raises UserWarning: file title is bigger than 256 characters
     """
-    if not isinstance(obj, (abstract.Curve, abstract.Surface)):
-        raise exch.GeomdlException("Input object should be a curve or a surface")
+    if not isinstance(obj, abstract.SplineGeometry):
+        raise exch.GeomdlException("Input object should be a spline geometry")
 
-    # Define possible point types
-    pt_types = dict(
-        ctrlpts=obj.ctrlpts,
-        evalpts=obj.evalpts
-    )
+    # Get keyword arguments
+    point_type = kwargs.get('point_type', 'evalpts')
+    tessellate = kwargs.get('tessellate', False)
+
+    possible_types = ['ctrlpts', 'evalpts']
     # Pick correct points from the object
-    if point_type in pt_types:
-        points = pt_types[point_type]
-    else:
+    if point_type not in possible_types:
         raise exch.GeomdlException("Please choose a valid point type option. " +
-                                   "Possible types:", ", ".join(pt_types.keys()))
+                                   "Possible types:", ", ".join([str(t) for t in possible_types]))
 
     # Get file title
     file_title = kwargs.get('title', repr(obj))
@@ -49,6 +49,23 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
     if len(file_title) >= 256:
         file_title = file_title[0:255]  # slice the array into 255 characters, we will add new line character later
         warnings.warn("VTK standard restricts the file title with 256 characters. New file title is:", file_title)
+
+    # Prepare data array
+    if point_type == "ctrlpts":
+        if tessellate and obj.pdimension == 2:
+            tsl = abstract.tessellate.QuadTessellate()
+            tsl.tessellate(obj.ctrlpts, obj.ctrlpts_size_u, obj.ctrlpts_size_v)
+            data_array = ([v.data for v in tsl.vertices], [t.vertex_ids_zero for t in tsl.faces])
+        else:
+            data_array = (obj.ctrlpts, [])
+    elif point_type == "evalpts":
+        if tessellate and obj.pdimension == 2:
+            obj.tessellate()
+            data_array = ([v.data for v in obj.tessellator.vertices], [t.vertex_ids_zero for t in obj.tessellator.faces])
+        else:
+            data_array = (obj.evalpts, [])
+    else:
+        data_array = ([], [])
 
     # Prepare file header
     line = "# vtk DataFile Version 3.0\n"
@@ -59,8 +76,8 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
     line += "DATASET POLYDATA\n"
 
     # Prepare points data
-    line += "POINTS " + str(len(points)) + " FLOAT\n"
-    for pt in points:
+    line += "POINTS " + str(len(data_array[0])) + " FLOAT\n"
+    for pt in data_array[0]:
         line += " ".join(str(c) for c in pt) + "\n"
 
     # Return generated file content
@@ -68,18 +85,20 @@ def export_polydata_str(obj, point_type='evalpts', **kwargs):
 
 
 @export
-def export_polydata(obj, file_name, point_type='evalpts', **kwargs):
+def export_polydata(obj, file_name, **kwargs):
     """ Exports control points or evaluated points in VTK Polydata format.
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
-    :param obj: a curve or a surface object
-    :type obj: abstract.Curve, abstract.Surface
+    Keyword Arguments:
+        * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
+        * ``tessellate``: tessellates the points (works only for surfaces)
+
+    :param obj: a spline geometry
+    :type obj: abstract.SplineGeometry
     :param file_name: output file name
     :type file_name: str
-    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
-    :type point_type: str
     :raises GeomdlException: an error occurred writing the file
     """
-    content = export_polydata_str(obj, point_type, **kwargs)
+    content = export_polydata_str(obj, **kwargs)
     return exch.write_file(file_name, content)
