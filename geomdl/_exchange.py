@@ -278,6 +278,22 @@ def export_dict_ff(obj):
     return data
 
 
+def import_dict_multi_crv(data):
+    shape = shortcuts.generate_container_curve()
+    curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff)
+    for trim in data['data']:
+        if trim['type'] in curve_typemap:
+            tcurve = curve_typemap[trim['type']](trim)
+            shape.add(tcurve)
+    if 'name' in data:
+        shape.name = data['name']
+    if 'id' in data:
+        shape.id = data['id']
+    if 'sense' in data:  # trim curve sense
+        shape.opt = ['sense', data['sense']]
+    return shape
+
+
 def import_dict_surf(data):
     shape = shortcuts.generate_nurbs_surface()
 
@@ -307,7 +323,7 @@ def import_dict_surf(data):
 
     # Trim curves
     if 'trims' in data:
-        trim_curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff)
+        trim_curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff, container=import_dict_multi_crv)
         trim_curves = []
         for trim in data['trims']['data']:
             if trim['type'] in trim_curve_typemap:
