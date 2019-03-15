@@ -69,6 +69,11 @@ class AbstractContainer(object):
         self._elements += other._elements
         return self
 
+    def __str__(self):
+        return self.type
+
+    __repr__ = __str__
+
     @property
     def dimension(self):
         """ Shape dimension.
