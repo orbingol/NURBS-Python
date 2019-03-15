@@ -259,7 +259,7 @@ The following example illustrates a NURBS surface:
                     - [u1, v1]  # expected to be 2-dimensional, corresponding to (u,v)
                     - [u2, v2]
                     - ...
-                  weights:  # weights vector of the 2nd trim
+                  weights:  # weights vector of the 2nd trim curve
                     - 1.0
                     - 1.0
                     - ...
@@ -272,6 +272,12 @@ The following example illustrates a NURBS surface:
                   - ...
                 name: "my freeform curve"  # optional
                 sense: 1  # 0: trim inside, 1: trim outside (optional, default is 0)
+              - type: container  # type of the 4th trim curve
+                data:  # a list of freeform and/or spline geometries
+                  - ...
+                  - ...
+                name: "my trim curves"  # optional
+                sense: 1  # 0: trim inside, 1: trim outside (optional, default is 0)
 
 * **Shape section:** This section contains the single or multi NURBS data. ``type`` and ``data`` sections are mandatory.
 * **Type section:** This section defines the type of the NURBS shape. For NURBS curves, it should be set to *surface*.
@@ -280,6 +286,7 @@ The following example illustrates a NURBS surface:
 Surfaces can also contain trim curves. These curves can be stored in 2 geometry types inside the surface:
 
 * ``spline`` corresponds to a spline geometry, which is defined by a set of degrees, knot vectors and control points
+* ``container`` corresponds to a geometry container
 * ``freeform`` corresponds to a freeform geometry; defined by a set of points
 
 Volume
