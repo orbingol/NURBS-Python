@@ -27,10 +27,11 @@ The following list contains the geometric operations included in the library:
 
     module_operations
     module_exchange
+    module_compatibility
     module_convert
     module_construct
-    module_compatibility
     module_fitting
+    module_tessellate
 
 Geometry Generators
 ===================
@@ -55,7 +56,6 @@ The following list contains the list of modules for advanced use:
     module_abstract
     module_evaluators
     module_utilities
-    module_tessellate
     module_voxelize
     module_elements
     module_ray
