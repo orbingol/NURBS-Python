@@ -1,32 +1,61 @@
 Core Modules
 ^^^^^^^^^^^^
 
-The following modules are included in the core library:
+The following are the lists of modules included in NURBS-Python (geomdl) Core Library. They are split into separate
+groups to make the documentation more understandable.
+
+User API
+========
+
+The User API is the main entrance point to the library. It provides geometry classes and containers, as well as the
+geometric operators and support modules.
+
+The following list contains the geometry classes included in the library:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_bspline
+    module_nurbs
+    module_freeform
+    module_container
+
+The following list contains the geometric operations included in the library:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_operations
+    module_exchange
+    module_convert
+    module_construct
+    module_compatibility
+    module_fitting
+
+Geometry Generators
+===================
+
+The following list contains the geometry generators included in the library:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_knotvector
+    module_cpgen
+
+
+Advanced API
+============
+
+The following list contains the list of modules for advanced use:
 
 .. toctree::
     :maxdepth: 1
 
     module_abstract
-    module_freeform
-    module_bspline
-    module_nurbs
     module_evaluators
-    module_operations
     module_utilities
-    module_knotvector
-    module_convert
-    module_construct
-    module_container
-    module_compatibility
-    module_fitting
-    module_cpgen
-    module_exchange
     module_tessellate
     module_voxelize
     module_elements
     module_ray
-
-NURBS-Python takes *The NURBS Book 2nd Edition by Piegl & Tiller* as the main reference for the evaluation algorithms.
-The users may want to use different algorithms and **Evaluators** serve directly to this purpose by allowing users
-to switch evaluation algorithms (i.e. evaluation strategy) at runtime. Please see ``evaluator`` property documentation
-for more details.
