@@ -22,8 +22,8 @@ def export_polydata_str(obj, **kwargs):
         * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
         * ``tessellate``: tessellates the points (works only for surfaces)
 
-    :param obj: a spline geometry
-    :type obj: abstract.SplineGeometry
+    :param obj: geometry object
+    :type obj: abstract.SplineGeometry, multi.AbstractContainer
     :return: contents of the VTK file
     :rtype: str
     :raises GeomdlException: point type is not supported
@@ -131,8 +131,8 @@ def export_polydata(obj, file_name, **kwargs):
         * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
         * ``tessellate``: tessellates the points (works only for surfaces)
 
-    :param obj: a spline geometry
-    :type obj: abstract.SplineGeometry
+    :param obj: geometry object
+    :type obj: abstract.SplineGeometry, multi.AbstractContainer
     :param file_name: output file name
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
