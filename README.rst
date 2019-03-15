@@ -5,8 +5,6 @@ NURBS-Python (geomdl)
 
 |RTD|_ |TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_ |CODECOV|_
 
-|WAFFLEIO|_
-
 Introduction
 ============
 
@@ -108,9 +106,6 @@ NURBS-Python (geomdl) is licensed under the terms of `MIT License <LICENSE>`_ an
 
 .. |RTD| image:: https://readthedocs.org/projects/nurbs-python/badge/?version=latest
 .. _RTD: https://nurbs-python.readthedocs.io/en/latest/?badge=latest
-
-.. |WAFFLEIO| image:: https://badge.waffle.io/orbingol/NURBS-Python.svg?columns=all
-.. _WAFFLEIO: https://waffle.io/orbingol/NURBS-Python
 
 .. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=master
 .. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
