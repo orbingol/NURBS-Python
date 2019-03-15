@@ -9,14 +9,18 @@
 
 import abc
 import warnings
-from . import vis, voxelize, utilities
+from . import abstract
+from . import vis
+from . import voxelize
+from . import utilities
 from . import tessellate
 from . import _utilities as utl
+from .exceptions import GeomdlException
 
 
 @utl.add_metaclass(abc.ABCMeta)
-class AbstractContainer(object):
-    """ Abstract class for curve and surface containers.
+class AbstractContainer(abstract.GeomdlBase):
+    """ Abstract class for geometry containers.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
@@ -32,9 +36,11 @@ class AbstractContainer(object):
     """
 
     def __init__(self, *args, **kwargs):
-        self._geometry_type = "container"
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
         self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # delta initialization value
+        super(AbstractContainer, self).__init__(**kwargs)
+        self._geometry_type = "container"
+        self._name = self._geometry_type
         self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
         self._elements = []  # list of elements contained
         self._vis_component = None  # visualization component
@@ -65,27 +71,9 @@ class AbstractContainer(object):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError("Cannot add non-matching container types")
-        self._elements += other._elements
+            raise GeomdlException("Cannot add non-matching container types")
+        self.add(other)
         return self
-
-    def __str__(self):
-        return self.type
-
-    __repr__ = __str__
-
-    @property
-    def dimension(self):
-        """ Shape dimension.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the dimension of the shape
-        """
-        if self._elements:
-            return self._elements[0].dimension
-        return 0
 
     @property
     def pdimension(self):
@@ -98,18 +86,6 @@ class AbstractContainer(object):
         :type: int
         """
         return self._pdim
-
-    @property
-    def type(self):
-        """ Geometry type
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the geometry type
-        :type: str
-        """
-        return self._geometry_type
 
     @property
     def evalpts(self):
@@ -268,9 +244,9 @@ class AbstractContainer(object):
     def _sample_size_setter_common(self, idx, value):
         # Check and set the delta value corresponding to the idx-th parametric dimension
         if not isinstance(value, int):
-            raise ValueError("Sample size must be an integer value bigger than 2")
+            raise GeomdlException("Sample size must be an integer value bigger than 2")
         if value < 2:
-            raise ValueError("Sample size must be an integer value bigger than 2")
+            raise GeomdlException("Sample size must be an integer value bigger than 2")
         self._delta[idx] = 1.0 / float(value - 1)
 
     def add(self, element):
@@ -280,39 +256,22 @@ class AbstractContainer(object):
 
         :param element: shape to be added
         """
-        if isinstance(element, self.__class__):
-            self.__add__(element)
-        elif isinstance(element, (list, tuple)):
+        if isinstance(element, (self.__class__, list, tuple)):
             for elem in element:
                 self.add(elem)
         elif hasattr(self, '_pdim'):
             if element.pdimension == self.pdimension:
+                if self.dimension == 0:
+                    self._dimension = element.dimension
+                else:
+                    if self.dimension != element.dimension:
+                        raise GeomdlException("The spatial dimensions of the container and the input must be the same")
                 self._elements.append(element)
         else:
-            raise TypeError("Cannot add the element to the container")
+            raise GeomdlException("Cannot add the element to the container")
 
     # Make container look like a list
     append = add
-
-    @property
-    def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the dict
-        """
-        return self._elements[0].opt
-
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
-
-        :param value: a key in the :py:attr:`opt` property
-        :type value: str
-        :return: the corresponding value, if the key exists. ``None``, otherwise.
-        """
-        return self._elements[0].opt_get(value)
 
     # Runs visualization component to render the surface
     @abc.abstractmethod

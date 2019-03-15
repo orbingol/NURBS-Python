@@ -18,8 +18,8 @@ from . import _utilities as utl
 
 
 @utl.add_metaclass(abc.ABCMeta)
-class Geometry(object):
-    """ Abstract base class for defining geometry objects.
+class GeomdlBase(object):
+    """ Abstract base class for defining geomdl objects.
 
     This class provides the following properties:
 
@@ -27,43 +27,20 @@ class Geometry(object):
     * :py:attr:`id`
     * :py:attr:`name`
     * :py:attr:`dimension`
-    * :py:attr:`evalpts`
     * :py:attr:`opt`
 
     **Keyword Arguments:**
 
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
-
     def __init__(self, **kwargs):
         self._dimension = 0  # spatial dimension
-        self._geometry_type = "default"  # geometry type
+        self._geometry_type = "none"  # geometry type
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        self._eval_points = self._init_array()  # evaluated points
-        self._name = "geometry object"  # object name
+        self._name = "base object"  # object name
         self._id = int(kwargs.get('id', 0))  # object ID
         self._opt_data = dict()  # custom data dict
         self._cache = {}  # cache dict
-
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
-    def __next__(self):
-        if self._iter_index > 0:
-            raise StopIteration
-        self._iter_index += 1
-        return self
-
-    def __len__(self):
-        return 1
-
-    def __getitem__(self, index):
-        return self
 
     def __copy__(self):
         cls = self.__class__
@@ -87,12 +64,6 @@ class Geometry(object):
         return self.name
 
     __repr__ = __str__
-
-    def _init_array(self):
-        """ Initializes the arrays. """
-        if callable(self._array_type):
-            return self._array_type()
-        return list()
 
     @property
     def dimension(self):
@@ -238,6 +209,70 @@ class Geometry(object):
         except KeyError:
             return None
 
+
+@utl.add_metaclass(abc.ABCMeta)
+class Geometry(GeomdlBase):
+    """ Abstract base class for defining geometry objects.
+
+    This class provides the following properties:
+
+    * :py:attr:`type`
+    * :py:attr:`id`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`evalpts`
+    * :py:attr:`opt`
+
+    **Keyword Arguments:**
+
+    * ``precision``: number of decimal places to round to. *Default: 18*
+    """
+
+    def __init__(self, **kwargs):
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
+        super(Geometry, self).__init__(**kwargs)
+        self._geometry_type = "default"  # geometry type
+        self._eval_points = self._init_array()  # evaluated points
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
+
+    def __getitem__(self, index):
+        return self
+
+    def _init_array(self):
+        """ Initializes the arrays. """
+        if callable(self._array_type):
+            return self._array_type()
+        return list()
+
+    @property
+    def evalpts(self):
+        """ Evaluated points.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the coordinates of the evaluated points
+        :type: list
+        """
+        if self._eval_points is None or len(self._eval_points) == 0:
+            self.evaluate()
+        return self._eval_points
+
     @abc.abstractmethod
     def evaluate(self, **kwargs):
         """ Abstract method for the implementation of evaluation algorithm.
@@ -277,10 +312,10 @@ class SplineGeometry(Geometry):
     """
 
     def __init__(self, **kwargs):
-        super(SplineGeometry, self).__init__(**kwargs)
-        self._geometry_type = "spline"  # geometry type
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        super(SplineGeometry, self).__init__(**kwargs)
+        self._geometry_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
