@@ -69,6 +69,11 @@ def fix_multi_trim_curves(obj, **kwargs):
                     # Reverse the second curve inplace
                     trim[idx2].reverse()
                     new_trim.append(trim[idx])
+                elif abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[0][0]) <= tol and \
+                        abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[0][1]) <= tol:
+                    # Reverse the first curve inplace
+                    trim[idx].reverse()
+                    new_trim.append(trim[idx])
                 # The trim curves are far away from each other
                 else:
                     # Find which end is closer to the current trim curve's end point
