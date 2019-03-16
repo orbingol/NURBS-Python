@@ -765,8 +765,7 @@ class VolumeContainer(SurfaceContainer):
             * ``animate``: activates animation (if supported). *Default: False*
             * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
-            * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
-            * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
+            * ``num_procs``: number of concurrent processes for voxelization. *Default: 1*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -782,13 +781,13 @@ class VolumeContainer(SurfaceContainer):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.get('cpcolor')
-        evalcolor = kwargs.get('evalcolor')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.pop('cpcolor', None)
+        evalcolor = kwargs.pop('evalcolor', None)
+        filename = kwargs.pop('filename', None)
+        plot_visible = kwargs.pop('plot', True)
+        animate_plot = kwargs.pop('animate', False)
         # Flag to control evaluation delta updates
-        update_delta = kwargs.get('delta', True)
+        update_delta = kwargs.pop('delta', True)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):

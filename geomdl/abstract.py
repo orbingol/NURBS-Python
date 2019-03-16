@@ -2784,8 +2784,7 @@ class Volume(SplineGeometry):
             * ``animate``: activates animation (if supported). *Default: False*
             * ``grid_size``: grid size for voxelization. *Default: (8, 8, 8)*
             * ``use_cubes``: use cube voxels instead of cuboid ones. *Default: False*
-            * ``use_mp``: flag to activate multi-threaded voxelization. *Default: False*
-            * ``num_procs``: number of concurrent processes for multi-threaded voxelization. *Default: 4*
+            * ``num_procs``: number of concurrent processes for voxelization. *Default: 1*
 
         The ``plot`` argument is useful when you would like to work on the command line without any window context.
         If ``plot`` flag is False, this method saves the plot as an image file (.png file where possible) and disables
