@@ -44,6 +44,7 @@ class AbstractContainer(abstract.GeomdlBase):
         self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
         self._elements = []  # list of elements contained
         self._vis_component = None  # visualization component
+        self._cache['evalpts'] = []
 
     def __iter__(self):
         self._iter_index = 0
@@ -113,12 +114,12 @@ class AbstractContainer(abstract.GeomdlBase):
 
         :getter: Gets the evaluated points of all contained shapes
         """
-        ret = []
-        for elem in self._elements:
-            elem.delta = self._delta[0] if self._pdim == 1 else self._delta
-            evalpts = elem.evalpts
-            ret += evalpts
-        return ret
+        if not self._cache['evalpts']:
+            for elem in self._elements:
+                elem.delta = self._delta[0] if self._pdim == 1 else self._delta
+                evalpts = elem.evalpts
+                self._cache['evalpts'] += evalpts
+        return self._cache['evalpts']
 
     @property
     def bbox(self):
@@ -192,6 +193,9 @@ class AbstractContainer(abstract.GeomdlBase):
         for idx, dval in enumerate(delta_vals):
             self._delta_setter_common(idx, dval)
 
+        # Reset the cache
+        self.reset()
+
     def _delta_setter_common(self, idx, value):
         # Check and set the delta value corresponding to the idx-th parametric dimension
         if float(value) <= 0 or float(value) >= 1:
@@ -238,6 +242,9 @@ class AbstractContainer(abstract.GeomdlBase):
         for idx, sval in enumerate(ssz):
             self._sample_size_setter_common(idx, sval)
 
+        # Reset the cache
+        self.reset()
+
     def _sample_size_getter_common(self, idx):
         return int(1 / self._delta[idx]) + 1
 
@@ -270,8 +277,15 @@ class AbstractContainer(abstract.GeomdlBase):
         else:
             raise GeomdlException("Cannot add the element to the container")
 
+        # Reset the cache
+        self.reset()
+
     # Make container look like a list
     append = add
+
+    def reset(self):
+        """ Resets the cache. """
+        self._cache['evalpts'][:] = []
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
