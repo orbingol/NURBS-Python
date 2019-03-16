@@ -610,6 +610,7 @@ class Surface(abstract.Surface):
     def transpose(self):
         """ Transposes the surface by swapping u and v parametric directions. """
         operations.transpose(self, inplace=True)
+        self.reset(evalpts=True)
 
     def evaluate(self, **kwargs):
         """ Evaluates the surface.
