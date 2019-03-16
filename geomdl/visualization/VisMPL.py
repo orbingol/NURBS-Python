@@ -38,6 +38,9 @@ class VisConfig(vis.VisConfigAbstract):
     * ``trim_size`` (int): Size of the trim curves. *Default: 20*
     * ``alpha`` (float): Opacity of the evaluated points. *Default: 1.0*
 
+    There is also a ``debug`` configuration variable which currently adds quiver plots to 2-dimensional curves to show
+    their directions.
+
     The following example illustrates the usage of the configuration class.
 
     .. code-block:: python
@@ -79,6 +82,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.trim_size = kwargs.get('trim_size', 20)
         self.alpha = kwargs.get('alpha', 1.0)
         self.figure_image_filename = "temp-figure.png"
+        self.debug_mode = kwargs.get('debug', False)  # debugging mode for determining the trim directions
 
     @staticmethod
     def set_axes_equal(ax):
@@ -141,6 +145,10 @@ class VisCurve2D(vis.VisAbstract):
                 curveplt, = plt.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-', alpha=self.vconf.alpha)
                 legend_proxy.append(curveplt)
                 legend_names.append(plot['name'])
+                # Debugging for curve directions
+                if self.vconf.debug_mode:
+                    plt.quiver(pts[0, 0], pts[0, 1], pts[-1, 0] - pts[0, 0], pts[-1, 1] - pts[0, 1],
+                               color='k', angles='xy', scale_units='xy', scale=1, width=0.003)
 
             # Plot bounding box
             if plot['type'] == 'bbox' and self.vconf.display_bbox:
