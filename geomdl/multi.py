@@ -352,7 +352,8 @@ class CurveContainer(AbstractContainer):
         * ``filename``: saves the plot with the input name
         * ``plot``: controls plot window visibility. *Default: True*
         * ``animate``: activates animation (if supported). *Default: False*
-        * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
+        * ``delta``: if True, the evaluation delta of the container object will be used. *Default: True*
+        * ``reset_names``: resets the name of the curves inside the container. *Default: False*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -376,6 +377,7 @@ class CurveContainer(AbstractContainer):
         animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
+        reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -396,6 +398,10 @@ class CurveContainer(AbstractContainer):
             if update_delta:
                 elem.delta = self.delta
             elem.evaluate()
+
+            # Reset element name
+            if reset_names:
+                elem.name = "curve"
 
             # Fix element name
             if elem.name == "curve":
@@ -583,7 +589,8 @@ class SurfaceContainer(AbstractContainer):
             * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
             * ``colormap``: sets the colormap of the surfaces
-            * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
+            * ``delta``: if True, the evaluation delta of the container object will be used. *Default: True*
+            * ``reset_names``: resets the name of the surfaces inside the container. *Default: False*
             * ``num_procs``: number of concurrent processes for rendering the surfaces. *Default: 1*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
@@ -616,6 +623,7 @@ class SurfaceContainer(AbstractContainer):
         animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
+        reset_names = kwargs.get('reset_names', False)
         # Number of parallel processes
         num_procs = kwargs.get('num_procs', 1)
 
@@ -645,11 +653,13 @@ class SurfaceContainer(AbstractContainer):
             with utl.pool_context(processes=num_procs) as pool:
                 tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
                                        colorval=(cpcolor, evalcolor, trimcolor), idx=-1,
-                                       update_delta=update_delta, delta=self.delta), self._elements)
+                                       update_delta=update_delta, delta=self.delta, reset_names=reset_names),
+                               self._elements)
                 vis_list += tmp
         else:
             for idx, elem in enumerate(self._elements):
-                tmp = process_elements_surface(elem, self._vis_component.mconf, (cpcolor, evalcolor, trimcolor), idx, update_delta, self.delta)
+                tmp = process_elements_surface(elem, self._vis_component.mconf, (cpcolor, evalcolor, trimcolor),
+                                               idx, update_delta, self.delta, reset_names)
                 vis_list += tmp
 
         for vl in vis_list:
@@ -766,7 +776,8 @@ class VolumeContainer(SurfaceContainer):
             * ``filename``: saves the plot with the input name
             * ``plot``: controls plot window visibility. *Default: True*
             * ``animate``: activates animation (if supported). *Default: False*
-            * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
+            * ``delta``: if True, the evaluation delta of the container object will be used. *Default: True*
+            * ``reset_names``: resets the name of the volumes inside the container. *Default: False*
             * ``grid_size``: grid size for voxelization. *Default: (16, 16, 16)*
             * ``num_procs``: number of concurrent processes for voxelization. *Default: 1*
 
@@ -791,6 +802,7 @@ class VolumeContainer(SurfaceContainer):
         animate_plot = kwargs.pop('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.pop('delta', True)
+        reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -811,6 +823,10 @@ class VolumeContainer(SurfaceContainer):
             if update_delta:
                 elem.delta = self.delta
             elem.evaluate()
+
+            # Reset element name
+            if reset_names:
+                elem.name = "volume"
 
             # Fix element name
             if elem.name == "volume":
@@ -877,7 +893,7 @@ def select_color(cpcolor, evalcolor, idx=0):
     return color
 
 
-def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta):
+def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, reset_names):
     """ Processes visualization elements for surfaces.
 
     :param elem: surface
@@ -892,12 +908,18 @@ def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta):
     :type update_delta: bool
     :param delta: new surface evaluation delta
     :type delta: list, tuple
+    :param reset_names: flag to reset names
+    :type reset_names: bool
     :return: visualization element (as a dict)
     :rtype: list
     """
     if update_delta:
         elem.delta = delta
     elem.evaluate()
+
+    # Reset element name
+    if reset_names:
+        elem.name = "surface"
 
     # Fix element name
     if elem.name == "surface" and idx >= 0:
