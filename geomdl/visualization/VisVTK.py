@@ -76,10 +76,10 @@ class VisConfig(vis.VisConfigAbstract):
         # Custom keypress events
         if key == 'Up':
             camera = renderer.GetActiveCamera()  # vtkCamera
-            camera.Pitch(-2.5)
+            camera.Pitch(2.5)
         if key == 'Down':
             camera = renderer.GetActiveCamera()  # vtkCamera
-            camera.Pitch(2.5)
+            camera.Pitch(-2.5)
         if key == 'Left':
             camera = renderer.GetActiveCamera()  # vtkCamera
             camera.Yaw(-2.5)
