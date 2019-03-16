@@ -300,6 +300,7 @@ class AbstractContainer(abstract.GeomdlBase):
         pass
 
 
+@utl.export
 class CurveContainer(AbstractContainer):
     """ Container class for storing multiple curves.
 
@@ -415,6 +416,7 @@ class CurveContainer(AbstractContainer):
             self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
+@utl.export
 class SurfaceContainer(AbstractContainer):
     """ Container class for storing multiple surfaces.
 
@@ -664,6 +666,7 @@ class SurfaceContainer(AbstractContainer):
             self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
+@utl.export
 class VolumeContainer(SurfaceContainer):
     """ Container class for storing multiple volumes.
 
