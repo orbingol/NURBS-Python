@@ -66,7 +66,8 @@ class VisAbstract(object):
         if ptsarr is None or len(ptsarr) == 0:
             return
         # Add points, size, plot color and name on the legend
-        elem = {'ptsarr': ptsarr, 'name': name, 'color': color, 'type': plot_type, 'idx': idx}
+        plt_name = " ".join([str(n) for n in name]) if isinstance(name, (list, tuple)) else name
+        elem = {'ptsarr': ptsarr, 'name': plt_name, 'color': color, 'type': plot_type, 'idx': idx}
         self._plots.append(elem)
 
     @property
