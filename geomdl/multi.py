@@ -10,6 +10,7 @@
 import abc
 import warnings
 from functools import partial
+from multiprocessing import Value, Lock
 from . import abstract
 from . import vis
 from . import voxelize
@@ -650,7 +651,9 @@ class SurfaceContainer(AbstractContainer):
         self._vis_component.clear()
         vis_list = []
         if num_procs > 1:
-            with utl.pool_context(processes=num_procs) as pool:
+            mp_lock = Lock()
+            mp_val = Value('i', 0)
+            with utl.pool_context(initializer=mp_init, initargs=(mp_lock, mp_val), processes=num_procs) as pool:
                 tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
                                        colorval=(cpcolor, evalcolor, trimcolor), idx=-1,
                                        update_delta=update_delta, delta=self.delta, reset_names=reset_names),
@@ -913,6 +916,12 @@ def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, re
     :return: visualization element (as a dict)
     :rtype: list
     """
+    if idx < 0:
+        lock.acquire()
+        idx = counter.value
+        counter.value += 1
+        lock.release()
+
     if update_delta:
         elem.delta = delta
     elem.evaluate()
@@ -973,3 +982,15 @@ def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, re
 
     # Return the list
     return rl
+
+
+def mp_init(l, c):
+    """ Initialization function for multi-threaded operations.
+
+    :param l: lock
+    :param c: value for common counter
+    """
+    global lock
+    global counter
+    lock = l
+    counter = c
