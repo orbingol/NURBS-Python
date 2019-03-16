@@ -15,8 +15,10 @@ from ._utilities import export
 
 
 @export
-def fix_multi_curve_trims(obj, **kwargs):
-    """ Fixes the direction and connectivity issues of the trim curves in trimmed surfaces.
+def fix_multi_trim_curves(obj, **kwargs):
+    """ Fixes direction, connectivity and similar issues of the trim curves in trimmed surfaces.
+
+    This function works for surface trims in curve containers, i.e. trims consisting of multiple curves.
 
     Keyword Arguments:
         * ``tol``: tolerance value for comparing floats. *Default: 10e-8*
@@ -107,11 +109,10 @@ def fix_multi_curve_trims(obj, **kwargs):
 
 
 @export
-def trim_surface(obj):
-    """ Updates the trim curves of a surface.
+def fix_trim_curves(obj):
+    """ Fixes direction, connectivity and similar issues of the trim curves in trimmed surfaces.
 
-    This is a helper function for trimming and it can fix the trimming issues, e.g. sense issues, open curves, etc.
-    If ``trims`` property of the Surface object returns an empty list, this function does nothing.
+    This function works for surface trim curves consisting of a single curve.
 
     :param obj: input surface
     :type obj: abstract.Surface
