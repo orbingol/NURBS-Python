@@ -9,6 +9,7 @@
 
 import abc
 import warnings
+from functools import partial
 from . import abstract
 from . import vis
 from . import voxelize
@@ -581,6 +582,7 @@ class SurfaceContainer(AbstractContainer):
             * ``animate``: activates animation (if supported). *Default: False*
             * ``colormap``: sets the colormap of the surfaces
             * ``delta``: if True, the evaluation delta of the Multi object will be used. *Default: True*
+            * ``num_procs``: number of concurrent processes for rendering the surfaces. *Default: 1*
 
         The ``cpcolor`` and ``evalcolor`` arguments can be a string or a list of strings corresponding to the color
         values. Both arguments are processed separately, e.g. ``cpcolor`` can be a string whereas ``evalcolor`` can be
@@ -598,64 +600,6 @@ class SurfaceContainer(AbstractContainer):
         contained in the class. In the case of number of surfaces is bigger than number of input colormaps, this method
         will automatically assign a random color for the remaining surfaces.
         """
-        def process_elements(elem, mconf, colorval, idx, update_delta):
-            if update_delta:
-                elem.delta = self.delta
-            elem.evaluate()
-
-            # Fix element name
-            if elem.name == "surface":
-                elem.name = elem.name + " " + str(idx)
-
-            # Color selection
-            color = select_color(colorval[0], colorval[1], idx=idx)
-
-            # Initialize the return list
-            rl = []
-
-            # Add control points
-            if mconf['ctrlpts'] == 'points':
-                ret = dict(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
-                           color=color[0], plot_type='ctrlpts', idx=idx)
-                rl.append(ret)
-
-            # Add control points as quads
-            if mconf['ctrlpts'] == 'quads':
-                qtsl = tessellate.QuadTessellate()
-                qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
-                ret = dict(ptsarr=[qtsl.vertices, qtsl.faces], name=(elem.name, "(CP)"),
-                           color=color[0], plot_type='ctrlpts', idx=idx)
-                rl.append(ret)
-
-            # Add surface points
-            if mconf['evalpts'] == 'points':
-                ret = dict(ptsarr=elem.evalpts, name=(elem.name, idx), color=color[1], plot_type='evalpts', idx=idx)
-                rl.append(ret)
-
-            # Add surface points as quads
-            if mconf['evalpts'] == 'quads':
-                qtsl = tessellate.QuadTessellate()
-                qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
-                ret = dict(ptsarr=[qtsl.vertices, qtsl.faces],
-                           name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
-                rl.append(ret)
-
-            # Add surface points as vertices and triangles
-            if mconf['evalpts'] == 'triangles':
-                elem.tessellate()
-                ret = dict(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
-                           name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
-                rl.append(ret)
-
-            # Add the trim curves
-            for itc, trim in enumerate(elem.trims):
-                ret = dict(ptsarr=elem.evaluate_list(trim.evalpts), name=("trim", itc),
-                           color=trimcolor, plot_type='trimcurve', idx=idx)
-                rl.append(ret)
-
-            # Return the list
-            return rl
-
         # Validation
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -670,6 +614,8 @@ class SurfaceContainer(AbstractContainer):
         animate_plot = kwargs.get('animate', False)
         # Flag to control evaluation delta updates
         update_delta = kwargs.get('delta', True)
+        # Number of parallel processes
+        num_procs = kwargs.get('num_procs', 1)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -693,12 +639,23 @@ class SurfaceContainer(AbstractContainer):
         # Run the visualization component
         self._vis_component.clear()
         vis_list = []
-        for idx, elem in enumerate(self._elements):
-            tmp = process_elements(elem, self._vis_component.mconf, (cpcolor, evalcolor), idx, update_delta)
-            vis_list += tmp
+        if num_procs > 1:
+            with utl.pool_context(processes=num_procs) as pool:
+                tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
+                                       colorval=(cpcolor, evalcolor, trimcolor), idx=-1,
+                                       update_delta=update_delta, delta=self.delta), self._elements)
+                vis_list += tmp
+        else:
+            for idx, elem in enumerate(self._elements):
+                tmp = process_elements_surface(elem, self._vis_component.mconf, (cpcolor, evalcolor, trimcolor), idx, update_delta, self.delta)
+                vis_list += tmp
 
-        for v in vis_list:
-            self._vis_component.add(**v)
+        for vl in vis_list:
+            if isinstance(vl, dict):
+                self._vis_component.add(**vl)
+            else:
+                for v in vl:
+                    self._vis_component.add(**v)
 
         # Display the figures
         if animate_plot:
@@ -916,3 +873,79 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[1] = evalcolor[idx]
 
     return color
+
+
+def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta):
+    """ Processes visualization elements for surfaces.
+
+    :param elem: surface
+    :type elem: abstract.Surface
+    :param mconf: visualization module configuration
+    :type mconf: dict
+    :param colorval: color values
+    :type colorval: tuple
+    :param idx: index of the surface
+    :type idx: int
+    :param update_delta: flag to update surface delta
+    :type update_delta: bool
+    :param delta: new surface evaluation delta
+    :type delta: list, tuple
+    :return: visualization element (as a dict)
+    :rtype: list
+    """
+    if update_delta:
+        elem.delta = delta
+    elem.evaluate()
+
+    # Fix element name
+    if elem.name == "surface" and idx >= 0:
+        elem.name = elem.name + " " + str(idx)
+
+    # Color selection
+    color = select_color(colorval[0], colorval[1], idx=idx)
+
+    # Initialize the return list
+    rl = []
+
+    # Add control points
+    if mconf['ctrlpts'] == 'points':
+        ret = dict(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
+                   color=color[0], plot_type='ctrlpts', idx=idx)
+        rl.append(ret)
+
+    # Add control points as quads
+    if mconf['ctrlpts'] == 'quads':
+        qtsl = tessellate.QuadTessellate()
+        qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
+        ret = dict(ptsarr=[qtsl.vertices, qtsl.faces], name=(elem.name, "(CP)"),
+                   color=color[0], plot_type='ctrlpts', idx=idx)
+        rl.append(ret)
+
+    # Add surface points
+    if mconf['evalpts'] == 'points':
+        ret = dict(ptsarr=elem.evalpts, name=(elem.name, idx), color=color[1], plot_type='evalpts', idx=idx)
+        rl.append(ret)
+
+    # Add surface points as quads
+    if mconf['evalpts'] == 'quads':
+        qtsl = tessellate.QuadTessellate()
+        qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
+        ret = dict(ptsarr=[qtsl.vertices, qtsl.faces],
+                   name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+        rl.append(ret)
+
+    # Add surface points as vertices and triangles
+    if mconf['evalpts'] == 'triangles':
+        elem.tessellate()
+        ret = dict(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
+                   name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+        rl.append(ret)
+
+    # Add the trim curves
+    for itc, trim in enumerate(elem.trims):
+        ret = dict(ptsarr=elem.evaluate_list(trim.evalpts), name=("trim", itc),
+                   color=colorval[2], plot_type='trimcurve', idx=idx)
+        rl.append(ret)
+
+    # Return the list
+    return rl
