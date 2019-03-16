@@ -16,11 +16,21 @@ from ._utilities import export
 
 @export
 def fix_multi_curve_trims(obj, **kwargs):
+    """ Fixes the direction and connectivity issues of the trim curves in trimmed surfaces.
+
+    Keyword Arguments:
+        * ``tol``: tolerance value for comparing floats. *Default: 10e-8*
+        * ``delta``: evaluation delta of the trim curves. *Default: 0.01*
+
+    :param obj: input surface
+    :type obj: abstract.BSplineGeometry, multi.AbstractContainer
+    :return: updated surface
+    """
     if obj.pdimension != 2:
         raise GeomdlException("Can only work with surfaces")
 
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-4)
+    tol = kwargs.get('tol', 10e-8)
     eval_delta = kwargs.get('delta', 0.01)
 
     # Loop through the surfaces
