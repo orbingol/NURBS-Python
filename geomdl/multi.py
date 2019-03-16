@@ -395,12 +395,16 @@ class CurveContainer(AbstractContainer):
                 elem.delta = self.delta
             elem.evaluate()
 
+            # Fix element name
+            if elem.name == "curve":
+                elem.name = elem.name + " " + str(idx)
+
             # Color selection
             color = select_color(cpcolor, evalcolor, idx=idx)
 
-            self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
+            self._vis_component.add(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
                                     color=color[0], plot_type='ctrlpts', idx=idx)
-            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name + str(idx),
+            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
                                     color=color[1], plot_type='evalpts', idx=idx)
 
         # Display the figures
@@ -594,6 +598,65 @@ class SurfaceContainer(AbstractContainer):
         contained in the class. In the case of number of surfaces is bigger than number of input colormaps, this method
         will automatically assign a random color for the remaining surfaces.
         """
+        def process_elements(elem, mconf, colorval, idx, update_delta):
+            if update_delta:
+                elem.delta = self.delta
+            elem.evaluate()
+
+            # Fix element name
+            if elem.name == "surface":
+                elem.name = elem.name + " " + str(idx)
+
+            # Color selection
+            color = select_color(colorval[0], colorval[1], idx=idx)
+
+            # Initialize the return list
+            rl = []
+
+            # Add control points
+            if mconf['ctrlpts'] == 'points':
+                ret = dict(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
+                           color=color[0], plot_type='ctrlpts', idx=idx)
+                rl.append(ret)
+
+            # Add control points as quads
+            if mconf['ctrlpts'] == 'quads':
+                qtsl = tessellate.QuadTessellate()
+                qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
+                ret = dict(ptsarr=[qtsl.vertices, qtsl.faces], name=(elem.name, "(CP)"),
+                           color=color[0], plot_type='ctrlpts', idx=idx)
+                rl.append(ret)
+
+            # Add surface points
+            if mconf['evalpts'] == 'points':
+                ret = dict(ptsarr=elem.evalpts, name=(elem.name, idx), color=color[1], plot_type='evalpts', idx=idx)
+                rl.append(ret)
+
+            # Add surface points as quads
+            if mconf['evalpts'] == 'quads':
+                qtsl = tessellate.QuadTessellate()
+                qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
+                ret = dict(ptsarr=[qtsl.vertices, qtsl.faces],
+                           name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+                rl.append(ret)
+
+            # Add surface points as vertices and triangles
+            if mconf['evalpts'] == 'triangles':
+                elem.tessellate()
+                ret = dict(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
+                           name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+                rl.append(ret)
+
+            # Add the trim curves
+            for itc, trim in enumerate(elem.trims):
+                ret = dict(ptsarr=elem.evaluate_list(trim.evalpts), name=("trim", itc),
+                           color=trimcolor, plot_type='trimcurve', idx=idx)
+                rl.append(ret)
+
+            # Return the list
+            return rl
+
+        # Validation
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
             return
@@ -629,48 +692,13 @@ class SurfaceContainer(AbstractContainer):
 
         # Run the visualization component
         self._vis_component.clear()
+        vis_list = []
         for idx, elem in enumerate(self._elements):
-            if update_delta:
-                elem.delta = self.delta
-            elem.evaluate()
+            tmp = process_elements(elem, self._vis_component.mconf, (cpcolor, evalcolor), idx, update_delta)
+            vis_list += tmp
 
-            # Color selection
-            color = select_color(cpcolor, evalcolor, idx=idx)
-
-            # Add control points
-            if self._vis_component.mconf['ctrlpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.ctrlpts, name=elem.name + " (CP)",
-                                        color=color[0], plot_type='ctrlpts', idx=idx)
-
-            # Add control points as quads
-            if self._vis_component.mconf['ctrlpts'] == 'quads':
-                qtsl = tessellate.QuadTessellate()
-                qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
-                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name + " (CP)",
-                                        color=color[0], plot_type='ctrlpts', idx=idx)
-
-            # Add surface points
-            if self._vis_component.mconf['evalpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
-                                        color=color[1], plot_type='evalpts', idx=idx)
-
-            # Add surface points as quads
-            if self._vis_component.mconf['evalpts'] == 'quads':
-                qtsl = tessellate.QuadTessellate()
-                qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
-                self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name,
-                                        color=color[1], plot_type='evalpts', idx=idx)
-
-            # Add surface points as vertices and triangles
-            if self._vis_component.mconf['evalpts'] == 'triangles':
-                elem.tessellate()
-                self._vis_component.add(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces], name=elem.name,
-                                        color=color[1], plot_type='evalpts', idx=idx)
-
-            # Visualize the trim curve
-            for itc, trim in enumerate(elem.trims):
-                self._vis_component.add(ptsarr=elem.evaluate_list(trim.evalpts), name="Trim Curve " + str(itc + 1),
-                                        color=trimcolor, plot_type='trimcurve', idx=idx)
+        for v in vis_list:
+            self._vis_component.add(**v)
 
         # Display the figures
         if animate_plot:
@@ -825,12 +853,16 @@ class VolumeContainer(SurfaceContainer):
                 elem.delta = self.delta
             elem.evaluate()
 
+            # Fix element name
+            if elem.name == "volume":
+                elem.name = elem.name + " " + str(idx)
+
             # Color selection
             color = select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
             if self._vis_component.mconf['ctrlpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.ctrlpts, name="Control Points for " + elem.name,
+                self._vis_component.add(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
                                         color=color[0], plot_type='ctrlpts', idx=idx)
 
             # Add evaluated points
