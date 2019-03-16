@@ -15,6 +15,88 @@ from ._utilities import export
 
 
 @export
+def fix_multi_curve_trims(obj, **kwargs):
+    if obj.pdimension != 2:
+        raise GeomdlException("Can only work with surfaces")
+
+    # Get keyword arguments
+    tol = kwargs.get('tol', 10e-4)
+    eval_delta = kwargs.get('delta', 0.01)
+
+    # Loop through the surfaces
+    for o in obj:
+        # Get the trims
+        trims = o.trims
+
+        # Initialize a list for the connected trims
+        new_trims = []
+
+        # Traverse through the trims
+        for trim in trims:
+            # Skip if it is not a curve container
+            trim_size = len(trim)
+            if trim_size == 1:
+                continue
+
+            new_trim = []
+            for idx in range(0, trim_size):
+                # Close the loop
+                if idx == trim_size - 1:
+                    idx2 = 0
+                else:
+                    idx2 = idx + 1
+
+                # Check if the curve end and start points are the same within the tolerance
+                if abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[0][0]) <= tol and \
+                        abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[0][1]) <= tol:
+                    # They are in the same direction
+                    new_trim.append(trim[idx])
+                # Check the other end
+                elif abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[-1][0]) <= tol and \
+                        abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[-1][1]) <= tol:
+                    # Reverse the second curve inplace
+                    trim[idx2].reverse()
+                    new_trim.append(trim[idx])
+                # The trim curves are far away from each other
+                else:
+                    # Find which end is closer to the current trim curve's end point
+                    dist1 = linalg.point_distance(trim[idx].evalpts[-1], trim[idx2].evalpts[0])
+                    dist2 = linalg.point_distance(trim[idx].evalpts[-1], trim[idx2].evalpts[-1])
+
+                    # Find start and end points of the connector curve
+                    start_pt = trim[idx].evalpts[-1]
+                    if dist1 < dist2:
+                        end_pt = trim[idx2].evalpts[0]
+                    else:
+                        end_pt = trim[idx2].evalpts[-1]
+
+                    # Generate the connector curve
+                    crv = shortcuts.generate_bspline_curve()
+                    crv.degree = 1
+                    crv.ctrlpts = [start_pt, end_pt]
+                    crv.knotvector = [0, 0, 1, 1]
+                    crv.opt = ['sense', trim[idx].opt_get('sense')]
+
+                    # Add trims
+                    new_trim.append(trim[idx])
+                    new_trim.append(crv)
+
+            # Create a curve container from the new trim list
+            cc = shortcuts.generate_container_curve()
+            cc.add(new_trim)
+            cc.opt = ['sense', trim.opt_get('sense')]
+            cc.delta = eval_delta
+
+            # Add curve container to the new trims list
+            new_trims.append(cc)
+
+        # Update input geometry
+        o.trims = new_trims
+
+    return obj
+
+
+@export
 def trim_surface(obj):
     """ Updates the trim curves of a surface.
 
