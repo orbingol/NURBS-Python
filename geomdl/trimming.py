@@ -16,7 +16,7 @@ from ._utilities import export
 
 @export
 def fix_multi_trim_curves(obj, **kwargs):
-    """ Fixes direction, connectivity and similar issues of the trim curves in trimmed surfaces.
+    """ Fixes direction, connectivity and similar issues of the trim curves.
 
     This function works for surface trims in curve containers, i.e. trims consisting of multiple curves.
 
@@ -115,7 +115,7 @@ def fix_multi_trim_curves(obj, **kwargs):
 
 @export
 def fix_trim_curves(obj):
-    """ Fixes direction, connectivity and similar issues of the trim curves in trimmed surfaces.
+    """ Fixes direction, connectivity and similar issues of the trim curves.
 
     This function works for surface trim curves consisting of a single curve.
 
@@ -277,7 +277,7 @@ def get_par_box(domain, last=False):
 
 
 def detect_sense(curve, tol):
-    """ Detects the sense, i.e. clockwise or counter-clockwise, of the curve
+    """ Detects the sense, i.e. clockwise or counter-clockwise, of the curve.
 
     :param curve: 2-dimensional trim curve
     :type curve: abstract.Curve
