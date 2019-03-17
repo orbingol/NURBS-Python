@@ -58,21 +58,39 @@ def fix_multi_trim_curves(obj, **kwargs):
                 else:
                     idx2 = idx + 1
 
-                # Check if the curve end and start points are the same within the tolerance
+                ###
+                # Assuming that we have two curves with starting and ending positions defined as P1-P2 and P3-P4,
+                # respectively. There are 5 possibilities:
+                # 1. P2 = P3 (end of 1st and start of 2nd)
+                # 2. P2 = P4 (end of 1st and end of 2nd)
+                # 3. P1 = P3 (start of 1st and start of 2nd)
+                # 4. P1 = P4 (start of 1st and end of 2nd)
+                # 5. the ends of the curves are far away from each other
+                ###
+
+                # End of 1st curve vs start of 2nd curve
                 if abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[0][0]) <= tol and \
                         abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[0][1]) <= tol:
                     # They are in the same direction
                     new_trim.append(trim[idx])
-                # Check the other end
+                # End of 1st curve vs end of 2nd curve
                 elif abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[-1][0]) <= tol and \
                         abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[-1][1]) <= tol:
                     # Reverse the second curve inplace
                     trim[idx2].reverse()
                     new_trim.append(trim[idx])
+                # Start of 1st curve and start of 2nd curve
                 elif abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[0][0]) <= tol and \
                         abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[0][1]) <= tol:
                     # Reverse the first curve inplace
                     trim[idx].reverse()
+                    new_trim.append(trim[idx])
+                # Start of 1st curve and end of 2nd curve
+                elif abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[-1][0]) <= tol and \
+                        abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[-1][1]) <= tol:
+                    # Reverse both curves inplace
+                    trim[idx].reverse()
+                    trim[idx2].reverse()
                     new_trim.append(trim[idx])
                 # The trim curves are far away from each other
                 else:
