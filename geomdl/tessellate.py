@@ -31,6 +31,12 @@ class AbstractTessellate(object):
         self._faces = []
         self._arguments = dict()
 
+    def __getstate__(self):
+        return self._vertices, self._faces
+
+    def __setstate__(self, state):
+        self._vertices, self._faces = state
+
     @property
     def vertices(self):
         """ Vertex objects generated after tessellation.
