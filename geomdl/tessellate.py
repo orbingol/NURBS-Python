@@ -32,10 +32,10 @@ class AbstractTessellate(object):
         self._arguments = dict()
 
     def __getstate__(self):
-        return self._vertices, self._faces
+        return self._vertices, self._faces, self._tsl_func, self._arguments
 
     def __setstate__(self, state):
-        self._vertices, self._faces = state
+        self._vertices, self._faces, self._tsl_func, self._arguments = state
 
     @property
     def vertices(self):
@@ -141,6 +141,16 @@ class TrimTessellate(AbstractTessellate):
         super(TrimTessellate, self).__init__(**kwargs)
         self._tsl_func = tsl.make_triangle_mesh
         self._tsl_trim_func = tsl.surface_trim_tessellate
+
+    def __getstate__(self):
+        ret_data = super(TrimTessellate, self).__getstate__()
+        ret_data = list(ret_data) + [self._tsl_trim_func]
+        return tuple(ret_data)
+
+    def __setstate__(self, state):
+        inp_data = list(state)
+        self._tsl_trim_func = inp_data.pop()
+        super(TrimTessellate, self).__setstate__(inp_data)
 
     def tessellate(self, points, **kwargs):
         """ Applies triangular tessellation w/ trimming curves.
