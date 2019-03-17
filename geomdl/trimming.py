@@ -22,7 +22,7 @@ def fix_multi_trim_curves(obj, **kwargs):
 
     Keyword Arguments:
         * ``tol``: tolerance value for comparing floats. *Default: 10e-8*
-        * ``delta``: evaluation delta of the trim curves. *Default: 0.01*
+        * ``delta``: evaluation delta of the trim curves. *Default: 0.05*
 
     :param obj: input surface
     :type obj: abstract.BSplineGeometry, multi.AbstractContainer
@@ -33,7 +33,7 @@ def fix_multi_trim_curves(obj, **kwargs):
 
     # Get keyword arguments
     tol = kwargs.get('tol', 10e-8)
-    eval_delta = kwargs.get('delta', 0.01)
+    eval_delta = kwargs.get('delta', 0.05)
 
     # Loop through the surfaces
     for o in obj:
