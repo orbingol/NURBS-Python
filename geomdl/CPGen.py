@@ -42,6 +42,12 @@ class Grid(object):
             return 0
         return len(self._grid_points) * len(self._grid_points[0])
 
+    def __getstate__(self):
+        return self._origin, self._size_x, self._size_y, self._size_u, self._size_v, self._z_value, self._grid_points
+
+    def __setstate__(self, state):
+        self._origin, self._size_x, self._size_y, self._size_u, self._size_v, self._z_value, self._grid_points = state
+
     @property
     def grid(self):
         """ Grid points.
@@ -263,6 +269,16 @@ class GridWeighted(Grid):
         self._weights = []
         # Variables for caching
         self._cache['gridptsw'] = []
+
+    def __getstate__(self):
+        ret_data = super(GridWeighted, self).__getstate__()
+        ret_data = list(ret_data) + [self._weights]
+        return tuple(ret_data)
+
+    def __setstate__(self, state):
+        inp_data = list(state)
+        self._weights = inp_data.pop()
+        super(GridWeighted, self).__setstate__(inp_data)
 
     @property
     def weight(self):
