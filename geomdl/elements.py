@@ -46,12 +46,6 @@ class AbstractEntity(object):
     def __reversed__(self):
         return reversed(self._data)
 
-    def __getstate__(self):
-        return self._name, self._id, self._opt_data, self._data
-
-    def __setstate__(self, state):
-        self._name, self._id, self._opt_data, self._data = state
-
     def __copy__(self):
         cls = self.__class__
         result = cls.__new__(cls)
@@ -187,17 +181,6 @@ class Vertex(AbstractEntity):
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._inside = False  # flag for trimming
-
-    def __getstate__(self):
-        ret_data = super(Vertex, self).__getstate__()
-        ret_data = list(ret_data) + [self._uv, self._inside]
-        return tuple(ret_data)
-
-    def __setstate__(self, state):
-        inp_data = list(state)
-        self._inside = inp_data.pop()
-        self._uv = inp_data.pop()
-        super(Vertex, self).__setstate__(inp_data)
 
     def __str__(self):
         return "Vertex " + str(self._id) + " " + str(self._data)
@@ -405,16 +388,6 @@ class Triangle(AbstractEntity):
         self._inside = False  # flag for trimming
         if args:
             self.add_vertex(*args)
-
-    def __getstate__(self):
-        ret_data = super(Triangle, self).__getstate__()
-        ret_data = list(ret_data) + [self._inside]
-        return tuple(ret_data)
-
-    def __setstate__(self, state):
-        inp_data = list(state)
-        self._inside = inp_data.pop()
-        super(Triangle, self).__setstate__(inp_data)
 
     def __str__(self):
         return "Triangle " + str(self._id)

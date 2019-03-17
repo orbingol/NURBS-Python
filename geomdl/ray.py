@@ -37,12 +37,6 @@ class Ray(object):
         self._pt1 = [float(c) for c in point1]
         self._pt2 = [float(c) for c in point2]
 
-    def __getstate__(self):
-        return self._pt1, self._pt2
-
-    def __setstate__(self, state):
-        self._pt1, self._pt2 = state
-
     @property
     def dimension(self):
         """ Spatial dimension of the ray
