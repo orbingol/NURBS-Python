@@ -94,8 +94,8 @@ class VisConfig(vis.VisConfigAbstract):
 
 class VisCurve2D(vis.VisAbstract):
     """ Plotly visualization module for 2D curves. """
-    def __init__(self, config=VisConfig()):
-        super(VisCurve2D, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisCurve2D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
@@ -215,8 +215,8 @@ class VisCurve2D(vis.VisAbstract):
 
 class VisCurve3D(vis.VisAbstract):
     """ Plotly visualization module for 3D curves. """
-    def __init__(self, config=VisConfig()):
-        super(VisCurve3D, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisCurve3D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
@@ -362,8 +362,8 @@ class VisSurface(vis.VisAbstract):
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
     """
-    def __init__(self, config=VisConfig()):
-        super(VisSurface, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisSurface, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "triangles"
 
@@ -528,8 +528,8 @@ class VisSurface(vis.VisAbstract):
 
 class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
-    def __init__(self, config=VisConfig()):
-        super(VisVolume, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisVolume, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "points"
 

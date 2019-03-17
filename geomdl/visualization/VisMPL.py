@@ -115,8 +115,8 @@ class VisConfig(vis.VisConfigAbstract):
 
 class VisCurve2D(vis.VisAbstract):
     """ Matplotlib visualization module for 2D curves """
-    def __init__(self, config=VisConfig()):
-        super(VisCurve2D, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisCurve2D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
         """ Plots the 2D curve and the control points polygon. """
@@ -196,8 +196,8 @@ class VisCurve2D(vis.VisAbstract):
 
 class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
-    def __init__(self, config=VisConfig()):
-        super(VisCurve3D, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisCurve3D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
         """ Plots the 3D curve and the control points polygon. """
@@ -287,8 +287,8 @@ class VisSurface(vis.VisAbstract):
     Wireframe plot for the control points and triangulated plot (using ``plot_trisurf``) for the surface points.
     The surface is triangulated externally using :py:func:`.utilities.make_triangle_mesh()` function.
     """
-    def __init__(self, config=VisConfig()):
-        super(VisSurface, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisSurface, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
 
@@ -541,8 +541,8 @@ class VisSurfWireframe(vis.VisAbstract):
 
     Scatter plot for the control points and wireframe plot for the surface points.
     """
-    def __init__(self, config=VisConfig()):
-        super(VisSurfWireframe, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisSurfWireframe, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "quads"
 
@@ -650,8 +650,8 @@ class VisSurfScatter(vis.VisAbstract):
 
     Wireframe plot for the control points and scatter plot for the surface points.
     """
-    def __init__(self, config=VisConfig()):
-        super(VisSurfScatter, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisSurfScatter, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "points"
 
@@ -757,8 +757,8 @@ class VisSurfScatter(vis.VisAbstract):
 
 class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
-    def __init__(self, config=VisConfig()):
-        super(VisVolume, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisVolume, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "points"
 
@@ -842,8 +842,8 @@ class VisVolume(vis.VisAbstract):
 
 class VisVoxel(vis.VisAbstract):
     """ Matplotlib visualization module for voxel representation of the volumes. """
-    def __init__(self, config=VisConfig()):
-        super(VisVoxel, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisVoxel, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "voxels"
 

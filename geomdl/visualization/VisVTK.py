@@ -114,8 +114,8 @@ class VisConfig(vis.VisConfigAbstract):
 
 class VisCurve3D(vis.VisAbstract):
     """ VTK visualization module for curves. """
-    def __init__(self, config=VisConfig()):
-        super(VisCurve3D, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisCurve3D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
         """ Plots the curve and the control points polygon. """
@@ -167,8 +167,8 @@ VisCurve2D = VisCurve3D
 
 class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
-    def __init__(self, config=VisConfig()):
-        super(VisSurface, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisSurface, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
 
@@ -227,8 +227,8 @@ class VisSurface(vis.VisAbstract):
 
 class VisVolume(vis.VisAbstract):
     """ VTK visualization module for volumes. """
-    def __init__(self, config=VisConfig()):
-        super(VisVolume, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisVolume, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "points"
 
@@ -268,8 +268,8 @@ class VisVolume(vis.VisAbstract):
 
 class VisVoxel(vis.VisAbstract):
     """ VTK visualization module for voxel representation of the volumes. """
-    def __init__(self, config=VisConfig()):
-        super(VisVoxel, self).__init__(config=config)
+    def __init__(self, config=VisConfig(), **kwargs):
+        super(VisVoxel, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "points"
         self._module_config['evalpts'] = "voxels"
 

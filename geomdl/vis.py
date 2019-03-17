@@ -36,10 +36,10 @@ class VisAbstract(object):
     :type config: VisConfigAbstract
     """
 
-    def __init__(self, config):
+    def __init__(self, config, **kwargs):
         if not isinstance(config, VisConfigAbstract):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
-        self._user_config = config
+        self._user_config = config.__class__(**kwargs) if kwargs else config
         self._module_config = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
         self._plots = []
         self._ctrlpts_offset = 0.0
