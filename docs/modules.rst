@@ -26,12 +26,18 @@ The following list contains the geometric operations included in the library:
     :maxdepth: 1
 
     module_operations
-    module_exchange
     module_compatibility
     module_convert
     module_construct
     module_fitting
     module_tessellate
+
+The following list contains the modules for data exchange:
+
+.. toctree::
+    :maxdepth: 1
+
+    module_exchange
 
 Geometry Generators
 ===================
@@ -48,7 +54,7 @@ The following list contains the geometry generators included in the library:
 Advanced API
 ============
 
-The following list contains the list of modules for advanced use:
+The following list contains the modules for advanced use:
 
 .. toctree::
     :maxdepth: 1
