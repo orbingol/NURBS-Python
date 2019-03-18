@@ -551,8 +551,9 @@ class SurfaceContainer(AbstractContainer):
     def sample_size_v(self, value):
         self._sample_size_setter_common(1, value)
 
-    def set_tessellator(self, tsl):
-        """ Sets the tessellation component of the surfaces inside the container.
+    @property
+    def tessellator(self):
+        """ Tessellation component of the surfaces inside the container.
 
         Please refer to :doc:`Tessellation <module_tessellate>` documentation for details.
 
@@ -565,18 +566,49 @@ class SurfaceContainer(AbstractContainer):
             # Create the surface container
             surf_container = multi.SurfaceContainer(surf_list)
 
-            # Set tessellator component (use a tessellator type object)
-            surf_container.set_tessellator(tessellate.TrimTessellate)
+            # Set tessellator component
+            surf_container.tessellator = tessellate.TrimTessellate()
 
-            # You can also use like the following
-            tsl = tessellator.TrimTessellate()
-            surf_container.set_tessellator(tsl.__class__)
-
-        :param tsl: tessellation component type
+        :getter: gets the tessellation component
+        :setter: sets the tessellation component
         """
+        tsl_comps = []
+        for idx in range(len(self._elements)):
+            tsl_comps.append(self._elements[idx].tessellator)
+        return tsl_comps
+
+    @tessellator.setter
+    def tessellator(self, value):
         # Set tessellation component
         for idx in range(len(self._elements)):
-            self._elements[idx].tessellator = tsl()
+            self._elements[idx].tessellator = value.__class__()
+
+    def tessellate(self, **kwargs):
+        """ Tessellates the surfaces inside the container.
+
+        Keyword arguments are directly passed to the tessellation component.
+
+        The following code snippet illustrates getting the vertices and faces of the surfaces inside the container:
+
+
+        .. code-block:: python
+            :linenos:
+
+            # Tessellate the surfaces inside the container
+            surf_container.tessellate()
+
+            # Vertices and faces are stored inside the tessellator component
+            tsl = surf_container.tessellator
+
+            # Loop through all tessellator components
+            for t in tsl:
+                # Get the vertices
+                vertices = t.tessellator.vertices
+                # Get the faces (triangles, quads, etc.)
+                faces = t.tessellator.faces
+        """
+        for idx in range(len(self._elements)):
+            self._elements[idx].tessellate(**kwargs)
 
     def render(self, **kwargs):
         """ Renders the surfaces.
