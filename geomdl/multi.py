@@ -590,7 +590,6 @@ class SurfaceContainer(AbstractContainer):
 
         The following code snippet illustrates getting the vertices and faces of the surfaces inside the container:
 
-
         .. code-block:: python
             :linenos:
 
@@ -606,9 +605,17 @@ class SurfaceContainer(AbstractContainer):
                 vertices = t.tessellator.vertices
                 # Get the faces (triangles, quads, etc.)
                 faces = t.tessellator.faces
+
+        Keyword Arguments:
+            * ``num_procs``: number of concurrent processes for tessellating the surfaces. *Default: 1*
         """
-        for idx in range(len(self._elements)):
-            self._elements[idx].tessellate(**kwargs)
+        num_procs = kwargs.pop('num_procs', 1)
+        if num_procs > 1:
+            with utl.pool_context(processes=num_procs) as pool:
+                pool.map(partial(process_tessellate, **kwargs), self._elements)
+        else:
+            for elem in self._elements:
+                process_tessellate(elem)
 
     def render(self, **kwargs):
         """ Renders the surfaces.
@@ -928,8 +935,21 @@ def select_color(cpcolor, evalcolor, idx=0):
     return color
 
 
+def process_tessellate(elem, **kwargs):
+    """ Tessellates surfaces.
+
+    .. note:: Helper function required for ``multiprocessing``
+
+    :param elem: surface
+    :type elem: abstract.Surface
+    """
+    elem.tessellate(**kwargs)
+
+
 def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, reset_names):
     """ Processes visualization elements for surfaces.
+
+    .. note:: Helper function required for ``multiprocessing``
 
     :param elem: surface
     :type elem: abstract.Surface
