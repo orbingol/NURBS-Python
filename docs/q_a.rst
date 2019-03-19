@@ -97,27 +97,6 @@ However, these changes will be kept minor and therefore, the users can update th
 much hassle. All of these changes, regardless of minor or major version upgrades, will be announced on the CHANGELOG
 file.
 
-Installation Issues on Mac OS
-=============================
-
-Installation of ``six`` package from PyPI might cause some issues on some Mac OS versions. Six is a Python 2 to 3
-compatibility library and allows NURBS-Python to run under both Python 2 and Python 3. If you are having issues regarding
-to installation of ``six`` package on Mac OS, please use the following command to install NURBS-Python (geomdl):
-
-.. code-block:: console
-
-    $ pip install geomdl --ignore-installed six
-
-and to upgrade NURBS-Python (geomdl):
-
-.. code-block:: console
-
-    $ pip install geomdl --upgrade --ignore-installed six
-
-or alternatively, you can use :doc:`conda <install>`.
-
-Please refer to the following issue on pip issue tracker for more details: https://github.com/pypa/pip/issues/3165
-
 Conda Package on Python 2.7
 ===========================
 
