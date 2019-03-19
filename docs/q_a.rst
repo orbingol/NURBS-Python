@@ -36,6 +36,7 @@ it comes with 40+ examples for various use cases. It also provides several exten
 * Using the library directly from the command-line (useful for non-Python and automated systems)
 * Generating common spline shapes
 * Rhino .3dm file import/export support
+* ACIS .sat file import support
 
 Moreover, NURBS-Python and its extensions are free and open-source projects distributed under the MIT license.
 
