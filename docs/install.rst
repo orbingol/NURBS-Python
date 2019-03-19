@@ -5,6 +5,13 @@ Installation and Testing
 Manual method is only recommended for advanced users. Please note that if you have used any of these methods to install
 NURBS-Python, please use the same method to upgrade to the latest version.
 
+.. note::
+
+    On some Linux and MacOS systems, you may encounter 2 different versions of Python installed. In that case Python 2.x
+    package would use ``python2`` and ``pip2``, whereas Python 3.x package would use ``python3`` and ``pip3``. The
+    default ``python`` and ``pip`` commands could be linked to one of those. Please check your installed Python version
+    via ``python -V`` to make sure that you are using the correct Python package.
+
 Install via Pip
 ===============
 
