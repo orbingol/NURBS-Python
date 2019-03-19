@@ -610,12 +610,16 @@ class SurfaceContainer(AbstractContainer):
             * ``num_procs``: number of concurrent processes for tessellating the surfaces. *Default: 1*
         """
         num_procs = kwargs.pop('num_procs', 1)
+        new_elems = []
         if num_procs > 1:
             with utl.pool_context(processes=num_procs) as pool:
-                pool.map(partial(process_tessellate, **kwargs), self._elements)
+                tmp_elem = pool.map(partial(process_tessellate, **kwargs), self._elements)
+                new_elems += tmp_elem
         else:
-            for elem in self._elements:
-                process_tessellate(elem)
+            for idx in range(len(self._elements)):
+                tmp_elem = process_tessellate(self._elements[idx])
+                new_elems.append(tmp_elem)
+        self._elements = new_elems
 
     def render(self, **kwargs):
         """ Renders the surfaces.
@@ -942,8 +946,11 @@ def process_tessellate(elem, **kwargs):
 
     :param elem: surface
     :type elem: abstract.Surface
+    :return: updated surface
+    :rtype: abstract.Surface
     """
     elem.tessellate(**kwargs)
+    return elem
 
 
 def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, reset_names):
