@@ -20,7 +20,7 @@ commands will download and install NURBS-Python from `Python Package Index <http
 
 .. code-block:: console
 
-    $ pip install geomdl
+    $ pip install --user geomdl
 
 Upgrading to the latest version:
 
@@ -32,7 +32,7 @@ Installing a specific version:
 
 .. code-block:: console
 
-    $ pip install geomdl==5.0.0
+    $ pip install --user geomdl==5.0.0
 
 Install via Conda
 =================
@@ -67,7 +67,7 @@ The most convenient method to install NURBS-Python manually is using ``pip``:
 
 .. code-block:: console
 
-    $ pip install .
+    $ pip install --user .
 
 To upgrade, please pull the latest commits from the repository via ``git pull --rebase`` and then execute the above
 command.
@@ -80,7 +80,7 @@ repository to your Python distribution's *site-packages* directory:
 
 .. code-block:: console
 
-    $ pip install -e .
+    $ pip install --user -e .
 
 Since this command only generates a link to the library directory, pulling the latest commits from the repository
 would be enough to update the library to the latest version.
@@ -123,7 +123,7 @@ following command along with the pure Python version.
 
 .. code-block:: console
 
-    $ pip install . --install-option="--use-cython"
+    $ pip install --user . --install-option="--use-cython"
 
 This command will generate .c files (i.e. cythonization) and compile the .c files into binary Python modules.
 
