@@ -951,7 +951,7 @@ def select_color(cpcolor, evalcolor, idx=0):
     return color
 
 
-def process_tessellate(elem, **kwargs):
+def process_tessellate(elem, update_delta, delta, **kwargs):
     """ Tessellates surfaces.
 
     .. note:: Helper function required for ``multiprocessing``
