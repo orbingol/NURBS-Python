@@ -398,7 +398,7 @@ class VisSurface(vis.VisAbstract):
                 vertices = plot['ptsarr'][0]
                 triangles = plot['ptsarr'][1]
                 pts = [v.data for v in vertices]
-                tri = [t.vertex_ids_zero for t in triangles]
+                tri = [t.vertex_ids for t in triangles]
                 pts = np.array(pts, dtype=self.vconf.dtype)
                 tri = np.array(tri, dtype=self.vconf.dtype)
                 figure = graph_objs.Mesh3d(

@@ -402,7 +402,7 @@ class Triangle(AbstractEntity):
         return tuple(self._data)
 
     @property
-    def vertices_raw(self):
+    def vertices_closed(self):
         """ Vertices which generates a closed triangle
 
         Adds the first vertex as a last element of the return value (good for plotting)
@@ -419,24 +419,13 @@ class Triangle(AbstractEntity):
         return v_raw
 
     @property
-    def vertices_uv(self):
-        """ Parametric coordinates of the triangle vertices
-
-        :getter: Gets the parametric coordinates of the vertices
-        :type: list
-        """
-        data = self.vertices
-        res = [data[idx].uv for idx in range(3)]
-        return res
-
-    @property
     def edges(self):
         """ Edges of the triangle
 
         :getter: Gets the list of vertices that generates the edges of the triangle
         :type: list
         """
-        data = self.vertices_raw
+        data = self.vertices_closed
         res = [[] for _ in range(3)]
         for idx in range(3):
             res[idx] = [data[idx], data[idx + 1]]
@@ -446,28 +435,12 @@ class Triangle(AbstractEntity):
     def vertex_ids(self):
         """ Vertex indices
 
-        Vertex numbering starts from 1.
-
         :getter: Gets the vertex indices
         :type: list
         """
         v_idx = []
         for v in self._data:
             v_idx.append(v.id)
-        return v_idx
-
-    @property
-    def vertex_ids_zero(self):
-        """ Zero-indexed vertex indices
-
-        Vertex numbering starts from 0.
-
-        :getter: Gets the vertex indices
-        :type: list
-        """
-        v_idx = []
-        for v in self._data:
-            v_idx.append(v.id - 1)
         return v_idx
 
     @property

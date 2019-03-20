@@ -204,7 +204,7 @@ class VisSurface(vis.VisAbstract):
                 vertices = [v.data for v in plot['ptsarr'][0]]
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
-                faces = [t.vertex_ids_zero for t in plot['ptsarr'][1]]
+                faces = [t.vertex_ids for t in plot['ptsarr'][1]]
                 tris = np.array(faces, dtype=np.int)
                 actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']),
                                                name=plot['name'], index=plot['idx'])

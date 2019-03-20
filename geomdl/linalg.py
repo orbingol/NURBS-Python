@@ -404,7 +404,7 @@ def triangle_center(tri, uv=False):
     :rtype: tuple
     """
     if uv:
-        data = tri.vertices_uv
+        data = [t.uv for t in tri]
         mid = [0.0, 0.0]
     else:
         data = tri.vertices

@@ -64,7 +64,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
                 final_vertices.append(vertex)
 
         # Fix vertex numbering (automatically fixes triangle vertex numbering)
-        vert_new_id = 1
+        vert_new_id = 0
         for vertex in final_vertices:
             vertex.id = vert_new_id
             vert_new_id += 1
@@ -81,9 +81,11 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         tsl_func = surface_tessellate
     tsl_args = kwargs.get('tessellate_args', dict())
 
+    # Numbering
+    vrt_idx = 0  # vertex index numbering start
+    tri_idx = 0  # triangle index numbering start
+
     # Variable initialization
-    vrt_idx = 1  # vertex index numbering start
-    tri_idx = 1  # triangle index numbering start
     u_jump = (1.0 / float(size_u - 1)) * vertex_spacing  # for computing vertex parametric u value
     v_jump = (1.0 / float(size_v - 1)) * vertex_spacing  # for computing vertex parametric v value
     varr_size_u = int(round((float(size_u) / float(vertex_spacing)) + 10e-8))  # vertex array size on the u-direction
@@ -96,9 +98,9 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         v = 0.0
         for j in range(0, size_v, vertex_spacing):
             idx = j + (i * size_v)
-            vertices[vrt_idx - 1].id = vrt_idx
-            vertices[vrt_idx - 1].data = points[idx]
-            vertices[vrt_idx - 1].uv = [u, v]
+            vertices[vrt_idx].id = vrt_idx
+            vertices[vrt_idx].data = points[idx]
+            vertices[vrt_idx].uv = [u, v]
             vrt_idx += 1
             v += v_jump
         u += u_jump
@@ -182,8 +184,11 @@ def make_quad_mesh(points, size_u, size_v):
     :return: a tuple containing lists of vertices and quads
     :rtype: tuple
     """
+    # Numbering
+    vertex_idx = 0
+    quad_idx = 0
+
     # Generate vertices
-    vertex_idx = 1
     vertices = []
     for pt in points:
         vrt = Vertex(*pt, id=vertex_idx)
@@ -191,7 +196,6 @@ def make_quad_mesh(points, size_u, size_v):
         vertex_idx += 1
 
     # Generate quads
-    quad_idx = 1
     quads = []
     for i in range(0, size_u - 1):
         for j in range(0, size_v - 1):

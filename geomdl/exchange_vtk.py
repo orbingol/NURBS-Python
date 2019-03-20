@@ -70,7 +70,7 @@ def export_polydata_str(obj, **kwargs):
         elif point_type == "evalpts":
             if tessellate and o.pdimension == 2:
                 o.tessellate()
-                data_array = ([v.data for v in o.tessellator.vertices], [t.vertex_ids_zero for t in o.tessellator.faces])
+                data_array = ([v.data for v in o.vertices], [t.vertex_ids for t in o.faces])
             else:
                 data_array = (o.evalpts, [])
         else:

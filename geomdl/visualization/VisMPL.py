@@ -334,7 +334,7 @@ class VisSurface(vis.VisAbstract):
                 verts = plot['ptsarr'][0]
                 tris = plot['ptsarr'][1]
                 # Extract zero-indexed vertex number list
-                tri_idxs += [[ti + num_vertices for ti in tri.vertex_ids_zero] for tri in tris]
+                tri_idxs += [[ti + num_vertices for ti in tri.vertex_ids] for tri in tris]
                 # Extract vertex coordinates
                 vert_coords += [vert.data for vert in verts]
                 # Update number of vertices
@@ -447,7 +447,7 @@ class VisSurface(vis.VisAbstract):
                 verts = plot['ptsarr'][0]
                 tris = plot['ptsarr'][1]
                 # Extract zero-indexed vertex number list
-                tri_idxs = [tri.vertex_ids_zero for tri in tris]
+                tri_idxs = [tri.vertex_ids for tri in tris]
                 # Extract vertex coordinates
                 vert_coords = [vert.data for vert in verts]
                 pts = np.array(vert_coords, dtype=self.vconf.dtype)

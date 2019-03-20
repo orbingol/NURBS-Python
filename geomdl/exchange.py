@@ -545,13 +545,13 @@ def export_obj_str(surface, **kwargs):
                 temp = "vn " + str(sn[1][0]) + " " + str(sn[1][1]) + " " + str(sn[1][2]) + "\n"
                 str_vn.append(temp)
 
-        # Collect faces
+        # Collect faces (1-indexed)
         for t in triangles:
             vl = t.vertex_ids
             temp = "f " + \
-                   str(vl[0] + vertex_offset) + " " + \
-                   str(vl[1] + vertex_offset) + " " + \
-                   str(vl[2] + vertex_offset) + "\n"
+                   str(vl[0] + 1 + vertex_offset) + " " + \
+                   str(vl[1] + 1 + vertex_offset) + " " + \
+                   str(vl[2] + 1 + vertex_offset) + "\n"
             str_f.append(temp)
 
         # Update vertex offset
@@ -719,9 +719,9 @@ def export_off_str(surface, **kwargs):
         for t in triangles:
             vl = t.vertex_ids
             line = "3 " + \
-                   str(vl[0] - 1 + vertex_offset) + " " + \
-                   str(vl[1] - 1 + vertex_offset) + " " + \
-                   str(vl[2] - 1 + vertex_offset) + "\n"
+                   str(vl[0] + vertex_offset) + " " + \
+                   str(vl[1] + vertex_offset) + " " + \
+                   str(vl[2] + vertex_offset) + "\n"
             str_f.append(line)
 
         # Update vertex offset
