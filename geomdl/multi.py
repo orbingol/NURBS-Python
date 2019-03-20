@@ -608,16 +608,28 @@ class SurfaceContainer(AbstractContainer):
 
         Keyword Arguments:
             * ``num_procs``: number of concurrent processes for tessellating the surfaces. *Default: 1*
+            * ``delta``: if True, the evaluation delta of the container object will be used. *Default: True*
+            * ``force``: flag to force tessellation. *Default: False*
         """
+        # Keyword arguments
+        force_tsl = bool(kwargs.pop('force', False))
+        update_delta = kwargs.pop('delta', True)
+
+        # Don't re-tessellate if everything is in place
+        if all((self._cache['vertices'], self._cache['faces'])) and not force_tsl:
+            return
+
+        # Tessellate the surfaces in the container
         num_procs = kwargs.pop('num_procs', 1)
         new_elems = []
         if num_procs > 1:
             with utl.pool_context(processes=num_procs) as pool:
-                tmp_elem = pool.map(partial(process_tessellate, **kwargs), self._elements)
+                tmp_elem = pool.map(partial(process_tessellate, delta=self.delta, update_delta=update_delta, **kwargs),
+                                    self._elements)
                 new_elems += tmp_elem
         else:
             for idx in range(len(self._elements)):
-                tmp_elem = process_tessellate(self._elements[idx])
+                tmp_elem = process_tessellate(self._elements[idx], delta=self.delta, update_delta=update_delta, **kwargs)
                 new_elems.append(tmp_elem)
         self._elements = new_elems
 
@@ -946,9 +958,16 @@ def process_tessellate(elem, **kwargs):
 
     :param elem: surface
     :type elem: abstract.Surface
+    :param update_delta: flag to control evaluation delta updates
+    :type update_delta: bool
+    :param delta: evaluation delta
+    :type delta: list, tuple
     :return: updated surface
     :rtype: abstract.Surface
     """
+    if update_delta:
+        elem.delta = delta
+        elem.evaluate()
     elem.tessellate(**kwargs)
     return elem
 
