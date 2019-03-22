@@ -71,9 +71,10 @@ Examples and Documentation
 Extra Modules
 =============
 
-* **Command line application**: https://github.com/orbingol/geomdl-cli
-* **Rhino importer/exporter**: https://github.com/orbingol/rw3dm
+* **Command-line application**: https://github.com/orbingol/geomdl-cli
 * **Shapes module**: https://github.com/orbingol/geomdl-shapes
+* **Rhino importer/exporter**: https://github.com/orbingol/rw3dm
+* **ACIS exporter**: https://github.com/orbingol/rwsat
 
 Author
 ======
