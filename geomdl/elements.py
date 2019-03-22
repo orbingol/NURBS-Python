@@ -10,10 +10,10 @@
 import copy
 import abc
 from .exceptions import GeomdlException
-from ._utilities import add_metaclass, export
+from . import _utilities as utl
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self, *args, **kwargs):
@@ -173,7 +173,7 @@ class AbstractEntity(object):
             return None
 
 
-@export
+@utl.export
 class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self, *args, **kwargs):
@@ -378,7 +378,7 @@ class Vertex(AbstractEntity):
         self._data = [float(val) for val in value]
 
 
-@export
+@utl.export
 class Triangle(AbstractEntity):
     """ Triangle entity which represents a triangle composed of vertices.
 
@@ -489,7 +489,7 @@ class Triangle(AbstractEntity):
         self._data = res
 
 
-@export
+@utl.export
 class Quad(AbstractEntity):
     """ Quad entity which represents a quadrilateral structure composed of vertices.
 
@@ -544,7 +544,7 @@ class Quad(AbstractEntity):
         self._data = res
 
 
-@export
+@utl.export
 class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
@@ -579,7 +579,7 @@ class Face(AbstractEntity):
         self._data = res
 
 
-@export
+@utl.export
 class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
