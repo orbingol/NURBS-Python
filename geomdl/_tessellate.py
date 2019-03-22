@@ -29,7 +29,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
     * ``vertex_spacing``: Defines the size of the triangles via setting the jump value between points
     * ``trims``: List of trim curves passed to the tessellation function
-    * ``tessellate_func``: Function called for tessellation. *Default:* ``tessellate.surface_tessellate``
+    * ``tessellate_func``: Function called for tessellation. *Default:* :func:`.tessellate.surface_tessellate`
     * ``tessellate_args``: Arguments passed to the tessellation function (as a dict)
 
     The tessellation function is designed to generate triangles from 4 vertices. It takes 4 :py:class:`.Vertex` objects,
@@ -152,7 +152,7 @@ def polygon_triangulate(tri_idx, *args):
     :param tri_idx: triangle numbering start value
     :type tri_idx: int
     :param args: list of Vertex objects
-    :type args: elements.Vertex
+    :type args: Vertex
     :return: list of Triangle objects
     :rtype: list
     """

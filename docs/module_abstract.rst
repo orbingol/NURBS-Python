@@ -1,5 +1,5 @@
-Geometry Abstract Base
-^^^^^^^^^^^^^^^^^^^^^^
+Geometry Base
+^^^^^^^^^^^^^
 
 ``abstract`` module provides base classes for parametric curves, surfaces and volumes contained in this library and
 therefore, it provides an easy way to extend the library in the most proper way.
@@ -8,6 +8,7 @@ Inheritance Diagram
 ===================
 
 .. inheritance-diagram:: geomdl.abstract
+    :top-classes: geomdl.abstract.Geometry
 
 Abstract Curve
 ==============
@@ -41,6 +42,7 @@ Low Level API
 
 The following classes provide the low level API for the geometry abstract base.
 
+* :py:class:`.GeomdlBase`
 * :py:class:`.Geometry`
 * :py:class:`.SplineGeometry`
 
