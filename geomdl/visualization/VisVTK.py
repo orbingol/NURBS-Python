@@ -49,12 +49,12 @@ class VisConfig(vis.VisConfigAbstract):
         Keypress events:
             * ``e``: exit the application
             * ``p``: pick object (hover the mouse and then press to pick)
-            * ``l``: change color of the picked object
             * ``f``: fly to point (click somewhere in the window and press to fly)
             * ``r``: reset the camera
             * ``s`` and ``w``: switch between solid and wireframe modes
-            * ``d``: print debug information (of picked object, point, etc.)
             * ``b``: change background color
+            * ``m``: change color of the picked object
+            * ``d``: print debug information (of picked object, point, etc.)
             * ``h``: change object visibility
             * ``n``: reset object visibility
             * ``arrow keys``: pan the model
@@ -91,7 +91,7 @@ class VisConfig(vis.VisConfigAbstract):
                 self._bg_id = 0
             renderer.SetBackground(*self._bg[self._bg_id])
             self._bg_id += 1
-        if key == 'l':
+        if key == 'm':
             if actor is not None:
                 actor.GetProperty().SetColor(random(), random(), random())
         if key == 'd':
