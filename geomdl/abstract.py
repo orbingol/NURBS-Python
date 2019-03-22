@@ -1689,8 +1689,10 @@ class Surface(SplineGeometry):
     def trims(self):
         """ Trim curves.
 
-        Trim curves are introduced to the surfaces on the parametric space. It should be an array (or list, tuple, etc.)
-        and they are integrated to the existing visualization system.
+        Trim curves are introduced to the surfaces on the parametric space. They should be contained as a list or tuple.
+        Using :class:`.tessellate.TrimTessellate` tessellator class, trimmed regions of the surfaces can be visualized.
+        In addition, using `trims` initialization argument of the visualization classes, trim curves can be visualized
+        directly.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1702,7 +1704,7 @@ class Surface(SplineGeometry):
 
     @trims.setter
     def trims(self, value):
-        self._trims = value
+        self._trims = tuple(value)
 
     @property
     def data(self):
