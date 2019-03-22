@@ -181,7 +181,7 @@ class Vertex(AbstractEntity):
         self._name = "vertex"
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
-        self._inside = False  # flag for trimming
+        self._opt_data['inside'] = False  # flag for trimming
 
     def __cmp__(self, other):
         return (self.id > other.id) - (self.id < other.id)
@@ -353,11 +353,11 @@ class Vertex(AbstractEntity):
         :setter: Sets the flag
         :type: bool
         """
-        return self._inside
+        return self.opt_get("inside")
 
     @inside.setter
     def inside(self, value):
-        self._inside = bool(value)
+        self.opt = ["inside", bool(value)]
 
     @property
     def data(self):
@@ -388,7 +388,7 @@ class Triangle(AbstractEntity):
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
         self._name = "triangle"
-        self._inside = False  # flag for trimming
+        self._opt_data['inside'] = False  # flag for trimming
         if args:
             self.add_vertex(*args)
 
@@ -450,11 +450,11 @@ class Triangle(AbstractEntity):
         :setter: Sets the flag
         :type: bool
         """
-        return self._inside
+        return self.opt_get("inside")
 
     @inside.setter
     def inside(self, value):
-        self._inside = bool(value)
+        self.opt = ["inside", bool(value)]
 
     @property
     def data(self):
