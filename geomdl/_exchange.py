@@ -119,7 +119,7 @@ def import_surf_mesh(file_name):
         raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
 
     # Create a NURBS surface instance and fill with the data read from mesh file
-    surf = shortcuts.generate_nurbs_surface()
+    surf = shortcuts.generate_surface(rational=True)
 
     # 2nd line is the degrees
     surf.degree_u = int(content[1][0])
@@ -170,7 +170,7 @@ def import_vol_mesh(file_name):
         raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
 
     # Create a NURBS surface instance and fill with the data read from mesh file
-    vol = shortcuts.generate_nurbs_volume()
+    vol = shortcuts.generate_volume(rational=True)
 
     # 2nd line is the degrees
     vol.degree_u = int(content[1][0])
@@ -208,7 +208,7 @@ def import_vol_mesh(file_name):
 
 
 def import_dict_crv(data):
-    shape = shortcuts.generate_nurbs_curve()
+    shape = shortcuts.generate_curve(rational=True)
 
     # Mandatory keys
     try:
@@ -295,7 +295,7 @@ def import_dict_multi_crv(data):
 
 
 def import_dict_surf(data):
-    shape = shortcuts.generate_nurbs_surface()
+    shape = shortcuts.generate_surface(rational=True)
 
     # Mandatory keys
     try:
@@ -369,7 +369,7 @@ def export_dict_surf(obj):
 
 
 def import_dict_vol(data):
-    shape = shortcuts.generate_nurbs_volume()
+    shape = shortcuts.generate_volume(rational=True)
 
     # Mandatory keys
     try:

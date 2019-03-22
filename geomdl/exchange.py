@@ -917,7 +917,7 @@ def import_3dm(file_name, **kwargs):
     res = []
     for r in res3dm:
         if r['shape_type'] == "curve":
-            tmp = exch.shortcuts.generate_nurbs_curve()
+            tmp = exch.shortcuts.generate_curve(rational=True)
             tmp.degree = r['degree']
             tmp.ctrlpts = r['control_points']['points']
             if 'weights' in r:
@@ -925,7 +925,7 @@ def import_3dm(file_name, **kwargs):
             tmp.knotvector = [r['knotvector'][0]] + r['knotvector'] + [r['knotvector'][-1]]
             res.append(tmp)
         if r['shape_type'] == "surface":
-            tmp = exch.shortcuts.generate_nurbs_surface()
+            tmp = exch.shortcuts.generate_surface(rational=True)
             tmp.degree_u = r['degree_u']
             tmp.degree_v = r['degree_v']
             tmp.ctrlpts_size_u = r['size_u']

@@ -106,7 +106,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                         end_pt = trim[idx2].evalpts[-1]
 
                     # Generate the connector curve
-                    crv = shortcuts.generate_bspline_curve()
+                    crv = shortcuts.generate_curve()
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
@@ -261,7 +261,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                     counter += 1
 
                 # Generate the curve segment
-                crv = shortcuts.generate_bspline_curve()
+                crv = shortcuts.generate_curve()
                 crv.degree = 1
                 crv.ctrlpts = [pt_end, pt_start]
                 crv.knotvector = [0, 0, 1, 1]
