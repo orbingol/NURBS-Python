@@ -50,13 +50,6 @@ The easiest way to install NURBS-Python (geomdl) is using ``pip``:
 
 .. code-block:: console
 
-    $ pip install geomdl
-
-If you are getting permission errors on Linux, you can use ``--user`` switch to install to current user's package
-directory.
-
-.. code-block:: console
-
     $ pip install --user geomdl
 
 It is also possible to install NURBS-Python (geomdl) using ``conda``:
