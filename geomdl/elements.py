@@ -65,7 +65,7 @@ class AbstractEntity(object):
         return result
 
     def __str__(self):
-        return self.name
+        return self.name + " " + str(self.id) + " " + str(self.data)
 
     __repr__ = __str__
 
@@ -178,12 +178,10 @@ class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
+        self._name = "vertex"
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._inside = False  # flag for trimming
-
-    def __str__(self):
-        return "Vertex " + str(self._id) + " " + str(self._data)
 
     def __cmp__(self, other):
         return (self.id > other.id) - (self.id < other.id)
@@ -382,15 +380,17 @@ class Vertex(AbstractEntity):
 
 @export
 class Triangle(AbstractEntity):
-    """ Triangle entity which represents a triangle composed of vertices. """
+    """ Triangle entity which represents a triangle composed of vertices.
+
+    A Triangle entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
+    return the :class:`Vertex: instances that compose the quadrilateral structure.
+    """
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
+        self._name = "triangle"
         self._inside = False  # flag for trimming
         if args:
             self.add_vertex(*args)
-
-    def __str__(self):
-        return "Triangle " + str(self._id)
 
     @property
     def vertices(self):
@@ -435,13 +435,12 @@ class Triangle(AbstractEntity):
     def vertex_ids(self):
         """ Vertex indices
 
+        .. note:: Please use :attr:`data` instead of this property.
+
         :getter: Gets the vertex indices
         :type: list
         """
-        v_idx = []
-        for v in self._data:
-            v_idx.append(v.id)
-        return v_idx
+        return self.data
 
     @property
     def inside(self):
@@ -456,6 +455,23 @@ class Triangle(AbstractEntity):
     @inside.setter
     def inside(self, value):
         self._inside = bool(value)
+
+    @property
+    def data(self):
+        """ Vertices composing the triangular structure.
+
+        :getter: Gets the vertex indices (as int values)
+        :setter: Sets the vertices (as Vertex objects)
+        """
+        return [v.id for v in self._data]
+
+    @data.setter
+    def data(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise GeomdlException("Input must be a list or tuple")
+        if len(value) != 3:
+            raise GeomdlException("Triangle can only have 3 vertices")
+        self.add_vertex(*value)
 
     def add_vertex(self, *args):
         """ Adds vertices to the Triangle object.
@@ -475,33 +491,42 @@ class Triangle(AbstractEntity):
 
 @export
 class Quad(AbstractEntity):
-    """ Quad entity which represents a quadrilateral structure composed of vertices. """
+    """ Quad entity which represents a quadrilateral structure composed of vertices.
+
+    A Quad entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
+    return the :class:`Vertex: instances that compose the quadrilateral structure.
+    """
 
     def __init__(self, *args, **kwargs):
         super(Quad, self).__init__(*args, **kwargs)
+        self._name = "quad"
         if args:
             self.data = args
 
-    def __str__(self):
-        return "Quad " + str(self._id) + " V: " + str(self._data)
+    @property
+    def vertices(self):
+        """ Vertices composing the quadrilateral structure.
+
+        :getter: Gets the vertices
+        """
+        return tuple(self._data)
 
     @property
     def data(self):
-        """ Vertex indices.
+        """ Vertices composing the quadrilateral structure.
 
-        :getter: Gets the vertex indices
-        :setter: Sets the vertex indices
+        :getter: Gets the vertex indices (as int values)
+        :setter: Sets the vertices (as Vertex objects)
         """
-        return tuple(self._data)
+        return [v.id for v in self._data]
 
     @data.setter
     def data(self, value):
         if not isinstance(value, (list, tuple)):
-            raise GeomdlException("Input data must be a list or tuple")
+            raise GeomdlException("Input must be a list or tuple")
         if len(value) != 4:
             raise GeomdlException("Quad can only have 4 vertices")
-        # Convert to int
-        self._data = [int(val) for val in value]
+        self.add_vertex(*value)
 
     def add_vertex(self, *args):
         """ Adds vertices to the Quad object.
@@ -513,7 +538,7 @@ class Quad(AbstractEntity):
         res = []
         for arg in args:
             if isinstance(arg, Vertex):
-                res.append(arg.id)
+                res.append(arg)
             else:
                 raise GeomdlException("Input must be a Vertex object")
         self._data = res
@@ -524,11 +549,12 @@ class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
+        self._name = "face"
         if args:
             self.add_triangle(*args)
 
     def __str__(self):
-        return "Face " + str(self._id)
+        return self.name + " " + str(self.id)
 
     @property
     def triangles(self):
@@ -558,11 +584,12 @@ class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
+        self._name = "body"
         if args:
             self.add_face(*args)
 
     def __str__(self):
-        return "Body " + str(self._id)
+        return self.name + " " + str(self.id)
 
     @property
     def faces(self):

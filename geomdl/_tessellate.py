@@ -56,7 +56,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Get all vertices inside the triangle list
         tri_vertex_ids = []
         for tri in triangle_list:
-            tri_vertex_ids += tri.vertex_ids
+            tri_vertex_ids += tri.data
 
         # Find vertices used in triangles
         for vertex in vertex_list:
@@ -199,11 +199,11 @@ def make_quad_mesh(points, size_u, size_v):
     quads = []
     for i in range(0, size_u - 1):
         for j in range(0, size_v - 1):
-            idx1 = j + (size_v * i)
-            idx2 = j + (size_v * (i + 1))
-            idx3 = j + 1 + (size_v * (i + 1))
-            idx4 = j + 1 + (size_v * i)
-            qd = Quad(idx1, idx2, idx3, idx4, id=quad_idx)
+            v1 = vertices[j + (size_v * i)]
+            v2 = vertices[j + (size_v * (i + 1))]
+            v3 = vertices[j + 1 + (size_v * (i + 1))]
+            v4 = vertices[j + 1 + (size_v * i)]
+            qd = Quad(v1, v2, v3, v4, id=quad_idx)
             quads.append(qd)
             quad_idx += 1
 
