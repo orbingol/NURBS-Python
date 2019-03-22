@@ -223,7 +223,7 @@ def extract_curves(psurf, **kwargs):
     :return: extracted curves
     :rtype: dict
     """
-    if psurf.pdimension != 3:
+    if psurf.pdimension != 2:
         raise GeomdlException("The input should be a spline surface")
     if len(psurf) != 1:
         raise GeomdlException("Can only operate on single spline surfaces")
