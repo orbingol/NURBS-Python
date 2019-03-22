@@ -7,7 +7,9 @@
 
 """
 
-from . import BSpline, NURBS, knotvector, compatibility
+from . import shortcuts
+from . import knotvector
+from . import compatibility
 from .exceptions import GeomdlException
 
 
@@ -34,7 +36,7 @@ def construct_surface(direction, *args, **kwargs):
 
     size_other = len(args)
     if size_other < 2:
-        raise ValueError("You need to input at least 2 curves")
+        raise GeomdlException("You need to input at least 2 curves")
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 2)
@@ -83,7 +85,7 @@ def construct_surface(direction, *args, **kwargs):
             new_ctrlpts = compatibility.flip_ctrlpts_u(new_ctrlpts, size_u, size_v)
 
     # Generate the surface
-    ns = NURBS.Surface() if rational else BSpline.Surface()
+    ns = shortcuts.generate_surface(rational)
     ns.degree_u = degree_u
     ns.degree_v = degree_v
     ns.ctrlpts_size_u = size_u
@@ -121,7 +123,7 @@ def construct_volume(direction, *args, **kwargs):
 
     size_other = len(args)
     if size_other < 2:
-        raise ValueError("You need to input at least 2 surfaces")
+        raise GeomdlException("You need to input at least 2 surfaces")
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 1)
@@ -186,7 +188,7 @@ def construct_volume(direction, *args, **kwargs):
             updated_weights = new_weights
 
     # Generate the volume
-    nv = NURBS.Volume() if rational else BSpline.Volume()
+    nv = shortcuts.generate_volume(rational)
     nv.degree_u = degree_u
     nv.degree_v = degree_v
     nv.degree_w = degree_w
@@ -221,8 +223,10 @@ def extract_curves(psurf, **kwargs):
     :return: extracted curves
     :rtype: dict
     """
-    if not isinstance(psurf, BSpline.abstract.Surface):
-        raise TypeError("The input should be an instance of abstract.Surface")
+    if psurf.pdimension != 3:
+        raise GeomdlException("The input should be a spline surface")
+    if len(psurf) != 1:
+        raise GeomdlException("Can only operate on single spline surfaces")
 
     # Get keyword arguments
     extract_u = kwargs.get('extract_u', True)
@@ -240,13 +244,13 @@ def extract_curves(psurf, **kwargs):
     cpts = surf_data['control_points']
 
     # Determine object type
-    obj = NURBS.Curve if rational else BSpline.Curve
+    obj = shortcuts.generate_curve(rational)
 
     # v-direction
     crvlist_v = []
     if extract_v:
         for u in range(size_u):
-            curve = obj()
+            curve = obj.__class__()
             curve.degree = degree_v
             curve.set_ctrlpts([cpts[v + (size_v * u)] for v in range(size_v)])
             curve.knotvector = kv_v
@@ -256,7 +260,7 @@ def extract_curves(psurf, **kwargs):
     crvlist_u = []
     if extract_u:
         for v in range(size_v):
-            curve = obj()
+            curve = obj.__class__()
             curve.degree = degree_u
             curve.set_ctrlpts([cpts[v + (size_v * u)] for u in range(size_u)])
             curve.knotvector = kv_u
@@ -274,8 +278,10 @@ def extract_surfaces(pvol):
     :return: extracted surface
     :rtype: dict
     """
-    if not isinstance(pvol, BSpline.abstract.Volume):
-        raise TypeError("The input should be an instance of abstract.Volume")
+    if pvol.pdimension != 3:
+        raise GeomdlException("The input should be a spline volume")
+    if len(pvol) != 1:
+        raise GeomdlException("Can only operate on single spline volumes")
 
     # Get data from the volume object
     vol_data = pvol.data
@@ -292,12 +298,12 @@ def extract_surfaces(pvol):
     cpts = vol_data['control_points']
 
     # Determine object type
-    obj = NURBS.Surface if rational else BSpline.Surface
+    obj = shortcuts.generate_surface(rational)
 
     # u-v plane
     surflist_uv = []
     for w in range(size_w):
-        surf = obj()
+        surf = obj.__class__()
         surf.degree_u = degree_u
         surf.degree_v = degree_v
         surf.ctrlpts_size_u = size_u
@@ -310,7 +316,7 @@ def extract_surfaces(pvol):
     # u-w plane
     surflist_uw = []
     for v in range(size_v):
-        surf = obj()
+        surf = obj.__class__()
         surf.degree_u = degree_u
         surf.degree_v = degree_w
         surf.ctrlpts_size_u = size_u
@@ -365,8 +371,10 @@ def extract_isosurface(pvol):
     :return: isosurface (as a tuple of surfaces)
     :rtype: tuple
     """
-    if not isinstance(pvol, BSpline.abstract.Volume):
-        raise TypeError("The input should be an instance of abstract.Volume")
+    if pvol.pdimension != 3:
+        raise GeomdlException("The input should be a spline volume")
+    if len(pvol) != 1:
+        raise GeomdlException("Can only operate on single spline volumes")
 
     # Extract surfaces from the parametric volume
     isosrf = extract_surfaces(pvol)

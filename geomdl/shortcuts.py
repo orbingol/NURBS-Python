@@ -17,6 +17,24 @@ from . import freeform
 __all__ = []
 
 
+def generate_curve(rational=False):
+    if rational:
+        return NURBS.Curve()
+    return BSpline.Curve()
+
+
+def generate_surface(rational=False):
+    if rational:
+        return NURBS.Surface()
+    return BSpline.Surface()
+
+
+def generate_volume(rational=False):
+    if rational:
+        return NURBS.Volume()
+    return BSpline.Volume()
+
+
 def generate_bspline_curve():
     return BSpline.Curve()
 
