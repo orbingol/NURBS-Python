@@ -1,5 +1,31 @@
 # geomdl Changelog
 
+## v5.2.0 released on 2019-03-22
+
+* Moved some `six` module functions and `backports_functools_lru_cache` module under *geomdl* directory
+* Removed `typing` dependency (no time to add all typing hints, see docs for input and output types)
+* Refactored imports, minimized internal dependencies
+* Code rearrangement for some internal functions
+* Refactored `operations` module (no API change)
+* Updated `multi` module
+* Updated `elements` module to make it consistent between its classes (minor API change)
+* Improved dict-type file formats (JSON, YAML, CFG) to support trim curves and more (backwards compatible)
+* Updated `exchange_vtk.export_polydata` to support tessellated surfaces and geometry containers
+* Refactored `tessellation` module (internal API change, user API is the same and comes with improvements)
+* Added `tessellate.QuadTessellate` class
+* Added `==` and `!=`operators to `SplineGeometry` classes
+* Added `freeform` module
+* Improved the surface trimming algorithm to handle edge cases
+* Added `trimming` module to fix different types of trim curves (open, multi-curve, etc.)
+* Added an option to set trim curve sense; i.e. `sense = 0` means trim inside, `sense = 1` means trim outside
+* Improved VTK visualization module to better handle surface and volume plots
+* Added voxel visualization option to VTK visualization module
+* Registered mode keypress events to VTK visualization module
+* Added an option to generate custom visualization configuration while generating the visualization object
+* General bug fixes and performance improvements
+* Added more tests
+* Documentation updates
+
 ## v5.1.2 released on 2019-02-28
 
 * Updated surface derivative algorithm to fill the return array completely
