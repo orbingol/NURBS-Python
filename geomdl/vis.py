@@ -8,29 +8,29 @@
 """
 
 import abc
-from ._utilities import add_metaclass
+from . import _utilities as utl
 
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class VisConfigAbstract(object):
     """ Abstract base class for user configuration of the visualization module
 
-    Defines an abstract base for NURBS-Python visualization configuration.
+    Defines an abstract base for NURBS-Python (geomdl) visualization configuration.
     """
 
     def __init__(self, **kwargs):
         pass
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class VisAbstract(object):
     """ Abstract base class for visualization
 
-    Defines an abstract base for NURBS-Python visualization modules.
+    Defines an abstract base for NURBS-Python (geomdl) visualization modules.
 
     :param config: configuration class
     :type config: VisConfigAbstract
