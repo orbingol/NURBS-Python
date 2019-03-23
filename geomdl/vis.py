@@ -9,6 +9,7 @@
 
 import abc
 from . import _utilities as utl
+from .exceptions import GeomdlException
 
 
 # Initialize an empty __all__ for controlling imports
@@ -117,14 +118,17 @@ class VisAbstract(object):
 
     @mconf.setter
     def mconf(self, value):
-        if not isinstance(value[0], str) or not isinstance(value[1], str):
-            raise TypeError("Plot type and its value should be string type")
+        try:
+            if not isinstance(value[0], str) or not isinstance(value[1], str):
+                raise GeomdlException("Plot type and its value should be string type")
 
-        if value[0] not in self._module_config.keys():
-            raise KeyError(value[0] + " is not a configuration directive. Possible directives: " +
-                           ", ".join([k for k in self._module_config.keys()]))
+            if value[0] not in self._module_config.keys():
+                raise GeomdlException(value[0] + " is not a configuration directive. Possible directives: " +
+                                      ", ".join([k for k in self._module_config.keys()]))
 
-        self._module_config[value[0]] = value[1]
+            self._module_config[value[0]] = value[1]
+        except TypeError:
+            raise GeomdlException("The input should be  a list or a tuple")
 
     @property
     def ctrlpts_offset(self):
@@ -173,4 +177,4 @@ class VisAbstract(object):
         """
         # We need something to plot
         if self._plots is None or len(self._plots) == 0:
-            raise ValueError("Nothing to plot")
+            raise GeomdlException("Nothing to plot")
