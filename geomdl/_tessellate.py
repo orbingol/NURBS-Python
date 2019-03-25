@@ -56,12 +56,16 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         # Get all vertices inside the triangle list
         tri_vertex_ids = []
         for tri in triangle_list:
-            tri_vertex_ids += tri.data
+            for td in tri.data:
+                if td not in tri_vertex_ids:
+                    tri_vertex_ids.append(td)
 
         # Find vertices used in triangles
+        seen_vertices = []
         for vertex in vertex_list:
-            if vertex.id in tri_vertex_ids:
+            if vertex.id in tri_vertex_ids and vertex.id not in seen_vertices:
                 final_vertices.append(vertex)
+                seen_vertices.append(vertex.id)
 
         # Fix vertex numbering (automatically fixes triangle vertex numbering)
         vert_new_id = 0
