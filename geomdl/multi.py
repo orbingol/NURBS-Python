@@ -638,7 +638,7 @@ class SurfaceContainer(AbstractContainer):
             * ``force``: flag to force tessellation. *Default: False*
         """
         # Keyword arguments
-        force_tsl = bool(kwargs.pop('force', False))
+        force_tsl = kwargs.get('force', False)
         update_delta = kwargs.pop('delta', True)
 
         # Don't re-tessellate if everything is in place
@@ -735,6 +735,7 @@ class SurfaceContainer(AbstractContainer):
         reset_names = kwargs.get('reset_names', False)
         # Number of parallel processes
         num_procs = kwargs.get('num_procs', 1)
+        force_tsl = bool(kwargs.pop('force', False))  # flag to force re-tessellation
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
@@ -763,14 +764,14 @@ class SurfaceContainer(AbstractContainer):
             mp_val = Value('i', 0)
             with utl.pool_context(initializer=mp_init, initargs=(mp_lock, mp_val), processes=num_procs) as pool:
                 tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
-                                       colorval=(cpcolor, evalcolor, trimcolor), idx=-1,
+                                       colorval=(cpcolor, evalcolor, trimcolor), idx=-1, force_tsl=force_tsl,
                                        update_delta=update_delta, delta=self.delta, reset_names=reset_names),
                                self._elements)
                 vis_list += tmp
         else:
             for idx, elem in enumerate(self._elements):
                 tmp = process_elements_surface(elem, self._vis_component.mconf, (cpcolor, evalcolor, trimcolor),
-                                               idx, update_delta, self.delta, reset_names)
+                                               idx, force_tsl, update_delta, self.delta, reset_names)
                 vis_list += tmp
 
         for vl in vis_list:
@@ -1025,7 +1026,7 @@ def process_tessellate(elem, update_delta, delta, **kwargs):
     return elem
 
 
-def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, reset_names):
+def process_elements_surface(elem, mconf, colorval, idx, force_tsl, update_delta, delta, reset_names):
     """ Processes visualization elements for surfaces.
 
     .. note:: Helper function required for ``multiprocessing``
@@ -1038,6 +1039,8 @@ def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, re
     :type colorval: tuple
     :param idx: index of the surface
     :type idx: int
+    :param force_tsl: flag to force re-tessellation
+    :type force_tsl: bool
     :param update_delta: flag to update surface delta
     :type update_delta: bool
     :param delta: new surface evaluation delta
@@ -1100,7 +1103,7 @@ def process_elements_surface(elem, mconf, colorval, idx, update_delta, delta, re
 
     # Add surface points as vertices and triangles
     if mconf['evalpts'] == 'triangles':
-        elem.tessellate()
+        elem.tessellate(force=force_tsl)
         ret = dict(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
                    name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
         rl.append(ret)

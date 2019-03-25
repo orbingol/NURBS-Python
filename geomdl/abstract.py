@@ -1820,6 +1820,7 @@ class Surface(SplineGeometry):
         plot_visible = kwargs.pop('plot', True)
         extra_plots = kwargs.pop('extras', None)
         animate_plot = kwargs.pop('animate', False)
+        force_tsl = bool(kwargs.pop('force', False))  # force re-tessellation
 
         # Get colormap and convert to a list
         surf_cmap = kwargs.get('colormap', None)
@@ -1859,7 +1860,7 @@ class Surface(SplineGeometry):
 
         # Add surface points as vertices and triangles
         if self._vis_component.mconf['evalpts'] == 'triangles':
-            self.tessellate()
+            self.tessellate(force=force_tsl)
             self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.faces],
                                     name=self.name, color=evalcolor, plot_type='evalpts')
 
@@ -1900,8 +1901,11 @@ class Surface(SplineGeometry):
 
         Keyword arguments are directly passed to the tessellation component.
         """
+        # Keyword arguments
+        force_tessellate = kwargs.pop('force', False)  # force re-tessellation
+
         # No need to re-tessellate if we have already tessellated the surface
-        if self._tsl_component.is_tessellated():
+        if self._tsl_component.is_tessellated() and not force_tessellate:
             return
 
         # Remove duplicate elements from the kwargs dictionary
