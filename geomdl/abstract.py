@@ -962,6 +962,8 @@ class Curve(SplineGeometry):
                     size=12.5  # size of the line plot
                 )
             ]
+
+        :return: the figure object
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -1803,6 +1805,8 @@ class Surface(SplineGeometry):
         Please note that ``colormap`` argument can only work with visualization classes that support colormaps. As an
         example, please see :py:class:`.VisMPL.VisSurfTriangle()` class documentation. This method expects a single
         colormap input.
+
+        :return: the figure object
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
@@ -2841,6 +2845,8 @@ class Volume(SplineGeometry):
                     size=12.5  # size of the line plot
                 )
             ]
+
+        :return: the figure object
         """
         if not self._vis_component:
             warnings.warn("No visualization component has been set")
