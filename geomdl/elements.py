@@ -381,7 +381,7 @@ class Triangle(AbstractEntity):
     """ Triangle entity which represents a triangle composed of vertices.
 
     A Triangle entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
-    return the :class:`Vertex: instances that compose the quadrilateral structure.
+    return the :class:`Vertex` instances that compose the triangular structure.
     """
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
@@ -500,7 +500,7 @@ class Quad(AbstractEntity):
     """ Quad entity which represents a quadrilateral structure composed of vertices.
 
     A Quad entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
-    return the :class:`Vertex: instances that compose the quadrilateral structure.
+    return the :class:`Vertex` instances that compose the quadrilateral structure.
     """
 
     def __init__(self, *args, **kwargs):
