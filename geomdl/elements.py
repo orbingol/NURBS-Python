@@ -23,6 +23,27 @@ class AbstractEntity(object):
         self._cache = {}  # cache dict
         self._data = []  # data storage array
 
+    def __cmp__(self, other):
+        return (self.id > other.id) - (self.id < other.id)
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __ne__(self, other):
+        return self.id != other.id
+
+    def __lt__(self, other):
+        return self.id < other.id
+
+    def __le__(self, other):
+        return self.id <= other.id
+
+    def __gt__(self, other):
+        return self.id > other.id
+
+    def __ge__(self, other):
+        return self.id >= other.id
+
     def __iter__(self):
         self._iter_index = 0
         return self
@@ -182,27 +203,6 @@ class Vertex(AbstractEntity):
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._opt_data['inside'] = False  # flag for trimming
-
-    def __cmp__(self, other):
-        return (self.id > other.id) - (self.id < other.id)
-
-    def __eq__(self, other):
-        return self.id == other.id
-
-    def __ne__(self, other):
-        return self.id != other.id
-
-    def __lt__(self, other):
-        return self.id < other.id
-
-    def __le__(self, other):
-        return self.id <= other.id
-
-    def __gt__(self, other):
-        return self.id > other.id
-
-    def __ge__(self, other):
-        return self.id >= other.id
 
     def __nonzero__(self):
         # For Python 2 compatibility
