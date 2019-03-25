@@ -329,7 +329,7 @@ def extract_surfaces(pvol):
     # v-w plane
     surflist_vw = []
     for u in range(size_u):
-        surf = obj()
+        surf = obj.__class__()
         surf.degree_u = degree_v
         surf.degree_v = degree_w
         surf.ctrlpts_size_u = size_v
