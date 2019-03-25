@@ -11,7 +11,7 @@ Freeform Geometry
 Inheritance Diagram
 ===================
 
-.. inheritance-diagram:: geomdl.BSpline
+.. inheritance-diagram:: geomdl.freeform
     :top-classes: geomdl.abstract.Geometry
 
 
