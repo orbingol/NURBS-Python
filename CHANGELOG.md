@@ -1,5 +1,14 @@
 # geomdl Changelog
 
+## v5.2.1 released on 2019-03-25
+
+* Minor refactoring in `elements` module (no API change)
+* Visualization figure objects are now accessible outside the geometry classes, `render` method returns the figure object
+* `vertex_spacing` is set to 1 for consistency between the exchange and visualization modules
+* `vertices` property of the `Surface` class returns the exact list of vertices used in generation of the triangles
+* Minor bug fixes
+* Documentation updates
+
 ## v5.2.0 released on 2019-03-22
 
 * Moved some `six` module functions and `backports_functools_lru_cache` module under *geomdl* directory
