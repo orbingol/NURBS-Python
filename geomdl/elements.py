@@ -105,9 +105,7 @@ class AbstractEntity(object):
 
     @id.setter
     def id(self, value):
-        if not isinstance(value, int):
-            raise GeomdlException("Identifier value must be an integer")
-        self._id = value
+        self._id = int(value)
 
     @id.deleter
     def id(self):
