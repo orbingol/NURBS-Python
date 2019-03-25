@@ -2,11 +2,11 @@ Surface Generator
 ^^^^^^^^^^^^^^^^^
 
 NURBS-Python comes with a simple surface generator which is designed to generate a control points grid to be used as
-a randomized input to :py:class:`.BSpline.Surface` and :py:class:`.NURBS.Surface`. It is capable of generating
-custom-sized surfaces with arbitrary divisions and generating hills (or bumps) on the surface. It is also possible to
+a randomized input to :class:`.BSpline.Surface` and :class:`.NURBS.Surface`. It is capable of generating
+customized surfaces with arbitrary divisions and generating hills (or bumps) on the surface. It is also possible to
 export the surface as a text file in the format described under :doc:`File Formats <file_formats>` documentation.
 
-The classes :py:class:`.CPGen.Grid` and :py:class:`.CPGen.GridWeighted` are responsible for generating the surfaces.
+The classes :class:`.CPGen.Grid` and :class:`.CPGen.GridWeighted` are responsible for generating the surfaces.
 
 The following example illustrates a sample usage of the B-Spline surface generator:
 
@@ -49,7 +49,7 @@ The following example illustrates a sample usage of the B-Spline surface generat
     surf.vis = VisMPL.VisSurface(ctrlpts=False, legend=False)
 
     # Plot the surface
-    surf.render(colormap=cm.twilight)
+    surf.render(colormap=cm.terrain)
 
 .. plot::
 
@@ -89,9 +89,9 @@ The following example illustrates a sample usage of the B-Spline surface generat
     surf.vis = VisMPL.VisSurface(ctrlpts=False, legend=False)
 
     # Plot the surface
-    surf.render(colormap=cm.twilight)
+    surf.render(colormap=cm.terrain)
 
-:py:meth:`.CPGen.Grid.bumps()` method takes the following keyword arguments:
+:meth:`.CPGen.Grid.bumps()` method takes the following keyword arguments:
 
 * ``num_bumps``: Number of hills to be generated
 * ``bump_height``: Defines the peak height of the generated hills
