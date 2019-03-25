@@ -210,7 +210,7 @@ class Vertex(AbstractEntity):
 
     def __bool__(self):
         # For Python 3 compatibility
-        return self.inside
+        return self.opt_get("inside")
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
