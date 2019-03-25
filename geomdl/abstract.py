@@ -1013,9 +1013,9 @@ class Curve(SplineGeometry):
 
         # Display the figure
         if animate_plot:
-            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+            return self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
         else:
-            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+            return self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
@@ -1887,9 +1887,9 @@ class Surface(SplineGeometry):
 
         # Display the figure
         if animate_plot:
-            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+            return self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
         else:
-            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
+            return self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def tessellate(self, **kwargs):
         """ Tessellates the surface.
@@ -2902,9 +2902,9 @@ class Volume(SplineGeometry):
 
         # Display the figure
         if animate_plot:
-            self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
+            return self._vis_component.animate(fig_save_as=filename, display_plot=plot_visible)
         else:
-            self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
+            return self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):

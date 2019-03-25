@@ -69,6 +69,9 @@ def create_render_window(actors, callbacks, **kwargs):
     # Start interactor
     window_interactor.Start()
 
+    # Return window interactor instance
+    return window_interactor
+
 
 def create_color(color):
     """ Creates VTK-compatible RGB color from a color string.

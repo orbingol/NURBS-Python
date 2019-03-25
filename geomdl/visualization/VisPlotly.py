@@ -356,6 +356,9 @@ class VisCurve3D(vis.VisAbstract):
         # Display the plot
         self.vconf.plotfn(fig, **plotfn_dict)
 
+        # Return the figure object
+        return fig
+
 
 class VisSurface(vis.VisAbstract):
     """ Plotly visualization module for surfaces.
@@ -525,6 +528,9 @@ class VisSurface(vis.VisAbstract):
         # Display the plot
         self.vconf.plotfn(fig, **plotfn_dict)
 
+        # Return the figure object
+        return fig
+
 
 class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
@@ -664,3 +670,6 @@ class VisVolume(vis.VisAbstract):
 
         # Display the plot
         self.vconf.plotfn(fig, **plotfn_dict)
+
+        # Return the figure object
+        return fig

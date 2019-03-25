@@ -157,8 +157,8 @@ class VisCurve3D(vis.VisAbstract):
                 vtk_actors.append(actor1)
 
         # Render actors
-        vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size)
+        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+                                         figure_size=self.vconf.figure_size)
 
 
 # It is easier to plot 2-dimensional curves with VisCurve3D
@@ -221,8 +221,8 @@ class VisSurface(vis.VisAbstract):
                     vtk_actors.append(actor1)
 
         # Render actors
-        vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size)
+        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+                                         figure_size=self.vconf.figure_size)
 
 
 class VisVolume(vis.VisAbstract):
@@ -262,8 +262,8 @@ class VisVolume(vis.VisAbstract):
                 vtk_actors.append(temp_actor)
 
         # Render actors
-        vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size)
+        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+                                         figure_size=self.vconf.figure_size)
 
 
 class VisVoxel(vis.VisAbstract):
@@ -303,5 +303,5 @@ class VisVoxel(vis.VisAbstract):
                 vtk_actors.append(temp_actor)
 
         # Render actors
-        vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                  figure_size=self.vconf.figure_size)
+        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+                                         figure_size=self.vconf.figure_size)
