@@ -392,6 +392,14 @@ class Triangle(AbstractEntity):
         if args:
             self.add_vertex(*args)
 
+    def __nonzero__(self):
+        # For Python 2 compatibility
+        return self.__bool__()
+
+    def __bool__(self):
+        # For Python 3 compatibility
+        return self.opt_get("inside")
+
     @property
     def vertices(self):
         """ Vertices of the triangle
