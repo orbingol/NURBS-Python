@@ -6,8 +6,7 @@ a randomized input to :py:class:`.BSpline.Surface` and :py:class:`.NURBS.Surface
 custom-sized surfaces with arbitrary divisions and generating hills (or bumps) on the surface. It is also possible to
 export the surface as a text file in the format described under :doc:`File Formats <file_formats>` documentation.
 
-The classes :py:class:`.CPGen.Grid` and :py:class:`.CPGen.GridWeighted` are responsible for generating surfaces and
-they are documented under :doc:`Core Libraries <modules>`.
+The classes :py:class:`.CPGen.Grid` and :py:class:`.CPGen.GridWeighted` are responsible for generating the surfaces.
 
 The following example illustrates a sample usage of the B-Spline surface generator:
 
@@ -17,16 +16,17 @@ The following example illustrates a sample usage of the B-Spline surface generat
     from geomdl import CPGen
     from geomdl import BSpline
     from geomdl import utilities
-    from geomdl.visualization import VisPlotly
+    from geomdl.visualization import VisMPL
+    from matplotlib import cm
 
     # Generate a plane with the dimensions 50x100
     surfgrid = CPGen.Grid(50, 100)
 
     # Generate a grid of 25x30
-    surfgrid.generate(25, 30)
+    surfgrid.generate(50, 60)
 
     # Generate bumps on the grid
-    surfgrid.bumps(num_bumps=5, bump_height=20, base_extent=4)
+    surfgrid.bumps(num_bumps=5, bump_height=20, base_extent=8)
 
     # Create a BSpline surface instance
     surf = BSpline.Surface()
@@ -43,17 +43,53 @@ The following example illustrates a sample usage of the B-Spline surface generat
     surf.knotvector_v = utilities.generate_knot_vector(surf.degree_v, surf.ctrlpts_size_v)
 
     # Set sample size
-    surf.sample_size = 30
-
-    # Generate the visualization component and its configuration
-    vis_config = VisPlotly.VisConfig(ctrlpts=False, legend=False)
-    vis_comp = VisPlotly.VisSurface(vis_config)
+    surf.sample_size = 100
 
     # Set visualization component
-    surf.vis = vis_comp
+    surf.vis = VisMPL.VisSurface(ctrlpts=False, legend=False)
 
     # Plot the surface
-    surf.render()
+    surf.render(colormap=cm.twilight)
+
+.. plot::
+
+    from geomdl import CPGen
+    from geomdl import BSpline
+    from geomdl import utilities
+    from geomdl.visualization import VisMPL
+    from matplotlib import cm
+
+    # Generate a plane with the dimensions 50x100
+    surfgrid = CPGen.Grid(50, 100)
+
+    # Generate a grid of 25x30
+    surfgrid.generate(50, 60)
+
+    # Generate bumps on the grid
+    surfgrid.bumps(num_bumps=5, bump_height=20, base_extent=8)
+
+    # Create a BSpline surface instance
+    surf = BSpline.Surface()
+
+    # Set degrees
+    surf.degree_u = 3
+    surf.degree_v = 3
+
+    # Get the control points from the generated grid
+    surf.ctrlpts2d = surfgrid.grid
+
+    # Set knot vectors
+    surf.knotvector_u = utilities.generate_knot_vector(surf.degree_u, surf.ctrlpts_size_u)
+    surf.knotvector_v = utilities.generate_knot_vector(surf.degree_v, surf.ctrlpts_size_v)
+
+    # Set sample size
+    surf.sample_size = 100
+
+    # Set visualization component
+    surf.vis = VisMPL.VisSurface(ctrlpts=False, legend=False)
+
+    # Plot the surface
+    surf.render(colormap=cm.twilight)
 
 :py:meth:`.CPGen.Grid.bumps()` method takes the following keyword arguments:
 
