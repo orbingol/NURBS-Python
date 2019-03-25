@@ -494,7 +494,7 @@ def export_obj_str(surface, **kwargs):
     :rtype: str
     """
     # Get keyword arguments
-    vertex_spacing = int(kwargs.get('vertex_spacing', 2))
+    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
     include_vertex_normal = kwargs.get('vertex_normals', False)
     include_param_vertex = kwargs.get('parametric_vertices', False)
     update_delta = kwargs.get('update_delta', True)
@@ -576,7 +576,7 @@ def export_stl(surface, file_name, **kwargs):
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: True*
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: True*
 
     :param surface: surface or surfaces to be saved
@@ -597,7 +597,7 @@ def export_stl_str(surface, **kwargs):
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: False*
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
@@ -606,7 +606,7 @@ def export_stl_str(surface, **kwargs):
     :rtype: str
     """
     binary = kwargs.get('binary', False)
-    vertex_spacing = int(kwargs.get('vertex_spacing', 2))
+    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
     update_delta = kwargs.get('update_delta', True)
 
     # Input validity checking
@@ -657,7 +657,7 @@ def export_off(surface, file_name, **kwargs):
     """ Exports surface(s) as a .off file.
 
     Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: True*
 
     :param surface: surface or surfaces to be saved
@@ -674,7 +674,7 @@ def export_off_str(surface, **kwargs):
     """ Exports surface(s) as a .off file (string).
 
     Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 2*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
         * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: True*
 
     :param surface: surface or surfaces to be saved
@@ -683,7 +683,7 @@ def export_off_str(surface, **kwargs):
     :rtype: str
     """
     # Get keyword arguments
-    vertex_spacing = int(kwargs.get('vertex_spacing', 2))
+    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
     update_delta = kwargs.get('update_delta', True)
 
     # Input validity checking
