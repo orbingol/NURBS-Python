@@ -8,7 +8,7 @@ Inheritance Diagram
 ===================
 
 .. inheritance-diagram:: geomdl.abstract
-    :top-classes: geomdl.abstract.Geometry
+    :top-classes: geomdl.abstract.GeomdlBase
 
 Abstract Curve
 ==============
