@@ -302,8 +302,8 @@ def link_curves(*args, **kwargs):
     The end control point of the curve k has to be the same with the start control point of the curve k + 1.
 
     Keyword Arguments:
-        * ``tol``: tolerance value for checking equality
-        * ``validate``: validate input
+        * ``tol``: tolerance value for checking equality. *Default: 10e-8*
+        * ``validate``: flag to enable input validation. *Default: False*
 
     :return: a tuple containing knot vector, control points, weights vector and knots
     """
