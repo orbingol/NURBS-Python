@@ -8,6 +8,8 @@
 """
 
 from . import linalg, helpers
+from .exceptions import GeomdlException
+
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -292,3 +294,62 @@ def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
 
     # Return 2-dimensional control points array
     return surf_ctrlpts
+
+
+def link_curves(*args, **kwargs):
+    """ Links the input curves together.
+
+    The end control point of the curve k has to be the same with the start control point of the curve k + 1.
+
+    Keyword Arguments:
+        * ``tol``: tolerance value for checking equality
+        * ``validate``: validate input
+
+    :return: a tuple containing knot vector, control points, weights vector and knots
+    """
+    # Get keyword arguments
+    tol = kwargs.get('tol', 10e-8)
+    validate = kwargs.get('validate', False)
+
+    # Validate input
+    if validate:
+        for idx in range(len(args) - 1):
+            if linalg.point_distance(args[idx].ctrlpts[-1], args[idx + 1].ctrlpts[0]) > tol:
+                raise GeomdlException("Curve #" + str(idx) + " and Curve #" + str(idx + 1) + " don't touch each other")
+
+    kv = []  # new knot vector
+    cpts = []  # new control points array
+    wgts = []  # new weights array
+    kv_connected = []  # superfluous knots to be removed
+    pdomain_end = 0
+
+    # Loop though the curves
+    for arg in args:
+        # Process knot vectors
+        if not kv:
+            kv += list(arg.knotvector[:-1])  # get rid of the last superfluous knot to maintain split curve notation
+            cpts += list(arg.ctrlpts)
+            # Process control points
+            if arg.rational:
+                wgts += list(arg.weights)
+            else:
+                tmp_w = [1.0 for _ in range(arg.ctrlpts_size)]
+                wgts += tmp_w
+        else:
+            tmp_kv = [pdomain_end + k for k in arg.knotvector[1:-1]]
+            kv += tmp_kv
+            cpts += list(arg.ctrlpts[1:])
+            # Process control points
+            if arg.rational:
+                wgts += list(arg.weights[1:])
+            else:
+                tmp_w = [1.0 for _ in range(arg.ctrlpts_size - 1)]
+                wgts += tmp_w
+
+        pdomain_end += arg.knotvector[-1]
+        kv_connected.append(pdomain_end)
+
+    # Fix curve by appending the last knot to the end
+    kv.append(pdomain_end)
+
+    return kv, cpts, wgts, kv_connected
