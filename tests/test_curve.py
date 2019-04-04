@@ -130,6 +130,34 @@ def test_bspline_curve2d_remove_knot_kv(spline_curve):
     assert s == 0
 
 
+def test_bspline_curve2d_degree_elevate_degree(spline_curve):
+    dops = 1
+    degree_new = spline_curve.degree + dops
+    operations.degree_operations(spline_curve, [dops])
+    assert spline_curve.degree == degree_new
+
+
+def test_bspline_curve2d_degree_elevate_ctrlpts_size(spline_curve):
+    dops = 1
+    ctrlpts_size = spline_curve.ctrlpts_size + dops
+    operations.degree_operations(spline_curve, [dops])
+    assert spline_curve.ctrlpts_size == ctrlpts_size
+
+
+def test_bspline_curve2d_degree_reduce_degree(spline_curve):
+    dops = -1
+    degree_new = spline_curve.degree + dops
+    operations.degree_operations(spline_curve, [dops])
+    assert spline_curve.degree == degree_new
+
+
+def test_bspline_curve2d_degree_reduce_ctrlpts_size(spline_curve):
+    dops = -1
+    ctrlpts_size_new = spline_curve.ctrlpts_size + dops
+    operations.degree_operations(spline_curve, [dops])
+    assert spline_curve.ctrlpts_size == ctrlpts_size_new
+
+
 @fixture
 def spline_curve3d(spline_curve):
     curve3d = operations.add_dimension(spline_curve, offset=1.0)
