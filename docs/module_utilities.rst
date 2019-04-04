@@ -10,6 +10,7 @@ The ``utilities`` module contains common utility functions for NURBS-Python libr
 
 .. automodule:: geomdl.utilities
     :members:
+    :exclude-members: generate_knot_vector, check_knot_vector, normalize_knot_vector
 
 
 Helpers
