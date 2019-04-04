@@ -585,11 +585,11 @@ def refine_knotvector(obj, param, **kwargs):
     then the algorithm finds the middle knots in each internal knot span to increase the number of knots to be refined.
 
     **Example**: Let the degree is 2 and the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots 
-    from the start and end are removed:
+    from the start and end are removed. Knot vectors with the changing ``density (d)`` value will be:
 
-    * If ``density=1``, refined knot vector will be ``[0, 2, 2, 4]``
-    * If ``density=2``, refined knot vector will be ``[0, 1, 1, 2, 2, 3, 3, 4]``
-    * If ``density=3``, refined knot vector will be ``[0, 0.5, 0.5, 1, 1, 1.5, 1.5 2, 2, 2.5, 2.5, 3, 3, 3.5, 3.5, 4]``
+    * ``d = 1``, knot vector ``[0, 2, 2, 4]``
+    * ``d = 2``, knot vector ``[0, 1, 1, 2, 2, 3, 3, 4]``
+    * ``d = 3``, knot vector ``[0, 0.5, 0.5, 1, 1, 1.5, 1.5, 2, 2, 2.5, 2.5, 3, 3, 3.5, 3.5, 4]``
 
     The following code snippet illustrates the usage of knot refinement densities:
 
