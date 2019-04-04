@@ -783,15 +783,64 @@ def degree_operations(obj, param, **kwargs):
     # Start curve degree manipulation operations
     if isinstance(obj, abstract.Curve):
         if param[0] is not None and param[0] != 0:
+            # Decompose the input by knot insertion
+            crv_list = decompose_curve(obj, **kwargs)
 
             # If parameter is positive, apply degree elevation. Otherwise, apply degree reduction
             if param[0] > 0:
-                pass
+                # Loop through to apply degree elevation
+                for crv in crv_list:
+                    cpts = crv.ctrlptsw if crv.rational else crv.ctrlpts
+                    new_cpts = helpers.degree_elevation(crv.degree, cpts, num=param[0])
+                    crv.degree += param[0]
+                    if crv.rational:
+                        crv.ctrlptsw = new_cpts
+                    else:
+                        crv.ctrlpts = new_cpts
+                    crv.knotvector = [crv.knotvector[0] for _ in range(param[0])] + list(crv.knotvector) + [crv.knotvector[-1] for _ in range(param[0])]
 
+                # Compute new degree
+                nd = obj.degree + param[0]
+
+                # Compute number of knot removals
+                num = obj.degree
             else:
                 # Validate degree reduction operation
                 validate_reduction(obj.degree)
-                pass
+
+                # Loop through to apply degree reduction
+                for crv in crv_list:
+                    cpts = crv.ctrlptsw if crv.rational else crv.ctrlpts
+                    new_cpts = helpers.degree_reduction(crv.degree, cpts)
+                    crv.degree -= 1 
+                    if crv.rational:
+                        crv.ctrlptsw = new_cpts
+                    else:
+                        crv.ctrlpts = new_cpts
+                    crv.knotvector = list(crv.knotvector[1:-1])
+                
+                # Compute new degree
+                nd = obj.degree - 1
+
+                # Compute number of knot removals
+                num = nd - 1
+            
+            # Link curves together (reverse of decomposition)
+            kv, cpts, ws, knots = ops.link_curves(*crv_list, validate=False)
+            
+            # Organize control points (if necessary)
+            ctrlpts = compatibility.combine_ctrlpts_weights(cpts, ws) if obj.rational else cpts
+
+            # Apply knot removal
+            for k in knots:
+                span = helpers.find_span_linear(nd, kv, len(ctrlpts), k)
+                ctrlpts = helpers.knot_removal(nd, kv, ctrlpts, k, num=num)
+                kv = helpers.knot_removal_kv(kv, span, num)
+            
+            # Update input curve
+            obj.degree = nd
+            obj.set_ctrlpts(ctrlpts)
+            obj.knotvector = kv
 
     # Start surface degree manipulation operations
     if isinstance(obj, abstract.Surface):
