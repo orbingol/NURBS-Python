@@ -130,6 +130,16 @@ def test_bspline_curve2d_remove_knot_kv(spline_curve):
     assert s == 0
 
 
+@mark.parametrize("density, kv", [
+    (1, [0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.33, 0.66, 0.66, 0.66, 1.0, 1.0, 1.0, 1.0]),
+    (2, [0.0, 0.0, 0.0, 0.0, 0.165, 0.165, 0.165, 0.33, 0.33, 0.33, 0.495, 0.495, 0.495, 0.66, 0.66, 0.66, 0.830, 0.830, 0.830, 1.0, 1.0, 1.0, 1.0]),
+])
+def test_bspline_curve2d_knot_refine(spline_curve, density, kv):
+    operations.refine_knotvector(spline_curve, [density])
+    for a, b in zip(kv, spline_curve.knotvector):
+        assert abs(a - b) < GEOMDL_DELTA
+
+
 def test_bspline_curve2d_degree_elevate_degree(spline_curve):
     dops = 1
     degree_new = spline_curve.degree + dops
