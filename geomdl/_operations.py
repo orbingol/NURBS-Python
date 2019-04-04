@@ -327,7 +327,7 @@ def link_curves(*args, **kwargs):
     for arg in args:
         # Process knot vectors
         if not kv:
-            kv += list(arg.knotvector[:-1])  # get rid of the last superfluous knot to maintain split curve notation
+            kv += list(arg.knotvector[:-(arg.degree + 1)])  # get rid of the last superfluous knot to maintain split curve notation
             cpts += list(arg.ctrlpts)
             # Process control points
             if arg.rational:
@@ -336,7 +336,7 @@ def link_curves(*args, **kwargs):
                 tmp_w = [1.0 for _ in range(arg.ctrlpts_size)]
                 wgts += tmp_w
         else:
-            tmp_kv = [pdomain_end + k for k in arg.knotvector[1:-1]]
+            tmp_kv = [pdomain_end + k for k in arg.knotvector[1:-(arg.degree + 1)]]
             kv += tmp_kv
             cpts += list(arg.ctrlpts[1:])
             # Process control points
@@ -350,6 +350,8 @@ def link_curves(*args, **kwargs):
         kv_connected.append(pdomain_end)
 
     # Fix curve by appending the last knot to the end
-    kv.append(pdomain_end)
+    kv += [pdomain_end for _ in range(arg.degree + 1)]
+    # Remove the last knot from knot insertion list
+    kv_connected.pop()
 
     return kv, cpts, wgts, kv_connected
