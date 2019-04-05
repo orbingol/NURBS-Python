@@ -622,6 +622,10 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     s = kwargs.get('s', find_multiplicity(u, knotvector))  # multiplicity
     r = kwargs.get('span', find_span_linear(degree, knotvector, len(ctrlpts), u))  # knot span
 
+    # Edge case
+    if num < 1:
+        return ctrlpts
+
     # Initialize variables
     first = r - degree
     last = r - s
@@ -777,6 +781,10 @@ def knot_removal_kv(knotvector, span, r):
     :return: updated knot vector
     :rtype: list
     """
+    # Edge case
+    if r < 1:
+        return knotvector
+
     # Create a deep copy of the input knot  vector
     kv_updated = deepcopy(knotvector)
 
