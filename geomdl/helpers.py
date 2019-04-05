@@ -1016,7 +1016,7 @@ def degree_reduction(degree, ctrlpts, **kwargs):
     pts_red[-1] = ctrlpts[-1]
 
     # Find if the degree is an even or an odd number
-    p_is_odd = False if degree % 2 == 0 else True
+    p_is_odd = True if (degree % 2 != 0 or degree == 2) else False
 
     # Compute control points of degree-reduced 1-dimensional shape
     r = int((degree - 1) / 2)
