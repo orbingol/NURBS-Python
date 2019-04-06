@@ -90,20 +90,6 @@ class GeomdlBase(object):
         return self._geometry_type
 
     @property
-    def evalpts(self):
-        """ Evaluated points.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the coordinates of the evaluated points
-        :type: list
-        """
-        if self._eval_points is None or len(self._eval_points) == 0:
-            self.evaluate()
-        return self._eval_points
-
-    @property
     def id(self):
         """ Object ID (as an integer).
 
