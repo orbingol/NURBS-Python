@@ -236,6 +236,8 @@ def import_dict_crv(data):
 
 def export_dict_crv(obj):
     data = dict(
+        rational=obj.rational,
+        dimension=obj.dimension,
         degree=obj.degree,
         knotvector=list(obj.knotvector),
         control_points=dict(
@@ -336,6 +338,8 @@ def import_dict_surf(data):
 
 def export_dict_surf(obj):
     data = dict(
+        rational=obj.rational,
+        dimension=obj.dimension,
         degree_u=obj.degree_u,
         degree_v=obj.degree_v,
         knotvector_u=list(obj.knotvector_u),
@@ -402,6 +406,8 @@ def import_dict_vol(data):
 
 def export_dict_vol(obj):
     data = dict(
+        rational=obj.rational,
+        dimension=obj.dimension,
         degree_u=obj.degree_u,
         degree_v=obj.degree_v,
         degree_w=obj.degree_w,
