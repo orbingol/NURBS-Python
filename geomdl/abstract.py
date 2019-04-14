@@ -1675,12 +1675,24 @@ class Surface(SplineGeometry):
 
     @property
     def trims(self):
-        """ Trim curves.
+        """ Curves for trimming the surface.
 
-        Trim curves are introduced to the surfaces on the parametric space. They should be contained as a list or tuple.
-        Using :class:`.tessellate.TrimTessellate` tessellator class, trimmed regions of the surfaces can be visualized.
+        Surface trims are 2-dimensional curves which are introduced on the parametric space of the surfaces. Trim curves
+        can be a spline curve, an analytic curve or a 2-dimensional freeform shape. To visualize the trimmed surfaces,
+        you need to use a tessellator that supports trimming. The following code snippet illustrates changing the default 
+        surface tessellator to the trimmed surface tessellator, :class:`.tessellate.TrimTessellate`.
+
+        .. code-block:: python
+            :linenos:
+
+            from geomdl import tessellate
+
+            # Assuming that "surf" variable stores the surface instance
+            surf.tessellator = tessellate.TrimTessellate()
+
         In addition, using `trims` initialization argument of the visualization classes, trim curves can be visualized
-        directly.
+        together with their underlying surfaces. Please refer to the visualization configuration class initialization
+        arguments for more details.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
