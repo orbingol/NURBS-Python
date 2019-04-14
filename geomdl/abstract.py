@@ -1692,6 +1692,13 @@ class Surface(SplineGeometry):
 
     @trims.setter
     def trims(self, value):
+        # Input type validation
+        if not isinstance(value, (list, tuple)):
+            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trim curves")
+        # Trim curve validation
+        for i, v in enumerate(value):
+            if v.dimension != 2:
+                raise GeomdlException("Curve at index " + str(i) + " is not a 2-dimensional curve")
         self._trims = tuple(value)
 
     @property
