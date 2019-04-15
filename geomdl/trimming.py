@@ -110,7 +110,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
-                    crv.opt = ['sense', trim[idx].opt_get('sense')]
+                    crv.opt = ['reversed', trim[idx].opt_get('senreversedse')]
 
                     # Add trims
                     new_trim.append(trim[idx])
@@ -119,7 +119,7 @@ def fix_multi_trim_curves(obj, **kwargs):
             # Create a curve container from the new trim list
             cc = shortcuts.generate_container_curve()
             cc.add(new_trim)
-            cc.opt = ['sense', trim.opt_get('sense')]
+            cc.opt = ['reversed', trim.opt_get('reversed')]
             cc.delta = eval_delta
 
             # Add curve container to the new trims list
@@ -214,7 +214,7 @@ def check_trim_curve(curve, parbox, **kwargs):
             return False, []
         else:
             # Get sense of the original curve
-            c_sense = curve.opt_get('sense')
+            c_sense = curve.opt_get('reversed')
 
             # If sense is None, then detect sense
             if c_sense is None:
@@ -239,7 +239,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                 c_sense = 0 if tmp_sense > 0 else 1
 
                 # Update sense of the original curve
-                curve.opt = ['sense', c_sense]
+                curve.opt = ['reversed', c_sense]
 
             # Generate a curve container and add the original curve
             cont = [curve]
@@ -265,7 +265,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                 crv.degree = 1
                 crv.ctrlpts = [pt_end, pt_start]
                 crv.knotvector = [0, 0, 1, 1]
-                crv.opt = ['sense', c_sense]
+                crv.opt = ['reversed', c_sense]
 
                 pt_end = pt_start
 
@@ -304,27 +304,27 @@ def detect_sense(curve, tol):
     :return: True if detection is successful, False otherwise
     :rtype: bool
     """
-    if curve.opt_get('sense') is None:
+    if curve.opt_get('reversed') is None:
         # Detect sense since it is unset
         pts = curve.evalpts
         num_pts = len(pts)
         for idx in range(1, num_pts - 1):
             sense = detect_ccw(pts[idx - 1], pts[idx], pts[idx + 1], tol)
             if sense < 0:  # cw
-                curve.opt = ['sense', 0]
+                curve.opt = ['reversed', 0]
                 return True
             elif sense > 0:  # ccw
-                curve.opt = ['sense', 1]
+                curve.opt = ['reversed', 1]
                 return True
             else:
                 continue
         # One final test with random points to determine the orientation
         sense = detect_ccw(pts[int(num_pts/3)], pts[int(2*num_pts/3)], pts[-int(num_pts/3)], tol)
         if sense < 0:  # cw
-            curve.opt = ['sense', 0]
+            curve.opt = ['reversed', 0]
             return True
         elif sense > 0:  # ccw
-            curve.opt = ['sense', 1]
+            curve.opt = ['reversed', 1]
             return True
         else:
             # Cannot determine the sense

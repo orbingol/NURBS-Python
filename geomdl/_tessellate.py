@@ -280,10 +280,10 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     vertices = [v1, v2, v3, v4]
     for idx in range(len(vertices)):
         for trim in trims:
-            cf = 1 if trim.opt['sense'] else -1
+            cf = 1 if trim.opt['reversed'] else -1
             uv = [p + (cf * t) for p, t in zip(vertices[idx].uv, vtol[idx])]
             if linalg.wn_poly(uv, trim.evalpts):
-                if trim.opt['sense']:
+                if trim.opt['reversed']:
                     if vertices[idx].opt_get('trim') is None or not vertices[idx].opt_get('trim'):
                         vertices[idx].inside = False
                         vertices[idx].opt = ['no_trim', True]  # always triangulate
@@ -291,7 +291,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                     vertices[idx].inside = True
                     vertices[idx].opt = ['trim', True]  # always trim
             else:
-                if trim.opt['sense']:
+                if trim.opt['reversed']:
                     if vertices[idx].opt_get('no_trim') is None or not vertices[idx].opt_get('no_trim'):
                         vertices[idx].inside = True
 
@@ -387,7 +387,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         tri_center = linalg.triangle_center(tris[idx], uv=True)
         for trim in trims:
             if linalg.wn_poly(tri_center, trim.evalpts):
-                if trim.opt['sense']:
+                if trim.opt['reversed']:
                     if tris[idx].opt_get('trim') is None or not tris[idx].opt_get('trim'):
                         tris[idx].inside = False
                         tris[idx].opt = ['no_trim', True]  # always triangulate
@@ -395,7 +395,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                     tris[idx].inside = True
                     tris[idx].opt = ['trim', True]  # always trim
             else:
-                if trim.opt['sense']:
+                if trim.opt['reversed']:
                     if tris[idx].opt_get('no_trim') is None or not tris[idx].opt_get('no_trim'):
                         tris[idx].inside = True
 

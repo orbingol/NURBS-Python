@@ -227,8 +227,8 @@ def import_dict_crv(data):
         shape.name = data['name']
     if 'id' in data:
         shape.id = data['id']
-    if 'sense' in data:  # trim curve sense
-        shape.opt = ['sense', data['sense']]
+    if 'reversed' in data:  # trim curve sense
+        shape.opt = ['reversed', data['reversed']]
 
     # Return curve
     return shape
@@ -249,9 +249,9 @@ def export_dict_crv(obj):
         data['control_points']['weights'] = list(obj.weights)
 
     # For trim curves
-    sense = obj.opt_get('sense')
+    sense = obj.opt_get('reversed')
     if sense is not None:
-        data['sense'] = sense
+        data['reversed'] = sense
 
     return data
 
@@ -269,8 +269,8 @@ def import_dict_ff(data):
         shape.name = data['name']
     if 'id' in data:
         shape.id = data['id']
-    if 'sense' in data:  # trim curve sense
-        shape.opt = ['sense', data['sense']]
+    if 'reversed' in data:  # trim curve sense
+        shape.opt = ['reversed', data['reversed']]
 
     return shape
 
@@ -291,8 +291,8 @@ def import_dict_multi_crv(data):
         shape.name = data['name']
     if 'id' in data:
         shape.id = data['id']
-    if 'sense' in data:  # trim curve sense
-        shape.opt = ['sense', data['sense']]
+    if 'reversed' in data:  # trim curve sense
+        shape.opt = ['reversed', data['reversed']]
     return shape
 
 
@@ -320,8 +320,8 @@ def import_dict_surf(data):
         shape.name = data['name']
     if 'id' in data:
         shape.id = data['id']
-    if 'sense' in data:  # surface sense
-        shape.opt = ['sense', data['sense']]
+    if 'reversed' in data:  # surface sense
+        shape.opt = ['reversed', data['reversed']]
 
     # Trim curves
     if 'trims' in data:
@@ -355,9 +355,9 @@ def export_dict_surf(obj):
         data['control_points']['weights'] = list(obj.weights)
 
     # Surface sense
-    sense = obj.opt_get('sense')
+    sense = obj.opt_get('reversed')
     if sense is not None:
-        data['sense'] = sense
+        data['reversed'] = sense
 
     # Trim curves
     if obj.trims:

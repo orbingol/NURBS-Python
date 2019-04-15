@@ -154,8 +154,8 @@ class TrimTessellate(AbstractTessellate):
 
         # Update sense if it is not set
         for trim in trims:
-            if trim.opt_get('sense') is None:
-                trim.opt = ['sense', 0]  # always trim the enclosed area by the curve
+            if trim.opt_get('reversed') is None:
+                trim.opt = ['reversed', 0]  # always trim the enclosed area by the curve
 
         # Apply default triangular mesh generator function with trimming customization
         self._vertices, self._faces = self._tsl_func(points, trims=trims, tessellate_func=self._tsl_trim_func,
