@@ -4,6 +4,10 @@ ACIS Importer
 The **ACIS importer**, ``rwsat`` uses `3D ACIS Modeler <https://www.spatial.com/>`_
 to convert .sat files to geomdl JSON format.
 
+``rwsat`` comes with the following list of programs:
+
+* ``sat2json`` converts ACIS .sat files to geomdl JSON format
+
 Use Cases
 =========
 
