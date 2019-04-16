@@ -45,9 +45,12 @@ def fix_multi_trim_curves(obj, **kwargs):
 
         # Traverse through the trims
         for trim in trims:
-            # Skip if it is not a curve container
             trim_size = len(trim)
+
+            # Directly add to the new trims array if the trim is a single curve
             if trim_size == 1:
+                # Also, get rid of the container if exists
+                new_trims.append(trim[0])
                 continue
 
             new_trim = []
