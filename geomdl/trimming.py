@@ -110,7 +110,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
-                    crv.opt = ['reversed', trim[idx].opt_get('senreversedse')]
+                    crv.opt = ['reversed', trim[idx].opt_get('reversed')]
 
                     # Add trims
                     new_trim.append(trim[idx])
