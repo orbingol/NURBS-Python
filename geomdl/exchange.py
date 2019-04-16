@@ -13,6 +13,7 @@ import json
 from io import StringIO
 from . import compatibility, operations, elements, linalg
 from . import _exchange as exch
+from .exceptions import GeomdlException
 from ._utilities import export
 
 
@@ -896,98 +897,31 @@ def export_vmesh(volume, file_name, **kwargs):
 
 @export
 def import_3dm(file_name, **kwargs):
-    """ Imports Rhinoceros/OpenNURBS .3dm file format.
+    """ Imports curves and surfaces from Rhinoceros/OpenNURBS .3dm files.
 
-    .. note::
+    .. deprecated:: 5.2.2
 
-        Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
+        ``rw3dm`` Python module is replaced by ``on2json``. It can be used to convert .3dm files to geomdl JSON format.
+        Please refer to https://github.com/orbingol/rw3dm for more details.
 
     :param file_name: input file name
     :type file_name: str
     """
-    try:
-        from rw3dm import rw3dm
-    except ImportError:
-        print("Please install 'rw3dm' module: https://github.com/orbingol/rw3dm")
-        return
-
-    res3dm = []
-    rw3dm.read(file_name, res3dm, **kwargs)
-
-    res = []
-    for r in res3dm:
-        if r['shape_type'] == "curve":
-            tmp = exch.shortcuts.generate_curve(rational=True)
-            tmp.degree = r['degree']
-            tmp.ctrlpts = r['control_points']['points']
-            if 'weights' in r:
-                tmp.weights = r['control_points']['weights']
-            tmp.knotvector = [r['knotvector'][0]] + r['knotvector'] + [r['knotvector'][-1]]
-            res.append(tmp)
-        if r['shape_type'] == "surface":
-            tmp = exch.shortcuts.generate_surface(rational=True)
-            tmp.degree_u = r['degree_u']
-            tmp.degree_v = r['degree_v']
-            tmp.ctrlpts_size_u = r['size_u']
-            tmp.ctrlpts_size_v = r['size_v']
-            tmp.ctrlpts = r['control_points']['points']
-            if 'weights' in r:
-                tmp.weights = r['control_points']['weights']
-            tmp.knotvector_u = [r['knotvector_u'][0]] + r['knotvector_u'] + [r['knotvector_u'][-1]]
-            tmp.knotvector_v = [r['knotvector_v'][0]] + r['knotvector_v'] + [r['knotvector_v'][-1]]
-            res.append(tmp)
-
-    return res
+    raise GeomdlException("This API call has been deprecated. Please refer to https://github.com/orbingol/rw3dm")
 
 
 @export
 def export_3dm(obj, file_name, **kwargs):
-    """ Exports NURBS curves and surfaces in Rhinoceros/OpenNURBS .3dm format.
+    """ Exports NURBS curves and surfaces to Rhinoceros/OpenNURBS .3dm files.
 
-    .. note::
+    .. deprecated:: 5.2.2
 
-        Requires ``rw3dm`` module: https://github.com/orbingol/rw3dm
+        ``rw3dm`` Python module is replaced by ``json2on``. It can be used to convert geomdl JSON format to .3dm files.
+        Please refer to https://github.com/orbingol/rw3dm for more details.
 
     :param obj: curves/surfaces to be exported
     :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer, multi.SurfaceContainer
     :param file_name: file name
     :type file_name: str
     """
-    try:
-        from rw3dm import rw3dm
-    except ImportError:
-        print("Please install 'rw3dm' module: https://github.com/orbingol/rw3dm")
-        return
-
-    res3dm = []
-    for o in obj:
-        if o.pdimension == 1:
-            rd = dict(
-                shape_type="curve",
-                degree=o.degree,
-                knotvector=o.knotvector[1:-1],
-                control_points=dict(
-                    points=o.ctrlpts
-                )
-            )
-            if o.rational:
-                rd['control_points']['weights'] = o.weights
-            res3dm.append(rd)
-        if o.pdimension == 2:
-            rd = dict(
-                shape_type="surface",
-                degree_u=o.degree_u,
-                degree_v=o.degree_v,
-                knotvector_u=o.knotvector_u[1:-1],
-                knotvector_v=o.knotvector_v[1:-1],
-                size_u=o.ctrlpts_size_u,
-                size_v=o.ctrlpts_size_v,
-                control_points=dict(
-                    points=o.ctrlpts
-                )
-            )
-            if o.rational:
-                rd['control_points']['weights'] = o.weights
-            res3dm.append(rd)
-
-    rw3dm.write(res3dm, file_name)
+    raise GeomdlException("This API call has been deprecated. Please refer to https://github.com/orbingol/rw3dm")
