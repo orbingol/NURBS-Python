@@ -1,5 +1,13 @@
 # geomdl Changelog
 
+## v5.2.2 released on 2019-04-17
+
+* Convert "sense" to "reversed" for better understanding of trim curve orientation (API change for surface trimming)
+* Update curve degree elevation and reduction algorithms and operations API (no API change)
+* Fix trim curve exporting in `exchange.export_json`
+* Deprecate `exchange.export_3dm` and `exchange.import_3dm` in favor of [rw3dm v2.0](https://github.com/orbingol/rw3dm)
+* Documentation updates
+
 ## v5.2.1 released on 2019-03-25
 
 * Minor refactoring in `elements` module (no API change)
