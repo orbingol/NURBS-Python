@@ -4,7 +4,7 @@ FROM pypy:3-slim
 USER root
 
 RUN apt-get update -qq \
-    && apt-get install -qq gcc g++ gfortran git pkg-config libfreetype6-dev libpng12-dev libopenblas-dev \
+    && apt-get install -qq gcc g++ gfortran git pkg-config libfreetype6-dev libpng-dev libopenblas-dev \
     && apt-get clean
 
 RUN useradd -ms /bin/bash nurbs
