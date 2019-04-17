@@ -361,13 +361,15 @@ def export_dict_surf(obj):
 
     # Trim curves
     if obj.trims:
+        trim_data = dict(count=len(obj.trims))
         trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff)
         trim_curves = []
         for trim in obj.trims:
             if trim.type in trim_curve_typemap:
                 tdata = trim_curve_typemap[trim.type](trim)
                 trim_curves.append(tdata)
-        data['trims'] = trim_curves
+        trim_data['data'] = trim_curves
+        data['trims'] = trim_data
 
     return data
 
@@ -506,7 +508,6 @@ def import_dict_str(file_src, delta, callback, tmpl):
 
 
 def export_dict_str(obj, callback):
-    count = 1
     if obj.pdimension == 1:
         export_type = "curve"
         data = [export_dict_crv(o) for o in obj]
@@ -523,7 +524,7 @@ def export_dict_str(obj, callback):
     data = dict(
         shape=dict(
             type=export_type,
-            count=count,
+            count=len(obj),
             data=tuple(data)
         )
     )
