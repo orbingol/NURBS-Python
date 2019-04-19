@@ -308,6 +308,30 @@ def import_dict_multi_crv(data):
     return shape
 
 
+def export_dict_multi_crv(obj):
+    curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff)
+    curves = []
+    for o in obj:
+        if o.type in curve_typemap:
+            tdata = curve_typemap[o.type](o)
+        else:
+            tdata = curve_typemap['freeform'](o)
+        curves.append(tdata)
+
+    data = dict(
+        type="container",
+        count=len(curves),
+        data=curves
+    )
+
+    # For trim curves
+    sense = obj.opt_get('reversed')
+    if sense is not None:
+        data['reversed'] = sense
+
+    return data
+
+
 def import_dict_surf(data):
     shape = shortcuts.generate_surface(rational=True)
 
