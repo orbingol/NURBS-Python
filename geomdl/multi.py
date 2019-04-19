@@ -335,8 +335,8 @@ class CurveContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
-        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
+        self._pdim = 1  # number of parametric dimensions
+        self._dinit = 0.01 # evaluation delta
         super(CurveContainer, self).__init__(*args, **kwargs)
         for arg in args:
             self.add(arg)
@@ -461,8 +461,8 @@ class SurfaceContainer(AbstractContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
-        self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
+        self._pdim = 2  # number of parametric dimensions
+        self._dinit = 0.05  # evaluation delta
         super(SurfaceContainer, self).__init__(*args, **kwargs)
         self._cache['vertices'] = []
         self._cache['faces'] = []
