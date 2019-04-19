@@ -236,6 +236,7 @@ def import_dict_crv(data):
 
 def export_dict_crv(obj):
     data = dict(
+        type="spline",
         rational=obj.rational,
         dimension=obj.dimension,
         degree=obj.degree,
@@ -349,6 +350,7 @@ def import_dict_surf(data):
 
 def export_dict_surf(obj):
     data = dict(
+        type="spline",
         rational=obj.rational,
         dimension=obj.dimension,
         degree_u=obj.degree_u,
@@ -419,6 +421,7 @@ def import_dict_vol(data):
 
 def export_dict_vol(obj):
     data = dict(
+        type="spline",
         rational=obj.rational,
         dimension=obj.dimension,
         degree_u=obj.degree_u,
