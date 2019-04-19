@@ -1,5 +1,13 @@
 # geomdl Changelog
 
+## v5.2.3 released on 2019-04-19
+
+* Fix incorrect dict export of trims in trimmed surfaces
+* Add analytic trim curve support to trimmed surface dict export
+* Change `VolumeContainer` base class from `SurfaceContainer` to `AbstractContainer` and add missing methods
+* Documentation updates
+* Minor bug fixes and improvements
+
 ## v5.2.2 released on 2019-04-17
 
 * Convert "sense" to "reversed" for better understanding of trim curve orientation (API change for surface trimming)
