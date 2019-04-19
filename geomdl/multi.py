@@ -99,7 +99,7 @@ class AbstractContainer(abstract.GeomdlBase):
     def evalpts(self):
         """ Evaluated points.
 
-        Since there are multiple shapes contained in the multi objects, the evaluated points will be returned in the
+        Since there are multiple geometry objects contained in the multi objects, the evaluated points will be returned in the
         format of list of individual evaluated points which is also a list of Cartesian coordinates.
 
         The following code example illustrates these details:
@@ -108,7 +108,7 @@ class AbstractContainer(abstract.GeomdlBase):
             :linenos:
 
             multi_obj = multi.SurfaceContainer()  # it can also be multi.CurveContainer()
-            # Add shapes to multi_obj via multi_obj.add() method
+            # Add geometries to multi_obj via multi_obj.add() method
             # Then, the following loop will print all the evaluated points of the Multi object
             for idx, mpt in enumerate(multi_obj.evalpts):
                 print("Shape", idx+1, "contains", len(mpt), "points. These points are:")
@@ -119,7 +119,7 @@ class AbstractContainer(abstract.GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the evaluated points of all contained shapes
+        :getter: Gets the evaluated points of all contained geometries
         """
         if not self._cache['evalpts']:
             for elem in self._elements:
@@ -135,7 +135,7 @@ class AbstractContainer(abstract.GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the bounding box of all contained shapes
+        :getter: Gets the bounding box of all contained geometries
         """
         all_box = []
         for elem in self._elements:
@@ -264,11 +264,11 @@ class AbstractContainer(abstract.GeomdlBase):
         self._delta[idx] = 1.0 / float(value - 1)
 
     def add(self, element):
-        """ Adds shapes to the container.
+        """ Adds geometry objects to the container.
 
-        The input can be a single shape, a list of shapes or a container object.
+        The input can be a single geometry, a list of geometry objects or a geometry container object.
 
-        :param element: shape to be added
+        :param element: geometry object
         """
         if isinstance(element, (self.__class__, list, tuple)):
             for elem in element:
@@ -394,13 +394,13 @@ class CurveContainer(AbstractContainer):
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of shaped contained ("
+                                 ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of shapes contained ("
+                                 ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
         # Run the visualization component
@@ -759,13 +759,13 @@ class SurfaceContainer(AbstractContainer):
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of shapes contained(" +
+                                 ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of shapes contained ("
+                                 ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
         # Get colormaps as a list
@@ -1026,13 +1026,13 @@ class VolumeContainer(AbstractContainer):
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of shapes contained(" +
+                                 ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of shapes contained ("
+                                 ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
         # Run the visualization component
@@ -1084,7 +1084,7 @@ def select_color(cpcolor, evalcolor, idx=0):
     :type cpcolor: str, list, tuple
     :param evalcolor: color for evaluated points grid item
     :type evalcolor: str, list, tuple
-    :param idx: index of the current shape
+    :param idx: index of the current geometry object
     :type idx: int
     :return: a list of color values
     :rtype: list
