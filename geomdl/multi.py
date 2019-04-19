@@ -792,7 +792,7 @@ class SurfaceContainer(AbstractContainer):
 
 
 @utl.export
-class VolumeContainer(SurfaceContainer):
+class VolumeContainer(AbstractContainer):
     """ Container class for storing multiple volumes.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -818,7 +818,7 @@ class VolumeContainer(SurfaceContainer):
     .. code-block:: python
 
         # Create a multi-volume container instance
-        mvol = Multi.VolumeContainer()
+        mvol = multi.VolumeContainer()
 
         # Add single or multi volumes to the multi container using mvol.add() command
         # Addition operator, e.g. mvol1 + mvol2, also works
@@ -831,12 +831,57 @@ class VolumeContainer(SurfaceContainer):
     """
 
     def __init__(self, *args, **kwargs):
-        self._pdim = 3 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
-        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta
+        self._pdim = 3  # number of parametric dimensions
+        self._dinit = 0.1  # evaluation delta
         super(VolumeContainer, self).__init__()
-        self._delta = [0.1, 0.1, 0.1]  # evaluation delta
         for arg in args:
             self.add(arg)
+
+    @property
+    def delta_u(self):
+        """ Evaluation delta for the u-direction.
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
+
+        Please note that ``delta_u`` and ``sample_size_u`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_u`` will also set ``sample_size_u``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta value for the u-direction
+        :setter: Sets the delta value for the u-direction
+        :type: float
+        """
+        return self._delta[0]
+
+    @delta_u.setter
+    def delta_u(self, value):
+        self._delta_setter_common(0, value)
+
+    @property
+    def delta_v(self):
+        """ Evaluation delta for the v-direction.
+
+        Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
+        Therefore; smaller the delta, smoother the shape.
+
+        Please note that ``delta_v`` and ``sample_size_v`` properties correspond to the same variable with different
+        descriptions. Therefore, setting ``delta_v`` will also set ``sample_size_v``.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the delta value for the v-direction
+        :setter: Sets the delta value for the v-direction
+        :type: float
+        """
+        return self._delta[1]
+
+    @delta_v.setter
+    def delta_v(self, value):
+        self._delta_setter_common(1, value)
 
     @property
     def delta_w(self):
@@ -860,6 +905,44 @@ class VolumeContainer(SurfaceContainer):
     @delta_w.setter
     def delta_w(self, value):
         self._delta_setter_common(2, value)
+
+    @property
+    def sample_size_u(self):
+        """ Sample size for the u-direction.
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the u-direction
+        :setter: Sets sample size for the u-direction
+        :type: int
+        """
+        return self._sample_size_getter_common(0)
+
+    @sample_size_u.setter
+    def sample_size_u(self, value):
+        self._sample_size_setter_common(0, value)
+
+    @property
+    def sample_size_v(self):
+        """ Sample size for the v-direction.
+
+        Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets sample size for the v-direction
+        :setter: Sets sample size for the v-direction
+        :type: int
+        """
+        return self._sample_size_getter_common(1)
+
+    @sample_size_v.setter
+    def sample_size_v(self, value):
+        self._sample_size_setter_common(1, value)
 
     @property
     def sample_size_w(self):
