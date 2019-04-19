@@ -33,14 +33,16 @@ class GeomdlBase(object):
 
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
+    # __slots__ = ('_precision', '_id', '_dimension', '_geometry_type', '_name', '_opt_data', '_cache')
+
     def __init__(self, **kwargs):
-        self._dimension = 0  # spatial dimension
-        self._geometry_type = "none"  # geometry type
         self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._name = "base object"  # object name
         self._id = int(kwargs.get('id', 0))  # object ID
-        self._opt_data = dict()  # custom data dict
-        self._cache = {}  # cache dict
+        self._dimension = 0 if not hasattr(self, '_dimension') else self._dimension  # spatial dimension
+        self._geometry_type = "none" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
+        self._name = "base object" if not hasattr(self, '_name') else self._name  # object name
+        self._opt_data = dict() if not hasattr(self, '_opt_data') else self._opt_data  # custom data dict
+        self._cache = dict() if not hasattr(self, '_cache') else self._cache  # cache dict
 
     def __copy__(self):
         cls = self.__class__
@@ -213,11 +215,12 @@ class Geometry(GeomdlBase):
 
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
+    # __slots__ = ('_iter_index', '_array_type', '_eval_points')
 
     def __init__(self, **kwargs):
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
+        self._geometry_type = "default" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
         super(Geometry, self).__init__(**kwargs)
-        self._geometry_type = "default"  # geometry type
+        self._array_type = list if not hasattr(self, '_array_type') else self._array_type  # array storage type
         self._eval_points = self._init_array()  # evaluated points
 
     def __iter__(self):
@@ -296,12 +299,16 @@ class SplineGeometry(Geometry):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
+    # __slots__ = (
+    #     '_pdim', '_dinit', '_rational', '_degree', '_knot_vector', '_control_points', '_control_points_size',
+    #     '_delta', '_bounding_box', '_evaluator', '_vis_component', '_span_func', '_kv_normalize'
+    # )
 
     def __init__(self, **kwargs):
+        self._geometry_type = "spline" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
+        super(SplineGeometry, self).__init__(**kwargs)
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
         self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        super(SplineGeometry, self).__init__(**kwargs)
-        self._geometry_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
@@ -681,11 +688,10 @@ class Curve(SplineGeometry):
     """
 
     def __init__(self, **kwargs):
-        self._pdim = 1 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
-        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
+        self._pdim = 1  # number of parametric directions
+        self._dinit = 0.01  # evaluation delta init value
+        self._name = "curve"  # object name
         super(Curve, self).__init__(**kwargs)  # Call parent function
-        self._name = "curve"  # default name
 
     @property
     def order(self):
@@ -1161,13 +1167,13 @@ class Surface(SplineGeometry):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
+    # __slots__ = ('_tsl_component', '_trims')
 
     def __init__(self, **kwargs):
-        self._pdim = 2 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
-        self._dinit = 0.05 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        super(Surface, self).__init__(**kwargs)
+        self._pdim = 2  # number of parametric directions
+        self._dinit = 0.05  # evaluation delta init value
         self._name = "surface"  # object name
+        super(Surface, self).__init__(**kwargs)
         self._tsl_component = None  # tessellation component
         self._trims = self._init_array()  # trim curves
 
@@ -2097,11 +2103,10 @@ class Volume(SplineGeometry):
     """
 
     def __init__(self, **kwargs):
-        self._pdim = 3 if not hasattr(self, '_pdim') else self._pdim  # number of parametric directions
-        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type
-        super(Volume, self).__init__(**kwargs)
+        self._pdim = 3  # number of parametric directions
+        self._dinit = 0.1  # evaluation delta init value
         self._name = "volume"  # object name
+        super(Volume, self).__init__(**kwargs)
 
     @property
     def order_u(self):

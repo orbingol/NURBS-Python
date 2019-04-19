@@ -66,12 +66,13 @@ class Curve(abstract.Curve):
 
     Please refer to the :py:class:`.abstract.Curve()` documentation for more details.
     """
+    # __slots__ = ('_insert_knot_func', '_remove_knot_func')
 
     def __init__(self, **kwargs):
         super(Curve, self).__init__(**kwargs)
+        self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
         self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
         self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
-        self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
 
     def save(self, file_name):
         """  Saves the curve as a pickled file.
@@ -423,14 +424,15 @@ class Surface(abstract.Surface):
 
     Please refer to the :py:class:`.abstract.Surface()` documentation for more details.
     """
+    # __slots__ = ('_insert_knot_func', '_remove_knot_func', '_control_points2D')
 
     def __init__(self, **kwargs):
         super(Surface, self).__init__(**kwargs)
-        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
-        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
-        self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
+        self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
+        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
+        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
 
     @property
     def ctrlpts2d(self):
@@ -896,12 +898,13 @@ class Volume(abstract.Volume):
 
     Please refer to the :py:class:`.abstract.Volume()` documentation for more details.
     """
+    # __slots__ = ('_insert_knot_func', '_remove_knot_func')
 
     def __init__(self, **kwargs):
         super(Volume, self).__init__(**kwargs)
+        self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
         self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
         self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
-        self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
 
     def save(self, file_name):
         """ Saves the volume as a pickled file.
