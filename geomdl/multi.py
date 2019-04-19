@@ -29,7 +29,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     This class provides the following properties:
 
-    * :py:attr:`dimension`
+    * :py:attr:`pdimension`
     * :py:attr:`evalpts`
     * :py:attr:`bbox`
     * :py:attr:`vis`
@@ -310,7 +310,7 @@ class CurveContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:attr:`dimension`
+    * :py:attr:`pdimension`
     * :py:attr:`evalpts`
     * :py:attr:`bbox`
     * :py:attr:`vis`
@@ -322,7 +322,7 @@ class CurveContainer(AbstractContainer):
     .. code-block:: python
 
         # Create a multi-curve container instance
-        mcrv = Multi.CurveContainer()
+        mcrv = multi.CurveContainer()
 
         # Add single or multi curves to the multi container using mcrv.add() command
         # Addition operator, e.g. mcrv1 + mcrv2, also works
@@ -432,7 +432,7 @@ class SurfaceContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:attr:`dimension`
+    * :py:attr:`pdimension`
     * :py:attr:`evalpts`
     * :py:attr:`bbox`
     * :py:attr:`vis`
@@ -442,13 +442,16 @@ class SurfaceContainer(AbstractContainer):
     * :py:attr:`sample_size`
     * :py:attr:`sample_size_u`
     * :py:attr:`sample_size_v`
+    * :py:attr:`tessellator`
+    * :py:attr:`vertices`
+    * :py:attr:`faces`
 
     The following code example illustrates the usage of these Python properties:
 
     .. code-block:: python
 
         # Create a multi-surface container instance
-        msurf = Multi.SurfaceContainer()
+        msurf = multi.SurfaceContainer()
 
         # Add single or multi surfaces to the multi container using msurf.add() command
         # Addition operator, e.g. msurf1 + msurf2, also works
@@ -797,7 +800,7 @@ class VolumeContainer(SurfaceContainer):
 
     This class provides the following properties:
 
-    * :py:attr:`dimension`
+    * :py:attr:`pdimension`
     * :py:attr:`evalpts`
     * :py:attr:`bbox`
     * :py:attr:`vis`
