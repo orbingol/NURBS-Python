@@ -276,7 +276,18 @@ def import_dict_ff(data):
 
 
 def export_dict_ff(obj):
-    data = dict(points=obj.evalpts)
+    data = dict(
+        type="freeform",
+        dimension=obj.dimension,
+        points=obj.evalpts,
+        name=obj.name
+    )
+
+    # For trim curves
+    sense = obj.opt_get('reversed')
+    if sense is not None:
+        data['reversed'] = sense
+
     return data
 
 
