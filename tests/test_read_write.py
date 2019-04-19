@@ -80,60 +80,6 @@ def nurbs_surface_decompose():
     return surf
 
 
-# Tests pickled load-save operations on curves
-def test_bspline_curve_loadsave(bspline_curve3d):
-    fname = FILE_NAME + ".pickle"
-
-    bspline_curve3d.save(fname)
-
-    curve_load = BSpline.Curve()
-    curve_load.load(fname)
-
-    # Remove save file
-    os.remove(fname)
-
-    assert bspline_curve3d.degree == curve_load.degree
-    assert bspline_curve3d.knotvector == curve_load.knotvector
-    assert bspline_curve3d.ctrlpts == curve_load.ctrlpts
-    assert bspline_curve3d.dimension == curve_load.dimension
-
-
-def test_bspline_curve_save_error(bspline_curve3d):
-    fname = ""
-
-    with pytest.raises(IOError):
-        bspline_curve3d.save(fname)
-
-
-def test_bspline_curve_load_error(bspline_curve3d):
-    fname = ""
-
-    with pytest.raises(IOError):
-        bspline_curve3d.load(fname)
-
-
-# Tests pickled load-save operations on surfaces
-def test_bspline_surface_loadsave(bspline_surface):
-    fname = FILE_NAME + ".pickle"
-
-    bspline_surface.save(fname)
-
-    surf_load = BSpline.Surface()
-    surf_load.load(fname)
-
-    # Remove save file
-    os.remove(fname)
-
-    assert bspline_surface.degree_u == surf_load.degree_u
-    assert bspline_surface.degree_v == surf_load.degree_v
-    assert bspline_surface.knotvector_u == surf_load.knotvector_u
-    assert bspline_surface.knotvector_v == surf_load.knotvector_v
-    assert bspline_surface.ctrlpts == surf_load.ctrlpts
-    assert bspline_surface.ctrlpts_size_u == surf_load.ctrlpts_size_u
-    assert bspline_surface.ctrlpts_size_v == surf_load.ctrlpts_size_v
-    assert bspline_surface.dimension == surf_load.dimension
-
-
 # Tests if the .obj file exists
 def test_export_obj_single(nurbs_surface):
     fname = FILE_NAME + ".obj"

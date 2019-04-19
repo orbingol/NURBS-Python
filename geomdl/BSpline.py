@@ -79,38 +79,26 @@ class Curve(abstract.Curve):
     def save(self, file_name):
         """  Saves the curve as a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.export_json()` instead.
+
         :param file_name: name of the file to be saved
         :type file_name: str
-        :raises IOError: an error occurred writing the file
         """
-        # Create a dictionary from the curve data
-        expdata = {'rational': self.rational,
-                   'degree': self.degree,
-                   'knotvector': self.knotvector,
-                   'ctrlpts': self._control_points,
-                   'dimension': self.dimension}
-
-        save_pickle(expdata, file_name)
+        return None
 
     def load(self, file_name):
         """ Loads the curve from a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.import_json()` instead.
+
         :param file_name: name of the file to be loaded
         :type file_name: str
-        :raises IOError: an error occurred reading the file
         """
-        impdata = read_pickle(file_name)
-
-        if self.rational != impdata['rational']:
-            raise TypeError("Curve types are not compatible (rational vs. non-rational mismatch)")
-
-        # Clean control points and evaluated points
-        self.reset(ctrlpts=True, evalpts=True)
-
-        # Set the curve data
-        self.degree = impdata['degree']
-        self.set_ctrlpts(impdata['ctrlpts'])
-        self.knotvector = impdata['knotvector']
+        return None
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -573,45 +561,26 @@ class Surface(abstract.Surface):
     def save(self, file_name):
         """ Saves the surface as a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.export_json()` instead.
+
         :param file_name: name of the file to be saved
         :type file_name: str
-        :raises IOError: an error occurred writing the file
         """
-        # Create a dictionary from the surface data
-        expdata = {'rational': self.rational,
-                   'degree_u': self.degree_u,
-                   'degree_v': self.degree_v,
-                   'knotvector_u': self.knotvector_u,
-                   'knotvector_v': self.knotvector_v,
-                   'ctrlpts_size_u': self.ctrlpts_size_u,
-                   'ctrlpts_size_v': self.ctrlpts_size_v,
-                   'ctrlpts': self._control_points,
-                   'dimension': self.dimension}
-
-        save_pickle(expdata, file_name)
+        return None
 
     def load(self, file_name):
         """ Loads the surface from a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.import_json()` instead.
+
         :param file_name: name of the file to be loaded
         :type file_name: str
-        :raises IOError: an error occurred reading the file
         """
-        impdata = read_pickle(file_name)
-
-        # Check if we have loaded the correct type of surface
-        if self.rational != impdata['rational']:
-            raise TypeError("Surface types are not compatible (rational vs. non-rational mismatch)")
-
-        # Clean control points and evaluated points
-        self.reset(ctrlpts=True, evalpts=True)
-
-        # Set the surface data
-        self.degree_u = impdata['degree_u']
-        self.degree_v = impdata['degree_v']
-        self.set_ctrlpts(impdata['ctrlpts'], impdata['ctrlpts_size_u'], impdata['ctrlpts_size_v'])
-        self.knotvector_u = impdata['knotvector_u']
-        self.knotvector_v = impdata['knotvector_v']
+        return None
 
     def transpose(self):
         """ Transposes the surface by swapping u and v parametric directions. """
@@ -915,50 +884,26 @@ class Volume(abstract.Volume):
     def save(self, file_name):
         """ Saves the volume as a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.export_json()` instead.
+
         :param file_name: name of the file to be saved
         :type file_name: str
-        :raises IOError: an error occurred writing the file
         """
-        # Create a dictionary from the surface data
-        expdata = {'rational': self.rational,
-                   'degree_u': self.degree_u,
-                   'degree_v': self.degree_v,
-                   'degree_w': self.degree_w,
-                   'knotvector_u': self.knotvector_u,
-                   'knotvector_v': self.knotvector_v,
-                   'knotvector_w': self.knotvector_w,
-                   'ctrlpts_size_u': self.ctrlpts_size_u,
-                   'ctrlpts_size_v': self.ctrlpts_size_v,
-                   'ctrlpts_size_w': self.ctrlpts_size_w,
-                   'ctrlpts': self._control_points,
-                   'dimension': self.dimension}
-
-        save_pickle(expdata, file_name)
+        return None
 
     def load(self, file_name):
         """ Loads the volume from a pickled file.
 
+        .. deprecated:: 5.2.4
+
+            Use :func:`.exchange.import_json()` instead.
+
         :param file_name: name of the file to be loaded
         :type file_name: str
-        :raises IOError: an error occurred reading the file
         """
-        idata = read_pickle(file_name)
-
-        # Check if we have loaded the correct type of surface
-        if self.rational != idata['rational']:
-            raise TypeError("Volume types are not compatible (rational vs. non-rational mismatch)")
-
-        # Clean control points and evaluated points
-        self.reset(ctrlpts=True, evalpts=True)
-
-        # Set the surface data
-        self.degree_u = idata['degree_u']
-        self.degree_v = idata['degree_v']
-        self.degree_w = idata['degree_w']
-        self.set_ctrlpts(idata['ctrlpts'], idata['ctrlpts_size_u'], idata['ctrlpts_size_v'], idata['ctrlpts_size_w'])
-        self.knotvector_u = idata['knotvector_u']
-        self.knotvector_v = idata['knotvector_v']
-        self.knotvector_w = idata['knotvector_w']
+        return None
 
     def evaluate(self, **kwargs):
         """ Evaluates the volume.
@@ -1126,50 +1071,3 @@ class Volume(abstract.Volume):
         # Evaluate curve again if it has already been evaluated before knot removal
         if check_num and self._eval_points:
             self.evaluate()
-
-
-def save_pickle(data_dict, file_name):
-    """ Saves the contents of the data dictionary as a pickled file.
-
-    Helper function for curve and surface ``save`` method.
-
-    :param data_dict: data dictionary
-    :type data_dict: dict
-    :param file_name: name of the file to be saved
-    :type file_name: str
-    :raises IOError: an error occurred writing the file
-    """
-    # Try opening the file for writing
-    try:
-        with open(file_name, 'wb') as fp:
-            # Pickle the data dictionary
-            pickle.dump(data_dict, fp)
-    except IOError as e:
-        print("An error occurred. {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise
-
-
-def read_pickle(file_name):
-    """ Reads a data dictionary from a pickled file.
-
-    Helper function for curve and surface ``load`` method.
-
-    :param file_name: name of the file to be loaded
-    :type file_name: str
-    :return: data dictionary
-    :rtype: dict
-    :raises IOError: an error occurred reading the file
-    """
-    # Try opening the file for reading
-    try:
-        with open(file_name, 'rb') as fp:
-            # Read and return the pickled file
-            impdata = pickle.load(fp)
-            return impdata
-    except IOError as e:
-        print("An error occurred. {}".format(e.args[-1]))
-        raise e
-    except Exception:
-        raise

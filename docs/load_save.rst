@@ -1,22 +1,15 @@
 Loading and Saving Data
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-NURBS-Python provides the following methods for loading curve and surface data from a file:
+NURBS-Python provides the following API calls for exporting and importing spline geometry data:
 
-* :py:meth:`.BSpline.Curve.load()` and :py:meth:`.NURBS.Curve.load()`
-* :py:meth:`.BSpline.Surface.load()` and :py:meth:`.NURBS.Surface.load()`
+* :py:func:`.exchange.import_json()`
+* :py:func:`.exchange.export_json()`
 
-Additionally, save functionality is provided via the following methods:
+JSON import/export works with all spline geometry and container objects. Please refer to
+:doc:`File Formats <file_formats>` for more details.
 
-* :py:meth:`.BSpline.Curve.save()` and :py:meth:`.NURBS.Curve.save()`
-* :py:meth:`.BSpline.Surface.save()` and :py:meth:`.NURBS.Surface.save()`
-
-These functions implement Python's ``pickle`` module to serialize the degree, knot vector and the control points data.
-The idea behind this system is only to provide users a basic data persistence capability, not to introduce a new
-file type. Since the data is *pickled*, it can be loaded with any compatible Python version even without using
-any special library.
-
-The following example demonstrates the save functionality on a curve:
+The following code snippet illustrates a B-spline curve generation and its JSON export:
 
 .. code-block:: python
     :linenos:
@@ -37,31 +30,20 @@ The following example demonstrates the save functionality on a curve:
     # Auto-generate the knot vector
     curve.knotvector = utilities.generate_knot_vector(curve.degree, len(curve.ctrlpts))
 
-    # Save the curve
-    curve.save("mycurve.pickle")
+    # Export the curve as a JSON file
+    exchange.export_json(curve, "curve.json")
 
-The saved curve can be loaded from the file with the following simple code segment:
-
-.. code-block:: python
-    :linenos:
-
-    from geomdl import BSpline
-
-    # Create a B-Spline curve instance
-    curve2 = BSpline.Curve()
-
-    # Load the saved curve from a file
-    curve2.load("mycurve.pickle")
-
-Since the load-save functionality implements Python's ``pickle`` module, the saved file can also be loaded directly
-without using the NURBS-Python library.
+The following code snippet illustrates importing from a JSON file and adding the result to
+a container object:
 
 .. code-block:: python
     :linenos:
 
-    import pickle
+    from geomdl import multi
+    from geomdl import exchange
 
-    # "data" variable will be a dictionary containing the curve information
-    data = pickle.load(open("mycurve.pickle"), "rb")
+    # Import curve from a JSON file
+    curve_list = exchange.import_json("curve.json")
 
-The ``pickle`` module has its own limitations by its design. Please see the Python documentation for more details.
+    # Add curve list to the container
+    curve_container = multi.CurveContainer(curve_list)
