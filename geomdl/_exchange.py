@@ -373,7 +373,7 @@ def export_dict_surf(obj):
     # Trim curves
     if obj.trims:
         trim_data = dict(count=len(obj.trims))
-        trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff)
+        trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff, analytic=export_dict_ff)
         trim_curves = []
         for trim in obj.trims:
             if trim.type in trim_curve_typemap:
