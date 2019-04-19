@@ -396,16 +396,26 @@ def export_dict_surf(obj):
     if sense is not None:
         data['reversed'] = sense
 
+    # Converter mapping for trim curves
+    trim_curve_typemap = dict(
+        spline=export_dict_crv,
+        freeform=export_dict_ff,
+        container=export_dict_multi_crv
+    )
+
     # Trim curves
     if obj.trims:
-        trim_data = dict(count=len(obj.trims))
-        trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff, analytic=export_dict_ff)
         trim_curves = []
         for trim in obj.trims:
             if trim.type in trim_curve_typemap:
                 tdata = trim_curve_typemap[trim.type](trim)
-                trim_curves.append(tdata)
-        trim_data['data'] = trim_curves
+            else:
+                tdata = trim_curve_typemap['freeform'](trim)
+            trim_curves.append(tdata)
+        trim_data = dict(
+            count=len(trim_curves),
+            data=trim_curves
+        )
         data['trims'] = trim_data
 
     return data
