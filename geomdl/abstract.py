@@ -1763,10 +1763,10 @@ class Surface(SplineGeometry):
             if arg < degree + 1:
                 raise GeomdlException("Number of control points should be at least degree + 1")
 
-        if len(ctrlpts[0]) < 3:
-            raise GeomdlException("A surface should be at least 3-dimensional")
+        if len(ctrlpts[0]) < 2:
+            raise GeomdlException("A surface should be at least 2-dimensional")
 
-        if self.rational and len(ctrlpts[0]) < 4:
+        if self.rational and len(ctrlpts[0]) < 3:
             raise GeomdlException("Rational surfaces expect weighted control points, e.g. (x * w, y * w, z * w, w)")
 
         # Clean up the surface and control points
