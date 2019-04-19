@@ -279,6 +279,8 @@ class SplineGeometry(Geometry):
 
     This class provides the following properties:
 
+    * :py:attr:`type` = spline
+    * :py:attr:`id`
     * :py:attr:`name`
     * :py:attr:`rational`
     * :py:attr:`dimension`
@@ -292,6 +294,7 @@ class SplineGeometry(Geometry):
     * :py:attr:`bbox`
     * :py:attr:`evaluator`
     * :py:attr:`vis`
+    * :py:attr:`opt`
 
     **Keyword Arguments:**
 

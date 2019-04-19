@@ -29,7 +29,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     This class provides the following properties:
 
-    * :py:attr:`type`
+    * :py:attr:`type` = container
     * :py:attr:`id`
     * :py:attr:`name`
     * :py:attr:`dimension`
@@ -315,7 +315,7 @@ class CurveContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:attr:`type`
+    * :py:attr:`type` = container
     * :py:attr:`id`
     * :py:attr:`name`
     * :py:attr:`dimension`
@@ -442,7 +442,7 @@ class SurfaceContainer(AbstractContainer):
 
     This class provides the following properties:
 
-    * :py:attr:`type`
+    * :py:attr:`type` = container
     * :py:attr:`id`
     * :py:attr:`name`
     * :py:attr:`dimension`

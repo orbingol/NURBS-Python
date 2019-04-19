@@ -19,6 +19,8 @@ class Curve(abstract.Curve):
 
     This class provides the following properties:
 
+    * :py:attr:`type` = spline
+    * :py:attr:`id`
     * :py:attr:`order`
     * :py:attr:`degree`
     * :py:attr:`knotvector`
@@ -358,6 +360,8 @@ class Surface(abstract.Surface):
 
     This class provides the following properties:
 
+    * :py:attr:`type` = spline
+    * :py:attr:`id`
     * :py:attr:`order_u`
     * :py:attr:`order_v`
     * :py:attr:`degree_u`
@@ -860,6 +864,8 @@ class Volume(abstract.Volume):
 
     This class provides the following properties:
 
+    * :py:attr:`type` = spline
+    * :py:attr:`id`
     * :py:attr:`order_u`
     * :py:attr:`order_v`
     * :py:attr:`order_w`
