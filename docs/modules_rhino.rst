@@ -21,6 +21,29 @@ Installation
 
 Please refer to the `rw3dm repository <https://github.com/orbingol/rw3dm>`_ for installation options.
 
+Using with geomdl
+=================
+
+The following code snippet illustrates importing the surface data converted from .3dm file:
+
+.. code-block:: python
+    :linenos:
+
+    from geomdl import exchange
+    from geomdl import multi
+    from geomdl.visualization import VisMPL as vis
+
+    # Import converted data
+    data = exchange.import_json("converted_rhino.json")
+
+    # Add the imported data to a surface container
+    surf_cont = multi.SurfaceContainer(data)
+    surf_cont.sample_size = 30
+
+    # Visualize
+    surf_cont.vis = vis.VisSurface(ctrlpts=False, trims=False)
+    surf_cont.render()
+
 References
 ==========
 

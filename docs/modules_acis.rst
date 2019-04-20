@@ -19,6 +19,29 @@ Installation
 
 Please refer to the `rwsat repository <https://github.com/orbingol/rwsat>`_ for installation options.
 
+Using with geomdl
+=================
+
+The following code snippet illustrates importing the surface data converted from .sat file:
+
+.. code-block:: python
+    :linenos:
+
+    from geomdl import exchange
+    from geomdl import multi
+    from geomdl.visualization import VisMPL as vis
+
+    # Import converted data
+    data = exchange.import_json("converted_acis.json")
+
+    # Add the imported data to a surface container
+    surf_cont = multi.SurfaceContainer(data)
+    surf_cont.sample_size = 30
+
+    # Visualize
+    surf_cont.vis = vis.VisSurface(ctrlpts=False, trims=False)
+    surf_cont.render()
+
 References
 ==========
 
