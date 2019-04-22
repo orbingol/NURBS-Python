@@ -1,5 +1,12 @@
 # geomdl Changelog
 
+## v5.2.4 released on 2019-04-22
+
+* Reduced set control points restrictions for surfaces. `Surface.set_ctrlpts` now accepts 2-dimensional control points.
+* Deprecated `save` and `load` methods defined in `BSpline` module in favor of `import_json` and `export_json`
+* Generalized `operations.add_dimension` API call to work with all `SplineGeometry` subclasses
+* Documentation updates
+
 ## v5.2.3 released on 2019-04-19
 
 * Fix incorrect dict export of trims in trimmed surfaces

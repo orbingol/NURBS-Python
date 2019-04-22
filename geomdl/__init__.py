@@ -5,7 +5,7 @@
 """
 
 # Library version
-__version__ = "5.2.3"
+__version__ = "5.2.4"
 
 # Author and licence
 __author__ = "Onur Rauf Bingol"
