@@ -16,7 +16,7 @@ from ._utilities import export
 
 @export
 def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
-    """ Generates 3-dimensional surface mapping of trimming curves.
+    """ Generates 3-dimensional mapping of 2-dimensional trimming curves.
 
     If `trim_idx=-1`, the function maps all 2-dimensional trims to their 3-dimensional
     correspondants.
@@ -28,6 +28,9 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
     :return: 3-dimensional mapping of trimming curve(s)
     :rtype: freeform.Freeform
     """
+    if obj.pdimension < 2:
+        raise GeomdlException("Input geometry should be defined on, at least, 2-dimensional parametric space")
+
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
 
