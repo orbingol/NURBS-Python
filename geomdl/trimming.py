@@ -15,6 +15,60 @@ from ._utilities import export
 
 
 @export
+def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
+    """ Generates 3-dimensional surface mapping of trimming curves.
+
+    If `trim_idx=-1`, the function maps all 2-dimensional trims to their 3-dimensional
+    correspondants.
+
+    :param obj: spline geometry
+    :type obj: abstract.SplineGeometry
+    :param trim_idx: index of the trimming curve in the geometry object
+    :type trim_idx: int
+    :return: 3-dimensional mapping of trimming curve(s)
+    :rtype: freeform.Freeform
+    """
+    # Get keyword arguments
+    delta = kwargs.get('delta', -1.0)
+
+    # Initialize return list
+    ret = []
+
+    # Process trims
+    if trim_idx < 0:
+        # Process all trims
+        for trim in obj.trims:
+            # Set delta
+            if delta > 0:
+                trim.delta = delta
+
+            # Evaluate trim
+            epts = obj.evaluate_list(trim.evalpts)
+            fcurve = shortcuts.generate_freeform()
+            fcurve.evaluate(points=epts)
+            ret.append(fcurve)
+    else:
+        # Process a single trim
+        try:
+            trim = obj.trims[trim_idx]
+        except KeyError:
+            raise GeomdlException("Trim curve at index " + str(trim_idx) + " does not exist")
+
+        # Set delta
+        if delta > 0:
+            trim.delta = delta
+
+        # Evaluate trim
+        epts = obj.evaluate_list(trim.evalpts)
+        fcurve = shortcuts.generate_freeform()
+        fcurve.evaluate(points=epts)
+        ret.append(fcurve)
+
+    # Return curves
+    return ret
+
+
+@export
 def fix_multi_trim_curves(obj, **kwargs):
     """ Fixes direction, connectivity and similar issues of the trim curves.
 
