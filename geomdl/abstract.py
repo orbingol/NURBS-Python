@@ -2128,6 +2128,7 @@ class Volume(SplineGeometry):
         self._dinit = 0.1  # evaluation delta init value
         self._name = "volume"  # object name
         super(Volume, self).__init__(**kwargs)
+        self._trims = self._init_array()  # trimming surfaces
 
     @property
     def order_u(self):
@@ -2746,8 +2747,32 @@ class Volume(SplineGeometry):
             raise ValueError("Cannot set delta. Please input a numeric value or a list or tuple with 3 numeric values")
 
     @property
+    def trims(self):
+        """ Trimming surfaces.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the array of trim surfaces
+        :setter: Sets the array of trim surfaces
+        """
+        return tuple(self._trims)
+
+    @trims.setter
+    def trims(self, value):
+        # Input type validation
+        if not isinstance(value, (list, tuple)):
+            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming surfaces")
+        # Trim curve validation
+        for i, v in enumerate(value):
+            try:
+                self.add_trim(v)
+            except GeomdlException:
+                raise GeomdlException("Invalid geometry at index " + str(i))
+
+    @property
     def data(self):
-        """ Returns a dictionary containing all shape data.
+        """ Returns a dictionary containing the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2758,8 +2783,21 @@ class Volume(SplineGeometry):
             degree=self._degree,
             knotvector=self._knot_vector,
             size=self._control_points_size,
-            control_points=self._control_points
+            control_points=self._control_points,
+            trims=self._trims
         )
+
+    def add_trim(self, trim):
+        """ Adds a trim to the volume.
+
+        :attr:`trims` uses this method to add trims to the volume.
+
+        :param trim: trimming surface
+        :type trim: abstract.Surface
+        """
+        if trim.dimension != 3:
+            raise GeomdlException("Input geometry should be 3-dimensional")
+        self._trims.append(trim)
 
     def reset(self, **kwargs):
         """ Resets control points and/or evaluated points.
