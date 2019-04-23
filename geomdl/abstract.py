@@ -1735,7 +1735,8 @@ class Surface(SplineGeometry):
             degree=self._degree,
             knotvector=self._knot_vector,
             size=self._control_points_size,
-            control_points=self._control_points
+            control_points=self._control_points,
+            trims=self._trims
         )
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
