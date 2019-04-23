@@ -1709,7 +1709,7 @@ class Surface(SplineGeometry):
         :getter: Gets the array of trim curves
         :setter: Sets the array of trim curves
         """
-        return self._trims
+        return tuple(self._trims)
 
     @trims.setter
     def trims(self, value):
@@ -1718,9 +1718,10 @@ class Surface(SplineGeometry):
             raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trim curves")
         # Trim curve validation
         for i, v in enumerate(value):
-            if v.dimension != 2:
-                raise GeomdlException("Curve at index " + str(i) + " is not a 2-dimensional curve")
-        self._trims = tuple(value)
+            try:
+                self.add_trim(v)
+            except GeomdlException:
+                raise GeomdlException("Invalid geometry at index " + str(i))
 
     @property
     def data(self):
@@ -1738,6 +1739,24 @@ class Surface(SplineGeometry):
             control_points=self._control_points,
             trims=self._trims
         )
+
+    def add_trim(self, trim):
+        """ Adds a trim to the surface.
+
+        A trim is a 2-dimensional curve defined on the parametric domain of the surface. Therefore, x-coordinate
+        of the trimming curve corresponds to u parametric direction of the surfaceand y-coordinate of the trimming
+        curve corresponds to v parametric direction of the surface.
+
+        :attr:`trims` also uses this method to add trims to the surface.
+        
+        :param trim: surface trimming curve
+        :type trim: abstract.Geometry
+        """
+        if trim.pdimension != 1:
+            raise GeomdlException("Input geometry should be 1-dimensional on the parametric space")
+        if trim.dimension != 2:
+            raise GeomdlException("Input geometry should be a 2-dimensional curve")
+        self._trims.append(trim)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets the control points and checks if the data is consistent.
