@@ -1752,10 +1752,8 @@ class Surface(SplineGeometry):
         :param trim: surface trimming curve
         :type trim: abstract.Geometry
         """
-        if trim.pdimension != 1:
-            raise GeomdlException("Input geometry should be 1-dimensional on the parametric space")
         if trim.dimension != 2:
-            raise GeomdlException("Input geometry should be a 2-dimensional curve")
+            raise GeomdlException("Input geometry should be 2-dimensional")
         self._trims.append(trim)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
