@@ -1715,7 +1715,7 @@ class Surface(SplineGeometry):
     def trims(self, value):
         # Input type validation
         if not isinstance(value, (list, tuple)):
-            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trim curves")
+            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming curves")
         # Trim curve validation
         for i, v in enumerate(value):
             try:
@@ -1748,7 +1748,7 @@ class Surface(SplineGeometry):
         curve corresponds to v parametric direction of the surface.
 
         :attr:`trims` uses this method to add trims to the surface.
-        
+
         :param trim: surface trimming curve
         :type trim: abstract.Geometry
         """
