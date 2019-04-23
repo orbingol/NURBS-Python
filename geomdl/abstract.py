@@ -1178,7 +1178,7 @@ class Surface(SplineGeometry):
         self._name = "surface"  # object name
         super(Surface, self).__init__(**kwargs)
         self._tsl_component = None  # tessellation component
-        self._trims = self._init_array()  # trim curves
+        self._trims = self._init_array()  # trimming curves
 
     @property
     def order_u(self):
@@ -1747,7 +1747,7 @@ class Surface(SplineGeometry):
         of the trimming curve corresponds to u parametric direction of the surfaceand y-coordinate of the trimming
         curve corresponds to v parametric direction of the surface.
 
-        :attr:`trims` also uses this method to add trims to the surface.
+        :attr:`trims` uses this method to add trims to the surface.
         
         :param trim: surface trimming curve
         :type trim: abstract.Geometry
