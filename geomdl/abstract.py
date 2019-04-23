@@ -1724,7 +1724,7 @@ class Surface(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dictionary containing all shape data.
+        """ Returns a dictionary containing the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
