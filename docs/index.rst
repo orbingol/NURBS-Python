@@ -9,8 +9,8 @@ Welcome to the **NURBS-Python (geomdl) v5.x** documentation! NURBS-Python is a p
 and NURBS library. It is compatible with Python versions 2.7.x, 3.4.x and later. It supports rational and non-rational
 curves, surfaces and volumes.
 
-NURBS-Python also provides a convenient and easy-to-use data structures for storing parametric shape descriptions.
-These are documented under :ref:`modules`.
+NURBS-Python provides convenient and easy-to-use data structures for storing geometry descriptions in addition to
+evaluation algorithms. These are documented under :ref:`modules`.
 
 This documentation is organized into a couple sections:
 
