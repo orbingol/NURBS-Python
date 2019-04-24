@@ -12,7 +12,7 @@ Some significant features of NURBS-Python (geomdl):
 * Surface and curve fitting with interpolation and least squares approximation
 * Knot vector and surface grid generators
 * Support for common geometric algorithms: tessellation, voxelization, ray intersection, etc.
-* Construct surfaces and volumes, extract isosurfaces via `construct` module
+* Construct surfaces and volumes, extract isosurfaces via ``construct`` module
 * Customizable visualization and animation options with Matplotlib, Plotly and VTK modules
 * Import geometry data from common CAD formats, such as 3DM and SAT.
 * Export geometry data into common CAD formats, such as 3DM, STL, OBJ and VTK
@@ -20,12 +20,11 @@ Some significant features of NURBS-Python (geomdl):
 * `Jinja2 <http://jinja.pocoo.org/>`_ support for file imports
 * Pure Python, no external C/C++ or FORTRAN library dependencies
 * Python compatibility: 2.7.x, 3.4.x and later
-* Install and use: Everything is implemented in pure Python and depends only on the Python Standard Library
 * For higher performance, optional *Compile with Cython* options are also available
-* Easy to install via **pip**: ``pip install geomdl`` or **conda**: ``conda install -c orbingol geomdl``
+* Easy to install via `pip <https://pypi.org/project/geomdl/>`_ or `conda <https://anaconda.org/orbingol/geomdl>`_
 * `Docker images <https://hub.docker.com/r/idealabisu/nurbs-python>`_ are available
-* `geomdl-shapes` module for generating common spline and analytic geometries
-* `geomdl-cli` module for using the library from the command line
+* ``geomdl-shapes`` module for generating common spline and analytic geometries
+* ``geomdl-cli`` module for using the library from the command line
 
 NURBS-Python (geomdl) contains the following fundamental geometric algorithms:
 
