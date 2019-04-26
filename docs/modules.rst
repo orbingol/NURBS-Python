@@ -31,6 +31,7 @@ The following is the list of the features and geometric operations included in t
     module_construct
     module_fitting
     module_tessellate
+    module_trimming
     module_exchange
 
 Geometry Generators
