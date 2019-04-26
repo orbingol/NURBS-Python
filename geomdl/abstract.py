@@ -420,6 +420,13 @@ class SplineGeometry(Geometry):
     def degree(self):
         """ Degree
 
+        .. note::
+
+            This is an expert property for getting and setting the degree(s) of the geometry.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the degree
         :setter: Sets the degree
         :type: list
@@ -433,6 +440,13 @@ class SplineGeometry(Geometry):
     @property
     def knotvector(self):
         """ Knot vector
+
+        .. note::
+
+            This is an expert property for getting and setting the knot vector(s) of the geometry.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -462,20 +476,12 @@ class SplineGeometry(Geometry):
         self._control_points = value
 
     @property
-    def ctrlpts_size(self):
-        """ Total number of control points.
-
-        :getter: Gets the total number of control points
-        :type: int
-        """
-        res = 1
-        for sz in self._control_points_size:
-            res *= sz
-        return res
-
-    @property
     def weights(self):
         """ Weights.
+
+        .. note::
+
+            Only available for rational spline geometries. Getter return ``None`` otherwise.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -488,6 +494,18 @@ class SplineGeometry(Geometry):
     @weights.setter
     def weights(self, value):
         pass
+
+    @property
+    def ctrlpts_size(self):
+        """ Total number of control points.
+
+        :getter: Gets the total number of control points
+        :type: int
+        """
+        res = 1
+        for sz in self._control_points_size:
+            res *= sz
+        return res
 
     @property
     def domain(self):
