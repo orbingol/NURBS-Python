@@ -1,5 +1,5 @@
-Tessellation & Trimming
-^^^^^^^^^^^^^^^^^^^^^^^
+Tessellation
+^^^^^^^^^^^^
 
 The ``tessellate`` module provides tessellation algorithms for surfaces. The following example illustrates the usage
 scenario of the tessellation algorithms with surfaces.

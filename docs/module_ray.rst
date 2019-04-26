@@ -9,4 +9,3 @@ Function and Class Reference
 
 .. automodule:: geomdl.ray
     :members:
-    :undoc-members:
