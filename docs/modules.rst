@@ -10,7 +10,7 @@ User API
 The User API is the main entrance point to the library. It provides geometry classes and containers, as well as the
 geometric operators and support modules.
 
-The following list contains the geometry classes included in the library:
+The following is the list of the geometry classes included in the library:
 
 .. toctree::
     :maxdepth: 1
@@ -20,7 +20,7 @@ The following list contains the geometry classes included in the library:
     module_freeform
     module_container
 
-The following list contains the geometric operations included in the library:
+The following is the list of the features and geometric operations included in the library:
 
 .. toctree::
     :maxdepth: 1
@@ -31,12 +31,6 @@ The following list contains the geometric operations included in the library:
     module_construct
     module_fitting
     module_tessellate
-
-The following list contains the modules for data exchange:
-
-.. toctree::
-    :maxdepth: 1
-
     module_exchange
 
 Geometry Generators
