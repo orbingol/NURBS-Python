@@ -496,6 +496,27 @@ class SplineGeometry(Geometry):
         pass
 
     @property
+    def cpsize(self):
+        """ Number of control points in all parametric directions.
+
+        .. note::
+
+            This is an expert property for getting and setting control point size(s) of the geometry.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the number of control points
+        :setter: Sets the number of control points
+        :type: list
+        """
+        return self._control_points_size
+
+    @cpsize.setter
+    def cpsize(self, value):
+        self._control_points_size = value
+
+    @property
     def ctrlpts_size(self):
         """ Total number of control points.
 
