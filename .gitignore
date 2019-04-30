@@ -7,13 +7,13 @@
 build/
 dist/
 wheelhouse/
-geomdl.egg-info/*
-geomdl.core.egg-info/*
+*.egg-info/*
 docs/_build
 docs/_static
 geomdl/core
 geomdl/cli
 geomdl/shapes
+geomdl/iga
 *.pyc
 *.c
 *.cpp
