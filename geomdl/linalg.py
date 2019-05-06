@@ -339,6 +339,19 @@ def point_mid(pt1, pt2):
     return point_translate(pt1, half_dist_vector)
 
 
+@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
+def matrix_identity(n):
+    """ Generates a NxN identity matrix.
+
+    :param n: size of the matrix
+    :type n: int
+    :return: identity matrix
+    :rtype: list
+    """
+    imat = [[1.0 if i == j else 0.0 for i in range(n)] for j in range(n)]
+    return imat
+
+
 def matrix_transpose(m):
     """ Transposes the input matrix.
 
