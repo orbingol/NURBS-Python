@@ -342,7 +342,7 @@ def point_mid(pt1, pt2):
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
 def matrix_identity(n):
-    """ Generates a NxN identity matrix.
+    """ Generates a :math:`N \\times N` identity matrix.
 
     :param n: size of the matrix
     :type n: int
@@ -358,9 +358,9 @@ def matrix_pivot(m, sign=False):
 
     This function computes
     
-    * the permutation matrix, P
-    * the product of M and P, M x P
-    * determinant of P, det(P) is ``sign = True``
+    * the permutation matrix, :math:`P`
+    * the product of M and P, :math:`M \\times P`
+    * determinant of P, :math:`det(P)` is ``sign = True``
 
     :param m: input matrix
     :type m: list, tuple
@@ -407,7 +407,7 @@ def matrix_inverse(m):
 
 
 def matrix_determinant(m):
-    """ Computes the determinant of the square matrix M via LUP decomposition.
+    """ Computes the determinant of the square matrix :math:`M` via LUP decomposition.
 
     :param m: input matrix
     :type m: list, tuple
@@ -593,9 +593,10 @@ def backward_substitution(matrix_u, matrix_y):
 def lu_solve(m_l, m_u, b):
     """ Solves a system of linear equations via forward-backward substitution.
 
-    This function solves Ax=b, where A = LU. A is a NxN matrix, 
-    b is NxM matrix of M column vectors. Each column of x is a solution for
-    corresponding column of b.
+    This function solves :math:`Ax = b`, where :math:`A = LU`. :math:`A` is a 
+    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of 
+    :math:`M` column vectors. Each column of :math:`x` is a solution for
+    corresponding column of :math:`b`.
 
     :param m_l: lower triangular decomposition of matrix A
     :type m_l: list
