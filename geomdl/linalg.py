@@ -9,6 +9,7 @@
 
 import os
 import math
+from copy import deepcopy
 from functools import reduce
 from . import _linalg
 try:
@@ -352,6 +353,76 @@ def matrix_identity(n):
     return imat
 
 
+def matrix_pivot(m, sign=False):
+    """ Computes the pivot matrix for M, a square matrix.
+
+    This function computes
+    
+    * the permutation matrix, P
+    * the product of M and P, M x P
+    * determinant of P, det(P) is ``sign = True``
+
+    :param m: input matrix
+    :type m: list, tuple
+    :param sign: flag to return the determinant of the permutation matrix, P
+    :type sign: bool
+    :return: a tuple containing the matrix product of M x P, P and det(P)
+    :rtype: tuple
+    """
+    mp = deepcopy(m)
+    n = len(mp)
+    p = matrix_identity(n)  # permutation matrix
+    num_rowswap = 0
+    for j in range(0, n):
+        row = j
+        a_max = 0.0
+        for i in range(j, n):
+            a_abs = abs(mp[i][j])
+            if a_abs > a_max:
+                a_max = a_abs
+                row = i
+        if j != row:
+            num_rowswap += 1
+            for q in range(0, n):
+                # Swap rows
+                p[j][q], p[row][q] = p[row][q], p[j][q]
+                mp[j][q], mp[row][q] = mp[row][q], mp[j][q]
+    if sign:
+        return mp, p, -1 ** num_rowswap
+    return mp, p
+
+
+def matrix_inverse(m):
+    """ Computes the inverse of the matrix via LUP decomposition.
+
+    :param m: input matrix
+    :type m: list, tuple
+    :return: inverse of the matrix
+    :rtype: list
+    """
+    mp, p = matrix_pivot(m)
+    m_l, m_u = lu_decomposition(mp)
+    m_inv = lu_solve(m_l, m_u, p)
+    return m_inv
+
+
+def matrix_determinant(m):
+    """ Computes the determinant of the square matrix M via LUP decomposition.
+
+    :param m: input matrix
+    :type m: list, tuple
+    :return: determinant of the matrix
+    :rtype: float
+    """
+    mp, p, sign = matrix_pivot(m, sign=True)
+    m_l, m_u = lu_decomposition(mp)
+    det = 1.0
+    for i in range(len(m)):
+        det *= m_l[i][i] * m_u[i][i]
+    det *= sign
+    return det
+    
+
 def matrix_transpose(m):
     """ Transposes the input matrix.
 
@@ -517,6 +588,39 @@ def backward_substitution(matrix_u, matrix_y):
         matrix_x[i] = float(matrix_y[i]) - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
         matrix_x[i] /= float(matrix_u[i][i])
     return matrix_x
+
+
+def lu_solve(m_l, m_u, b):
+    """ Solves a system of linear equations via forward-backward substitution.
+
+    This function solves Ax=b, where A = LU. A is a NxN matrix, 
+    b is NxM matrix of M column vectors. Each column of x is a solution for
+    corresponding column of b.
+
+    :param m_l: lower triangular decomposition of matrix A
+    :type m_l: list
+    :param m_u: upper triangular decomposition of matrix A
+    :type m_u: list
+    :param b: matrix of M column vectors
+    :type b: list
+    :return: x, the solution matrix
+    :rtype: list
+    """
+    # Variable initialization
+    dim = len(b[0])
+    num_x = len(b)
+    x = [[0.0 for _ in range(dim)] for _ in range(num_x)]
+
+    # Solve the system of linear equations
+    for i in range(dim):
+        bt = [b1[i] for b1 in b]
+        y = forward_substitution(m_l, bt)
+        xt = backward_substitution(m_u, y)
+        for j in range(num_x):
+            x[j][i] = xt[j]
+    
+    # Return the solution
+    return x
 
 
 def linspace(start, stop, num, decimals=18):
