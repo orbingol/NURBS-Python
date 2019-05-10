@@ -584,7 +584,7 @@ def refine_knotvector(obj, param, **kwargs):
     The values of ``param`` argument can be used to set the *knot refinement density*. If *density* is bigger than 1,
     then the algorithm finds the middle knots in each internal knot span to increase the number of knots to be refined.
 
-    **Example**: Let the degree is 2 and the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots 
+    **Example**: Let the degree is 2 and the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots
     from the start and end are removed. Knot vectors with the changing ``density (d)`` value will be:
 
     * ``d = 1``, knot vector ``[0, 2, 2, 4]``
@@ -816,19 +816,19 @@ def degree_operations(obj, param, **kwargs):
                 for crv in crv_list:
                     cpts = crv.ctrlptsw if crv.rational else crv.ctrlpts
                     new_cpts = helpers.degree_reduction(crv.degree, cpts)
-                    crv.degree -= 1 
+                    crv.degree -= 1
                     crv.set_ctrlpts(new_cpts)
                     crv.knotvector = list(crv.knotvector[1:-1])
-                
+
                 # Compute new degree
                 nd = obj.degree - 1
 
                 # Number of knot removals
                 num = obj.degree - 1
-            
+
             # Link curves together (reverse of decomposition)
             kv, cpts, ws, knots = ops.link_curves(*crv_list, validate=False)
-            
+
             # Organize control points (if necessary)
             ctrlpts = compatibility.combine_ctrlpts_weights(cpts, ws) if obj.rational else cpts
 
@@ -837,7 +837,7 @@ def degree_operations(obj, param, **kwargs):
                 span = helpers.find_span_linear(nd, kv, len(ctrlpts), k)
                 ctrlpts = helpers.knot_removal(nd, kv, ctrlpts, k, num=num-s)
                 kv = helpers.knot_removal_kv(kv, span, num-s)
-            
+
             # Update input curve
             obj.degree = nd
             obj.set_ctrlpts(ctrlpts)
@@ -931,8 +931,8 @@ def split_curve(obj, param, **kwargs):
     if not isinstance(obj, abstract.Curve):
         raise GeomdlException("Input shape must be an instance of abstract.Curve class")
 
-    if param == obj.knotvector[0] or param == obj.knotvector[-1]:
-        raise GeomdlException("Cannot split on the corner points")
+    if param == obj.domain[0] or param == obj.domain[1]:
+        raise GeomdlException("Cannot split from the domain edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
@@ -1100,8 +1100,8 @@ def split_surface_u(obj, param, **kwargs):
     if not isinstance(obj, abstract.Surface):
         raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
-    if param == obj.knotvector_u[0] or param == obj.knotvector_u[-1]:
-        raise GeomdlException("Cannot split on the edge")
+    if param == obj.domain[0][0] or param == obj.domain[0][1]:
+        raise GeomdlException("Cannot split from the u-domain edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
@@ -1173,8 +1173,8 @@ def split_surface_v(obj, param, **kwargs):
     if not isinstance(obj, abstract.Surface):
         raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
-    if param == obj.knotvector_v[0] or param == obj.knotvector_v[-1]:
-        raise GeomdlException("Cannot split on the edge")
+    if param == obj.domain[1][0] or param == obj.domain[1][1]:
+        raise GeomdlException("Cannot split from the v-domain edge")
 
     # Keyword arguments
     span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
