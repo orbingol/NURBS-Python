@@ -20,6 +20,11 @@ points to be fitted in both parametric dimensions. In other words,
 ``size_u`` and ``size_v`` arguments are used to fit curves of the
 surface on the corresponding parametric dimension.
 
+Degree of the output spline geometry is important to determine the
+knot vector(s), compute the basis functions and build the coefficient
+matrix, :math:`A`. Most of the time, fitting to a quadratic (``degree = 2``)
+or a cubic (``degree = 3``) B-spline geometry should be good enough.
+
 In the array structure, the data points on the v-direction come the
 first and u-direction points come. The index of the data points can
 be found using the following formula:
