@@ -29,8 +29,9 @@ You can use the following BibTeX entry to cite the NURBS-Python paper::
 Licenses
 ========
 
-* NURBS-Python source code is released under the terms of the **MIT License**. Please refer to the LICENSE_ file for details.
-* NURBS-Python documentation is released under the terms of `CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`_.
+* Source code is released under the terms of the `MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
+* Examples are released under the terms of the `MIT License <https://github.com/orbingol/NURBS-Python_Examples/blob/master/LICENSE>`_.
+* Documentation is released under the terms of `CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`_.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
