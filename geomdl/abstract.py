@@ -901,12 +901,13 @@ class Curve(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dictionary containing all shape data.
+        """ Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
         return dict(
+            type=self.type,
             rational=self.rational,
             dimension=self.dimension,
             degree=self._degree,
@@ -1727,7 +1728,7 @@ class Surface(SplineGeometry):
 
         Surface trims are 2-dimensional curves which are introduced on the parametric space of the surfaces. Trim curves
         can be a spline curve, an analytic curve or a 2-dimensional freeform shape. To visualize the trimmed surfaces,
-        you need to use a tessellator that supports trimming. The following code snippet illustrates changing the default 
+        you need to use a tessellator that supports trimming. The following code snippet illustrates changing the default
         surface tessellator to the trimmed surface tessellator, :class:`.tessellate.TrimTessellate`.
 
         .. code-block:: python
@@ -1764,19 +1765,20 @@ class Surface(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dictionary containing the geometry data.
+        """ Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
         return dict(
+            type=self.type,
             rational=self.rational,
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
             size=self._control_points_size,
             control_points=self._control_points,
-            trims=self._trims
+            trims=[t.data for t in self._trims]
         )
 
     def add_trim(self, trim):
@@ -2811,19 +2813,20 @@ class Volume(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dictionary containing the geometry data.
+        """ Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
         return dict(
+            type=self.type,
             rational=self.rational,
             dimension=self.dimension,
             degree=self._degree,
             knotvector=self._knot_vector,
             size=self._control_points_size,
             control_points=self._control_points,
-            trims=self._trims
+            trims=[t.data for t in self._trims]
         )
 
     def add_trim(self, trim):

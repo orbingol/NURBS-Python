@@ -263,6 +263,15 @@ class AbstractContainer(abstract.GeomdlBase):
             raise GeomdlException("Sample size must be an integer value bigger than 2")
         self._delta[idx] = 1.0 / float(value - 1)
 
+    @property
+    def data(self):
+        """ Returns a dict which contains the geometry data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return [e.data for e in self._elements]
+
     def add(self, element):
         """ Adds geometry objects to the container.
 

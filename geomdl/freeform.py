@@ -17,6 +17,18 @@ class Freeform(abstract.Geometry):
         self._geometry_type = "freeform"
         self.name = "freeform geometry"
 
+    @property
+    def data(self):
+        """ Returns a dict which contains the geometry data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return dict(
+            type=self.type,
+            points=self.evalpts
+        )
+
     def evaluate(self, **kwargs):
         """ Sets points that form the geometry.
 
