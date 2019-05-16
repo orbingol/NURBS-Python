@@ -1,49 +1,52 @@
 """
 .. module:: convert
     :platform: Unix, Windows
-    :synopsis: Provides BSpline and NURBS conversion functionality
+    :synopsis: Helper module for converting rational and non-rational geometries to each other
 
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
 
 from . import BSpline, NURBS
-from . import _convert
+from . import _convert as cvt
 
 
-def bspline_to_nurbs(obj):
-    """ Converts non-rational parametric shapes to rational ones.
+def bspline_to_nurbs(obj, **kwargs):
+    """ Converts non-rational splines to rational ones.
 
-    :param obj: B-Spline shape
+    :param obj: non-rational spline geometry
     :type obj: BSpline.Curve, BSpline.Surface or BSpline.Volume
-    :return: NURBS shape
+    :return: rational spline geometry
     :rtype: NURBS.Curve, NURBS.Surface or NURBS.Volume
     :raises: TypeError
     """
     # B-Spline -> NURBS
     if isinstance(obj, BSpline.Curve):
-        return _convert.convert_curve(obj, NURBS)
+        ret = cvt.convert_curve(obj, NURBS)
     elif isinstance(obj, BSpline.Surface):
-        return _convert.convert_surface(obj, NURBS)
+        ret = cvt.convert_surface(obj, NURBS)
     elif isinstance(obj, BSpline.Volume):
-        return _convert.convert_volume(obj, NURBS)
+        ret = cvt.convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
+    
+    return ret
 
 
 def nurbs_to_bspline(obj, **kwargs):
-    """ Extracts the non-rational components from rational parametric shapes, if possible.
+    """ Converts rational splines to non-rational ones (if possible).
 
-    The possibility of converting a rational shape to a non-rational one depends on the weights vector.
+    The possibility of converting a rational spline geometry to
+    a non-rational one depends on the weights vector.
 
-    :param obj: NURBS shape
+    :param obj: rational spline geometry
     :type obj: NURBS.Curve, NURBS.Surface or NURBS.Volume
-    :return: B-Spline shape
+    :return: non-rational spline geometry
     :rtype: BSpline.Curve, BSpline.Surface or BSpline.Volume
     :raises: TypeError
     """
     if not obj.rational:
-        raise TypeError("The input must be a rational shape")
+        raise TypeError("The input must be a rational geometry")
 
     # Get keyword arguments
     tol = kwargs.get('tol', 10e-8)
@@ -56,12 +59,12 @@ def nurbs_to_bspline(obj, **kwargs):
 
     # NURBS -> B-Spline
     if isinstance(obj, NURBS.Curve):
-        return _convert.convert_curve(obj, BSpline)
+        ret = cvt.convert_curve(obj, BSpline)
     elif isinstance(obj, NURBS.Surface):
-        return _convert.convert_surface(obj, BSpline)
+        ret = cvt.convert_surface(obj, BSpline)
     elif isinstance(obj, NURBS.Volume):
-        return _convert.convert_volume(obj, BSpline)
+        ret = cvt.convert_volume(obj, BSpline)
     else:
         raise TypeError("Input must be an instance of NURBS curve, surface or volume")
 
-
+    return ret
