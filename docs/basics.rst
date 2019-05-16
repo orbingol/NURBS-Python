@@ -249,6 +249,7 @@ Plotting multiple curves
     :linenos:
 
     from geomdl import BSpline
+    from geomdl import multi
     from geomdl import knotvector
 
     # Create the curve instance #1
