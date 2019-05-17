@@ -37,16 +37,22 @@ Further reading
 * Wiki: https://github.com/orbingol/NURBS-Python/wiki
 * Development: https://github.com/orbingol/NURBS-Python
 
-Extra Modules
-=============
+Modules extending geomdl
+========================
 
-* `geomdl-cli <https://pypi.org/project/geomdl.cli>`_ for using **geomdl** from the command-line
+* `geomdl-cli <https://pypi.org/project/geomdl.cli>`_
 * `geomdl-shapes <https://pypi.org/project/geomdl.shapes>`_
+
+Additional file format support
+==============================
+
+* `rw3dm <https://github.com/orbingol/rw3dm>`_
+* `rwsat <https://github.com/orbingol/rwsat>`_
 
 License
 =======
 
-**geomdl** is licensed under the `MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
+**geomdl** is licensed under the terms of the `MIT License <https://github.com/orbingol/NURBS-Python/blob/master/LICENSE>`_.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
