@@ -42,7 +42,7 @@ def interpolate_curve(points, degree, **kwargs):
 
     # Do global interpolation
     matrix_a = _build_coeff_matrix(degree, kv, uk, points)
-    ctrlpts = ginterp(matrix_a, points)
+    ctrlpts = linalg.lu_solve(matrix_a, points)
 
     # Generate B-spline curve
     curve = BSpline.Curve()
@@ -90,14 +90,14 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     for v in range(size_v):
         pts = [points[v + (size_v * u)] for u in range(size_u)]
         matrix_a = _build_coeff_matrix(degree_u, kv_u, uk, pts)
-        ctrlpts_r += ginterp(matrix_a, pts)
+        ctrlpts_r += linalg.lu_solve(matrix_a, pts)
 
     # Do global interpolation on the v-direction
     ctrlpts = []
     for u in range(size_u):
         pts = [ctrlpts_r[u + (size_u * v)] for v in range(size_v)]
         matrix_a = _build_coeff_matrix(degree_v, kv_v, vl, pts)
-        ctrlpts += ginterp(matrix_a, pts)
+        ctrlpts += linalg.lu_solve(matrix_a, pts)
 
     # Generate B-spline surface
     surf = BSpline.Surface()
@@ -191,7 +191,7 @@ def approximate_curve(points, degree, **kwargs):
             for idx in range(len(ru_tmp)):
                 vector_r[i - 1][d] += ru_tmp[idx][d]
 
-    # Computer control points
+    # Compute control points
     for i in range(dim):
         b = [pt[i] for pt in vector_r]
         y = linalg.forward_substitution(matrix_l, b)
@@ -504,36 +504,6 @@ def compute_params_surface(points, size_u, size_v, centripetal=False):
         vl[v] = sum(knots_u) / size_u
 
     return uk, vl
-
-
-def ginterp(coeff_matrix, points):
-    """ Applies global interpolation to the set of data points to find control points.
-
-    :param coeff_matrix: coefficient matrix
-    :type coeff_matrix: list, tuple
-    :param points: data points
-    :type points: list, tuple
-    :return: control points
-    :rtype: list
-    """
-    # Dimension
-    dim = len(points[0])
-
-    # Number of data points
-    num_points = len(points)
-
-    # Solve system of linear equations
-    matrix_l, matrix_u = linalg.lu_decomposition(coeff_matrix)
-    ctrlpts = [[0.0 for _ in range(dim)] for _ in range(num_points)]
-    for i in range(dim):
-        b = [pt[i] for pt in points]
-        y = linalg.forward_substitution(matrix_l, b)
-        x = linalg.backward_substitution(matrix_u, y)
-        for j in range(num_points):
-            ctrlpts[j][i] = x[j]
-
-    # Return control points
-    return ctrlpts
 
 
 def _build_coeff_matrix(degree, knotvector, params, points):
