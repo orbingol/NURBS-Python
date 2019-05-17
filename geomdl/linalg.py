@@ -360,7 +360,7 @@ def matrix_pivot(m, sign=False):
     
     * the permutation matrix, :math:`P`
     * the product of M and P, :math:`M \\times P`
-    * determinant of P, :math:`det(P)` is ``sign = True``
+    * determinant of P, :math:`det(P)` if ``sign = True``
 
     :param m: input matrix
     :type m: list, tuple
