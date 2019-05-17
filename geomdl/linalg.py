@@ -401,8 +401,7 @@ def matrix_inverse(m):
     :rtype: list
     """
     mp, p = matrix_pivot(m)
-    m_l, m_u = lu_decomposition(mp)
-    m_inv = lu_solve(m_l, m_u, p)
+    m_inv = lu_solve(mp, p)
     return m_inv
 
 
@@ -590,18 +589,16 @@ def backward_substitution(matrix_u, matrix_y):
     return matrix_x
 
 
-def lu_solve(m_l, m_u, b):
-    """ Solves a system of linear equations via forward-backward substitution.
+def lu_solve(matrix_a, b):
+    """ Computes the solution to a system of linear equations.
 
-    This function solves :math:`Ax = b`, where :math:`A = LU`. :math:`A` is a 
+    This function solves :math:`Ax = b` using LU decomposition. :math:`A` is a 
     :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of 
     :math:`M` column vectors. Each column of :math:`x` is a solution for
     corresponding column of :math:`b`.
 
-    :param m_l: lower triangular decomposition of matrix A
+    :param matrix_a: matrix A
     :type m_l: list
-    :param m_u: upper triangular decomposition of matrix A
-    :type m_u: list
     :param b: matrix of M column vectors
     :type b: list
     :return: x, the solution matrix
@@ -611,6 +608,45 @@ def lu_solve(m_l, m_u, b):
     dim = len(b[0])
     num_x = len(b)
     x = [[0.0 for _ in range(dim)] for _ in range(num_x)]
+
+    # LU decomposition
+    m_l, m_u = lu_decomposition(matrix_a)
+
+    # Solve the system of linear equations
+    for i in range(dim):
+        bt = [b1[i] for b1 in b]
+        y = forward_substitution(m_l, bt)
+        xt = backward_substitution(m_u, y)
+        for j in range(num_x):
+            x[j][i] = xt[j]
+    
+    # Return the solution
+    return x
+
+
+def lu_factor(matrix_a, b):
+    """ Computes the solution to a system of linear equations with partial pivoting.
+
+    This function solves :math:`Ax = b` using LUP decomposition. :math:`A` is a 
+    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of 
+    :math:`M` column vectors. Each column of :math:`x` is a solution for
+    corresponding column of :math:`b`.
+
+    :param matrix_a: matrix A
+    :type m_l: list
+    :param b: matrix of M column vectors
+    :type b: list
+    :return: x, the solution matrix
+    :rtype: list
+    """
+    # Variable initialization
+    dim = len(b[0])
+    num_x = len(b)
+    x = [[0.0 for _ in range(dim)] for _ in range(num_x)]
+
+    # LUP decomposition
+    mp, p = matrix_pivot(matrix_a)
+    m_l, m_u = lu_decomposition(mp)
 
     # Solve the system of linear equations
     for i in range(dim):
