@@ -357,7 +357,7 @@ def matrix_pivot(m, sign=False):
     """ Computes the pivot matrix for M, a square matrix.
 
     This function computes
-    
+
     * the permutation matrix, :math:`P`
     * the product of M and P, :math:`M \\times P`
     * determinant of P, :math:`det(P)` if ``sign = True``
@@ -420,7 +420,7 @@ def matrix_determinant(m):
         det *= m_l[i][i] * m_u[i][i]
     det *= sign
     return det
-    
+
 
 def matrix_transpose(m):
     """ Transposes the input matrix.
@@ -460,6 +460,25 @@ def matrix_multiply(m1, m2):
         for j in range(len(m2[0])):
             for k in range(len(m2)):
                 mm[i][j] += float(m1[i][k] * m2[k][j])
+    return mm
+
+
+def matrix_scalar(m, sc):
+    """ Matrix multiplication by a scalar value (iterative algorithm).
+
+    The running time of the iterative matrix multiplication algorithm is :math:`O(n^{2})`.
+
+    :param m: input matrix
+    :type m: list, tuple
+    :param sc: scalar value
+    :type sc: int, float
+    :return: resultant matrix
+    :rtype: list
+    """
+    mm = [[0.0 for _ in range(len(m1[0]))] for _ in range(len(m1))]
+    for i in range(len(m1)):
+        for j in range(len(m1[0])):
+                mm[i][j] = float(m1[i][k] * sc)
     return mm
 
 
@@ -592,8 +611,8 @@ def backward_substitution(matrix_u, matrix_y):
 def lu_solve(matrix_a, b):
     """ Computes the solution to a system of linear equations.
 
-    This function solves :math:`Ax = b` using LU decomposition. :math:`A` is a 
-    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of 
+    This function solves :math:`Ax = b` using LU decomposition. :math:`A` is a
+    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of
     :math:`M` column vectors. Each column of :math:`x` is a solution for
     corresponding column of :math:`b`.
 
@@ -619,7 +638,7 @@ def lu_solve(matrix_a, b):
         xt = backward_substitution(m_u, y)
         for j in range(num_x):
             x[j][i] = xt[j]
-    
+
     # Return the solution
     return x
 
@@ -627,8 +646,8 @@ def lu_solve(matrix_a, b):
 def lu_factor(matrix_a, b):
     """ Computes the solution to a system of linear equations with partial pivoting.
 
-    This function solves :math:`Ax = b` using LUP decomposition. :math:`A` is a 
-    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of 
+    This function solves :math:`Ax = b` using LUP decomposition. :math:`A` is a
+    :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of
     :math:`M` column vectors. Each column of :math:`x` is a solution for
     corresponding column of :math:`b`.
 
@@ -655,7 +674,7 @@ def lu_factor(matrix_a, b):
         xt = backward_substitution(m_u, y)
         for j in range(num_x):
             x[j][i] = xt[j]
-    
+
     # Return the solution
     return x
 
