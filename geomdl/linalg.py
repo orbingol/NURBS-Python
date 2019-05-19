@@ -475,10 +475,10 @@ def matrix_scalar(m, sc):
     :return: resultant matrix
     :rtype: list
     """
-    mm = [[0.0 for _ in range(len(m1[0]))] for _ in range(len(m1))]
-    for i in range(len(m1)):
-        for j in range(len(m1[0])):
-                mm[i][j] = float(m1[i][k] * sc)
+    mm = [[0.0 for _ in range(len(m[0]))] for _ in range(len(m))]
+    for i in range(len(m)):
+        for j in range(len(m[0])):
+                mm[i][j] = float(m[i][j] * sc)
     return mm
 
 
