@@ -31,18 +31,19 @@ class GeomdlBase(object):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
     # __slots__ = ('_precision', '_id', '_dimension', '_geometry_type', '_name', '_opt_data', '_cache')
 
     def __init__(self, **kwargs):
-        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._id = int(kwargs.get('id', 0))  # object ID
         self._dimension = 0 if not hasattr(self, '_dimension') else self._dimension  # spatial dimension
         self._geometry_type = "none" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
         self._name = "base object" if not hasattr(self, '_name') else self._name  # object name
         self._opt_data = dict() if not hasattr(self, '_opt_data') else self._opt_data  # custom data dict
         self._cache = dict() if not hasattr(self, '_cache') else self._cache  # cache dict
+        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
+        self._id = int(kwargs.get('id', 0))  # object ID
 
     def __copy__(self):
         cls = self.__class__
@@ -213,6 +214,7 @@ class Geometry(GeomdlBase):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
     # __slots__ = ('_iter_index', '_array_type', '_eval_points')
@@ -298,6 +300,7 @@ class SplineGeometry(Geometry):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
@@ -724,6 +727,7 @@ class Curve(SplineGeometry):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
@@ -1206,6 +1210,7 @@ class Surface(SplineGeometry):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
@@ -2159,6 +2164,7 @@ class Volume(SplineGeometry):
 
     **Keyword Arguments:**
 
+    * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
