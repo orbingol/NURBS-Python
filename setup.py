@@ -1,40 +1,25 @@
 #!/usr/bin/env python
 
-"""
-    NURBS-Python (geomdl) Setup Script
-    NURBS-Python is released under the MIT License. Copyright (c) Onur Rauf Bingol.
-
-    The setup script directly depends on "setuptools" package and it does not fallback to "distutils" which might
-    cause issues on some Python distributions, especially on the embedded distributions.
-
-    To solve this issue, you may want to start with installing "pip" using the "get_pip.py" script
-    from the following link if it doesn't exist on your distribution:
-
-    https://pip.pypa.io/en/stable/installing/
-
-    Then, you may install "setuptools" package using the following command:
-
-        pip install setuptools
-
-    "setuptools" is a collection of enhancements to the Python's "distutils" package. You may check its documentation
-    from the following link:
-
-    http://setuptools.readthedocs.io/en/latest/setuptools.html#command-reference
-
-    It also comes installed by default with the official Python.org distribution and in all "conda" environments.
-    On the other hand, it might require an update. You may update your "setuptools" package using the following command:
-
-        pip install setuptools --upgrade
-
-    or
-
-        conda update setuptools
-
-    depending on the package manager that you are using.
-
-    After installing "pip", you may also consider installing NURBS-Python (geomdl) via "pip install geomdl" or
-    alternatively, you may use "conda" package on https://anaconda.org/orbingol/geomdl
-"""
+# NURBS-Python - Copyright (c) 2016-2018 Onur Rauf Bingol
+# geomdl - Copyright (c) 2018-2019 Onur Rauf Bingol
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from setuptools import setup
 from setuptools import Extension
