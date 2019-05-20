@@ -23,7 +23,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     Implementation of Algorithm A2.1 from The NURBS Book by Piegl & Tiller.
 
     The NURBS Book states that the knot span index always starts from zero, i.e. for a knot vector [0, 0, 1, 1];
-    if FindSpan returns 1, then the knot is between the interval [0, 1).
+    if FindSpan returns 1, then the knot is between the half-open interval [0, 1).
 
     :param degree: degree, :math:`p`
     :type degree: int
@@ -141,6 +141,8 @@ def basis_function(degree, knot_vector, span, knot):
     """ Computes the non-vanishing basis functions for a single parameter.
 
     Implementation of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
+    Uses recurrence to compute the basis functions, also known as Cox - de
+    Boor recursion formula.
 
     :param degree: degree, :math:`p`
     :type degree: int
@@ -170,8 +172,67 @@ def basis_function(degree, knot_vector, span, knot):
     return N
 
 
+def basis_function_one(degree, knot_vector, span, knot):
+    """ Computes the value of a basis function for a single parameter.
+
+    Implementation of Algorithm 2.4 from The NURBS Book by Piegl & Tiller.
+
+    :param degree: degree, :math:`p`
+    :type degree: int
+    :param knot_vector: knot vector
+    :type knot_vector: list, tuple
+    :param span: knot span, :math:`i`
+    :type span: int
+    :param knot: knot or parameter, :math:`u`
+    :type knot: float
+    :return: basis function, :math:`N_{i,p}`
+    :rtype: float
+    """
+    # Special case at boundaries
+    if (span == 0 and knot == knot_vector[0]) or \
+            (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector) - 1]:
+        return 1.0
+
+    # Knot is outside of span range
+    if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
+        return 0.0
+
+    N = [0.0 for _ in range(degree + span + 1)]
+
+    # Initialize the zeroth degree basis functions
+    for j in range(0, degree + 1):
+        if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
+            N[j] = 1.0
+
+    # Computing triangular table of basis functions
+    for k in range(1, degree + 1):
+        # Detecting zeros saves computations
+        saved = 0.0
+        if N[0] != 0.0:
+            saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
+
+        for j in range(0, degree - k + 1):
+            Uleft = knot_vector[span + j + 1]
+            Uright = knot_vector[span + j + k + 1]
+
+            # Zero detection
+            if N[j + 1] == 0.0:
+                N[j] = saved
+                saved = 0.0
+            else:
+                temp = N[j + 1] / (Uright - Uleft)
+                N[j] = saved + (Uright - knot) * temp
+                saved = (knot - Uleft) * temp
+
+    return N[0]
+
+
 def basis_functions(degree, knot_vector, spans, knots):
     """ Computes the non-vanishing basis functions for a list of parameters.
+
+    Wrapper for :func:`.helpers.basis_function` to process multiple span
+    and knot values. Uses recurrence to compute the basis functions, also 
+    known as Cox - de Boor recursion formula.
 
     :param degree: degree, :math:`p`
     :type degree: int
@@ -194,6 +255,13 @@ def basis_function_all(degree, knot_vector, span, knot):
     """ Computes all non-zero basis functions of all degrees from 0 up to the input degree for a single parameter.
 
     A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
+    Wrapper for :func:`.helpers.basis_function` to compute multiple basis functions.
+    Uses recurrence to compute the basis functions, also known as Cox - de Boor 
+    recursion formula.
+
+    For instance; if ``degree = 2``, then this function will compute the basis function
+    values of degrees **0, 1** and **2** for the ``knot`` value at the input knot ``span`` 
+    of the ``knot_vector``.
 
     :param degree: degree, :math:`p`
     :type degree: int
@@ -304,83 +372,6 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
     return ders
 
 
-def basis_functions_ders(degree, knot_vector, spans, knots, order):
-    """ Computes derivatives of the basis functions for a list of parameters.
-
-    :param degree: degree, :math:`p`
-    :type degree: int
-    :param knot_vector: knot vector, :math:`U`
-    :type knot_vector: list, tuple
-    :param spans: list of knot spans
-    :type spans:  list, tuple
-    :param knots: list of knots or parameters
-    :type knots: list, tuple
-    :param order: order of the derivative
-    :type order: int
-    :return: derivatives of the basis functions
-    :rtype: list
-    """
-    basis_ders = []
-    for span, knot in zip(spans, knots):
-        basis_ders.append(basis_function_ders(degree, knot_vector, span, knot, order))
-    return basis_ders
-
-
-def basis_function_one(degree, knot_vector, span, knot):
-    """ Computes the value of a basis function for a single parameter.
-
-    Implementation of Algorithm 2.4 from The NURBS Book by Piegl & Tiller.
-
-    :param degree: degree, :math:`p`
-    :type degree: int
-    :param knot_vector: knot vector
-    :type knot_vector: list, tuple
-    :param span: knot span, :math:`i`
-    :type span: int
-    :param knot: knot or parameter, :math:`u`
-    :type knot: float
-    :return: basis function, :math:`N_{i,p}`
-    :rtype: float
-    """
-    # Special case at boundaries
-    if (span == 0 and knot == knot_vector[0]) or \
-            (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector) - 1]:
-        return 1.0
-
-    # Knot is outside of span range
-    if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
-        return 0.0
-
-    N = [0.0 for _ in range(degree + span + 1)]
-
-    # Initialize the zeroth degree basis functions
-    for j in range(0, degree + 1):
-        if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
-            N[j] = 1.0
-
-    # Computing triangular table of basis functions
-    for k in range(1, degree + 1):
-        # Detecting zeros saves computations
-        saved = 0.0
-        if N[0] != 0.0:
-            saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
-
-        for j in range(0, degree - k + 1):
-            Uleft = knot_vector[span + j + 1]
-            Uright = knot_vector[span + j + k + 1]
-
-            # Zero detection
-            if N[j + 1] == 0.0:
-                N[j] = saved
-                saved = 0.0
-            else:
-                temp = N[j + 1] / (Uright - Uleft)
-                N[j] = saved + (Uright - knot) * temp
-                saved = (knot - Uleft) * temp
-
-    return N[0]
-
-
 def basis_function_ders_one(degree, knot_vector, span, knot, order):
     """ Computes the derivative of one basis functions for a single parameter.
 
@@ -475,6 +466,31 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
         ders[k] = ND[0]
 
     return ders
+
+
+def basis_functions_ders(degree, knot_vector, spans, knots, order):
+    """ Computes derivatives of the basis functions for a list of parameters.
+
+    Wrapper for :func:`.helpers.basis_function_ders` to process multiple span
+    and knot values.
+
+    :param degree: degree, :math:`p`
+    :type degree: int
+    :param knot_vector: knot vector, :math:`U`
+    :type knot_vector: list, tuple
+    :param spans: list of knot spans
+    :type spans:  list, tuple
+    :param knots: list of knots or parameters
+    :type knots: list, tuple
+    :param order: order of the derivative
+    :type order: int
+    :return: derivatives of the basis functions
+    :rtype: list
+    """
+    basis_ders = []
+    for span, knot in zip(spans, knots):
+        basis_ders.append(basis_function_ders(degree, knot_vector, span, knot, order))
+    return basis_ders
 
 
 def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
