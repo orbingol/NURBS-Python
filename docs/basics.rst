@@ -14,8 +14,8 @@ The number of components depend on the parametric dimensionality of the shape re
 
 Parametric dimensions are defined by ``u``, ``v``, ``w`` and spatial dimensions are defined by ``x``, ``y``, ``z``.
 
-How to create a curve
-=====================
+Working with the curves
+=======================
 
 In this section, we will cover the basics of spline curve generation using NURBS-Python. The following code snippet is
 an example to a 3-dimensional curve.
@@ -99,6 +99,11 @@ Getting the curve point at a specific parameter
 Setting the evaluation delta
 ----------------------------
 
+Evaluation delta is used to change the number of evaluated points. Increasing the number of points will result in a
+bigger evaluated points array, as described with ``evalpts`` property and decreasing will reduce the size of the
+``evalpts`` array. Therefore, evaluation delta can also be used to change smoothness of the plots generated using
+the visualization modules.
+
 ``delta`` property will set the evaluation delta. It is also possible to use ``sample_size`` property to set the number
 of evaluated points.
 
@@ -135,7 +140,6 @@ Inserting a knot
 ----------------
 
 ``insert_knot`` method is recommended for this purpose.
-
 
 .. code-block:: python
     :linenos:
@@ -290,12 +294,20 @@ Plotting multiple curves
 
 Please refer to the :doc:`Examples Repository <examples_repo>` for more curve examples.
 
-How to create a surface
-=======================
+Working with the surfaces
+=========================
+
+The majority of the surface API is very similar to the curve API. Since a surface is defined on a 2-dimensional
+parametric space, the getters/setters have a suffix of ``_u`` and ``_v``; such as ``knotvector_u`` and
+``knotvector_v``.
 
 Please refer to the :doc:`Examples Repository <examples_repo>` for surface examples.
 
-How to create a volume
-======================
+Working with the volumes
+========================
+
+Volumes are defined on a 3-dimensional parametric space. Working with the volumes are very similar to Working
+with the surfaces. The only difference is the 3rd parametric dimension, ``w``. For instance, to access the
+knot vectors, the properties you will use are ``knotvector_u``, ``knotvector_v`` and ``knotvector_w``. 
 
 Please refer to the :doc:`Examples Repository <examples_repo>` for volume examples.
