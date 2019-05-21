@@ -18,6 +18,20 @@ from ._utilities import export
 def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
     """ Generates 3-dimensional mapping of 2-dimensional trimming curves.
 
+    **Description:**
+
+    Trimming curves are defined on the parametric space of the surfaces. Therefore,
+    all trimming curves are 2-dimensional. The coordinates of the trimming curves
+    correspond to (u, v) parameters of the underlying surface geometry. When these
+    (u, v) values are evaluated with respect to the underlying surface geometry,
+    a 3-dimensional representation of the trimming curves is generated.
+
+    The resultant 3-dimensional curve is described using :class:`.freeform.Freeform`
+    class. Using the ``fitting`` module, it is possible to generate the B-spline
+    form of the freeform curve.
+
+    **Remarks:**
+
     If `trim_idx=-1`, the function maps all 2-dimensional trims to their 3-dimensional
     correspondants.
 
@@ -75,7 +89,8 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
 def fix_multi_trim_curves(obj, **kwargs):
     """ Fixes direction, connectivity and similar issues of the trim curves.
 
-    This function works for surface trims in curve containers, i.e. trims consisting of multiple curves.
+    This function works for surface trims in curve containers, i.e. trims
+    consisting of multiple curves.
 
     Keyword Arguments:
         * ``tol``: tolerance value for comparing floats. *Default: 10e-8*
