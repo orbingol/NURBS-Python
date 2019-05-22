@@ -8,6 +8,7 @@
 """
 
 import abc
+import copy
 from functools import reduce
 from .exceptions import GeomdlException
 from ._utilities import export, add_metaclass
