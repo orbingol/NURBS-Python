@@ -4,6 +4,7 @@ pushd %~dp0
 
 REM Command file for Sphinx documentation
 
+set SPHINXOPTS=-Dhtml_theme=sphinx_rtd_theme
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
