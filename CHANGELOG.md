@@ -1,5 +1,12 @@
 # geomdl Changelog
 
+## v5.2.5 released on 2019-05-21
+
+* Improved `linalg` module 
+* Added `control_points` module for managing control points
+* Bug fixes and improvements
+* Documentation updates
+
 ## v5.2.4 released on 2019-04-22
 
 * Reduced set control points restrictions for surfaces. `Surface.set_ctrlpts` now accepts 2-dimensional control points.
