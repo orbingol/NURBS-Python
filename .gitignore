@@ -9,7 +9,6 @@ dist/
 wheelhouse/
 *.egg-info/*
 docs/_build
-docs/_static
 geomdl/core
 geomdl/cli
 geomdl/shapes
