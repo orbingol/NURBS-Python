@@ -21,16 +21,16 @@ The following books are recommended for individuals who prefer to investigate th
 Why NURBS-Python?
 =================
 
-NURBS-Python started as a final project for *M E 625 Surface Modeling* course offered in 2016 Spring semester at 
+NURBS-Python started as a final project for *M E 625 Surface Modeling* course offered in 2016 Spring semester at
 Iowa State University. The main purpose of the project was development of a free and open-source, object-oriented,
-pure Python NURBS library and releasing it on the public domain. As an added challenge to the project, everything 
+pure Python NURBS library and releasing it on the public domain. As an added challenge to the project, everything
 was developed using Python Standard Library but no other external modules.
 
 In years, NURBS-Python has grown up to a self-contained and extensible general-purpose pure Python spline library with
 support for various computational geometry and linear algebra algorithms. Apart from the computational side, user
 experience was also improved by introduction of visualization and CAD exchange modules.
 
-NURBS-Python is a user-friendly library, regardless of the mathematical complexity of the splines. 
+NURBS-Python is a user-friendly library, regardless of the mathematical complexity of the splines.
 To give a head start, it comes with 40+ examples for various use cases.
 It also provides several extension modules for
 
@@ -64,7 +64,7 @@ NURBS-Python (geomdl) is tested with Python versions 2.7.x, 3.4.x and higher.
 Help and Support
 ================
 
-Please join the `email list <https://groups.google.com/forum/#!forum/nurbs-python>`_ on Google Groups. 
+Please join the `email list <https://groups.google.com/forum/#!forum/nurbs-python>`_ on Google Groups.
 It is open for NURBS-Python users to ask questions, request new features and submit any other comments
 you may have.
 
@@ -76,7 +76,7 @@ Issues and Reporting
 Bugs and Feature Requests
 -------------------------
 
-NURBS-Python project uses the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_ for 
+NURBS-Python project uses the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_ for
 reporting bugs and requesting for a new feature. Please use the provided templates on GitHub.
 
 Contributions
@@ -93,7 +93,7 @@ How can I add a new feature?
 ============================
 
 The library is designed to be extensible in mind. It provides a set of :doc:`abstract classes <module_abstract>`
-for creating new geometry types. All classes use :doc:`evaluators <module_evaluator>` which contain the evaluation
+for creating new geometry types. All classes use :doc:`evaluators <module_evaluators>` which contain the evaluation
 algorithms. Evaluator classes can be extended for new type of algorithms. Please refer to ``BSpline`` and ``NURBS``
 modules for implementation examples. It would be also a good idea to refer to the constructors of the abstract
 classes for more details.
