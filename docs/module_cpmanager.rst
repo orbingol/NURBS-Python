@@ -10,3 +10,6 @@ Class Reference
 
 .. automodule:: geomdl.control_points
     :members:
+    :inherited-members:
+    :exclude-members: next
+    :show-inheritance:
