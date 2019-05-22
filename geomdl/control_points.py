@@ -83,6 +83,9 @@ class AbstractManager(object):
     def ctrlpts(self):
         """ Control points.
 
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
         :getter: Gets the control points
         :setter: Sets the control points
         """
