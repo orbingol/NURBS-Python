@@ -1,5 +1,9 @@
 # geomdl Changelog
 
+## v5.2.6 released on 2019-05-21
+
+* Fixed imports in `control_points` module
+
 ## v5.2.5 released on 2019-05-21
 
 * Improved `linalg` module 
