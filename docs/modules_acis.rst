@@ -7,6 +7,7 @@ to convert .sat files to geomdl JSON format.
 ``rwsat`` comes with the following list of programs:
 
 * ``sat2json`` converts ACIS .sat files to geomdl JSON format
+* ``satgen`` generates sample geometries
 
 Use Cases
 =========
@@ -18,6 +19,7 @@ Installation
 ============
 
 Please refer to the `rwsat repository <https://github.com/orbingol/rwsat>`_ for installation options.
+Due to ACIS licensing, no binary files are distributed within the repository.
 
 Using with geomdl
 =================
@@ -46,3 +48,4 @@ References
 ==========
 
 * **Development**: https://github.com/orbingol/rwsat
+* **Documentation**: https://github.com/orbingol/rwsat

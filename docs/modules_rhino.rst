@@ -20,6 +20,8 @@ Installation
 ============
 
 Please refer to the `rw3dm repository <https://github.com/orbingol/rw3dm>`_ for installation options.
+The binary files can be downloaded under `Releases <https://github.com/orbingol/rw3dm/releases>`_
+section of the GitHub repository.
 
 Using with geomdl
 =================

@@ -132,7 +132,7 @@ step:
 
 .. code-block:: console
 
-    $ pip install . --install-option="--use-source"
+    $ pip install --user . --install-option="--use-source"
 
 To update the compiled module with the latest changes, you need to re-cythonize the code.
 

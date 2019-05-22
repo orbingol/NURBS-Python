@@ -308,9 +308,9 @@ Please refer to the :doc:`Examples Repository <examples_repo>` for surface examp
 Working with the volumes
 ========================
 
-Volumes are defined on a 3-dimensional parametric space. Working with the volumes are very similar to Working
+Volumes are defined on a 3-dimensional parametric space. Working with the volumes are very similar to working
 with the surfaces. The only difference is the 3rd parametric dimension, ``w``. For instance, to access the
-knot vectors, the properties you will use are ``knotvector_u``, ``knotvector_v`` and ``knotvector_w``. 
+knot vectors, the properties you will use are ``knotvector_u``, ``knotvector_v`` and ``knotvector_w``.
 
 For setting up the control points, please refer to the :doc:`control points manager <module_cpmanager>` documentation.
 
