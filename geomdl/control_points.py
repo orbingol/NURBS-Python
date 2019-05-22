@@ -16,11 +16,25 @@ from ._utilities import export, add_metaclass
 
 @add_metaclass(abc.ABCMeta)
 class AbstractManager(object):
-    """ Abstract base class for control points manager classes. """
+    """ Abstract base class for control points manager classes.
+
+    Control points manager class provides an easy way to set control points without knowing
+    the internal data structure of the geometry classes. The manager class is initialized
+    with the number of control points in all parametric dimensions.
+
+    All classes extending this class should implement the following methods:
+
+    * ``get_ctrlpt``
+    * ``set_ctrlpt``
+
+    This class provides the following properties:
+
+    * :py:attr:`ctrlpts`
+    """
     def __init__(self, *args):
-        self._size = [int(arg) for arg in args]
-        self._points = []
-        self.reset()
+        self._size = [int(arg) for arg in args]  # size in all parametric dimensions
+        self._points = []  # list of control points
+        self.reset()  # initialize control points list
 
     def __iter__(self):
         self._iter_index = 0
@@ -45,7 +59,7 @@ class AbstractManager(object):
 
     def __getitem__(self, idx):
         return self._points[idx]
-    
+
     def __setitem__(self, idx, val):
         self._points[idx] = val
 
@@ -67,13 +81,13 @@ class AbstractManager(object):
 
     @property
     def ctrlpts(self):
-        """ Control points
+        """ Control points.
 
         :getter: Gets the control points
         :setter: Sets the control points
         """
         return self._points
-    
+
     @ctrlpts.setter
     def ctrlpts(self, value):
         self._points = value
@@ -85,15 +99,24 @@ class AbstractManager(object):
 
     @abc.abstractmethod
     def get_ctrlpt(self, *args):
-        """ Gets the input control point from the input location in the array. """
+        """ Gets the control point from the given location in the array.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
         pass
 
     @abc.abstractmethod
     def set_ctrlpt(self, pt, *args):
-        """ Puts the input control point to the input location in the array.
+        """ Puts the control point to the given location in the array.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
 
         :param pt: control point
-        :type pt: list, tuple        
+        :type pt: list, tuple
         """
         if not isinstance(pt, (list, tuple)):
             raise GeomdlException("'pt' argument should be a list or tuple")
@@ -103,12 +126,28 @@ class AbstractManager(object):
 
 
 class CurveManager(AbstractManager):
-    """ Curve control points manager. """
+    """ Curve control points manager.
+
+    Control points manager class provides an easy way to set control points without knowing
+    the internal data structure of the geometry classes. The manager class is initialized
+    with the number of control points in all parametric dimensions.
+
+    B-spline curves are defined in one parametric dimension. Therefore, this manager class
+    should be initialized with a single integer value.
+
+    .. code-block:: python
+
+        # Assuming that the curve has 10 control points
+        manager = CurveManager(10)
+
+    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
+    for more details on using the manager class.
+    """
     def __init__(self, *args):
         super(CurveManager, self).__init__(*args)
 
     def get_ctrlpt(self, *args):
-        """ Gets the input control point from the input location in the array.
+        """ Gets the control point from the given location in the array.
 
         .. code-block:: python
 
@@ -135,21 +174,21 @@ class CurveManager(AbstractManager):
             return None
 
     def set_ctrlpt(self, pt, *args):
-        """ Puts the input control point to the input location in the array.
+        """ Puts the control point to the given location in the array.
 
         .. code-block:: python
 
             # Number of control points in all parametric dimensions
             size_u = 5
-            
+
             # Create control points manager
             points = control_points.SurfaceManager(size_u)
-            
+
             # Set control points
             for u in range(size_u):
                 # 'pt' is the control point, e.g. [10, 15, 12]
                 points.set_ctrlpt(pt, u, v)
-            
+
             # Create spline geometry
             curve = BSpline.Curve()
 
@@ -157,7 +196,7 @@ class CurveManager(AbstractManager):
             curve.ctrlpts = points.ctrlpts
 
         :param pt: control point
-        :type pt: list, tuple        
+        :type pt: list, tuple
         """
         super(CurveManager, self).set_ctrlpt(pt, *args)
         idx = args[0]
@@ -168,12 +207,28 @@ class CurveManager(AbstractManager):
 
 
 class SurfaceManager(AbstractManager):
-    """ Surface control points manager. """
+    """ Surface control points manager.
+
+    Control points manager class provides an easy way to set control points without knowing
+    the internal data structure of the geometry classes. The manager class is initialized
+    with the number of control points in all parametric dimensions.
+
+    B-spline surfaces are defined in one parametric dimension. Therefore, this manager class
+    should be initialized with two integer values.
+
+    .. code-block:: python
+
+        # Assuming that the surface has size_u = 5 and size_v = 7 control points
+        manager = SurfaceManager(5, 7)
+
+    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
+    for more details on using the manager class.
+    """
     def __init__(self, *args):
         super(SurfaceManager, self).__init__(*args)
 
     def get_ctrlpt(self, *args):
-        """ Gets the input control point from the input location in the array.
+        """ Gets the control point from the given location in the array.
 
         .. code-block:: python
 
@@ -202,23 +257,23 @@ class SurfaceManager(AbstractManager):
             return None
 
     def set_ctrlpt(self, pt, *args):
-        """ Puts the input control point to the input location in the array.
+        """ Puts the control point to the given location in the array.
 
         .. code-block:: python
 
             # Number of control points in all parametric dimensions
             size_u = 5
             size_v = 3
-            
+
             # Create control points manager
             points = control_points.SurfaceManager(size_u, size_v)
-            
+
             # Set control points
             for u in range(size_u):
                 for v in range(size_v):
                     # 'pt' is the control point, e.g. [10, 15, 12]
                     points.set_ctrlpt(pt, u, v)
-            
+
             # Create spline geometry
             surf = BSpline.Surface()
 
@@ -226,7 +281,7 @@ class SurfaceManager(AbstractManager):
             surf.ctrlpts = points.ctrlpts
 
         :param pt: control point
-        :type pt: list, tuple        
+        :type pt: list, tuple
         """
         super(SurfaceManager, self).set_ctrlpt(pt, *args)
         idx = args[1] + (args[0] * self._size[1])
@@ -237,13 +292,29 @@ class SurfaceManager(AbstractManager):
 
 
 class VolumeManager(AbstractManager):
-    """ Volume control points manager. """
+    """ Volume control points manager.
+
+    Control points manager class provides an easy way to set control points without knowing
+    the internal data structure of the geometry classes. The manager class is initialized
+    with the number of control points in all parametric dimensions.
+
+    B-spline volumes are defined in one parametric dimension. Therefore, this manager class
+    should be initialized with there integer values.
+
+    .. code-block:: python
+
+        # Assuming that the volume has size_u = 5, size_v = 12 and size_w = 3 control points
+        manager = VolumeManager(5, 12, 3)
+
+    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
+    for more details on using the manager class.
+    """
     def __init__(self, *args):
         super(VolumeManager, self).__init__(*args)
 
     def get_ctrlpt(self, *args):
-        """ Gets the input control point from the input location in the array.
-        
+        """ Gets the control point from the given location in the array.
+
         .. code-block:: python
 
             # Number of control points in all parametric dimensions
@@ -273,7 +344,7 @@ class VolumeManager(AbstractManager):
             return None
 
     def set_ctrlpt(self, pt, *args):
-        """ Puts the input control point to the input location in the array.
+        """ Puts the control point to the given location in the array.
 
         .. code-block:: python
 
@@ -281,7 +352,7 @@ class VolumeManager(AbstractManager):
             size_u = 5
             size_v = 3
             size_w = 2
-            
+
             # Create control points manager
             points = control_points.VolumeManager(size_u, size_v, size_w)
 
@@ -291,7 +362,7 @@ class VolumeManager(AbstractManager):
                     for w in range(size_w):
                         # 'pt' is the control point, e.g. [10, 15, 12]
                         points.set_ctrlpt(pt, u, v, w)
-            
+
             # Create spline geometry
             volume = BSpline.Volume()
 
@@ -299,7 +370,7 @@ class VolumeManager(AbstractManager):
             volume.ctrlpts = points.ctrlpts
 
         :param pt: control point
-        :type pt: list, tuple        
+        :type pt: list, tuple
         """
         super(VolumeManager, self).set_ctrlpt(pt, *args)
         idx = args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
