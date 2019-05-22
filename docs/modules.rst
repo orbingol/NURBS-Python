@@ -38,12 +38,13 @@ The following is the list of the features and geometric operations included in t
 Geometry Generators
 ===================
 
-The following list contains the geometry generators included in the library:
+The following list contains the geometry generators/managers included in the library:
 
 .. toctree::
     :maxdepth: 1
 
     module_knotvector
+    module_cpmanager
     module_cpgen
 
 

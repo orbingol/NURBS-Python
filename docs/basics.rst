@@ -301,6 +301,8 @@ The majority of the surface API is very similar to the curve API. Since a surfac
 parametric space, the getters/setters have a suffix of ``_u`` and ``_v``; such as ``knotvector_u`` and
 ``knotvector_v``.
 
+For setting up the control points, please refer to the :doc:`control points manager <module_cpmanager>` documentation.
+
 Please refer to the :doc:`Examples Repository <examples_repo>` for surface examples.
 
 Working with the volumes
@@ -309,5 +311,7 @@ Working with the volumes
 Volumes are defined on a 3-dimensional parametric space. Working with the volumes are very similar to Working
 with the surfaces. The only difference is the 3rd parametric dimension, ``w``. For instance, to access the
 knot vectors, the properties you will use are ``knotvector_u``, ``knotvector_v`` and ``knotvector_w``. 
+
+For setting up the control points, please refer to the :doc:`control points manager <module_cpmanager>` documentation.
 
 Please refer to the :doc:`Examples Repository <examples_repo>` for volume examples.
