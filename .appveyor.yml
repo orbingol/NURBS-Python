@@ -6,7 +6,8 @@
 #   https://github.com/ogrisel/python-appveyor-demo
 #   https://www.appveyor.com/docs/appveyor-yml/
 
-version: 1.0.{build}
+# Build version
+version: Build {build}
 
 # Fetch repository as a zip archive
 shallow_clone: true
