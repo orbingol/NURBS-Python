@@ -388,7 +388,7 @@ def matrix_pivot(m, sign=False):
                 p[j][q], p[row][q] = p[row][q], p[j][q]
                 mp[j][q], mp[row][q] = mp[row][q], mp[j][q]
     if sign:
-        return mp, p, -1 ** num_rowswap
+        return mp, p, math.pow(-1, num_rowswap)
     return mp, p
 
 
