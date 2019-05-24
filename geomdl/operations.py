@@ -1684,3 +1684,39 @@ def transpose(surf, **kwargs):
         g.knotvector_v = kv_v_new
 
     return geom
+
+
+@export
+def flip(surf, **kwargs):
+    """ Flips the control points grid of the input surface(s).
+
+    Keyword Arguments:
+        * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
+
+    :param surf: input surface(s)
+    :type surf: abstract.Surface, multi.SurfaceContainer
+    :return: flipped surface(s)
+    """
+    if surf.pdimension != 2:
+    raise GeomdlException("Can only flip surfaces")
+
+    # Keyword arguments
+    inplace = kwargs.get('inplace', False)
+
+    if not inplace:
+        geom = copy.deepcopy(surf)
+    else:
+        geom = surf
+
+    for g in geom:
+        size_u = g.ctrlpts_size_u
+        size_v = g.ctrlpts_size_v
+        cpts = g.ctrlptsw if g.rational else g.ctrlpts
+        new_cpts = [[] for _ in range(g.ctrlpts_size)]
+        idx = g.ctrlpts_size - 1
+        for pt in cpts:
+            new_cpts[idx] = pt
+            idx -= 1
+        g.set_ctrlpts(new_cpts, size_u, size_v)
+
+    return geom
