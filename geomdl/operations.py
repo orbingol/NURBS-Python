@@ -1698,7 +1698,7 @@ def flip(surf, **kwargs):
     :return: flipped surface(s)
     """
     if surf.pdimension != 2:
-    raise GeomdlException("Can only flip surfaces")
+        raise GeomdlException("Can only flip surfaces")
 
     # Keyword arguments
     inplace = kwargs.get('inplace', False)
