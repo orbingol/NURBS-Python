@@ -1,12 +1,18 @@
 # geomdl Changelog
 
+## v5.2.7 released on 2019-05-24
+
+* Added `operations.flip`
+* Bug fixes and improvements
+* Documentation updates
+
 ## v5.2.6 released on 2019-05-21
 
 * Fixed imports in `control_points` module
 
 ## v5.2.5 released on 2019-05-21
 
-* Improved `linalg` module 
+* Improved `linalg` module
 * Added `control_points` module for managing control points
 * Bug fixes and improvements
 * Documentation updates
@@ -285,7 +291,7 @@ This release moves some of the features from `BSpline` module to other modules s
 * Code reorganization and cleanup for Curve and Surface classes
 * Removed plural-named methods, such as `tangents`, `normals`, etc and moved the functionality to singular methods (`normal`, `tangent`, etc.)
 * Moved `translate`, `split` and `decompose` methods to `operations` module
-* `derivatives` method is added as an abstract method to `Abstract.Curve` and `Abstract.Surface` since it is also a requirement for all `Evaluator` implementations. 
+* `derivatives` method is added as an abstract method to `Abstract.Curve` and `Abstract.Surface` since it is also a requirement for all `Evaluator` implementations.
 
 The following new and updated features are added with this release:
 
@@ -386,7 +392,7 @@ This is the official release of NURBS-Python (geomdl) v4.0.0. The following list
 
 ## v4.0b1 released on 2018-06-04
 
-This is the first **beta version** of NURBS-Python v4.x series. 
+This is the first **beta version** of NURBS-Python v4.x series.
 
 * Updated `NURBS` class control points / weights getters and setters
 * Rearranged / updated some functions and properties to clean up the `BSpline` and `NURBS` class structure
