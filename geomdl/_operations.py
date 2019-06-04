@@ -60,8 +60,10 @@ def tangent_curve_single_list(obj, param_list, normalize):
 def normal_curve_single(obj, u, normalize):
     """ Evaluates the curve normal vector at the input parameter, u.
 
-    Curve normal is calculated from the 1nd derivative of the curve at the input parameter, u,
-    rotating it by 90 degrees to obtain a normal. This approach is applicable in 2D.
+    In 2D, curve normal is calculated from the 1st derivative of the curve at the input parameter, u,
+    rotating it by 90 degrees to obtain a normal.
+
+    In 3D, curve normal is calculated from the 2nd derivative of the curve at the input parameter, u.
 
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
