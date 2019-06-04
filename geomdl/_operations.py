@@ -60,7 +60,9 @@ def tangent_curve_single_list(obj, param_list, normalize):
 def normal_curve_single(obj, u, normalize):
     """ Evaluates the curve normal vector at the input parameter, u.
 
-    Curve normal is calculated from the 2nd derivative of the curve at the input parameter, u.
+    Curve normal is calculated from the 1nd derivative of the curve at the input parameter, u,
+    rotating it by 90 degrees to obtain a normal. This approach is applicable in 2D.
+
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
@@ -72,13 +74,27 @@ def normal_curve_single(obj, u, normalize):
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
-    # 2nd derivative of the curve gives the normal
-    ders = obj.derivatives(u, 2)
 
-    point = ders[0]
-    vector = linalg.vector_normalize(ders[2]) if normalize else ders[2]
+    if obj.dimension == 2:
+        # Obtain the parametric point, and the 1st derivative to use to create the normal
+        ders = obj.derivatives(u, 1)
+        point = ders[0]
+        vector = linalg.vector_normalize(ders[1]) if normalize else ders[1]
 
-    return tuple(point), tuple(vector)
+        # rotate the tangent by 90 degrees to obtain a normal
+        vector = [vector[1], -vector[0]]
+
+        return tuple(point), tuple(vector)
+    else:  # assume therefore that obj.dimension == 3 - not sure if there's other cases supported
+
+        # Curve normal is calculated from the 2nd derivative of the curve at the input parameter, u.
+        # The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
+        ders = obj.derivatives(u, 2)
+
+        point = ders[0]
+        vector = linalg.vector_normalize(ders[2]) if normalize else ders[2]
+
+        return tuple(point), tuple(vector)
 
 
 def normal_curve_single_list(obj, param_list, normalize):
