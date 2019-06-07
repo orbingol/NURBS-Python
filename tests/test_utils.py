@@ -178,7 +178,7 @@ def test_cpman_curve5():
     p = 5
     sz = 12
     cpman = control_points.CurveManager(sz, testdata=4)
-    cpman.set_ptdata(p, testdata=d)
+    cpman.set_ptdata(dict(testdata=d), p)
     retv = cpman.get_ptdata('testdata2', p)
     assert retv == None
 
@@ -190,7 +190,7 @@ def test_cpman_curve6():
         p = 5
         sz = 12
         cpman = control_points.CurveManager(sz, testdata=3)
-        cpman.set_ptdata(p, testdata=d)
+        cpman.set_ptdata(dict(testdata=d), p)
 
 
 def test_cpman_curve7():
@@ -199,7 +199,7 @@ def test_cpman_curve7():
     p = 5
     sz = 12
     cpman = control_points.CurveManager(sz, testdata=1)
-    cpman.set_ptdata(p, testdata=d)
+    cpman.set_ptdata(dict(testdata=d), p)
     assert cpman.get_ptdata('testdata', 5) == 13
 
 
@@ -210,7 +210,7 @@ def test_cpman_curve8():
         p = 5
         sz = 12
         cpman = control_points.CurveManager(sz, testdata=4)
-        cpman.set_ptdata(p, testdata1=d)
+        cpman.set_ptdata({'testdata1': d}, p)
 
 
 def test_cpman_surface1():

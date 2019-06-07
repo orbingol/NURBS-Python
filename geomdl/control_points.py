@@ -139,25 +139,33 @@ class AbstractManager(object):
         except IndexError:
             raise GeomdlException("Index is out of range")
 
-    def get_ptdata(self, dtv, *args):
-        """ Gets the data attached to the control point. """
+    def get_ptdata(self, dkey, *args):
+        """ Gets the data attached to the control point.
+
+        :param dkey: key of the attachment dictionary
+        :param dkey: str
+        """
         # Find the index
         idx = self.find_index(*args)
         # Return the attached data
         try:
-            return self._pt_data[dtv][idx]
+            return self._pt_data[dkey][idx]
         except IndexError:
             return None
         except KeyError:
             return None
 
-    def set_ptdata(self, *args, **kwargs):
-        """ Attaches the data to the control point. """
+    def set_ptdata(self, adct, *args):
+        """ Attaches the data to the control point.
+
+        :param adct: attachment dictionary
+        :param adct: dict
+        """
         # Find the index
         idx = self.find_index(*args)
         # Attach the data to the control point
         try:
-            for k, val in kwargs.items():
+            for k, val in adct.items():
                 if k in self._pt_data:
                     if isinstance(val, (list, tuple)):
                         for j, v in enumerate(val):
