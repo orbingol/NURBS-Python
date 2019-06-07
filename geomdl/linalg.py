@@ -11,6 +11,7 @@ import os
 import math
 from copy import deepcopy
 from functools import reduce
+from .exceptions import GeomdlException
 from . import _linalg
 try:
     from functools import lru_cache
@@ -443,24 +444,38 @@ def matrix_transpose(m):
     return m_t
 
 
-def matrix_multiply(m1, m2):
+def matrix_multiply(mat1, mat2):
     """ Matrix multiplication (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
 
-    :param m1: 1st matrix with dimensions :math:`(n \\times p)`
-    :type m1: list, tuple
-    :param m2: 2nd matrix with dimensions :math:`(p \\times m)`
-    :type m2: list, tuple
+    :param mat1: 1st matrix with dimensions :math:`(n \\times p)`
+    :type mat1: list, tuple
+    :param mat2: 2nd matrix with dimensions :math:`(p \\times m)`
+    :type mat2: list, tuple
     :return: resultant matrix with dimensions :math:`(n \\times m)`
     :rtype: list
     """
-    mm = [[0.0 for _ in range(len(m2[0]))] for _ in range(len(m1))]
-    for i in range(len(m1)):
-        for j in range(len(m2[0])):
-            for k in range(len(m2)):
-                mm[i][j] += float(m1[i][k] * m2[k][j])
-    return mm
+    n = len(mat1)
+    p1 = len(mat1[0])
+    p2 = len(mat2)
+    if p1 != p2:
+        raise GeomdlException("Column - row size mismatch")
+    try:
+        # Matrix - matrix multiplication
+        m = len(mat2[0])
+        mat3 = [[0.0 for _ in range(m)] for _ in range(n)]
+        for i in range(n):
+            for j in range(m):
+                for k in range(p2):
+                    mat3[i][j] += float(mat1[i][k] * mat2[k][j])
+    except TypeError:
+        # Matrix - vector multiplication
+        mat3 = [0.0 for _ in range(n)]
+        for i in range(n):
+            for k in range(p2):
+                mat3[i] += float(mat1[i][k] * mat2[k])
+    return mat3
 
 
 def matrix_scalar(m, sc):
