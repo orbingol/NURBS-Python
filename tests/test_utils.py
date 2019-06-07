@@ -167,9 +167,11 @@ def test_cpman_curve4():
     p = 5
     sz = 12
     cpman = control_points.CurveManager(sz, testdata=4)
-    cpman.set_ptdata(p, testdata=d)
-    retv = cpman.get_ptdata('testdata', p)
-    assert retv[2] == 2.0
+    cpman.set_ptdata(dict(testdata=d), p)
+    retv1 = cpman.get_ptdata('testdata', p)
+    retv2 = cpman.get_ptdata('testdata', p + 1)
+    assert retv1[2] == 2.0
+    assert retv2[2] == 0.0
 
 
 def test_cpman_curve5():

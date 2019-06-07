@@ -108,8 +108,10 @@ class AbstractManager(object):
         """ Resets/initializes the internal control points array. """
         self._points[:] = [[] for _ in range(self._num_ctrlpts)]
         for k, v in self._attachment.items():
-            tmp = [0.0 for _ in range(v)] if v > 1 else 0.0
-            self._pt_data[k] = [tmp for _ in range(self._num_ctrlpts)]
+            if v > 1:
+                self._pt_data[k] = [[0.0 for _ in range(v)] for _ in range(self._num_ctrlpts)]
+            else:
+                self._pt_data[k] = [0.0 for _ in range(self._num_ctrlpts)]
 
     def get_ctrlpt(self, *args):
         """ Gets the control point from the given location in the array. """
