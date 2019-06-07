@@ -24,16 +24,25 @@ class AbstractManager(object):
 
     All classes extending this class should implement the following methods:
 
-    * ``get_ctrlpt``
-    * ``set_ctrlpt``
+    * ``find_index``
 
     This class provides the following properties:
 
     * :py:attr:`ctrlpts`
+
+    This class provides the following methods:
+
+    * :py:meth:`get_ctrlpt`
+    * :py:meth:`set_ctrlpt`
+    * :py:meth:`get_ptdata`
+    * :py:meth:`set_ptdata`
     """
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         self._size = [int(arg) for arg in args]  # size in all parametric dimensions
-        self._points = []  # list of control points
+        self._num_ctrlpts = reduce(lambda x, y: x *y, self._size)  # number of control points
+        self._attachment = kwargs if kwargs else dict()  # data attached to the control points
+        self._points = list()  # list of control points
+        self._pt_data = dict()  # dict containing lists of additional data attached to the control points
         self.reset()  # initialize control points list
 
     def __iter__(self):
@@ -97,26 +106,23 @@ class AbstractManager(object):
 
     def reset(self):
         """ Resets/initializes the internal control points array. """
-        num = reduce(lambda x, y: x *y, self._size)
-        self._points[:] = [[] for _ in range(num)]
+        self._points[:] = [[] for _ in range(self._num_ctrlpts)]
+        for k, v in self._attachment.items():
+            tmp = [0.0 for _ in range(v)] if v > 1 else 0.0
+            self._pt_data[k] = [tmp for _ in range(self._num_ctrlpts)]
 
-    @abc.abstractmethod
     def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array.
+        """ Gets the control point from the given location in the array. """
+        # Find the index
+        idx = self.find_index(*args)
+        # Return the control point
+        try:
+            return self._points[idx]
+        except IndexError:
+            return None
 
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        pass
-
-    @abc.abstractmethod
     def set_ctrlpt(self, pt, *args):
         """ Puts the control point to the given location in the array.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
 
         :param pt: control point
         :type pt: list, tuple
@@ -125,7 +131,53 @@ class AbstractManager(object):
             raise GeomdlException("'pt' argument should be a list or tuple")
         if len(args) != len(self._size):
             raise GeomdlException("Input dimensions are not compatible with the geometry")
-        pass
+        # Find the index
+        idx = self.find_index(*args)
+        # Set control point
+        try:
+            self._points[idx] = pt
+        except IndexError:
+            raise GeomdlException("Index is out of range")
+
+    def get_ptdata(self, dtv, *args):
+        """ Gets the data attached to the control point. """
+        # Find the index
+        idx = self.find_index(*args)
+        # Return the attached data
+        try:
+            return self._pt_data[dtv][idx]
+        except IndexError:
+            return None
+        except KeyError:
+            return None
+
+    def set_ptdata(self, *args, **kwargs):
+        """ Attaches the data to the control point. """
+        # Find the index
+        idx = self.find_index(*args)
+        # Attach the data to the control point
+        try:
+            for k, val in kwargs.items():
+                if k in self._pt_data:
+                    if isinstance(val, (list, tuple)):
+                        for j, v in enumerate(val):
+                            self._pt_data[k][idx][j] = v
+                    else:
+                        self._pt_data[k][idx] = val
+                else:
+                    raise GeomdlException("Invalid key: " + str(k))
+        except IndexError:
+            raise GeomdlException("Index is out of range")
+
+    @abc.abstractmethod
+    def find_index(self, *args):
+        """ Finds the array index from the given parametric positions.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
+        return 0
 
 
 class CurveManager(AbstractManager):
@@ -143,70 +195,51 @@ class CurveManager(AbstractManager):
         # Assuming that the curve has 10 control points
         manager = CurveManager(10)
 
-    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
-    for more details on using the manager class.
+    Getting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = spline.ctrlpts_size_u
+
+        # Generate control points manager
+        cpt_manager = control_points.SurfaceManager(size_u)
+        cpt_manager.ctrlpts = spline.ctrlpts
+
+        # Control points array to be used externally
+        control_points = []
+
+        # Get control points from the spline geometry
+        for u in range(size_u):
+            pt = cpt_manager.get_ctrlpt(u)
+            control_points.append(pt)
+
+    Setting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = 5
+
+        # Create control points manager
+        points = control_points.SurfaceManager(size_u)
+
+        # Set control points
+        for u in range(size_u):
+            # 'pt' is the control point, e.g. [10, 15, 12]
+            points.set_ctrlpt(pt, u, v)
+
+        # Create spline geometry
+        curve = BSpline.Curve()
+
+        # Set control points
+        curve.ctrlpts = points.ctrlpts
     """
-    def __init__(self, *args):
-        super(CurveManager, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(CurveManager, self).__init__(*args, **kwargs)
 
-    def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = spline.ctrlpts_size_u
-
-            # Generate control points manager
-            cpt_manager = control_points.SurfaceManager(size_u)
-            cpt_manager.ctrlpts = spline.ctrlpts
-
-            # Control points array to be used externally
-            control_points = []
-
-            # Get control points from the spline geometry
-            for u in range(size_u):
-                pt = cpt_manager.get_ctrlpt(u)
-                control_points.append(pt)
-        """
-        super(CurveManager, self).get_ctrlpt(*args)
-        idx = args[0]
-        try:
-            return self._points[idx]
-        except KeyError:
-            return None
-
-    def set_ctrlpt(self, pt, *args):
-        """ Puts the control point to the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = 5
-
-            # Create control points manager
-            points = control_points.SurfaceManager(size_u)
-
-            # Set control points
-            for u in range(size_u):
-                # 'pt' is the control point, e.g. [10, 15, 12]
-                points.set_ctrlpt(pt, u, v)
-
-            # Create spline geometry
-            curve = BSpline.Curve()
-
-            # Set control points
-            curve.ctrlpts = points.ctrlpts
-
-        :param pt: control point
-        :type pt: list, tuple
-        """
-        super(CurveManager, self).set_ctrlpt(pt, *args)
-        idx = args[0]
-        try:
-            self._points[idx] = pt
-        except IndexError:
-            raise GeomdlException("Index is out of range")
+    def find_index(self, *args):
+        return args[0]
 
 
 class SurfaceManager(AbstractManager):
@@ -224,74 +257,55 @@ class SurfaceManager(AbstractManager):
         # Assuming that the surface has size_u = 5 and size_v = 7 control points
         manager = SurfaceManager(5, 7)
 
-    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
-    for more details on using the manager class.
+    Getting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = spline.ctrlpts_size_u
+        size_v = spline.ctrlpts_size_v
+
+        # Generate control points manager
+        cpt_manager = control_points.SurfaceManager(size_u, size_v)
+        cpt_manager.ctrlpts = spline.ctrlpts
+
+        # Control points array to be used externally
+        control_points = []
+
+        # Get control points from the spline geometry
+        for u in range(size_u):
+            for v in range(size_v):
+                pt = cpt_manager.get_ctrlpt(u, v)
+                control_points.append(pt)
+
+    Setting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = 5
+        size_v = 3
+
+        # Create control points manager
+        points = control_points.SurfaceManager(size_u, size_v)
+
+        # Set control points
+        for u in range(size_u):
+            for v in range(size_v):
+                # 'pt' is the control point, e.g. [10, 15, 12]
+                points.set_ctrlpt(pt, u, v)
+
+        # Create spline geometry
+        surf = BSpline.Surface()
+
+        # Set control points
+        surf.ctrlpts = points.ctrlpts
     """
-    def __init__(self, *args):
-        super(SurfaceManager, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(SurfaceManager, self).__init__(*args, **kwargs)
 
-    def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = spline.ctrlpts_size_u
-            size_v = spline.ctrlpts_size_v
-
-            # Generate control points manager
-            cpt_manager = control_points.SurfaceManager(size_u, size_v)
-            cpt_manager.ctrlpts = spline.ctrlpts
-
-            # Control points array to be used externally
-            control_points = []
-
-            # Get control points from the spline geometry
-            for u in range(size_u):
-                for v in range(size_v):
-                    pt = cpt_manager.get_ctrlpt(u, v)
-                    control_points.append(pt)
-        """
-        super(SurfaceManager, self).get_ctrlpt(*args)
-        idx = args[1] + (args[0] * self._size[1])
-        try:
-            return self._points[idx]
-        except IndexError:
-            return None
-
-    def set_ctrlpt(self, pt, *args):
-        """ Puts the control point to the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = 5
-            size_v = 3
-
-            # Create control points manager
-            points = control_points.SurfaceManager(size_u, size_v)
-
-            # Set control points
-            for u in range(size_u):
-                for v in range(size_v):
-                    # 'pt' is the control point, e.g. [10, 15, 12]
-                    points.set_ctrlpt(pt, u, v)
-
-            # Create spline geometry
-            surf = BSpline.Surface()
-
-            # Set control points
-            surf.ctrlpts = points.ctrlpts
-
-        :param pt: control point
-        :type pt: list, tuple
-        """
-        super(SurfaceManager, self).set_ctrlpt(pt, *args)
-        idx = args[1] + (args[0] * self._size[1])
-        try:
-            self._points[idx] = pt
-        except IndexError:
-            raise GeomdlException("Index is out of range")
+    def find_index(self, *args):
+        return args[1] + (args[0] * self._size[1])
 
 
 class VolumeManager(AbstractManager):
@@ -309,75 +323,56 @@ class VolumeManager(AbstractManager):
         # Assuming that the volume has size_u = 5, size_v = 12 and size_w = 3 control points
         manager = VolumeManager(5, 12, 3)
 
-    Please refer to the documentation of :meth:`set_ctrlpt` and :meth:`get_ctrlpt` methods
-    for more details on using the manager class.
+    Gettting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = spline.ctrlpts_size_u
+        size_v = spline.ctrlpts_size_v
+        size_w = spline.ctrlpts_size_w
+
+        # Generate control points manager
+        cpt_manager = control_points.SurfaceManager(size_u, size_v, size_w)
+        cpt_manager.ctrlpts = spline.ctrlpts
+
+        # Control points array to be used externally
+        control_points = []
+
+        # Get control points from the spline geometry
+        for u in range(size_u):
+            for v in range(size_v):
+                for w in range(size_w):
+                    pt = cpt_manager.get_ctrlpt(u, v, w)
+                    control_points.append(pt)
+
+    Setting the control points:
+
+    .. code-block:: python
+
+        # Number of control points in all parametric dimensions
+        size_u = 5
+        size_v = 3
+        size_w = 2
+
+        # Create control points manager
+        points = control_points.VolumeManager(size_u, size_v, size_w)
+
+        # Set control points
+        for u in range(size_u):
+            for v in range(size_v):
+                for w in range(size_w):
+                    # 'pt' is the control point, e.g. [10, 15, 12]
+                    points.set_ctrlpt(pt, u, v, w)
+
+        # Create spline geometry
+        volume = BSpline.Volume()
+
+        # Set control points
+        volume.ctrlpts = points.ctrlpts
     """
-    def __init__(self, *args):
-        super(VolumeManager, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(VolumeManager, self).__init__(*args, **kwargs)
 
-    def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = spline.ctrlpts_size_u
-            size_v = spline.ctrlpts_size_v
-            size_w = spline.ctrlpts_size_w
-
-            # Generate control points manager
-            cpt_manager = control_points.SurfaceManager(size_u, size_v, size_w)
-            cpt_manager.ctrlpts = spline.ctrlpts
-
-            # Control points array to be used externally
-            control_points = []
-
-            # Get control points from the spline geometry
-            for u in range(size_u):
-                for v in range(size_v):
-                    for w in range(size_w):
-                        pt = cpt_manager.get_ctrlpt(u, v, w)
-                        control_points.append(pt)
-        """
-        super(VolumeManager, self).get_ctrlpt(*args)
-        idx = args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
-        try:
-            return self._points[idx]
-        except IndexError:
-            return None
-
-    def set_ctrlpt(self, pt, *args):
-        """ Puts the control point to the given location in the array.
-
-        .. code-block:: python
-
-            # Number of control points in all parametric dimensions
-            size_u = 5
-            size_v = 3
-            size_w = 2
-
-            # Create control points manager
-            points = control_points.VolumeManager(size_u, size_v, size_w)
-
-            # Set control points
-            for u in range(size_u):
-                for v in range(size_v):
-                    for w in range(size_w):
-                        # 'pt' is the control point, e.g. [10, 15, 12]
-                        points.set_ctrlpt(pt, u, v, w)
-
-            # Create spline geometry
-            volume = BSpline.Volume()
-
-            # Set control points
-            volume.ctrlpts = points.ctrlpts
-
-        :param pt: control point
-        :type pt: list, tuple
-        """
-        super(VolumeManager, self).set_ctrlpt(pt, *args)
-        idx = args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
-        try:
-            self._points[idx] = pt
-        except IndexError:
-            raise GeomdlException("Index is out of range")
+    def find_index(self, *args):
+        return args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
