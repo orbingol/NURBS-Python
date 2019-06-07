@@ -218,7 +218,7 @@ def test_cpman_surface1():
     pt = [1.0, 2.0, 3.0]
     p = [2 ,3]
     sz = [4, 3]
-    cpman = control_points.CurveManager(*sz)
+    cpman = control_points.SurfaceManager(*sz)
     cpman.set_ctrlpt(pt, *p)
     assert cpman.get_ctrlpt(2, 3) == pt
 
@@ -228,6 +228,6 @@ def test_cpman_volume1():
     pt = [1.0, 2.0, 3.0]
     p = [2, 3, 1]
     sz = [4, 3, 2]
-    cpman = control_points.CurveManager(*sz)
+    cpman = control_points.VolumeManager(*sz)
     cpman.set_ctrlpt(pt, *p)
     assert cpman.get_ctrlpt(2, 3, 1) == pt

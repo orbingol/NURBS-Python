@@ -239,6 +239,7 @@ class CurveManager(AbstractManager):
         super(CurveManager, self).__init__(*args, **kwargs)
 
     def find_index(self, *args):
+        super(CurveManager, self).find_index(*args)
         return args[0]
 
 
@@ -305,6 +306,7 @@ class SurfaceManager(AbstractManager):
         super(SurfaceManager, self).__init__(*args, **kwargs)
 
     def find_index(self, *args):
+        super(SurfaceManager, self).find_index(*args)
         return args[1] + (args[0] * self._size[1])
 
 
@@ -375,4 +377,5 @@ class VolumeManager(AbstractManager):
         super(VolumeManager, self).__init__(*args, **kwargs)
 
     def find_index(self, *args):
+        super(VolumeManager, self).find_index(*args)
         return args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
