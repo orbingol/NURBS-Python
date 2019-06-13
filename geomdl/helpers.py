@@ -231,7 +231,7 @@ def basis_functions(degree, knot_vector, spans, knots):
     """ Computes the non-vanishing basis functions for a list of parameters.
 
     Wrapper for :func:`.helpers.basis_function` to process multiple span
-    and knot values. Uses recurrence to compute the basis functions, also 
+    and knot values. Uses recurrence to compute the basis functions, also
     known as Cox - de Boor recursion formula.
 
     :param degree: degree, :math:`p`
@@ -256,11 +256,11 @@ def basis_function_all(degree, knot_vector, span, knot):
 
     A slightly modified version of Algorithm A2.2 from The NURBS Book by Piegl & Tiller.
     Wrapper for :func:`.helpers.basis_function` to compute multiple basis functions.
-    Uses recurrence to compute the basis functions, also known as Cox - de Boor 
+    Uses recurrence to compute the basis functions, also known as Cox - de Boor
     recursion formula.
 
     For instance; if ``degree = 2``, then this function will compute the basis function
-    values of degrees **0, 1** and **2** for the ``knot`` value at the input knot ``span`` 
+    values of degrees **0, 1** and **2** for the ``knot`` value at the input knot ``span``
     of the ``knot_vector``.
 
     :param degree: degree, :math:`p`
@@ -829,12 +829,11 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     than 1, then the algorithm finds the middle knots in each internal knot span to increase the number of knots to be
     refined.
 
-    **Example**: Let the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots from the start and end
-    are removed:
+    **Example**: Let the degree is 2 and the knot vector to be refined is ``[0, 2, 4]`` with the superfluous knots
+    from the start and end are removed. Knot vectors with the changing ``density (d)`` value will be:
 
-    * If ``density`` is 1, knot vector to be refined is ``[0, 2, 4]``
-    * If ``density`` is 2, knot vector to be refined is ``[0, 1, 2, 3, 4]``
-    * If ``density`` is 3, knot vector to be refined is ``[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]``
+    * ``d = 1``, knot vector ``[0, 1, 1, 2, 2, 3, 3, 4]``
+    * ``d = 2``, knot vector ``[0, 0.5, 0.5, 1, 1, 1.5, 1.5, 2, 2, 2.5, 2.5, 3, 3, 3.5, 3.5, 4]``
 
     Keyword Arguments:
         * ``knot_list``: knot list to be refined. *Default: list of internal knots*
@@ -872,7 +871,7 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     knot_list = sorted(set(knot_list))
 
     # Increase knot density
-    for d in range(0, density - 1):
+    for d in range(0, density):
         rknots = []
         for i in range(len(knot_list) - 1):
             knot_tmp = knot_list[i] + ((knot_list[i + 1] - knot_list[i]) / 2.0)
