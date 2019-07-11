@@ -1,5 +1,9 @@
 # geomdl Changelog
 
+## v5.2.8 released on 2019-07-10
+
+* Fix normal vector evaluation for curves (as discussed in #49 and #50)
+
 ## v5.2.7 released on 2019-05-24
 
 * Added `operations.flip`
