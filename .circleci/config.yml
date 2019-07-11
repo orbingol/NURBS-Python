@@ -11,6 +11,7 @@ defsteps: &defsteps
     - run: docker build -t $IMAGE docker/$TAG
     - run: echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
     - run: docker tag $IMAGE $DOCKER_HUB_ORGANIZATION/$DOCKER_HUB_REPO:$TAG
+    - run: docker tag $IMAGE $DOCKER_HUB_ORGANIZATION/$DOCKER_HUB_REPO:$TAG2
     - run: docker push $DOCKER_HUB_ORGANIZATION/$DOCKER_HUB_REPO
 
 # Define executors
@@ -70,18 +71,19 @@ jobs:
       - run: echo 'export GEOMDL_CONDA_PKG=`conda build conda/geomdl --output`' >> $BASH_ENV
       - run: anaconda --token $ANACONDA_TOKEN upload --skip-existing $GEOMDL_CONDA_PKG
 
-  # Build Docker image for Python v2.7
-  docker_build_py27:
-    executor: docker_build_executor
-    environment:
-      TAG: py27  # Docker tag as an environmental variable
-    <<: *defsteps
+#  # Build Docker image for Python v2.7
+#  docker_build_py27:
+#    executor: docker_build_executor
+#    environment:
+#      TAG: py27  # Docker tag as an environmental variable
+#    <<: *defsteps
 
   # Build Docker image for Python v3.5
   docker_build_py35:
     executor: docker_build_executor
     environment:
       TAG: py35  # Docker tag as an environmental variable
+      TAG2: latest
     <<: *defsteps
 
   # Build Docker image for Python v3.6
@@ -89,6 +91,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36  # Docker tag as an environmental variable
+      TAG2: py36
     <<: *defsteps
 
   # Build Docker image for Python v3.7
@@ -96,20 +99,22 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py37  # Docker tag as an environmental variable
+      TAG2: py37
     <<: *defsteps
 
-  # Build Docker image for Python v2.7 w/ Alpine Linux
-  docker_build_py27_alpine:
-    executor: docker_build_executor
-    environment:
-      TAG: py27-alpine  # Docker tag as an environmental variable
-    <<: *defsteps
+#  # Build Docker image for Python v2.7 w/ Alpine Linux
+#  docker_build_py27_alpine:
+#    executor: docker_build_executor
+#    environment:
+#      TAG: py27-alpine  # Docker tag as an environmental variable
+#    <<: *defsteps
 
   # Build Docker image for Python v3.5 w/ Alpine Linux
   docker_build_py35_alpine:
     executor: docker_build_executor
     environment:
       TAG: py35-alpine  # Docker tag as an environmental variable
+      TAG2: latest-alpine
     <<: *defsteps
 
   # Build Docker image for Python v3.6 w/ Alpine Linux
@@ -117,6 +122,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36-alpine  # Docker tag as an environmental variable
+      TAG2: py36-alpine
     <<: *defsteps
 
   # Build Docker image for Python v3.7 w/ Alpine Linux
@@ -124,6 +130,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py37-alpine  # Docker tag as an environmental variable
+      TAG2: py37-alpine
     <<: *defsteps
 
   # Build Docker image for PyPy3
@@ -131,6 +138,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: pypy3  # Docker tag as an environmental variable
+      TAG2: pypy3
     <<: *defsteps
 
 # Define workflows
@@ -160,15 +168,15 @@ workflows:
               only:
                 - master
                 - circleci-testing
-      - docker_build_py27:
-          requires:
-            - pypi_deploy
-            - anaconda_deploy
-          filters:
-            branches:
-              only:
-                - master
-                - circleci-testing
+#      - docker_build_py27:
+#          requires:
+#            - pypi_deploy
+#            - anaconda_deploy
+#          filters:
+#            branches:
+#              only:
+#                - master
+#                - circleci-testing
       - docker_build_py35:
           requires:
             - pypi_deploy
@@ -196,15 +204,15 @@ workflows:
               only:
                 - master
                 - circleci-testing
-      - docker_build_py27_alpine:
-          requires:
-            - pypi_deploy
-            - anaconda_deploy
-          filters:
-            branches:
-              only:
-                - master
-                - circleci-testing
+#      - docker_build_py27_alpine:
+#          requires:
+#            - pypi_deploy
+#            - anaconda_deploy
+#          filters:
+#            branches:
+#              only:
+#                - master
+#                - circleci-testing
       - docker_build_py35_alpine:
           requires:
             - pypi_deploy
