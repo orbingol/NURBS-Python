@@ -58,9 +58,8 @@ def tangent_curve_single_list(obj, param_list, normalize):
 
 
 def normal_curve_single(obj, u, normalize):
-    """ Evaluates the curve normal vector at the input parameter, u.
+    """ Evaluates the vector normal to the tangent vector at the input parameter, u.
 
-    Curve normal is calculated from the 2nd derivative of the curve at the input parameter, u.
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
     :param obj: input curve
@@ -72,11 +71,17 @@ def normal_curve_single(obj, u, normalize):
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
-    # 2nd derivative of the curve gives the normal
-    ders = obj.derivatives(u, 2)
+    # Find 1st derivative
+    ders = obj.derivatives(u, 1)
 
+    # Apply fix on https://github.com/orbingol/NURBS-Python/pull/50#issuecomment-499354073
+    t = ders[1]
+    tn = [0.0, 0.0, 1.0]
+    n = linalg.vector_cross(t, tn)
+
+    # Normalize the vector component
+    vector = linalg.vector_normalize(n) if normalize else n
     point = ders[0]
-    vector = linalg.vector_normalize(ders[2]) if normalize else ders[2]
 
     return tuple(point), tuple(vector)
 
