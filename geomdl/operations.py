@@ -608,6 +608,8 @@ def refine_knotvector(obj, param, **kwargs):
         # u-dir = 1, v-dir = 3 and w-dir = 2
         operations.refine_knotvector(volume, [1, 3, 2])
 
+    Please refer to :func:`.helpers.knot_refinement` function for more usage options.
+
     Keyword Arguments:
         * ``check_num``: enables/disables operation validity checks. *Default: True*
 
