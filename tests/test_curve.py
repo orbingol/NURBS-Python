@@ -12,6 +12,7 @@ from geomdl import evaluators
 from geomdl import helpers
 from geomdl import convert
 from geomdl import operations
+from geomdl import linalg
 
 GEOMDL_DELTA = 0.001
 
@@ -168,6 +169,30 @@ def test_bspline_curve2d_degree_reduce_ctrlpts_size(spline_curve):
     assert spline_curve.ctrlpts_size == ctrlpts_size_new
 
 
+def test_bspline_curve2d_tn_vector(spline_curve):
+    angle = 90.0
+    t = spline_curve.tangent(0.5)
+    n = spline_curve.normal(0.5)
+    res = linalg.vector_angle_between(t[1], n[1])
+    assert angle == res
+
+
+def test_bspline_curve2d_tb_vector(spline_curve):
+    angle = 90.0
+    t = spline_curve.tangent(0.5)
+    b = spline_curve.binormal(0.5)
+    res = linalg.vector_angle_between(t[1], b[1])
+    assert angle == res
+
+
+def test_bspline_curve2d_nb_vector(spline_curve):
+    angle = 90.0
+    b = spline_curve.binormal(0.5)
+    n = spline_curve.normal(0.5)
+    res = linalg.vector_angle_between(b[1], n[1])
+    assert angle == res
+
+
 @fixture
 def spline_curve3d(spline_curve):
     curve3d = operations.add_dimension(spline_curve, offset=1.0)
@@ -177,6 +202,30 @@ def spline_curve3d(spline_curve):
 def test_bspline_curve3d_ctrlpts(spline_curve3d):
     assert spline_curve3d.ctrlpts == [[5.0, 5.0, 1.0], [10.0, 10.0, 1.0], [20.0, 15.0, 1.0], [35.0, 15.0, 1.0], [45.0, 10.0, 1.0], [50.0, 5.0, 1.0]]
     assert spline_curve3d.dimension == 3
+
+
+def test_bspline_curve3d_tn_vector(spline_curve3d):
+    angle = 90.0
+    t = spline_curve3d.tangent(0.5)
+    n = spline_curve3d.normal(0.5)
+    res = linalg.vector_angle_between(t[1], n[1])
+    assert angle == res
+
+
+def test_bspline_curve3d_tb_vector(spline_curve3d):
+    angle = 90.0
+    t = spline_curve3d.tangent(0.5)
+    b = spline_curve3d.binormal(0.5)
+    res = linalg.vector_angle_between(t[1], b[1])
+    assert angle == res
+
+
+def test_bspline_curve3d_nb_vector(spline_curve3d):
+    angle = 90.0
+    b = spline_curve3d.binormal(0.5)
+    n = spline_curve3d.normal(0.5)
+    res = linalg.vector_angle_between(b[1], n[1])
+    assert angle == res
 
 
 @fixture
