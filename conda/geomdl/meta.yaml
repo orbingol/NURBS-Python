@@ -20,14 +20,8 @@ requirements:
   host:
     - python
     - setuptools
-    - six
-    #- functools_lru_cache
-    - typing
   run:
     - python
-    - six
-    #- functools_lru_cache
-    - typing
     - numpy
     - matplotlib
 
@@ -45,11 +39,17 @@ test:
 about:
   home: https://onurraufbingol.com/NURBS-Python/
   license: MIT
-  license_file: ../../LICENSE
+  license_family: MIT
   summary: Object-oriented B-Spline and NURBS evaluation library
-  description: "Self-contained, object-oriented, pure Python B-Spline and NURBS evaluation library with knot vector and surface grid generators."
-  doc_url: "http://nurbs-python.readthedocs.io/"
-  dev_url: "https://github.com/orbingol/NURBS-Python"
+  description: |
+    NURBS-Python (geomdl) is an object-oriented B-Spline and NURBS library. The core
+    library is pure Python code with no dependencies. Visualization modules depend on
+    external Python packages, such as matplotlib, Plotly and VTK. Please refer to the
+    documentation <http://nurbs-python.readthedocs.io/> for a list of features.
+    Please refer to the examples repo <https://github.com/orbingol/NURBS-Python_Examples>
+    for example scripts.
+  doc_url: http://nurbs-python.readthedocs.io/
+  dev_url: https://github.com/orbingol/NURBS-Python
 
 extra:
   recipe-maintainers:
