@@ -291,31 +291,10 @@ class Curve(abstract.Curve):
         if check_num and self._eval_points:
             self.evaluate()
 
-    def tangent(self, param, **kwargs):
+    def tangent(self, parpos, **kwargs):
         """ Evaluates the tangent vector of the curve at the given parametric position(s).
 
-        The ``param`` argument can be
-
-        * a float value for evaluation at a single parametric position
-        * a list of float values for evaluation at the multiple parametric positions
-
-        The return value will be in the order of the input parametric position list.
-
-        This method accepts the following keyword arguments:
-
-        * ``normalize``: normalizes the output vector. Default value is *True*.
-
-        :param param: parametric position(s) where the evaluation will be executed
-        :type param: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
-        :rtype: tuple
-        """
-        return operations.tangent(self, param, **kwargs)
-
-    def normal(self, parpos, **kwargs):
-        """ Evaluates the normal vector of the curve at the given parametric position(s).
-
-        The ``param`` argument can be
+        The ``parpos`` argument can be
 
         * a float value for evaluation at a single parametric position
         * a list of float values for evaluation at the multiple parametric positions
@@ -328,7 +307,28 @@ class Curve(abstract.Curve):
 
         :param parpos: parametric position(s) where the evaluation will be executed
         :type parpos: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
+        :return: tangent vector as a tuple of the origin point and the vector components
+        :rtype: tuple
+        """
+        return operations.tangent(self, parpos, **kwargs)
+
+    def normal(self, parpos, **kwargs):
+        """ Evaluates the normal to the tangent vector of the curve at the given parametric position(s).
+
+        The ``parpos`` argument can be
+
+        * a float value for evaluation at a single parametric position
+        * a list of float values for evaluation at the multiple parametric positions
+
+        The return value will be in the order of the input parametric position list.
+
+        This method accepts the following keyword arguments:
+
+        * ``normalize``: normalizes the output vector. Default value is *True*.
+
+        :param parpos: parametric position(s) where the evaluation will be executed
+        :type parpos: float, list or tuple
+        :return: normal vector as a tuple of the origin point and the vector components
         :rtype: tuple
         """
         return operations.normal(self, parpos, **kwargs)
@@ -336,7 +336,7 @@ class Curve(abstract.Curve):
     def binormal(self, parpos, **kwargs):
         """ Evaluates the binormal vector of the curve at the given parametric position(s).
 
-        The ``param`` argument can be
+        The ``parpos`` argument can be
 
         * a float value for evaluation at a single parametric position
         * a list of float values for evaluation at the multiple parametric positions
@@ -349,7 +349,7 @@ class Curve(abstract.Curve):
 
         :param parpos: parametric position(s) where the evaluation will be executed
         :type parpos: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
+        :return: binormal vector as a tuple of the origin point and the vector components
         :rtype: tuple
         """
         return operations.binormal(self, parpos, **kwargs)
