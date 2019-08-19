@@ -8,7 +8,7 @@
 """
 
 import math
-from . import BSpline, helpers, linalg
+from . import BSpline, helpers, linalg, abstract
 from ._utilities import export
 
 
@@ -430,7 +430,7 @@ def compute_params_curve(points, centripetal=False):
     :return: parameter array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
-    if not isinstance(points, (list, tuple)):
+    if not isinstance(points, abstract.GeomdlSequence):
         raise TypeError("Data points must be a list or a tuple")
 
     # Length of the points array

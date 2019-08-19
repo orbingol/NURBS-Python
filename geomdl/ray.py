@@ -7,9 +7,8 @@
 
 """
 
-from . import linalg
+from . import linalg, abstract
 from ._utilities import export
-
 
 @export
 class Ray(object):
@@ -26,9 +25,9 @@ class Ray(object):
     """
     def __init__(self, point1, point2):
         super(Ray, self).__init__()
-        if not isinstance(point1, (list, tuple)):
+        if not isinstance(point1, abstract.GeomdlSequence):
             raise TypeError("Point 1 must be a list or a tuple")
-        if not isinstance(point2, (list, tuple)):
+        if not isinstance(point2, abstract.GeomdlSequence):
             raise TypeError("Point 2 must be a list or a tuple")
         if len(point1) != len(point2):
             raise ValueError("THe dimensions of the input points must be equal")

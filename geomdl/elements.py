@@ -11,6 +11,7 @@ import copy
 import abc
 from .exceptions import GeomdlException
 from . import _utilities as utl
+from . import abstract
 
 
 @utl.add_metaclass(abc.ABCMeta)
@@ -163,7 +164,7 @@ class AbstractEntity(object):
 
     @opt.setter
     def opt(self, key_value):
-        if not isinstance(key_value, (list, tuple)):
+        if not isinstance(key_value, abstract.GeomdlSequence):
             raise GeomdlException("opt input must be a list or a tuple")
         if len(key_value) != 2:
             raise GeomdlException("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
@@ -337,7 +338,7 @@ class Vertex(AbstractEntity):
 
     @uv.setter
     def uv(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abstract.GeomdlSequence):
             raise GeomdlException("UV data input must be a list or tuple")
         if len(value) != 2:
             raise GeomdlException("UV must have 2 components")
@@ -368,7 +369,7 @@ class Vertex(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abstract.GeomdlSequence):
             raise GeomdlException("Vertex data must be a list or tuple")
         if len(value) != 3:
             raise GeomdlException("Vertex can only store 3 components")
@@ -473,7 +474,7 @@ class Triangle(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abstract.GeomdlSequence):
             raise GeomdlException("Input must be a list or tuple")
         if len(value) != 3:
             raise GeomdlException("Triangle can only have 3 vertices")
@@ -528,7 +529,7 @@ class Quad(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abstract.GeomdlSequence):
             raise GeomdlException("Input must be a list or tuple")
         if len(value) != 4:
             raise GeomdlException("Quad can only have 4 vertices")

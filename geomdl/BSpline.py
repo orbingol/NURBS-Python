@@ -488,7 +488,7 @@ class Surface(abstract.Surface):
 
     @ctrlpts2d.setter
     def ctrlpts2d(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abstract.GeomdlSequence):
             raise ValueError("The input must be a list or tuple")
 
         # Clean up the surface and control points

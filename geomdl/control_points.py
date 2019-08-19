@@ -12,6 +12,7 @@ import copy
 from functools import reduce
 from .exceptions import GeomdlException
 from ._utilities import export, add_metaclass
+from . import abstract
 
 
 @add_metaclass(abc.ABCMeta)
@@ -129,7 +130,7 @@ class AbstractManager(object):
         :param pt: control point
         :type pt: list, tuple
         """
-        if not isinstance(pt, (list, tuple)):
+        if not isinstance(pt, abstract.GeomdlSequence):
             raise GeomdlException("'pt' argument should be a list or tuple")
         if len(args) != len(self._size):
             raise GeomdlException("Input dimensions are not compatible with the geometry")
@@ -169,7 +170,7 @@ class AbstractManager(object):
         try:
             for k, val in adct.items():
                 if k in self._pt_data:
-                    if isinstance(val, (list, tuple)):
+                    if isinstance(val, abstract.GeomdlSequence):
                         for j, v in enumerate(val):
                             self._pt_data[k][idx][j] = v
                     else:

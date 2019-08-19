@@ -187,7 +187,7 @@ class AbstractContainer(abstract.GeomdlBase):
         if self._pdim == 1 and isinstance(value, (int, float)):
             delta_vals = [value]
         else:
-            if isinstance(value, (list, tuple)):
+            if isinstance(value, abstract.GeomdlSequence):
                 if len(value) != self._pdim:
                     raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
                 delta_vals = value
@@ -236,7 +236,7 @@ class AbstractContainer(abstract.GeomdlBase):
         if self._pdim == 1 and isinstance(value, (int, float)):
             ssz = [value]
         else:
-            if isinstance(value, (list, tuple)):
+            if isinstance(value, abstract.GeomdlSequence):
                 if len(value) != self._pdim:
                     raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
                 ssz = value
@@ -400,13 +400,13 @@ class CurveContainer(AbstractContainer):
         reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, abstract.GeomdlSequence):
             if len(cpcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, abstract.GeomdlSequence):
             if len(evalcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -765,13 +765,13 @@ class SurfaceContainer(AbstractContainer):
         force_tsl = bool(kwargs.pop('force', False))  # flag to force re-tessellation
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, abstract.GeomdlSequence):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, abstract.GeomdlSequence):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -779,7 +779,7 @@ class SurfaceContainer(AbstractContainer):
 
         # Get colormaps as a list
         surf_cmaps = kwargs.get('colormap', [])
-        if not isinstance(surf_cmaps, (list, tuple)):
+        if not isinstance(surf_cmaps, abstract.GeomdlSequence):
             warnings.warn("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
             surf_cmaps = []
 
@@ -1032,13 +1032,13 @@ class VolumeContainer(AbstractContainer):
         reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, abstract.GeomdlSequence):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, abstract.GeomdlSequence):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -1106,7 +1106,7 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[0] = cpcolor
 
     # User-defined color for control points grid
-    if isinstance(cpcolor, (list, tuple)):
+    if isinstance(cpcolor, abstract.GeomdlSequence):
         color[0] = cpcolor[idx]
 
     # Constant color for evaluated points grid
@@ -1114,7 +1114,7 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[1] = evalcolor
 
     # User-defined color for evaluated points grid
-    if isinstance(evalcolor, (list, tuple)):
+    if isinstance(evalcolor, abstract.GeomdlSequence):
         color[1] = evalcolor[idx]
 
     return color

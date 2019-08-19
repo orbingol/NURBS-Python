@@ -54,7 +54,7 @@ def insert_knot(obj, param, num, **kwargs):
 
     if check_num:
         # Check the validity of number of insertions
-        if not isinstance(num, (list, tuple)):
+        if not isinstance(num, abstract.GeomdlSequence):
             raise GeomdlException("The number of insertions must be a list or a tuple",
                                   data=dict(num=num))
 
@@ -327,7 +327,7 @@ def remove_knot(obj, param, num, **kwargs):
 
     if check_num:
         # Check the validity of number of insertions
-        if not isinstance(num, (list, tuple)):
+        if not isinstance(num, abstract.GeomdlSequence):
             raise GeomdlException("The number of removals must be a list or a tuple",
                                   data=dict(num=num))
 
@@ -623,7 +623,7 @@ def refine_knotvector(obj, param, **kwargs):
     check_num = kwargs.get('check_num', True)  # enables/disables input validity checks
 
     if check_num:
-        if not isinstance(param, (list, tuple)):
+        if not isinstance(param, abstract.GeomdlSequence):
             raise GeomdlException("Parametric dimensions argument (param) must be a list or a tuple")
 
         if len(param) != obj.pdimension:
@@ -1405,7 +1405,7 @@ def tangent(obj, params, **kwargs):
     """
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
-        if isinstance(params, (list, tuple)):
+        if isinstance(params, abstract.GeomdlSequence):
             return ops.tangent_curve_single_list(obj, params, normalize)
         else:
             return ops.tangent_curve_single(obj, params, normalize)
@@ -1432,7 +1432,7 @@ def normal(obj, params, **kwargs):
     """
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
-        if isinstance(params, (list, tuple)):
+        if isinstance(params, abstract.GeomdlSequence):
             return ops.normal_curve_single_list(obj, params, normalize)
         else:
             return ops.normal_curve_single(obj, params, normalize)
@@ -1459,7 +1459,7 @@ def binormal(obj, params, **kwargs):
     """
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
-        if isinstance(params, (list, tuple)):
+        if isinstance(params, abstract.GeomdlSequence):
             return ops.binormal_curve_single_list(obj, params, normalize)
         else:
             return ops.binormal_curve_single(obj, params, normalize)
