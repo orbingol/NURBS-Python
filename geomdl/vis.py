@@ -7,9 +7,9 @@
 
 """
 
-import abc
 from . import _utilities as utl
 from .exceptions import GeomdlException
+from . import abc
 
 
 # Initialize an empty __all__ for controlling imports

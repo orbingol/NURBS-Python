@@ -7,10 +7,10 @@
 
 """
 
-import abc
 from .exceptions import GeomdlException
 from . import _tessellate as tsl
 from ._utilities import add_metaclass, export
+from . import abc
 
 
 # Add some aliases

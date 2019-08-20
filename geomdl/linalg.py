@@ -12,7 +12,7 @@ import math
 from copy import deepcopy
 from functools import reduce
 from .exceptions import GeomdlException
-from . import _linalg
+from . import abc, _linalg
 try:
     from functools import lru_cache
 except ImportError:
@@ -270,7 +270,7 @@ def vector_is_zero(vector_in, tol=10e-8):
     :return: True if the input vector is zero, False otherwise
     :rtype: bool
     """
-    if not isinstance(vector_in, (list, tuple)):
+    if not isinstance(vector_in, abc.GeomdlSequence):
         raise TypeError("Input vector must be a list or a tuple")
 
     res = [False for _ in range(len(vector_in))]

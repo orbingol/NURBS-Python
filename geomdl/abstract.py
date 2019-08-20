@@ -8,10 +8,9 @@
 """
 
 import copy
-import abc
 import warnings
 from . import vis, helpers, knotvector, voxelize, utilities
-from . import tessellate
+from . import tessellate, abc
 from .evaluators import AbstractEvaluator
 from .exceptions import GeomdlException
 from . import _utilities as utl
@@ -170,7 +169,7 @@ class GeomdlBase(object):
 
     @opt.setter
     def opt(self, key_value):
-        if not isinstance(key_value, (list, tuple)):
+        if not isinstance(key_value, abc.GeomdlSequence):
             raise GeomdlException("opt input must be a list or a tuple")
         if len(key_value) != 2:
             raise GeomdlException("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
@@ -1275,7 +1274,7 @@ class Surface(SplineGeometry):
 
     @degree.setter
     def degree(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.degree_u = value[0]
         self.degree_v = value[1]
@@ -1338,7 +1337,7 @@ class Surface(SplineGeometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.knotvector_u = value[0]
         self.knotvector_v = value[1]
@@ -1670,7 +1669,7 @@ class Surface(SplineGeometry):
         if isinstance(value, (int, float)):
             self.delta_u = value
             self.delta_v = value
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, abc.GeomdlSequence):
             if len(value) == 2:
                 self.delta_u = value[0]
                 self.delta_v = value[1]
@@ -1759,7 +1758,7 @@ class Surface(SplineGeometry):
     @trims.setter
     def trims(self, value):
         # Input type validation
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming curves")
         # Trim curve validation
         for i, v in enumerate(value):
@@ -2246,7 +2245,7 @@ class Volume(SplineGeometry):
 
     @degree.setter
     def degree(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.degree_u = value[0]
         self.degree_v = value[1]
@@ -2333,7 +2332,7 @@ class Volume(SplineGeometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.knotvector_u = value[0]
         self.knotvector_v = value[1]
@@ -2783,7 +2782,7 @@ class Volume(SplineGeometry):
             self.delta_u = value
             self.delta_v = value
             self.delta_w = value
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, abc.GeomdlSequence):
             if len(value) == 3:
                 self.delta_u = value[0]
                 self.delta_v = value[1]
@@ -2808,7 +2807,7 @@ class Volume(SplineGeometry):
     @trims.setter
     def trims(self, value):
         # Input type validation
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming surfaces")
         # Trim curve validation
         for i, v in enumerate(value):
