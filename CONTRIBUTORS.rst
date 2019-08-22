@@ -7,6 +7,7 @@ the NURBS-Python project.
 * Pavel Vlasanek (`@tucna <https://github.com/tucna>`_)
 * Xuefeng Zhao
 * Hugo Rambure (`@Nodli <https://github.com/Nodli>`_)
+* Chris Arthurs (`@carthurs <https://github.com/carthurs>`_)
 
 Last but not least, I could never overlook the contributions of my Ph.D. adviser,
 `Dr. Adarsh Krishnamurthy <https://www.me.iastate.edu/faculty/profile/adarsh>`_
