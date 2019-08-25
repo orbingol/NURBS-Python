@@ -13,6 +13,7 @@ from copy import deepcopy
 from functools import reduce
 from .exceptions import GeomdlException
 from . import _linalg
+from .doubledouble import DoubleDouble
 try:
     from functools import lru_cache
 except ImportError:
@@ -43,12 +44,12 @@ def vector_cross(vector1, vector2):
 
     # Convert 2-D to 3-D, if necessary
     if len(vector1) == 2:
-        v1 = [float(v) for v in vector1] + [0.0]
+        v1 = [DoubleDouble(v) for v in vector1] + [DoubleDouble(0.0)]
     else:
         v1 = vector1
 
     if len(vector2) == 2:
-        v2 = [float(v) for v in vector2] + [0.0]
+        v2 = [DoubleDouble(v) for v in vector2] + [DoubleDouble(0.0)]
     else:
         v2 = vector2
 
@@ -81,9 +82,7 @@ def vector_dot(vector1, vector2):
         raise
 
     # Compute dot product
-    prod = 0.0
-    for v1, v2 in zip(vector1, vector2):
-        prod += v1 * v2
+    prod = sum(((v1 * v2) for v1, v2 in zip(vector1, vector2)), DoubleDouble(0.0))
 
     # Return the dot product of the input vectors
     return prod
@@ -152,8 +151,8 @@ def vector_normalize(vector_in, decimals=18):
         for vin in vector_in:
             vector_out.append(vin / magnitude)
 
-        # Return the normalized vector and consider the number of significands
-        return [float(("{:." + str(decimals) + "f}").format(vout)) for vout in vector_out]
+        # Return the normalized vector
+        return [float('%.*f' % (decimals, vout)) for vout in vector_out]
     else:
         raise ValueError("The magnitude of the vector is zero")
 
@@ -230,10 +229,8 @@ def vector_magnitude(vector_in):
     :return: magnitude of the vector
     :rtype: float
     """
-    sq_sum = 0.0
-    for vin in vector_in:
-        sq_sum += vin**2
-    return math.sqrt(sq_sum)
+    sq_sum = sum((vin**2 for vin in vector_in), DoubleDouble(0.0))
+    return sq_sum.sqrt()
 
 
 def vector_angle_between(vector1, vector2, **kwargs):
