@@ -63,7 +63,7 @@ try:
         return r, e
 except ImportError:
     def _two_product(x, y):
-        u = x*134217729.0
+        u = x*134217729.0 # 0x8000001.0 (equivalent to shift add significand)
         v = y*134217729.0
         s = u - (u - x)
         t = v - (v - y)
@@ -241,6 +241,7 @@ class DoubleDouble(object):
     def exp(self):
         n = int(round(self.x))
         x = self - n
+        # the Pade approximate for e^x: R[L=12/M=12] = (u/v), expressed using Horner's rule
         u = (((((((((((x +
             156)*x + 12012)*x +
             600600)*x + 21621600)*x +
