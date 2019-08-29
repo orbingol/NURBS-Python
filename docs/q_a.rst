@@ -86,8 +86,9 @@ All contributions to NURBS-Python are welcomed and I appreciate your time and ef
 some `guidelines for contributing <https://github.com/orbingol/NURBS-Python/blob/master/.github/CONTRIBUTING.md>`_
 and I would be really happy if you could follow these guidelines if you would like to contribute to NURBS-Python.
 
-`Opening a new issue on GitHub <https://github.com/orbingol/NURBS-Python/issues/new>`_ to discuss what you would
-like to implement for NURBS-Python will be also appreciated.
+It is suggested to open `a new ticket <https://github.com/orbingol/NURBS-Python/issues/new>`_ GitHub to discuss what
+you would like to fix or add as a new feature, as it may already been fixed/implemented in some of the development
+branches.
 
 How can I add a new feature?
 ============================
@@ -97,6 +98,28 @@ for creating new geometry types. All classes use :doc:`evaluators <module_evalua
 algorithms. Evaluator classes can be extended for new type of algorithms. Please refer to ``BSpline`` and ``NURBS``
 modules for implementation examples. It would be also a good idea to refer to the constructors of the abstract
 classes for more details.
+
+Why doesn't NURBS-Python have XYZ feature?
+==========================================
+
+NURBS-Python tries to keep the geometric operations on the parametric space without any conversion to other
+representations. This approach makes some operations and queries hard to implement. Keeping NURBS-Python independent of
+libraries that require compilation caused including implementations some well-known geometric queries and computations,
+as well as a simple linear algebra module. However, **the main purpose is providing a base for NURBS data and fundamental
+operations while keeping the external dependencies at minimum**. It is users' choice to extend the library and add new
+more advanced features (e.g. intersection computations) or capabilities (e.g. a new file format import/export support).
+
+All advanced features should be packaged separately. If you are developing a feature to replace an existing feature,
+it might be a good idea to package it separately.
+
+NURBS-Python may seem to keep very high standards by means of accepting contributions. For instance, if you implement a
+feature applicable to curves but not surfaces and volumes, such a pull request won't be accepted till you add that
+feature to surfaces and volumes. Similarly, if you change a single module and/or the function you use most frequently,
+but that change is affecting the library as a whole, your pull request will be put on hold.
+
+If you are not interested in such level of contributions, it is suggested to create a separate module and add ``geomdl``
+as its dependency. If you create a module which uses ``geomdl``, please let the developers know via emailing
+``nurbs-python@googlegroups.com`` and you will be credited as a contributor.
 
 API Changes
 ===========
