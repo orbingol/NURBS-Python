@@ -8,6 +8,7 @@ and support in testing, bug fixing and improvement of the NURBS-Python (geomdl) 
 * Xuefeng Zhao
 * Hugo Rambure (`@Nodli <https://github.com/Nodli>`_)
 * Chris Arthurs (`@carthurs <https://github.com/carthurs>`_)
+* Chris Horler (`@cshorler <https://github.com/cshorler>`_)
 
 The author (`@orbingol <https://github.com/orbingol>`_) also acknowledges the following professors:
 
