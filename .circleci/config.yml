@@ -71,13 +71,12 @@ jobs:
       - run: echo 'export GEOMDL_CONDA_PKG=`conda build conda/geomdl --output`' >> $BASH_ENV
       - run: anaconda --token $ANACONDA_TOKEN upload --skip-existing $GEOMDL_CONDA_PKG
 
-
   # Build Docker image for Python v3.5
   docker_build_py35:
     executor: docker_build_executor
     environment:
       TAG: py35  # Docker tag as an environmental variable
-      TAG2: latest
+      TAG2: py35
     <<: *defsteps
 
   # Build Docker image for Python v3.6
@@ -85,7 +84,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36  # Docker tag as an environmental variable
-      TAG2: py36
+      TAG2: latest
     <<: *defsteps
 
   # Build Docker image for Python v3.7
@@ -96,13 +95,12 @@ jobs:
       TAG2: py37
     <<: *defsteps
 
-
   # Build Docker image for Python v3.5 w/ Alpine Linux
   docker_build_py35_alpine:
     executor: docker_build_executor
     environment:
       TAG: py35-alpine  # Docker tag as an environmental variable
-      TAG2: latest-alpine
+      TAG2: py35-alpine
     <<: *defsteps
 
   # Build Docker image for Python v3.6 w/ Alpine Linux
@@ -110,7 +108,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36-alpine  # Docker tag as an environmental variable
-      TAG2: py36-alpine
+      TAG2: latest-alpine
     <<: *defsteps
 
   # Build Docker image for Python v3.7 w/ Alpine Linux
