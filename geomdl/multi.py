@@ -270,7 +270,7 @@ class AbstractContainer(abstract.GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
-        return [e.data for e in self._elements]
+        return tuple([e.data for e in self._elements])
 
     def add(self, element):
         """ Adds geometry objects to the container.
