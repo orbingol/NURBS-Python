@@ -143,13 +143,8 @@ class Curve(abstract.Curve):
         # Clean up the curve points
         self.reset(evalpts=True)
 
-        # Evaluate
-        cpts = self._evaluator.evaluate(start=start, stop=stop,
-                                        degree=self.degree, knotvector=self.knotvector,
-                                        ctrlpts=self._control_points, sample_size=self.sample_size,
-                                        dimension=self._dimension, precision=self._precision)
-
-        self._eval_points = cpts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data, start=start, stop=stop)
 
     def evaluate_single(self, param):
         """ Evaluates the curve at the input parameter.
@@ -168,10 +163,7 @@ class Curve(abstract.Curve):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the curve point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self.degree, knotvector=self.knotvector,
-                                      ctrlpts=self._control_points, sample_size=self.sample_size,
-                                      dimension=self._dimension, precision=self._precision)
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
 
         return pt[0]
 
@@ -223,9 +215,7 @@ class Curve(abstract.Curve):
         super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
-        return self._evaluator.derivatives(parameter=u, deriv_order=order, degree=self.degree,
-                                           knotvector=self.knotvector, ctrlpts=self._control_points,
-                                           dimension=self._dimension)
+        return self._evaluator.derivatives(self.data, parpos=u, deriv_order=order)
 
     def insert_knot(self, param, **kwargs):
         """ Inserts the knot and updates the control points array and the knot vector.
@@ -647,14 +637,10 @@ class Surface(abstract.Surface):
         # Clean up the surface points
         self.reset(evalpts=True)
 
-        # Evaluate
-        spts = self._evaluator.evaluate(start=(start_u, start_v), stop=(stop_u, stop_v),
-                                        degree=self._degree, knotvector=self._knot_vector,
-                                        ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                        sample_size=self.sample_size, dimension=self._dimension,
-                                        precision=self._precision)
-
-        self._eval_points = spts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data,
+                                                     start=(start_u, start_v),
+                                                     stop=(stop_u, stop_v))
 
     def evaluate_single(self, param):
         """ Evaluates the surface at the input (u, v) parameter pair.
@@ -668,11 +654,7 @@ class Surface(abstract.Surface):
         super(Surface, self).evaluate_single(param)
 
         # Evaluate the surface point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self._degree, knotvector=self._knot_vector,
-                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                      sample_size=self.sample_size, dimension=self._dimension,
-                                      precision=self._precision)
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
 
         return pt[0]
 
@@ -718,10 +700,7 @@ class Surface(abstract.Surface):
         super(Surface, self).derivatives(u=u, v=v, order=order, **kwargs)
 
         # Evaluate and return the derivatives
-        return self._evaluator.derivatives(parameter=(u, v), deriv_order=order,
-                                           degree=self._degree, knotvector=self._knot_vector,
-                                           ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                           dimension=self._dimension)
+        return self._evaluator.derivatives(self.data, parpos=(u, v), deriv_order=order)
 
     def insert_knot(self, u=None, v=None, **kwargs):
         """ Inserts knot(s) on the u- or v-directions
@@ -951,13 +930,10 @@ class Volume(abstract.Volume):
         # Clean up the evaluated points
         self.reset(evalpts=True)
 
-        # Evaluate
-        vpts = self._evaluator.evaluate(start=(start_u, start_v, start_w), stop=(stop_u, stop_v, stop_w),
-                                        degree=self._degree, knotvector=self._knot_vector,
-                                        ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                        sample_size=self.sample_size, dimension=self._dimension,
-                                        precision=self._precision)
-        self._eval_points = vpts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data,
+                                                     start=(start_u, start_v, start_w),
+                                                     stop=(stop_u, stop_v, stop_w))
 
     def evaluate_single(self, param):
         """ Evaluates the volume at the input (u, v, w) parameter.
@@ -976,12 +952,7 @@ class Volume(abstract.Volume):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the volume point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self._degree, knotvector=self._knot_vector,
-                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                      sample_size=self.sample_size, dimension=self._dimension,
-                                      precision=self._precision)
-
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
         return pt[0]
 
     def evaluate_list(self, param_list):

@@ -10,10 +10,11 @@
 import copy
 import abc
 from . import linalg, helpers
-from ._utilities import add_metaclass, export
+from . import _utilities as utl
+from . import _evaluators as evlh
 
 
-@add_metaclass(abc.ABCMeta)
+@utl.add_metaclass(abc.ABCMeta)
 class AbstractEvaluator(object):
     """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
 
@@ -40,27 +41,37 @@ class AbstractEvaluator(object):
         return self._name
 
     @abc.abstractmethod
-    def evaluate(self, **kwargs):
-        """ Abstract method for computation of points over a range of parameters.
+    def evaluate(self, datadict, **kwargs):
+        """ Abstract method for evaluation of points on the spline geometry.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
         """
         pass
 
     @abc.abstractmethod
-    def derivatives(self, **kwargs):
-        """ Abstract method for computation of derivatives at a single parameter.
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Abstract method for evaluation of the n-th order derivatives at the input parametric position.
 
         .. note::
 
             This is an abstract method and it must be implemented in the subclass.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
         """
         pass
 
 
-@export
+@utl.export
 class CurveEvaluator(AbstractEvaluator):
     """ Sequential curve evaluation algorithms.
 
@@ -78,23 +89,34 @@ class CurveEvaluator(AbstractEvaluator):
         super(CurveEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the curve. """
-        # Call parent method
-        super(CurveEvaluator, self).evaluate(**kwargs)
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the curve.
 
-        start = kwargs.get('start')
-        stop = kwargs.get('stop')
-        sample_size = kwargs.get('sample_size')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree'][0]
+        knotvector = datadict['knotvector'][0]
+        ctrlpts = datadict['control_points']
+        size = datadict['size'][0]
+        sample_size = datadict['sample_size'][0]
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        precision = datadict['precision']
+
+        # Keyword arguments
+        start = kwargs.get('start', 0.0)
+        stop = kwargs.get('stop', 1.0)
 
         # Algorithm A3.1
         knots = linalg.linspace(start, stop, sample_size, decimals=precision)
-        spans = helpers.find_spans(degree, knotvector, len(ctrlpts), knots, self._span_func)
+        spans = helpers.find_spans(degree, knotvector, size, knots, self._span_func)
         basis = helpers.basis_functions(degree, knotvector, spans, knots)
 
         eval_points = []
@@ -108,25 +130,32 @@ class CurveEvaluator(AbstractEvaluator):
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        # Call parent method
-        super(CurveEvaluator, self).derivatives(**kwargs)
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
 
-        param = kwargs.get('parameter')
-        deriv_order = kwargs.get('deriv_order', 0)
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree'][0]
+        knotvector = datadict['knotvector'][0]
+        ctrlpts = datadict['control_points']
+        size = datadict['size'][0]
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Algorithm A3.2
         du = min(degree, deriv_order)
 
         CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = self._span_func(degree, knotvector, len(ctrlpts), param)
-        bfunsders = helpers.basis_function_ders(degree, knotvector, span, param, du)
+        span = self._span_func(degree, knotvector, size, parpos)
+        bfunsders = helpers.basis_function_ders(degree, knotvector, span, parpos, du)
 
         for k in range(0, du + 1):
             for j in range(0, degree + 1):
@@ -137,94 +166,7 @@ class CurveEvaluator(AbstractEvaluator):
         return CK
 
 
-class CurveEvaluator2(CurveEvaluator):
-    """ Sequential curve evaluation algorithms (alternative).
-
-    This evaluator implements the following algorithms from **The NURBS Book**:
-
-    * Algorithm A3.1: CurvePoint
-    * Algorithm A3.4: CurveDerivsAlg2
-
-    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
-    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
-    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
-    """
-
-    def __init__(self, **kwargs):
-        super(CurveEvaluator2, self).__init__(**kwargs)
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    @staticmethod
-    def derivatives_ctrlpts(**kwargs):
-        """ Computes the control points of all derivative curves up to and including the {degree}-th derivative.
-
-        Implementation of Algorithm A3.3 from The NURBS Book by Piegl & Tiller.
-
-        Output is PK[k][i], i-th control point of the k-th derivative curve where 0 <= k <= degree and r1 <= i <= r2-k.
-        """
-        # r1 - minimum span, r2 - maximum span
-        r1 = kwargs.get('r1')
-        r2 = kwargs.get('r2')
-        deriv_order = kwargs.get('deriv_order')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-
-        # Algorithm A3.3
-        r = r2 - r1
-        PK = [[[None for _ in range(dimension)] for _ in range(r + 1)] for _ in range(deriv_order + 1)]
-        for i in range(0, r + 1):
-            PK[0][i][:] = [elem for elem in ctrlpts[r1 + i]]
-
-        for k in range(1, deriv_order + 1):
-            tmp = degree - k + 1
-            for i in range(0, r - k + 1):
-                PK[k][i][:] = [tmp * (elem1 - elem2) /
-                               (knotvector[r1 + i + degree + 1] - knotvector[r1 + i + k]) for elem1, elem2
-                               in zip(PK[k - 1][i + 1], PK[k - 1][i])]
-
-        # Return a 2-dimensional list of control points
-        return PK
-
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        # Call parent method
-        super(CurveEvaluator2, self).derivatives(**kwargs)
-
-        param = kwargs.get('parameter')
-        deriv_order = kwargs.get('deriv_order', 0)
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-
-        # Algorithm A3.4
-        du = min(degree, deriv_order)
-
-        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
-
-        span = self._span_func(degree, knotvector, len(ctrlpts), param)
-        bfuns = helpers.basis_function_all(degree, tuple(knotvector), span, param)
-
-        # "derivatives_ctrlpts" is a static method that could be called like below
-        PK = CurveEvaluator2.derivatives_ctrlpts(r1=(span - degree), r2=span,
-                                                 degree=degree,
-                                                 knotvector=knotvector,
-                                                 ctrlpts=ctrlpts,
-                                                 dimension=dimension,
-                                                 deriv_order=du)
-
-        for k in range(0, du + 1):
-            for j in range(0, degree - k + 1):
-                CK[k][:] = [elem + (bfuns[j][degree - k] * drv_ctl_p) for elem, drv_ctl_p in
-                            zip(CK[k], PK[k][j])]
-
-        # Return the derivatives
-        return CK
-
-
-@export
+@utl.export
 class CurveEvaluatorRational(CurveEvaluator):
     """ Sequential rational curve evaluation algorithms.
 
@@ -242,12 +184,22 @@ class CurveEvaluatorRational(CurveEvaluator):
         super(CurveEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the rational curve. """
-        dimension = kwargs.get('dimension')
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the rational curve.
+
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Algorithm A4.1
-        crvptw = super(CurveEvaluatorRational, self).evaluate(**kwargs)
+        crvptw = super(CurveEvaluatorRational, self).evaluate(datadict, **kwargs)
 
         # Divide by weight
         eval_points = []
@@ -257,13 +209,22 @@ class CurveEvaluatorRational(CurveEvaluator):
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        deriv_order = kwargs.get('deriv_order')
-        dimension = kwargs.get('dimension')
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        CKw = super(CurveEvaluatorRational, self).derivatives(**kwargs)
+        CKw = super(CurveEvaluatorRational, self).derivatives(datadict, parpos, deriv_order, **kwargs)
 
         # Algorithm A4.2
         CK = [[0.0 for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
@@ -278,7 +239,7 @@ class CurveEvaluatorRational(CurveEvaluator):
         return CK
 
 
-@export
+@utl.export
 class SurfaceEvaluator(AbstractEvaluator):
     """ Sequential surface evaluation algorithms.
 
@@ -296,27 +257,38 @@ class SurfaceEvaluator(AbstractEvaluator):
         super(SurfaceEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the surface. """
-        # Call parent method
-        super(SurfaceEvaluator, self).evaluate(**kwargs)
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the surface.
 
-        start = kwargs.get('start')
-        stop = kwargs.get('stop')
-        sample_size = kwargs.get('sample_size')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        # Geometry data from datadict
+        sample_size = datadict['sample_size']
+        degree = datadict['degree']
+        knotvector = datadict['knotvector']
+        ctrlpts = datadict['control_points']
+        size = datadict['size']
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        pdimension = datadict['pdimension']
+        precision = datadict['precision']
+
+        # Keyword arguments
+        start = kwargs.get('start', [0.0 for _ in range(pdimension)])
+        stop = kwargs.get('stop', [1.0 for _ in range(pdimension)])
 
         # Algorithm A3.5
-        spans = [[] for _ in range(len(degree))]
-        basis = [[] for _ in range(len(degree))]
-        for idx in range(len(degree)):
+        spans = [[] for _ in range(pdimension)]
+        basis = [[] for _ in range(pdimension)]
+        for idx in range(pdimension):
             knots = linalg.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
-            spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], ctrlpts_size[idx], knots, self._span_func)
+            spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], size[idx], knots, self._span_func)
             basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
 
         eval_points = []
@@ -329,36 +301,43 @@ class SurfaceEvaluator(AbstractEvaluator):
                     temp = [0.0 for _ in range(dimension)]
                     for l in range(0, degree[1] + 1):
                         temp[:] = [tmp + (basis[1][j][l] * cp) for tmp, cp in
-                                   zip(temp, ctrlpts[idx_v + l + (ctrlpts_size[1] * (idx_u + k))])]
+                                   zip(temp, ctrlpts[idx_v + l + (size[1] * (idx_u + k))])]
                     spt[:] = [pt + (basis[0][i][k] * tmp) for pt, tmp in zip(spt, temp)]
 
                 eval_points.append(spt)
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        # Call parent method
-        super(SurfaceEvaluator, self).derivatives(**kwargs)
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
 
-        deriv_order = kwargs.get('deriv_order')
-        param = kwargs.get('parameter')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree']
+        knotvector = datadict['knotvector']
+        ctrlpts = datadict['control_points']
+        size = datadict['size']
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        pdimension = datadict['pdimension']
 
         # Algorithm A3.6
         d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
 
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
-        span = [0 for _ in range(len(degree))]
-        basisdrv = [[] for _ in range(len(degree))]
-        for idx in range(len(degree)):
-            span[idx] = self._span_func(degree[idx], knotvector[idx], ctrlpts_size[idx], param[idx])
-            basisdrv[idx] = helpers.basis_function_ders(degree[idx], knotvector[idx], span[idx], param[idx], d[idx])
+        span = [0 for _ in range(pdimension)]
+        basisdrv = [[] for _ in range(pdimension)]
+        for idx in range(pdimension):
+            span[idx] = self._span_func(degree[idx], knotvector[idx], size[idx], parpos[idx])
+            basisdrv[idx] = helpers.basis_function_ders(degree[idx], knotvector[idx], span[idx], parpos[idx], d[idx])
 
         for k in range(0, d[0] + 1):
             temp = [[0.0 for _ in range(dimension)] for _ in range(degree[1] + 1)]
@@ -367,7 +346,7 @@ class SurfaceEvaluator(AbstractEvaluator):
                     cu = span[0] - degree[0] + r
                     cv = span[1] - degree[1] + s
                     temp[s][:] = [tmp + (basisdrv[0][k][r] * cp) for tmp, cp in
-                                  zip(temp[s], ctrlpts[cv + (ctrlpts_size[1] * cu)])]
+                                  zip(temp[s], ctrlpts[cv + (size[1] * cu)])]
 
             # dd = min(deriv_order - k, d[1])
             dd = min(deriv_order, d[1])
@@ -378,130 +357,7 @@ class SurfaceEvaluator(AbstractEvaluator):
         return SKL
 
 
-class SurfaceEvaluator2(SurfaceEvaluator):
-    """ Sequential surface evaluation algorithms.
-
-    This evaluator implements the following algorithms from **The NURBS Book**:
-
-    * Algorithm A3.5: SurfacePoint
-    * Algorithm A3.7: SurfaceDerivCpts
-    * Algorithm A3.8: SurfaceDerivsAlg2
-
-    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
-    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
-    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
-    """
-
-    def __init__(self, **kwargs):
-        super(SurfaceEvaluator2, self).__init__(**kwargs)
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
-
-    @staticmethod
-    def derivatives_ctrlpts(**kwargs):
-        """ Computes the control points of all derivative surfaces up to and including the {degree}-th derivative.
-
-        Output is PKL[k][l][i][j], i,j-th control point of the surface differentiated k times w.r.t to u and
-        l times w.r.t v.
-        """
-        r1 = kwargs.get('r1')  # minimum span on the u-direction
-        r2 = kwargs.get('r2')  # maximum span on the u-direction
-        s1 = kwargs.get('s1')  # minimum span on the v-direction
-        s2 = kwargs.get('s2')  # maximum span on the v-direction
-
-        deriv_order = kwargs.get('deriv_order')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        dimension = kwargs.get('dimension')
-
-        PKL = [[[[[None for _ in range(dimension)]
-                  for _ in range(ctrlpts_size[1])] for _ in range(ctrlpts_size[0])]
-                for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
-
-        du = min(degree[0], deriv_order)
-        dv = min(degree[1], deriv_order)
-
-        r = r2 - r1
-        s = s2 - s1
-
-        # Control points of the U derivatives of every U-curve
-        for j in range(s1, s2 + 1):
-            PKu = CurveEvaluator2.derivatives_ctrlpts(r1=r1, r2=r2,
-                                                      degree=degree[0],
-                                                      knotvector=knotvector[0],
-                                                      ctrlpts=[ctrlpts[j + (ctrlpts_size[1] * i)] for i in range(ctrlpts_size[0])],
-                                                      dimension=dimension,
-                                                      deriv_order=du)
-
-            # Copy into output as the U partial derivatives
-            for k in range(0, du + 1):
-                for i in range(0, r - k + 1):
-                    PKL[k][0][i][j - s1] = PKu[k][i]
-
-        # Control points of the V derivatives of every U-differentiated V-curve
-        for k in range(0, du):
-            for i in range(0, r - k + 1):
-                dd = min(deriv_order - k, dv)
-
-                PKuv = CurveEvaluator2.derivatives_ctrlpts(r1=0, r2=s,
-                                                           degree=degree[1],
-                                                           knotvector=knotvector[1][s1:],
-                                                           ctrlpts=PKL[k][0][i],
-                                                           dimension=dimension,
-                                                           deriv_order=dd)
-
-                # Copy into output
-                for l in range(1, dd + 1):
-                    for j in range(0, s - l + 1):
-                        PKL[k][l][i][j] = PKuv[l][j]
-
-        return PKL
-
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        deriv_order = kwargs.get('deriv_order')
-        param = kwargs.get('parameter')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts_size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
-
-        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
-
-        d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
-
-        span = [0 for _ in range(len(degree))]
-        basis = [[] for _ in range(len(degree))]
-        for idx in range(len(degree)):
-            span[idx] = self._span_func(degree[idx], knotvector[idx], ctrlpts_size[idx], param[idx])
-            basis[idx] = helpers.basis_function_all(degree[idx], knotvector[idx], span[idx], param[idx])
-
-        PKL = self.derivatives_ctrlpts(r1=span[0] - degree[0], r2=span[0],
-                                       s1=span[1] - degree[1], s2=span[1],
-                                       **kwargs)
-
-        # Evaluating the derivative at parameters (u,v) using its control points
-        for k in range(0, d[0] + 1):
-            dd = min(deriv_order - k, d[1])
-
-            for l in range(0, dd + 1):
-                SKL[k][l] = [0.0 for _ in range(dimension)]
-
-                for i in range(0, degree[1] - l + 1):
-                    temp = [0.0 for _ in range(dimension)]
-
-                    for j in range(0, degree[0] - k + 1):
-                        temp[:] = [elem + (basis[0][j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
-                                   zip(temp, PKL[k][l][j][i])]
-
-                    SKL[k][l][:] = [elem + (basis[1][i][degree[1] - l] * drv_ctl_p) for elem, drv_ctl_p in
-                                    zip(SKL[k][l], temp)]
-
-        return SKL
-
-
-@export
+@utl.export
 class SurfaceEvaluatorRational(SurfaceEvaluator):
     """ Sequential rational surface evaluation algorithms.
 
@@ -519,12 +375,22 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         super(SurfaceEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the rational surface. """
-        dimension = kwargs.get('dimension')
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the rational surface.
+
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Algorithm A4.3
-        cptw = super(SurfaceEvaluatorRational, self).evaluate(**kwargs)
+        cptw = super(SurfaceEvaluatorRational, self).evaluate(datadict, **kwargs)
 
         # Divide by weight
         eval_points = []
@@ -534,13 +400,22 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        deriv_order = kwargs.get('deriv_order')
-        dimension = kwargs.get('dimension')
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Call the parent function to evaluate A(u) and w(u) derivatives
-        SKLw = super(SurfaceEvaluatorRational, self).derivatives(**kwargs)
+        SKLw = super(SurfaceEvaluatorRational, self).derivatives(datadict, parpos, deriv_order, **kwargs)
 
         # Generate an empty list of derivatives
         SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
@@ -570,7 +445,7 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         return SKL
 
 
-@export
+@utl.export
 class VolumeEvaluator(AbstractEvaluator):
     """ Sequential volume evaluation algorithms.
 
@@ -583,24 +458,36 @@ class VolumeEvaluator(AbstractEvaluator):
         super(VolumeEvaluator, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the volume. """
-        # Call parent method
-        super(VolumeEvaluator, self).evaluate(**kwargs)
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the volume.
 
-        start = kwargs.get('start')
-        stop = kwargs.get('stop')
-        sample_size = kwargs.get('sample_size')
-        degree = kwargs.get('degree')
-        knotvector = kwargs.get('knotvector')
-        ctrlpts = kwargs.get('ctrlpts')
-        size = kwargs.get('ctrlpts_size')
-        dimension = kwargs.get('dimension')
-        precision = kwargs.get('precision')
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
 
-        spans = [[] for _ in range(len(degree))]
-        basis = [[] for _ in range(len(degree))]
-        for idx in range(len(degree)):
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        # Geometry data from datadict
+        sample_size = datadict['sample_size']
+        degree = datadict['degree']
+        knotvector = datadict['knotvector']
+        ctrlpts = datadict['control_points']
+        size = datadict['size']
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        pdimension = datadict['pdimension']
+        precision = datadict['precision']
+
+        # Keyword arguments
+        start = kwargs.get('start', [0.0 for _ in range(pdimension)])
+        stop = kwargs.get('stop', [1.0 for _ in range(pdimension)])
+
+        # Algorithm A3.5 (modified)
+        spans = [[] for _ in range(pdimension)]
+        basis = [[] for _ in range(pdimension)]
+        for idx in range(pdimension):
             knots = linalg.linspace(start[idx], stop[idx], sample_size[idx], decimals=precision)
             spans[idx] = helpers.find_spans(degree[idx], knotvector[idx], size[idx], knots, self._span_func)
             basis[idx] = helpers.basis_functions(degree[idx], knotvector[idx], spans[idx], knots)
@@ -633,7 +520,7 @@ class VolumeEvaluator(AbstractEvaluator):
         pass
 
 
-@export
+@utl.export
 class VolumeEvaluatorRational(VolumeEvaluator):
     """ Sequential rational volume evaluation algorithms.
 
@@ -646,11 +533,22 @@ class VolumeEvaluatorRational(VolumeEvaluator):
         super(VolumeEvaluatorRational, self).__init__(**kwargs)
         self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
 
-    def evaluate(self, **kwargs):
-        """ Evaluates the rational volume. """
-        dimension = kwargs.get('dimension')
+    def evaluate(self, datadict, **kwargs):
+        """ Evaluates the rational volume.
 
-        cptw = super(VolumeEvaluatorRational, self).evaluate(**kwargs)
+        Keyword Arguments:
+            * ``start``: starting parametric position for evaluation
+            * ``stop``: ending parametric position for evaluation
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :return: evaluated points
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+
+        # Algorithm A4.3 (modified)
+        cptw = super(VolumeEvaluatorRational, self).evaluate(datadict, **kwargs)
 
         # Divide by weight
         eval_points = []
@@ -663,3 +561,137 @@ class VolumeEvaluatorRational(VolumeEvaluator):
     def derivatives(self, **kwargs):
         """ Evaluates the derivatives at the input parameter. """
         pass
+
+
+# Don't export alternative curve evalutator
+class CurveEvaluator2(CurveEvaluator):
+    """ Sequential curve evaluation algorithms (alternative).
+
+    This evaluator implements the following algorithms from **The NURBS Book**:
+
+    * Algorithm A3.1: CurvePoint
+    * Algorithm A3.3: CurveDerivCpts
+    * Algorithm A3.4: CurveDerivsAlg2
+
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
+    """
+
+    def __init__(self, **kwargs):
+        super(CurveEvaluator2, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree'][0]
+        knotvector = datadict['knotvector'][0]
+        ctrlpts = datadict['control_points']
+        size = datadict['size'][0]
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+
+        # Algorithm A3.4
+        du = min(degree, deriv_order)
+
+        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
+
+        span = self._span_func(degree, knotvector, size, parpos)
+        bfuns = helpers.basis_function_all(degree, knotvector, span, parpos)
+
+        # Algorithm A3.3
+        PK = evlh.curve_deriv_cpts(dimension, degree, knotvector, ctrlpts,
+                                   rs=((span - degree), span), deriv_order=du)
+
+        for k in range(0, du + 1):
+            for j in range(0, degree - k + 1):
+                CK[k][:] = [elem + (bfuns[j][degree - k] * drv_ctl_p) for elem, drv_ctl_p in
+                            zip(CK[k], PK[k][j])]
+
+        # Return the derivatives
+        return CK
+
+
+# Don't export alternative surface evaluator
+class SurfaceEvaluator2(SurfaceEvaluator):
+    """ Sequential surface evaluation algorithms (alternative).
+
+    This evaluator implements the following algorithms from **The NURBS Book**:
+
+    * Algorithm A3.5: SurfacePoint
+    * Algorithm A3.7: SurfaceDerivCpts
+    * Algorithm A3.8: SurfaceDerivsAlg2
+
+    Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
+    during the initialization. By default, this function is set to :py:func:`.helpers.find_span_linear`.
+    Please see :doc:`Helpers Module Documentation <module_utilities>` for more details.
+    """
+
+    def __init__(self, **kwargs):
+        super(SurfaceEvaluator2, self).__init__(**kwargs)
+        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree']
+        knotvector = datadict['knotvector']
+        ctrlpts = datadict['control_points']
+        size = datadict['size']
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        pdimension = datadict['pdimension']
+
+        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+
+        d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
+
+        span = [0 for _ in range(pdimension)]
+        basis = [[] for _ in range(pdimension)]
+        for idx in range(pdimension):
+            span[idx] = self._span_func(degree[idx], knotvector[idx], size[idx], parpos[idx])
+            basis[idx] = helpers.basis_function_all(degree[idx], knotvector[idx], span[idx], parpos[idx])
+
+        # Algorithm A3.7
+        # rs: (minimum, maximum) span on the u-direction., ss: (minimum, maximum) span on the v-direction
+        PKL = evlh.surface_deriv_cpts(dimension, degree, knotvector, ctrlpts, size,
+                                      rs=(span[0] - degree[0], span[0]), ss=(span[1] - degree[1], span[1]),
+                                      deriv_order=deriv_order)
+
+        # Evaluating the derivative at parameters (u,v) using its control points
+        for k in range(0, d[0] + 1):
+            dd = min(deriv_order - k, d[1])
+
+            for l in range(0, dd + 1):
+                SKL[k][l] = [0.0 for _ in range(dimension)]
+
+                for i in range(0, degree[1] - l + 1):
+                    temp = [0.0 for _ in range(dimension)]
+
+                    for j in range(0, degree[0] - k + 1):
+                        temp[:] = [elem + (basis[0][j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
+                                   zip(temp, PKL[k][l][j][i])]
+
+                    SKL[k][l][:] = [elem + (basis[1][i][degree[1] - l] * drv_ctl_p) for elem, drv_ctl_p in
+                                    zip(SKL[k][l], temp)]
+
+        return SKL
