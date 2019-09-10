@@ -1,5 +1,12 @@
 # geomdl Changelog
 
+## v5.2.9 released on 2019-09-10
+
+* Fixed issues #59, #61 and #62
+* ``evaluators`` API and documentation updates 
+* Documentation updates
+* Docker configuration updates: ``latest`` tag points to Python v3.6
+
 ## v5.2.8 released on 2019-07-10
 
 * Update `control_points` module
