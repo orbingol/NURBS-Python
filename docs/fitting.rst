@@ -1,5 +1,5 @@
-Fitting
-^^^^^^^
+Curve & Surface Fitting
+^^^^^^^^^^^^^^^^^^^^^^^
 
 ``geomdl`` includes 2 fitting methods for curves and surfaces: approximation and interpolation. Please refer to the
 :doc:`module_fitting` page for more details on the curve and surface fitting API.
