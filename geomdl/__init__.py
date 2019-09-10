@@ -7,9 +7,13 @@
 # Library version
 __version__ = "5.2.8"
 
-# Author and licence
+# Author and license
 __author__ = "Onur Rauf Bingol"
 __license__ = "MIT"
+
+# Optional variables
+__description__ = 'Object-oriented B-Spline and NURBS evaluation library'
+__keywords__ = 'NURBS B-Spline curve surface CAD modeling visualization surface-generator'
 
 # Support for "from geomdl import *"
 # @see: https://stackoverflow.com/a/41895257
