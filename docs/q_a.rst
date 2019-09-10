@@ -121,11 +121,49 @@ If you are not interested in such level of contributions, it is suggested to cre
 as its dependency. If you create a module which uses ``geomdl``, please let the developers know via emailing
 ``nurbs-python@googlegroups.com`` and you will be credited as a contributor.
 
-API Changes
-===========
+NURBS-Python API changes
+========================
 
-I try to keep the API (name and location of the functions, class fields and member functions) backward-compatible
-during minor version upgrades. During major version upgrades, the API change might not be backward-compatible.
-However, these changes will be kept minor and therefore, the users can update their code to the new version without
-much hassle. All of these changes, regardless of minor or major version upgrades, will be announced on the CHANGELOG
-file.
+Please refer to `CHANGELOG <https://github.com/orbingol/NURBS-Python/blob/master/CHANGELOG.md>`_ file for details.
+
+Plotly v4 API changes
+=====================
+
+As of Plotly release v4.0, the package ``plotly`` is now an offline-only package (which is all fine for ``geomdl``).
+However, The online functionality, e.g. uploading charts to Plotly servers, has been moved to ``chart-studio`` package.
+
+To install Plotly v4.x, please follow the instructions below or refer to
+`Plotly website <https://plot.ly/python/v4-migration/>`_:
+
+Using pip
+---------
+
+.. code-block:: console
+
+    $ pip install plotly chart-studio
+
+Using conda
+-----------
+
+.. code-block:: console
+
+    $ conda install -c plotly plotly chart-studio
+
+Activating online mode
+----------------------
+
+``geomdl`` comes with the offline functionality by default. It also supports the online functionality as an option.
+A keyword argument ``online`` should be passed while initializing :class:`.VisPlotly.VisConfig` class.
+
+.. code-block:: python
+
+    from geomdl.visualization import VisPlotly
+
+    # Enable Plotly online functionality
+    vconf = VisPlotly.VisConfig(online=True)
+
+    # Alternatively, the keyword argument may be used during the initialization of the visualization class
+    vmodule = VisPlotly.VisSurface(online=True)
+
+    # Update a hypothetical "surf" object which corresponds to a B-spline or NURBS surface
+    surf.vis = vmodule
