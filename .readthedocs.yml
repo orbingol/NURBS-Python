@@ -20,6 +20,6 @@ formats:
 python:
   version: 3.7
   install:
-    - method: setuptools  # use "python setup.py install"
-      path: .
+    - method: setuptools  # use "python setup.py install" method
+      path: .  # execute command "python ./setup.py install"
   system_packages: true  # needed for numpy, matplotlib, etc.
