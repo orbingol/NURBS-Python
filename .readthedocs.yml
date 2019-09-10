@@ -21,4 +21,5 @@ python:
   version: 3.7
   install:
     - method: setuptools  # use "python setup.py install"
+      path: .
   system_packages: true  # needed for numpy, matplotlib, etc.
