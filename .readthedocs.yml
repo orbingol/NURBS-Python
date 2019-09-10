@@ -1,8 +1,15 @@
 # https://nurbs-python.readthedocs.io/en/latest/
 
+# Use RTD config version 2
+version: 2
+
 # Use RTD latest python image
 build:
   image: latest
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
 
 # Build HTML and PDF docs
 formats:
@@ -11,5 +18,7 @@ formats:
 
 # Python options
 python:
-  version: 3.5
-  use_system_site_packages: true  # needed for numpy, matplotlib, etc.
+  version: 3.7
+  install:
+    - method: setuptools  # use "python setup.py install"
+  system_packages: true  # needed for numpy, matplotlib, etc.
