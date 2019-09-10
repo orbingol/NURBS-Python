@@ -1,10 +1,9 @@
 Evaluators
 ^^^^^^^^^^
 
-Evaluators (or geometric evaluation strategies) allow users to change shape evaluation strategy, i.e. the algorithms
-that are used to evaluate curves, surfaces and volumes, take derivatives and more.
-Therefore, the user can switch between the evaluation algorithms at runtime, implement and use different algorithms
-or extend existing ones.
+Evaluators allow users to change the evaluation algorithms that are used to evaluate curves, surfaces and volumes,
+take derivatives and more. All geometry classes set an evaluator by default. Users may switch between the evaluation
+algorithms at runtime. It is also possible to implement different algorithms (e.g. T-splines) or extend existing ones.
 
 How to Use
 ==========
@@ -27,6 +26,15 @@ property. For instance, the following code snippet changes the evaluator of a B-
 
     # Get evaluated points
     curve_points = crv.evalpts
+
+
+Implementing Evaluators
+=======================
+
+All evaluators should be extended from :class:`.evaluators.AbstractEvaluator` abstract base class. This class provides
+a point evaluation and a derivative computation methods. Both methods take a *data* input which contains the geometry
+data as a *dict* object (refer to :attr:`.BSpline.Surface.data` property as an example). The derivative computation
+method also takes additional arguments, such as the parametric position and the derivative order.
 
 Inheritance Diagram
 ===================
@@ -51,13 +59,13 @@ Curve Evaluators
     :inherited-members:
     :show-inheritance:
 
-.. autoclass:: geomdl.evaluators.CurveEvaluator2
+.. autoclass:: geomdl.evaluators.CurveEvaluatorRational
     :members:
     :undoc-members:
     :inherited-members:
     :show-inheritance:
 
-.. autoclass:: geomdl.evaluators.CurveEvaluatorRational
+.. autoclass:: geomdl.evaluators.CurveEvaluator2
     :members:
     :undoc-members:
     :inherited-members:
@@ -72,13 +80,13 @@ Surface Evaluators
     :inherited-members:
     :show-inheritance:
 
-.. autoclass:: geomdl.evaluators.SurfaceEvaluator2
+.. autoclass:: geomdl.evaluators.SurfaceEvaluatorRational
     :members:
     :undoc-members:
     :inherited-members:
     :show-inheritance:
 
-.. autoclass:: geomdl.evaluators.SurfaceEvaluatorRational
+.. autoclass:: geomdl.evaluators.SurfaceEvaluator2
     :members:
     :undoc-members:
     :inherited-members:
