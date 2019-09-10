@@ -44,6 +44,7 @@ This documentation is organized into a couple sections:
     compatibility
     surface_generator
     knot_refinement
+    fitting
     visualization
     visualization_splitting
     visualization_export
