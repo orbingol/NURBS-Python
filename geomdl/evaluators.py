@@ -11,7 +11,6 @@ import copy
 import abc
 from . import linalg, helpers
 from . import _utilities as utl
-from . import _evaluators as evlh
 
 
 @utl.add_metaclass(abc.ABCMeta)
@@ -610,8 +609,8 @@ class CurveEvaluator2(CurveEvaluator):
         bfuns = helpers.basis_function_all(degree, knotvector, span, parpos)
 
         # Algorithm A3.3
-        PK = evlh.curve_deriv_cpts(dimension, degree, knotvector, ctrlpts,
-                                   rs=((span - degree), span), deriv_order=du)
+        PK = helpers.curve_deriv_cpts(dimension, degree, knotvector, ctrlpts,
+                                      rs=((span - degree), span), deriv_order=du)
 
         for k in range(0, du + 1):
             for j in range(0, degree - k + 1):
@@ -673,9 +672,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
 
         # Algorithm A3.7
         # rs: (minimum, maximum) span on the u-direction., ss: (minimum, maximum) span on the v-direction
-        PKL = evlh.surface_deriv_cpts(dimension, degree, knotvector, ctrlpts, size,
-                                      rs=(span[0] - degree[0], span[0]), ss=(span[1] - degree[1], span[1]),
-                                      deriv_order=deriv_order)
+        PKL = helpers.surface_deriv_cpts(dimension, degree, knotvector, ctrlpts, size,
+                                         rs=(span[0] - degree[0], span[0]), ss=(span[1] - degree[1], span[1]),
+                                         deriv_order=deriv_order)
 
         # Evaluating the derivative at parameters (u,v) using its control points
         for k in range(0, d[0] + 1):
