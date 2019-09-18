@@ -119,7 +119,21 @@ but that change is affecting the library as a whole, your pull request will be p
 
 If you are not interested in such level of contributions, it is suggested to create a separate module and add ``geomdl``
 as its dependency. If you create a module which uses ``geomdl``, please let the developers know via emailing
-``nurbs-python@googlegroups.com`` and you will be credited as a contributor.
+``nurbs-python@googlegroups.com`` and you may be credited as a contributor.
+
+Documentation references to the text books
+==========================================
+
+NURBS-Python contains implementations of several algorithms and equations from the references stated in the
+:doc:`Introduction <introduction>` section. Please be aware that there is always a difference between an algorithm and
+an implementation. Depending on the function/method documentation you are looking, it might be an implementation of
+an algorithm, an equation, a set of equations or the concept/the idea discussed in the given page range.
+
+Why doesn't NURBS-Python follow the algorithms?
+===============================================
+
+Actually, NURBS-Python does follow the algorithms pretty much all the time. However, as stated above, the implementation
+that you are looking at might not belong to an algorithm, but an equation or a concept.
 
 NURBS-Python API changes
 ========================
