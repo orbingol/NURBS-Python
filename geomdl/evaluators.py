@@ -514,9 +514,28 @@ class VolumeEvaluator(AbstractEvaluator):
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivative at the given parametric coordinate. """
-        pass
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        # Geometry data from datadict
+        degree = datadict['degree']
+        knotvector = datadict['knotvector']
+        ctrlpts = datadict['control_points']
+        size = datadict['size']
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+        pdimension = datadict['pdimension']
+
+        # TO-DO: Complete volume derivatives
+        return list()
 
 
 @utl.export
@@ -557,9 +576,25 @@ class VolumeEvaluatorRational(VolumeEvaluator):
 
         return eval_points
 
-    def derivatives(self, **kwargs):
-        """ Evaluates the derivatives at the input parameter. """
-        pass
+    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
+        """ Evaluates the n-th order derivatives at the input parametric position.
+
+        :param datadict: data dictionary containing the necessary variables
+        :type datadict: dict
+        :param parpos: parametric position where the derivatives will be computed
+        :type parpos: list, tuple
+        :param deriv_order: derivative order; to get the i-th derivative
+        :type deriv_order: int
+        :return: evaluated derivatives
+        :rtype: list
+        """
+        dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
+
+        # Call the parent function to evaluate A(u) and w(u) derivatives
+        SKLw = super(VolumeEvaluatorRational, self).derivatives(datadict, parpos, deriv_order, **kwargs)
+
+        # TO-DO: Complete rational volume derivatives
+        return list()
 
 
 # Don't export alternative curve evalutator
