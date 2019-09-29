@@ -11,6 +11,7 @@ import abc
 from .six import add_metaclass
 from . import vis, helpers, knotvector, voxelize, utilities, tessellate
 from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning, GeomdlTypeSequence
+from ._collections import NotifyList
 
 
 @add_metaclass(abc.ABCMeta)
@@ -34,9 +35,9 @@ class Geometry(GeomdlBase):
     # __slots__ = ('_iter_index', '_array_type', '_eval_points')
 
     def __init__(self, *args, **kwargs):
-        self._geometry_type = "default" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
         super(Geometry, self).__init__(*args, **kwargs)
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type  # array storage type
+        self._geometry_type = getattr(self, '_geometry_type', 'default') # geometry type
+        self._array_type = getattr(self, '_array_type', NotifyList) # array storage type
         self._eval_points = self._init_array()  # evaluated points
 
     def __iter__(self):

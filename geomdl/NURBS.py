@@ -127,8 +127,8 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['ctrlpts']
 
     @ctrlpts.setter
@@ -159,8 +159,8 @@ class Curve(BSpline.Curve):
         # Populate the cache, if necessary
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['weights']
 
     @weights.setter
@@ -192,6 +192,7 @@ class Curve(BSpline.Curve):
         if reset_ctrlpts:
             # Delete the caches
             self._cache['ctrlpts'] = self._init_array()
+            # TODO: why is this reset differently from the initialisation?
             self._cache['weights'][:] = self._init_array()
 
 
@@ -330,8 +331,8 @@ class Surface(BSpline.Surface):
         """
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['ctrlpts']
 
     @ctrlpts.setter
@@ -361,8 +362,8 @@ class Surface(BSpline.Surface):
         """
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['weights']
 
     @weights.setter
@@ -518,8 +519,8 @@ class Volume(BSpline.Volume):
         """
         if not self._cache['ctrlpts']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['ctrlpts']
 
     @ctrlpts.setter
@@ -549,8 +550,8 @@ class Volume(BSpline.Volume):
         """
         if not self._cache['weights']:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
+            self._cache['ctrlpts'] = self._array_type(iter(c))
+            self._cache['weights'] = self._array_type(iter(w))
         return self._cache['weights']
 
     @weights.setter
