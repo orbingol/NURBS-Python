@@ -135,6 +135,7 @@ class SplineGeometry(Geometry):
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
         self._control_points = self._init_array()  # control points
         self._control_points_size = [0 for _ in range(self._pdim)]  # control points length
+        self._control_points_valid = False
         self._delta = [self._dinit for _ in range(self._pdim)]  # evaluation delta
         self._bounding_box = self._init_array()  # bounding box
         self._evaluator = None  # evaluator instance
@@ -466,7 +467,7 @@ class SplineGeometry(Geometry):
             raise ValueError("Number of arguments after ctrlpts must be " + str(self._pdim))
 
         # Keyword arguments
-        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
+        array_init = kwargs.get('array_init', self._array_type([] for _ in range(len(ctrlpts))))
         array_check_for = kwargs.get('array_check_for', (list, tuple))
         callback_func = kwargs.get('callback', validate_and_clean)
         self._dimension = kwargs.get('dimension', len(ctrlpts[0]))
@@ -480,6 +481,7 @@ class SplineGeometry(Geometry):
         # Set control points and sizes
         self._control_points = callback_func(ctrlpts, array_check_for, self._dimension, array_init, **kwargs)
         self._control_points_size = [int(arg) for arg in args]
+        self._control_points_valid = True
 
     @abc.abstractmethod
     def render(self, **kwargs):
@@ -891,6 +893,7 @@ class Curve(SplineGeometry):
         if reset_ctrlpts:
             self._control_points = self._init_array()
             self._bounding_box = self._init_array()
+            self._control_points_valid = False
 
         if reset_evalpts:
             self._eval_points = self._init_array()
