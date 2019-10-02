@@ -8,8 +8,7 @@
 """
 
 import copy
-import abc
-from . import linalg, helpers
+from . import abc, linalg, helpers
 from . import _utilities as utl
 
 

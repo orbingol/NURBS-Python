@@ -8,6 +8,7 @@
 """
 
 import struct
+from . import abc
 from . import _voxelize as vxl
 from ._utilities import export
 
@@ -32,7 +33,7 @@ def voxelize(obj, **kwargs):
     use_cubes = kwargs.pop('use_cubes', False)
     num_procs = kwargs.get('num_procs', 1)
 
-    if not isinstance(grid_size, (list, tuple)):
+    if not isinstance(grid_size, abc.GeomdlSequence):
         raise TypeError("Grid size must be a list or a tuple of integers")
 
     # Initialize result arrays

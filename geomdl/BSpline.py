@@ -8,7 +8,7 @@
 """
 
 import pickle
-from . import abstract, evaluators, operations, tessellate, utilities
+from . import abc, abstract, evaluators, operations, tessellate, utilities
 from . import _utilities as utl
 from .exceptions import GeomdlException
 
@@ -491,7 +491,7 @@ class Surface(abstract.Surface):
 
     @ctrlpts2d.setter
     def ctrlpts2d(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, abc.GeomdlSequence):
             raise ValueError("The input must be a list or tuple")
 
         # Clean up the surface and control points

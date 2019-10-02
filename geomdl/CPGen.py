@@ -9,6 +9,7 @@
 
 import random
 import warnings
+from . import abc
 from ._utilities import export
 
 
@@ -155,7 +156,7 @@ class Grid(object):
             warnings.warn("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps,
                           UserWarning)
 
-        if isinstance(bump_height, (list, tuple)):
+        if isinstance(bump_height, abc.GeomdlSequence):
             if len(bump_height) != num_bumps:
                 raise ValueError("Number of bump heights must be equal to number of bumps")
             else:
@@ -286,7 +287,7 @@ class GridWeighted(Grid):
             if value <= 0:
                 raise ValueError("Weight value must be bigger than 0")
             self._weights = [float(value) for _ in range(len(self))]
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, abc.GeomdlSequence):
             if len(value) != len(self):
                 raise ValueError("Input must be the same size with the grid points")
             if all(val <= 0 for val in value):
