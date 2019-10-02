@@ -12,6 +12,14 @@ import numpy as np
 import plotly
 from plotly import graph_objs
 
+# Migrate to Plotly v4.x
+try:
+    # Online plotting functionality is moved to chart-studio package
+    from chart_studio.plotly import plot, iplot
+except ImportError:
+    # Load offline plotting functionality in case of an import error
+    from plotly.offline import plot, iplot
+
 
 class VisConfig(vis.VisConfigAbstract):
     """ Configuration class for Plotly visualization module.
@@ -73,10 +81,10 @@ class VisConfig(vis.VisConfigAbstract):
             get_ipython
             from plotly.offline import download_plotlyjs, init_notebook_mode
             init_notebook_mode(connected=True)
-            self.plotfn = plotly.plotly.iplot if online_plotting else plotly.offline.iplot
+            self.plotfn = iplot if online_plotting else plotly.offline.iplot
             self.no_ipython = False
         except NameError:
-            self.plotfn = plotly.plotly.plot if online_plotting else plotly.offline.plot
+            self.plotfn = plot if online_plotting else plotly.offline.plot
             self.no_ipython = True
 
         # Get keyword arguments

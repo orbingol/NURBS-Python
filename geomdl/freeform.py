@@ -26,7 +26,7 @@ class Freeform(abstract.Geometry):
         """
         return dict(
             type=self.type,
-            points=self.evalpts
+            points=tuple(self.evalpts)
         )
 
     def evaluate(self, **kwargs):

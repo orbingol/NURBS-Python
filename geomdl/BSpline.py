@@ -143,13 +143,8 @@ class Curve(abstract.Curve):
         # Clean up the curve points
         self.reset(evalpts=True)
 
-        # Evaluate
-        cpts = self._evaluator.evaluate(start=start, stop=stop,
-                                        degree=self.degree, knotvector=self.knotvector,
-                                        ctrlpts=self._control_points, sample_size=self.sample_size,
-                                        dimension=self._dimension, precision=self._precision)
-
-        self._eval_points = cpts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data, start=start, stop=stop)
 
     def evaluate_single(self, param):
         """ Evaluates the curve at the input parameter.
@@ -168,10 +163,7 @@ class Curve(abstract.Curve):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the curve point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self.degree, knotvector=self.knotvector,
-                                      ctrlpts=self._control_points, sample_size=self.sample_size,
-                                      dimension=self._dimension, precision=self._precision)
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
 
         return pt[0]
 
@@ -199,6 +191,19 @@ class Curve(abstract.Curve):
     def derivatives(self, u, order=0, **kwargs):
         """ Evaluates n-th order curve derivatives at the given parameter value.
 
+        The output of this method is list of n-th order derivatives. If ``order`` is ``0``, then it will only output
+        the evaluated point. Similarly, if ``order`` is ``2``, then it will output the evaluated point, 1st derivative
+        and the 2nd derivative. For instance;
+
+        .. code-block:: python
+
+            # Assuming a curve (crv) is defined on a parametric domain [0.0, 1.0]
+            # Let's take the curve derivative at the parametric position u = 0.35
+            ders = crv.derivatives(u=0.35, order=2)
+            ders[0]  # evaluated point, equal to crv.evaluate_single(0.35)
+            ders[1]  # 1st derivative at u = 0.35
+            ders[2]  @ 2nd derivative at u = 0.35
+
         :param u: parameter value
         :type u: float
         :param order: derivative order
@@ -210,9 +215,7 @@ class Curve(abstract.Curve):
         super(Curve, self).derivatives(u=u, order=order, **kwargs)
 
         # Evaluate and return the derivative at knot u
-        return self._evaluator.derivatives(parameter=u, deriv_order=order, degree=self.degree,
-                                           knotvector=self.knotvector, ctrlpts=self._control_points,
-                                           dimension=self._dimension)
+        return self._evaluator.derivatives(self.data, parpos=u, deriv_order=order)
 
     def insert_knot(self, param, **kwargs):
         """ Inserts the knot and updates the control points array and the knot vector.
@@ -278,31 +281,10 @@ class Curve(abstract.Curve):
         if check_num and self._eval_points:
             self.evaluate()
 
-    def tangent(self, param, **kwargs):
+    def tangent(self, parpos, **kwargs):
         """ Evaluates the tangent vector of the curve at the given parametric position(s).
 
-        The ``param`` argument can be
-
-        * a float value for evaluation at a single parametric position
-        * a list of float values for evaluation at the multiple parametric positions
-
-        The return value will be in the order of the input parametric position list.
-
-        This method accepts the following keyword arguments:
-
-        * ``normalize``: normalizes the output vector. Default value is *True*.
-
-        :param param: parametric position(s) where the evaluation will be executed
-        :type param: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
-        :rtype: tuple
-        """
-        return operations.tangent(self, param, **kwargs)
-
-    def normal(self, parpos, **kwargs):
-        """ Evaluates the normal vector of the curve at the given parametric position(s).
-
-        The ``param`` argument can be
+        The ``parpos`` argument can be
 
         * a float value for evaluation at a single parametric position
         * a list of float values for evaluation at the multiple parametric positions
@@ -315,7 +297,28 @@ class Curve(abstract.Curve):
 
         :param parpos: parametric position(s) where the evaluation will be executed
         :type parpos: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
+        :return: tangent vector as a tuple of the origin point and the vector components
+        :rtype: tuple
+        """
+        return operations.tangent(self, parpos, **kwargs)
+
+    def normal(self, parpos, **kwargs):
+        """ Evaluates the normal to the tangent vector of the curve at the given parametric position(s).
+
+        The ``parpos`` argument can be
+
+        * a float value for evaluation at a single parametric position
+        * a list of float values for evaluation at the multiple parametric positions
+
+        The return value will be in the order of the input parametric position list.
+
+        This method accepts the following keyword arguments:
+
+        * ``normalize``: normalizes the output vector. Default value is *True*.
+
+        :param parpos: parametric position(s) where the evaluation will be executed
+        :type parpos: float, list or tuple
+        :return: normal vector as a tuple of the origin point and the vector components
         :rtype: tuple
         """
         return operations.normal(self, parpos, **kwargs)
@@ -323,7 +326,7 @@ class Curve(abstract.Curve):
     def binormal(self, parpos, **kwargs):
         """ Evaluates the binormal vector of the curve at the given parametric position(s).
 
-        The ``param`` argument can be
+        The ``parpos`` argument can be
 
         * a float value for evaluation at a single parametric position
         * a list of float values for evaluation at the multiple parametric positions
@@ -336,7 +339,7 @@ class Curve(abstract.Curve):
 
         :param parpos: parametric position(s) where the evaluation will be executed
         :type parpos: float, list or tuple
-        :return: an array containing "point" and "vector" pairs
+        :return: binormal vector as a tuple of the origin point and the vector components
         :rtype: tuple
         """
         return operations.binormal(self, parpos, **kwargs)
@@ -634,14 +637,10 @@ class Surface(abstract.Surface):
         # Clean up the surface points
         self.reset(evalpts=True)
 
-        # Evaluate
-        spts = self._evaluator.evaluate(start=(start_u, start_v), stop=(stop_u, stop_v),
-                                        degree=self._degree, knotvector=self._knot_vector,
-                                        ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                        sample_size=self.sample_size, dimension=self._dimension,
-                                        precision=self._precision)
-
-        self._eval_points = spts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data,
+                                                     start=(start_u, start_v),
+                                                     stop=(stop_u, stop_v))
 
     def evaluate_single(self, param):
         """ Evaluates the surface at the input (u, v) parameter pair.
@@ -655,11 +654,7 @@ class Surface(abstract.Surface):
         super(Surface, self).evaluate_single(param)
 
         # Evaluate the surface point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self._degree, knotvector=self._knot_vector,
-                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                      sample_size=self.sample_size, dimension=self._dimension,
-                                      precision=self._precision)
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
 
         return pt[0]
 
@@ -705,10 +700,7 @@ class Surface(abstract.Surface):
         super(Surface, self).derivatives(u=u, v=v, order=order, **kwargs)
 
         # Evaluate and return the derivatives
-        return self._evaluator.derivatives(parameter=(u, v), deriv_order=order,
-                                           degree=self._degree, knotvector=self._knot_vector,
-                                           ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                           dimension=self._dimension)
+        return self._evaluator.derivatives(self.data, parpos=(u, v), deriv_order=order)
 
     def insert_knot(self, u=None, v=None, **kwargs):
         """ Inserts knot(s) on the u- or v-directions
@@ -938,13 +930,10 @@ class Volume(abstract.Volume):
         # Clean up the evaluated points
         self.reset(evalpts=True)
 
-        # Evaluate
-        vpts = self._evaluator.evaluate(start=(start_u, start_v, start_w), stop=(stop_u, stop_v, stop_w),
-                                        degree=self._degree, knotvector=self._knot_vector,
-                                        ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                        sample_size=self.sample_size, dimension=self._dimension,
-                                        precision=self._precision)
-        self._eval_points = vpts
+        # Evaluate and cache
+        self._eval_points = self._evaluator.evaluate(self.data,
+                                                     start=(start_u, start_v, start_w),
+                                                     stop=(stop_u, stop_v, stop_w))
 
     def evaluate_single(self, param):
         """ Evaluates the volume at the input (u, v, w) parameter.
@@ -963,12 +952,7 @@ class Volume(abstract.Volume):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Evaluate the volume point
-        pt = self._evaluator.evaluate(start=param, stop=param,
-                                      degree=self._degree, knotvector=self._knot_vector,
-                                      ctrlpts_size=self._control_points_size, ctrlpts=self._control_points,
-                                      sample_size=self.sample_size, dimension=self._dimension,
-                                      precision=self._precision)
-
+        pt = self._evaluator.evaluate(self.data, start=param, stop=param)
         return pt[0]
 
     def evaluate_list(self, param_list):

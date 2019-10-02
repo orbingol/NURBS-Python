@@ -913,10 +913,14 @@ class Curve(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=[self.ctrlpts_size],
-            control_points=self._control_points
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=(self.sample_size,),
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=(self.ctrlpts_size,),
+            control_points=tuple(self._control_points)
         )
 
     def reverse(self):
@@ -1778,11 +1782,15 @@ class Surface(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=self._control_points_size,
-            control_points=self._control_points,
-            trims=[t.data for t in self._trims]
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=self.sample_size,
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=tuple(self._control_points_size),
+            control_points=tuple(self._control_points),
+            trims=tuple([t.data for t in self._trims])
         )
 
     def add_trim(self, trim):
@@ -2827,11 +2835,15 @@ class Volume(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=self._control_points_size,
-            control_points=self._control_points,
-            trims=[t.data for t in self._trims]
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=self.sample_size,
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=tuple(self._control_points_size),
+            control_points=tuple(self._control_points),
+            trims=tuple([t.data for t in self._trims])
         )
 
     def add_trim(self, trim):

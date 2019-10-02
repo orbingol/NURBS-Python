@@ -37,12 +37,15 @@ class AbstractManager(object):
     * :py:meth:`get_ptdata`
     * :py:meth:`set_ptdata`
     """
+    __slots__ = ('_size', '_num_ctrlpts', '_attachment', '_points', '_pt_data', '_cache', '_iter_index')
+
     def __init__(self, *args, **kwargs):
         self._size = [int(arg) for arg in args]  # size in all parametric dimensions
         self._num_ctrlpts = reduce(lambda x, y: x *y, self._size)  # number of control points
         self._attachment = kwargs if kwargs else dict()  # data attached to the control points
         self._points = list()  # list of control points
         self._pt_data = dict()  # dict containing lists of additional data attached to the control points
+        self._cache = {}
         self.reset()  # initialize control points list
 
     def __iter__(self):
@@ -73,19 +76,27 @@ class AbstractManager(object):
         self._points[idx] = val
 
     def __copy__(self):
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
+        # Copy all attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.copy(getattr(self, var)))
+        # Return updated instance
         return result
 
     def __deepcopy__(self, memo):
-        # Don't copy self reference
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
+        # Don't copy self reference
         memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(dict)
+        # Deep copy all other attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.deepcopy(getattr(self, var), memo))
+        # Return updated instance
         return result
 
     @property

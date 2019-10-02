@@ -10,7 +10,7 @@
 import math
 import copy
 import warnings
-from . import abc, abstract, helpers, evaluators, linalg, compatibility
+from . import abc, abstract, helpers, linalg, compatibility
 from . import _operations as ops
 from .exceptions import GeomdlException
 from ._utilities import export
@@ -1033,13 +1033,8 @@ def derivative_curve(obj):
         return obj
 
     # Find the control points of the derivative curve
-    pkl = evaluators.CurveEvaluator2.derivatives_ctrlpts(r1=0,
-                                                         r2=len(obj.ctrlpts) - 1,  # n + 1 = num of control points
-                                                         degree=obj.degree,
-                                                         knotvector=obj.knotvector,
-                                                         ctrlpts=obj.ctrlpts,
-                                                         dimension=obj.dimension,
-                                                         deriv_order=1)
+    pkl = helpers.curve_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts,
+                                          rs=(0, obj.ctrlpts_size - 1), deriv_order=1)
 
     # Generate the derivative curve
     curve = obj.__class__()
@@ -1321,14 +1316,8 @@ def derivative_surface(obj):
 
     # Find the control points of the derivative surface
     d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
-    pkl = evaluators.SurfaceEvaluator2.derivatives_ctrlpts(r1=0, r2=obj.ctrlpts_size_u - 1,
-                                                           s1=0, s2=obj.ctrlpts_size_v - 1,
-                                                           degree=(obj.degree_u, obj.degree_v),
-                                                           ctrlpts_size=(obj.ctrlpts_size_u,obj.ctrlpts_size_v),
-                                                           knotvector=(obj.knotvector_u, obj.knotvector_v),
-                                                           ctrlpts=obj.ctrlpts,
-                                                           dimension=obj.dimension,
-                                                           deriv_order=d)
+    pkl = helpers.surface_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts, obj.cpsize,
+                                            rs=(0, obj.ctrlpts_size_u - 1), ss=(0, obj.ctrlpts_size_v - 1), deriv_order=d)
 
     ctrlpts2d_u = []
     for i in range(0, len(pkl[1][0]) - 1):

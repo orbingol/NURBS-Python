@@ -86,8 +86,9 @@ All contributions to NURBS-Python are welcomed and I appreciate your time and ef
 some `guidelines for contributing <https://github.com/orbingol/NURBS-Python/blob/master/.github/CONTRIBUTING.md>`_
 and I would be really happy if you could follow these guidelines if you would like to contribute to NURBS-Python.
 
-`Opening a new issue on GitHub <https://github.com/orbingol/NURBS-Python/issues/new>`_ to discuss what you would
-like to implement for NURBS-Python will be also appreciated.
+It is suggested to open `a new ticket <https://github.com/orbingol/NURBS-Python/issues/new>`_ GitHub to discuss what
+you would like to fix or add as a new feature, as it may already been fixed/implemented in some of the development
+branches.
 
 How can I add a new feature?
 ============================
@@ -98,11 +99,85 @@ algorithms. Evaluator classes can be extended for new type of algorithms. Please
 modules for implementation examples. It would be also a good idea to refer to the constructors of the abstract
 classes for more details.
 
-API Changes
-===========
+Why doesn't NURBS-Python have XYZ feature?
+==========================================
 
-I try to keep the API (name and location of the functions, class fields and member functions) backward-compatible
-during minor version upgrades. During major version upgrades, the API change might not be backward-compatible.
-However, these changes will be kept minor and therefore, the users can update their code to the new version without
-much hassle. All of these changes, regardless of minor or major version upgrades, will be announced on the CHANGELOG
-file.
+NURBS-Python tries to keep the geometric operations on the parametric space without any conversion to other
+representations. This approach makes some operations and queries hard to implement. Keeping NURBS-Python independent of
+libraries that require compilation caused including implementations some well-known geometric queries and computations,
+as well as a simple linear algebra module. However, **the main purpose is providing a base for NURBS data and fundamental
+operations while keeping the external dependencies at minimum**. It is users' choice to extend the library and add new
+more advanced features (e.g. intersection computations) or capabilities (e.g. a new file format import/export support).
+
+All advanced features should be packaged separately. If you are developing a feature to replace an existing feature,
+it might be a good idea to package it separately.
+
+NURBS-Python may seem to keep very high standards by means of accepting contributions. For instance, if you implement a
+feature applicable to curves but not surfaces and volumes, such a pull request won't be accepted till you add that
+feature to surfaces and volumes. Similarly, if you change a single module and/or the function you use most frequently,
+but that change is affecting the library as a whole, your pull request will be put on hold.
+
+If you are not interested in such level of contributions, it is suggested to create a separate module and add ``geomdl``
+as its dependency. If you create a module which uses ``geomdl``, please let the developers know via emailing
+``nurbs-python@googlegroups.com`` and you may be credited as a contributor.
+
+Documentation references to the text books
+==========================================
+
+NURBS-Python contains implementations of several algorithms and equations from the references stated in the
+:doc:`Introduction <introduction>` section. Please be aware that there is always a difference between an algorithm and
+an implementation. Depending on the function/method documentation you are looking, it might be an implementation of
+an algorithm, an equation, a set of equations or the concept/the idea discussed in the given page range.
+
+Why doesn't NURBS-Python follow the algorithms?
+===============================================
+
+Actually, NURBS-Python does follow the algorithms pretty much all the time. However, as stated above, the implementation
+that you are looking at might not belong to an algorithm, but an equation or a concept.
+
+NURBS-Python API changes
+========================
+
+Please refer to `CHANGELOG <https://github.com/orbingol/NURBS-Python/blob/master/CHANGELOG.md>`_ file for details.
+
+Plotly v4 API changes
+=====================
+
+As of Plotly release v4.0, the package ``plotly`` is now an offline-only package (which is all fine for ``geomdl``).
+However, The online functionality, e.g. uploading charts to Plotly servers, has been moved to ``chart-studio`` package.
+
+To install Plotly v4.x, please follow the instructions below or refer to
+`Plotly website <https://plot.ly/python/v4-migration/>`_:
+
+Using pip
+---------
+
+.. code-block:: console
+
+    $ pip install plotly chart-studio
+
+Using conda
+-----------
+
+.. code-block:: console
+
+    $ conda install -c plotly plotly chart-studio
+
+Activating online mode
+----------------------
+
+``geomdl`` comes with the offline functionality by default. It also supports the online functionality as an option.
+A keyword argument ``online`` should be passed while initializing :class:`.VisPlotly.VisConfig` class.
+
+.. code-block:: python
+
+    from geomdl.visualization import VisPlotly
+
+    # Enable Plotly online functionality
+    vconf = VisPlotly.VisConfig(online=True)
+
+    # Alternatively, the keyword argument may be used during the initialization of the visualization class
+    vmodule = VisPlotly.VisSurface(online=True)
+
+    # Update a hypothetical "surf" object which corresponds to a B-spline or NURBS surface
+    surf.vis = vmodule

@@ -6,6 +6,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
+import sys
 
 from . import abc, linalg
 from ._utilities import export
@@ -139,7 +140,7 @@ def intersect(ray1, ray2, **kwargs):
         raise ValueError("Dimensions of the input rays must be the same")
 
     # Keyword arguments
-    tol = kwargs.get('tol', 10e-17)
+    tol = kwargs.get('tol', (1 << 8) * sys.float_info.epsilon)
 
     # Call intersection method
     if ray1.dimension == 2:
