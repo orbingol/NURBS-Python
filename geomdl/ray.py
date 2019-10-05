@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides ray data structures and operations
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 import sys

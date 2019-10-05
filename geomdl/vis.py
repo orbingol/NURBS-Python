@@ -3,20 +3,19 @@
     :platform: Unix, Windows
     :synopsis: Provides abstract base classes for visualization modules
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from . import _utilities as utl
-from .exceptions import GeomdlException
-from . import abc
-
+import abc
+from .six import add_metaclass
+from .base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class VisConfigAbstract(object):
     """ Abstract base class for user configuration of the visualization module
 
@@ -27,7 +26,7 @@ class VisConfigAbstract(object):
         pass
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class VisAbstract(object):
     """ Abstract base class for visualization
 
@@ -120,15 +119,15 @@ class VisAbstract(object):
     def mconf(self, value):
         try:
             if not isinstance(value[0], str) or not isinstance(value[1], str):
-                raise GeomdlException("Plot type and its value should be string type")
+                raise GeomdlError("Plot type and its value should be string type")
 
             if value[0] not in self._module_config.keys():
-                raise GeomdlException(value[0] + " is not a configuration directive. Possible directives: " +
+                raise GeomdlError(value[0] + " is not a configuration directive. Possible directives: " +
                                       ", ".join([k for k in self._module_config.keys()]))
 
             self._module_config[value[0]] = value[1]
         except TypeError:
-            raise GeomdlException("The input should be  a list or a tuple")
+            raise GeomdlError("The input should be  a list or a tuple")
 
     @property
     def ctrlpts_offset(self):
@@ -177,4 +176,4 @@ class VisAbstract(object):
         """
         # We need something to plot
         if self._plots is None or len(self._plots) == 0:
-            raise GeomdlException("Nothing to plot")
+            raise GeomdlError("Nothing to plot")

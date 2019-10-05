@@ -3,13 +3,12 @@
     :platform: Unix, Windows
     :synopsis: Helper functions for operations module
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 from . import linalg, helpers
-from .exceptions import GeomdlException
-
+from .base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -320,7 +319,7 @@ def link_curves(*args, **kwargs):
     if validate:
         for idx in range(len(args) - 1):
             if linalg.point_distance(args[idx].ctrlpts[-1], args[idx + 1].ctrlpts[0]) > tol:
-                raise GeomdlException("Curve #" + str(idx) + " and Curve #" + str(idx + 1) + " don't touch each other")
+                raise GeomdlError("Curve #" + str(idx) + " and Curve #" + str(idx + 1) + " don't touch each other")
 
     kv = []  # new knot vector
     cpts = []  # new control points array
