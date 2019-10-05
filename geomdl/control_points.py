@@ -90,6 +90,10 @@ class CPManager(object):
         # Initialize cache
         self._cache = GeomdlDict()
 
+    def __call__(self, pdim=-1):
+        if pdim < 0:
+            return self.points
+
     def __iter__(self):
         self._iter_index = 0
         return self
