@@ -8,69 +8,12 @@
 """
 
 import copy
-from . import abc, linalg, helpers
-from . import _utilities as utl
+from . import linalg, helpers
+from .base import export, GeomdlEvaluator
 
 
-@utl.add_metaclass(abc.ABCMeta)
-class AbstractEvaluator(object):
-    """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
-
-    **Abstract Methods**:
-
-    * ``evaluate`` is used for computation of the complete spline shape
-    * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
-
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see :py:mod:`helpers` module for details.
-    """
-
-    def __init__(self, **kwargs):
-        self._name = kwargs.get('name', self.__class__.__name__)
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @property
-    def name(self):
-        """ Evaluator name.
-
-        :getter: Gets the name of the evaluator
-        :type: str
-        """
-        return self._name
-
-    @abc.abstractmethod
-    def evaluate(self, datadict, **kwargs):
-        """ Abstract method for evaluation of points on the spline geometry.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-
-        :param datadict: data dictionary containing the necessary variables
-        :type datadict: dict
-        """
-        pass
-
-    @abc.abstractmethod
-    def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
-        """ Abstract method for evaluation of the n-th order derivatives at the input parametric position.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-
-        :param datadict: data dictionary containing the necessary variables
-        :type datadict: dict
-        :param parpos: parametric position where the derivatives will be computed
-        :type parpos: list, tuple
-        :param deriv_order: derivative order; to get the i-th derivative
-        :type deriv_order: int
-        """
-        pass
-
-
-@utl.export
-class CurveEvaluator(AbstractEvaluator):
+@export
+class CurveEvaluator(GeomdlEvaluator):
     """ Sequential curve evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -164,7 +107,7 @@ class CurveEvaluator(AbstractEvaluator):
         return CK
 
 
-@utl.export
+@export
 class CurveEvaluatorRational(CurveEvaluator):
     """ Sequential rational curve evaluation algorithms.
 
@@ -237,8 +180,8 @@ class CurveEvaluatorRational(CurveEvaluator):
         return CK
 
 
-@utl.export
-class SurfaceEvaluator(AbstractEvaluator):
+@export
+class SurfaceEvaluator(GeomdlEvaluator):
     """ Sequential surface evaluation algorithms.
 
     This evaluator implements the following algorithms from **The NURBS Book**:
@@ -355,7 +298,7 @@ class SurfaceEvaluator(AbstractEvaluator):
         return SKL
 
 
-@utl.export
+@export
 class SurfaceEvaluatorRational(SurfaceEvaluator):
     """ Sequential rational surface evaluation algorithms.
 
@@ -443,8 +386,8 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         return SKL
 
 
-@utl.export
-class VolumeEvaluator(AbstractEvaluator):
+@export
+class VolumeEvaluator(GeomdlEvaluator):
     """ Sequential volume evaluation algorithms.
 
     Please note that knot vector span finding function may be changed by setting ``find_span_func`` keyword argument
@@ -537,7 +480,7 @@ class VolumeEvaluator(AbstractEvaluator):
         return list()
 
 
-@utl.export
+@export
 class VolumeEvaluatorRational(VolumeEvaluator):
     """ Sequential rational volume evaluation algorithms.
 

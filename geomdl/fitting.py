@@ -3,13 +3,13 @@
     :platform: Unix, Windows
     :synopsis: Provides curve and surface fitting functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import math
-from . import abc, BSpline, helpers, linalg
-from ._utilities import export
+from . import helpers, linalg, shortcuts
+from .base import export, GeomdlTypeSequence
 
 
 @export
@@ -45,7 +45,7 @@ def interpolate_curve(points, degree, **kwargs):
     ctrlpts = linalg.lu_solve(matrix_a, points)
 
     # Generate B-spline curve
-    curve = BSpline.Curve()
+    curve = shortcuts.generate_curve()
     curve.degree = degree
     curve.ctrlpts = ctrlpts
     curve.knotvector = kv
@@ -100,7 +100,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         ctrlpts += linalg.lu_solve(matrix_a, pts)
 
     # Generate B-spline surface
-    surf = BSpline.Surface()
+    surf = shortcuts.generate_surface()
     surf.degree_u = degree_u
     surf.degree_v = degree_v
     surf.ctrlpts_size_u = size_u
@@ -200,7 +200,7 @@ def approximate_curve(points, degree, **kwargs):
             ctrlpts[j][i] = x[j - 1]
 
     # Generate B-spline curve
-    curve = BSpline.Curve()
+    curve = shortcuts.generate_curve()
     curve.degree = degree
     curve.ctrlpts = ctrlpts
     curve.knotvector = kv
@@ -343,7 +343,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
                 ctrlpts[j + (num_cpts_v * i)][d] = x[j - 1]
 
     # Generate B-spline surface
-    surf = BSpline.Surface()
+    surf = shortcuts.generate_surface()
     surf.degree_u = degree_u
     surf.degree_v = degree_v
     surf.ctrlpts_size_u = num_cpts_u
@@ -430,7 +430,7 @@ def compute_params_curve(points, centripetal=False):
     :return: parameter array, :math:`\\overline{u}_{k}`
     :rtype: list
     """
-    if not isinstance(points, abc.GeomdlSequence):
+    if not isinstance(points, GeomdlTypeSequence):
         raise TypeError("Data points must be a list or a tuple")
 
     # Length of the points array

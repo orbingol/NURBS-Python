@@ -3,14 +3,13 @@
     :platform: Unix, Windows
     :synopsis: Provides exchange capabilities for VTK file formats
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import warnings
-from . import abstract
+from . import tessellate
+from .base import export, GeomdlError, GeomdlWarning
 from . import _exchange as exch
-from ._utilities import export
 
 
 def export_polydata_str(obj, **kwargs):
@@ -32,18 +31,18 @@ def export_polydata_str(obj, **kwargs):
     # Get keyword arguments
     point_type = kwargs.get('point_type', "evalpts")
     file_title = kwargs.get('title', "geomdl " + repr(obj))  # file title
-    tessellate = kwargs.get('tessellate', False)
+    do_tessellate = kwargs.get('tessellate', False)
 
     # Input validation
     possible_types = ['ctrlpts', 'evalpts']
     if point_type not in possible_types:
-        raise exch.GeomdlException("Please choose a valid point type option. " +
-                                   "Possible types:", ", ".join([str(t) for t in possible_types]))
+        raise GeomdlError("Please choose a valid point type option. " +
+                          "Possible types:", ", ".join([str(t) for t in possible_types]))
 
     # Check for VTK standards for the file title
     if len(file_title) >= 256:
         file_title = file_title[0:255]  # slice the array into 255 characters, we will add new line character later
-        warnings.warn("VTK standard restricts the file title with 256 characters. New file title is:", file_title)
+        GeomdlWarning("VTK standard restricts the file title with 256 characters. New file title is:", file_title)
 
     # Find number of edges in a single tessellated structure
     tsl_dim = 4 if point_type == "ctrlpts" else 3
@@ -61,14 +60,14 @@ def export_polydata_str(obj, **kwargs):
     for o in obj:
         # Prepare data array
         if point_type == "ctrlpts":
-            if tessellate and o.pdimension == 2:
-                tsl = abstract.tessellate.QuadTessellate()
+            if do_tessellate and o.pdimension == 2:
+                tsl = tessellate.QuadTessellate()
                 tsl.tessellate(o.ctrlpts, size_u=o.ctrlpts_size_u, size_v=o.ctrlpts_size_v)
                 data_array = ([v.data for v in tsl.vertices], [q.data for q in tsl.faces])
             else:
                 data_array = (o.ctrlpts, [])
         elif point_type == "evalpts":
-            if tessellate and o.pdimension == 2:
+            if do_tessellate and o.pdimension == 2:
                 o.tessellate()
                 data_array = ([v.data for v in o.vertices], [t.data for t in o.faces])
             else:
@@ -108,7 +107,7 @@ def export_polydata_str(obj, **kwargs):
     line += str_v
 
     # Add polygon data to the file
-    if tessellate:
+    if do_tessellate:
         line += "POLYGONS " + str(f_offset) + " " + str((tsl_dim + 1) * f_offset) + "\n"
         line += str_f
 
