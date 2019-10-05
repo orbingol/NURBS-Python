@@ -3,15 +3,13 @@
     :platform: Unix, Windows
     :synopsis: Provides functions for generating swept geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 from copy import deepcopy
-from . import linalg
-from . import construct
-from .exceptions import GeomdlException
-from ._utilities import export
+from . import linalg, construct
+from .base import export, GeomdlError
 
 
 @export
@@ -30,7 +28,7 @@ def sweep_vector(obj, vec, **kwargs):
     :return: swept geometry
     """
     if not 0 < obj.pdimension < 3:
-        raise GeomdlException("Can only sweep curves and surfaces with curves and surface")
+        raise GeomdlError("Can only sweep curves and surfaces with curves and surface")
 
     # Translate control points
     swept_cps = [[] for _ in range(obj.ctrlpts_size)]

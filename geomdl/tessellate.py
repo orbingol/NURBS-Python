@@ -3,14 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Provides tessellation classes for surface triangulation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from .exceptions import GeomdlException
+import abc
 from . import _tessellate as tsl
-from ._utilities import add_metaclass, export
-from . import abc
+from .six import add_metaclass
+from .base import export, GeomdlError
 
 
 # Add some aliases
@@ -65,7 +65,7 @@ class AbstractTessellate(object):
     @arguments.setter
     def arguments(self, value):
         if not isinstance(value, dict):
-            raise GeomdlException("Tessellation arguments must be a dict object")
+            raise GeomdlError("Tessellation arguments must be a dict object")
         self._arguments = value
 
     @arguments.deleter

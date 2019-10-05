@@ -3,12 +3,12 @@
     :platform: Unix, Windows
     :synopsis: Provides utility functions related to knot vector generation and validation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 from .linalg import linspace
-from ._utilities import export
+from .base import export
 
 
 @export

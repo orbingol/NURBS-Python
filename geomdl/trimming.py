@@ -8,10 +8,8 @@
 """
 
 import math
-from . import linalg
-from . import shortcuts
-from .exceptions import GeomdlException
-from ._utilities import export
+from . import linalg, shortcuts
+from .base import export, GeomdlError
 
 
 @export
@@ -43,7 +41,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
     :rtype: freeform.Freeform
     """
     if obj.pdimension < 2:
-        raise GeomdlException("Input geometry should be defined on, at least, 2-dimensional parametric space")
+        raise GeomdlError("Input geometry should be defined on, at least, 2-dimensional parametric space")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -69,7 +67,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
         try:
             trim = obj.trims[trim_idx]
         except KeyError:
-            raise GeomdlException("Trim curve at index " + str(trim_idx) + " does not exist")
+            raise GeomdlError("Trim curve at index " + str(trim_idx) + " does not exist")
 
         # Set delta
         if delta > 0:
@@ -101,7 +99,7 @@ def fix_multi_trim_curves(obj, **kwargs):
     :return: updated surface
     """
     if obj.pdimension != 2:
-        raise GeomdlException("Can only work with surfaces")
+        raise GeomdlError("Can only work with surfaces")
 
     # Get keyword arguments
     tol = kwargs.get('tol', 10e-8)
@@ -216,7 +214,7 @@ def fix_trim_curves(obj):
     """
     # Validate input
     if obj.pdimension != 2:
-        raise GeomdlException("Input geometry must be a surface")
+        raise GeomdlError("Input geometry must be a surface")
 
     # Get trims of the surface
     for o in obj:

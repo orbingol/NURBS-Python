@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Defines internal utility functions, such as decorators, context managers and similar
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
