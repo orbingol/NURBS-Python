@@ -109,21 +109,29 @@ class CPManager(object):
     * :py:meth:`get_ptdata`
     * :py:meth:`set_ptdata`
     * :py:meth:`reset`
+
+    The following keyword arguments can be used to configure the internal data structures of this class:
+
+        * ``config_ctrlpts_init``: sets control points initialization function
+        * ``config_ctrlpts_set``: sets control points set function
+        * ``config_find_index``: sets find index function
     """
-    __slots__ = ('_idt', '_pt_data', '_cache', '_func_init', '_func_set', '_iter_index')
+    __slots__ = ('_idt', '_pt_data', '_cache', '_cfg', '_iter_index')
 
     def __init__(self, *args, **kwargs):
-        # Define control points initialization function
-        self._func_init = kwargs.pop('ctrlpts_init_function', default_ctrlpts_init)
-        # Define control points initialization function
-        self._func_set = kwargs.pop('ctrlpts_set_function', default_ctrlpts_set)
+        # Configuration dictionary
+        self._cfg = GeomdlDict(
+            func_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
+            func_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
+            func_find_index=kwargs.pop('config_find_index', find_index)  # index finding function
+        )
         # Start constructing the internal data structures
         self._idt = GeomdlDict(
             size=tuple([int(arg) for arg in args]),  # size in all parametric dimensions
         )
         self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points
-        self._idt['control_points'], self._pt_data = self._func_init(self.count, **kwargs)
+        self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
         # Set spatial dimension
         self._idt['dimension'] = int(kwargs.pop('ctrlpts_dimension', 0))
         # Initialize cache
@@ -226,7 +234,7 @@ class CPManager(object):
         if self.dimension < 1:
             self._idt['dimension'] = len(value[0])
         # Set control points
-        self._func_set(value, self.dimension, self._idt['control_points'])
+        self._cfg['func_set'](value, self.dimension, self._idt['control_points'])
 
     @property
     def points_data(self):
@@ -256,12 +264,12 @@ class CPManager(object):
 
     def reset(self, **kwargs):
         """ Resets the control points and the attached data contents """
-        self._func_init(self.count, **kwargs)
+        self._cfg['func_init'](self.count, **kwargs)
 
     def get_ctrlpt(self, *args):
         """ Gets the control point from the input position. """
         # Find the index
-        idx = find_index(self.size, *args)
+        idx = self._cfg['func_find_index'](self.size, *args)
         # Return the control point
         try:
             return tuple(self._idt['control_points'][idx])
@@ -279,7 +287,7 @@ class CPManager(object):
         if len(args) != len(self.size):
             raise GeomdlError("Input dimensions are not compatible with the geometry")
         # Find the index
-        idx = find_index(self, *args)
+        idx = self._cfg['func_find_index'](self, *args)
         # Set control point
         try:
             self._idt['control_points'][idx] = pt
@@ -293,7 +301,7 @@ class CPManager(object):
         :param dkey: str
         """
         # Find the index
-        idx = find_index(self.size, *args)
+        idx = self._cfg['func_find_index'](self.size, *args)
         # Return the attached data
         try:
             return self._pt_data[dkey][idx]
@@ -309,7 +317,7 @@ class CPManager(object):
         :param adct: dict
         """
         # Find the index
-        idx = find_index(self.size, *args)
+        idx = self._cfg['func_find_index'](self.size, *args)
         # Attach the data to the control point
         try:
             for k, val in adct.items():
