@@ -39,3 +39,13 @@ __all__ = [
     'utilities',
     'voxelize'
 ]
+
+# Register default types for isinstance() checking
+from .base import GeomdlTypeSequence, GeomdlTypeString
+
+# Default types for sequences
+GeomdlTypeSequence.register(list)
+GeomdlTypeSequence.register(tuple)
+
+# Default types for strings
+GeomdlTypeString.register(str)
