@@ -19,11 +19,11 @@ __all__ = []
 
 
 def default_ctrlpts_init(num_ctrlpts, **kwargs):
-    """ Default control points and attached data initialization function.
+    """ Default control points initialization function.
 
     :param num_ctrlpts: total number of control points
     :type num_ctrlpts: int
-    :return: a tuple containing initialized control points (as a ``list``) and attached data (as a ``dict``)
+    :return: a tuple containing initialized control points (as a ``list``) and data dictionary (as a ``dict``)
     :rtype: tuple
     """
     points = [[] for _ in range(num_ctrlpts)]
@@ -37,6 +37,17 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
 
 
 def default_ctrlpts_set(pts_in, dim, pts_out):
+    """ Default control points set function.
+
+    :param pts_in: input list of control points
+    :type pts_in: list, tuple
+    :param dim: spatial dimension
+    :type dim: int
+    :param pts_out: output list of control points
+    :type pts_out: list
+    :return: ``pts_out`` will be returned
+    :rtype: list
+    """
     for idx, cpt in enumerate(pts_in):
         if not isinstance(cpt, GeomdlTypeSequence):
             raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
