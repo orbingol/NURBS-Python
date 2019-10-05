@@ -36,6 +36,17 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
     return points, points_data
 
 
+def default_ctrlpts_set(pts_in, dim, pts_out):
+    for idx, cpt in enumerate(pts_in):
+        if not isinstance(cpt, GeomdlTypeSequence):
+            raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
+        if len(cpt) != dim:
+            raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
+        # Convert to list of floats
+        pts_out[idx] = [float(coord) for coord in cpt]
+    return pts_out
+
+
 @export
 class CPManager(object):
     """ Control points manager class.
@@ -50,6 +61,7 @@ class CPManager(object):
     * :py:attr:`points_data`
     * :py:attr:`size`
     * :py:attr:`count`
+    * :py:attr:`dimension`
 
     This class provides the following methods:
 
@@ -59,16 +71,22 @@ class CPManager(object):
     * :py:meth:`set_ptdata`
     * :py:meth:`reset`
     """
-    __slots__ = ('_idt', '_pt_data', '_cache', '_reset_func', '_iter_index')
+    __slots__ = ('_idt', '_pt_data', '_cache', '_func_init', '_func_set', '_iter_index')
 
     def __init__(self, *args, **kwargs):
+        # Define control points initialization function
+        self._func_init = kwargs.pop('ctrlpts_init_function', default_ctrlpts_init)
+        # Define control points initialization function
+        self._func_set = kwargs.pop('ctrlpts_set_function', default_ctrlpts_set)
+        # Start constructing the internal data structures
         self._idt = GeomdlDict(
             size=tuple([int(arg) for arg in args]),  # size in all parametric dimensions
         )
         self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
-        # Configure control points and attached data init function and update variables
-        self._reset_func = kwargs.pop('ctrlpts_init_function', default_ctrlpts_init)
-        self._idt['control_points'], self._pt_data = self._reset_func(self.count, **kwargs)
+        # Initialize control points
+        self._idt['control_points'], self._pt_data = self._func_init(self.count, **kwargs)
+        # Set spatial dimension
+        self._idt['dimension'] = int(kwargs.pop('ctrlpts_dimension', 0))
         # Initialize cache
         self._cache = GeomdlDict()
 
@@ -145,6 +163,14 @@ class CPManager(object):
         return idx
 
     @property
+    def dimension(self):
+        """ Spatial dimension of the control points.
+
+        :getter: Gets the spatial dimension
+        """
+        return self._idt['dimension']
+
+    @property
     def points(self):
         """ Control points.
 
@@ -158,7 +184,17 @@ class CPManager(object):
 
     @points.setter
     def points(self, value):
-        self._idt['control_points'] = value
+        # Check input type
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("Control points input must be a sequence")
+        # Check input length
+        if len(value) != self.count:
+            raise GeomdlError("Number of control points must be " + str(self.count))
+        # Determine dimension, if required
+        if self.dimension < 1:
+            self._idt['dimension'] = len(value[0])
+        # Set control points
+        self._func_set(value, self.dimension, self._idt['control_points'])
 
     @property
     def points_data(self):
@@ -188,7 +224,7 @@ class CPManager(object):
 
     def reset(self, **kwargs):
         """ Resets the control points and the attached data contents """
-        self._reset_func(self.count, **kwargs)
+        self._func_init(self.count, **kwargs)
 
     def get_ctrlpt(self, *args):
         """ Gets the control point from the input position. """
