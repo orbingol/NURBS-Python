@@ -22,6 +22,7 @@ __all__ = [
     'BSpline',
     'compatibility',
     'construct',
+    'control_points',
     'convert',
     'CPGen',
     'elements',
