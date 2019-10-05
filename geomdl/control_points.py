@@ -18,6 +18,34 @@ GEOMDL_PDIM_ATTRS = GeomdlDict(size_u=0, size_v=1, size_w=2)
 __all__ = []
 
 
+def find_index(pts_size, *args):
+    """ Finds the array index from the given parametric positions.
+
+    .. code-block:: python
+
+        from geomdl.control_points import find_index
+
+        # parametric position: u=2, v=1, w=5
+        # ctrlpts_size: number of control points in all parametric dimensions, e.g. (6, 7, 11)
+        idx = find_index((6, 7, 11), 2, 1, 5)
+
+    :param pts_size: number of control points in all parametric dimensions
+    :type pts_size: list, tuple
+    :param args: position in the parametric space
+    :type args: tuple
+    :return: index of the control points at the specified parametric position
+    :rtype: int
+    """
+    idx = 0
+    for i, arg in enumerate(args):
+        mul_res = 1
+        if i > 0:
+            for j in pts_size[:i]:
+                mul_res *= j
+        idx += arg * mul_res
+    return idx
+
+
 def default_ctrlpts_init(num_ctrlpts, **kwargs):
     """ Default control points initialization function.
 
@@ -166,17 +194,6 @@ class CPManager(object):
             raise AttributeError(attr)
         return self.__slots__[attr]
 
-    def _find_index(self, *args):
-        """ Finds the array index from the given parametric positions."""
-        idx = 0
-        for i, arg in enumerate(args):
-            mul_res = 1
-            if i > 0:
-                for j in self._size[:i]:
-                    mul_res *= j
-            idx += arg * mul_res
-        return idx
-
     @property
     def dimension(self):
         """ Spatial dimension of the control points.
@@ -244,7 +261,7 @@ class CPManager(object):
     def get_ctrlpt(self, *args):
         """ Gets the control point from the input position. """
         # Find the index
-        idx = self._find_index(*args)
+        idx = find_index(self.size, *args)
         # Return the control point
         try:
             return tuple(self._idt['control_points'][idx])
@@ -262,7 +279,7 @@ class CPManager(object):
         if len(args) != len(self.size):
             raise GeomdlError("Input dimensions are not compatible with the geometry")
         # Find the index
-        idx = self._find_index(*args)
+        idx = find_index(self, *args)
         # Set control point
         try:
             self._idt['control_points'][idx] = pt
@@ -276,7 +293,7 @@ class CPManager(object):
         :param dkey: str
         """
         # Find the index
-        idx = self._find_index(*args)
+        idx = find_index(self.size, *args)
         # Return the attached data
         try:
             return self._pt_data[dkey][idx]
@@ -292,7 +309,7 @@ class CPManager(object):
         :param adct: dict
         """
         # Find the index
-        idx = self._find_index(*args)
+        idx = find_index(self.size, *args)
         # Attach the data to the control point
         try:
             for k, val in adct.items():
