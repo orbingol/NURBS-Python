@@ -104,8 +104,8 @@ class CPManager(object):
 
     This class provides the following methods:
 
-    * :py:meth:`get_ctrlpt`
-    * :py:meth:`set_ctrlpt`
+    * :py:meth:`get_pt`
+    * :py:meth:`set_pt`
     * :py:meth:`get_ptdata`
     * :py:meth:`set_ptdata`
     * :py:meth:`reset`
@@ -150,23 +150,48 @@ class CPManager(object):
 
     def __next__(self):
         try:
-            result = self._points[self._iter_index]
+            result = self._idt['control_points'][self._iter_index]
         except IndexError:
             raise StopIteration
         self._iter_index += 1
         return result
 
     def __len__(self):
-        return len(self._points)
+        return self.count
 
     def __reversed__(self):
-        return reversed(self._points)
+        return reversed(self._idt['control_points'])
 
-    def __getitem__(self, idx):
-        return self._points[idx]
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return self._idt['control_points'][item]
+        if isinstance(item, tuple):
+            if len(item) != len(self.size):
+                raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
+            idx = self._cfg['func_find_index'](self.size, *item)
+            return self._idt['control_points'][idx]
+        raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + item.__class__.__name__)
 
-    def __setitem__(self, idx, val):
-        self._points[idx] = val
+    def __setitem__(self, key, value):
+        # The input value must be a sequence type
+        if not isinstance(value, GeomdlTypeSequence):
+            raise TypeError("RHS must be a sequence")
+        # If dimension is not set, try to find it
+        if self.dimension < 1:
+            self._idt['dimension'] = len(value)
+        # Always make sure that new input conforms with the existing dimension value
+        if len(value) != self.dimension:
+            raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
+        if isinstance(key, int):
+            self._idt['control_points'][key] = value
+            return
+        if isinstance(key, tuple):
+            if len(key) != len(self.size):
+                raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
+            idx = self._cfg['func_find_index'](self.size, *key)
+            self._idt['control_points'][idx] = value
+            return
+        raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
     def __copy__(self):
         # Create a new instance
@@ -266,33 +291,17 @@ class CPManager(object):
         """ Resets the control points and the attached data contents """
         self._cfg['func_init'](self.count, **kwargs)
 
-    def get_ctrlpt(self, *args):
+    def get_pt(self, *args):
         """ Gets the control point from the input position. """
-        # Find the index
-        idx = self._cfg['func_find_index'](self.size, *args)
-        # Return the control point
-        try:
-            return tuple(self._idt['control_points'][idx])
-        except IndexError:
-            return None
+        return self[args]
 
-    def set_ctrlpt(self, pt, *args):
+    def set_pt(self, pt, *args):
         """ Puts the control point to the input position.
 
         :param pt: control point
         :type pt: list, tuple
         """
-        if not isinstance(pt, GeomdlTypeSequence):
-            raise GeomdlError("'pt' argument should be a list or tuple")
-        if len(args) != len(self.size):
-            raise GeomdlError("Input dimensions are not compatible with the geometry")
-        # Find the index
-        idx = self._cfg['func_find_index'](self, *args)
-        # Set control point
-        try:
-            self._idt['control_points'][idx] = pt
-        except IndexError:
-            raise GeomdlError("Index is out of range")
+        self[args] = pt
 
     def get_ptdata(self, dkey, *args):
         """ Gets the data attached to the control point.
