@@ -3,17 +3,15 @@
     :platform: Unix, Windows
     :synopsis: Provides data storage and evaluation functionality for non-rational spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import pickle
-from . import abc, abstract, evaluators, operations, tessellate, utilities
-from . import _utilities as utl
-from .exceptions import GeomdlException
+from . import abstract, evaluators, operations, tessellate, utilities
+from .base import export, GeomdlError
 
 
-@utl.export
+@export
 class Curve(abstract.Curve):
     """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
 
@@ -138,7 +136,7 @@ class Curve(abstract.Curve):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params([start, stop]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Clean up the curve points
         self.reset(evalpts=True)
@@ -160,7 +158,7 @@ class Curve(abstract.Curve):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params([param]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Evaluate the curve point
         pt = self._evaluator.evaluate(self.data, start=param, stop=param)
@@ -232,7 +230,7 @@ class Curve(abstract.Curve):
         # Check parameters are correct
         if self._kv_normalize:
             if not utilities.check_params([param]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num = kwargs.get('num', 1)  # number of knot insertions
@@ -241,7 +239,7 @@ class Curve(abstract.Curve):
         # Insert knot
         try:
             self._insert_knot_func(self, [param], [num], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
@@ -264,7 +262,7 @@ class Curve(abstract.Curve):
         # Check param parameters are correct
         if self._kv_normalize:
             if not utilities.check_params([param]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num = kwargs.get('num', 1)  # number of knot removals
@@ -273,7 +271,7 @@ class Curve(abstract.Curve):
         # Remove knot
         try:
             self._remove_knot_func(self, [param], [num], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
@@ -345,7 +343,7 @@ class Curve(abstract.Curve):
         return operations.binormal(self, parpos, **kwargs)
 
 
-@utl.export
+@export
 class Surface(abstract.Surface):
     """ Data storage and evaluation class for B-spline (non-rational) surfaces.
 
@@ -491,7 +489,7 @@ class Surface(abstract.Surface):
 
     @ctrlpts2d.setter
     def ctrlpts2d(self, value):
-        if not isinstance(value, abc.GeomdlSequence):
+        if not isinstance(value, GeomdlTypeSequence):
             raise ValueError("The input must be a list or tuple")
 
         # Clean up the surface and control points
@@ -632,7 +630,7 @@ class Surface(abstract.Surface):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params([start_u, stop_u, start_v, stop_v]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Clean up the surface points
         self.reset(evalpts=True)
@@ -720,7 +718,7 @@ class Surface(abstract.Surface):
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
             if not utilities.check_params([u, v]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
@@ -730,7 +728,7 @@ class Surface(abstract.Surface):
         # Insert knots
         try:
             self._insert_knot_func(self, [u, v], [num_u, num_v], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
@@ -756,7 +754,7 @@ class Surface(abstract.Surface):
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
             if not utilities.check_params([u, v]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
@@ -766,7 +764,7 @@ class Surface(abstract.Surface):
         # Remove knots
         try:
             self._remove_knot_func(self, [u, v], [num_u, num_v], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
@@ -819,7 +817,7 @@ class Surface(abstract.Surface):
         return operations.normal(self, parpos, **kwargs)
 
 
-@utl.export
+@export
 class Volume(abstract.Volume):
     """ Data storage and evaluation class for B-spline (non-rational) volumes.
 
@@ -925,7 +923,7 @@ class Volume(abstract.Volume):
         # Check if all the input parameters are in the range
         if self._kv_normalize:
             if not utilities.check_params([start_u, stop_u, start_v, stop_v, start_w, stop_w]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Clean up the evaluated points
         self.reset(evalpts=True)
@@ -949,7 +947,7 @@ class Volume(abstract.Volume):
         # Check if all parameters are in the range
         if self._kv_normalize:
             if not utilities.check_params(param):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Evaluate the volume point
         pt = self._evaluator.evaluate(self.data, start=param, stop=param)
@@ -997,7 +995,7 @@ class Volume(abstract.Volume):
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
             if not utilities.check_params([u, v, w]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
@@ -1008,7 +1006,7 @@ class Volume(abstract.Volume):
         # Insert knots
         try:
             self._insert_knot_func(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
@@ -1037,7 +1035,7 @@ class Volume(abstract.Volume):
         # Check if the parameter values are correctly defined
         if self._kv_normalize:
             if not utilities.check_params([u, v, w]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
         # Get keyword arguments
         num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
@@ -1048,7 +1046,7 @@ class Volume(abstract.Volume):
         # Remove knots
         try:
             self._remove_knot_func(self, [u, v, w], [num_u, num_v, num_w], check_num=check_num)
-        except GeomdlException as e:
+        except GeomdlError as e:
             print(e)
             return
 
