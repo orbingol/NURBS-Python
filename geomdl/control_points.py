@@ -19,7 +19,7 @@ __all__ = []
 
 
 def find_index(pts_size, *args):
-    """ Finds the array index from the given parametric positions.
+    """ Finds the array index from the input parametric position.
 
     .. code-block:: python
 
@@ -49,6 +49,8 @@ def find_index(pts_size, *args):
 def default_ctrlpts_init(num_ctrlpts, **kwargs):
     """ Default control points initialization function.
 
+    Default functions use the container types included in the Python Standard Library.
+
     :param num_ctrlpts: total number of control points
     :type num_ctrlpts: int
     :return: a tuple containing initialized control points (as a ``list``) and data dictionary (as a ``dict``)
@@ -66,6 +68,8 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
 
 def default_ctrlpts_set(pts_in, dim, pts_out):
     """ Default control points set function.
+
+    Default functions use the container types included in the Python Standard Library.
 
     :param pts_in: input list of control points
     :type pts_in: list, tuple
