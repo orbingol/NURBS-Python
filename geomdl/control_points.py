@@ -115,6 +115,10 @@ class CPManager(object):
         * ``config_ctrlpts_init``: sets control points initialization function
         * ``config_ctrlpts_set``: sets control points set function
         * ``config_find_index``: sets find index function
+
+    The following keyword arguments can be used to initialize some properties:
+
+        * ``dimension``: spatial dimension of the control points
     """
     __slots__ = ('_idt', '_pt_data', '_cache', '_cfg', '_iter_index')
 
@@ -133,7 +137,7 @@ class CPManager(object):
         # Initialize control points
         self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
         # Set spatial dimension
-        self._idt['dimension'] = int(kwargs.pop('ctrlpts_dimension', 0))
+        self._idt['dimension'] = int(kwargs.pop('dimension', 0))
         # Initialize cache
         self._cache = GeomdlDict()
 
