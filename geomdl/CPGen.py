@@ -8,9 +8,7 @@
 """
 
 import random
-import warnings
-from . import abc
-from ._utilities import export
+from .base import export, GeomdlWarning, GeomdlTypeSequence
 
 
 @export
@@ -81,11 +79,11 @@ class Grid(object):
 
         if not isinstance(num_u, int):
             num_u = int(num_u)
-            warnings.warn("%d will be used as the value of num_u" % num_u, UserWarning)
+            GeomdlWarning("%d will be used as the value of num_u" % num_u, UserWarning)
 
         if not isinstance(num_v, int):
             num_v = int(num_v)
-            warnings.warn("%d will be used as the value of num_v" % num_v, UserWarning)
+            GeomdlWarning("%d will be used as the value of num_v" % num_v, UserWarning)
 
         # Reset the grid
         self.reset()
@@ -153,10 +151,10 @@ class Grid(object):
 
         if not isinstance(num_bumps, int):
             num_bumps = int(num_bumps)
-            warnings.warn("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps,
+            GeomdlWarning("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps,
                           UserWarning)
 
-        if isinstance(bump_height, abc.GeomdlSequence):
+        if isinstance(bump_height, GeomdlTypeSequence):
             if len(bump_height) != num_bumps:
                 raise ValueError("Number of bump heights must be equal to number of bumps")
             else:
@@ -287,7 +285,7 @@ class GridWeighted(Grid):
             if value <= 0:
                 raise ValueError("Weight value must be bigger than 0")
             self._weights = [float(value) for _ in range(len(self))]
-        elif isinstance(value, abc.GeomdlSequence):
+        elif isinstance(value, GeomdlTypeSequence):
             if len(value) != len(self):
                 raise ValueError("Input must be the same size with the grid points")
             if all(val <= 0 for val in value):
