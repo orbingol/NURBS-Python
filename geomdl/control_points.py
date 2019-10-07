@@ -90,6 +90,53 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
     return pts_out
 
 
+def extract_ctrlpts2d(cm):
+    """ Extracts control points in u- and v-dimensions
+
+    :param cm: control points manager
+    :type cm: CPManager
+    """
+    if cm.get_opt('points_u') is None:
+        pt_u = []
+        for v in range(cm.size_v):
+            pt_u += [cm[u, v] for u in range(cm.size_u)]
+        cm.opt = ('points_u', pt_u)
+
+    if cm.get_opt('points_v') is None:
+        pt_v = []
+        for u in range(cm.size_u):
+            pt_v += [cm[u, v] for v in range(cm.size_v)]
+        cm.opt = ('points_v', pt_v)
+
+
+def extract_ctrlpts3d(cm):
+    """ Extracts control points in u-, v- and w-dimensions
+
+    :param cm: control points manager
+    :type cm: CPManager
+    """
+    if cm.get_opt('points_u') is None:
+        pt_u = []
+        for w in range(cm.size_w):
+            for v in range(cm.size_v):
+                pt_u += [cm[u, v, w] for u in range(cm.size_u)]
+        cm.opt = ('points_u', pt_u)
+
+    if cm.get_opt('points_v') is None:
+        pt_v = []
+        for w in range(cm.size_w):
+            for u in range(cm.size_u):
+                pt_v += [cm[u, v, w] for v in range(cm.size_v)]
+        cm.opt = ('points_v', pt_v)
+
+    if cm.get_opt('points_w') is None:
+        pt_w = []
+        for v in range(cm.size_v):
+            for u in range(cm.size_u):
+                pt_w += [cm[u, v, w] for w in range(cm.size_w)]
+        cm.opt = ('points_w', pt_w)
+
+
 @export
 class CPManager(GeomdlBase):
     """ Control points manager class
