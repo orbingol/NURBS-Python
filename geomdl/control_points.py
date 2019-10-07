@@ -18,7 +18,7 @@ GEOMDL_PDIM_ATTRS = GeomdlDict(size_u=0, size_v=1, size_w=2)
 __all__ = []
 
 
-def find_index(pts_size, *args):
+def default_find_index(pts_size, *args):
     """ Finds the array index from the input parametric position.
 
     .. code-block:: python
@@ -131,7 +131,7 @@ class CPManager(object):
         self._cfg = GeomdlDict(
             func_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
             func_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
-            func_find_index=kwargs.pop('config_find_index', find_index)  # index finding function
+            func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
         )
         # Start constructing the internal data structures
         self._idt = GeomdlDict(
