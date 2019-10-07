@@ -182,7 +182,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
-                    crv.opt = ['reversed', trim[idx].opt_get('reversed')]
+                    crv.opt = ['reversed', trim[idx].get_opt('reversed')]
 
                     # Add trims
                     new_trim.append(trim[idx])
@@ -191,7 +191,7 @@ def fix_multi_trim_curves(obj, **kwargs):
             # Create a curve container from the new trim list
             cc = shortcuts.generate_container_curve()
             cc.add(new_trim)
-            cc.opt = ['reversed', trim.opt_get('reversed')]
+            cc.opt = ['reversed', trim.get_opt('reversed')]
             cc.delta = eval_delta
 
             # Add curve container to the new trims list
@@ -286,7 +286,7 @@ def check_trim_curve(curve, parbox, **kwargs):
             return False, []
         else:
             # Get sense of the original curve
-            c_sense = curve.opt_get('reversed')
+            c_sense = curve.get_opt('reversed')
 
             # If sense is None, then detect sense
             if c_sense is None:
@@ -376,7 +376,7 @@ def detect_sense(curve, tol):
     :return: True if detection is successful, False otherwise
     :rtype: bool
     """
-    if curve.opt_get('reversed') is None:
+    if curve.get_opt('reversed') is None:
         # Detect sense since it is unset
         pts = curve.evalpts
         num_pts = len(pts)

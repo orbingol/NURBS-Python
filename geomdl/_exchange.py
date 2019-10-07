@@ -247,7 +247,7 @@ def export_dict_crv(obj):
         data['control_points']['weights'] = list(obj.weights)
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.get_opt('reversed')
     if sense is not None:
         data['reversed'] = sense
 
@@ -282,7 +282,7 @@ def export_dict_ff(obj):
     )
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.get_opt('reversed')
     if sense is not None:
         data['reversed'] = sense
 
@@ -322,7 +322,7 @@ def export_dict_multi_crv(obj):
     )
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.get_opt('reversed')
     if sense is not None:
         data['reversed'] = sense
 
@@ -389,7 +389,7 @@ def export_dict_surf(obj):
         data['control_points']['weights'] = list(obj.weights)
 
     # Surface sense
-    sense = obj.opt_get('reversed')
+    sense = obj.get_opt('reversed')
     if sense is not None:
         data['reversed'] = sense
 

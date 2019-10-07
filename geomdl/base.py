@@ -32,7 +32,7 @@ def export(fn):
 
 @export
 class GeomdlError(Exception):
-    """ Custom exception for library-wide errors.
+    """ Custom exception for library-wide errors
 
     The error details can be retrieved by querying ``data`` class member. The following snippet illustrates a sample
     usage of this exception.
@@ -62,7 +62,7 @@ class GeomdlError(Exception):
 
 @export
 class GeomdlWarning(Warning):
-    """ Custom exception for library-wide warnings.
+    """ Custom exception for library-wide warnings
 
     The warning details can be retrieved by querying ``data`` class member. The following snippet illustrates a sample
     usage of this exception.
@@ -97,7 +97,7 @@ class GeomdlDict(dict):
 
 @add_metaclass(abc.ABCMeta)
 class GeomdlBase(object):
-    """ Abstract base class for defining geomdl objects.
+    """ Abstract base class for defining geomdl objects
 
     This class provides the following properties:
 
@@ -110,18 +110,20 @@ class GeomdlBase(object):
     **Keyword Arguments:**
 
     * ``id``: object ID (as integer)
-    * ``precision``: number of decimal places to round to. *Default: 18*
+    * ``precision``: number of decimal places to round to. *Default: 12*
     """
-    # __slots__ = ('_precision', '_id', '_dimension', '_geometry_type', '_name', '_opt_data', '_cache')
+    __slots__ = ('_idt', '_opt_data', '_cache')
 
     def __init__(self, **kwargs):
-        self._dimension = 0 if not hasattr(self, '_dimension') else self._dimension  # spatial dimension
-        self._geometry_type = "none" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
-        self._name = "base object" if not hasattr(self, '_name') else self._name  # object name
-        self._opt_data = dict() if not hasattr(self, '_opt_data') else self._opt_data  # custom data dict
-        self._cache = dict() if not hasattr(self, '_cache') else self._cache  # cache dict
-        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._id = int(kwargs.get('id', 0))  # object ID
+        self._idt = GeomdlDict(
+            dimension=0,  # spatial dimension
+            geometry_type=str(),  # geometry type
+            name=str(),  # object name
+            precision=int(kwargs.get('precision', 12)),  # number of decimal places to round to
+            id=int(kwargs.get('id', 0))  # object ID
+        )
+        self._opt_data = GeomdlDict()  # custom data dict
+        self._cache = GeomdlDict()  # cache dict
 
     def __copy__(self):
         cls = self.__class__
@@ -148,7 +150,7 @@ class GeomdlBase(object):
 
     @property
     def dimension(self):
-        """ Spatial dimension.
+        """ Spatial dimension
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -156,7 +158,7 @@ class GeomdlBase(object):
         :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
         :type: int
         """
-        return self._dimension
+        return self._idt['dimension']
 
     @property
     def type(self):
@@ -168,11 +170,11 @@ class GeomdlBase(object):
         :getter: Gets the geometry type
         :type: str
         """
-        return self._geometry_type
+        return self._idt['geometry_type']
 
     @property
     def id(self):
-        """ Object ID (as an integer).
+        """ Object ID (as an integer)
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -181,17 +183,15 @@ class GeomdlBase(object):
         :setter: Sets the object ID
         :type: int
         """
-        return self._id
+        return self._idt['id']
 
     @id.setter
     def id(self, value):
-        if not isinstance(value, int):
-            raise GeomdlError("Identifier value must be an integer")
-        self._id = value
+        self._idt['id'] = int(value)
 
     @id.deleter
     def id(self):
-        self._id = 0
+        self._idt['id'] = 0
 
     @property
     def name(self):
@@ -204,19 +204,19 @@ class GeomdlBase(object):
         :setter: Sets the object name
         :type: str
         """
-        return self._name
+        return self._idt['name']
 
     @name.setter
     def name(self, value):
-        self._name = str(value)
+        self._idt['name'] = str(value)
 
     @name.deleter
     def name(self):
-        self._name = ""
+        self._idt['name'] = str()
 
     @property
     def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
+        """ Dictionary for storing custom data in the current geometry object
 
         ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
         You can use ``opt`` property to store custom data inside the geometry object. For instance:
@@ -262,10 +262,10 @@ class GeomdlBase(object):
 
     @opt.deleter
     def opt(self):
-        self._opt_data = dict()
+        self._opt_data = GeomdlDict()
 
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
+    def get_opt(self, value):
+        """ Safely query for the value from the :py:attr:`opt` property
 
         :param value: a key in the :py:attr:`opt` property
         :type value: str
@@ -276,10 +276,15 @@ class GeomdlBase(object):
         except KeyError:
             return None
 
+    def reset(self, **kwargs):
+        """ Resets the internal data structure """
+        self._opt_data = GeomdlDict()
+        self._cache = GeomdlDict()
+
 
 @add_metaclass(abc.ABCMeta)
 class GeomdlEvaluator(object):
-    """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative.
+    """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative
 
     **Abstract Methods**:
 

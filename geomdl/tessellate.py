@@ -154,7 +154,7 @@ class TrimTessellate(AbstractTessellate):
 
         # Update sense if it is not set
         for trim in trims:
-            if trim.opt_get('reversed') is None:
+            if trim.get_opt('reversed') is None:
                 trim.opt = ['reversed', 0]  # always trim the enclosed area by the curve
 
         # Apply default triangular mesh generator function with trimming customization
