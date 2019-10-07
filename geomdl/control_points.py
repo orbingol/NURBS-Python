@@ -9,7 +9,7 @@
 
 import copy
 from functools import reduce
-from .base import GeomdlDict, GeomdlTypeSequence, GeomdlError, export
+from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
 
 # Parametric dimension names for dynamical generation of the attributes
 GEOMDL_PDIM_ATTRS = GeomdlDict(size_u=0, size_v=1, size_w=2)
@@ -91,8 +91,8 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
 
 
 @export
-class CPManager(object):
-    """ Control points manager class.
+class CPManager(GeomdlBase):
+    """ Control points manager class
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
@@ -119,14 +119,11 @@ class CPManager(object):
         * ``config_ctrlpts_init``: sets control points initialization function
         * ``config_ctrlpts_set``: sets control points set function
         * ``config_find_index``: sets find index function
-
-    The following keyword arguments can be used to initialize some properties:
-
-        * ``dimension``: spatial dimension of the control points
     """
-    __slots__ = ('_idt', '_pt_data', '_cache', '_cfg', '_iter_index')
+    __slots__ = ('_pt_data', '_cfg', '_iter_index')
 
     def __init__(self, *args, **kwargs):
+        super(CPManager, self).__init__(**kwargs)
         # Configuration dictionary
         self._cfg = GeomdlDict(
             func_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
@@ -134,16 +131,10 @@ class CPManager(object):
             func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
         )
         # Start constructing the internal data structures
-        self._idt = GeomdlDict(
-            size=tuple([int(arg) for arg in args]),  # size in all parametric dimensions
-        )
+        self._idt['size'] = tuple([int(arg) for arg in args]),  # size in all parametric dimensions
         self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points
         self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
-        # Set spatial dimension
-        self._idt['dimension'] = int(kwargs.pop('dimension', 0))
-        # Initialize cache
-        self._cache = GeomdlDict()
 
     def __call__(self):
         return self.points
@@ -235,16 +226,8 @@ class CPManager(object):
         return self.__slots__[attr]
 
     @property
-    def dimension(self):
-        """ Spatial dimension of the control points.
-
-        :getter: Gets the spatial dimension
-        """
-        return self._idt['dimension']
-
-    @property
     def points(self):
-        """ Control points.
+        """ Control points
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -274,7 +257,7 @@ class CPManager(object):
 
     @property
     def size(self):
-        """ Number of the control points in all parametric dimensions.
+        """ Number of the control points in all parametric dimensions
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -285,7 +268,7 @@ class CPManager(object):
 
     @property
     def count(self):
-        """ Total number of the control points.
+        """ Total number of the control points
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -295,15 +278,18 @@ class CPManager(object):
         return self._idt['count']
 
     def reset(self, **kwargs):
-        """ Resets the control points and the attached data contents """
+        """ Resets the control points """
+        # Call parent method
+        super(CPManager, self).reset(**kwargs)
+        # Reset the control points and the attached data
         self._cfg['func_init'](self.count, **kwargs)
 
     def get_pt(self, *args):
-        """ Gets the control point from the input position. """
+        """ Gets the control point from the input position """
         return self[args]
 
     def set_pt(self, pt, *args):
-        """ Puts the control point to the input position.
+        """ Puts the control point to the input position
 
         :param pt: control point
         :type pt: list, tuple
@@ -311,7 +297,7 @@ class CPManager(object):
         self[args] = pt
 
     def get_ptdata(self, dkey, *args):
-        """ Gets the data attached to the control point.
+        """ Gets the data attached to the control point
 
         :param dkey: key of the attachment dictionary
         :param dkey: str
@@ -327,7 +313,7 @@ class CPManager(object):
             return None
 
     def set_ptdata(self, adct, *args):
-        """ Attaches the data to the control point.
+        """ Attaches the data to the control point
 
         :param adct: attachment dictionary
         :param adct: dict
