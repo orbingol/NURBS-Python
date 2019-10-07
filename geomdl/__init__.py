@@ -1,18 +1,19 @@
-""" Object-oriented B-Spline and NURBS evaluation library in pure Python
+""" GEOMDL - Object-oriented, self-contained, pure Python B-Spline and NURBS library
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
+.. moduleauthor:: The GEOMDL Contributors
 
 """
 
 # Library version
-__version__ = "5.2.9"
+__version__ = "6.0a1"
 
 # Author and license
-__author__ = "Onur Rauf Bingol"
+__author__ = "Onur R. Bingol and The GEOMDL Contributors"
 __license__ = "MIT"
 
 # Optional variables
-__description__ = 'Object-oriented B-Spline and NURBS evaluation library'
+__description__ = 'Object-oriented B-Spline and NURBS library'
 __keywords__ = 'NURBS B-Spline curve surface CAD modeling visualization surface-generator'
 
 # Support for "from geomdl import *"
