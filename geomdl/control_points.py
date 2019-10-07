@@ -145,6 +145,24 @@ class CPManager(GeomdlBase):
     the internal data structure of the geometry classes. The manager class is initialized
     with the number of control points in all parametric dimensions.
 
+    This class inherits the following properties:
+
+    * :py:attr:`type`
+    * :py:attr:`id`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`opt`
+
+    This class inherits the following methods:
+
+    * :py:meth:`get_opt`
+    * :py:meth:`reset`
+
+    This class inherits the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
+    * ``precision``: number of decimal places to round to. *Default: 12*
+
     This class provides the following properties:
 
     * :py:attr:`points`
@@ -161,11 +179,11 @@ class CPManager(GeomdlBase):
     * :py:meth:`set_ptdata`
     * :py:meth:`reset`
 
-    The following keyword arguments can be used to configure the internal data structures of this class:
+    This class provides the following keyword arguments:
 
-        * ``config_ctrlpts_init``: sets control points initialization function
-        * ``config_ctrlpts_set``: sets control points set function
-        * ``config_find_index``: sets find index function
+    * ``config_ctrlpts_init``: sets control points initialization function. *Default:* ``default_ctrlpts_init``
+    * ``config_ctrlpts_set``: sets control points set function. *Default:* ``default_ctrlpts_set``
+    * ``config_find_index``: sets find index function. *Default:* ``default_find_index``
     """
     __slots__ = ('_pt_data', '_cfg', '_iter_index')
 
