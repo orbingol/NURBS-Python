@@ -388,7 +388,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         for trim in trims:
             if linalg.wn_poly(tri_center, trim.evalpts):
                 if trim.opt['reversed']:
-                    if tris[idx].opt_get('trim') is None or not tris[idx].opt_get('trim'):
+                    if tris[idx].get_opt('trim') is None or not tris[idx].get_opt('trim'):
                         tris[idx].inside = False
                         tris[idx].opt = ['no_trim', True]  # always triangulate
                 else:
@@ -396,7 +396,7 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
                     tris[idx].opt = ['trim', True]  # always trim
             else:
                 if trim.opt['reversed']:
-                    if tris[idx].opt_get('no_trim') is None or not tris[idx].opt_get('no_trim'):
+                    if tris[idx].get_opt('no_trim') is None or not tris[idx].get_opt('no_trim'):
                         tris[idx].inside = True
 
     # Extract triangles which are not inside the trim

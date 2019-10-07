@@ -1,14 +1,13 @@
 """
 .. module:: Multi
     :platform: Unix, Windows
-    :synopsis: Provides container classes for spline geoemtries
+    :synopsis: Provides container classes for spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import abc
-import warnings
 from functools import partial
 from multiprocessing import Value, Lock
 from . import abstract
@@ -16,12 +15,13 @@ from . import vis
 from . import voxelize
 from . import utilities
 from . import tessellate
-from . import _utilities as utl
-from .exceptions import GeomdlException
+from .six import add_metaclass
+from .ext_utils import pool_context
+from .base import export, GeomdlError, GeomdlWarning, GeomdlBase, GeomdlTypeSequence
 
 
-@utl.add_metaclass(abc.ABCMeta)
-class AbstractContainer(abstract.GeomdlBase):
+@add_metaclass(abc.ABCMeta)
+class AbstractContainer(GeomdlBase):
     """ Abstract class for geometry containers.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
@@ -79,7 +79,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise GeomdlException("Cannot add non-matching container types")
+            raise GeomdlError("Cannot add non-matching container types")
         self.add(other)
         return self
 
@@ -157,7 +157,7 @@ class AbstractContainer(abstract.GeomdlBase):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of the vis.VisAbstract class")
+            GeomdlWarning("Visualization component is NOT an instance of the vis.VisAbstract class")
             return
         self._vis_component = value
 
@@ -187,7 +187,7 @@ class AbstractContainer(abstract.GeomdlBase):
         if self._pdim == 1 and isinstance(value, (int, float)):
             delta_vals = [value]
         else:
-            if isinstance(value, (list, tuple)):
+            if isinstance(value, GeomdlTypeSequence):
                 if len(value) != self._pdim:
                     raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
                 delta_vals = value
@@ -236,7 +236,7 @@ class AbstractContainer(abstract.GeomdlBase):
         if self._pdim == 1 and isinstance(value, (int, float)):
             ssz = [value]
         else:
-            if isinstance(value, (list, tuple)):
+            if isinstance(value, GeomdlTypeSequence):
                 if len(value) != self._pdim:
                     raise ValueError("The input must be a list of a tuple with a length of " + str(self._pdim))
                 ssz = value
@@ -258,9 +258,9 @@ class AbstractContainer(abstract.GeomdlBase):
     def _sample_size_setter_common(self, idx, value):
         # Check and set the delta value corresponding to the idx-th parametric dimension
         if not isinstance(value, int):
-            raise GeomdlException("Sample size must be an integer value bigger than 2")
+            raise GeomdlError("Sample size must be an integer value bigger than 2")
         if value < 2:
-            raise GeomdlException("Sample size must be an integer value bigger than 2")
+            raise GeomdlError("Sample size must be an integer value bigger than 2")
         self._delta[idx] = 1.0 / float(value - 1)
 
     @property
@@ -270,7 +270,7 @@ class AbstractContainer(abstract.GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
-        return [e.data for e in self._elements]
+        return tuple([e.data for e in self._elements])
 
     def add(self, element):
         """ Adds geometry objects to the container.
@@ -288,10 +288,10 @@ class AbstractContainer(abstract.GeomdlBase):
                     self._dimension = element.dimension
                 else:
                     if self.dimension != element.dimension:
-                        raise GeomdlException("The spatial dimensions of the container and the input must be the same")
+                        raise GeomdlError("The spatial dimensions of the container and the input must be the same")
                 self._elements.append(element)
         else:
-            raise GeomdlException("Cannot add the element to the container")
+            raise GeomdlError("Cannot add the element to the container")
 
         # Reset the cache
         self.reset()
@@ -315,7 +315,7 @@ class AbstractContainer(abstract.GeomdlBase):
         pass
 
 
-@utl.export
+@export
 class CurveContainer(AbstractContainer):
     """ Container class for storing multiple curves.
 
@@ -386,7 +386,7 @@ class CurveContainer(AbstractContainer):
         configuration class.
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has set")
+            GeomdlWarning("No visualization component has set")
             return
 
         # Get the color values from keyword arguments
@@ -400,13 +400,13 @@ class CurveContainer(AbstractContainer):
         reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, GeomdlTypeSequence):
             if len(cpcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained ("
                                  + str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, GeomdlTypeSequence):
             if len(evalcolor) < len(self._elements):
                 raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -442,7 +442,7 @@ class CurveContainer(AbstractContainer):
             self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
 
-@utl.export
+@export
 class SurfaceContainer(AbstractContainer):
     """ Container class for storing multiple surfaces.
 
@@ -676,7 +676,7 @@ class SurfaceContainer(AbstractContainer):
         num_procs = kwargs.pop('num_procs', 1)
         new_elems = []
         if num_procs > 1:
-            with utl.pool_context(processes=num_procs) as pool:
+            with pool_context(processes=num_procs) as pool:
                 tmp_elem = pool.map(partial(process_tessellate, delta=self.delta, update_delta=update_delta, **kwargs),
                                     self._elements)
                 new_elems += tmp_elem
@@ -747,7 +747,7 @@ class SurfaceContainer(AbstractContainer):
         """
         # Validation
         if not self._vis_component:
-            warnings.warn("No visualization component has been set")
+            GeomdlWarning("No visualization component has been set")
             return
 
         # Get the color values from keyword arguments
@@ -765,13 +765,13 @@ class SurfaceContainer(AbstractContainer):
         force_tsl = bool(kwargs.pop('force', False))  # flag to force re-tessellation
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, GeomdlTypeSequence):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, GeomdlTypeSequence):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -779,8 +779,8 @@ class SurfaceContainer(AbstractContainer):
 
         # Get colormaps as a list
         surf_cmaps = kwargs.get('colormap', [])
-        if not isinstance(surf_cmaps, (list, tuple)):
-            warnings.warn("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
+        if not isinstance(surf_cmaps, GeomdlTypeSequence):
+            GeomdlWarning("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
             surf_cmaps = []
 
         # Run the visualization component
@@ -789,7 +789,7 @@ class SurfaceContainer(AbstractContainer):
         if num_procs > 1:
             mp_lock = Lock()
             mp_val = Value('i', 0)
-            with utl.pool_context(initializer=mp_init, initargs=(mp_lock, mp_val), processes=num_procs) as pool:
+            with pool_context(initializer=mp_init, initargs=(mp_lock, mp_val), processes=num_procs) as pool:
                 tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
                                        colorval=(cpcolor, evalcolor, trimcolor), idx=-1, force_tsl=force_tsl,
                                        update_delta=update_delta, delta=self.delta, reset_names=reset_names),
@@ -815,7 +815,7 @@ class SurfaceContainer(AbstractContainer):
             self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmaps)
 
 
-@utl.export
+@export
 class VolumeContainer(AbstractContainer):
     """ Container class for storing multiple volumes.
 
@@ -1019,7 +1019,7 @@ class VolumeContainer(AbstractContainer):
         configuration class.
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has been set")
+            GeomdlWarning("No visualization component has been set")
             return
 
         cpcolor = kwargs.pop('cpcolor', None)
@@ -1032,13 +1032,13 @@ class VolumeContainer(AbstractContainer):
         reset_names = kwargs.get('reset_names', False)
 
         # Check if the input list sizes are equal
-        if isinstance(cpcolor, (list, tuple)):
+        if isinstance(cpcolor, GeomdlTypeSequence):
             if len(cpcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
                                  ") cannot be less than the number of geometries contained(" +
                                  str(len(self._elements)) + ")")
 
-        if isinstance(evalcolor, (list, tuple)):
+        if isinstance(evalcolor, GeomdlTypeSequence):
             if len(evalcolor) != len(self._elements):
                 raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
                                  ") cannot be less than the number of geometries contained ("
@@ -1106,7 +1106,7 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[0] = cpcolor
 
     # User-defined color for control points grid
-    if isinstance(cpcolor, (list, tuple)):
+    if isinstance(cpcolor, GeomdlTypeSequence):
         color[0] = cpcolor[idx]
 
     # Constant color for evaluated points grid
@@ -1114,7 +1114,7 @@ def select_color(cpcolor, evalcolor, idx=0):
         color[1] = evalcolor
 
     # User-defined color for evaluated points grid
-    if isinstance(evalcolor, (list, tuple)):
+    if isinstance(evalcolor, GeomdlTypeSequence):
         color[1] = evalcolor[idx]
 
     return color

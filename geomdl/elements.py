@@ -3,17 +3,17 @@
     :platform: Unix, Windows
     :synopsis: Provides classes representing geometry and topology entities
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import copy
 import abc
-from .exceptions import GeomdlException
-from . import _utilities as utl
+import copy
+from .six import add_metaclass
+from .base import export, GeomdlTypeSequence, GeomdlError
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class AbstractEntity(object):
     """ Abstract base class for all geometric entities. """
     def __init__(self, *args, **kwargs):
@@ -163,12 +163,12 @@ class AbstractEntity(object):
 
     @opt.setter
     def opt(self, key_value):
-        if not isinstance(key_value, (list, tuple)):
-            raise GeomdlException("opt input must be a list or a tuple")
+        if not isinstance(key_value, GeomdlTypeSequence):
+            raise GeomdlError("opt input must be a list or a tuple")
         if len(key_value) != 2:
-            raise GeomdlException("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
+            raise GeomdlError("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
         if not isinstance(key_value[0], str):
-            raise GeomdlException("key must be string")
+            raise GeomdlError("key must be string")
 
         if key_value[1] is None:
             self._opt_data.pop(*key_value)
@@ -192,7 +192,7 @@ class AbstractEntity(object):
             return None
 
 
-@utl.export
+@export
 class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
     def __init__(self, *args, **kwargs):
@@ -212,7 +212,7 @@ class Vertex(AbstractEntity):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise GeomdlException("Can only add Vertex objects")
+            raise GeomdlError("Can only add Vertex objects")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] + other.data[idx]
@@ -226,7 +226,7 @@ class Vertex(AbstractEntity):
 
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
-            raise GeomdlException("Can only subtract Vertex objects")
+            raise GeomdlError("Can only subtract Vertex objects")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] - other.data[idx]
@@ -243,7 +243,7 @@ class Vertex(AbstractEntity):
 
     def __truediv__(self, other):
         if not isinstance(other, (float, int)):
-            raise GeomdlException("Can only divide by a float or an integer")
+            raise GeomdlError("Can only divide by a float or an integer")
         res_data = [0.0 for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] / float(other)
@@ -337,10 +337,10 @@ class Vertex(AbstractEntity):
 
     @uv.setter
     def uv(self, value):
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("UV data input must be a list or tuple")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("UV data input must be a list or tuple")
         if len(value) != 2:
-            raise GeomdlException("UV must have 2 components")
+            raise GeomdlError("UV must have 2 components")
         self._uv = list(value)
 
     @property
@@ -368,15 +368,15 @@ class Vertex(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("Vertex data must be a list or tuple")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("Vertex data must be a list or tuple")
         if len(value) != 3:
-            raise GeomdlException("Vertex can only store 3 components")
+            raise GeomdlError("Vertex can only store 3 components")
         # Convert to float
         self._data = [float(val) for val in value]
 
 
-@utl.export
+@export
 class Triangle(AbstractEntity):
     """ Triangle entity which represents a triangle composed of vertices.
 
@@ -473,10 +473,10 @@ class Triangle(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("Input must be a list or tuple")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("Input must be a list or tuple")
         if len(value) != 3:
-            raise GeomdlException("Triangle can only have 3 vertices")
+            raise GeomdlError("Triangle can only have 3 vertices")
         self.add_vertex(*value)
 
     def add_vertex(self, *args):
@@ -485,17 +485,17 @@ class Triangle(AbstractEntity):
         This method takes a single or a list of vertices as its function arguments.
         """
         if len(self._data) > 2:
-            raise GeomdlException("Cannot add more vertices")
+            raise GeomdlError("Cannot add more vertices")
         res = []
         for arg in args:
             if isinstance(arg, Vertex):
                 res.append(arg)
             else:
-                raise GeomdlException("Input must be a Vertex object")
+                raise GeomdlError("Input must be a Vertex object")
         self._data = res
 
 
-@utl.export
+@export
 class Quad(AbstractEntity):
     """ Quad entity which represents a quadrilateral structure composed of vertices.
 
@@ -528,10 +528,10 @@ class Quad(AbstractEntity):
 
     @data.setter
     def data(self, value):
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("Input must be a list or tuple")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("Input must be a list or tuple")
         if len(value) != 4:
-            raise GeomdlException("Quad can only have 4 vertices")
+            raise GeomdlError("Quad can only have 4 vertices")
         self.add_vertex(*value)
 
     def add_vertex(self, *args):
@@ -540,17 +540,17 @@ class Quad(AbstractEntity):
         This method takes a single or a list of vertices as its function arguments.
         """
         if len(self._data) > 3:
-            raise GeomdlException("Cannot add more vertices")
+            raise GeomdlError("Cannot add more vertices")
         res = []
         for arg in args:
             if isinstance(arg, Vertex):
                 res.append(arg)
             else:
-                raise GeomdlException("Input must be a Vertex object")
+                raise GeomdlError("Input must be a Vertex object")
         self._data = res
 
 
-@utl.export
+@export
 class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
@@ -581,11 +581,11 @@ class Face(AbstractEntity):
             if isinstance(arg, Triangle):
                 res.append(arg)
             else:
-                raise GeomdlException("Input must be a Triangle object")
+                raise GeomdlError("Input must be a Triangle object")
         self._data = res
 
 
-@utl.export
+@export
 class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
@@ -616,5 +616,5 @@ class Body(AbstractEntity):
             if isinstance(arg, Face):
                 res.append(arg)
             else:
-                raise GeomdlException("Input must be a Face object")
+                raise GeomdlError("Input must be a Face object")
         self._data = res

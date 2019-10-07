@@ -3,13 +3,13 @@
     :platform: Unix, Windows
     :synopsis: Provides voxelization functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import struct
+from .base import export, GeomdlTypeSequence
 from . import _voxelize as vxl
-from ._utilities import export
 
 
 @export
@@ -32,7 +32,7 @@ def voxelize(obj, **kwargs):
     use_cubes = kwargs.pop('use_cubes', False)
     num_procs = kwargs.get('num_procs', 1)
 
-    if not isinstance(grid_size, (list, tuple)):
+    if not isinstance(grid_size, GeomdlTypeSequence):
         raise TypeError("Grid size must be a list or a tuple of integers")
 
     # Initialize result arrays

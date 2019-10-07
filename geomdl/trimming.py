@@ -8,10 +8,8 @@
 """
 
 import math
-from . import linalg
-from . import shortcuts
-from .exceptions import GeomdlException
-from ._utilities import export
+from . import linalg, shortcuts
+from .base import export, GeomdlError
 
 
 @export
@@ -43,7 +41,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
     :rtype: freeform.Freeform
     """
     if obj.pdimension < 2:
-        raise GeomdlException("Input geometry should be defined on, at least, 2-dimensional parametric space")
+        raise GeomdlError("Input geometry should be defined on, at least, 2-dimensional parametric space")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -69,7 +67,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
         try:
             trim = obj.trims[trim_idx]
         except KeyError:
-            raise GeomdlException("Trim curve at index " + str(trim_idx) + " does not exist")
+            raise GeomdlError("Trim curve at index " + str(trim_idx) + " does not exist")
 
         # Set delta
         if delta > 0:
@@ -101,7 +99,7 @@ def fix_multi_trim_curves(obj, **kwargs):
     :return: updated surface
     """
     if obj.pdimension != 2:
-        raise GeomdlException("Can only work with surfaces")
+        raise GeomdlError("Can only work with surfaces")
 
     # Get keyword arguments
     tol = kwargs.get('tol', 10e-8)
@@ -184,7 +182,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
-                    crv.opt = ['reversed', trim[idx].opt_get('reversed')]
+                    crv.opt = ['reversed', trim[idx].get_opt('reversed')]
 
                     # Add trims
                     new_trim.append(trim[idx])
@@ -193,7 +191,7 @@ def fix_multi_trim_curves(obj, **kwargs):
             # Create a curve container from the new trim list
             cc = shortcuts.generate_container_curve()
             cc.add(new_trim)
-            cc.opt = ['reversed', trim.opt_get('reversed')]
+            cc.opt = ['reversed', trim.get_opt('reversed')]
             cc.delta = eval_delta
 
             # Add curve container to the new trims list
@@ -216,7 +214,7 @@ def fix_trim_curves(obj):
     """
     # Validate input
     if obj.pdimension != 2:
-        raise GeomdlException("Input geometry must be a surface")
+        raise GeomdlError("Input geometry must be a surface")
 
     # Get trims of the surface
     for o in obj:
@@ -288,7 +286,7 @@ def check_trim_curve(curve, parbox, **kwargs):
             return False, []
         else:
             # Get sense of the original curve
-            c_sense = curve.opt_get('reversed')
+            c_sense = curve.get_opt('reversed')
 
             # If sense is None, then detect sense
             if c_sense is None:
@@ -378,7 +376,7 @@ def detect_sense(curve, tol):
     :return: True if detection is successful, False otherwise
     :rtype: bool
     """
-    if curve.opt_get('reversed') is None:
+    if curve.get_opt('reversed') is None:
         # Detect sense since it is unset
         pts = curve.evalpts
         num_pts = len(pts)

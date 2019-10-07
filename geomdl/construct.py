@@ -3,14 +3,12 @@
     :platform: Unix, Windows
     :synopsis: Provides functions for constructing and extracting spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from . import shortcuts
-from . import knotvector
-from . import compatibility
-from .exceptions import GeomdlException
+from . import compatibility, knotvector, shortcuts
+from .base import GeomdlError
 
 
 def construct_surface(direction, *args, **kwargs):
@@ -31,12 +29,12 @@ def construct_surface(direction, *args, **kwargs):
     # Input validation
     possible_dirs = ['u', 'v']
     if direction not in possible_dirs:
-        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
-                              data=dict(input_dir=direction))
+        raise GeomdlError("Possible direction values: " + ", ".join([val for val in possible_dirs]),
+                          data=dict(input_dir=direction))
 
     size_other = len(args)
     if size_other < 2:
-        raise GeomdlException("You need to input at least 2 curves")
+        raise GeomdlError("You need to input at least 2 curves")
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 2)
@@ -50,16 +48,16 @@ def construct_surface(direction, *args, **kwargs):
     new_weights = []
     for idx, arg in enumerate(args):
         if degree != arg.degree:
-            raise GeomdlException("Input curves must have the same degrees",
-                                  data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
+            raise GeomdlError("Input curves must have the same degrees",
+                              data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
         if num_ctrlpts != arg.ctrlpts_size:
-            raise GeomdlException("Input curves must have the same number of control points",
-                                  data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size))
+            raise GeomdlError("Input curves must have the same number of control points",
+                              data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size))
         new_ctrlpts += list(arg.ctrlpts)
         if rational:
             if arg.weights is None:
-                raise GeomdlException("Expecting a rational curve",
-                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
+                raise GeomdlError("Expecting a rational curve",
+                                  data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
             new_weights += list(arg.weights)
 
     # Set variables w.r.t. input direction
@@ -118,12 +116,12 @@ def construct_volume(direction, *args, **kwargs):
     # Input validation
     possible_dirs = ['u', 'v', 'w']
     if direction not in possible_dirs:
-        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
-                              data=dict(input_dir=direction))
+        raise GeomdlError("Possible direction values: " + ", ".join([val for val in possible_dirs]),
+                          data=dict(input_dir=direction))
 
     size_other = len(args)
     if size_other < 2:
-        raise GeomdlException("You need to input at least 2 surfaces")
+        raise GeomdlError("You need to input at least 2 surfaces")
 
     # Get keyword arguments
     degree_other = kwargs.get('degree', 1)
@@ -137,16 +135,16 @@ def construct_volume(direction, *args, **kwargs):
     new_weights = []
     for idx, arg in enumerate(args):
         if degree_u != arg.degree_u or degree_v != arg.degree_v:
-            raise GeomdlException("Input surfaces must have the same degrees",
-                                  data=dict(idx=idx, degree=(degree_u, degree_v), degree_arg=(arg.degree_u, arg.degree_v)))
+            raise GeomdlError("Input surfaces must have the same degrees",
+                              data=dict(idx=idx, degree=(degree_u, degree_v), degree_arg=(arg.degree_u, arg.degree_v)))
         if size_u != arg.ctrlpts_size_u or size_v != arg.ctrlpts_size_v:
-            raise GeomdlException("Input surfaces must have the same number of control points",
-                                  data=dict(idx=idx, size=(size_u, size_v), size_arg=(arg.ctrlpts_size_u, arg.ctrlpts_size_v)))
+            raise GeomdlError("Input surfaces must have the same number of control points",
+                              data=dict(idx=idx, size=(size_u, size_v), size_arg=(arg.ctrlpts_size_u, arg.ctrlpts_size_v)))
         new_ctrlpts += list(arg.ctrlpts)
         if rational:
             if arg.weights is None:
-                raise GeomdlException("Expecting a rational surface",
-                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
+                raise GeomdlError("Expecting a rational surface",
+                                  data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
             new_weights += list(arg.weights)
 
     updated_ctrlpts = []
@@ -224,9 +222,9 @@ def extract_curves(psurf, **kwargs):
     :rtype: dict
     """
     if psurf.pdimension != 2:
-        raise GeomdlException("The input should be a spline surface")
+        raise GeomdlError("The input should be a spline surface")
     if len(psurf) != 1:
-        raise GeomdlException("Can only operate on single spline surfaces")
+        raise GeomdlError("Can only operate on single spline surfaces")
 
     # Get keyword arguments
     extract_u = kwargs.get('extract_u', True)
@@ -279,9 +277,9 @@ def extract_surfaces(pvol):
     :rtype: dict
     """
     if pvol.pdimension != 3:
-        raise GeomdlException("The input should be a spline volume")
+        raise GeomdlError("The input should be a spline volume")
     if len(pvol) != 1:
-        raise GeomdlException("Can only operate on single spline volumes")
+        raise GeomdlError("Can only operate on single spline volumes")
 
     # Get data from the volume object
     vol_data = pvol.data
@@ -372,9 +370,9 @@ def extract_isosurface(pvol):
     :rtype: tuple
     """
     if pvol.pdimension != 3:
-        raise GeomdlException("The input should be a spline volume")
+        raise GeomdlError("The input should be a spline volume")
     if len(pvol) != 1:
-        raise GeomdlException("Can only operate on single spline volumes")
+        raise GeomdlError("Can only operate on single spline volumes")
 
     # Extract surfaces from the parametric volume
     isosrf = extract_surfaces(pvol)

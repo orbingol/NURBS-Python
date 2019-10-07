@@ -7,11 +7,10 @@
 """
 
 import pytest
-from geomdl import utilities
 from geomdl import knotvector
 from geomdl import control_points
 from geomdl import utilities
-from geomdl.exceptions import GeomdlException
+from geomdl.base import GeomdlError
 
 GEOMDL_DELTA = 10e-6
 
@@ -187,7 +186,7 @@ def test_cpman_curve5():
 
 def test_cpman_curve6():
     """ Control Points Manager: get-set attachment (exception) """
-    with pytest.raises(GeomdlException):
+    with pytest.raises(GeomdlError):
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12
@@ -207,7 +206,7 @@ def test_cpman_curve7():
 
 def test_cpman_curve8():
     """ Control Points Manager: try to set invalid key """
-    with pytest.raises(GeomdlException):
+    with pytest.raises(GeomdlError):
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12

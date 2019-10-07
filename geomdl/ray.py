@@ -3,14 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Provides ray data structures and operations
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
+.. moduleauthor:: Chris Horler
 
 """
-
 import sys
-from . import linalg
-from ._utilities import export
 from .doubledouble import DoubleDouble
+from . import linalg
+from .base import export, GeomdlTypeSequence
 
 
 @export
@@ -28,9 +28,9 @@ class Ray(object):
     """
     def __init__(self, point1, point2):
         super(Ray, self).__init__()
-        if not isinstance(point1, (list, tuple)):
+        if not isinstance(point1, GeomdlTypeSequence):
             raise TypeError("Point 1 must be a list or a tuple")
-        if not isinstance(point2, (list, tuple)):
+        if not isinstance(point2, GeomdlTypeSequence):
             raise TypeError("Point 2 must be a list or a tuple")
         if len(point1) != len(point2):
             raise ValueError("THe dimensions of the input points must be equal")

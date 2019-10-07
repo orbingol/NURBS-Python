@@ -343,3 +343,35 @@ def test_surf_multi_fig_save(bspline_surface):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+def test_deriv_curve_fig(bspline_curve2d):
+    fname = "test-derivative_curve.png"
+
+    data = operations.derivative_curve(bspline_curve2d)
+    multi_shape = multi.CurveContainer(data)
+    multi_shape.vis = VisMPL.VisCurve2D()
+    multi_shape.render(filename=fname, plot=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_deriv_surf_fig(bspline_surface):
+    fname = "test-derivative_surface.png"
+
+    data = operations.derivative_surface(bspline_surface)
+    multi_shape = multi.SurfaceContainer(data)
+    multi_shape.vis = VisMPL.VisSurface()
+    multi_shape.render(filename=fname, plot=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)

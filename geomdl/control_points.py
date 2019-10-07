@@ -3,47 +3,206 @@
     :platform: Unix, Windows
     :synopsis: Provides helper classes for managing control points
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import abc
 import copy
 from functools import reduce
-from .exceptions import GeomdlException
-from ._utilities import export, add_metaclass
+from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
+
+# Parametric dimension names for dynamical generation of the attributes
+GEOMDL_PDIM_ATTRS = GeomdlDict(size_u=0, size_v=1, size_w=2)
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
-@add_metaclass(abc.ABCMeta)
-class AbstractManager(object):
-    """ Abstract base class for control points manager classes.
+def default_find_index(pts_size, *args):
+    """ Finds the array index from the input parametric position.
+
+    .. code-block:: python
+
+        from geomdl.control_points import find_index
+
+        # parametric position: u=2, v=1, w=5
+        # ctrlpts_size: number of control points in all parametric dimensions, e.g. (6, 7, 11)
+        idx = find_index((6, 7, 11), 2, 1, 5)
+
+    :param pts_size: number of control points in all parametric dimensions
+    :type pts_size: list, tuple
+    :param args: position in the parametric space
+    :type args: tuple
+    :return: index of the control points at the specified parametric position
+    :rtype: int
+    """
+    idx = 0
+    for i, arg in enumerate(args):
+        mul_res = 1
+        if i > 0:
+            for j in pts_size[:i]:
+                mul_res *= j
+        idx += arg * mul_res
+    return idx
+
+
+def default_ctrlpts_init(num_ctrlpts, **kwargs):
+    """ Default control points initialization function.
+
+    Default functions use the container types included in the Python Standard Library.
+
+    :param num_ctrlpts: total number of control points
+    :type num_ctrlpts: int
+    :return: a tuple containing initialized control points (as a ``list``) and data dictionary (as a ``dict``)
+    :rtype: tuple
+    """
+    points = [[] for _ in range(num_ctrlpts)]
+    points_data = GeomdlDict()
+    for k, v in kwargs.items():
+        if v > 1:
+            points_data[k] = [[0.0 for _ in range(v)] for _ in range(num_ctrlpts)]
+        else:
+            points_data[k] = [0.0 for _ in range(num_ctrlpts)]
+    return points, points_data
+
+
+def default_ctrlpts_set(pts_in, dim, pts_out):
+    """ Default control points set function.
+
+    Default functions use the container types included in the Python Standard Library.
+
+    :param pts_in: input list of control points
+    :type pts_in: list, tuple
+    :param dim: spatial dimension
+    :type dim: int
+    :param pts_out: output list of control points
+    :type pts_out: list
+    :return: ``pts_out`` will be returned
+    :rtype: list
+    """
+    for idx, cpt in enumerate(pts_in):
+        if not isinstance(cpt, GeomdlTypeSequence):
+            raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
+        if len(cpt) != dim:
+            raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
+        # Convert to list of floats
+        pts_out[idx] = [float(coord) for coord in cpt]
+    return pts_out
+
+
+def extract_ctrlpts2d(cm):
+    """ Extracts control points in u- and v-dimensions
+
+    :param cm: control points manager
+    :type cm: CPManager
+    """
+    if cm.get_opt('points_u') is None:
+        pt_u = []
+        for v in range(cm.size_v):
+            pt_u += [cm[u, v] for u in range(cm.size_u)]
+        cm.opt = ('points_u', pt_u)
+
+    if cm.get_opt('points_v') is None:
+        pt_v = []
+        for u in range(cm.size_u):
+            pt_v += [cm[u, v] for v in range(cm.size_v)]
+        cm.opt = ('points_v', pt_v)
+
+
+def extract_ctrlpts3d(cm):
+    """ Extracts control points in u-, v- and w-dimensions
+
+    :param cm: control points manager
+    :type cm: CPManager
+    """
+    if cm.get_opt('points_u') is None:
+        pt_u = []
+        for w in range(cm.size_w):
+            for v in range(cm.size_v):
+                pt_u += [cm[u, v, w] for u in range(cm.size_u)]
+        cm.opt = ('points_u', pt_u)
+
+    if cm.get_opt('points_v') is None:
+        pt_v = []
+        for w in range(cm.size_w):
+            for u in range(cm.size_u):
+                pt_v += [cm[u, v, w] for v in range(cm.size_v)]
+        cm.opt = ('points_v', pt_v)
+
+    if cm.get_opt('points_w') is None:
+        pt_w = []
+        for v in range(cm.size_v):
+            for u in range(cm.size_u):
+                pt_w += [cm[u, v, w] for w in range(cm.size_w)]
+        cm.opt = ('points_w', pt_w)
+
+
+@export
+class CPManager(GeomdlBase):
+    """ Control points manager class
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
     with the number of control points in all parametric dimensions.
 
-    All classes extending this class should implement the following methods:
+    This class inherits the following properties:
 
-    * ``find_index``
+    * :py:attr:`type`
+    * :py:attr:`id`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`opt`
+
+    This class inherits the following methods:
+
+    * :py:meth:`get_opt`
+    * :py:meth:`reset`
+
+    This class inherits the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
+    * ``precision``: number of decimal places to round to. *Default: 12*
 
     This class provides the following properties:
 
-    * :py:attr:`ctrlpts`
+    * :py:attr:`points`
+    * :py:attr:`points_data`
+    * :py:attr:`size`
+    * :py:attr:`count`
+    * :py:attr:`dimension`
 
     This class provides the following methods:
 
-    * :py:meth:`get_ctrlpt`
-    * :py:meth:`set_ctrlpt`
+    * :py:meth:`get_pt`
+    * :py:meth:`set_pt`
     * :py:meth:`get_ptdata`
     * :py:meth:`set_ptdata`
+    * :py:meth:`reset`
+
+    This class provides the following keyword arguments:
+
+    * ``config_ctrlpts_init``: sets control points initialization function. *Default:* ``default_ctrlpts_init``
+    * ``config_ctrlpts_set``: sets control points set function. *Default:* ``default_ctrlpts_set``
+    * ``config_find_index``: sets find index function. *Default:* ``default_find_index``
     """
+    __slots__ = ('_pt_data', '_cfg', '_iter_index')
+
     def __init__(self, *args, **kwargs):
-        self._size = [int(arg) for arg in args]  # size in all parametric dimensions
-        self._num_ctrlpts = reduce(lambda x, y: x *y, self._size)  # number of control points
-        self._attachment = kwargs if kwargs else dict()  # data attached to the control points
-        self._points = list()  # list of control points
-        self._pt_data = dict()  # dict containing lists of additional data attached to the control points
-        self.reset()  # initialize control points list
+        super(CPManager, self).__init__(**kwargs)
+        # Configuration dictionary
+        self._cfg = GeomdlDict(
+            func_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
+            func_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
+            func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
+        )
+        # Start constructing the internal data structures
+        self._idt['size'] = tuple([int(arg) for arg in args]),  # size in all parametric dimensions
+        self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
+        # Initialize control points
+        self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
+
+    def __call__(self):
+        return self.points
 
     def __iter__(self):
         self._iter_index = 0
@@ -54,43 +213,86 @@ class AbstractManager(object):
 
     def __next__(self):
         try:
-            result = self._points[self._iter_index]
+            result = self._idt['control_points'][self._iter_index]
         except IndexError:
             raise StopIteration
         self._iter_index += 1
         return result
 
     def __len__(self):
-        return len(self._points)
+        return self.count
 
     def __reversed__(self):
-        return reversed(self._points)
+        return reversed(self._idt['control_points'])
 
-    def __getitem__(self, idx):
-        return self._points[idx]
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return self._idt['control_points'][item]
+        if isinstance(item, tuple):
+            if len(item) != len(self.size):
+                raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
+            idx = self._cfg['func_find_index'](self.size, *item)
+            return self._idt['control_points'][idx]
+        raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + item.__class__.__name__)
 
-    def __setitem__(self, idx, val):
-        self._points[idx] = val
+    def __setitem__(self, key, value):
+        # The input value must be a sequence type
+        if not isinstance(value, GeomdlTypeSequence):
+            raise TypeError("RHS must be a sequence")
+        # If dimension is not set, try to find it
+        if self.dimension < 1:
+            self._idt['dimension'] = len(value)
+        # Always make sure that new input conforms with the existing dimension value
+        if len(value) != self.dimension:
+            raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
+        if isinstance(key, int):
+            self._idt['control_points'][key] = value
+            return
+        if isinstance(key, tuple):
+            if len(key) != len(self.size):
+                raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
+            idx = self._cfg['func_find_index'](self.size, *key)
+            self._idt['control_points'][idx] = value
+            return
+        raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
     def __copy__(self):
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
+        # Copy all attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.copy(getattr(self, var)))
+        # Return updated instance
         return result
 
     def __deepcopy__(self, memo):
-        # Don't copy self reference
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
+        # Don't copy self reference
         memo[id(self)] = result
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
+        # Deep copy all other attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.deepcopy(getattr(self, var), memo))
+        # Return updated instance
         return result
 
+    def __getattr__(self, attr):
+        if attr in GEOMDL_PDIM_ATTRS:
+            try:
+                return self.size[GEOMDL_PDIM_ATTRS[attr]]
+            except IndexError:
+                raise AttributeError(attr)
+        if attr not in self.__slots__:
+            raise AttributeError(attr)
+        return self.__slots__[attr]
+
     @property
-    def ctrlpts(self):
-        """ Control points.
+    def points(self):
+        """ Control points
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -98,57 +300,75 @@ class AbstractManager(object):
         :getter: Gets the control points
         :setter: Sets the control points
         """
-        return self._points
+        return tuple(self._idt['control_points'])
 
-    @ctrlpts.setter
-    def ctrlpts(self, value):
-        self._points = value
+    @points.setter
+    def points(self, value):
+        # Check input type
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("Control points input must be a sequence")
+        # Check input length
+        if len(value) != self.count:
+            raise GeomdlError("Number of control points must be " + str(self.count))
+        # Determine dimension, if required
+        if self.dimension < 1:
+            self._idt['dimension'] = len(value[0])
+        # Set control points
+        self._cfg['func_set'](value, self.dimension, self._idt['control_points'])
 
-    def reset(self):
-        """ Resets/initializes the internal control points array. """
-        self._points[:] = [[] for _ in range(self._num_ctrlpts)]
-        for k, v in self._attachment.items():
-            if v > 1:
-                self._pt_data[k] = [[0.0 for _ in range(v)] for _ in range(self._num_ctrlpts)]
-            else:
-                self._pt_data[k] = [0.0 for _ in range(self._num_ctrlpts)]
+    @property
+    def points_data(self):
+        return self._pt_data
 
-    def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array. """
-        # Find the index
-        idx = self.find_index(*args)
-        # Return the control point
-        try:
-            return self._points[idx]
-        except IndexError:
-            return None
+    @property
+    def size(self):
+        """ Number of the control points in all parametric dimensions
 
-    def set_ctrlpt(self, pt, *args):
-        """ Puts the control point to the given location in the array.
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the number of the control points (as a ``tuple``)
+        """
+        return self._idt['size']
+
+    @property
+    def count(self):
+        """ Total number of the control points
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the total number of the control points (as an ``int``)
+        """
+        return self._idt['count']
+
+    def reset(self, **kwargs):
+        """ Resets the control points """
+        # Call parent method
+        super(CPManager, self).reset(**kwargs)
+        # Reset the control points and the attached data
+        self._cfg['func_init'](self.count, **kwargs)
+
+    def get_pt(self, *args):
+        """ Gets the control point from the input position """
+        return self[args]
+
+    def set_pt(self, pt, *args):
+        """ Puts the control point to the input position
 
         :param pt: control point
         :type pt: list, tuple
         """
-        if not isinstance(pt, (list, tuple)):
-            raise GeomdlException("'pt' argument should be a list or tuple")
-        if len(args) != len(self._size):
-            raise GeomdlException("Input dimensions are not compatible with the geometry")
-        # Find the index
-        idx = self.find_index(*args)
-        # Set control point
-        try:
-            self._points[idx] = pt
-        except IndexError:
-            raise GeomdlException("Index is out of range")
+        self[args] = pt
 
     def get_ptdata(self, dkey, *args):
-        """ Gets the data attached to the control point.
+        """ Gets the data attached to the control point
 
         :param dkey: key of the attachment dictionary
         :param dkey: str
         """
         # Find the index
-        idx = self.find_index(*args)
+        idx = self._cfg['func_find_index'](self.size, *args)
         # Return the attached data
         try:
             return self._pt_data[dkey][idx]
@@ -158,234 +378,23 @@ class AbstractManager(object):
             return None
 
     def set_ptdata(self, adct, *args):
-        """ Attaches the data to the control point.
+        """ Attaches the data to the control point
 
         :param adct: attachment dictionary
         :param adct: dict
         """
         # Find the index
-        idx = self.find_index(*args)
+        idx = self._cfg['func_find_index'](self.size, *args)
         # Attach the data to the control point
         try:
             for k, val in adct.items():
                 if k in self._pt_data:
-                    if isinstance(val, (list, tuple)):
+                    if isinstance(val, GeomdlTypeSequence):
                         for j, v in enumerate(val):
                             self._pt_data[k][idx][j] = v
                     else:
                         self._pt_data[k][idx] = val
                 else:
-                    raise GeomdlException("Invalid key: " + str(k))
+                    raise GeomdlError("Invalid key: " + str(k))
         except IndexError:
-            raise GeomdlException("Index is out of range")
-
-    @abc.abstractmethod
-    def find_index(self, *args):
-        """ Finds the array index from the given parametric positions.
-
-        .. note::
-
-            This is an abstract method and it must be implemented in the subclass.
-        """
-        return 0
-
-
-class CurveManager(AbstractManager):
-    """ Curve control points manager.
-
-    Control points manager class provides an easy way to set control points without knowing
-    the internal data structure of the geometry classes. The manager class is initialized
-    with the number of control points in all parametric dimensions.
-
-    B-spline curves are defined in one parametric dimension. Therefore, this manager class
-    should be initialized with a single integer value.
-
-    .. code-block:: python
-
-        # Assuming that the curve has 10 control points
-        manager = CurveManager(10)
-
-    Getting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = spline.ctrlpts_size_u
-
-        # Generate control points manager
-        cpt_manager = control_points.SurfaceManager(size_u)
-        cpt_manager.ctrlpts = spline.ctrlpts
-
-        # Control points array to be used externally
-        control_points = []
-
-        # Get control points from the spline geometry
-        for u in range(size_u):
-            pt = cpt_manager.get_ctrlpt(u)
-            control_points.append(pt)
-
-    Setting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = 5
-
-        # Create control points manager
-        points = control_points.SurfaceManager(size_u)
-
-        # Set control points
-        for u in range(size_u):
-            # 'pt' is the control point, e.g. [10, 15, 12]
-            points.set_ctrlpt(pt, u, v)
-
-        # Create spline geometry
-        curve = BSpline.Curve()
-
-        # Set control points
-        curve.ctrlpts = points.ctrlpts
-    """
-    def __init__(self, *args, **kwargs):
-        super(CurveManager, self).__init__(*args, **kwargs)
-
-    def find_index(self, *args):
-        super(CurveManager, self).find_index(*args)
-        return args[0]
-
-
-class SurfaceManager(AbstractManager):
-    """ Surface control points manager.
-
-    Control points manager class provides an easy way to set control points without knowing
-    the internal data structure of the geometry classes. The manager class is initialized
-    with the number of control points in all parametric dimensions.
-
-    B-spline surfaces are defined in one parametric dimension. Therefore, this manager class
-    should be initialized with two integer values.
-
-    .. code-block:: python
-
-        # Assuming that the surface has size_u = 5 and size_v = 7 control points
-        manager = SurfaceManager(5, 7)
-
-    Getting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = spline.ctrlpts_size_u
-        size_v = spline.ctrlpts_size_v
-
-        # Generate control points manager
-        cpt_manager = control_points.SurfaceManager(size_u, size_v)
-        cpt_manager.ctrlpts = spline.ctrlpts
-
-        # Control points array to be used externally
-        control_points = []
-
-        # Get control points from the spline geometry
-        for u in range(size_u):
-            for v in range(size_v):
-                pt = cpt_manager.get_ctrlpt(u, v)
-                control_points.append(pt)
-
-    Setting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = 5
-        size_v = 3
-
-        # Create control points manager
-        points = control_points.SurfaceManager(size_u, size_v)
-
-        # Set control points
-        for u in range(size_u):
-            for v in range(size_v):
-                # 'pt' is the control point, e.g. [10, 15, 12]
-                points.set_ctrlpt(pt, u, v)
-
-        # Create spline geometry
-        surf = BSpline.Surface()
-
-        # Set control points
-        surf.ctrlpts = points.ctrlpts
-    """
-    def __init__(self, *args, **kwargs):
-        super(SurfaceManager, self).__init__(*args, **kwargs)
-
-    def find_index(self, *args):
-        super(SurfaceManager, self).find_index(*args)
-        return args[1] + (args[0] * self._size[1])
-
-
-class VolumeManager(AbstractManager):
-    """ Volume control points manager.
-
-    Control points manager class provides an easy way to set control points without knowing
-    the internal data structure of the geometry classes. The manager class is initialized
-    with the number of control points in all parametric dimensions.
-
-    B-spline volumes are defined in one parametric dimension. Therefore, this manager class
-    should be initialized with there integer values.
-
-    .. code-block:: python
-
-        # Assuming that the volume has size_u = 5, size_v = 12 and size_w = 3 control points
-        manager = VolumeManager(5, 12, 3)
-
-    Gettting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = spline.ctrlpts_size_u
-        size_v = spline.ctrlpts_size_v
-        size_w = spline.ctrlpts_size_w
-
-        # Generate control points manager
-        cpt_manager = control_points.SurfaceManager(size_u, size_v, size_w)
-        cpt_manager.ctrlpts = spline.ctrlpts
-
-        # Control points array to be used externally
-        control_points = []
-
-        # Get control points from the spline geometry
-        for u in range(size_u):
-            for v in range(size_v):
-                for w in range(size_w):
-                    pt = cpt_manager.get_ctrlpt(u, v, w)
-                    control_points.append(pt)
-
-    Setting the control points:
-
-    .. code-block:: python
-
-        # Number of control points in all parametric dimensions
-        size_u = 5
-        size_v = 3
-        size_w = 2
-
-        # Create control points manager
-        points = control_points.VolumeManager(size_u, size_v, size_w)
-
-        # Set control points
-        for u in range(size_u):
-            for v in range(size_v):
-                for w in range(size_w):
-                    # 'pt' is the control point, e.g. [10, 15, 12]
-                    points.set_ctrlpt(pt, u, v, w)
-
-        # Create spline geometry
-        volume = BSpline.Volume()
-
-        # Set control points
-        volume.ctrlpts = points.ctrlpts
-    """
-    def __init__(self, *args, **kwargs):
-        super(VolumeManager, self).__init__(*args, **kwargs)
-
-    def find_index(self, *args):
-        super(VolumeManager, self).find_index(*args)
-        return args[1] + (args[0] * self._size[1]) + (args[2] * self._size[0] * self._size[1])
+            raise GeomdlError("Index is out of range")

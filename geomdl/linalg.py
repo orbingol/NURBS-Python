@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides linear algebra utility functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
@@ -11,7 +11,6 @@ import os
 import math
 from copy import deepcopy
 from functools import reduce
-from .exceptions import GeomdlException
 from . import _linalg
 from .doubledouble import DoubleDouble
 try:
@@ -267,7 +266,7 @@ def vector_is_zero(vector_in, tol=10e-8):
     :return: True if the input vector is zero, False otherwise
     :rtype: bool
     """
-    if not isinstance(vector_in, (list, tuple)):
+    if not isinstance(vector_in, base.GeomdlTypeSequence):
         raise TypeError("Input vector must be a list or a tuple")
 
     res = [False for _ in range(len(vector_in))]
@@ -457,7 +456,7 @@ def matrix_multiply(mat1, mat2):
     p1 = len(mat1[0])
     p2 = len(mat2)
     if p1 != p2:
-        raise GeomdlException("Column - row size mismatch")
+        raise ValueError("Column - row size mismatch")
     try:
         # Matrix - matrix multiplication
         m = len(mat2[0])
@@ -490,7 +489,7 @@ def matrix_scalar(m, sc):
     mm = [[0.0 for _ in range(len(m[0]))] for _ in range(len(m))]
     for i in range(len(m)):
         for j in range(len(m[0])):
-                mm[i][j] = float(m[i][j] * sc)
+            mm[i][j] = float(m[i][j] * sc)
     return mm
 
 

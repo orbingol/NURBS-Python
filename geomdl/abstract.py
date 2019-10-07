@@ -3,203 +3,17 @@
     :platform: Unix, Windows
     :synopsis: Provides abstract base classes for representing the geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import copy
 import abc
-import warnings
-from . import vis, helpers, knotvector, voxelize, utilities
-from . import tessellate
-from .evaluators import AbstractEvaluator
-from .exceptions import GeomdlException
-from . import _utilities as utl
+from .six import add_metaclass
+from . import vis, helpers, knotvector, voxelize, utilities, tessellate
+from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning, GeomdlTypeSequence
 
 
-@utl.add_metaclass(abc.ABCMeta)
-class GeomdlBase(object):
-    """ Abstract base class for defining geomdl objects.
-
-    This class provides the following properties:
-
-    * :py:attr:`type`
-    * :py:attr:`id`
-    * :py:attr:`name`
-    * :py:attr:`dimension`
-    * :py:attr:`opt`
-
-    **Keyword Arguments:**
-
-    * ``id``: object ID (as integer)
-    * ``precision``: number of decimal places to round to. *Default: 18*
-    """
-    # __slots__ = ('_precision', '_id', '_dimension', '_geometry_type', '_name', '_opt_data', '_cache')
-
-    def __init__(self, **kwargs):
-        self._dimension = 0 if not hasattr(self, '_dimension') else self._dimension  # spatial dimension
-        self._geometry_type = "none" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
-        self._name = "base object" if not hasattr(self, '_name') else self._name  # object name
-        self._opt_data = dict() if not hasattr(self, '_opt_data') else self._opt_data  # custom data dict
-        self._cache = dict() if not hasattr(self, '_cache') else self._cache  # cache dict
-        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._id = int(kwargs.get('id', 0))  # object ID
-
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(dict)
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __str__(self):
-        return self.name
-
-    __repr__ = __str__
-
-    @property
-    def dimension(self):
-        """ Spatial dimension.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
-        :type: int
-        """
-        return self._dimension
-
-    @property
-    def type(self):
-        """ Geometry type
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the geometry type
-        :type: str
-        """
-        return self._geometry_type
-
-    @property
-    def id(self):
-        """ Object ID (as an integer).
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the object ID
-        :setter: Sets the object ID
-        :type: int
-        """
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        if not isinstance(value, int):
-            raise GeomdlException("Identifier value must be an integer")
-        self._id = value
-
-    @id.deleter
-    def id(self):
-        self._id = 0
-
-    @property
-    def name(self):
-        """ Object name (as a string)
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the object name
-        :setter: Sets the object name
-        :type: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = str(value)
-
-    @name.deleter
-    def name(self):
-        self._name = ""
-
-    @property
-    def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
-
-        ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
-        You can use ``opt`` property to store custom data inside the geometry object. For instance:
-
-        .. code-block:: python
-
-            geom.opt = ["face_id", 4]  # creates "face_id" key and sets its value to an integer
-            geom.opt = ["contents", "data values"]  # creates "face_id" key and sets its value to a string
-            print(geom.opt)  # will print: {'face_id': 4, 'contents': 'data values'}
-
-            del geom.opt  # deletes the contents of the hash map
-            print(geom.opt)  # will print: {}
-
-            geom.opt = ["body_id", 1]  # creates "body_id" key  and sets its value to 1
-            geom.opt = ["body_id", 12]  # changes the value of "body_id" to 12
-            print(geom.opt)  # will print: {'body_id': 12}
-
-            geom.opt = ["body_id", None]  # deletes "body_id"
-            print(geom.opt)  # will print: {}
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the dict
-        :setter: Adds key and value pair to the dict
-        :deleter: Deletes the contents of the dict
-        """
-        return self._opt_data
-
-    @opt.setter
-    def opt(self, key_value):
-        if not isinstance(key_value, (list, tuple)):
-            raise GeomdlException("opt input must be a list or a tuple")
-        if len(key_value) != 2:
-            raise GeomdlException("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
-        if not isinstance(key_value[0], str):
-            raise GeomdlException("key must be string")
-
-        if key_value[1] is None:
-            self._opt_data.pop(*key_value)
-        else:
-            self._opt_data[key_value[0]] = key_value[1]
-
-    @opt.deleter
-    def opt(self):
-        self._opt_data = dict()
-
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
-
-        :param value: a key in the :py:attr:`opt` property
-        :type value: str
-        :return: the corresponding value, if the key exists. ``None``, otherwise.
-        """
-        try:
-            return self._opt_data[value]
-        except KeyError:
-            return None
-
-
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Geometry(GeomdlBase):
     """ Abstract base class for defining geometry objects.
 
@@ -275,7 +89,7 @@ class Geometry(GeomdlBase):
         pass
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class SplineGeometry(Geometry):
     """ Abstract base class for defining spline geometry objects.
 
@@ -589,7 +403,7 @@ class SplineGeometry(Geometry):
 
     @evaluator.setter
     def evaluator(self, value):
-        if not isinstance(value, AbstractEvaluator):
+        if not isinstance(value, GeomdlEvaluator):
             raise TypeError("The evaluator must be an instance of AbstractEvaluator")
         value._span_func = self._span_func
         self._evaluator = value
@@ -610,7 +424,7 @@ class SplineGeometry(Geometry):
     @vis.setter
     def vis(self, value):
         if not isinstance(value, vis.VisAbstract):
-            warnings.warn("Visualization component is NOT an instance of VisAbstract class")
+            GeomdlWarning("Visualization component is NOT an instance of VisAbstract class")
             return
         self._vis_component = value
 
@@ -677,7 +491,7 @@ class SplineGeometry(Geometry):
         pass
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Curve(SplineGeometry):
     """ Abstract base class for defining spline curves.
 
@@ -858,7 +672,7 @@ class Curve(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if self.knotvector is None or len(self.knotvector) == 0 or self.degree == 0:
-            warnings.warn("Cannot determine the delta value. Please set knot vector and degree before sample size.")
+            GeomdlWarning("Cannot determine the delta value. Please set knot vector and degree before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -914,10 +728,14 @@ class Curve(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=[self.ctrlpts_size],
-            control_points=self._control_points
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=(self.sample_size,),
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=(self.ctrlpts_size,),
+            control_points=tuple(self._control_points)
         )
 
     def reverse(self):
@@ -946,15 +764,15 @@ class Curve(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise GeomdlException("Set the degree first")
+                raise GeomdlError("Set the degree first")
             if arg < degree + 1:
-                raise GeomdlException("Number of control points should be at least degree + 1")
+                raise GeomdlError("Number of control points should be at least degree + 1")
 
         if len(ctrlpts[0]) < 2:
-            raise GeomdlException("A curve should be at least 2-dimensional")
+            raise GeomdlError("A curve should be at least 2-dimensional")
 
         if self.rational and len(ctrlpts[0]) < 3:
-            raise GeomdlException("Rational curves expect weighted control points, e.g. (x * w, y * w, w)")
+            raise GeomdlError("Rational curves expect weighted control points, e.g. (x * w, y * w, w)")
 
         # Clean up the curve and control points lists
         self.reset(ctrlpts=True, evalpts=True)
@@ -1005,7 +823,7 @@ class Curve(SplineGeometry):
         :return: the figure object
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has been set")
+            GeomdlWarning("No visualization component has been set")
             return
 
         cpcolor = kwargs.pop('cpcolor', 'blue')
@@ -1123,7 +941,7 @@ class Curve(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params(param):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
@@ -1157,10 +975,10 @@ class Curve(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params([u]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Surface(SplineGeometry):
     """ Abstract base class for defining spline surfaces.
 
@@ -1275,7 +1093,7 @@ class Surface(SplineGeometry):
 
     @degree.setter
     def degree(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, GeomdlTypeSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.degree_u = value[0]
         self.degree_v = value[1]
@@ -1338,7 +1156,7 @@ class Surface(SplineGeometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, GeomdlTypeSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.knotvector_u = value[0]
         self.knotvector_v = value[1]
@@ -1494,7 +1312,7 @@ class Surface(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0:
-            warnings.warn("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -1525,7 +1343,7 @@ class Surface(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if (self.knotvector_v is None or len(self.knotvector_v) == 0) or self.degree_v == 0:
-            warnings.warn("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -1562,7 +1380,7 @@ class Surface(SplineGeometry):
     def sample_size(self, value):
         if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or\
                 (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0):
-            warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -1670,7 +1488,7 @@ class Surface(SplineGeometry):
         if isinstance(value, (int, float)):
             self.delta_u = value
             self.delta_v = value
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, GeomdlTypeSequence):
             if len(value) == 2:
                 self.delta_u = value[0]
                 self.delta_v = value[1]
@@ -1694,7 +1512,7 @@ class Surface(SplineGeometry):
     @tessellator.setter
     def tessellator(self, value):
         if not isinstance(value, tessellate.AbstractTessellate):
-            warnings.warn("Tessellation component must be an instance of AbstractTessellate class")
+            GeomdlWarning("Tessellation component must be an instance of AbstractTessellate class")
             return
 
         self._tsl_component = value
@@ -1759,14 +1577,14 @@ class Surface(SplineGeometry):
     @trims.setter
     def trims(self, value):
         # Input type validation
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming curves")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("'trims' setter only accepts a list or a tuple containing the trimming curves")
         # Trim curve validation
         for i, v in enumerate(value):
             try:
                 self.add_trim(v)
-            except GeomdlException:
-                raise GeomdlException("Invalid geometry at index " + str(i))
+            except GeomdlError:
+                raise GeomdlError("Invalid geometry at index " + str(i))
 
     @property
     def data(self):
@@ -1779,11 +1597,15 @@ class Surface(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=self._control_points_size,
-            control_points=self._control_points,
-            trims=[t.data for t in self._trims]
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=self.sample_size,
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=tuple(self._control_points_size),
+            control_points=tuple(self._control_points),
+            trims=tuple([t.data for t in self._trims])
         )
 
     def add_trim(self, trim):
@@ -1799,7 +1621,7 @@ class Surface(SplineGeometry):
         :type trim: abstract.Geometry
         """
         if trim.dimension != 2:
-            raise GeomdlException("Input geometry should be 2-dimensional")
+            raise GeomdlError("Input geometry should be 2-dimensional")
         self._trims.append(trim)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
@@ -1823,15 +1645,15 @@ class Surface(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise GeomdlException("Set the degree first")
+                raise GeomdlError("Set the degree first")
             if arg < degree + 1:
-                raise GeomdlException("Number of control points should be at least degree + 1")
+                raise GeomdlError("Number of control points should be at least degree + 1")
 
         if len(ctrlpts[0]) < 2:
-            raise GeomdlException("A surface should be at least 2-dimensional")
+            raise GeomdlError("A surface should be at least 2-dimensional")
 
         if self.rational and len(ctrlpts[0]) < 3:
-            raise GeomdlException("Rational surfaces expect weighted control points, e.g. (x * w, y * w, z * w, w)")
+            raise GeomdlError("Rational surfaces expect weighted control points, e.g. (x * w, y * w, z * w, w)")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
@@ -1887,7 +1709,7 @@ class Surface(SplineGeometry):
         :return: the figure object
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has been set")
+            GeomdlWarning("No visualization component has been set")
             return
 
         cpcolor = kwargs.pop('cpcolor', 'blue')
@@ -2079,7 +1901,7 @@ class Surface(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params(param):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
@@ -2115,10 +1937,10 @@ class Surface(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params([u, v]):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
 
-@utl.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class Volume(SplineGeometry):
     """ Abstract base class for defining spline volumes.
 
@@ -2246,7 +2068,7 @@ class Volume(SplineGeometry):
 
     @degree.setter
     def degree(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, GeomdlTypeSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.degree_u = value[0]
         self.degree_v = value[1]
@@ -2333,7 +2155,7 @@ class Volume(SplineGeometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        if not isinstance(value, (list, tuple)):
+        if not isinstance(value, GeomdlTypeSequence):
             raise ValueError("Please input a list with a length of " + str(self.pdimension))
         self.knotvector_u = value[0]
         self.knotvector_v = value[1]
@@ -2538,7 +2360,7 @@ class Volume(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0:
-            warnings.warn("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta_u' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -2569,7 +2391,7 @@ class Volume(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if (self.knotvector_v is None or len(self.knotvector_v) == 0) or self.degree_v == 0:
-            warnings.warn("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta_v' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -2600,7 +2422,7 @@ class Volume(SplineGeometry):
             raise ValueError("Sample size must be an integer value")
 
         if (self.knotvector_w is None or len(self.knotvector_w) == 0) or self.degree_w == 0:
-            warnings.warn("Cannot determine 'delta_w' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta_w' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -2639,7 +2461,7 @@ class Volume(SplineGeometry):
         if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or \
                 (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0) or \
                 (self.knotvector_w is None or len(self.knotvector_w) == 0 or self.degree_w == 0):
-            warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
+            GeomdlWarning("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
@@ -2783,7 +2605,7 @@ class Volume(SplineGeometry):
             self.delta_u = value
             self.delta_v = value
             self.delta_w = value
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, GeomdlTypeSequence):
             if len(value) == 3:
                 self.delta_u = value[0]
                 self.delta_v = value[1]
@@ -2808,14 +2630,14 @@ class Volume(SplineGeometry):
     @trims.setter
     def trims(self, value):
         # Input type validation
-        if not isinstance(value, (list, tuple)):
-            raise GeomdlException("'trims' setter only accepts a list or a tuple containing the trimming surfaces")
+        if not isinstance(value, GeomdlTypeSequence):
+            raise GeomdlError("'trims' setter only accepts a list or a tuple containing the trimming surfaces")
         # Trim curve validation
         for i, v in enumerate(value):
             try:
                 self.add_trim(v)
-            except GeomdlException:
-                raise GeomdlException("Invalid geometry at index " + str(i))
+            except GeomdlError:
+                raise GeomdlError("Invalid geometry at index " + str(i))
 
     @property
     def data(self):
@@ -2828,11 +2650,15 @@ class Volume(SplineGeometry):
             type=self.type,
             rational=self.rational,
             dimension=self.dimension,
-            degree=self._degree,
-            knotvector=self._knot_vector,
-            size=self._control_points_size,
-            control_points=self._control_points,
-            trims=[t.data for t in self._trims]
+            pdimension=self.pdimension,
+            delta=tuple(self._delta),
+            sample_size=self.sample_size,
+            precision=self._precision,
+            degree=tuple(self._degree),
+            knotvector=tuple(self._knot_vector),
+            size=tuple(self._control_points_size),
+            control_points=tuple(self._control_points),
+            trims=tuple([t.data for t in self._trims])
         )
 
     def add_trim(self, trim):
@@ -2844,7 +2670,7 @@ class Volume(SplineGeometry):
         :type trim: abstract.Surface
         """
         if trim.dimension != 3:
-            raise GeomdlException("Input geometry should be 3-dimensional")
+            raise GeomdlError("Input geometry should be 3-dimensional")
         self._trims.append(trim)
 
     def reset(self, **kwargs):
@@ -2910,15 +2736,15 @@ class Volume(SplineGeometry):
         # Validate input
         for arg, degree in zip(args, self._degree):
             if degree <= 0:
-                raise GeomdlException("Set the degree first")
+                raise GeomdlError("Set the degree first")
             if arg < degree + 1:
-                raise GeomdlException("Number of control points should be at least degree + 1")
+                raise GeomdlError("Number of control points should be at least degree + 1")
 
         if len(ctrlpts[0]) < 3:
-            raise GeomdlException("A volume should be at least 3-dimensional")
+            raise GeomdlError("A volume should be at least 3-dimensional")
 
         if self.rational and len(ctrlpts[0]) < 4:
-            raise GeomdlException("Rational volumes expect weighted control points, e.g. (x * w, y * w, z * w, w)")
+            raise GeomdlError("Rational volumes expect weighted control points, e.g. (x * w, y * w, z * w, w)")
 
         # Clean up the surface and control points
         self.reset(evalpts=True, ctrlpts=True)
@@ -2970,7 +2796,7 @@ class Volume(SplineGeometry):
         :return: the figure object
         """
         if not self._vis_component:
-            warnings.warn("No visualization component has been set")
+            GeomdlWarning("No visualization component has been set")
             return
 
         cpcolor = kwargs.pop('cpcolor', 'blue')
@@ -3064,7 +2890,7 @@ class Volume(SplineGeometry):
         # Check parameters
         if self._kv_normalize:
             if not utilities.check_params(param):
-                raise GeomdlException("Parameters should be between 0 and 1")
+                raise GeomdlError("Parameters should be between 0 and 1")
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):

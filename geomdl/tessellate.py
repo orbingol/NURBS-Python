@@ -3,14 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Provides tessellation classes for surface triangulation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import abc
-from .exceptions import GeomdlException
 from . import _tessellate as tsl
-from ._utilities import add_metaclass, export
+from .six import add_metaclass
+from .base import export, GeomdlError
 
 
 # Add some aliases
@@ -65,7 +65,7 @@ class AbstractTessellate(object):
     @arguments.setter
     def arguments(self, value):
         if not isinstance(value, dict):
-            raise GeomdlException("Tessellation arguments must be a dict object")
+            raise GeomdlError("Tessellation arguments must be a dict object")
         self._arguments = value
 
     @arguments.deleter
@@ -154,7 +154,7 @@ class TrimTessellate(AbstractTessellate):
 
         # Update sense if it is not set
         for trim in trims:
-            if trim.opt_get('reversed') is None:
+            if trim.get_opt('reversed') is None:
                 trim.opt = ['reversed', 0]  # always trim the enclosed area by the curve
 
         # Apply default triangular mesh generator function with trimming customization
