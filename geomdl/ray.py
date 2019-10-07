@@ -4,9 +4,11 @@
     :synopsis: Provides ray data structures and operations
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
+.. moduleauthor:: Chris Horler
 
 """
 import sys
+from .doubledouble import DoubleDouble
 from . import linalg
 from .base import export, GeomdlTypeSequence
 
@@ -34,8 +36,8 @@ class Ray(object):
             raise ValueError("THe dimensions of the input points must be equal")
         else:
             self._dim = len(point1)
-        self._pt1 = [float(c) for c in point1]
-        self._pt2 = [float(c) for c in point2]
+        self._pt1 = [DoubleDouble(c) for c in point1]
+        self._pt2 = [DoubleDouble(c) for c in point2]
 
     @property
     def dimension(self):
@@ -139,7 +141,7 @@ def intersect(ray1, ray2, **kwargs):
         raise ValueError("Dimensions of the input rays must be the same")
 
     # Keyword arguments
-    tol = kwargs.get('tol', (1 << 8) * sys.float_info.epsilon)
+    tol = kwargs.get('tol', sys.float_info.epsilon)
 
     # Call intersection method
     if ray1.dimension == 2:
@@ -152,10 +154,10 @@ def intersect(ray1, ray2, **kwargs):
 
 def _intersect2d(ray1, ray2, tol):
     # Using homogeneous coordinates
-    r1_pt1 = list(ray1.points[0]) + [1.0]
-    r1_pt2 = list(ray1.points[1]) + [1.0]
-    r2_pt1 = list(ray2.points[0]) + [1.0]
-    r2_pt2 = list(ray2.points[1]) + [1.0]
+    r1_pt1 = list(ray1.points[0]) + [DoubleDouble(1.0)]
+    r1_pt2 = list(ray1.points[1]) + [DoubleDouble(1.0)]
+    r2_pt1 = list(ray2.points[0]) + [DoubleDouble(1.0)]
+    r2_pt2 = list(ray2.points[1]) + [DoubleDouble(1.0)]
 
     # Generate 3-dimensional rays
     ray1_3d = Ray(r1_pt1, r1_pt2)
