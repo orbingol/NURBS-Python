@@ -107,9 +107,14 @@ class GeomdlBase(object):
     * :py:attr:`dimension`
     * :py:attr:`opt`
 
-    **Keyword Arguments:**
+    This class provides the following methods:
 
-    * ``id``: object ID (as integer)
+    * :py:meth:`get_opt`
+    * :py:meth:`reset`
+
+    This class provides the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
     * ``precision``: number of decimal places to round to. *Default: 12*
     """
     __slots__ = ('_idt', '_opt_data', '_cache')
