@@ -9,6 +9,7 @@
 
 import copy
 from functools import reduce
+from decimal import Decimal
 from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
 
 # Parametric dimension names for dynamical generation of the attributes
@@ -85,13 +86,12 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
             raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
         if len(cpt) != dim:
             raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
-        # Convert to list of floats
-        pts_out[idx] = tuple(float(coord) for coord in cpt)
+        default_ctrlpt_set(pts_out, idx, cpt)
     return pts_out
 
 
-def default_ctrlpt_set(pts_arr, idx, pt):
     """ Assigns value to  a single control point position inside the container (default)
+def default_ctrlpt_set(pts_arr, idx, cpt):
 
     :param pts_arr: control points container
     :type pts_arr: list
@@ -100,7 +100,7 @@ def default_ctrlpt_set(pts_arr, idx, pt):
     :param pt: control point/vertex
     :type pt: list, tuple
     """
-    pts_arr[idx] = tuple(pt)
+    pts_arr[idx] = tuple(Decimal(c) for c in cpt)
 
 
 def extract_ctrlpts2d(cm):
@@ -154,9 +154,13 @@ def extract_ctrlpts3d(cm):
 class CPManager(GeomdlBase):
     """ Control points manager class
 
-    Control points manager class provides an easy way to set control points without knowing
-    the internal data structure of the geometry classes. The manager class is initialized
-    with the number of control points in all parametric dimensions.
+    Control points manager class provides an easy way to set control points without knowing the internal data structure
+    of the geometry classes. The manager class is initialized with the number of control points in all parametric
+    dimensions.
+
+    Control points manager class utilizes Python's `decimal.Decimal <https://docs.python.org/library/decimal.html>`_
+    class instead of the ``float`` datatype. Please refer to the Python documentation for more details on using
+    ``decimal`` module.
 
     This class inherits the following properties:
 
