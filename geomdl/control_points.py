@@ -47,7 +47,7 @@ def default_find_index(pts_size, *args):
 
 
 def default_ctrlpts_init(num_ctrlpts, **kwargs):
-    """ Control points array initialization function (Default).
+    """ Initializes the control points container (default)
 
     Default functions use the container types included in the Python Standard Library.
 
@@ -67,7 +67,7 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
 
 
 def default_ctrlpts_set(pts_in, dim, pts_out):
-    """ Control points array set function (Default).
+    """ Fills the control points container with the input points (default)
 
     Default functions use the container types included in the Python Standard Library.
 
@@ -91,7 +91,7 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
 
 
 def default_ctrlpt_set(pts_arr, idx, pt):
-    """ Control points single set function (Default).
+    """ Assigns value to  a single control point position inside the container (default)
 
     :param pts_arr: control points container
     :type pts_arr: list
