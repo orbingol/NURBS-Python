@@ -90,15 +90,15 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
     return pts_out
 
 
-    """ Assigns value to  a single control point position inside the container (default)
 def default_ctrlpt_set(pts_arr, idx, cpt):
+    """ Assigns value to a single control point position inside the container (default)
 
     :param pts_arr: control points container
     :type pts_arr: list
     :param idx: container index
     :type idx: int
-    :param pt: control point/vertex
-    :type pt: list, tuple
+    :param cpt: control point
+    :type cpt: list, tuple
     """
     pts_arr[idx] = tuple(Decimal(c) for c in cpt)
 
