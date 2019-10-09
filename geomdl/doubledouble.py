@@ -38,10 +38,12 @@ from __future__ import division
 from math import exp, frexp, ldexp, log, sqrt
 from numbers import Integral
 
+
 def _two_sum_quick(x, y):
     r = x + y
     e = y - (r - x)
     return r, e
+
 
 def _two_sum(x, y):
     r = x + y
@@ -49,14 +51,17 @@ def _two_sum(x, y):
     e = (x - (r - t)) + (y - t)
     return r, e
 
+
 def _two_difference(x, y):
     r = x - y
     t = r - x
     e = (x - (r - t)) - (y + t)
     return r, e
 
+
 try:
     from math import fma
+
     def _two_product(x, y):
         r = x*y
         e = fma(x, y, -r)
@@ -73,8 +78,8 @@ except ImportError:
         e = ((s*t - r) + s*g + f*t) + f*g
         return r, e
 
-class DoubleDouble(object):
 
+class DoubleDouble(object):
     __slots__ = 'x', 'y'
 
     def __init__(self, x, y=0.0):
@@ -289,6 +294,7 @@ class DoubleDouble(object):
         if self.y < 0.0:
             return '(%s - %s)' % (self.x.hex(), (-self.y).hex())
         return '(%s + %s)' % (self.x.hex(), self.y.hex())
+
 
 _zero, _one = DoubleDouble(0.0), DoubleDouble(1.0)
 
