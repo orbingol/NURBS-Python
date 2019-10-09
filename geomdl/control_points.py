@@ -196,7 +196,7 @@ class CPManager(GeomdlBase):
             func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
         )
         # Start constructing the internal data structures
-        self._idt['size'] = tuple([int(arg) for arg in args]),  # size in all parametric dimensions
+        self._idt['size'] = tuple(int(arg) for arg in args)  # size in all parametric dimensions
         self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points
         self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
