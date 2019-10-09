@@ -47,7 +47,7 @@ def default_find_index(pts_size, *args):
 
 
 def default_ctrlpts_init(num_ctrlpts, **kwargs):
-    """ Default control points initialization function.
+    """ Control points array initialization function (Default).
 
     Default functions use the container types included in the Python Standard Library.
 
@@ -56,7 +56,7 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
     :return: a tuple containing initialized control points (as a ``list``) and data dictionary (as a ``dict``)
     :rtype: tuple
     """
-    points = [[] for _ in range(num_ctrlpts)]
+    points = [() for _ in range(num_ctrlpts)]
     points_data = GeomdlDict()
     for k, v in kwargs.items():
         if v > 1:
@@ -67,7 +67,7 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
 
 
 def default_ctrlpts_set(pts_in, dim, pts_out):
-    """ Default control points set function.
+    """ Control points array set function (Default).
 
     Default functions use the container types included in the Python Standard Library.
 
@@ -86,8 +86,21 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
         if len(cpt) != dim:
             raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
         # Convert to list of floats
-        pts_out[idx] = [float(coord) for coord in cpt]
+        pts_out[idx] = tuple(float(coord) for coord in cpt)
     return pts_out
+
+
+def default_ctrlpt_set(pts_arr, idx, pt):
+    """ Control points single set function (Default).
+
+    :param pts_arr: control points container
+    :type pts_arr: list
+    :param idx: container index
+    :type idx: int
+    :param pt: control point/vertex
+    :type pt: list, tuple
+    """
+    pts_arr[idx] = tuple(pt)
 
 
 def extract_ctrlpts2d(cm):
@@ -181,9 +194,10 @@ class CPManager(GeomdlBase):
 
     This class provides the following keyword arguments:
 
-    * ``config_ctrlpts_init``: sets control points initialization function. *Default:* ``default_ctrlpts_init``
-    * ``config_ctrlpts_set``: sets control points set function. *Default:* ``default_ctrlpts_set``
-    * ``config_find_index``: sets find index function. *Default:* ``default_find_index``
+    * ``config_ctrlpts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
+    * ``config_ctrlpts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
+    * ``config_ctrlpt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
+    * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
     __slots__ = ('_pt_data', '_cfg', '_iter_index')
 
@@ -191,15 +205,16 @@ class CPManager(GeomdlBase):
         super(CPManager, self).__init__(**kwargs)
         # Configuration dictionary
         self._cfg = GeomdlDict(
-            func_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
-            func_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
+            func_pts_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
+            func_pts_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
+            func_pt_set=kwargs.pop('config_ctrlpt_set', default_ctrlpt_set),  # control point set function
             func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
         )
         # Start constructing the internal data structures
         self._idt['size'] = tuple(int(arg) for arg in args)  # size in all parametric dimensions
         self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points
-        self._idt['control_points'], self._pt_data = self._cfg['func_init'](self.count, **kwargs)
+        self._idt['control_points'], self._pt_data = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def __call__(self):
         return self.points
@@ -246,13 +261,13 @@ class CPManager(GeomdlBase):
         if len(value) != self.dimension:
             raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
         if isinstance(key, int):
-            self._idt['control_points'][key] = value
+            self._cfg['func_pt_set'](self._idt['control_points'], key, value)
             return
         if isinstance(key, tuple):
             if len(key) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *key)
-            self._idt['control_points'][idx] = value
+            self._cfg['func_pt_set'](self._idt['control_points'], idx, value)
             return
         raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
@@ -297,7 +312,7 @@ class CPManager(GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the control points
+        :getter: Gets the control points (as a ``tuple``)
         :setter: Sets the control points
         """
         return tuple(self._idt['control_points'])
@@ -314,7 +329,7 @@ class CPManager(GeomdlBase):
         if self.dimension < 1:
             self._idt['dimension'] = len(value[0])
         # Set control points
-        self._cfg['func_set'](value, self.dimension, self._idt['control_points'])
+        self._cfg['func_pts_set'](value, self.dimension, self._idt['control_points'])
 
     @property
     def points_data(self):
@@ -347,7 +362,7 @@ class CPManager(GeomdlBase):
         # Call parent method
         super(CPManager, self).reset(**kwargs)
         # Reset the control points and the attached data
-        self._cfg['func_init'](self.count, **kwargs)
+        self._cfg['func_pts_init'](self.count, **kwargs)
 
     def get_pt(self, *args):
         """ Gets the control point from the input position """
