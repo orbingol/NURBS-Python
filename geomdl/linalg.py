@@ -197,17 +197,14 @@ def vector_mean(*args):
     .. code-block:: python
         :linenos:
 
-        # Import geomdl.utilities module
-        from geomdl import utilities
-
         # Create a list of vectors as an example
         vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
         # Compute mean vector
-        mean_vector = utilities.vector_mean(*vector_list)
+        mean_vector = vector_mean(*vector_list)
 
         # Alternative usage example (same as above):
-        mean_vector = utilities.vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
+        mean_vector = vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
 
     :param args: list of vectors
     :type args: list, tuple
