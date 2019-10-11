@@ -6,7 +6,7 @@ defsteps: &defsteps
     - attach_workspace:
         at: ~/
     - setup_remote_docker:
-        docker_layer_caching: true
+        docker_layer_caching: false  # disabled on free plan
     - run: echo 'export IMAGE=geomdl-$TAG' >> $BASH_ENV
     - run: docker build -t $IMAGE docker/$TAG
     - run: echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
