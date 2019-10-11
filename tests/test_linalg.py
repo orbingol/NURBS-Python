@@ -7,6 +7,8 @@
 """
 
 import pytest
+import math
+from decimal import setcontext, Context
 from geomdl import linalg
 
 GEOMDL_DELTA = 10e-6
@@ -21,24 +23,12 @@ def test_linspace():
     assert to_check == result
 
 
-def test_vector_dot1():
-    with pytest.raises(ValueError):
-        vec1 = ()
-        vec2 = ()
-        linalg.vector_dot(vec1, vec2)
-
-
-def test_vector_dot2():
+def test_vector_dot():
     result = 32
     vec1 = (1, 2, 3)
     vec2 = (1, 5, 7)
     to_check = linalg.vector_dot(vec1, vec2)
     assert to_check == result
-
-
-def test_vector_dot3():
-    with pytest.raises(TypeError):
-        linalg.vector_dot(5, 9.7)
 
 
 def test_vector_cross1():
@@ -78,47 +68,41 @@ def test_vector_cross5():
 
 def test_vector_normalize1():
     with pytest.raises(ValueError):
-        vec = ()
-        linalg.vector_normalize(vec)
-
-
-def test_vector_normalize2():
-    with pytest.raises(ValueError):
         vec = (0, 0)
         linalg.vector_normalize(vec)
 
 
-def test_vector_normalize3():
+def test_vector_normalize2():
     with pytest.raises(TypeError):
         linalg.vector_normalize(5)
 
 
-def test_vector3_normalize():
-    vec = (5, 2.5, 5)
-    result = [0.667, 0.333, 0.667]
-    to_check = linalg.vector_normalize(vec, decimals=3)
-    assert to_check == result
+def test_vector_normalize3():
+    c = Context(prec=3)
+    setcontext(c)
+    vec = (c.create_decimal_from_float(5), c.create_decimal_from_float(2.5), c.create_decimal_from_float(5))
+    result = [c.create_decimal_from_float(0.667),
+              c.create_decimal_from_float(0.333),
+              c.create_decimal_from_float(0.667)]
+    to_check = linalg.vector_normalize(vec)
+    for i in range(3):
+        assert abs(to_check[i] - result[i]) <= GEOMDL_DELTA
 
 
-def test_vector4_normalize():
+def test_vector_normalize4():
     vec = (5, 2.5, 5, 10)
     result = [0.4, 0.2, 0.4, 0.8]
     to_check = linalg.vector_normalize(vec)
-    assert to_check == result
-
-
-def test_vector_generate1():
-    with pytest.raises(ValueError):
-        pt1 = ()
-        pt2 = (1, 2, 3)
-        linalg.vector_generate(pt1, pt2)
+    for a, b in zip(result, to_check):
+        assert abs(a - b) <= GEOMDL_DELTA
 
 
 def test_vector_generate2():
     pt1 = (0, 0, 0)
     pt2 = (5, 3, 4)
     result = (5, 3, 4)
-    result_normalized = (0.707107, 0.424264, 0.565685)
+    mag = math.sqrt(sum([math.pow(r, 2) for r in result]))
+    result_normalized = tuple(r / mag for r in result)
     to_check = linalg.vector_generate(pt1, pt2)
     to_check_normalized = linalg.vector_generate(pt1, pt2, normalize=True)
     assert abs(to_check[0] - result[0]) <= GEOMDL_DELTA
@@ -132,13 +116,6 @@ def test_vector_generate2():
 def test_vector_generate3():
     with pytest.raises(TypeError):
         linalg.vector_generate(5, 9.7)
-
-
-def test_point_translate1():
-    with pytest.raises(ValueError):
-        pt1 = ()
-        pt2 = (1, 2, 3)
-        linalg.point_translate(pt1, pt2)
 
 
 def test_point_translate2():
@@ -223,7 +200,7 @@ def test_point_distance():
 
 def test_point_mid():
     result = [2.5, 3.5, 4.5]
-    computed = linalg.point_mid((1, 2, 3), (4, 5, 6))
+    computed = linalg.point_mid((1.0, 2.0, 3.0), (4.0, 5.0, 6.0))
     assert result == computed
 
 

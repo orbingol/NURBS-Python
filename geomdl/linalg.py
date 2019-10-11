@@ -9,10 +9,9 @@
 
 import os
 import math
+from operator import add, sub, mul, truediv, pow
 from copy import deepcopy
 from functools import reduce
-from . import _linalg
-from .doubledouble import DoubleDouble
 try:
     from functools import lru_cache
 except ImportError:
@@ -29,36 +28,15 @@ def vector_cross(vector1, vector2):
     :return: result of the cross product
     :rtype: tuple
     """
-    try:
-        if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
-            raise ValueError("Input vectors cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Input must be a list or tuple")
-    except Exception:
-        raise
-
     if not 1 < len(vector1) <= 3 or not 1 < len(vector2) <= 3:
-        raise ValueError("The input vectors should contain 2 or 3 elements")
+        raise ValueError("The input vectors should contain 2 or 3 components")
 
     # Convert 2-D to 3-D, if necessary
-    if len(vector1) == 2:
-        v1 = [DoubleDouble(v) for v in vector1] + [DoubleDouble(0.0)]
-    else:
-        v1 = vector1
-
-    if len(vector2) == 2:
-        v2 = [DoubleDouble(v) for v in vector2] + [DoubleDouble(0.0)]
-    else:
-        v2 = vector2
+    v1 = list(vector1) + [type(vector1[0])(0.0)] if len(vector1) == 2 else vector1
+    v2 = list(vector2) + [type(vector2[0])(0.0)] if len(vector2) == 2 else vector2
 
     # Compute cross product
-    vector_out = [(v1[1] * v2[2]) - (v1[2] * v2[1]),
-                  (v1[2] * v2[0]) - (v1[0] * v2[2]),
-                  (v1[0] * v2[1]) - (v1[1] * v2[0])]
-
-    # Return the cross product of the input vectors
-    return vector_out
+    return [(v1[1] * v2[2]) - (v1[2] * v2[1]), (v1[2] * v2[0]) - (v1[0] * v2[2]), (v1[0] * v2[1]) - (v1[1] * v2[0])]
 
 
 def vector_dot(vector1, vector2):
@@ -69,22 +47,9 @@ def vector_dot(vector1, vector2):
     :param vector2: input vector 2
     :type vector2: list, tuple
     :return: result of the dot product
-    :rtype: float
     """
-    try:
-        if vector1 is None or len(vector1) == 0 or vector2 is None or len(vector2) == 0:
-            raise ValueError("Input vectors cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Input must be a list or tuple")
-    except Exception:
-        raise
-
-    # Compute dot product
-    prod = sum(((v1 * v2) for v1, v2 in zip(vector1, vector2)), DoubleDouble(0.0))
-
-    # Return the dot product of the input vectors
-    return prod
+    # Compute dot product, ref: https://docs.python.org/2/library/itertools.html#recipes
+    return sum(map(mul, vector1, vector2))
 
 
 def vector_multiply(vector_in, scalar):
@@ -95,95 +60,63 @@ def vector_multiply(vector_in, scalar):
     :param vector_in: vector
     :type vector_in: list, tuple
     :param scalar: scalar value
-    :type scalar: int, float
     :return: updated vector
     :rtype: tuple
     """
-    scaled_vector = [v * scalar for v in vector_in]
-    return scaled_vector
+    s = type(vector_in[0])(scalar)
+    return [mul(v, s) for v in vector_in]
 
 
-def vector_sum(vector1, vector2, coeff=1.0):
+def vector_sum(vector1, vector2):
     """ Sums the vectors.
 
-    This function computes the result of the vector operation :math:`\\overline{v}_{1} + c * \\overline{v}_{2}`, where
-    :math:`\\overline{v}_{1}` is ``vector1``, :math:`\\overline{v}_{2}`  is ``vector2`` and :math:`c` is ``coeff``.
+    This function computes the result of the vector operation :math:`\\overline{v}_{1} + \\overline{v}_{2}`, where
+    :math:`\\overline{v}_{1}` is ``vector1`` and :math:`\\overline{v}_{2}`  is ``vector2``.
 
     :param vector1: vector 1
     :type vector1: list, tuple
     :param vector2: vector 2
     :type vector2: list, tuple
-    :param coeff: multiplier for vector 2
-    :type coeff: float
     :return: updated vector
     :rtype: list
     """
-    summed_vector = [v1 + (coeff * v2) for v1, v2 in zip(vector1, vector2)]
-    return summed_vector
+    return list(map(add, vector1, vector2))
 
 
-def vector_normalize(vector_in, decimals=18):
+def vector_normalize(vector_in):
     """ Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
     :type vector_in: list, tuple
-    :param decimals: number of significands
-    :type decimals: int
     :return: the normalized vector (i.e. the unit vector)
     :rtype: list
     """
-    try:
-        if vector_in is None or len(vector_in) == 0:
-            raise ValueError("Input vector cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Input must be a list or tuple")
-    except Exception:
-        raise
-
     # Calculate magnitude of the vector
     magnitude = vector_magnitude(vector_in)
 
-    # Normalize the vector
-    if magnitude > 0:
-        vector_out = []
-        for vin in vector_in:
-            vector_out.append(vin / magnitude)
-
-        # Return the normalized vector
-        return [float('%.*f' % (decimals, vout)) for vout in vector_out]
-    else:
+    if magnitude <= 0:
         raise ValueError("The magnitude of the vector is zero")
 
+    # Normalize the vector
+    vector_out = [truediv(vin, magnitude) for vin in vector_in]
 
-def vector_generate(start_pt, end_pt, normalize=False):
+    # Return the normalized vector
+    return vector_out
+
+
+def vector_generate(start_pt, end_pt, **kwargs):
     """ Generates a vector from 2 input points.
 
     :param start_pt: start point of the vector
     :type start_pt: list, tuple
     :param end_pt: end point of the vector
     :type end_pt: list, tuple
-    :param normalize: if True, the generated vector is normalized
-    :type normalize: bool
     :return: a vector from start_pt to end_pt
     :rtype: list
     """
-    try:
-        if start_pt is None or len(start_pt) == 0 or end_pt is None or len(end_pt) == 0:
-            raise ValueError("Input points cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Input must be a list or tuple")
-    except Exception:
-        raise
-
-    ret_vec = []
-    for sp, ep in zip(start_pt, end_pt):
-        ret_vec.append(ep - sp)
-
-    if normalize:
-        ret_vec = vector_normalize(ret_vec)
-    return ret_vec
+    normalize = kwargs.get('normalize', False)
+    ret_vec = list(map(sub, end_pt, start_pt))
+    return vector_normalize(ret_vec) if normalize else ret_vec
 
 
 def vector_mean(*args):
@@ -195,41 +128,41 @@ def vector_mean(*args):
     .. code-block:: python
         :linenos:
 
-        # Import geomdl.utilities module
-        from geomdl import utilities
-
         # Create a list of vectors as an example
         vector_list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
         # Compute mean vector
-        mean_vector = utilities.vector_mean(*vector_list)
+        mean_vector = vector_mean(*vector_list)
 
         # Alternative usage example (same as above):
-        mean_vector = utilities.vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
+        mean_vector = vector_mean([1, 2, 3], [4, 5, 6], [7, 8, 9])
 
     :param args: list of vectors
     :type args: list, tuple
     :return: mean vector
     :rtype: list
     """
+    dtype = type(args[0][0])
     sz = len(args)
-    mean_vector = [0.0 for _ in range(len(args[0]))]
+    mean_vector = [dtype(0.0) for _ in range(len(args[0]))]
     for input_vector in args:
         mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
-    mean_vector = [a / sz for a in mean_vector]
-    return mean_vector
+    return [truediv(a, sz) for a in mean_vector]
 
 
 def vector_magnitude(vector_in):
-    """ Computes the magnitude of the input vector.
+    """ Computes square magnitude of the input vector.
 
     :param vector_in: input vector
     :type vector_in: list, tuple
-    :return: magnitude of the vector
+    :return: square magnitude of the vector
     :rtype: float
     """
-    sq_sum = sum((vin**2 for vin in vector_in), DoubleDouble(0.0))
-    return sq_sum.sqrt()
+    mag_sq = sum([pow(vin, 2) for vin in vector_in])
+    try:
+        return mag_sq.sqrt()
+    except AttributeError:
+        return math.sqrt(mag_sq)
 
 
 def vector_angle_between(vector1, vector2, **kwargs):
@@ -243,17 +176,13 @@ def vector_angle_between(vector1, vector2, **kwargs):
     :param vector2: vector
     :type vector2: list, tuple
     :return: angle between the vectors
-    :rtype: float
     """
     degrees = kwargs.get('degrees', True)
     magn1 = vector_magnitude(vector1)
     magn2 = vector_magnitude(vector2)
-    acos_val = vector_dot(vector1, vector2) / (magn1 * magn2)
+    acos_val = truediv(vector_dot(vector1, vector2), mul(magn1, magn2))
     angle_radians = math.acos(acos_val)
-    if degrees:
-        return math.degrees(angle_radians)
-    else:
-        return angle_radians
+    return math.degrees(angle_radians) if degrees else angle_radians
 
 
 def vector_is_zero(vector_in, tol=10e-8):
@@ -266,14 +195,7 @@ def vector_is_zero(vector_in, tol=10e-8):
     :return: True if the input vector is zero, False otherwise
     :rtype: bool
     """
-    if not isinstance(vector_in, base.GeomdlTypeSequence):
-        raise TypeError("Input vector must be a list or a tuple")
-
-    res = [False for _ in range(len(vector_in))]
-    for idx in range(len(vector_in)):
-        if abs(vector_in[idx]) < tol:
-            res[idx] = True
-    return all(res)
+    return all([True if abs(vin) < tol else False for vin in vector_in])
 
 
 def point_translate(point_in, vector_in):
@@ -286,22 +208,10 @@ def point_translate(point_in, vector_in):
     :return: translated point
     :rtype: list
     """
-    try:
-        if point_in is None or len(point_in) == 0 or vector_in is None or len(vector_in) == 0:
-            raise ValueError("Input arguments cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Input must be a list or tuple")
-    except Exception:
-        raise
-
-    # Translate the point using the input vector
-    point_out = [coord + comp for coord, comp in zip(point_in, vector_in)]
-
-    return point_out
+    return list(map(add, point_in, vector_in))
 
 
-def point_distance(pt1, pt2):
+def point_distance(pt1, pt2, **kwargs):
     """ Computes distance between two points.
 
     :param pt1: point 1
@@ -309,14 +219,9 @@ def point_distance(pt1, pt2):
     :param pt2: point 2
     :type pt2: list, tuple
     :return: distance between input points
-    :rtype: float
     """
-    if len(pt1) != len(pt2):
-        raise ValueError("The input points should have the same dimension")
-
     dist_vector = vector_generate(pt1, pt2, normalize=False)
-    distance = vector_magnitude(dist_vector)
-    return distance
+    return vector_magnitude(dist_vector)
 
 
 def point_mid(pt1, pt2):
@@ -329,28 +234,26 @@ def point_mid(pt1, pt2):
     :return: midpoint
     :rtype: list
     """
-    if len(pt1) != len(pt2):
-        raise ValueError("The input points should have the same dimension")
-
     dist_vector = vector_generate(pt1, pt2, normalize=False)
     half_dist_vector = vector_multiply(dist_vector, 0.5)
     return point_translate(pt1, half_dist_vector)
 
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
-def matrix_identity(n):
+def matrix_identity(n, dtype=float):
     """ Generates a :math:`N \\times N` identity matrix.
 
     :param n: size of the matrix
     :type n: int
+    :param dtype: data type
+    :type dtype: type
     :return: identity matrix
     :rtype: list
     """
-    imat = [[1.0 if i == j else 0.0 for i in range(n)] for j in range(n)]
-    return imat
+    return [[dtype(1.0) if i == j else dtype(0.0) for i in range(n)] for j in range(n)]
 
 
-def matrix_pivot(m, sign=False):
+def matrix_pivot(m, sign=False, **kwargs):
     """ Computes the pivot matrix for M, a square matrix.
 
     This function computes
@@ -366,13 +269,14 @@ def matrix_pivot(m, sign=False):
     :return: a tuple containing the matrix product of M x P, P and det(P)
     :rtype: tuple
     """
+    dtype = kwargs.get('dtype', type(m[0][0]))
     mp = deepcopy(m)
     n = len(mp)
-    p = matrix_identity(n)  # permutation matrix
+    p = matrix_identity(n, dtype=dtype)  # permutation matrix
     num_rowswap = 0
     for j in range(0, n):
         row = j
-        a_max = 0.0
+        a_max = dtype(0.0)
         for i in range(j, n):
             a_abs = abs(mp[i][j])
             if a_abs > a_max:
@@ -389,7 +293,7 @@ def matrix_pivot(m, sign=False):
     return mp, p
 
 
-def matrix_inverse(m):
+def matrix_inverse(m, **kwargs):
     """ Computes the inverse of the matrix via LUP decomposition.
 
     :param m: input matrix
@@ -397,21 +301,22 @@ def matrix_inverse(m):
     :return: inverse of the matrix
     :rtype: list
     """
-    mp, p = matrix_pivot(m)
-    m_inv = lu_solve(mp, p)
+    dtype = kwargs.get('dtype', type(m[0][0]))
+    mp, p = matrix_pivot(m, dtype=dtype)
+    m_inv = lu_solve(mp, p, dtype=dtype)
     return m_inv
 
 
-def matrix_determinant(m):
+def matrix_determinant(m, **kwargs):
     """ Computes the determinant of the square matrix :math:`M` via LUP decomposition.
 
     :param m: input matrix
     :type m: list, tuple
     :return: determinant of the matrix
-    :rtype: float
     """
-    mp, p, sign = matrix_pivot(m, sign=True)
-    m_l, m_u = lu_decomposition(mp)
+    dtype = kwargs.get('dtype', type(m[0][0]))
+    mp, p, sign = matrix_pivot(m, sign=True, dtype=dtype)
+    m_l, m_u = lu_decomposition(mp, dtype=dtype)
     det = 1.0
     for i in range(len(m)):
         det *= m_l[i][i] * m_u[i][i]
@@ -440,7 +345,7 @@ def matrix_transpose(m):
     return m_t
 
 
-def matrix_multiply(mat1, mat2):
+def matrix_multiply(mat1, mat2, **kwargs):
     """ Matrix multiplication (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
@@ -452,6 +357,7 @@ def matrix_multiply(mat1, mat2):
     :return: resultant matrix with dimensions :math:`(n \\times m)`
     :rtype: list
     """
+    dtype = kwargs.get('dtype', type(mat1[0][0]))
     n = len(mat1)
     p1 = len(mat1[0])
     p2 = len(mat2)
@@ -460,17 +366,17 @@ def matrix_multiply(mat1, mat2):
     try:
         # Matrix - matrix multiplication
         m = len(mat2[0])
-        mat3 = [[0.0 for _ in range(m)] for _ in range(n)]
+        mat3 = [[dtype(0.0) for _ in range(m)] for _ in range(n)]
         for i in range(n):
             for j in range(m):
                 for k in range(p2):
-                    mat3[i][j] += float(mat1[i][k] * mat2[k][j])
+                    mat3[i][j] += mat1[i][k] * mat2[k][j]
     except TypeError:
         # Matrix - vector multiplication
-        mat3 = [0.0 for _ in range(n)]
+        mat3 = [dtype(0.0) for _ in range(n)]
         for i in range(n):
             for k in range(p2):
-                mat3[i] += float(mat1[i][k] * mat2[k])
+                mat3[i] += mat1[i][k] * mat2[k]
     return mat3
 
 
@@ -482,14 +388,13 @@ def matrix_scalar(m, sc):
     :param m: input matrix
     :type m: list, tuple
     :param sc: scalar value
-    :type sc: int, float
-    :return: resultant matrix
+    :return: result matrix
     :rtype: list
     """
-    mm = [[0.0 for _ in range(len(m[0]))] for _ in range(len(m))]
+    mm = deepcopy(m)
     for i in range(len(m)):
         for j in range(len(m[0])):
-            mm[i][j] = float(m[i][j] * sc)
+            mm[i][j] = m[i][j] * sc
     return mm
 
 
@@ -516,20 +421,15 @@ def triangle_center(tri, uv=False):
     :return: center of mass of the triangle
     :rtype: tuple
     """
-    if uv:
-        data = [t.uv for t in tri]
-        mid = [0.0, 0.0]
-    else:
-        data = tri.vertices
-        mid = [0.0, 0.0, 0.0]
+    data, mid = ([t.uv for t in tri], [tri.dtype(0.0) for _ in range(2)]) if uv \
+        else (tri.vertices, [tri.dtype(0.0) for _ in range(3)])
     for vert in data:
         mid = [m + v for m, v in zip(mid, vert)]
-    mid = [float(m) / 3.0 for m in mid]
-    return tuple(mid)
+    return (truediv(m, 3) for m in mid)
 
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
-def binomial_coefficient(k, i):
+def binomial_coefficient(k, i, dtype=float):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
     Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
@@ -538,20 +438,22 @@ def binomial_coefficient(k, i):
     :type k: int
     :param i: size of the subsets
     :type i: int
+    :param dtype: data type
+    :type dtype: type
     :return: combination of *k* and *i*
     :rtype: float
     """
     # Special case
     if i > k:
-        return float(0)
+        return dtype(0.0)
     # Compute binomial coefficient
     k_fact = math.factorial(k)
     i_fact = math.factorial(i)
     k_i_fact = math.factorial(k - i)
-    return float(k_fact / (k_i_fact * i_fact))
+    return dtype(truediv(k_fact, (k_i_fact * i_fact)))
 
 
-def lu_decomposition(matrix_a):
+def lu_decomposition(matrix_a, **kwargs):
     """ LU-Factorization method using Doolittle's Method for solution of linear systems.
 
     Decomposes the matrix :math:`A` such that :math:`A = LU`.
@@ -559,11 +461,46 @@ def lu_decomposition(matrix_a):
     The input matrix is represented by a list or a tuple. The input matrix is **2-dimensional**, i.e. list of lists of
     integers and/or floats.
 
-    :param matrix_a: Input matrix (must be a square matrix)
+    :param matrix_a: input matrix (must be a square matrix)
     :type matrix_a: list, tuple
     :return: a tuple containing matrices L and U
     :rtype: tuple
     """
+    def _doolittle(ma, dt):
+        """ Doolittle's Method for LU-factorization.
+
+        :param ma: Input matrix (must be a square matrix)
+        :type ma: list, tuple
+        :param dt: data type
+        :type dt: type
+        :return: a tuple containing matrices (L,U)
+        :rtype: tuple
+        """
+        # Initialize L and U matrices
+        mu = [[dt(0.0) for _ in range(len(ma))] for _ in range(len(ma))]
+        ml = [[dt(0.0) for _ in range(len(ma))] for _ in range(len(ma))]
+
+        # Doolittle Method
+        for i in range(0, len(ma)):
+            for k in range(i, len(ma)):
+                # Upper triangular (U) matrix
+                mu[i][k] = ma[i][k] - sum([ml[i][j] * mu[j][k] for j in range(0, i)])
+                # Lower triangular (L) matrix
+                if i == k:
+                    ml[i][i] = dt(1.0)
+                else:
+                    ml[k][i] = ma[k][i] - sum([ml[k][j] * mu[j][i] for j in range(0, i)])
+                    # Handle zero division error
+                    try:
+                        ml[k][i] = truediv(ml[k][i], mu[i][i])
+                    except ZeroDivisionError:
+                        ml[k][i] = dt(0.0)
+
+        return ml, mu
+
+    # Data type, e.g. float, Decimal, etc.
+    dtype = kwargs.get('dtype', matrix_a[0][0])
+
     # Check if the 2-dimensional input matrix is a square matrix
     q = len(matrix_a)
     for idx, m_a in enumerate(matrix_a):
@@ -572,10 +509,10 @@ def lu_decomposition(matrix_a):
                              "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
 
     # Return L and U matrices
-    return _linalg.doolittle(matrix_a)
+    return _doolittle(matrix_a, dtype)
 
 
-def forward_substitution(matrix_l, matrix_b):
+def forward_substitution(matrix_l, matrix_b, **kwargs):
     """ Forward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ly = b` using forward substitution method
@@ -588,16 +525,17 @@ def forward_substitution(matrix_l, matrix_b):
     :return: y, column matrix
     :rtype: list
     """
+    dtype = kwargs.get('dtype', matrix_l[0][0])
     q = len(matrix_b)
-    matrix_y = [0.0 for _ in range(q)]
-    matrix_y[0] = float(matrix_b[0]) / float(matrix_l[0][0])
+    matrix_y = [dtype(0.0) for _ in range(q)]
+    matrix_y[0] = truediv(matrix_b[0], matrix_l[0][0])
     for i in range(1, q):
-        matrix_y[i] = float(matrix_b[i]) - sum([matrix_l[i][j] * matrix_y[j] for j in range(0, i)])
-        matrix_y[i] /= float(matrix_l[i][i])
+        matrix_y[i] = matrix_b[i] - sum([matrix_l[i][j] * matrix_y[j] for j in range(0, i)])
+        matrix_y[i] = truediv(matrix_y[i], matrix_l[i][i])
     return matrix_y
 
 
-def backward_substitution(matrix_u, matrix_y):
+def backward_substitution(matrix_u, matrix_y, **kwargs):
     """ Backward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ux = y` using backward substitution method
@@ -610,16 +548,17 @@ def backward_substitution(matrix_u, matrix_y):
     :return: x, column matrix
     :rtype: list
     """
+    dtype = kwargs.get('dtype', matrix_u[0][0])
     q = len(matrix_y)
-    matrix_x = [0.0 for _ in range(q)]
-    matrix_x[q - 1] = float(matrix_y[q - 1]) / float(matrix_u[q - 1][q - 1])
+    matrix_x = [dtype(0.0) for _ in range(q)]
+    matrix_x[q - 1] = truediv(matrix_y[q - 1], matrix_u[q - 1][q - 1])
     for i in range(q - 2, -1, -1):
-        matrix_x[i] = float(matrix_y[i]) - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
-        matrix_x[i] /= float(matrix_u[i][i])
+        matrix_x[i] = matrix_y[i] - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
+        matrix_x[i] = truediv(matrix_x[i], matrix_u[i][i])
     return matrix_x
 
 
-def lu_solve(matrix_a, b):
+def lu_solve(matrix_a, b, **kwargs):
     """ Computes the solution to a system of linear equations.
 
     This function solves :math:`Ax = b` using LU decomposition. :math:`A` is a
@@ -634,19 +573,21 @@ def lu_solve(matrix_a, b):
     :return: x, the solution matrix
     :rtype: list
     """
+    # Data type, e.g. float, Decimal, etc.
+    dtype = kwargs.get('dtype', matrix_a[0][0])
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
-    x = [[0.0 for _ in range(dim)] for _ in range(num_x)]
+    x = [[dtype(0.0) for _ in range(dim)] for _ in range(num_x)]
 
     # LU decomposition
-    m_l, m_u = lu_decomposition(matrix_a)
+    ml, mu = lu_decomposition(matrix_a, dtype=dtype)
 
     # Solve the system of linear equations
     for i in range(dim):
         bt = [b1[i] for b1 in b]
-        y = forward_substitution(m_l, bt)
-        xt = backward_substitution(m_u, y)
+        y = forward_substitution(ml, bt, dtype=dtype)
+        xt = backward_substitution(mu, y, dtype=dtype)
         for j in range(num_x):
             x[j][i] = xt[j]
 
@@ -654,7 +595,7 @@ def lu_solve(matrix_a, b):
     return x
 
 
-def lu_factor(matrix_a, b):
+def lu_factor(matrix_a, b, **kwargs):
     """ Computes the solution to a system of linear equations with partial pivoting.
 
     This function solves :math:`Ax = b` using LUP decomposition. :math:`A` is a
@@ -669,20 +610,22 @@ def lu_factor(matrix_a, b):
     :return: x, the solution matrix
     :rtype: list
     """
+    # Data type, e.g. float, Decimal, etc.
+    dtype = kwargs.get('dtype', matrix_a[0][0])
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
-    x = [[0.0 for _ in range(dim)] for _ in range(num_x)]
+    x = [[dtype(0.0) for _ in range(dim)] for _ in range(num_x)]
 
     # LUP decomposition
-    mp, p = matrix_pivot(matrix_a)
-    m_l, m_u = lu_decomposition(mp)
+    mp, p = matrix_pivot(matrix_a, dtype=dtype)
+    ml, mu = lu_decomposition(mp, dtype=dtype)
 
     # Solve the system of linear equations
     for i in range(dim):
         bt = [b1[i] for b1 in b]
-        y = forward_substitution(m_l, bt)
-        xt = backward_substitution(m_u, y)
+        y = forward_substitution(ml, bt)
+        xt = backward_substitution(mu, y)
         for j in range(num_x):
             x[j][i] = xt[j]
 
@@ -690,56 +633,52 @@ def lu_factor(matrix_a, b):
     return x
 
 
-def linspace(start, stop, num, decimals=18):
+def linspace(start, stop, num, dtype=float):
     """ Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
 
     :param start: starting value
-    :type start: float
     :param stop: end value
-    :type stop: float
     :param num: number of samples to generate
     :type num: int
-    :param decimals: number of significands
-    :type decimals: int
+    :param dtype: data type
+    :type dtype: type
     :return: a list of equally spaced numbers
     :rtype: list
     """
-    start = float(start)
-    stop = float(stop)
+    start = dtype(start)
+    stop = dtype(stop)
     if abs(start - stop) <= 10e-8:
         return [start]
     num = int(num)
     if num > 1:
         div = num - 1
         delta = stop - start
-        return [float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
-                for x in range(num)]
-    return [float(("{:." + str(decimals) + "f}").format(start))]
+        return [start + truediv(x * delta, div) for x in range(num)]
+    return [start]
 
 
-def frange(start, stop, step=1.0):
-    """ Implementation of Python's ``range()`` function which works with floats.
+def frange(start, stop, step=1.0, dtype=float):
+    """ Implementation of Python's ``range()`` function which works non-int numeric types.
 
     Reference to this implementation: https://stackoverflow.com/a/36091634
 
     :param start: start value
-    :type start: float
     :param stop: end value
-    :type stop: float
     :param step: increment
-    :type step: float
-    :return: float
+    :param dtype: data type
+    :type dtype: type
+    :return: Python generator instance
     :rtype: generator
     """
-    i = 0.0
-    x = float(start)  # Prevent yielding integers.
+    i = dtype(0.0)
+    x = dtype(start)  # Prevent yielding integers.
     x0 = x
-    epsilon = step / 2.0
+    epsilon = truediv(step, 2)
     yield x  # always yield first value
     while x + epsilon < stop:
-        i += 1.0
+        i += dtype(1.0)
         x = x0 + i * step
         yield x
     if stop > x:
