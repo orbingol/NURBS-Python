@@ -115,7 +115,6 @@ class GeomdlBase(object):
     This class provides the following keyword arguments:
 
     * ``id``: object ID (as an integer). *Default: 0*
-    * ``precision``: number of decimal places to round to. *Default: 12*
     """
     __slots__ = ('_idt', '_opt_data', '_cache')
 
@@ -124,7 +123,6 @@ class GeomdlBase(object):
             dimension=0,  # spatial dimension
             geometry_type=str(),  # geometry type
             name=str(),  # object name
-            precision=int(kwargs.get('precision', 12)),  # number of decimal places to round to
             id=int(kwargs.get('id', 0))  # object ID
         )
         self._opt_data = GeomdlDict()  # custom data dict
