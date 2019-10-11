@@ -3,11 +3,12 @@
     Released under The MIT License. See LICENSE file for details.
     Copyright (c) 2019 Onur Rauf Bingol
 
-    Tests control points manager module. Requires "pytest" to run.
+    Tests geomdl.control_points module. Requires "pytest" to run.
 """
 
 import pytest
 from geomdl.control_points import CPManager
+from geomdl.base import GeomdlError
 
 GEOMDL_TEST_CPTS1 = [
     [1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0], [9.0, 10.0], [11.0, 12.0]
@@ -111,3 +112,46 @@ def test_point_iter(cpman2d):
         for j in range(len(GEOMDL_TEST_CPTS2[i])):
             assert pt[j] == GEOMDL_TEST_CPTS2[i][j]
 
+
+def test_point_data1():
+    """ Control Points Manager: get-set attachment (valid, list) """
+    d = [0.0, 1.0, 2.0, 3.0]
+    p = 5
+    sz = 12
+    cpman = CPManager(sz, testdata=4)
+    cpman.set_ptdata(dict(testdata=d), p)
+    retv1 = cpman.get_ptdata('testdata', p)
+    retv2 = cpman.get_ptdata('testdata', p + 1)
+    assert retv1[2] == 2.0
+    assert retv2[2] == 0.0
+
+
+def test_point_data2():
+    """ Control Points Manager: get-set attachment (invalid, list) """
+    d = [0.0, 1.0, 2.0, 3.0]
+    p = 5
+    sz = 12
+    cpman = CPManager(sz, testdata=4)
+    cpman.set_ptdata(dict(testdata=d), p)
+    retv = cpman.get_ptdata('testdata2', p)
+    assert retv == None
+
+
+def test_point_data3():
+    """ Control Points Manager: get-set attachment (exception) """
+    with pytest.raises(GeomdlError):
+        d = [0.0, 1.0, 2.0, 3.0]
+        p = 5
+        sz = 12
+        cpman = CPManager(sz, testdata=3)
+        cpman.set_ptdata(dict(testdata=d), p)
+
+
+def test_point_data4():
+    """ Control Points Manager: get-set attachment (valid, float) """
+    d = 13
+    p = 5
+    sz = 12
+    cpman = CPManager(sz, testdata=1)
+    cpman.set_ptdata(dict(testdata=d), p)
+    assert cpman.get_ptdata('testdata', 5) == 13
