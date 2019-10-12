@@ -9,7 +9,7 @@
 
 import os
 import math
-from operator import add, sub, mul, truediv, pow
+from operator import add, sub, mul, truediv
 from copy import deepcopy
 from functools import reduce
 try:
@@ -499,7 +499,7 @@ def lu_decomposition(matrix_a, **kwargs):
         return ml, mu
 
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', matrix_a[0][0])
+    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
 
     # Check if the 2-dimensional input matrix is a square matrix
     q = len(matrix_a)
@@ -525,7 +525,7 @@ def forward_substitution(matrix_l, matrix_b, **kwargs):
     :return: y, column matrix
     :rtype: list
     """
-    dtype = kwargs.get('dtype', matrix_l[0][0])
+    dtype = kwargs.get('dtype', type(matrix_l[0][0]))
     q = len(matrix_b)
     matrix_y = [dtype(0.0) for _ in range(q)]
     matrix_y[0] = truediv(matrix_b[0], matrix_l[0][0])
@@ -548,7 +548,7 @@ def backward_substitution(matrix_u, matrix_y, **kwargs):
     :return: x, column matrix
     :rtype: list
     """
-    dtype = kwargs.get('dtype', matrix_u[0][0])
+    dtype = kwargs.get('dtype', type(matrix_u[0][0]))
     q = len(matrix_y)
     matrix_x = [dtype(0.0) for _ in range(q)]
     matrix_x[q - 1] = truediv(matrix_y[q - 1], matrix_u[q - 1][q - 1])
@@ -574,7 +574,7 @@ def lu_solve(matrix_a, b, **kwargs):
     :rtype: list
     """
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', matrix_a[0][0])
+    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
@@ -611,7 +611,7 @@ def lu_factor(matrix_a, b, **kwargs):
     :rtype: list
     """
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', matrix_a[0][0])
+    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
