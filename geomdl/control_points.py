@@ -206,7 +206,7 @@ class CPManager(GeomdlBase):
     __slots__ = ('_pt_data', '_cfg', '_iter_index')
 
     def __init__(self, *args, **kwargs):
-        super(CPManager, self).__init__(**kwargs)
+        super(CPManager, self).__init__(*args, **kwargs)
         # Configuration dictionary
         self._cfg = GeomdlDict(
             func_pts_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function

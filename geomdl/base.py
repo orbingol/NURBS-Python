@@ -118,7 +118,7 @@ class GeomdlBase(object):
     """
     __slots__ = ('_idt', '_opt_data', '_cache')
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self._idt = GeomdlDict(
             dimension=0,  # spatial dimension
             geometry_type=str(),  # geometry type

@@ -33,9 +33,9 @@ class Geometry(GeomdlBase):
     """
     # __slots__ = ('_iter_index', '_array_type', '_eval_points')
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self._geometry_type = "default" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
-        super(Geometry, self).__init__(**kwargs)
+        super(Geometry, self).__init__(*args, **kwargs)
         self._array_type = list if not hasattr(self, '_array_type') else self._array_type  # array storage type
         self._eval_points = self._init_array()  # evaluated points
 
