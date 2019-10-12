@@ -8,20 +8,22 @@
 """
 
 import abc
-import copy
 from .six import add_metaclass
-from .base import export, GeomdlTypeSequence, GeomdlError
+from .base import export, GeomdlBase, GeomdlTypeSequence, GeomdlError
 
 
 @add_metaclass(abc.ABCMeta)
-class AbstractEntity(object):
+class AbstractEntity(GeomdlBase):
     """ Abstract base class for all geometric entities. """
+    __slots__ = ('_data', '_iter_index')
+
     def __init__(self, *args, **kwargs):
-        self._name = "entity"  # object name
-        self._id = int(kwargs.get('id', 0))  # object ID
-        self._opt_data = dict()  # custom data dict
-        self._cache = {}  # cache dict
+        super(AbstractEntity, self).__init__(*args, **kwargs)
+        self._idt['name'] = "entity"  # object name
         self._data = []  # data storage array
+
+    def __str__(self):
+        return self.name + " " + str(self.id) + " " + str(self.data)
 
     def __cmp__(self, other):
         return (self.id > other.id) - (self.id < other.id)
@@ -67,137 +69,15 @@ class AbstractEntity(object):
     def __reversed__(self):
         return reversed(self._data)
 
-    def __copy__(self):
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        # Don't copy self reference
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(dict)
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
-
-    def __str__(self):
-        return self.name + " " + str(self.id) + " " + str(self.data)
-
-    __repr__ = __str__
-
-    @property
-    def id(self):
-        """ Object ID (as an integer).
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the object ID
-        :setter: Sets the object ID
-        :type: int
-        """
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        self._id = int(value)
-
-    @id.deleter
-    def id(self):
-        self._id = 0
-
-    @property
-    def name(self):
-        """ Object name (as a string)
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the object name
-        :setter: Sets the object name
-        :type: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = str(value)
-
-    @name.deleter
-    def name(self):
-        self._name = ""
-
-    @property
-    def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
-
-        ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
-        You can use ``opt`` property to store custom data inside the geometry object. For instance:
-
-        .. code-block:: python
-
-            geom.opt = ["face_id", 4]  # creates "face_id" key and sets its value to an integer
-            geom.opt = ["contents", "data values"]  # creates "face_id" key and sets its value to a string
-            print(geom.opt)  # will print: {'face_id': 4, 'contents': 'data values'}
-
-            del geom.opt  # deletes the contents of the hash map
-            print(geom.opt)  # will print: {}
-
-            geom.opt = ["body_id", 1]  # creates "body_id" key  and sets its value to 1
-            geom.opt = ["body_id", 12]  # changes the value of "body_id" to 12
-            print(geom.opt)  # will print: {'body_id': 12}
-
-            geom.opt = ["body_id", None]  # deletes "body_id"
-            print(geom.opt)  # will print: {}
-
-        :getter: Gets the dict
-        :setter: Adds key and value pair to the dict
-        :deleter: Deletes the contents of the dict
-        """
-        return self._opt_data
-
-    @opt.setter
-    def opt(self, key_value):
-        if not isinstance(key_value, GeomdlTypeSequence):
-            raise GeomdlError("opt input must be a list or a tuple")
-        if len(key_value) != 2:
-            raise GeomdlError("opt input must have a size of 2, corresponding to [0:key] => [1:value]")
-        if not isinstance(key_value[0], str):
-            raise GeomdlError("key must be string")
-
-        if key_value[1] is None:
-            self._opt_data.pop(*key_value)
-        else:
-            self._opt_data[key_value[0]] = key_value[1]
-
-    @opt.deleter
-    def opt(self):
-        self._opt_data = dict()
-
-    def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
-
-        :param value: a key in the :py:attr:`opt` property
-        :type value: str
-        :return: the corresponding value, if the key exists. ``None``, otherwise.
-        """
-        try:
-            return self._opt_data[value]
-        except KeyError:
-            return None
-
 
 @export
 class Vertex(AbstractEntity):
     """ 3-dimensional Vertex entity with spatial and parametric position. """
+    __slots__ = '_uv'
+
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
-        self._name = "vertex"
+        self._idt['name'] = "vertex"  # object name
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._opt_data['inside'] = False  # flag for trimming
@@ -385,7 +265,7 @@ class Triangle(AbstractEntity):
     """
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
-        self._name = "triangle"
+        self._idt['name'] = "triangle"  # object name
         self._opt_data['inside'] = False  # flag for trimming
         if args:
             self.add_vertex(*args)
@@ -505,7 +385,7 @@ class Quad(AbstractEntity):
 
     def __init__(self, *args, **kwargs):
         super(Quad, self).__init__(*args, **kwargs)
-        self._name = "quad"
+        self._idt['name'] = "quad"  # object name
         if args:
             self.data = args
 
@@ -555,7 +435,7 @@ class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
-        self._name = "face"
+        self._idt['name'] = "face"  # object name
         if args:
             self.add_triangle(*args)
 
@@ -590,7 +470,7 @@ class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
-        self._name = "body"
+        self._idt['name'] = "body"  # object name
         if args:
             self.add_face(*args)
 
