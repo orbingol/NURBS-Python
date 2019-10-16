@@ -39,3 +39,8 @@ __all__ = [
     'utilities',
     'voxelize'
 ]
+
+
+def geomdl_version():
+    """ Returns geomdl full version as a tuple """
+    return tuple(__version__.split('.'))
