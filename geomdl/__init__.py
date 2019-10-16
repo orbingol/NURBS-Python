@@ -9,12 +9,12 @@
 __version__ = "6.0a1"
 
 # Author and license
-__author__ = "Onur R. Bingol and The GEOMDL Contributors"
+__author__ = "Onur R. Bingol"
 __license__ = "MIT"
 
 # Optional variables
 __description__ = 'Object-oriented B-Spline and NURBS library'
-__keywords__ = 'NURBS B-Spline curve surface CAD modeling visualization surface-generator'
+__keywords__ = 'NURBS B-Spline curve surface volume computational-geometry CAD modeling visualization'
 
 # Support for "from geomdl import *"
 # @see: https://stackoverflow.com/a/41895257
@@ -25,7 +25,6 @@ __all__ = [
     'construct',
     'control_points',
     'convert',
-    'CPGen',
     'elements',
     'evaluators',
     'exchange',
@@ -51,3 +50,8 @@ GeomdlTypeSequence.register(tuple)
 
 # Default types for strings
 GeomdlTypeString.register(str)
+
+
+def geomdl_version():
+    """ Returns geomdl full version as a tuple """
+    return tuple(__version__.split('.'))
