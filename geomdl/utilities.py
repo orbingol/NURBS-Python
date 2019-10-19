@@ -3,18 +3,12 @@
     :platform: Unix, Windows
     :synopsis: Provides common utility functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import random
 from geomdl import linalg
-
-# Preserve the knot vector functions for compatibility
-from . import knotvector
-generate_knot_vector = knotvector.generate
-check_knot_vector = knotvector.check
-normalize_knot_vector = knotvector.normalize
 
 
 def color_generator(seed=None):

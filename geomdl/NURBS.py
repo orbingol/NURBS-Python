@@ -3,12 +3,12 @@
     :platform: Unix, Windows
     :synopsis: Provides data storage and evaluation functionality for rational spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 from . import BSpline, compatibility, evaluators
-from ._utilities import export
+from .base import export
 
 
 @export

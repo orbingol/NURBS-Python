@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides freeform geometry classes
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
@@ -12,9 +12,9 @@ from geomdl import abstract
 
 class Freeform(abstract.Geometry):
     """ n-dimensional freeform geometry """
-    def __init__(self, **kwargs):
-        super(Freeform, self).__init__(**kwargs)
-        self._geometry_type = "freeform"
+    def __init__(self, *args, **kwargs):
+        super(Freeform, self).__init__(*args, **kwargs)
+        self._idt['geometry_type'] = "freeform"
         self.name = "freeform geometry"
 
     @property
@@ -36,4 +36,4 @@ class Freeform(abstract.Geometry):
             * ``points``: sets the points
         """
         self._eval_points = kwargs.get('points', self._init_array())
-        self._dimension = len(self._eval_points[0])
+        self._idt['dimension'] = len(self._eval_points[0])

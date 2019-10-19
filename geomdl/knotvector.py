@@ -3,12 +3,13 @@
     :platform: Unix, Windows
     :synopsis: Provides utility functions related to knot vector generation and validation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
+from operator import truediv
 from .linalg import linspace
-from ._utilities import export
+from .base import export
 
 
 @export
@@ -39,6 +40,7 @@ def generate(degree, num_ctrlpts, **kwargs):
 
     # Get keyword arguments
     clamped = kwargs.get('clamped', True)
+    dtype = kwargs.get('dtype', float)
 
     # Number of repetitions at the start and end of the array
     num_repeat = degree
@@ -53,46 +55,35 @@ def generate(degree, num_ctrlpts, **kwargs):
         num_segments = degree + num_ctrlpts - 1
 
     # First knots
-    knot_vector = [0.0 for _ in range(0, num_repeat)]
+    knot_vector = [dtype(0.0) for _ in range(0, num_repeat)]
 
     # Middle knots
-    knot_vector += linspace(0.0, 1.0, num_segments + 2)
+    knot_vector += linspace(0.0, 1.0, num_segments + 2, dtype=dtype)
 
     # Last knots
-    knot_vector += [1.0 for _ in range(0, num_repeat)]
+    knot_vector += [dtype(1.0) for _ in range(0, num_repeat)]
 
     # Return auto-generated knot vector
     return knot_vector
 
 
 @export
-def normalize(knot_vector, decimals=18):
+def normalize(knot_vector, **kwargs):
     """ Normalizes the input knot vector to [0, 1] domain.
 
     :param knot_vector: knot vector to be normalized
     :type knot_vector: list, tuple
-    :param decimals: rounding number
-    :type decimals: int
     :return: normalized knot vector
     :rtype: list
     """
-    try:
-        if knot_vector is None or len(knot_vector) == 0:
-            raise ValueError("Input knot vector cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Knot vector must be a list or tuple")
-    except Exception:
-        raise
+    # Get keyword arguments
+    dtype = kwargs.get('dtype', float)
 
-    first_knot = float(knot_vector[0])
-    last_knot = float(knot_vector[-1])
+    first_knot = dtype(knot_vector[0])
+    last_knot = dtype(knot_vector[-1])
     denominator = last_knot - first_knot
 
-    knot_vector_out = [float(("{:." + str(decimals) + "f}").format((float(kv) - first_knot) / denominator))
-                       for kv in knot_vector]
-
-    return knot_vector_out
+    return [truediv(dtype(kv) - first_knot, denominator) for kv in knot_vector]
 
 
 @export
@@ -110,15 +101,6 @@ def check(degree, knot_vector, num_ctrlpts):
     :return: True if the knot vector is valid, False otherwise
     :rtype: bool
     """
-    try:
-        if knot_vector is None or len(knot_vector) == 0:
-            raise ValueError("Input knot vector cannot be empty")
-    except TypeError as e:
-        print("An error occurred: {}".format(e.args[-1]))
-        raise TypeError("Knot vector must be a list or tuple")
-    except Exception:
-        raise
-
     # Check the formula; m = p + n + 1
     if len(knot_vector) != degree + num_ctrlpts + 1:
         return False

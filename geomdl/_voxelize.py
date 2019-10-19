@@ -3,14 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Helper functions for voxelization module
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 from functools import partial
 from . import linalg
-from ._utilities import pool_context
-from .exceptions import GeomdlException
+from .ext_utils import pool_context
+from .base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -60,7 +60,7 @@ def generate_voxel_grid(bbox, szval, use_cubes=False):
     """
     # Input validation
     if szval[0] <= 1 or szval[1] <= 1 or szval[2] <= 1:
-        raise GeomdlException("Size values must be bigger than 1", data=dict(sizevals=szval))
+        raise GeomdlError("Size values must be bigger than 1", data=dict(sizevals=szval))
 
     # Find step size for each direction
     steps = [float(bbox[1][idx] - bbox[0][idx]) / float(szval[idx] - 1) for idx in range(0, 3)]

@@ -3,14 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Provides spline evaluation helper functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import os
 from copy import deepcopy
 from . import linalg
-from .exceptions import GeomdlException
+from .base import GeomdlError
 try:
     from functools import lru_cache
 except ImportError:
@@ -858,10 +858,10 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     # Input validity checking
     if check_num:
         if not isinstance(density, int):
-            raise GeomdlException("Density value must be an integer", data=dict(density=density))
+            raise GeomdlError("Density value must be an integer", data=dict(density=density))
 
         if density < 1:
-            raise GeomdlException("Density value cannot be less than 1", data=dict(density=density))
+            raise GeomdlError("Density value cannot be less than 1", data=dict(density=density))
 
     # Add additional knots to be refined
     if add_knot_list:
@@ -889,7 +889,7 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
 
     # Check if the knot refinement is possible
     if not X:
-        raise GeomdlException("Cannot refine knot vector on this parametric dimension")
+        raise GeomdlError("Cannot refine knot vector on this parametric dimension")
 
     # Initialize common variables
     r = len(X) - 1
@@ -977,9 +977,9 @@ def degree_elevation(degree, ctrlpts, **kwargs):
 
     if check_op:
         if degree + 1 != len(ctrlpts):
-            raise GeomdlException("Degree elevation can only work with Bezier-type geometries")
+            raise GeomdlError("Degree elevation can only work with Bezier-type geometries")
         if num <= 0:
-            raise GeomdlException("Cannot degree elevate " + str(num) + " times")
+            raise GeomdlError("Cannot degree elevate " + str(num) + " times")
 
     # Initialize variables
     num_pts_elev = degree + 1 + num
@@ -1019,9 +1019,9 @@ def degree_reduction(degree, ctrlpts, **kwargs):
 
     if check_op:
         if degree + 1 != len(ctrlpts):
-            raise GeomdlException("Degree reduction can only work with Bezier-type geometries")
+            raise GeomdlError("Degree reduction can only work with Bezier-type geometries")
         if degree < 2:
-            raise GeomdlException("Input spline geometry must have degree > 1")
+            raise GeomdlError("Input spline geometry must have degree > 1")
 
     # Initialize variables
     pts_red = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(degree)]

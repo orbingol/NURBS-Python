@@ -84,7 +84,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36  # Docker tag as an environmental variable
-      TAG2: latest
+      TAG2: py36
     <<: *defsteps
 
   # Build Docker image for Python v3.7
@@ -92,7 +92,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py37  # Docker tag as an environmental variable
-      TAG2: py37
+      TAG2: latest
     <<: *defsteps
 
   # Build Docker image for Python v3.5 w/ Alpine Linux
@@ -108,7 +108,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py36-alpine  # Docker tag as an environmental variable
-      TAG2: latest-alpine
+      TAG2: py36-alpine
     <<: *defsteps
 
   # Build Docker image for Python v3.7 w/ Alpine Linux
@@ -116,7 +116,7 @@ jobs:
     executor: docker_build_executor
     environment:
       TAG: py37-alpine  # Docker tag as an environmental variable
-      TAG2: py37-alpine
+      TAG2: latest-alpine
     <<: *defsteps
 
   # Build Docker image for PyPy3

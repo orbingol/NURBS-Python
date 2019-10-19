@@ -3,13 +3,14 @@
     :platform: Unix, Windows
     :synopsis: Provides ray data structures and operations
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
+.. moduleauthor:: Chris Horler
 
 """
 import sys
-
+from .doubledouble import DoubleDouble
 from . import linalg
-from ._utilities import export
+from .base import export, GeomdlTypeSequence
 
 
 @export
@@ -27,16 +28,16 @@ class Ray(object):
     """
     def __init__(self, point1, point2):
         super(Ray, self).__init__()
-        if not isinstance(point1, (list, tuple)):
+        if not isinstance(point1, GeomdlTypeSequence):
             raise TypeError("Point 1 must be a list or a tuple")
-        if not isinstance(point2, (list, tuple)):
+        if not isinstance(point2, GeomdlTypeSequence):
             raise TypeError("Point 2 must be a list or a tuple")
         if len(point1) != len(point2):
             raise ValueError("THe dimensions of the input points must be equal")
         else:
             self._dim = len(point1)
-        self._pt1 = [float(c) for c in point1]
-        self._pt2 = [float(c) for c in point2]
+        self._pt1 = [DoubleDouble(c) for c in point1]
+        self._pt2 = [DoubleDouble(c) for c in point2]
 
     @property
     def dimension(self):
@@ -140,7 +141,7 @@ def intersect(ray1, ray2, **kwargs):
         raise ValueError("Dimensions of the input rays must be the same")
 
     # Keyword arguments
-    tol = kwargs.get('tol', (1 << 8) * sys.float_info.epsilon)
+    tol = kwargs.get('tol', sys.float_info.epsilon)
 
     # Call intersection method
     if ray1.dimension == 2:
@@ -153,10 +154,10 @@ def intersect(ray1, ray2, **kwargs):
 
 def _intersect2d(ray1, ray2, tol):
     # Using homogeneous coordinates
-    r1_pt1 = list(ray1.points[0]) + [1.0]
-    r1_pt2 = list(ray1.points[1]) + [1.0]
-    r2_pt1 = list(ray2.points[0]) + [1.0]
-    r2_pt2 = list(ray2.points[1]) + [1.0]
+    r1_pt1 = list(ray1.points[0]) + [DoubleDouble(1.0)]
+    r1_pt2 = list(ray1.points[1]) + [DoubleDouble(1.0)]
+    r2_pt1 = list(ray2.points[0]) + [DoubleDouble(1.0)]
+    r2_pt2 = list(ray2.points[1]) + [DoubleDouble(1.0)]
 
     # Generate 3-dimensional rays
     ray1_3d = Ray(r1_pt1, r1_pt2)
