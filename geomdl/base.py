@@ -96,84 +96,54 @@ class GeomdlDict(dict):
 
 
 @add_metaclass(abc.ABCMeta)
-class GeomdlBase(object):
-    """ Abstract base class for defining geomdl objects
+class GeomdlObject(object):
+    """ Abstract base class for defining simple objects in geomdl
 
     This class provides the following properties:
 
-    * :py:attr:`type`
     * :py:attr:`id`
     * :py:attr:`name`
-    * :py:attr:`dimension`
-    * :py:attr:`opt`
-
-    This class provides the following methods:
-
-    * :py:meth:`get_opt`
-    * :py:meth:`reset`
 
     This class provides the following keyword arguments:
 
-    * ``id``: object ID (as an integer). *Default: 0*
+    * ``id``: object ID. *Default: 0*
+    * ``name``: object name. *Default: name of the class*
     """
-    __slots__ = ('_idt', '_opt_data', '_cache')
+    __slots__ = ('_name', '_id', '_cfg')
 
     def __init__(self, *args, **kwargs):
-        self._idt = GeomdlDict(
-            dimension=0,  # spatial dimension
-            geometry_type=str(),  # geometry type
-            name=str(),  # object name
-            id=int(kwargs.get('id', 0))  # object ID
-        )
-        self._opt_data = GeomdlDict()  # custom data dict
-        self._cache = GeomdlDict()  # cache dict
+        self._name = self._name = kwargs.get('name', self.__class__.__name__)  # object name
+        self._id = int(kwargs.get('id', 0))  # object ID
+        self._cfg = GeomdlDict()  # dict for storing configuration variables
 
     def __copy__(self):
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
+        # Copy all attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.copy(getattr(self, var)))
+        # Return updated instance
         return result
 
     def __deepcopy__(self, memo):
-        # Don't copy self reference
+        # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
+        # Don't copy self reference
         memo[id(self)] = result
         # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(dict)
-        # Copy all other attributes
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
+        memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
+        # Deep copy all other attributes
+        for var in self.__slots__:
+            setattr(result, var, copy.deepcopy(getattr(self, var), memo))
+        # Return updated instance
         return result
 
     def __str__(self):
         return self.name
 
     __repr__ = __str__
-
-    @property
-    def dimension(self):
-        """ Spatial dimension
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
-        :type: int
-        """
-        return self._idt['dimension']
-
-    @property
-    def type(self):
-        """ Geometry type
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the geometry type
-        :type: str
-        """
-        return self._idt['geometry_type']
 
     @property
     def id(self):
@@ -186,15 +156,15 @@ class GeomdlBase(object):
         :setter: Sets the object ID
         :type: int
         """
-        return self._idt['id']
+        return self._id
 
     @id.setter
     def id(self, value):
-        self._idt['id'] = int(value)
+        self._id = int(value)
 
     @id.deleter
     def id(self):
-        self._idt['id'] = 0
+        self._id = 0
 
     @property
     def name(self):
@@ -207,15 +177,72 @@ class GeomdlBase(object):
         :setter: Sets the object name
         :type: str
         """
-        return self._idt['name']
+        return self._name
 
     @name.setter
     def name(self, value):
-        self._idt['name'] = str(value)
+        self._name = str(value)
 
     @name.deleter
     def name(self):
-        self._idt['name'] = str()
+        self._name = str()
+
+
+@add_metaclass(abc.ABCMeta)
+class GeomdlBase(GeomdlObject):
+    """ Abstract base class for defining geomdl objects
+
+    This class provides the following properties:
+
+    * :py:attr:`id`
+    * :py:attr:`name`
+    * :py:attr:`type`
+    * :py:attr:`dimension`
+    * :py:attr:`opt`
+
+    This class provides the following methods:
+
+    * :py:meth:`get_opt`
+    * :py:meth:`reset`
+
+    This class provides the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
+    * ``name``: object name. *Default: name of the class*
+    """
+    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache')
+
+    def __init__(self, *args, **kwargs):
+        super(GeomdlBase, self).__init__(*args, **kwargs)
+        self._dimension = 0  # spatial dimension
+        self._geom_type = str()  # geometry type
+        self._opt_data = GeomdlDict()  # dict for storing arbitrary data
+        self._cfg = GeomdlDict()  # dict for storing configuration variables
+        self._cache = GeomdlDict()  # cache dict
+
+    @property
+    def dimension(self):
+        """ Spatial dimension
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
+        :type: int
+        """
+        return self._dim
+
+    @property
+    def type(self):
+        """ Geometry type
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the geometry type
+        :type: str
+        """
+        return self._geom_type
 
     @property
     def opt(self):
@@ -286,34 +313,35 @@ class GeomdlBase(object):
 
 
 @add_metaclass(abc.ABCMeta)
-class GeomdlEvaluator(object):
-    """ Abstract base class for implementations of fundamental spline algorithms, such as evaluate and derivative
+class GeomdlEvaluator(GeomdlObject):
+    """ Abstract base class for implementations of fundamental algorithms
 
-    **Abstract Methods**:
+    This class provides the following properties:
 
-    * ``evaluate`` is used for computation of the complete spline shape
-    * ``derivative_single`` is used for computation of derivatives at a single parametric coordinate
+    * :py:attr:`id`
+    * :py:attr:`name`
 
-    Please note that this class requires the keyword argument ``find_span_func`` to be set to a valid find_span
-    function implementation. Please see :py:mod:`helpers` module for details.
+    This class provides the following ABSTRACT methods:
+
+    * :py:meth:`evaluate`
+    * :py:meth:`derivatives_single`
+
+    This class provides the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
+    * ``name``: object name. *Default: name of the class*
+    * ``config_find_span``: function to find the span on the knot vector
+
+    Please refer to :py:mod:`helpers` module for details on ``FindSpan`` implementations.
     """
 
-    def __init__(self, **kwargs):
-        self._name = kwargs.get('name', self.__class__.__name__)
-        self._span_func = kwargs.get('find_span_func', None)
-
-    @property
-    def name(self):
-        """ Evaluator name.
-
-        :getter: Gets the name of the evaluator
-        :type: str
-        """
-        return self._name
+    def __init__(self, *args, **kwargs):
+        super(GeomdlEvaluator, self).__init__(*args, **kwargs)
+        self.cfg['func_find_span'] = kwargs.get('config_find_span', None)
 
     @abc.abstractmethod
     def evaluate(self, datadict, **kwargs):
-        """ Abstract method for evaluation of points on the spline geometry.
+        """ Abstract method for evaluation of points
 
         .. note::
 
@@ -345,7 +373,7 @@ class GeomdlEvaluator(object):
 # Following classes allows extensibility via registering additional input types.
 @add_metaclass(abc.ABCMeta)
 class GeomdlTypeSequence(object):
-    """ Abstract base class for supported sequence types."""
+    """ Abstract base class for supported sequence types. """
     pass
 
 
@@ -353,4 +381,3 @@ class GeomdlTypeSequence(object):
 class GeomdlTypeString(object):
     """ Abstract base class for supported string types. """
     pass
-
