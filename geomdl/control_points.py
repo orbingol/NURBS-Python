@@ -7,7 +7,6 @@
 
 """
 
-import copy
 from functools import reduce
 from decimal import Decimal
 from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
