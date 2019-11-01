@@ -198,27 +198,25 @@ class CPManager(GeomdlBase):
 
     This class provides the following keyword arguments:
 
-    * ``config_ctrlpts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
-    * ``config_ctrlpts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
-    * ``config_ctrlpt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
+    * ``config_pts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
+    * ``config_pts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
+    * ``config_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
     * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_pt_data', '_cfg', '_iter_index')
+    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_iter_index')
 
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
-        # Configuration dictionary
-        self._cfg = GeomdlDict(
-            func_pts_init=kwargs.pop('config_ctrlpts_init', default_ctrlpts_init),  # control points init function
-            func_pts_set=kwargs.pop('config_ctrlpts_set', default_ctrlpts_set),  # control points set function
-            func_pt_set=kwargs.pop('config_ctrlpt_set', default_ctrlpt_set),  # control point set function
-            func_find_index=kwargs.pop('config_find_index', default_find_index)  # index finding function
-        )
-        # Start constructing the internal data structures
-        self._idt['size'] = tuple(int(arg) for arg in args)  # size in all parametric dimensions
-        self._idt['count'] = reduce(lambda x, y: x * y, self.size)  # total number of control points
-        # Initialize control points
-        self._idt['control_points'], self._pt_data = self._cfg['func_pts_init'](self.count, **kwargs)
+        # Update configuration dictionary
+        self._cfg['func_pts_init'] = kwargs.pop('config_pts_init', default_ctrlpts_init),  # points init function
+        self._cfg['func_pts_set'] = kwargs.pop('config_pts_set', default_ctrlpts_set),  # points set function
+        self._cfg['func_pt_set'] = kwargs.pop('config_pt_set', default_ctrlpt_set),  # single point set function
+        self._cfg['func_find_index'] = kwargs.pop('config_find_index', default_find_index)  # index finding function
+        # Update size and count
+        self._size = tuple(int(arg) for arg in args)  # size in all parametric dimensions
+        self._count = reduce(lambda x, y: x * y, self.size)  # total number of control points
+        # Initialize control points and associated data container
+        self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def __call__(self):
         return self.points
@@ -232,7 +230,7 @@ class CPManager(GeomdlBase):
 
     def __next__(self):
         try:
-            result = self._idt['control_points'][self._iter_index]
+            result = self._pts[self._iter_index]
         except IndexError:
             raise StopIteration
         self._iter_index += 1
@@ -242,16 +240,16 @@ class CPManager(GeomdlBase):
         return self.count
 
     def __reversed__(self):
-        return reversed(self._idt['control_points'])
+        return reversed(self._pts)
 
     def __getitem__(self, item):
         if isinstance(item, int):
-            return self._idt['control_points'][item]
+            return self._pts[item]
         if isinstance(item, tuple):
             if len(item) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *item)
-            return self._idt['control_points'][idx]
+            return self._pts[idx]
         raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + item.__class__.__name__)
 
     def __setitem__(self, key, value):
@@ -265,39 +263,15 @@ class CPManager(GeomdlBase):
         if len(value) != self.dimension:
             raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
         if isinstance(key, int):
-            self._cfg['func_pt_set'](self._idt['control_points'], key, value)
+            self._cfg['func_pt_set'](self._pts, key, value)
             return
         if isinstance(key, tuple):
             if len(key) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *key)
-            self._cfg['func_pt_set'](self._idt['control_points'], idx, value)
+            self._cfg['func_pt_set'](self._pts, idx, value)
             return
         raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
-
-    def __copy__(self):
-        # Create a new instance
-        cls = self.__class__
-        result = cls.__new__(cls)
-        # Copy all attributes
-        for var in self.__slots__:
-            setattr(result, var, copy.copy(getattr(self, var)))
-        # Return updated instance
-        return result
-
-    def __deepcopy__(self, memo):
-        # Create a new instance
-        cls = self.__class__
-        result = cls.__new__(cls)
-        # Don't copy self reference
-        memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
-        # Deep copy all other attributes
-        for var in self.__slots__:
-            setattr(result, var, copy.deepcopy(getattr(self, var), memo))
-        # Return updated instance
-        return result
 
     def __getattr__(self, attr):
         if attr in GEOMDL_PDIM_ATTRS:
@@ -319,7 +293,7 @@ class CPManager(GeomdlBase):
         :getter: Gets the control points (as a ``tuple``)
         :setter: Sets the control points
         """
-        return tuple(self._idt['control_points'])
+        return tuple(self._pts)
 
     @points.setter
     def points(self, value):
@@ -333,11 +307,11 @@ class CPManager(GeomdlBase):
         if self.dimension < 1:
             self._idt['dimension'] = len(value[0])
         # Set control points
-        self._cfg['func_pts_set'](value, self.dimension, self._idt['control_points'])
+        self._cfg['func_pts_set'](value, self.dimension, self._pts)
 
     @property
     def points_data(self):
-        return self._pt_data
+        return self._ptsd
 
     @property
     def size(self):
@@ -348,7 +322,7 @@ class CPManager(GeomdlBase):
 
         :getter: Gets the number of the control points (as a ``tuple``)
         """
-        return self._idt['size']
+        return self._size
 
     @property
     def count(self):
@@ -359,7 +333,7 @@ class CPManager(GeomdlBase):
 
         :getter: Gets the total number of the control points (as an ``int``)
         """
-        return self._idt['count']
+        return self._count
 
     def reset(self, **kwargs):
         """ Resets the control points """
@@ -390,7 +364,7 @@ class CPManager(GeomdlBase):
         idx = self._cfg['func_find_index'](self.size, *args)
         # Return the attached data
         try:
-            return self._pt_data[dkey][idx]
+            return self._ptsd[dkey][idx]
         except IndexError:
             return None
         except KeyError:
@@ -407,12 +381,12 @@ class CPManager(GeomdlBase):
         # Attach the data to the control point
         try:
             for k, val in adct.items():
-                if k in self._pt_data:
+                if k in self._ptsd:
                     if isinstance(val, GeomdlTypeSequence):
                         for j, v in enumerate(val):
-                            self._pt_data[k][idx][j] = v
+                            self._ptsd[k][idx][j] = v
                     else:
-                        self._pt_data[k][idx] = val
+                        self._ptsd[k][idx] = val
                 else:
                     raise GeomdlError("Invalid key: " + str(k))
         except IndexError:
