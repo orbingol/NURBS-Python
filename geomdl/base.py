@@ -131,32 +131,32 @@ class GeomdlList(list):
         __setslice__ = notifylist_callback(list.__setslice__)
         __delslice__ = notifylist_callback(list.__delslice__)
 
-        def __getslice__(self,*args):
-            return self.__class__(list.__getslice__(self,*args))
+        def __getslice__(self, *args):
+            return self.__class__(list.__getslice__(self, *args))
 
-    def __getitem__(self,item):
+    def __getitem__(self, item):
         if isinstance(item,slice):
-            return self.__class__(list.__getitem__(self,item))
+            return self.__class__(list.__getitem__(self, item))
         else:
-            return list.__getitem__(self,item)
+            return list.__getitem__(self, item)
 
-    def __init__(self,*args):
-        list.__init__(self,*args)
+    def __init__(self, *args):
+        list.__init__(self, *args)
         self._callbacks = []
         self._callback_cntr = 0
 
-    def register_callback(self,cb):
-        self._callbacks.append((self._callback_cntr,cb))
+    def register_callback(self, cb):
+        self._callbacks.append((self._callback_cntr, cb))
         self._callback_cntr += 1
         return self._callback_cntr - 1
 
-    def unregister_callback(self,cbid):
+    def unregister_callback(self, cbid):
         for idx, (i, cb) in enumerate(self._callbacks):
             if i == cbid:
                 self._callbacks.pop(idx)
                 return cb
-        else:
-            return None
+            else:
+                return None
 
 
 @add_metaclass(abc.ABCMeta)
