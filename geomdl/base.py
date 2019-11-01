@@ -16,6 +16,9 @@ from .six import add_metaclass
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
+# Get Python version
+_pyversion = sys.version_info[0]
+
 
 def export(fn):
     """ Export decorator
@@ -93,6 +96,67 @@ class GeomdlWarning(Warning):
 class GeomdlDict(dict):
     """ A weak referencable dict class """
     pass
+
+
+# https://stackoverflow.com/a/13259435/1162349
+def notifylist_callback(func):
+    """ Callback function for GeomdlList
+
+    Contributed by Chris Horler.
+    """
+    def notify(self, *args, **kwargs):
+        for _, callback in self._callbacks:
+            callback()
+        return func(self, *args, **kwargs)
+    return notify
+
+
+# https://stackoverflow.com/a/13259435/1162349
+class GeomdlList(list):
+    """ A list class with callback handlers for list modification
+
+    Contributed by Chris Horler.
+    """
+    extend = notifylist_callback(list.extend)
+    append = notifylist_callback(list.append)
+    remove = notifylist_callback(list.remove)
+    pop = notifylist_callback(list.pop)
+    __delitem__ = notifylist_callback(list.__delitem__)
+    __setitem__ = notifylist_callback(list.__setitem__)
+    __iadd__ = notifylist_callback(list.__iadd__)
+    __imul__ = notifylist_callback(list.__imul__)
+
+    # Take care to return a new NotifyList if we slice it.
+    if _pyversion < 3:
+        __setslice__ = notifylist_callback(list.__setslice__)
+        __delslice__ = notifylist_callback(list.__delslice__)
+
+        def __getslice__(self,*args):
+            return self.__class__(list.__getslice__(self,*args))
+
+    def __getitem__(self,item):
+        if isinstance(item,slice):
+            return self.__class__(list.__getitem__(self,item))
+        else:
+            return list.__getitem__(self,item)
+
+    def __init__(self,*args):
+        list.__init__(self,*args)
+        self._callbacks = []
+        self._callback_cntr = 0
+
+    def register_callback(self,cb):
+        self._callbacks.append((self._callback_cntr,cb))
+        self._callback_cntr += 1
+        return self._callback_cntr - 1
+
+    def unregister_callback(self,cbid):
+        for idx, (i, cb) in enumerate(self._callbacks):
+            if i == cbid:
+                self._callbacks.pop(idx)
+                return cb
+        else:
+            return None
 
 
 @add_metaclass(abc.ABCMeta)
@@ -354,7 +418,7 @@ class GeomdlEvaluator(GeomdlObject):
 
     @abc.abstractmethod
     def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
-        """ Abstract method for evaluation of the n-th order derivatives at the input parametric position.
+        """ Abstract method for evaluation of the n-th order derivatives at the input parametric position
 
         .. note::
 
@@ -373,11 +437,11 @@ class GeomdlEvaluator(GeomdlObject):
 # Following classes allows extensibility via registering additional input types.
 @add_metaclass(abc.ABCMeta)
 class GeomdlTypeSequence(object):
-    """ Abstract base class for supported sequence types. """
+    """ Abstract base class for supported sequence types """
     pass
 
 
 @add_metaclass(abc.ABCMeta)
 class GeomdlTypeString(object):
-    """ Abstract base class for supported string types. """
+    """ Abstract base class for supported string types """
     pass
