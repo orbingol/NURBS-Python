@@ -135,6 +135,21 @@ Why doesn't NURBS-Python follow the algorithms?
 Actually, NURBS-Python does follow the algorithms pretty much all the time. However, as stated above, the implementation
 that you are looking at might not belong to an algorithm, but an equation or a concept.
 
+I was wondering how XYZ algorithm works
+=======================================
+
+Please refer to the books and papers in the :doc:`Introduction <introduction>` section. Sometimes, it is very easy to
+miss some important points; such as issues with the dimensionality.
+If you still have any questions, feel free to email ``nurbs-python@googlegroups.com``.
+
+Please prove XYZ algorithm
+==========================
+
+Due to the nature of the question, I will leave this to you. I strongly recommend the function/class reference as your
+starting point to prove the algorithm. It should contain at least a reference or some details you could be missing.
+You may always refer to the books and papers in the :doc:`Introduction <introduction>` section.
+If you still have questions, feel free to email ``nurbs-python@googlegroups.com``.
+
 NURBS-Python API changes
 ========================
 
