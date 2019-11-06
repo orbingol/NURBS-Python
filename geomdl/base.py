@@ -98,7 +98,7 @@ class GeomdlDict(dict):
     pass
 
 
-# https://stackoverflow.com/a/13259435/1162349
+# Ref: https://stackoverflow.com/a/13259435/1162349
 def notifylist_callback(func):
     """ Callback function for GeomdlList
 
@@ -111,7 +111,7 @@ def notifylist_callback(func):
     return notify
 
 
-# https://stackoverflow.com/a/13259435/1162349
+# Ref: https://stackoverflow.com/a/13259435/1162349
 class GeomdlList(list):
     """ A list class with callback handlers for list modification
 
@@ -159,157 +159,6 @@ class GeomdlList(list):
                 return None
 
 
-# Parametric dimension names
-GEOMDL_PDIM_ATTRS = GeomdlDict(u=0, v=1, w=2)
-
-
-class GeomdlProperty(object):
-    """ Controls properties that depend on the number of parametric dimensions
-
-    :param dim: number of dimensions of the property
-    :type dim: int
-    :param ival: initialization value
-    :type ival: any type, e.g. int, list, str
-    """
-    __slots__ = ('_dim', '_data', '_iter_index')
-
-    def __init__(self, dim, ival=0):
-        self._dim = dim
-        self._data = [ival for _ in range(self._dim)]
-
-    def __str__(self):
-        return "{}".format(self._data)
-
-    __repr__ = __str__
-
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
-    def __next__(self):
-        try:
-            result = self._data[self._iter_index]
-        except IndexError:
-            raise StopIteration
-        self._iter_index += 1
-        return result
-
-    def __len__(self):
-        return self._dim
-
-    def __reversed__(self):
-        return reversed(self._data)
-
-    def __getitem__(self, item):
-        try:
-            return self._data[item]
-        except IndexError:
-            raise IndexError("assignment index out of range, min: 0 and max:" + str(self._dim - 1))
-        except TypeError:
-            raise TypeError("indices must be integer, not " + item.__class__.__name__)
-        except Exception as e:
-            raise e
-
-    def __setitem__(self, key, value):
-        try:
-            self._data[key] = value
-            return
-        except IndexError:
-            raise IndexError("assignment index out of range, min: 0 and max:" + str(self._dim - 1))
-        except TypeError:
-            raise TypeError("indices must be integer, not " + key.__class__.__name__)
-        except Exception as e:
-            raise e
-
-    def __getattr__(self, attr):
-        if attr in GEOMDL_PDIM_ATTRS:
-            try:
-                return self._data[GEOMDL_PDIM_ATTRS[attr]]
-            except IndexError:
-                raise AttributeError(attr)
-        if attr not in self.__slots__:
-            raise AttributeError(attr)
-        # Ref: https://stackoverflow.com/a/19566973/3345747
-        GeomdlProperty.__dict__['__dict__'].__get__(self, attr)
-
-    def __setattr__(self, key, value):
-        if key in GEOMDL_PDIM_ATTRS:
-            try:
-                self._data[GEOMDL_PDIM_ATTRS[key]] = value
-                return
-            except IndexError:
-                raise AttributeError(key)
-        if key not in self.__slots__:
-            raise AttributeError(key)
-        # Ref: https://stackoverflow.com/a/19566973/3345747
-        GeomdlProperty.__dict__[key].__set__(self, value)
-
-    def __copy__(self):
-        # Create a new instance
-        cls = self.__class__
-        result = cls.__new__(cls)
-        # Copy all attributes
-        for var in self.__slots__:
-            setattr(result, var, copy.copy(getattr(self, var)))
-        # Return updated instance
-        return result
-
-    def __deepcopy__(self, memo):
-        # Create a new instance
-        cls = self.__class__
-        result = cls.__new__(cls)
-        # Don't copy self reference
-        memo[id(self)] = result
-        # Deep copy all attributes
-        for var in self.__slots__:
-            setattr(result, var, copy.deepcopy(getattr(self, var), memo))
-        # Return updated instance
-        return result
-
-    def __add__(self, other):
-        if isinstance(other, self.__class__):
-            res = [a + b for a, b in zip(self._data, other._data)]
-        else:
-            res = [a + other for a in self._data]
-        ret = GeomdlProperty(dim=self._dim)
-        ret._data = res
-        return ret
-
-    def __radd__(self, other):
-        if other == 0:
-            return self
-        else:
-            return self.__add__(other)
-
-    def __iadd__(self, other):
-        res = self.__add__(other)
-        self._data = res._data
-        return self
-
-    def __sub__(self, other):
-        if isinstance(other, self.__class__):
-            res = [a - b for a, b in zip(self._data, other._data)]
-        else:
-            res = [a - other for a in self._data]
-        ret = GeomdlProperty(dim=self._dim)
-        ret._data = res
-        return ret
-
-    def __rsub__(self, other):
-        if other == 0:
-            return self
-        else:
-            return self.__add__(other)
-
-    def __isub__(self, other):
-        res = self.__sub__(other)
-        self._data = res._data
-        return self
-
-
 @add_metaclass(abc.ABCMeta)
 class GeomdlObject(object):
     """ Abstract base class for defining simple objects in geomdl
@@ -324,12 +173,32 @@ class GeomdlObject(object):
     * ``id``: object ID. *Default: 0*
     * ``name``: object name. *Default: name of the class*
     """
-    __slots__ = ('_name', '_id', '_cfg')
+    __slots__ = ('_name', '_id', '_cfg', '_iter_index')
 
     def __init__(self, *args, **kwargs):
-        self._name = self._name = kwargs.get('name', self.__class__.__name__)  # object name
+        self._name = kwargs.get('name', self.__class__.__name__)  # object name
         self._id = int(kwargs.get('id', 0))  # object ID
         self._cfg = GeomdlDict()  # dict for storing configuration variables
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
+
+    def __getitem__(self, index):
+        return self
+
 
     def __copy__(self):
         # Create a new instance
@@ -425,7 +294,7 @@ class GeomdlBase(GeomdlObject):
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
     """
-    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache', '_iter_index')
+    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache')
 
     def __init__(self, *args, **kwargs):
         super(GeomdlBase, self).__init__(*args, **kwargs)
@@ -434,25 +303,6 @@ class GeomdlBase(GeomdlObject):
         self._opt_data = GeomdlDict()  # dict for storing arbitrary data
         self._cfg = GeomdlDict()  # dict for storing configuration variables
         self._cache = GeomdlDict()  # cache dict
-
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
-    def __next__(self):
-        if self._iter_index > 0:
-            raise StopIteration
-        self._iter_index += 1
-        return self
-
-    def __len__(self):
-        return 1
-
-    def __getitem__(self, index):
-        return self
 
     @property
     def dimension(self):
@@ -602,6 +452,137 @@ class GeomdlEvaluator(GeomdlObject):
         :type deriv_order: int
         """
         pass
+
+
+# Parametric dimension names
+GEOMDL_PDIM_ATTRS = GeomdlDict(u=0, v=1, w=2)
+
+
+class GeomdlProperty(GeomdlObject):
+    """ Stores properties that depend on the number of parametric dimensions
+
+    This class provides the following properties:
+
+    * :py:attr:`id`
+    * :py:attr:`name`
+
+    This class provides the following keyword arguments:
+
+    * ``id``: object ID. *Default: 0*
+    * ``name``: object name. *Default: name of the class*
+
+    :param dim: number of dimensions of the property
+    :type dim: int
+    :param ival: initialization value
+    :type ival: any type, e.g. int, list, str
+    """
+    __slots__ = ('_dim', '_data')
+
+    def __init__(self, dim, ival=0, *args, **kwargs):
+        super(GeomdlProperty, self).__init__(*args, **kwargs)
+        self._dim = dim
+        self._data = [ival for _ in range(self._dim)]
+
+    def __str__(self):
+        return "{}".format(self._data)
+
+    def __next__(self):
+        try:
+            result = self._data[self._iter_index]
+        except IndexError:
+            raise StopIteration
+        self._iter_index += 1
+        return result
+
+    def __len__(self):
+        return self._dim
+
+    def __reversed__(self):
+        return reversed(self._data)
+
+    def __getitem__(self, item):
+        try:
+            return self._data[item]
+        except IndexError:
+            raise IndexError("assignment index out of range, min: 0 and max:" + str(self._dim - 1))
+        except TypeError:
+            raise TypeError("indices must be integer, not " + item.__class__.__name__)
+        except Exception as e:
+            raise e
+
+    def __setitem__(self, key, value):
+        try:
+            self._data[key] = value
+            return
+        except IndexError:
+            raise IndexError("assignment index out of range, min: 0 and max:" + str(self._dim - 1))
+        except TypeError:
+            raise TypeError("indices must be integer, not " + key.__class__.__name__)
+        except Exception as e:
+            raise e
+
+    def __getattr__(self, attr):
+        if attr in GEOMDL_PDIM_ATTRS:
+            try:
+                return self._data[GEOMDL_PDIM_ATTRS[attr]]
+            except IndexError:
+                raise AttributeError(attr)
+        if attr not in self.__slots__:
+            raise AttributeError(attr)
+        # Ref: https://stackoverflow.com/a/19566973/3345747
+        GeomdlProperty.__dict__['__dict__'].__get__(self, attr)
+
+    def __setattr__(self, key, value):
+        if key in GEOMDL_PDIM_ATTRS:
+            try:
+                self._data[GEOMDL_PDIM_ATTRS[key]] = value
+                return
+            except IndexError:
+                raise AttributeError(key)
+        if key not in self.__slots__:
+            raise AttributeError(key)
+        # Ref: https://stackoverflow.com/a/19566973/3345747
+        GeomdlProperty.__dict__[key].__set__(self, value)
+
+    def __add__(self, other):
+        if isinstance(other, self.__class__):
+            res = [a + b for a, b in zip(self._data, other._data)]
+        else:
+            res = [a + other for a in self._data]
+        ret = GeomdlProperty(dim=self._dim)
+        ret._data = res
+        return ret
+
+    def __radd__(self, other):
+        if other == 0:
+            return self
+        else:
+            return self.__add__(other)
+
+    def __iadd__(self, other):
+        res = self.__add__(other)
+        self._data = res._data
+        return self
+
+    def __sub__(self, other):
+        if isinstance(other, self.__class__):
+            res = [a - b for a, b in zip(self._data, other._data)]
+        else:
+            res = [a - other for a in self._data]
+        ret = GeomdlProperty(dim=self._dim)
+        ret._data = res
+        return ret
+
+    def __rsub__(self, other):
+        if other == 0:
+            return self
+        else:
+            return self.__add__(other)
+
+    def __isub__(self, other):
+        res = self.__sub__(other)
+        self._data = res._data
+        return self
 
 
 # Following classes allows extensibility via registering additional input types.
