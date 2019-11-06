@@ -220,13 +220,6 @@ class CPManager(GeomdlBase):
     def __call__(self):
         return self.points
 
-    def __iter__(self):
-        self._iter_index = 0
-        return self
-
-    def next(self):
-        return self.__next__()
-
     def __next__(self):
         try:
             result = self._pts[self._iter_index]

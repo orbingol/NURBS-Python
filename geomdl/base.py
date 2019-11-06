@@ -274,7 +274,7 @@ class GeomdlBase(GeomdlObject):
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
     """
-    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache')
+    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache', '_iter_index')
 
     def __init__(self, *args, **kwargs):
         super(GeomdlBase, self).__init__(*args, **kwargs)
@@ -283,6 +283,25 @@ class GeomdlBase(GeomdlObject):
         self._opt_data = GeomdlDict()  # dict for storing arbitrary data
         self._cfg = GeomdlDict()  # dict for storing configuration variables
         self._cache = GeomdlDict()  # cache dict
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self._iter_index > 0:
+            raise StopIteration
+        self._iter_index += 1
+        return self
+
+    def __len__(self):
+        return 1
+
+    def __getitem__(self, index):
+        return self
 
     @property
     def dimension(self):
