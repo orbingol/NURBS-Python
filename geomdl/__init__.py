@@ -51,6 +51,7 @@ GeomdlTypeSequence.register(tuple)
 # Default types for strings
 GeomdlTypeString.register(str)
 
+
 def geomdl_version():
     """ Returns geomdl full version as a tuple """
     return tuple(__version__.split('.'))
