@@ -301,7 +301,6 @@ class GeomdlBase(GeomdlObject):
         self._dimension = 0  # spatial dimension
         self._geom_type = str()  # geometry type
         self._opt_data = GeomdlDict()  # dict for storing arbitrary data
-        self._cfg = GeomdlDict()  # dict for storing configuration variables
         self._cache = GeomdlDict()  # cache dict
 
     @property
