@@ -2,7 +2,11 @@
 
 Welcome to geomdl, a pure Python B-spline and NURBS library!
 
-This image provides geomdl module and geomdl-cli command line application.
+This image contains the following packages:
+
+* geomdl
+* geomdl.shapes
+* geomdl-cli
 
 You can find the examples under the following directory:
 
