@@ -207,9 +207,9 @@ class CPManager(GeomdlBase):
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
         # Update configuration dictionary
-        self._cfg['func_pts_init'] = kwargs.pop('config_pts_init', default_ctrlpts_init),  # points init function
-        self._cfg['func_pts_set'] = kwargs.pop('config_pts_set', default_ctrlpts_set),  # points set function
-        self._cfg['func_pt_set'] = kwargs.pop('config_pt_set', default_ctrlpt_set),  # single point set function
+        self._cfg['func_pts_init'] = kwargs.pop('config_pts_init', default_ctrlpts_init)  # points init function
+        self._cfg['func_pts_set'] = kwargs.pop('config_pts_set', default_ctrlpts_set)  # points set function
+        self._cfg['func_pt_set'] = kwargs.pop('config_pt_set', default_ctrlpt_set)  # single point set function
         self._cfg['func_find_index'] = kwargs.pop('config_find_index', default_find_index)  # index finding function
         # Update size and count
         self._size = tuple(int(arg) for arg in args)  # size in all parametric dimensions
