@@ -187,10 +187,10 @@ class GeomdlList(object):
         return result
 
     def __len__(self):
-        return self.count
+        return len(self._data)
 
     def __reversed__(self):
-        return reversed(self._pts)
+        return reversed(self._data)
 
     def __getitem__(self, key):
         return self._data[key]
