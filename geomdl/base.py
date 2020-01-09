@@ -160,6 +160,86 @@ class GeomdlNotifyList(list):
         return self._callbacks
 
 
+class GeomdlList(object):
+    """ A list-like container class which allows dynamically created attributes """
+    __slots__ = ('_data', '_attribs', '_iter_index')
+
+    def __init__(self, *args, **kwargs):
+        self._data = list(args)
+        self._attribs = kwargs.get('attribs', tuple())
+
+    def __str__(self):
+        return str(self._data)
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        try:
+            result = self._data[self._iter_index]
+        except IndexError:
+            raise StopIteration
+        self._iter_index += 1
+        return result
+
+    def __len__(self):
+        return self.count
+
+    def __reversed__(self):
+        return reversed(self._pts)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __setitem__(self, key, value):
+        self._data[key] = value
+
+    def __getattr__(self, name):
+        try:
+            idx = object.__getattribute__(self, '_attribs').index(name)
+            return object.__getattribute__(self, '_data')[idx]
+        except ValueError:
+            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
+        except AttributeError:
+            return object.__getattribute__(self, name)
+
+    def __setattr__(self, name, value):
+        if name in object.__getattribute__(self, '__slots__'):
+            object.__setattr__(self, name, value)
+        else:
+            try:
+                idx = object.__getattribute__(self, '_attribs').index(name)
+                temp_coords = object.__getattribute__(self, '_data')
+                temp_coords[idx] = value
+                object.__setattr__(self, '_data', temp_coords)
+            except ValueError:
+                raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, val):
+        if not isinstance(val, GeomdlTypeSequence):
+            raise TypeError("Input for 'data' attribute should be a GeomdlTypeSequence")
+        self._data = list(val)
+
+    @property
+    def attribs(self):
+        return self._attribs
+
+    @attribs.setter
+    def attribs(self, val):
+        if not isinstance(val, GeomdlTypeSequence):
+            raise TypeError("Input for 'attribs' attribute should be a GeomdlTypeSequence")
+        self._attribs = tuple(val)
+
+
 @add_metaclass(abc.ABCMeta)
 class GeomdlObject(object):
     """ Abstract base class for defining simple objects in geomdl
@@ -199,7 +279,6 @@ class GeomdlObject(object):
 
     def __getitem__(self, index):
         return self
-
 
     def __copy__(self):
         # Create a new instance
