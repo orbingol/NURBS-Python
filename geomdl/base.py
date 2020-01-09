@@ -162,11 +162,12 @@ class GeomdlNotifyList(list):
 
 class GeomdlList(object):
     """ A list-like container class which allows dynamically created attributes """
-    __slots__ = ('_data', '_attribs', '_iter_index')
+    __slots__ = ('_data', '_attribs', '_is_changed', '_iter_index')
 
     def __init__(self, *args, **kwargs):
         self._data = list(args)
         self._attribs = kwargs.get('attribs', tuple())
+        self._is_changed = False
 
     def __str__(self):
         return str(self._data)
@@ -200,6 +201,7 @@ class GeomdlList(object):
 
     def __setitem__(self, key, value):
         self._data[key] = value
+        self._is_changed = True
 
     def __getattr__(self, name):
         try:
@@ -213,12 +215,14 @@ class GeomdlList(object):
     def __setattr__(self, name, value):
         if name in object.__getattribute__(self, '__slots__'):
             object.__setattr__(self, name, value)
+            self._is_changed = True
         else:
             try:
                 idx = object.__getattribute__(self, '_attribs').index(name)
                 temp = object.__getattribute__(self, '_data')
                 temp[idx] = value
                 object.__setattr__(self, '_data', temp)
+                self._is_changed = True
             except ValueError:
                 raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
 
@@ -236,6 +240,7 @@ class GeomdlList(object):
         if not isinstance(val, GeomdlTypeSequence):
             raise TypeError("Input for 'data' attribute should be a GeomdlTypeSequence")
         self._data = list(val)
+        self._is_changed = True
 
     @property
     def attribs(self):
@@ -251,6 +256,18 @@ class GeomdlList(object):
         if not isinstance(val, GeomdlTypeSequence):
             raise TypeError("Input for 'attribs' attribute should be a GeomdlTypeSequence")
         self._attribs = tuple(val)
+
+    @property
+    def is_changed(self):
+        """ Flag to check if the list updated
+
+        :getter: get the changed status flag
+        """
+        return self._is_changed
+
+    def reset_changed(self):
+        """ Resets 'is_changed' flag to False """
+        self._is_changed = False
 
 
 @add_metaclass(abc.ABCMeta)
