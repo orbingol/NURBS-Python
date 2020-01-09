@@ -95,24 +95,23 @@ class GeomdlWarning(Warning):
 
 class GeomdlDict(dict):
     """ A weak referencable dict class """
-    pass
 
 
 # Ref: https://stackoverflow.com/a/13259435/1162349
 def notifylist_callback(func):
-    """ Callback function for GeomdlList
+    """ Callback function for GeomdlNotifyList
 
     Contributed by Chris Horler.
     """
     def notify(self, *args, **kwargs):
-        for _, callback in self._callbacks:
+        for _, callback in self.callbacks:
             callback()
         return func(self, *args, **kwargs)
     return notify
 
 
 # Ref: https://stackoverflow.com/a/13259435/1162349
-class GeomdlList(list):
+class GeomdlNotifyList(list):
     """ A list class with callback handlers for list modification
 
     Contributed by Chris Horler.
@@ -135,10 +134,9 @@ class GeomdlList(list):
             return self.__class__(list.__getslice__(self, *args))
 
     def __getitem__(self, item):
-        if isinstance(item,slice):
+        if isinstance(item, slice):
             return self.__class__(list.__getitem__(self, item))
-        else:
-            return list.__getitem__(self, item)
+        return list.__getitem__(self, item)
 
     def __init__(self, *args):
         list.__init__(self, *args)
@@ -155,8 +153,11 @@ class GeomdlList(list):
             if i == cbid:
                 self._callbacks.pop(idx)
                 return cb
-            else:
-                return None
+            return None
+
+    @property
+    def callbacks(self):
+        return self._callbacks
 
 
 @add_metaclass(abc.ABCMeta)
