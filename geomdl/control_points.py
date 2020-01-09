@@ -11,9 +11,6 @@ from functools import reduce
 from decimal import Decimal
 from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
 
-# Parametric dimension names for dynamical generation of the attributes
-GEOMDL_PDIM_ATTRS = GeomdlDict(size_u=0, size_v=1, size_w=2)
-
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
@@ -203,6 +200,7 @@ class CPManager(GeomdlBase):
     * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
     __slots__ = ('_size', '_count', '_pts', '_ptsd', '_iter_index')
+    PDIM_ATTRIBS = ('size_u', 'size_v', 'size_w')
 
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
@@ -266,14 +264,13 @@ class CPManager(GeomdlBase):
         raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
     def __getattr__(self, attr):
-        if attr in GEOMDL_PDIM_ATTRS:
-            try:
-                return self.size[GEOMDL_PDIM_ATTRS[attr]]
-            except IndexError:
-                raise AttributeError(attr)
-        if attr not in self.__slots__:
-            raise AttributeError(attr)
-        return self.__slots__[attr]
+        try:
+            idx = object.__getattribute__(self, 'PDIM_ATTRIBS').index(attr)
+            return object.__getattribute__(self, '_size')[idx]
+        except ValueError:
+            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
+        except AttributeError:
+            return object.__getattribute__(self, attr)
 
     @property
     def points(self):
