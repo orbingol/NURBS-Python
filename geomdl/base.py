@@ -213,9 +213,9 @@ class GeomdlList(object):
         else:
             try:
                 idx = object.__getattribute__(self, '_attribs').index(name)
-                temp_coords = object.__getattribute__(self, '_data')
-                temp_coords[idx] = value
-                object.__setattr__(self, '_data', temp_coords)
+                temp = object.__getattribute__(self, '_data')
+                temp[idx] = value
+                object.__setattr__(self, '_data', temp)
             except ValueError:
                 raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
 
