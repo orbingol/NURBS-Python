@@ -171,6 +171,9 @@ class GeomdlList(object):
     def __str__(self):
         return str(self._data)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __iter__(self):
         self._iter_index = 0
         return self
