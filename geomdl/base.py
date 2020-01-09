@@ -224,6 +224,11 @@ class GeomdlList(object):
 
     @property
     def data(self):
+        """ Elements of the list
+
+        :getter: get the elements of the list
+        :setter: set the elements of the list
+        """
         return self._data
 
     @data.setter
@@ -234,6 +239,11 @@ class GeomdlList(object):
 
     @property
     def attribs(self):
+        """ Attributes of the list elements
+
+        :getter: get the attributes
+        :setter: set the attributes
+        """
         return self._attribs
 
     @attribs.setter
