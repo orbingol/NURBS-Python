@@ -199,7 +199,7 @@ class CPManager(GeomdlBase):
     * ``config_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
     * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_count', '_pts', '_ptsd', 'is_changed', '_iter_index')
+    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_is_changed', '_iter_index')
     PDIM_ATTRIBS = ('size_u', 'size_v', 'size_w')
 
     def __init__(self, *args, **kwargs):
