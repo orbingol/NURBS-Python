@@ -186,9 +186,9 @@ class CPManager(GeomdlBase):
 
     This class provides the following methods:
 
-    * :py:meth:`get_pt`
+    * :py:meth:`pt`
     * :py:meth:`set_pt`
-    * :py:meth:`get_ptdata`
+    * :py:meth:`ptdata`
     * :py:meth:`set_ptdata`
     * :py:meth:`reset`
 
@@ -331,7 +331,7 @@ class CPManager(GeomdlBase):
         # Reset the control points and the attached data
         self._cfg['func_pts_init'](self.count, **kwargs)
 
-    def get_pt(self, *args):
+    def pt(self, *args):
         """ Gets the control point from the input position """
         return self[args]
 
@@ -343,7 +343,7 @@ class CPManager(GeomdlBase):
         """
         self[args] = pt
 
-    def get_ptdata(self, dkey, *args):
+    def ptdata(self, dkey, *args):
         """ Gets the data attached to the control point
 
         :param dkey: key of the attachment dictionary
