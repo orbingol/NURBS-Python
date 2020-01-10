@@ -199,7 +199,7 @@ class CPManager(GeomdlBase):
     * ``config_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
     * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_iter_index')
+    __slots__ = ('_size', '_count', '_pts', '_ptsd', 'is_changed', '_iter_index')
     PDIM_ATTRIBS = ('size_u', 'size_v', 'size_w')
 
     def __init__(self, *args, **kwargs):
@@ -214,6 +214,7 @@ class CPManager(GeomdlBase):
         self._count = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points and associated data container
         self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
+        self._is_changed = False  # flag to check changes
 
     def __next__(self):
         try:
@@ -251,12 +252,14 @@ class CPManager(GeomdlBase):
             raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
         if isinstance(key, int):
             self._cfg['func_pt_set'](self._pts, key, value)
+            self._is_changed = True
             return
         if isinstance(key, tuple):
             if len(key) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *key)
             self._cfg['func_pt_set'](self._pts, idx, value)
+            self._is_changed = True
             return
         raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
@@ -294,6 +297,7 @@ class CPManager(GeomdlBase):
             self._idt['dimension'] = len(value[0])
         # Set control points
         self._cfg['func_pts_set'](value, self.dimension, self._pts)
+        self._is_changed = True
 
     @property
     def points_data(self):
@@ -321,12 +325,29 @@ class CPManager(GeomdlBase):
         """
         return self._count
 
+    @property
+    def is_changed(self):
+        """ Change control flag
+
+        This flag is always false if there are no changes, e.g. add/update a control point. Otherwise, True
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the change status of the manager instance
+        """
+        return self._is_changed
+
     def reset(self, **kwargs):
         """ Resets the control points """
         # Call parent method
         super(CPManager, self).reset(**kwargs)
         # Reset the control points and the attached data
         self._cfg['func_pts_init'](self.count, **kwargs)
+
+    def reset_changed(self):
+        """ Resets 'is_changed' flag to False """
+        self._is_changed = False
 
     def pt(self, *args):
         """ Gets the control point from the input position """
@@ -339,6 +360,7 @@ class CPManager(GeomdlBase):
         :type pt: list, tuple
         """
         self[args] = pt
+        self._is_changed = True
 
     def ptdata(self, dkey, *args):
         """ Gets the data attached to the control point
@@ -373,6 +395,7 @@ class CPManager(GeomdlBase):
                             self._ptsd[k][idx][j] = v
                     else:
                         self._ptsd[k][idx] = val
+                    self._is_changed = True
                 else:
                     raise GeomdlError("Invalid key: " + str(k))
         except IndexError:
