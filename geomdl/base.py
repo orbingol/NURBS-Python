@@ -543,7 +543,6 @@ class GeomdlEvaluator(GeomdlObject):
         :param datadict: data dictionary containing the necessary variables
         :type datadict: dict
         """
-        pass
 
     @abc.abstractmethod
     def derivatives(self, datadict, parpos, deriv_order=0, **kwargs):
@@ -560,17 +559,14 @@ class GeomdlEvaluator(GeomdlObject):
         :param deriv_order: derivative order; to get the i-th derivative
         :type deriv_order: int
         """
-        pass
 
 
 # Following classes allows extensibility via registering additional input types.
 @add_metaclass(abc.ABCMeta)
 class GeomdlTypeSequence(object):
     """ Abstract base class for supported sequence types """
-    pass
 
 
 @add_metaclass(abc.ABCMeta)
 class GeomdlTypeString(object):
     """ Abstract base class for supported string types """
-    pass
