@@ -423,7 +423,7 @@ class GeomdlBase(GeomdlObject):
         :getter: Gets the spatial dimension, e.g. 2D, 3D, etc.
         :type: int
         """
-        return self._dim
+        return self._dimension
 
     @property
     def type(self):
