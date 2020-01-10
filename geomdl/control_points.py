@@ -215,9 +215,6 @@ class CPManager(GeomdlBase):
         # Initialize control points and associated data container
         self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
 
-    def __call__(self):
-        return self.points
-
     def __next__(self):
         try:
             result = self._pts[self._iter_index]
