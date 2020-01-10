@@ -224,3 +224,29 @@ def check_params(params):
             if not 0.0 <= prm <= 1.0:
                 return False
     return True
+
+
+def compute_delta_from_sample_size(sample_size, domain, domain_range):
+    """ Computes delta from sample size
+
+    :param sample_size: sample size
+    :type sample_size: int
+    :param domain: parametric domain
+    :type domain: list, tuple
+    :param domain: parametric domain range
+    :type domain: float
+    :return: delta value
+    :rtype: float
+    """
+    return (domain[1] - domain[0]) / (domain_range * float(sample_size - 1))
+
+
+def compute_sample_size_from_delta(delta):
+    """ Computes sample size from delta
+
+    :param delta: evaluation delta
+    :type delta: float
+    :return: sample size
+    :rtype: int
+    """
+    return int(1.0 / delta) + 1
