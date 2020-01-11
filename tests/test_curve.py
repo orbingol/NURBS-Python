@@ -5,9 +5,11 @@
 
     Requires "pytest" to run.
 """
+import math
 
 from pytest import fixture, mark
 from geomdl import BSpline
+from geomdl import NURBS
 from geomdl import evaluators
 from geomdl import helpers
 from geomdl import convert
@@ -234,6 +236,13 @@ def nurbs_curve(spline_curve):
     curve.weights = [0.5, 1.0, 0.75, 1.0, 0.25, 1.0]
     return curve
 
+@fixture
+def unit_circle_tri_ctrlpts():
+    r = 1.
+    a, h = 3. * r / math.sqrt(3.), 1.5 * r
+    ctrlpts = [(0., -r), (-a,-r), (-a/2,-r+h), (0., 2*h-r), (a/2, -r+h), (a, -r), (0., -r)]
+    return ctrlpts
+
 
 def test_nurbs_curve2d_weights(nurbs_curve):
     assert nurbs_curve.weights == [0.5, 1.0, 0.75, 1.0, 0.25, 1.0]
@@ -252,6 +261,27 @@ def test_nurbs_curve2d_eval(nurbs_curve, param, res):
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
 
 
+@mark.parametrize("param, res", [
+    (0.0, (0.0, -1.0)),
+    (0.2, (-0.9571859726038534, -0.2894736842105261)),
+    (0.5, (1.1102230246251568e-16, 1.0)),
+    (0.95, (0.27544074447012257, -0.9613180515759312))
+])
+def test_nurbs_curve2d_slice_eval(unit_circle_tri_ctrlpts, param, res):
+    crv = NURBS.Curve()
+    crv.degree = 2
+    crv.ctrlpts = unit_circle_tri_ctrlpts
+    crv.knotvector = [0.,0.,0., 1./3, 1./3, 2./3, 2./3, 1.,1.,1.]
+    crv.weights[1::2] = [0.5, 0.5, 0.5]
+
+    evalpt = crv.evaluate_single(param)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+
+
+# TODO: derivative of a circle is a circle
+@mark.xfail
 @mark.parametrize("param, order, res", [
     (0.0, 1, ((5.0, 5.0), (90.9090, 90.9090))),
     (0.2, 2, ((13.8181, 11.5103), (40.0602, 17.3878), (104.4062, -29.3672))),
