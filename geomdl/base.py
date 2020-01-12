@@ -492,8 +492,8 @@ class GeomdlBase(GeomdlObject):
         except KeyError:
             return None
 
-    def reset(self, **kwargs):
-        """ Resets the internal data structure """
+    def reset(self):
+        """ Clears computed/generated data, such as caches """
         self._opt_data = GeomdlDict()
         self._cache = GeomdlDict()
 

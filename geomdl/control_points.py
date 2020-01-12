@@ -327,7 +327,7 @@ class CPManager(GeomdlBase):
 
     @property
     def is_changed(self):
-        """ Change control flag
+        """ Flags changes in the current manager instance
 
         This flag is always false if there are no changes, e.g. add/update a control point. Otherwise, True
 
