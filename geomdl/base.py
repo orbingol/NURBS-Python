@@ -162,12 +162,13 @@ class GeomdlNotifyList(list):
 
 class GeomdlList(object):
     """ A list-like container class which allows dynamically created attributes """
-    __slots__ = ('_data', '_attribs', '_set_cb', '_iter_index')
+    __slots__ = ('_data', '_attribs', '_cb', '_cb_dynamic', '_iter_index')
 
     def __init__(self, *args, **kwargs):
         self._data = list(args)  # container object
         self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
-        self._set_cb = kwargs.get('cb', lambda: None)  # callback for setters
+        self._cb = kwargs.get('cb', [lambda: None])  # callbacks for setters
+        self._cb_dynamic = kwargs.get('cbd', [lambda k, v: None])  # callbacks for dynamic atribute setters
 
     def __str__(self):
         return str(self._data)
@@ -201,7 +202,9 @@ class GeomdlList(object):
 
     def __setitem__(self, key, value):
         self._data[key] = value
-        self._set_cb()
+        # Run callback functions
+        for c in self._cb: c()
+        for cd in self._cb_dynamic: cd(key, value)
 
     def __getattr__(self, name):
         try:
@@ -221,7 +224,9 @@ class GeomdlList(object):
                 temp = object.__getattribute__(self, '_data')
                 temp[idx] = value
                 object.__setattr__(self, '_data', temp)
-                self._set_cb()
+                # Run callback functions
+                for c in self._cb: c()
+                for cd in self._cb_dynamic: cd(name, value)
             except ValueError:
                 raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
 
@@ -239,7 +244,8 @@ class GeomdlList(object):
         if not isinstance(val, GeomdlTypeSequence):
             raise TypeError("Input for 'data' attribute should be a GeomdlTypeSequence")
         self._data = list(val)
-        self._set_cb()
+        # Run callback function (no need to run callback functions for dynamic attributes)
+        for c in self._cb: c()
 
     @property
     def attribs(self):
