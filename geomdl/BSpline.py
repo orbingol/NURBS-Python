@@ -285,7 +285,7 @@ class Surface(SplineGeometry):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
         """
-        data = super(Surface, self).data()
+        data = super(Surface, self).data
         data.update(dict(trims=tuple([t.data for t in self._trims])))
         return data
 
