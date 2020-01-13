@@ -246,7 +246,7 @@ class CPManager(GeomdlBase):
             raise TypeError("RHS must be a sequence")
         # If dimension is not set, try to find it
         if self.dimension < 1:
-            self._idt['dimension'] = len(value)
+            self._dimension = len(value)
         # Always make sure that new input conforms with the existing dimension value
         if len(value) != self.dimension:
             raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
@@ -294,7 +294,7 @@ class CPManager(GeomdlBase):
             raise GeomdlError("Number of control points must be " + str(self.count))
         # Determine dimension, if required
         if self.dimension < 1:
-            self._idt['dimension'] = len(value[0])
+            self._dimension = len(value[0])
         # Set control points
         self._cfg['func_pts_set'](value, self.dimension, self._pts)
         self._is_changed = True
