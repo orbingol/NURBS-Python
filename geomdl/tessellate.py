@@ -13,14 +13,6 @@ from .six import add_metaclass
 from .base import export, GeomdlError
 
 
-# Add some aliases
-make_triangle_mesh = tsl.make_triangle_mesh
-make_quad_mesh = tsl.make_quad_mesh
-polygon_triangulate = tsl.polygon_triangulate
-surface_tessellate = tsl.surface_tessellate
-surface_trim_tessellate = tsl.surface_trim_tessellate
-
-
 @add_metaclass(abc.ABCMeta)
 class AbstractTessellate(object):
     """ Abstract base class for tessellation algorithms. """
@@ -97,7 +89,6 @@ class AbstractTessellate(object):
 
         :param points: points to be tessellated
         """
-        pass
 
 
 @export
@@ -124,7 +115,10 @@ class TriangularTessellate(AbstractTessellate):
         super(TriangularTessellate, self).tessellate(points, **kwargs)
 
         # Apply default triangular mesh generator function
-        self._vertices, self._faces = self._tsl_func(points, **kwargs)
+        self._vertices, self._faces = self._tsl_func(
+            points,
+            **kwargs
+        )
 
 
 @export
@@ -158,8 +152,12 @@ class TrimTessellate(AbstractTessellate):
                 trim.opt = ['reversed', 0]  # always trim the enclosed area by the curve
 
         # Apply default triangular mesh generator function with trimming customization
-        self._vertices, self._faces = self._tsl_func(points, trims=trims, tessellate_func=self._tsl_trim_func,
-                                                     tessellate_args=self.arguments, **kwargs)
+        self._vertices, self._faces = self._tsl_func(
+            points,
+            trims=trims,
+            tessellate_func=self._tsl_trim_func,
+            tessellate_args=self.arguments, **kwargs
+        )
 
 
 @export
@@ -186,4 +184,7 @@ class QuadTessellate(AbstractTessellate):
         super(QuadTessellate, self).tessellate(points, **kwargs)
 
         # Apply default triangular mesh generator function
-        self._vertices, self._faces = self._tsl_func(points, **kwargs)
+        self._vertices, self._faces = self._tsl_func(
+            points,
+            **kwargs
+        )

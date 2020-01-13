@@ -78,7 +78,7 @@ def render(spg, **kwargs):
 
     # Add evaluated points as vertices and triangles
     if spg.vis.mconf['evalpts'] == 'triangles':
-        tsl = op['config_tsl_tri'] if op['config_tsl_tri'] else tessellate.TrimTessellate(force=True)
+        tsl = op['config_tsl_tri'] if op['config_tsl_tri'] else tessellate.TrimTessellate()
         spg.vis.add(
             ptsarr=[tsl.vertices, tsl.faces],
             name=spg.name,
