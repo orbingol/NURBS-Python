@@ -516,14 +516,10 @@ class GeomdlEvaluator(GeomdlObject):
 
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
-    * ``config_find_span``: function to find the span on the knot vector
-
-    Please refer to :py:mod:`helpers` module for details on ``FindSpan`` implementations.
     """
 
     def __init__(self, *args, **kwargs):
         super(GeomdlEvaluator, self).__init__(*args, **kwargs)
-        self.cfg['func_find_span'] = kwargs.get('config_find_span', None)
 
     @abc.abstractmethod
     def evaluate(self, datadict, **kwargs):
