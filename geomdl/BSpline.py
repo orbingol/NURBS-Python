@@ -7,7 +7,7 @@
 
 """
 
-from .base import export, GeomdlError, GeomdlWarning, GeomdlTypeSequence
+from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlTypeSequence
 from .abstract import SplineGeometry
 from . import evaluators, tessellate, utilities
 
@@ -280,13 +280,15 @@ class Surface(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data
+        """ Returns a dict which contains the geometry information
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
+
+        :getter: Gets the geometry information
         """
         data = super(Surface, self).data
-        data.update(dict(trims=tuple([t.data for t in self._trims])))
+        data.update(GeomdlDict(trims=tuple([t.data for t in self._trims])))
         return data
 
     @property

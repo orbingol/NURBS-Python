@@ -9,7 +9,7 @@
 
 import abc
 from .six import add_metaclass
-from .base import GeomdlBase, GeomdlEvaluator, GeomdlList, GeomdlError, GeomdlWarning
+from .base import GeomdlBase, GeomdlEvaluator, GeomdlList, GeomdlDict, GeomdlError, GeomdlWarning
 from .control_points import CPManager
 from . import vis, knotvector, utilities
 
@@ -60,6 +60,20 @@ class Geometry(GeomdlBase):
         if not self._eval_points:
             self.evaluate()
         return self._eval_points
+
+    @property
+    def data(self):
+        """ Returns a dict which contains the geometry information
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the geometry information
+        """
+        return GeomdlDict(
+            type=self.type,
+            dimension=self.dimension
+        )
 
     def reset(self, **kwargs):
         """ Clears computed/generated data, such as caches and evaluated points """
@@ -478,7 +492,7 @@ class SplineGeometry(Geometry):
 
     @property
     def evaluator(self):
-        """ Evaluator instance.
+        """ Evaluator
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
@@ -500,7 +514,7 @@ class SplineGeometry(Geometry):
 
     @property
     def vis(self):
-        """ Visualization component.
+        """ Visualization component
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -520,24 +534,26 @@ class SplineGeometry(Geometry):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """ Returns a dict which contains the geometry information
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
+
+        :getter: Gets the geometry information
         """
-        return dict(
-            type=self.type,
+        data = super(SplineGeometry, self).data
+        spl_data = GeomdlDict(
             rational=self.rational,
-            dimension=self.dimension,
             pdimension=self.pdimension,
             delta=tuple(self._delta),
             sample_size=tuple(self.sample_size),
-            precision=self._precision,
             degree=tuple(self.degree),
             knotvector=tuple(self.knotvector),
             size=tuple(self.ctrlpts_size),
-            control_points=tuple(self.ctrlpts)
+            control_points=self.ctrlpts  # CPManager instance
         )
+        data.update(spl_data)
+        return data
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
         """ Sets control points and checks if the data is consistent
@@ -612,7 +628,7 @@ class SplineGeometry(Geometry):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
     def evaluate_list(self, params):
-        """ Evaluates the geometry for an input range of parameters.
+        """ Evaluates the geometry for an input range of parameters
 
         :param params: parameters
         :type params: list, tuple
