@@ -341,7 +341,7 @@ class CPManager(GeomdlBase):
     def reset(self, **kwargs):
         """ Resets the control points """
         # Call parent method
-        super(CPManager, self).reset(**kwargs)
+        super(CPManager, self).reset()
         # Reset the control points and the attached data
         self._cfg['func_pts_init'](self.count, **kwargs)
 

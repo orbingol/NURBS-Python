@@ -61,9 +61,9 @@ class Geometry(GeomdlBase):
             self.evaluate()
         return self._eval_points
 
-    def reset(self):
+    def reset(self, **kwargs):
         """ Clears computed/generated data, such as caches and evaluated points """
-        super(Geometry, self).reset()
+        super(Geometry, self).reset(**kwargs)
         self._eval_points = list()
 
     @abc.abstractmethod

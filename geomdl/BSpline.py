@@ -80,7 +80,7 @@ class Curve(SplineGeometry):
             self._kv_normalize,
         )
 
-        # Clean the data struvture
+        # Reset cached variables
         self.reset()
 
         # Evaluate and cache
@@ -187,10 +187,10 @@ class Surface(SplineGeometry):
         self._trims = list()  # trimming curves
         self._tsl_component = tessellate.TriangularTessellate()  # tessellation component
 
-    def reset(self):
-        """ Resets control points and/or evaluated points  """
+    def reset(self, **kwargs):
+        """ Clears computed/generated data, such as caches and evaluated points """
         # Call parent function
-        super(Surface, self).reset()
+        super(Surface, self).reset(**kwargs)
 
         # Reset vertices and triangles
         self._tsl_component.reset()
