@@ -7,27 +7,28 @@
 
 """
 
-from geomdl import abstract
+from .base import GeomdlDict
+from .abstract import Geometry
 
 
-class Freeform(abstract.Geometry):
+class Freeform(Geometry):
     """ n-dimensional freeform geometry """
     def __init__(self, *args, **kwargs):
         super(Freeform, self).__init__(*args, **kwargs)
-        self._idt['geometry_type'] = "freeform"
-        self.name = "freeform geometry"
+        self._geom_type = "freeform"
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """ Returns a dict which contains the geometry information
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
+
+        :getter: Gets the geometry information
         """
-        return dict(
-            type=self.type,
-            points=tuple(self.evalpts)
-        )
+        data = super(Freeform, self).data
+        data.update(GeomdlDict(points=tuple(self.evalpts)))
+        return data
 
     def evaluate(self, **kwargs):
         """ Sets points that form the geometry.
@@ -36,4 +37,4 @@ class Freeform(abstract.Geometry):
             * ``points``: sets the points
         """
         self._eval_points = kwargs.get('points', self._init_array())
-        self._idt['dimension'] = len(self._eval_points[0])
+        self._dimension = len(self._eval_points[0])
