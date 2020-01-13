@@ -216,6 +216,13 @@ class CPManager(GeomdlBase):
         self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
         self._is_changed = False  # flag to check changes
 
+    def __call__(self, points):
+        self.points = points
+        self._is_changed = True
+
+    def __reduce__(self):
+        return (self.__class__, (self.points,))
+
     def __next__(self):
         try:
             result = self._pts[self._iter_index]
