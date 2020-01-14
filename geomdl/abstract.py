@@ -172,7 +172,7 @@ class SplineGeometry(Geometry):
         )
 
         # Get keyword arguments
-        self.cfg['config_normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
+        self._cfg['config_normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
 
     def __eq__(self, other):
         if not hasattr(other, '_pdim'):
@@ -623,7 +623,7 @@ class SplineGeometry(Geometry):
             param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._kv_normalize:
+        if self._cfg['config_normalize_kv']:
             if not utilities.check_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
@@ -639,7 +639,7 @@ class SplineGeometry(Geometry):
         # Evaluate parameter list
         res = []
         for prm in params:
-            if self._kv_normalize:
+            if self._cfg['config_normalize_kv']:
                 if utilities.check_params([prm]):
                     res.append(self.evaluate_single(prm))
             else:
@@ -667,7 +667,7 @@ class SplineGeometry(Geometry):
             param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._kv_normalize:
+        if self._cfg['config_normalize_kv']:
             if not utilities.check_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 

@@ -77,7 +77,7 @@ class Curve(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._kv_normalize,
+            self._cfg['config_normalize_kv'],
         )
 
         # Reset cached variables
@@ -233,7 +233,7 @@ class Surface(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._kv_normalize,
+            self._cfg['config_normalize_kv'],
         )
 
         # Reset cached variables
@@ -395,7 +395,7 @@ class Surface(SplineGeometry):
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
             uv = self._tsl_component.vertices[idx].uv
-            if self._kv_normalize and not utilities.check_params(uv):
+            if self._cfg['config_normalize_kv'] and not utilities.check_params(uv):
                 continue
             self._tsl_component.vertices[idx].data = self.evaluate_single(uv)
 
@@ -465,7 +465,7 @@ class Volume(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._kv_normalize,
+            self._cfg['config_normalize_kv'],
         )
 
         # Reset cached variables
