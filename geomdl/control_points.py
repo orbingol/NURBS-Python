@@ -8,8 +8,7 @@
 """
 
 from functools import reduce
-from decimal import Decimal
-from .base import export, GeomdlBase, GeomdlDict, GeomdlTypeSequence, GeomdlError
+from .base import export, GeomdlBase, GeomdlDict, GeomdlFloat, GeomdlTypeSequence, GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -96,7 +95,7 @@ def default_ctrlpt_set(pts_arr, idx, cpt):
     :param cpt: control point
     :type cpt: list, tuple
     """
-    pts_arr[idx] = tuple(Decimal(c) for c in cpt)
+    pts_arr[idx] = tuple(GeomdlFloat(c) for c in cpt)
 
 
 def extract_ctrlpts2d(cm):
@@ -153,10 +152,6 @@ class CPManager(GeomdlBase):
     Control points manager class provides an easy way to set control points without knowing the internal data structure
     of the geometry classes. The manager class is initialized with the number of control points in all parametric
     dimensions.
-
-    Control points manager class utilizes Python's `decimal.Decimal <https://docs.python.org/library/decimal.html>`_
-    class instead of the ``float`` datatype. Please refer to the Python documentation for more details on using
-    ``decimal`` module.
 
     This class inherits the following properties:
 
