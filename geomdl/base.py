@@ -56,10 +56,10 @@ class GeomdlError(Exception):
             # Stop execution of the function
             return
     """
-    EXCEPTION_PREFIX = "GEOMDL ERROR: "
+    PREFIX = "GEOMDL ERROR: "
 
     def __init__(self, msg, data=None):
-        super(GeomdlError, self).__init__(GeomdlError.EXCEPTION_PREFIX + msg)
+        super(GeomdlError, self).__init__(GeomdlError.PREFIX + msg)
         self.data = data
 
 
@@ -86,10 +86,10 @@ class GeomdlWarning(Warning):
             # Stop execution of the function
             return
     """
-    EXCEPTION_PREFIX = "GEOMDL WARNING: "
+    PREFIX = "GEOMDL WARNING: "
 
     def __init__(self, msg, data=None):
-        super(GeomdlWarning, self).__init__(GeomdlWarning.EXCEPTION_PREFIX + msg)
+        super(GeomdlWarning, self).__init__(GeomdlWarning.PREFIX + msg)
         self.data = data
 
 
