@@ -1124,7 +1124,7 @@ def surface_deriv_cpts(dim, degree, kv, cpts, cpsize, rs, ss, deriv_order=0):
     """
     # Initialize return value (control points)
     PKL = [[[[[None for _ in range(dim)]
-              for _ in range(cpsize[1])] for _ in range(cpsize[0])]
+              for _ in range(cpsize[0])] for _ in range(cpsize[1])]
             for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
     du = min(degree[0], deriv_order)
@@ -1138,7 +1138,7 @@ def surface_deriv_cpts(dim, degree, kv, cpts, cpsize, rs, ss, deriv_order=0):
         PKu = curve_deriv_cpts(dim=dim,
                                degree=degree[0],
                                kv=kv[0],
-                               cpts=[cpts[j + (cpsize[1] * i)] for i in range(cpsize[0])],
+                               cpts=[cpts[i + (cpsize[0] * j)] for i in range(cpsize[1])],
                                rs=rs,
                                deriv_order=du)
 
