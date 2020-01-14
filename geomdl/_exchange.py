@@ -8,7 +8,7 @@
 """
 
 import math
-from . import compatibility, utilities, shortcuts
+from . import utilities, shortcuts
 from .base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
@@ -94,114 +94,6 @@ def write_file(file_name, content, **kwargs):
         raise GeomdlError("An error occurred during writing '{0}': {1}".format(file_name, e.args[-1]))
     except Exception as e:
         raise GeomdlError("An error occurred: {0}".format(str(e)))
-
-
-def import_surf_mesh(file_name):
-    """ Generates a NURBS surface object from a mesh file.
-
-    :param file_name: input mesh file
-    :type file_name: str
-    :return: a NURBS surface
-    :rtype: NURBS.Surface
-    """
-    raw_content = read_file(file_name)
-    raw_content = raw_content.split("\n")
-    content = []
-    for rc in raw_content:
-        temp = rc.strip().split()
-        content.append(temp)
-
-    # 1st line defines the dimension and it must be 3
-    if int(content[0][0]) != 3:
-        raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
-
-    # Create a NURBS surface instance and fill with the data read from mesh file
-    surf = shortcuts.generate_surface(rational=True)
-
-    # 2nd line is the degrees
-    surf.degree_u = int(content[1][0])
-    surf.degree_v = int(content[1][1])
-
-    # 3rd line is the number of weighted control points in u and v directions
-    dim_u = int(content[2][0])
-    dim_v = int(content[2][1])
-
-    # Starting from 6th line, we have the weighted control points
-    ctrlpts_end = 5 + (dim_u * dim_v)
-    ctrlpts_mesh = content[5:ctrlpts_end]
-
-    # mesh files have the control points in u-row order format
-    ctrlpts = compatibility.flip_ctrlpts_u(ctrlpts_mesh, dim_u, dim_v)
-
-    # mesh files store control points in format (x, y, z, w)
-    ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
-
-    # Set control points
-    surf.set_ctrlpts(ctrlptsw, dim_u, dim_v)
-
-    # 4th and 5th lines are knot vectors
-    surf.knotvector_u = [float(u) for u in content[3]]
-    surf.knotvector_v = [float(v) for v in content[4]]
-
-    # Return the surface instance
-    return surf
-
-
-def import_vol_mesh(file_name):
-    """ Generates a NURBS volume object from a mesh file.
-
-    :param file_name: input mesh file
-    :type file_name: str
-    :return: a NURBS volume
-    :rtype: NURBS.Volume
-    """
-    raw_content = read_file(file_name)
-    raw_content = raw_content.split("\n")
-    content = []
-    for rc in raw_content:
-        temp = rc.strip().split()
-        content.append(temp)
-
-    # 1st line defines the dimension and it must be 3
-    if int(content[0][0]) != 3:
-        raise TypeError("Input mesh '" + str(file_name) + "' must be 3-dimensional")
-
-    # Create a NURBS surface instance and fill with the data read from mesh file
-    vol = shortcuts.generate_volume(rational=True)
-
-    # 2nd line is the degrees
-    vol.degree_u = int(content[1][0])
-    vol.degree_v = int(content[1][1])
-    vol.degree_w = int(content[1][2])
-
-    # 3rd line is the number of weighted control points in u, v, w directions
-    dim_u = int(content[2][0])
-    dim_v = int(content[2][1])
-    dim_w = int(content[2][2])
-
-    # Starting from 7th line, we have the weighted control points
-    surf_cpts = dim_u * dim_v
-    ctrlpts_end = 6 + (surf_cpts * dim_w)
-    ctrlpts_mesh = content[6:ctrlpts_end]
-
-    # mesh files have the control points in u-row order format
-    ctrlpts = []
-    for i in range(dim_w - 1):
-        ctrlpts += compatibility.flip_ctrlpts_u(ctrlpts_mesh[surf_cpts * i:surf_cpts * (i + 1)], dim_u, dim_v)
-
-    # mesh files store control points in format (x, y, z, w)
-    ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
-
-    # Set control points
-    vol.set_ctrlpts(ctrlptsw, dim_u, dim_v, dim_w)
-
-    # 4th, 5th and 6th lines are knot vectors
-    vol.knotvector_u = [float(u) for u in content[3]]
-    vol.knotvector_v = [float(v) for v in content[4]]
-    vol.knotvector_w = [float(w) for w in content[5]]
-
-    # Return the volume instance
-    return vol
 
 
 def import_dict_crv(data):
@@ -474,60 +366,26 @@ def export_dict_vol(obj):
     return data
 
 
-def import_text_data(content, sep, col_sep=";", two_dimensional=False):
+def import_text_data(content, sep):
     lines = content.strip().split("\n")
     ctrlpts = []
-    if two_dimensional:
-        # Start reading file
-        size_u = 0
-        size_v = 0
-        for line in lines:
-            # Remove whitespace
-            line = line.strip()
-            # Convert the string containing the coordinates into a list
-            control_point_row = line.split(col_sep)
-            # Clean and convert the values
-            size_v = 0
-            for cpr in control_point_row:
-                ctrlpts.append([float(c.strip()) for c in cpr.split(sep)])
-                size_v += 1
-            size_u += 1
 
-        # Return control points, size in u- and v-directions
-        return ctrlpts, size_u, size_v
-    else:
-        # Start reading file
-        for line in lines:
-            # Remove whitespace
-            line = line.strip()
-            # Clean and convert the values
-            ctrlpts.append([float(c.strip()) for c in line.split(sep)])
+    # Start reading file
+    for line in lines:
+        # Remove whitespace
+        line = line.strip()
+        # Clean and convert the values
+        ctrlpts.append([float(c.strip()) for c in line.split(sep)])
 
-        # Return control points
-        return ctrlpts
+    # Return control points
+    return ctrlpts
 
 
-def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
+def export_text_data(obj, sep, result=""):
     ctrlpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-    result = ""
-    if two_dimensional:
-        for i in range(0, obj.ctrlpts_size_u):
-            line = ""
-            for j in range(0, obj.ctrlpts_size_v):
-                for idx, coord in enumerate(ctrlpts[j + (obj.ctrlpts_size_v * i)]):
-                    if idx:  # check for the first element
-                        line += sep
-                    line += str(coord)
-                if j != obj.ctrlpts_size_v - 1:
-                    line += col_sep
-                else:
-                    line += "\n"
-            result += line
-    else:
-        # Loop through points
-        for pt in ctrlpts:
-            result += sep.join(str(c) for c in pt) + "\n"
-
+    # Loop through points
+    for pt in ctrlpts:
+        result += sep.join(str(c) for c in pt) + "\n"
     return result
 
 

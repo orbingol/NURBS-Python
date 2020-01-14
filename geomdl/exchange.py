@@ -7,34 +7,17 @@
 
 """
 
-import os
 import struct
 import json
 from io import StringIO
-
-import geomdl.base
-from . import compatibility, operations, elements, linalg
+from . import operations, elements, linalg
 from . import _exchange as exch
-from geomdl.base import export, GeomdlError
+from .base import export, GeomdlError
 
 
 @export
-def import_txt(file_name, two_dimensional=False, **kwargs):
+def import_txt(file_name, **kwargs):
     """ Reads control points from a text file and generates a 1-dimensional list of control points.
-
-    The following code examples illustrate importing different types of text files for curves and surfaces:
-
-    .. code-block:: python
-        :linenos:
-
-        # Import curve control points from a text file
-        curve_ctrlpts = exchange.import_txt(file_name="control_points.txt")
-
-        # Import surface control points from a text file (1-dimensional file)
-        surf_ctrlpts = exchange.import_txt(file_name="control_points.txt")
-
-        # Import surface control points from a text file (2-dimensional file)
-        surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True)
 
     If argument ``jinja2=True`` is set, then the input file is processed as a `Jinja2 <http://jinja.pocoo.org/>`_
     template. You can also use the following convenience template functions which correspond to the given mathematical
@@ -44,34 +27,20 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     * ``cubert(x)``: :math:`\\sqrt[3]{x}`
     * ``pow(x, y)``: :math:`x^{y}`
 
-    You may set the file delimiters using the keyword arguments ``separator`` and ``col_separator``, respectively.
-    ``separator`` is the delimiter between the coordinates of the control points. It could be comma
-    ``1, 2, 3`` or space ``1 2 3`` or something else. ``col_separator`` is the delimiter between the control
-    points and is only valid when ``two_dimensional`` is ``True``. Assuming that ``separator`` is set to space, then
-    ``col_operator`` could be semi-colon ``1 2 3; 4 5 6`` or pipe ``1 2 3| 4 5 6`` or comma ``1 2 3, 4 5 6`` or
-    something else.
-
-    The defaults for ``separator`` and ``col_separator`` are *comma (,)* and *semi-colon (;)*, respectively.
-
-    The following code examples illustrate the usage of the keyword arguments discussed above.
+    The following code examples illustrate the function usage:
 
     .. code-block:: python
         :linenos:
 
-        # Import curve control points from a text file delimited with space
-        curve_ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
+        # Import control points from a text file
+        ctrlpts = exchange.import_txt(file_name="control_points.txt")
 
-        # Import surface control points from a text file (2-dimensional file) w/ space and comma delimiters
-        surf_ctrlpts, size_u, size_v = exchange.import_txt(file_name="control_points.txt", two_dimensional=True,
-                                                           separator=" ", col_separator=",")
-
-    Please note that this function does not check whether the user set delimiters to the same value or not.
+        # Import control points from a text file delimited with space
+        ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
 
     :param file_name: file name of the text file
     :type file_name: str
-    :param two_dimensional: type of the text file
-    :type two_dimensional: bool
-    :return: list of control points, if two_dimensional, then also returns size in u- and v-directions
+    :return: list of control points
     :rtype: list
     :raises GeomdlException: an error occurred reading the file
     """
@@ -84,18 +53,14 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
         content = exch.process_template(content)
 
     # File delimiters
-    col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    return exch.import_text_data(content, sep, col_sep, two_dimensional)
+    return exch.import_text_data(content, sep)
 
 
 @export
-def export_txt(obj, file_name, two_dimensional=False, **kwargs):
+def export_txt(obj, file_name, **kwargs):
     """ Exports control points as a text file.
-
-    For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-dimensional
-    control point output file using ``two_dimensional``.
 
     Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
 
@@ -103,24 +68,16 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
     :type obj: abstract.SplineGeometry
     :param file_name: file name of the text file to be saved
     :type file_name: str
-    :param two_dimensional: type of the text file (only works for Surface objects)
-    :type two_dimensional: bool
     :raises GeomdlException: an error occurred writing the file
     """
     # Check if the user has set any control points
     if obj.ctrlpts is None or len(obj.ctrlpts) == 0:
-        raise geomdl.base.GeomdlError("There are no control points to save!")
-
-    # Check the usage of two_dimensional flag
-    if obj.pdimension == 1 and two_dimensional:
-        # Silently ignore two_dimensional flag
-        two_dimensional = False
+        raise GeomdlError("There are no control points to save!")
 
     # File delimiters
-    col_sep = kwargs.get('col_separator', ";")
     sep = kwargs.get('separator', ",")
 
-    content = exch.export_text_data(obj, sep, col_sep, two_dimensional)
+    content = exch.export_text_data(obj, sep)
     return exch.write_file(file_name, content)
 
 
@@ -168,16 +125,13 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     :type point_type: str
     :raises GeomdlException: an error occurred writing the file
     """
-    if not 0 < obj.pdimension < 3:
-        raise geomdl.base.GeomdlError("Input object should be a curve or a surface")
-
     # Pick correct points from the object
     if point_type == 'ctrlpts':
         points = obj.ctrlptsw if obj.rational else obj.ctrlpts
     elif point_type == 'evalpts':
         points = obj.evalpts
     else:
-        raise geomdl.base.GeomdlError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
+        raise GeomdlError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
 
     # Prepare CSV header
     dim = len(points[0])
@@ -186,12 +140,8 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
         line += str(i + 1) + ", dim "
     line += str(dim) + "\n"
 
-    # Prepare values
-    for pt in points:
-        line += ",".join([str(p) for p in pt]) + "\n"
-
-    # Write to file
-    return exch.write_file(file_name, line)
+    content = exch.export_text_data(obj, ',', line)
+    return exch.write_file(file_name, content)
 
 
 @export
@@ -217,7 +167,7 @@ def import_cfg(file_name, **kwargs):
     try:
         import libconf
     except ImportError:
-        raise geomdl.base.GeomdlError("Please install 'libconf' package to use libconfig format: pip install libconf")
+        raise GeomdlError("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -254,7 +204,7 @@ def export_cfg(obj, file_name):
     try:
         import libconf
     except ImportError:
-        raise geomdl.base.GeomdlError("Please install 'libconf' package to use libconfig format: pip install libconf")
+        raise GeomdlError("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Export data
     exported_data = exch.export_dict_str(obj=obj, callback=callback)
@@ -287,7 +237,7 @@ def import_yaml(file_name, **kwargs):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        raise geomdl.base.GeomdlError("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
+        raise GeomdlError("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
 
     # Get keyword arguments
     delta = kwargs.get('delta', -1.0)
@@ -328,7 +278,7 @@ def export_yaml(obj, file_name):
     try:
         from ruamel.yaml import YAML
     except ImportError:
-        raise geomdl.base.GeomdlError("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
+        raise GeomdlError("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
 
     # Export data
     exported_data = exch.export_dict_str(obj=obj, callback=callback)
@@ -503,9 +453,9 @@ def export_obj_str(surface, **kwargs):
 
     # Input validity checking
     if surface.pdimension != 2:
-        raise geomdl.base.GeomdlError("Can only export surfaces")
+        raise GeomdlError("Can only export surfaces")
     if vertex_spacing < 1:
-        raise geomdl.base.GeomdlError("Vertex spacing should be bigger than zero")
+        raise GeomdlError("Vertex spacing should be bigger than zero")
 
     # Create the string and start adding triangulated surface points
     line = "# Generated by geomdl\n"
@@ -613,9 +563,9 @@ def export_stl_str(surface, **kwargs):
 
     # Input validity checking
     if surface.pdimension != 2:
-        raise geomdl.base.GeomdlError("Can only export surfaces")
+        raise GeomdlError("Can only export surfaces")
     if vertex_spacing < 1:
-        raise geomdl.base.GeomdlError("Vertex spacing should be bigger than zero")
+        raise GeomdlError("Vertex spacing should be bigger than zero")
 
     triangles_list = []
     for srf in surface:
@@ -690,9 +640,9 @@ def export_off_str(surface, **kwargs):
 
     # Input validity checking
     if surface.pdimension != 2:
-        raise geomdl.base.GeomdlError("Can only export surfaces")
+        raise GeomdlError("Can only export surfaces")
     if vertex_spacing < 1:
-        raise geomdl.base.GeomdlError("Vertex spacing should be bigger than zero")
+        raise GeomdlError("Vertex spacing should be bigger than zero")
 
     # Count the vertices to update the face numbers correctly
     vertex_offset = 0
@@ -740,189 +690,3 @@ def export_off_str(surface, **kwargs):
         line += lf
 
     return line
-
-
-@export
-def import_smesh(file):
-    """ Generates NURBS surface(s) from surface mesh (smesh) file(s).
-
-    *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
-    NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
-    several NURBS surfaces. The files have the extensions of ``txt`` or ``dat`` and they are named as
-
-    * ``smesh.X.Y.txt``
-    * ``smesh.X.dat``
-
-    where *X* and *Y* correspond to some integer value which defines the set the surface belongs to and part number of
-    the surface inside the complete object.
-
-    :param file: path to a directory containing mesh files or a single mesh file
-    :type file: str
-    :return: list of NURBS surfaces
-    :rtype: list
-    :raises GeomdlException: an error occurred reading the file
-    """
-    imported_elements = []
-    if os.path.isfile(file):
-        imported_elements.append(exch.import_surf_mesh(file))
-    elif os.path.isdir(file):
-        files = sorted([os.path.join(file, f) for f in os.listdir(file)])
-        for f in files:
-            imported_elements.append(exch.import_surf_mesh(f))
-    else:
-        raise geomdl.base.GeomdlError("Input is not a file or a directory")
-    return imported_elements
-
-
-@export
-def export_smesh(surface, file_name, **kwargs):
-    """ Exports surface(s) as surface mesh (smesh) files.
-
-    Please see :py:func:`.import_smesh()` for details on the file format.
-
-    :param surface: surface(s) to be exported
-    :type surface: abstract.Surface or multi.SurfaceContainer
-    :param file_name: name of the output file
-    :type file_name: str
-    :raises GeomdlException: an error occurred writing the file
-    """
-    # Input validity checking
-    if surface.pdimension != 2:
-        raise geomdl.base.GeomdlError("Can only export surfaces")
-
-    # Get keyword arguments
-    decimals = kwargs.get('decimals', 18)
-
-    # Split file name and extension
-    fname, fext = os.path.splitext(file_name)
-
-    # Enumerate file name only if we are working with multiple surfaces
-    numerate_file = True if len(surface) > 1 else False
-
-    for idx, s in enumerate(surface):
-        if s.rational:
-            pts = s.ctrlptsw
-        else:
-            pts = compatibility.combine_ctrlpts_weights(s.ctrlpts)
-        line = str(s.dimension) + "\n"
-        line += str(s.degree_u) + " " + str(s.degree_v) + "\n"
-        line += str(s.ctrlpts_size_u) + " " + str(s.ctrlpts_size_v) + "\n"
-        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in s.knotvector_u]) + "\n"
-        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in s.knotvector_v]) + "\n"
-        # Flip control points
-        ctrlptsw = compatibility.flip_ctrlpts(pts, s.ctrlpts_size_u, s.ctrlpts_size_v)
-        # Convert control points into (x, y, z, w) format
-        ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
-        for ptw in ctrlptsw:
-            line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
-        # Open or closed?
-        line += "1\n"
-
-        # Write to file
-        fname_curr = fname + "." + str(idx + 1) if numerate_file else fname
-        exch.write_file(fname_curr + fext, line)
-
-
-@export
-def import_vmesh(file):
-    """ Imports NURBS volume(s) from volume mesh (vmesh) file(s).
-
-    :param file: path to a directory containing mesh files or a single mesh file
-    :type file: str
-    :return: list of NURBS volumes
-    :rtype: list
-    :raises GeomdlException: an error occurred reading the file
-    """
-    imported_elements = []
-    if os.path.isfile(file):
-        imported_elements.append(exch.import_vol_mesh(file))
-    elif os.path.isdir(file):
-        files = sorted([os.path.join(file, f) for f in os.listdir(file)])
-        for f in files:
-            imported_elements.append(exch.import_vol_mesh(f))
-    else:
-        raise geomdl.base.GeomdlError("Input is not a file or a directory")
-    return imported_elements
-
-
-@export
-def export_vmesh(volume, file_name, **kwargs):
-    """ Exports volume(s) as volume mesh (vmesh) files.
-
-    :param volume: volume(s) to be exported
-    :type volume: abstract.Volume
-    :param file_name: name of the output file
-    :type file_name: str
-    :raises GeomdlException: an error occurred writing the file
-    """
-    if volume.pdimension != 3:
-        raise geomdl.base.GeomdlError("Can only export volumes")
-
-    # Get keyword arguments
-    decimals = kwargs.get('decimals', 18)
-
-    # Split file name and extension
-    fname, fext = os.path.splitext(file_name)
-
-    # Enumerate file name only if we are working with multiple volumes
-    numerate_file = True if len(volume) > 1 else False
-
-    for idx, v in enumerate(volume):
-        if v.rational:
-            pts = v.ctrlptsw
-        else:
-            pts = compatibility.combine_ctrlpts_weights(v.ctrlpts)
-        line = str(v.dimension) + "\n"
-        line += str(v.degree_u) + " " + str(v.degree_v) + " " + str(v.degree_w) + "\n"
-        line += str(v.ctrlpts_size_u) + " " + str(v.ctrlpts_size_v) + " " + str(v.ctrlpts_size_w) + "\n"
-        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in v.knotvector_u]) + "\n"
-        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in v.knotvector_v]) + "\n"
-        line += " ".join([("{:." + str(decimals) + "f}").format(k) for k in v.knotvector_w]) + "\n"
-        # Convert control points into (x, y, z, w)
-        ctrlptsw = []
-        for w in range(v.ctrlpts_size_w):
-            srfpts = pts[(w * v.ctrlpts_size_u * v.ctrlpts_size_v):((w + 1) * v.ctrlpts_size_u * v.ctrlpts_size_v)]
-            # Flip control points
-            ctrlptsw += compatibility.flip_ctrlpts(srfpts, v.ctrlpts_size_u, v.ctrlpts_size_v)
-        # Convert control points into (x, y, z, w) format
-        ctrlptsw = compatibility.generate_ctrlpts_weights(ctrlptsw)
-        for ptw in ctrlptsw:
-            line += " ".join([("{:." + str(decimals) + "f}").format(p) for p in ptw]) + "\n"
-        # Open or closed?
-        line += "1\n"
-
-        # Write to file
-        fname_curr = fname + "." + str(idx + 1) if numerate_file else fname
-        exch.write_file(fname_curr + fext, line)
-
-
-@export
-def import_3dm(file_name, **kwargs):
-    """ Imports curves and surfaces from Rhinoceros/OpenNURBS .3dm files.
-
-    .. deprecated:: 5.2.2
-
-        ``rw3dm`` Python module is replaced by ``on2json``. It can be used to convert .3dm files to geomdl JSON format.
-        Please refer to https://github.com/orbingol/rw3dm for more details.
-
-    :param file_name: input file name
-    :type file_name: str
-    """
-    raise GeomdlError("This API call has been deprecated. Please refer to https://github.com/orbingol/rw3dm")
-
-
-@export
-def export_3dm(obj, file_name, **kwargs):
-    """ Exports NURBS curves and surfaces to Rhinoceros/OpenNURBS .3dm files.
-
-    .. deprecated:: 5.2.2
-
-        ``rw3dm`` Python module is replaced by ``json2on``. It can be used to convert geomdl JSON format to .3dm files.
-        Please refer to https://github.com/orbingol/rw3dm for more details.
-
-    :param obj: curves/surfaces to be exported
-    :type obj: abstract.Curve, abstract.Surface, multi.CurveContainer, multi.SurfaceContainer
-    :param file_name: file name
-    :type file_name: str
-    """
-    raise GeomdlError("This API call has been deprecated. Please refer to https://github.com/orbingol/rw3dm")
