@@ -14,7 +14,7 @@ from .base import export
 
 @export
 def generate(degree, num_ctrlpts, **kwargs):
-    """ Generates an equally spaced knot vector.
+    """ Generates an equally spaced knot vector
 
     It uses the following equality to generate knot vector: :math:`m = n + p + 1`
 
@@ -69,7 +69,7 @@ def generate(degree, num_ctrlpts, **kwargs):
 
 @export
 def normalize(knot_vector, **kwargs):
-    """ Normalizes the input knot vector to [0, 1] domain.
+    """ Normalizes the input knot vector to [0, 1] domain
 
     :param knot_vector: knot vector to be normalized
     :type knot_vector: list, tuple
@@ -88,7 +88,7 @@ def normalize(knot_vector, **kwargs):
 
 @export
 def check(degree, knot_vector, num_ctrlpts):
-    """ Checks the validity of the input knot vector.
+    """ Checks the validity of the input knot vector
 
     Please refer to The NURBS Book (2nd Edition), p.50 for details.
 
