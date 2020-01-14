@@ -9,7 +9,7 @@
 
 import abc
 from .six import add_metaclass
-from .base import GeomdlBase, GeomdlEvaluator, GeomdlList, GeomdlDict, GeomdlError, GeomdlWarning
+from .base import GeomdlBase, GeomdlEvaluator, GeomdlList, GeomdlDict, GeomdlError, GeomdlWarning, GeomdlTypeSequence
 from .control_points import CPManager
 from . import vis, knotvector, utilities
 
@@ -298,11 +298,7 @@ class SplineGeometry(Geometry):
 
     @degree.setter
     def degree(self, value):
-        # Set the degree(s)
-        if isinstance(value, GeomdlList):
-            self._degree.data = [int(d) for d in value.data]
-        else:
-            self._degree.data = [int(d) for d in value]
+        self._degree.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
 
     @property
     def knotvector(self):
@@ -319,11 +315,8 @@ class SplineGeometry(Geometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        # Set the knot vector(s)
-        if isinstance(value, GeomdlList):
-            self._knot_vector.data = knotvector.normalize(value.data, decimals=self._precision) if self._kv_normalize else value.data
-        else:
-            self._knot_vector.data = knotvector.normalize(value, decimals=self._precision) if self._kv_normalize else value
+        val = value.data if isinstance(value, GeomdlList) else value if isinstance(value[0], GeomdlTypeSequence) else [value]
+        self._knot_vector.data = [knotvector.normalize(v) if self._cfg['config_normalize_kv'] else v for v in val]
 
     @property
     def ctrlpts(self):
@@ -407,7 +400,8 @@ class SplineGeometry(Geometry):
                 return
 
         # Set delta value(s)
-        self.delta = [utilities.compute_delta_from_sample_size(value[i], self.domain[i], self.range[i]) for i in range(self.pdimension)]
+        val = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
+        self._delta.data = [utilities.compute_delta_from_sample_size(val[i], self.domain[i], self.range[i]) for i in range(self.pdimension)]
 
     @property
     def delta(self):
@@ -434,11 +428,7 @@ class SplineGeometry(Geometry):
 
     @delta.setter
     def delta(self, value):
-        # Set the evaluation delta(s)
-        if isinstance(value, GeomdlList):
-            self._delta.data = [float(d) for d in value.data]
-        else:
-            self._delta.data = [float(d) for d in value]
+        self._delta.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
 
     @property
     def domain(self):
