@@ -169,7 +169,7 @@ class CPManager(GeomdlBase):
     This class inherits the following keyword arguments:
 
     * ``id``: object ID (as an integer). *Default: 0*
-    * ``precision``: number of decimal places to round to. *Default: 12*
+    * ``name``: object name. *Default: name of the class*
 
     This class provides the following properties:
 
