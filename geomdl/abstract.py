@@ -674,7 +674,9 @@ class SplineGeometry(Geometry):
 
 def validate_degree_value(key, value):
     if value <= 0:
-        raise GeomdlError("Degree " + str(key) + "should be bigger than zero")
+        raise GeomdlError("Degree " + str(key) + " should be bigger than zero")
+    if not isinstance(value, int):
+        raise GeomdlError("Degree " + str(key) + " must be an integer value")
 
 
 def validate_knotvector_value(key, value):
@@ -683,5 +685,7 @@ def validate_knotvector_value(key, value):
 
 
 def validate_delta_value(key, value):
-    if float(value) <= 0 or float(value) >= 1:
+    if not isinstance(value, float):
+        raise GeomdlError("Delta value must be a float value for the dimension " + str(key))
+    if value <= 0 or value >= 1:
         raise GeomdlError("Delta should be between 0.0 and 1.0 for the dimension " + str(key))
