@@ -19,7 +19,7 @@ class AbstractEntity(GeomdlBase):
 
     def __init__(self, *args, **kwargs):
         super(AbstractEntity, self).__init__(*args, **kwargs)
-        self._idt['name'] = "entity"  # object name
+        self._geom_type = "entity"  # object name
         self._data = []  # data storage array
 
     def __str__(self):
@@ -77,7 +77,6 @@ class Vertex(AbstractEntity):
 
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
-        self._idt['name'] = "vertex"  # object name
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
         self._opt_data['inside'] = False  # flag for trimming
@@ -265,7 +264,6 @@ class Triangle(AbstractEntity):
     """
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
-        self._idt['name'] = "triangle"  # object name
         self._opt_data['inside'] = False  # flag for trimming
         if args:
             self.add_vertex(*args)
@@ -385,7 +383,6 @@ class Quad(AbstractEntity):
 
     def __init__(self, *args, **kwargs):
         super(Quad, self).__init__(*args, **kwargs)
-        self._idt['name'] = "quad"  # object name
         if args:
             self.data = args
 
@@ -435,7 +432,6 @@ class Face(AbstractEntity):
     """ Representation of Face entity which is composed of triangles or quads. """
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
-        self._idt['name'] = "face"  # object name
         if args:
             self.add_triangle(*args)
 
@@ -470,7 +466,6 @@ class Body(AbstractEntity):
     """ Representation of Body entity which is composed of faces. """
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
-        self._idt['name'] = "body"  # object name
         if args:
             self.add_face(*args)
 
