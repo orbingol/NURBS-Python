@@ -93,6 +93,12 @@ class GeomdlWarning(Warning):
         self.data = data
 
 
+class GeomdlFloat(float):
+    """ A customizable float class """
+    def __new__(cls, value):
+        return float.__new__(cls, value)
+
+
 class GeomdlDict(dict):
     """ A weak referencable dict class """
 
