@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides helper functions for surface trimming
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

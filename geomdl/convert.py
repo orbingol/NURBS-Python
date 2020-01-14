@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Helper module for converting rational and non-rational geometries to each other
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
@@ -29,7 +29,7 @@ def bspline_to_nurbs(obj, **kwargs):
         ret = cvt.convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
-    
+
     return ret
 
 

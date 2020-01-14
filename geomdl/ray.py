@@ -4,7 +4,6 @@
     :synopsis: Provides ray data structures and operations
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
-.. moduleauthor:: Chris Horler
 
 """
 import sys

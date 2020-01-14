@@ -4,7 +4,6 @@
     :synopsis: Provides common base functionality for geomdl and its extensions
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
-.. moduleauthor:: Chris Horler
 
 """
 
