@@ -174,7 +174,7 @@ class SplineGeometry(Geometry):
         )
 
         # Get keyword arguments
-        self._cfg['config_normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
+        self._cfg['bool_normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
 
     def __eq__(self, other):
         if not hasattr(other, '_pdim'):
@@ -318,7 +318,7 @@ class SplineGeometry(Geometry):
     @knotvector.setter
     def knotvector(self, value):
         val = value.data if isinstance(value, GeomdlList) else value if isinstance(value[0], GeomdlTypeSequence) else [value]
-        self._knot_vector.data = [knotvector.normalize(v) if self._cfg['config_normalize_kv'] else v for v in val]
+        self._knot_vector.data = [knotvector.normalize(v) if self._cfg['bool_normalize_kv'] else v for v in val]
 
     @property
     def ctrlpts(self):
@@ -615,7 +615,7 @@ class SplineGeometry(Geometry):
             param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._cfg['config_normalize_kv']:
+        if self._cfg['bool_normalize_kv']:
             if not utilities.check_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
@@ -631,7 +631,7 @@ class SplineGeometry(Geometry):
         # Evaluate parameter list
         res = []
         for prm in params:
-            if self._cfg['config_normalize_kv']:
+            if self._cfg['bool_normalize_kv']:
                 if utilities.check_params([prm]):
                     res.append(self.evaluate_single(prm))
             else:
@@ -659,7 +659,7 @@ class SplineGeometry(Geometry):
             param = [float(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._cfg['config_normalize_kv']:
+        if self._cfg['bool_normalize_kv']:
             if not utilities.check_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 

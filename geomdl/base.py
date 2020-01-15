@@ -291,14 +291,14 @@ class GeomdlObject(object):
         object.__setattr__(self, '_id', int(kwargs.get('id', 0)))  # object ID
         object.__setattr__(self, '_cfg',
             GeomdlDict(
-                setter_callbacks=kwargs.pop('callbacks', tuple()),
+                iter_callbacks=kwargs.pop('callbacks', tuple()),
             )
         )  # dict for storing the configuration variables
 
     def __setattr__(self, name, value):
         object.__setattr__(self, name, value)
         # Run callbacks
-        for cb in object.__getattribute__(self, '_cfg')['setter_callbacks']:
+        for cb in object.__getattribute__(self, '_cfg')['iter_callbacks']:
             cb(name, value)
 
     def __iter__(self):
