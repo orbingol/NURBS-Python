@@ -9,7 +9,7 @@
 
 from operator import truediv
 from .linalg import linspace
-from .base import export
+from .base import export, GeomdlFloat
 
 
 @export
@@ -40,7 +40,7 @@ def generate(degree, num_ctrlpts, **kwargs):
 
     # Get keyword arguments
     clamped = kwargs.get('clamped', True)
-    dtype = kwargs.get('dtype', float)
+    dtype = kwargs.get('dtype', GeomdlFloat)
 
     # Number of repetitions at the start and end of the array
     num_repeat = degree
@@ -77,7 +77,7 @@ def normalize(knot_vector, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    dtype = kwargs.get('dtype', float)
+    dtype = kwargs.get('dtype', GeomdlFloat)
 
     first_knot = dtype(knot_vector[0])
     last_knot = dtype(knot_vector[-1])
