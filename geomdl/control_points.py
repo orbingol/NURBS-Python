@@ -189,31 +189,29 @@ class CPManager(GeomdlBase):
 
     This class provides the following keyword arguments:
 
-    * ``config_pts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
-    * ``config_pts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
-    * ``config_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
-    * ``config_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
+    * ``func_pts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
+    * ``func_pts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
+    * ``func_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
+    * ``func_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_is_changed', '_iter_index')
+    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_iter_index')
     PDIM_ATTRIBS = ('size_u', 'size_v', 'size_w')
 
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
         # Update configuration dictionary
-        self._cfg['func_pts_init'] = kwargs.pop('config_pts_init', default_ctrlpts_init)  # points init function
-        self._cfg['func_pts_set'] = kwargs.pop('config_pts_set', default_ctrlpts_set)  # points set function
-        self._cfg['func_pt_set'] = kwargs.pop('config_pt_set', default_ctrlpt_set)  # single point set function
-        self._cfg['func_find_index'] = kwargs.pop('config_find_index', default_find_index)  # index finding function
+        self._cfg['func_pts_init'] = kwargs.pop('func_pts_init', default_ctrlpts_init)  # points init function
+        self._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_ctrlpts_set)  # points set function
+        self._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_ctrlpt_set)  # single point set function
+        self._cfg['func_find_index'] = kwargs.pop('func_find_index', default_find_index)  # index finding function
         # Update size and count
         self._size = tuple(int(arg) for arg in args)  # size in all parametric dimensions
         self._count = reduce(lambda x, y: x * y, self.size)  # total number of control points
         # Initialize control points and associated data container
         self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
-        self._is_changed = False  # flag to check changes
 
     def __call__(self, points):
         self.points = points
-        self._is_changed = True
 
     def __reduce__(self):
         return (self.__class__, (self.points,))
@@ -252,27 +250,28 @@ class CPManager(GeomdlBase):
         # Always make sure that new input conforms with the existing dimension value
         if len(value) != self.dimension:
             raise ValueError("Input points must be " + str(self.dimension) + "-dimensional")
+
+        # Set the item
         if isinstance(key, int):
             self._cfg['func_pt_set'](self._pts, key, value)
-            self._is_changed = True
-            return
-        if isinstance(key, tuple):
+        elif isinstance(key, tuple):
             if len(key) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *key)
             self._cfg['func_pt_set'](self._pts, idx, value)
-            self._is_changed = True
-            return
-        raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
+        else:
+            raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
     def __getattr__(self, attr):
         try:
-            idx = object.__getattribute__(self, 'PDIM_ATTRIBS').index(attr)
-            return object.__getattribute__(self, '_size')[idx]
+            idx = super(CPManager, self).__getattr__('PDIM_ATTRIBS').index(attr)
+            return super(CPManager, self).__getattr__('_size')[idx]
         except ValueError:
             raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
+        except IndexError:
+            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
         except AttributeError:
-            return object.__getattribute__(self, attr)
+            return super(CPManager, self).__getattr__(attr)
 
     @property
     def points(self):
@@ -299,7 +298,6 @@ class CPManager(GeomdlBase):
             self._dimension = len(value[0])
         # Set control points
         self._cfg['func_pts_set'](value, self.dimension, self._pts)
-        self._is_changed = True
 
     @property
     def points_data(self):
@@ -327,29 +325,12 @@ class CPManager(GeomdlBase):
         """
         return self._count
 
-    @property
-    def is_changed(self):
-        """ Flags changes in the current manager instance
-
-        This flag is always false if there are no changes, e.g. add/update a control point. Otherwise, True
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the change status of the manager instance
-        """
-        return self._is_changed
-
     def reset(self, **kwargs):
         """ Resets the control points """
         # Call parent method
         super(CPManager, self).reset(**kwargs)
         # Reset the control points and the attached data
         self._cfg['func_pts_init'](self.count, **kwargs)
-
-    def reset_changed(self):
-        """ Resets 'is_changed' flag to False """
-        self._is_changed = False
 
     def pt(self, *args):
         """ Gets the control point from the input position """
@@ -362,12 +343,11 @@ class CPManager(GeomdlBase):
         :type pt: list, tuple
         """
         self[args] = pt
-        self._is_changed = True
 
     def ptdata(self, dkey, *args):
         """ Gets the data attached to the control point
 
-        :param dkey: key of the attachment dictionary
+        :param dkey: key of the data dictionary
         :param dkey: str
         """
         # Find the index
@@ -383,7 +363,7 @@ class CPManager(GeomdlBase):
     def set_ptdata(self, adct, *args):
         """ Attaches the data to the control point
 
-        :param adct: attachment dictionary
+        :param adct: data dictionary
         :param adct: dict
         """
         # Find the index
@@ -397,7 +377,6 @@ class CPManager(GeomdlBase):
                             self._ptsd[k][idx][j] = v
                     else:
                         self._ptsd[k][idx] = val
-                    self._is_changed = True
                 else:
                     raise GeomdlError("Invalid key: " + str(k))
         except IndexError:
