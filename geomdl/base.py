@@ -95,7 +95,101 @@ class GeomdlWarning(Warning):
 class GeomdlFloat(float):
     """ A customizable float class """
     def __new__(cls, value):
-        return float.__new__(cls, value)
+        return super(GeomdlFloat, cls).__new__(cls, value)
+
+    def __add__(self, other):
+        c = super(GeomdlFloat, self).__add__(other)
+        return self.__class__(c)
+
+    def __radd__(self, other):
+        c = super(GeomdlFloat, self).__radd__(other)
+        return self.__class__(c)
+
+    def __iadd__(self, other):
+        c = super(GeomdlFloat, self).__add__(other)
+        return self.__class__(c)
+
+    def __sub__(self, other):
+        c = super(GeomdlFloat, self).__sub__(other)
+        return self.__class__(c)
+
+    def __rsub__(self, other):
+        c = super(GeomdlFloat, self).__rsub__(other)
+        return self.__class__(c)
+
+    def __isub__(self, other):
+        c = super(GeomdlFloat, self).__sub__(other)
+        return self.__class__(c)
+
+    def __mul__(self, other):
+        c = super(GeomdlFloat, self).__mul__(other)
+        return self.__class__(c)
+
+    def __rmul__(self, other):
+        c = super(GeomdlFloat, self).__rmul__(other)
+        return self.__class__(c)
+
+    def __imul__(self, other):
+        c = super(GeomdlFloat, self).__mul__(other)
+        return self.__class__(c)
+
+    def __div__(self, other):
+        c = super(GeomdlFloat, self).__div__(other)
+        return self.__class__(c)
+
+    def __rdiv__(self, other):
+        c = super(GeomdlFloat, self).__rdiv__(other)
+        return self.__class__(c)
+
+    def __idiv__(self, other):
+        c = super(GeomdlFloat, self).__div__(other)
+        return self.__class__(c)
+
+    def __truediv__(self, other):
+        c = super(GeomdlFloat, self).__truediv__(other)
+        return self.__class__(c)
+
+    def __rtruediv__(self, other):
+        c = super(GeomdlFloat, self).__rtruediv__(other)
+        return self.__class__(c)
+
+    def __itruediv__(self, other):
+        c = super(GeomdlFloat, self).__truediv__(other)
+        return self.__class__(c)
+
+    def __pos__(self):
+        c = super(GeomdlFloat, self).__pos__()
+        return self.__class__(c)
+
+    def __neg__(self):
+        c = super(GeomdlFloat, self).__neg__()
+        return self.__class__(c)
+
+    def __abs__(self):
+        c = super(GeomdlFloat, self).__abs__()
+        return self.__class__(c)
+
+    def __round__(self, n):
+        c = super(GeomdlFloat, self).__round__(n)
+        return self.__class__(c)
+
+    def __eq__(self, other):
+        return float(self).__eq__(other)
+
+    def __ne__(self, other):
+        return float(self).__ne__(other)
+
+    def __lt__(self, other):
+        return float(self).__lt__(other)
+
+    def __gt__(self, other):
+        return float(self).__gt__(other)
+
+    def __le__(self, other):
+        return float(self).__le__(other)
+
+    def __ge__(self, other):
+        return float(self).__ge__(other)
 
 
 class GeomdlDict(dict):
