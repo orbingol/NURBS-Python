@@ -146,6 +146,51 @@ def extract_ctrlpts3d(cm):
 
 
 @export
+def combine_ctrlpts_weights(ctrlpts, weights=None):
+    """ Multiplies control points by the weights to generate weighted control points.
+
+    This function is dimension agnostic, i.e. control points can be in any dimension but weights should be 1-dimensional.
+
+    The ``weights`` function parameter can be set to None to let the function generate a weights vector composed of
+    1.0 values. This feature can be used to convert B-Spline basis to NURBS basis.
+
+    :param ctrlpts: unweighted control points
+    :type ctrlpts: list, tuple
+    :param weights: weights vector; if set to None, a weights vector of 1.0s will be automatically generated
+    :type weights: list, tuple or None
+    :return: weighted control points
+    :rtype: list
+    """
+    if weights is None:
+        weights = [GeomdlFloat(1.0) for _ in range(len(ctrlpts))]
+
+    ctrlptsw = [[] for _ in range(len(ctrlpts))]
+    for idx, (pt, w) in enumerate(zip(ctrlpts, weights)):
+        ctrlptsw[idx] = [GeomdlFloat(c * w) for c in pt] + [GeomdlFloat(w)]
+    return ctrlptsw
+
+@export
+def separate_ctrlpts_weights(ctrlptsw):
+    """ Divides weighted control points by weights to generate unweighted control points and weights vector.
+
+    This function is dimension agnostic, i.e. control points can be in any dimension but the last element of the array
+    should indicate the weight.
+
+    :param ctrlptsw: weighted control points
+    :type ctrlptsw: list, tuple
+    :return: unweighted control points and weights vector
+    :rtype: list
+    """
+    ctrlpts = [[] for _ in range(len(ctrlptsw))]
+    weights = [1.0 for _ in range(len(ctrlptsw))]
+    for idx, ptw in enumerate(ctrlptsw):
+        ctrlpts[idx] = [GeomdlFloat(pw / ptw[-1]) for pw in ptw[:-1]]
+        weights[idx] = GeomdlFloat(ptw[-1])
+    return ctrlpts, weights
+
+
+
+@export
 class CPManager(GeomdlBase):
     """ Control points manager class
 

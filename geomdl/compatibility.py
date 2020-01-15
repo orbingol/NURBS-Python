@@ -187,54 +187,6 @@ def generate_ctrlpts2d_weights(ctrlpts2d):
     return new_ctrlpts2d
 
 
-def combine_ctrlpts_weights(ctrlpts, weights=None):
-    """ Multiplies control points by the weights to generate weighted control points.
-
-    This function is dimension agnostic, i.e. control points can be in any dimension but weights should be 1D.
-
-    The ``weights`` function parameter can be set to None to let the function generate a weights vector composed of
-    1.0 values. This feature can be used to convert B-Spline basis to NURBS basis.
-
-    :param ctrlpts: unweighted control points
-    :type ctrlpts: list, tuple
-    :param weights: weights vector; if set to None, a weights vector of 1.0s will be automatically generated
-    :type weights: list, tuple or None
-    :return: weighted control points
-    :rtype: list
-    """
-    if weights is None:
-        weights = [1.0 for _ in range(len(ctrlpts))]
-
-    ctrlptsw = []
-    for pt, w in zip(ctrlpts, weights):
-        temp = [float(c * w) for c in pt]
-        temp.append(float(w))
-        ctrlptsw.append(temp)
-
-    return ctrlptsw
-
-
-def separate_ctrlpts_weights(ctrlptsw):
-    """ Divides weighted control points by weights to generate unweighted control points and weights vector.
-
-    This function is dimension agnostic, i.e. control points can be in any dimension but the last element of the array
-    should indicate the weight.
-
-    :param ctrlptsw: weighted control points
-    :type ctrlptsw: list, tuple
-    :return: unweighted control points and weights vector
-    :rtype: list
-    """
-    ctrlpts = []
-    weights = []
-    for ptw in ctrlptsw:
-        temp = [float(pw / ptw[-1]) for pw in ptw[:-1]]
-        ctrlpts.append(temp)
-        weights.append(ptw[-1])
-
-    return [ctrlpts, weights]
-
-
 def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
     """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
 
