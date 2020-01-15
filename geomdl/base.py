@@ -281,13 +281,25 @@ class GeomdlObject(object):
 
     * ``id``: object ID. *Default: 0*
     * ``name``: object name. *Default: name of the class*
+    * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
     __slots__ = ('_name', '_id', '_cfg', '_iter_index')
 
     def __init__(self, *args, **kwargs):
-        self._name = kwargs.get('name', self.__class__.__name__)  # object name
-        self._id = int(kwargs.get('id', 0))  # object ID
-        self._cfg = GeomdlDict()  # dict for storing configuration variables
+        # Use object.__setattr__ to bypass self.__setattr__
+        object.__setattr__(self, '_name', kwargs.get('name', self.__class__.__name__))  # object name
+        object.__setattr__(self, '_id', int(kwargs.get('id', 0)))  # object ID
+        object.__setattr__(self, '_cfg',
+            GeomdlDict(
+                setter_callbacks=kwargs.pop('callbacks', tuple()),
+            )
+        )  # dict for storing the configuration variables
+
+    def __setattr__(self, name, value):
+        object.__setattr__(self, name, value)
+        # Run callbacks
+        for cb in object.__getattribute__(self, '_cfg')['setter_callbacks']:
+            cb(name, value)
 
     def __iter__(self):
         self._iter_index = 0
@@ -401,6 +413,7 @@ class GeomdlBase(GeomdlObject):
 
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
+    * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
     __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache')
 
@@ -521,10 +534,8 @@ class GeomdlEvaluator(GeomdlObject):
 
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
+    * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-
-    def __init__(self, *args, **kwargs):
-        super(GeomdlEvaluator, self).__init__(*args, **kwargs)
 
     @abc.abstractmethod
     def evaluate(self, datadict, **kwargs):

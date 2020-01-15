@@ -40,6 +40,7 @@ class Geometry(GeomdlBase):
 
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
+    * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
     __slots__ = ('_eval_points')
 
@@ -137,6 +138,7 @@ class SplineGeometry(Geometry):
 
     * ``id``: object ID (as an integer). *Default: 0*
     * ``name``: object name. *Default: name of the class*
+    * ``callbacks``: a list of callback functions to be called after setting the attributes
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
     __slots__ = (
