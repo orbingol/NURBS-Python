@@ -7,7 +7,7 @@
 """
 
 import pytest
-from geomdl.control_points import CPManager
+from geomdl import control_points
 from geomdl.base import GeomdlError
 
 GEOMDL_TEST_CPTS1 = [
@@ -23,22 +23,48 @@ GEOMDL_TEST_CPTS3 = [
     [31.0, 32.0, 33.0], [33.0, 34.0, 35.0]
 ]
 
+P = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+W = [0.5, 2, 1]
+PW = [[0.5, 1, 1.5, 0.5], [8, 10, 12, 2], [7, 8, 9, 1]]
+PW_ONES = [[1, 2, 3, 1], [4, 5, 6, 1], [7, 8, 9, 1]]
+
+
+# Combine with a predefined set of weights
+def test_combine_ctrlpts_weights1():
+    check = control_points.combine_ctrlpts_weights(P, W)
+
+    assert PW == check
+
+
+# Combine with default weights
+def test_combine_ctrlpts_weights2():
+    check = control_points.combine_ctrlpts_weights(P)
+
+    assert PW_ONES == check
+
+
+def test_separate_ctrlpts_weights():
+    c_ctrlpts, c_weights = control_points.separate_ctrlpts_weights(PW)
+
+    assert P == c_ctrlpts
+    assert W == c_weights
+
 
 @pytest.fixture
 def cpman1d():
-    cpman = CPManager(6)
+    cpman = base.CPManager(6)
     return cpman
 
 
 @pytest.fixture
 def cpman2d():
-    cpman = CPManager(3, 2)
+    cpman = base.CPManager(3, 2)
     return cpman
 
 
 @pytest.fixture
 def cpman3d():
-    cpman = CPManager(2, 3, 2)
+    cpman = base.CPManager(2, 3, 2)
     return cpman
 
 
@@ -118,7 +144,7 @@ def test_point_data1():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = CPManager(sz, testdata=4)
+    cpman = base.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv1 = cpman.get_ptdata('testdata', p)
     retv2 = cpman.get_ptdata('testdata', p + 1)
@@ -131,7 +157,7 @@ def test_point_data2():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = CPManager(sz, testdata=4)
+    cpman = base.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv = cpman.get_ptdata('testdata2', p)
     assert retv == None
@@ -143,7 +169,7 @@ def test_point_data3():
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12
-        cpman = CPManager(sz, testdata=3)
+        cpman = base.CPManager(sz, testdata=3)
         cpman.set_ptdata(dict(testdata=d), p)
 
 
@@ -152,6 +178,6 @@ def test_point_data4():
     d = 13
     p = 5
     sz = 12
-    cpman = CPManager(sz, testdata=1)
+    cpman = base.CPManager(sz, testdata=1)
     cpman.set_ptdata(dict(testdata=d), p)
     assert cpman.get_ptdata('testdata', 5) == 13
