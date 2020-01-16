@@ -9,7 +9,7 @@
 
 from operator import truediv
 from .linalg import linspace
-from .base import export, GeomdlFloat
+from .base import export, GeomdlError, GeomdlFloat
 
 
 @export
@@ -36,11 +36,11 @@ def generate(degree, num_ctrlpts, **kwargs):
     :rtype: list
     """
     if degree == 0 or num_ctrlpts == 0:
-        raise ValueError("Input values should be different than zero.")
+        raise GeomdlError("Input values should be different than zero.")
 
     # Get keyword arguments
     clamped = kwargs.get('clamped', True)
-    dtype = kwargs.get('dtype', GeomdlFloat)
+    dt = kwargs.get('dtype', GeomdlFloat)
 
     # Number of repetitions at the start and end of the array
     num_repeat = degree
@@ -55,13 +55,13 @@ def generate(degree, num_ctrlpts, **kwargs):
         num_segments = degree + num_ctrlpts - 1
 
     # First knots
-    knot_vector = [dtype(0.0) for _ in range(0, num_repeat)]
+    knot_vector = [dt(0.0) for _ in range(0, num_repeat)]
 
     # Middle knots
-    knot_vector += linspace(0.0, 1.0, num_segments + 2, dtype=dtype)
+    knot_vector += linspace(0.0, 1.0, num_segments + 2, dtype=dt)
 
     # Last knots
-    knot_vector += [dtype(1.0) for _ in range(0, num_repeat)]
+    knot_vector += [dt(1.0) for _ in range(0, num_repeat)]
 
     # Return auto-generated knot vector
     return knot_vector
@@ -77,13 +77,13 @@ def normalize(knot_vector, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    dtype = kwargs.get('dtype', GeomdlFloat)
+    dt = kwargs.get('dtype', GeomdlFloat)
 
-    first_knot = dtype(knot_vector[0])
-    last_knot = dtype(knot_vector[-1])
+    first_knot = dt(knot_vector[0])
+    last_knot = dt(knot_vector[-1])
     denominator = last_knot - first_knot
 
-    return [truediv(dtype(kv) - first_knot, denominator) for kv in knot_vector]
+    return [truediv(dt(kv) - first_knot, denominator) for kv in knot_vector]
 
 
 @export
@@ -111,5 +111,4 @@ def check(degree, knot_vector, num_ctrlpts):
         if prev_knot > knot:
             return False
         prev_knot = knot
-
     return True
