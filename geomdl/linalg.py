@@ -240,7 +240,7 @@ def point_mid(pt1, pt2):
     return point_translate(pt1, half_dist_vector)
 
 
-@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
+@lru_cache(maxsize=int(os.environ.get('GEOMDL_CACHE_SIZE', '64')))
 def matrix_identity(n, **kwargs):
     """ Generates a :math:`N \\times N` identity matrix.
 
@@ -428,7 +428,7 @@ def triangle_center(tri, **kwargs):
     return (truediv(m, 3) for m in mid)
 
 
-@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
+@lru_cache(maxsize=int(os.environ.get('GEOMDL_CACHE_SIZE', '128')))
 def binomial_coefficient(k, i, **kwargs):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
