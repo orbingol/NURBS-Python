@@ -37,7 +37,7 @@ def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     :rtype: int
     """
     # Get tolerance value
-    tol = kwargs.get('tol', 10e-6)
+    tol = kwargs.get('tol', 10e-8)
 
     # In The NURBS Book; number of knots = m + 1, number of control points = n + 1, p = degree
     # All knot vectors should follow the rule: m = p + n + 1
@@ -630,7 +630,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
     :return: updated control points
     :rtype: list
     """
-    tol = kwargs.get('tol', 10e-4)  # Refer to Eq 5.30 for the meaning
+    tol = kwargs.get('tol', 10e-8)  # Refer to Eq 5.30 for the meaning
     num = kwargs.get('num', 1)  # number of same knot removals
     s = kwargs.get('s', find_multiplicity(u, knotvector))  # multiplicity
     r = kwargs.get('span', find_span_linear(degree, knotvector, len(ctrlpts), u))  # knot span
