@@ -10,7 +10,7 @@
 import os
 from copy import deepcopy
 from . import linalg
-from .base import GeomdlError
+from .base import GeomdlError, GeomdlFloat, GeomdlTypeSequence
 try:
     from functools import lru_cache
 except ImportError:
@@ -87,7 +87,6 @@ def find_span_linear(degree, knot_vector, num_ctrlpts, knot, **kwargs):
     span = 0  # Knot span index starts from zero
     while span < num_ctrlpts and knot_vector[span] <= knot:
         span += 1
-
     return span - 1
 
 
@@ -155,14 +154,14 @@ def basis_function(degree, knot_vector, span, knot):
     :return: basis functions
     :rtype: list
     """
-    left = [0.0 for _ in range(degree + 1)]
-    right = [0.0 for _ in range(degree + 1)]
-    N = [1.0 for _ in range(degree + 1)]  # N[0] = 1.0 by definition
+    left = [GeomdlFloat(0.0) for _ in range(degree + 1)]
+    right = [GeomdlFloat(0.0) for _ in range(degree + 1)]
+    N = [GeomdlFloat(1.0) for _ in range(degree + 1)]  # N[0] = 1.0 by definition
 
     for j in range(1, degree + 1):
         left[j] = knot - knot_vector[span + 1 - j]
         right[j] = knot_vector[span + j] - knot
-        saved = 0.0
+        saved = GeomdlFloat(0.0)
         for r in range(0, j):
             temp = N[r] / (right[r + 1] + left[j - r])
             N[r] = saved + right[r + 1] * temp
@@ -191,24 +190,24 @@ def basis_function_one(degree, knot_vector, span, knot):
     # Special case at boundaries
     if (span == 0 and knot == knot_vector[0]) or \
             (span == len(knot_vector) - degree - 2) and knot == knot_vector[len(knot_vector) - 1]:
-        return 1.0
+        return GeomdlFloat(1.0)
 
     # Knot is outside of span range
     if knot < knot_vector[span] or knot >= knot_vector[span + degree + 1]:
-        return 0.0
+        return GeomdlFloat(0.0)
 
-    N = [0.0 for _ in range(degree + span + 1)]
+    N = [GeomdlFloat(0.0) for _ in range(degree + span + 1)]
 
     # Initialize the zeroth degree basis functions
     for j in range(0, degree + 1):
         if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
-            N[j] = 1.0
+            N[j] = GeomdlFloat(1.0)
 
     # Computing triangular table of basis functions
     for k in range(1, degree + 1):
         # Detecting zeros saves computations
-        saved = 0.0
-        if N[0] != 0.0:
+        saved = GeomdlFloat(0.0)
+        if N[0] != GeomdlFloat(0.0):
             saved = ((knot - knot_vector[span]) * N[0]) / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
@@ -216,9 +215,9 @@ def basis_function_one(degree, knot_vector, span, knot):
             Uright = knot_vector[span + j + k + 1]
 
             # Zero detection
-            if N[j + 1] == 0.0:
+            if N[j + 1] == GeomdlFloat(0.0):
                 N[j] = saved
-                saved = 0.0
+                saved = GeomdlFloat(0.0)
             else:
                 temp = N[j + 1] / (Uright - Uleft)
                 N[j] = saved + (Uright - knot) * temp
@@ -301,14 +300,14 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
     :rtype: list
     """
     # Initialize variables
-    left = [1.0 for _ in range(degree + 1)]
-    right = [1.0 for _ in range(degree + 1)]
-    ndu = [[1.0 for _ in range(degree + 1)] for _ in range(degree + 1)]  # N[0][0] = 1.0 by definition
+    left = [GeomdlFloat(1.0) for _ in range(degree + 1)]
+    right = [GeomdlFloat(1.0) for _ in range(degree + 1)]
+    ndu = [[GeomdlFloat(1.0) for _ in range(degree + 1)] for _ in range(degree + 1)]  # N[0][0] = 1.0 by definition
 
     for j in range(1, degree + 1):
         left[j] = knot - knot_vector[span + 1 - j]
         right[j] = knot_vector[span + j] - knot
-        saved = 0.0
+        saved = GeomdlFloat(0.0)
         r = 0
         for r in range(r, j):
             # Lower triangle
@@ -320,18 +319,18 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
         ndu[j][j] = saved
 
     # Load the basis functions
-    ders = [[0.0 for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
+    ders = [[GeomdlFloat(0.0) for _ in range(degree + 1)] for _ in range((min(degree, order) + 1))]
     for j in range(0, degree + 1):
         ders[0][j] = ndu[j][degree]
 
     # Start calculating derivatives
-    a = [[1.0 for _ in range(degree + 1)] for _ in range(2)]
+    a = [[GeomdlFloat(1.0) for _ in range(degree + 1)] for _ in range(2)]
     # Loop over function index
     for r in range(0, degree + 1):
         # Alternate rows in array a
         s1 = 0
         s2 = 1
-        a[0][0] = 1.0
+        a[0][0] = GeomdlFloat(1.0)
         # Loop to compute k-th derivative
         for k in range(1, order + 1):
             d = 0.0
@@ -357,12 +356,10 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
             ders[k][r] = d
 
             # Switch rows
-            j = s1
-            s1 = s2
-            s2 = j
+            j, s1, s2 = s1, s2, j
 
     # Multiply through by the the correct factors
-    r = float(degree)
+    r = GeomdlFloat(degree)
     for k in range(1, order + 1):
         for j in range(0, degree + 1):
             ders[k][j] *= r
@@ -390,27 +387,27 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     :return: basis function derivatives
     :rtype: list
     """
-    ders = [0.0 for _ in range(0, order + 1)]
+    ders = [GeomdlFloat(0.0) for _ in range(0, order + 1)]
 
     # Knot is outside of span range
     if (knot < knot_vector[span]) or (knot >= knot_vector[span + degree + 1]):
         for k in range(0, order + 1):
-            ders[k] = 0.0
+            ders[k] = GeomdlFloat(0.0)
 
         return ders
 
-    N = [[0.0 for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
+    N = [[GeomdlFloat(0.0) for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
 
     # Initializing the zeroth degree basis functions
     for j in range(0, degree + 1):
         if knot_vector[span + j] <= knot < knot_vector[span + j + 1]:
-            N[j][0] = 1.0
+            N[j][0] = GeomdlFloat(1.0)
 
     # Computing all basis functions values for all degrees inside the span
     for k in range(1, degree + 1):
-        saved = 0.0
+        saved = GeomdlFloat(0.0)
         # Detecting zeros saves computations
-        if N[0][k - 1] != 0.0:
+        if N[0][k - 1] != GeomdlFloat(0.0):
             saved = ((knot - knot_vector[span]) * N[0][k - 1]) / (knot_vector[span + k] - knot_vector[span])
 
         for j in range(0, degree - k + 1):
@@ -418,9 +415,9 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
             Uright = knot_vector[span + j + k + 1]
 
             # Zero detection
-            if N[j + 1][k - 1] == 0.0:
+            if N[j + 1][k - 1] == GeomdlFloat(0.0):
                 N[j][k] = saved
-                saved = 0.0
+                saved = GeomdlFloat(0.0)
             else:
                 temp = N[j + 1][k - 1] / (Uright - Uleft)
                 N[j][k] = saved + (Uright - knot) * temp
@@ -432,7 +429,7 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     # Computing the basis functions derivatives
     for k in range(1, order + 1):
         # Buffer for computing the kth derivative
-        ND = [0.0 for _ in range(0, k + 1)]
+        ND = [GeomdlFloat(0.0) for _ in range(0, k + 1)]
 
         # Basis functions values used for the derivative
         for j in range(0, k + 1):
@@ -442,8 +439,8 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
 
         # Derivative order for the k-th basis function derivative
         for jj in range(1, k + 1):
-            if ND[0] == 0.0:
-                saved = 0.0
+            if ND[0] == GeomdlFloat(0.0):
+                saved = GeomdlFloat(0.0)
             else:
                 saved = ND[0] / (knot_vector[span + degree - k + jj] - knot_vector[span])
 
@@ -454,9 +451,9 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
                 # The right expression is the same as for saved with the added j offset
                 Uright = knot_vector[span + j + degree - k + jj + 1]
 
-                if ND[j + 1] == 0.0:
+                if ND[j + 1] == GeomdlFloat(0.0):
                     ND[j] = (degree - k + jj) * saved
-                    saved = 0.0
+                    saved = GeomdlFloat(0.0)
                 else:
                     temp = ND[j + 1] / (Uright - Uleft)
 
@@ -545,10 +542,10 @@ def knot_insertion(degree, knotvector, ctrlpts, u, **kwargs):
         for i in range(0, degree - j - s + 1):
             alpha = knot_insertion_alpha(u, tuple(knotvector), k, i, L)
             if isinstance(temp[i][0], float):
-                temp[i][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in zip(temp[i], temp[i + 1])]
+                temp[i][:] = [alpha * elem2 + (GeomdlFloat(1.0) - alpha) * elem1 for elem1, elem2 in zip(temp[i], temp[i + 1])]
             else:
                 for idx in range(len(temp[i])):
-                    temp[i][idx][:] = [alpha * elem2 + (1.0 - alpha) * elem1 for elem1, elem2 in
+                    temp[i][idx][:] = [alpha * elem2 + (GeomdlFloat(1.0) - alpha) * elem1 for elem1, elem2 in
                                        zip(temp[i][idx], temp[i + 1][idx])]
         ctrlpts_new[L] = deepcopy(temp[0])
         ctrlpts_new[k + num - j - s] = deepcopy(temp[degree - j - s])
@@ -600,7 +597,7 @@ def knot_insertion_kv(knotvector, u, span, r):
     """
     # Initialize variables
     kv_size = len(knotvector)
-    kv_updated = [0.0 for _ in range(kv_size + r)]
+    kv_updated = [GeomdlFloat(0.0) for _ in range(kv_size + r)]
 
     # Compute new knot vector
     for i in range(0, span + 1):
@@ -675,13 +672,13 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             alpha_j = knot_removal_alpha_j(u, degree, tuple(knotvector), t, j)
             if is_volume:
                 for idx in range(len(ctrlpts[0])):
-                    temp[ii][idx] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti
+                    temp[ii][idx] = [(cpt - (GeomdlFloat(1.0) - alpha_i) * ti) / alpha_i for cpt, ti
                                      in zip(ctrlpts[i][idx], temp[ii - 1][idx])]
-                    temp[jj][idx] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj
+                    temp[jj][idx] = [(cpt - alpha_j * tj) / (GeomdlFloat(1.0) - alpha_j) for cpt, tj
                                      in zip(ctrlpts[j][idx], temp[jj + 1][idx])]
             else:
-                temp[ii] = [(cpt - (1.0 - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
-                temp[jj] = [(cpt - alpha_j * tj) / (1.0 - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
+                temp[ii] = [(cpt - (GeomdlFloat(1.0) - alpha_i) * ti) / alpha_i for cpt, ti in zip(ctrlpts[i], temp[ii - 1])]
+                temp[jj] = [(cpt - alpha_j * tj) / (GeomdlFloat(1.0) - alpha_j) for cpt, tj in zip(ctrlpts[j], temp[jj + 1])]
             i += 1
             j -= 1
             ii += 1
@@ -698,9 +695,9 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         else:
             alpha_i = knot_removal_alpha_i(u, degree, tuple(knotvector), t, i)
             if is_volume:
-                ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1][0], temp[ii - 1][0])]
+                ptn = [(alpha_i * t1) + ((GeomdlFloat(1.0) - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1][0], temp[ii - 1][0])]
             else:
-                ptn = [(alpha_i * t1) + ((1.0 - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
+                ptn = [(alpha_i * t1) + ((GeomdlFloat(1.0) - alpha_i) * t2) for t1, t2 in zip(temp[ii + t + 1], temp[ii - 1])]
             if linalg.point_distance(ctrlpts[i], ptn) <= tol:
                 remflag = True
 
@@ -874,7 +871,7 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
     for d in range(0, density):
         rknots = []
         for i in range(len(knot_list) - 1):
-            knot_tmp = knot_list[i] + ((knot_list[i + 1] - knot_list[i]) / 2.0)
+            knot_tmp = knot_list[i] + ((knot_list[i + 1] - knot_list[i]) / GeomdlFloat(2.0))
             rknots.append(knot_list[i])
             rknots.append(knot_tmp)
         rknots.append(knot_list[i + 1])
@@ -939,12 +936,12 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
                 new_ctrlpts[idx - 1] = deepcopy(new_ctrlpts[idx])
             else:
                 alpha = alpha / (new_kv[k + l] - knotvector[i - degree + l])
-                if isinstance(ctrlpts[0][0], float):
-                    new_ctrlpts[idx - 1] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
+                if not isinstance(ctrlpts[0][0], GeomdlTypeSequence):
+                    new_ctrlpts[idx - 1] = [alpha * p1 + (GeomdlFloat(1.0) - alpha) * p2 for p1, p2 in
                                             zip(new_ctrlpts[idx - 1], new_ctrlpts[idx])]
                 else:
                     for idx2 in range(len(ctrlpts[0])):
-                        new_ctrlpts[idx - 1][idx2] = [alpha * p1 + (1.0 - alpha) * p2 for p1, p2 in
+                        new_ctrlpts[idx - 1][idx2] = [alpha * p1 + (GeomdlFloat(1.0) - alpha) * p2 for p1, p2 in
                                                       zip(new_ctrlpts[idx - 1][idx2], new_ctrlpts[idx][idx2])]
         new_kv[k] = X[j]
         k = k - 1
@@ -983,7 +980,7 @@ def degree_elevation(degree, ctrlpts, **kwargs):
 
     # Initialize variables
     num_pts_elev = degree + 1 + num
-    pts_elev = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(num_pts_elev)]
+    pts_elev = [[GeomdlFloat(0.0) for _ in range(len(ctrlpts[0]))] for _ in range(num_pts_elev)]
 
     # Compute control points of degree-elevated 1-dimensional shape
     for i in range(0, num_pts_elev):
@@ -1024,7 +1021,7 @@ def degree_reduction(degree, ctrlpts, **kwargs):
             raise GeomdlError("Input spline geometry must have degree > 1")
 
     # Initialize variables
-    pts_red = [[0.0 for _ in range(len(ctrlpts[0]))] for _ in range(degree)]
+    pts_red = [[GeomdlFloat(0.0) for _ in range(len(ctrlpts[0]))] for _ in range(degree)]
 
     # Fix start and end control points
     pts_red[0] = ctrlpts[0]
@@ -1053,7 +1050,7 @@ def degree_reduction(degree, ctrlpts, **kwargs):
         left = [(c1 - (alpha * c2)) / (1 - alpha) for c1, c2 in zip(ctrlpts[r], pts_red[r - 1])]
         alpha = float(r + 1) / float(degree)
         right = [(c1 - ((1 - alpha) * c2)) / alpha for c1, c2 in zip(ctrlpts[r + 1], pts_red[r + 1])]
-        pts_red[r] = [0.5 * (pl + pr) for pl, pr in zip(left, right)]
+        pts_red[r] = [GeomdlFloat(0.5) * (pl + pr) for pl, pr in zip(left, right)]
 
     # Return computed control points after degree reduction
     return pts_red
