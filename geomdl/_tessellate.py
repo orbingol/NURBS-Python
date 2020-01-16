@@ -9,6 +9,7 @@
 
 from . import linalg
 from . import ray
+from .base import GeomdlFloat
 from .elements import Vertex, Triangle, Quad
 
 # Initialize an empty __all__ for controlling imports
@@ -78,6 +79,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     # Vertex spacing for triangulation
     vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
     trim_curves = kwargs.get('trims', [])
+    tol = kwargs.get('tol', 10e-8)
 
     # Tessellation algorithm
     tsl_func = kwargs.get('tessellate_func')
@@ -90,10 +92,10 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     tri_idx = 0  # triangle index numbering start
 
     # Variable initialization
-    u_jump = (1.0 / float(size_u - 1)) * vertex_spacing  # for computing vertex parametric u value
-    v_jump = (1.0 / float(size_v - 1)) * vertex_spacing  # for computing vertex parametric v value
-    varr_size_u = int(round((float(size_u) / float(vertex_spacing)) + 10e-8))  # vertex array size on the u-direction
-    varr_size_v = int(round((float(size_v) / float(vertex_spacing)) + 10e-8))  # vertex array size on the v-direction
+    u_jump = (GeomdlFloat(1.0) / GeomdlFloat(size_u - 1)) * vertex_spacing  # for computing vertex parametric u value
+    v_jump = (GeomdlFloat(1.0) / GeomdlFloat(size_v - 1)) * vertex_spacing  # for computing vertex parametric v value
+    varr_size_u = int(round((GeomdlFloat(size_u) / GeomdlFloat(vertex_spacing)) + tol))  # vertex array size on the u-direction
+    varr_size_v = int(round((GeomdlFloat(size_v) / GeomdlFloat(vertex_spacing)) + tol))  # vertex array size on the v-direction
 
     # Generate vertices directly from input points (preliminary evaluation)
     vertices = [Vertex() for _ in range(varr_size_v * varr_size_u)]
