@@ -7,7 +7,7 @@
 
 """
 
-from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlTypeSequence
+from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlFloat, GeomdlTypeSequence
 from .abstract import SplineGeometry
 from . import evaluators, tessellate, utilities
 
@@ -59,7 +59,7 @@ class Curve(SplineGeometry):
 
     def __init__(self, *args, **kwargs):
         self._pdim = 1  # number of parametric directions
-        self._dinit = 0.01  # evaluation delta init value
+        self._dinit = GeomdlFloat(0.01)  # evaluation delta init value
         self._attribs = ('u',)  # dynamic attributes
         super(Curve, self).__init__(*args, **kwargs)
         self._evaluator = evaluators.CurveEvaluator()  # initialize evaluator
@@ -179,7 +179,7 @@ class Surface(SplineGeometry):
 
     def __init__(self, *args, **kwargs):
         self._pdim = 2  # number of parametric directions
-        self._dinit = 0.01  # evaluation delta init value
+        self._dinit = GeomdlFloat(0.01)  # evaluation delta init value
         self._attribs = ('u', 'v')  # dynamic attributes
         super(Surface, self).__init__(*args, **kwargs)
         self._evaluator = evaluators.SurfaceEvaluator()
@@ -447,7 +447,7 @@ class Volume(SplineGeometry):
 
     def __init__(self, *args, **kwargs):
         self._pdim = 3  # number of parametric directions
-        self._dinit = 0.05  # evaluation delta init value
+        self._dinit = GeomdlFloat(0.05)  # evaluation delta init value
         self._attribs = ('u', 'v', 'w')  # dynamic attributes
         super(Volume, self).__init__(*args, **kwargs)
         self._evaluator = evaluators.VolumeEvaluator()
@@ -498,13 +498,7 @@ def prepare_evaluation(start, stop, domain, is_kv_normalized):
         if isinstance(prm, GeomdlTypeSequence):
             if len(prm) != len(domain):
                 raise GeomdlError("Parameter input should be " + str(len(domain)) + "-dimensional")
-            pprm = [d[key] for d in domain]
-            for i, _ in enumerate(domain):
-                if not isinstance(prm[i], (int, float)):
-                    raise GeomdlError("Parameter " + str(i) + " should be int or float")
-                if prm[i] is not None:
-                    pprm[i] = float(prm[i])
-            return pprm
+            return [d[key] if GeomdlFloat(prm[i]) is None else prm[i] for i, d in enumerate(domain)]
         return [prm for _ in domain]
 
     # Find evaluation start and stop parameter values

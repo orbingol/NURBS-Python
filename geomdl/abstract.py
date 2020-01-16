@@ -9,7 +9,8 @@
 
 import abc
 from .six import add_metaclass
-from .base import GeomdlBase, GeomdlEvaluator, GeomdlList, GeomdlDict, GeomdlError, GeomdlWarning, GeomdlTypeSequence
+from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning
+from .base import GeomdlFloat, GeomdlList, GeomdlDict, GeomdlTypeSequence
 from .control_points import CPManager
 from . import vis, knotvector, utilities
 
@@ -150,7 +151,7 @@ class SplineGeometry(Geometry):
         super(SplineGeometry, self).__init__(*args, **kwargs)
         # Update the following if defined in the child class
         self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
-        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._dinit = GeomdlFloat(0.1) if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
         self._attribs = tuple() if not hasattr(self, '_attribs') else self._attribs  # dynamic attributes
 
         # Initialize variables
@@ -612,7 +613,7 @@ class SplineGeometry(Geometry):
         self.check_variables()
 
         if isinstance(param, (int, float)):
-            param = [float(param) for _ in range(self.pdimension)]
+            param = [GeomdlFloat(param) for _ in range(self.pdimension)]
 
         # Check parameters
         if self._cfg['bool_normalize_kv']:
@@ -656,7 +657,7 @@ class SplineGeometry(Geometry):
 
         # Convert parameter input to the correct format
         if isinstance(param, (int, float)):
-            param = [float(param) for _ in range(self.pdimension)]
+            param = [GeomdlFloat(param) for _ in range(self.pdimension)]
 
         # Check parameters
         if self._cfg['bool_normalize_kv']:
