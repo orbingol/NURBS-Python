@@ -145,10 +145,10 @@ def intersect(ray1, ray2, **kwargs):
     # Call intersection method
     if ray1.dimension == 2:
         return _intersect2d(ray1, ray2, tol)
-    elif ray1.dimension == 3:
+    if ray1.dimension == 3:
         return _intersect3d(ray1, ray2, tol)
-    else:
-        raise NotImplementedError("Intersection operation for the current type of rays has not been implemented yet")
+
+    raise NotImplementedError("Intersection operation for the current type of rays has not been implemented yet")
 
 
 def _intersect2d(ray1, ray2, tol):
