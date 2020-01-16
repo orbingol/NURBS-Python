@@ -9,7 +9,7 @@
 
 import copy
 from . import linalg, helpers
-from .base import export, GeomdlEvaluator
+from .base import export, GeomdlFloat, GeomdlEvaluator
 
 
 @export
@@ -38,8 +38,8 @@ class CurveEvaluator(GeomdlEvaluator):
         dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Keyword arguments
-        start = kwargs.get('start', [0.0 for _ in range(datadict['pdimension'])])
-        stop = kwargs.get('stop', [1.0 for _ in range(datadict['pdimension'])])
+        start = kwargs.get('start', [GeomdlFloat(0.0) for _ in range(datadict['pdimension'])])
+        stop = kwargs.get('stop', [GeomdlFloat(1.0) for _ in range(datadict['pdimension'])])
 
         # Algorithm A3.1
         spans = [[] for _ in range(datadict['pdimension'])]
@@ -77,7 +77,7 @@ class CurveEvaluator(GeomdlEvaluator):
         # Algorithm A3.2
         du = min(datadict['degree'][0], deriv_order)
 
-        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
+        CK = [[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
         span = helpers.find_span_linear(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos[0])
         bfunsders = helpers.basis_function_ders(datadict['degree'][0], datadict['knotvector'][0], span, parpos[0], du)
@@ -122,7 +122,7 @@ class CurveEvaluatorRational(CurveEvaluator):
         # Divide by weight
         eval_points = []
         for pt in crvptw:
-            cpt = [float(c / pt[-1]) for c in pt[0:(dimension - 1)]]
+            cpt = [GeomdlFloat(c / pt[-1]) for c in pt[0:(dimension - 1)]]
             eval_points.append(cpt)
 
         return eval_points
@@ -145,7 +145,7 @@ class CurveEvaluatorRational(CurveEvaluator):
         CKw = super(CurveEvaluatorRational, self).derivatives(datadict, parpos, deriv_order, **kwargs)
 
         # Algorithm A4.2
-        CK = [[0.0 for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
+        CK = [[GeomdlFloat(0.0) for _ in range(dimension - 1)] for _ in range(deriv_order + 1)]
         for k in range(0, deriv_order + 1):
             v = [val for val in CKw[k][0:(dimension - 1)]]
             for i in range(1, k + 1):
@@ -183,8 +183,8 @@ class SurfaceEvaluator(GeomdlEvaluator):
         dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Keyword arguments
-        start = kwargs.get('start', [0.0 for _ in range(datadict['pdimension'])])
-        stop = kwargs.get('stop', [1.0 for _ in range(datadict['pdimension'])])
+        start = kwargs.get('start', [GeomdlFloat(0.0) for _ in range(datadict['pdimension'])])
+        stop = kwargs.get('stop', [GeomdlFloat(1.0) for _ in range(datadict['pdimension'])])
 
         # Algorithm A3.5
         spans = [[] for _ in range(datadict['pdimension'])]
@@ -199,9 +199,9 @@ class SurfaceEvaluator(GeomdlEvaluator):
             idx_v = sv - datadict['degree'][1]
             for i, su in enumerate(spans[0]):
                 idx_u = su - datadict['degree'][0]
-                spt = [0.0 for _ in range(dimension)]
+                spt = [GeomdlFloat(0.0) for _ in range(dimension)]
                 for k in range(0, datadict['degree'][0] + 1):
-                    temp = [0.0 for _ in range(dimension)]
+                    temp = [GeomdlFloat(0.0) for _ in range(dimension)]
                     for l in range(0, datadict['degree'][1] + 1):
                         temp[:] = [tmp + (basis[1][j][l] * cp) for tmp, cp in
                                    zip(temp, datadict['control_points'][idx_u + k, idx_v + l])]
@@ -227,7 +227,7 @@ class SurfaceEvaluator(GeomdlEvaluator):
 
         # Algorithm A3.6
         d = [min(p, deriv_order) for p in datadict['degree']]
-        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        SKL = [[[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
         span = [0 for _ in range(datadict['pdimension'])]
         basisdrv = [[] for _ in range(datadict['pdimension'])]
@@ -236,7 +236,7 @@ class SurfaceEvaluator(GeomdlEvaluator):
             basisdrv[idx] = helpers.basis_function_ders(datadict['degree'][idx], datadict['knotvector'][idx], span[idx], parpos[idx], d[idx])
 
         for k in range(0, d[0] + 1):
-            temp = [[0.0 for _ in range(dimension)] for _ in range(datadict['degree'][1] + 1)]
+            temp = [[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(datadict['degree'][1] + 1)]
             for s in range(0, datadict['degree'][1] + 1):
                 for r in range(0, datadict['degree'][0] + 1):
                     cu = span[0] - datadict['degree'][0] + r
@@ -283,7 +283,7 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         # Divide by weight
         eval_points = []
         for pt in cptw:
-            cpt = [float(c / pt[-1]) for c in pt[0:(dimension - 1)]]
+            cpt = [GeomdlFloat(c / pt[-1]) for c in pt[0:(dimension - 1)]]
             eval_points.append(cpt)
 
         return eval_points
@@ -306,7 +306,7 @@ class SurfaceEvaluatorRational(SurfaceEvaluator):
         SKLw = super(SurfaceEvaluatorRational, self).derivatives(datadict, parpos, deriv_order, **kwargs)
 
         # Generate an empty list of derivatives
-        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        SKL = [[[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
         # Algorithm A4.4
         for k in range(0, deriv_order + 1):
@@ -352,8 +352,8 @@ class VolumeEvaluator(GeomdlEvaluator):
         dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
 
         # Keyword arguments
-        start = kwargs.get('start', [0.0 for _ in range(datadict['pdimension'])])
-        stop = kwargs.get('stop', [1.0 for _ in range(datadict['pdimension'])])
+        start = kwargs.get('start', [GeomdlFloat(0.0) for _ in range(datadict['pdimension'])])
+        stop = kwargs.get('stop', [GeomdlFloat(1.0) for _ in range(datadict['pdimension'])])
 
         # Algorithm A3.5 (modified)
         spans = [[] for _ in range(datadict['pdimension'])]
@@ -370,11 +370,11 @@ class VolumeEvaluator(GeomdlEvaluator):
                 iv = sv - datadict['degree'][1]
                 for i, su in enumerate(spans[0]):
                     iu = su - datadict['degree'][0]
-                    spt = [0.0 for _ in range(dimension)]
+                    spt = [GeomdlFloat(0.0) for _ in range(dimension)]
                     for du in range(0, datadict['degree'][0] + 1):
-                        temp2 = [0.0 for _ in range(dimension)]
+                        temp2 = [GeomdlFloat(0.0) for _ in range(dimension)]
                         for dv in range(0, datadict['degree'][1] + 1):
-                            temp = [0.0 for _ in range(dimension)]
+                            temp = [GeomdlFloat(0.0) for _ in range(dimension)]
                             for dw in range(0, datadict['degree'][2] + 1):
                                 temp[:] = [tmp + (basis[2][k][dw] * cp) for tmp, cp in
                                            zip(temp, datadict['control_points'][iu + du, iv + dv, iw + dw])]
@@ -424,7 +424,7 @@ class VolumeEvaluatorRational(VolumeEvaluator):
         # Divide by weight
         eval_points = []
         for pt in cptw:
-            cpt = [float(c / pt[-1]) for c in pt[0:(dimension - 1)]]
+            cpt = [GeomdlFloat(c / pt[-1]) for c in pt[0:(dimension - 1)]]
             eval_points.append(cpt)
 
         return eval_points
@@ -477,7 +477,7 @@ class CurveEvaluator2(CurveEvaluator):
         # Algorithm A3.4
         du = min(datadict['degree'][0], deriv_order)
 
-        CK = [[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)]
+        CK = [[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
         span = helpers.find_span_linear(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos)
         bfuns = helpers.basis_function_all(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos)
@@ -526,7 +526,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
         pdimension = datadict['pdimension']
 
-        SKL = [[[0.0 for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
+        SKL = [[[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)] for _ in range(deriv_order + 1)]
 
         d = (min(degree[0], deriv_order), min(degree[1], deriv_order))
 
@@ -546,9 +546,9 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         for k in range(0, d[0] + 1):
             dd = min(deriv_order - k, d[1])
             for l in range(0, dd + 1):
-                SKL[k][l] = [0.0 for _ in range(dimension)]
+                #SKL[k][l] = [GeomdlFloat(0.0) for _ in range(dimension)]
                 for i in range(0, degree[1] - l + 1):
-                    temp = [0.0 for _ in range(dimension)]
+                    temp = [GeomdlFloat(0.0) for _ in range(dimension)]
                     for j in range(0, degree[0] - k + 1):
                         temp[:] = [elem + (basis[0][j][degree[0] - k] * drv_ctl_p) for elem, drv_ctl_p in
                                    zip(temp, PKL[k][l][j][i])]
