@@ -7,6 +7,7 @@
 
 """
 
+import os
 import sys
 import abc
 import copy
@@ -17,6 +18,8 @@ __all__ = []
 
 # Get Python version
 _pyversion = sys.version_info[0]
+# Get precision, i.e. number of decimals to round to
+_precision = os.environ.get('GEOMDL_PRECISION', '12')
 
 
 def export(fn):
@@ -30,6 +33,17 @@ def export(fn):
     else:
         mod.__all__ = [fn.__name__]
     return fn
+
+
+def apply_precision(num):
+    """ Rounds the input numeric value using the library precision constant
+
+    :param num: numeric value
+    :return: value rounded to the library precision
+    :rtype: str
+    """
+    # 'num' has to be type-casted to float for max compatibility
+    return ("{:." + _precision + "f}").format(float(num))
 
 
 @export
@@ -95,7 +109,7 @@ class GeomdlWarning(Warning):
 class GeomdlFloat(float):
     """ A customizable float class """
     def __new__(cls, value):
-        return super(GeomdlFloat, cls).__new__(cls, value)
+        return super(GeomdlFloat, cls).__new__(cls, apply_precision(value))
 
     def __add__(self, other):
         c = super(GeomdlFloat, self).__add__(other)
