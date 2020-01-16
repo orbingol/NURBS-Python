@@ -9,7 +9,7 @@
 
 import abc
 from .six import add_metaclass
-from .base import GeomdlError
+from .base import GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -42,7 +42,7 @@ class VisAbstract(object):
         self._user_config = config.__class__(**kwargs) if kwargs else config
         self._module_config = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
         self._plots = []
-        self._ctrlpts_offset = 0.0
+        self._ctrlpts_offset = GeomdlFloat(0.0)
 
     def clear(self):
         """ Clears the points, colors and names lists. """
@@ -66,7 +66,7 @@ class VisAbstract(object):
         if ptsarr is None or len(ptsarr) == 0:
             return
         # Add points, size, plot color and name on the legend
-        plt_name = " ".join([str(n) for n in name]) if isinstance(name, (list, tuple)) else name
+        plt_name = " ".join([str(n) for n in name]) if isinstance(name, GeomdlTypeSequence) else name
         elem = {'ptsarr': ptsarr, 'name': plt_name, 'color': color, 'type': plot_type, 'idx': idx}
         self._plots.append(elem)
 

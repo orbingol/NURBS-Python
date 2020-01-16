@@ -8,7 +8,8 @@
 """
 
 import random
-from geomdl import linalg
+from .base import GeomdlFloat
+from . import linalg
 
 
 def color_generator(seed=None):
@@ -197,8 +198,8 @@ def evaluate_bounding_box(ctrlpts):
     dimension = len(ctrlpts[0])
 
     # Evaluate bounding box
-    bbmin = [float('inf') for _ in range(0, dimension)]
-    bbmax = [float('-inf') for _ in range(0, dimension)]
+    bbmin = [GeomdlFloat('inf') for _ in range(0, dimension)]
+    bbmax = [GeomdlFloat('-inf') for _ in range(0, dimension)]
     for cpt in ctrlpts:
         for i, arr in enumerate(zip(cpt, bbmin)):
             if arr[0] < arr[1]:
@@ -238,7 +239,7 @@ def compute_delta_from_sample_size(sample_size, domain, domain_range):
     :return: delta value
     :rtype: float
     """
-    return (domain[1] - domain[0]) / (domain_range * float(sample_size - 1))
+    return (domain[1] - domain[0]) / (domain_range * GeomdlFloat(sample_size - 1))
 
 
 def compute_sample_size_from_delta(delta):

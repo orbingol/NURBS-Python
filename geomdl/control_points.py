@@ -56,9 +56,9 @@ def default_ctrlpts_init(num_ctrlpts, **kwargs):
     points_data = GeomdlDict()
     for k, v in kwargs.items():
         if v > 1:
-            points_data[k] = [[0.0 for _ in range(v)] for _ in range(num_ctrlpts)]
+            points_data[k] = [[GeomdlFloat(0.0) for _ in range(v)] for _ in range(num_ctrlpts)]
         else:
-            points_data[k] = [0.0 for _ in range(num_ctrlpts)]
+            points_data[k] = [GeomdlFloat(0.0) for _ in range(num_ctrlpts)]
     return points, points_data
 
 

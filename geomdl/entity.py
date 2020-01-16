@@ -9,7 +9,7 @@
 
 import abc
 from .six import add_metaclass
-from .base import export, GeomdlBase, GeomdlTypeSequence, GeomdlError
+from .base import export, GeomdlBase, GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 
 @add_metaclass(abc.ABCMeta)
@@ -77,8 +77,8 @@ class Vertex(AbstractEntity):
 
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
-        self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
-        self._uv = [0.0, 0.0]  # parametric coordinates
+        self.data = [GeomdlFloat(arg) for arg in args] if args else [GeomdlFloat(0.0), GeomdlFloat(0.0), GeomdlFloat(0.0)]  # spatial coordinates
+        self._uv = [GeomdlFloat(0.0), GeomdlFloat(0.0)]  # parametric coordinates
         self._opt_data['inside'] = False  # flag for trimming
 
     def __nonzero__(self):
@@ -92,10 +92,10 @@ class Vertex(AbstractEntity):
     def __add__(self, other):
         if not isinstance(other, self.__class__):
             raise GeomdlError("Can only add Vertex objects")
-        res_data = [0.0 for _ in range(3)]
+        res_data = [GeomdlFloat(0.0) for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] + other.data[idx]
-        res_uv = [0.0 for _ in range(2)]
+        res_uv = [GeomdlFloat(0.0) for _ in range(2)]
         for idx in range(2):
             res_uv[idx] = self.uv[idx] + other.uv[idx]
         res_val = self.__class__()
@@ -106,10 +106,10 @@ class Vertex(AbstractEntity):
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
             raise GeomdlError("Can only subtract Vertex objects")
-        res_data = [0.0 for _ in range(3)]
+        res_data = [GeomdlFloat(0.0) for _ in range(3)]
         for idx in range(3):
             res_data[idx] = self.data[idx] - other.data[idx]
-        res_uv = [0.0 for _ in range(2)]
+        res_uv = [GeomdlFloat(0.0) for _ in range(2)]
         for idx in range(2):
             res_uv[idx] = self.uv[idx] - other.uv[idx]
         res_val = self.__class__()
@@ -123,12 +123,12 @@ class Vertex(AbstractEntity):
     def __truediv__(self, other):
         if not isinstance(other, (float, int)):
             raise GeomdlError("Can only divide by a float or an integer")
-        res_data = [0.0 for _ in range(3)]
+        res_data = [GeomdlFloat(0.0) for _ in range(3)]
         for idx in range(3):
-            res_data[idx] = self.data[idx] / float(other)
-        res_uv = [0.0 for _ in range(2)]
+            res_data[idx] = self.data[idx] / GeomdlFloat(other)
+        res_uv = [GeomdlFloat(0.0) for _ in range(2)]
         for idx in range(2):
-            res_uv[idx] = self.uv[idx] / float(other)
+            res_uv[idx] = self.uv[idx] / GeomdlFloat(other)
         res_val = self.__class__()
         res_val.data = res_data
         res_val.uv = res_uv
@@ -146,7 +146,7 @@ class Vertex(AbstractEntity):
 
     @x.setter
     def x(self, value):
-        self._data[0] = float(value)
+        self._data[0] = GeomdlFloat(value)
 
     @property
     def y(self):
@@ -160,7 +160,7 @@ class Vertex(AbstractEntity):
 
     @y.setter
     def y(self, value):
-        self._data[1] = float(value)
+        self._data[1] = GeomdlFloat(value)
 
     @property
     def z(self):
@@ -174,7 +174,7 @@ class Vertex(AbstractEntity):
 
     @z.setter
     def z(self, value):
-        self._data[2] = float(value)
+        self._data[2] = GeomdlFloat(value)
 
     @property
     def u(self):
@@ -188,7 +188,7 @@ class Vertex(AbstractEntity):
 
     @u.setter
     def u(self, value):
-        self._uv[0] = float(value)
+        self._uv[0] = GeomdlFloat(value)
 
     @property
     def v(self):
@@ -202,7 +202,7 @@ class Vertex(AbstractEntity):
 
     @v.setter
     def v(self, value):
-        self._uv[1] = float(value)
+        self._uv[1] = GeomdlFloat(value)
 
     @property
     def uv(self):
@@ -252,7 +252,7 @@ class Vertex(AbstractEntity):
         if len(value) != 3:
             raise GeomdlError("Vertex can only store 3 components")
         # Convert to float
-        self._data = [float(val) for val in value]
+        self._data = [GeomdlFloat(val) for val in value]
 
 
 @export
