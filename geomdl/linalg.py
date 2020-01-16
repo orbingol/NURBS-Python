@@ -16,6 +16,7 @@ try:
     from functools import lru_cache
 except ImportError:
     from .functools_lru_cache import lru_cache
+from .base import GeomdlError, GeomdlFloat
 
 
 def vector_cross(vector1, vector2):
@@ -29,7 +30,7 @@ def vector_cross(vector1, vector2):
     :rtype: tuple
     """
     if not 1 < len(vector1) <= 3 or not 1 < len(vector2) <= 3:
-        raise ValueError("The input vectors should contain 2 or 3 components")
+        raise GeomdlError("The input vectors should contain 2 or 3 components")
 
     # Convert 2-D to 3-D, if necessary
     v1 = list(vector1) + [type(vector1[0])(0.0)] if len(vector1) == 2 else vector1
@@ -95,7 +96,7 @@ def vector_normalize(vector_in):
     magnitude = vector_magnitude(vector_in)
 
     if magnitude <= 0:
-        raise ValueError("The magnitude of the vector is zero")
+        raise GeomdlError("The magnitude of the vector is zero")
 
     # Normalize the vector
     vector_out = [truediv(vin, magnitude) for vin in vector_in]
@@ -119,7 +120,7 @@ def vector_generate(start_pt, end_pt, **kwargs):
     return vector_normalize(ret_vec) if normalize else ret_vec
 
 
-def vector_mean(*args):
+def vector_mean(*args, **kwargs):
     """ Computes the mean (average) of a list of vectors.
 
     The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
@@ -142,9 +143,9 @@ def vector_mean(*args):
     :return: mean vector
     :rtype: list
     """
-    dtype = type(args[0][0])
+    dt = kwargs.get('dtype', GeomdlFloat)
     sz = len(args)
-    mean_vector = [dtype(0.0) for _ in range(len(args[0]))]
+    mean_vector = [dt(0.0) for _ in range(len(args[0]))]
     for input_vector in args:
         mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
     return [truediv(a, sz) for a in mean_vector]
@@ -211,7 +212,7 @@ def point_translate(point_in, vector_in):
     return list(map(add, point_in, vector_in))
 
 
-def point_distance(pt1, pt2, **kwargs):
+def point_distance(pt1, pt2):
     """ Computes distance between two points.
 
     :param pt1: point 1
@@ -235,22 +236,21 @@ def point_mid(pt1, pt2):
     :rtype: list
     """
     dist_vector = vector_generate(pt1, pt2, normalize=False)
-    half_dist_vector = vector_multiply(dist_vector, 0.5)
+    half_dist_vector = vector_multiply(dist_vector, GeomdlFloat(0.5))
     return point_translate(pt1, half_dist_vector)
 
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
-def matrix_identity(n, dtype=float):
+def matrix_identity(n, **kwargs):
     """ Generates a :math:`N \\times N` identity matrix.
 
     :param n: size of the matrix
     :type n: int
-    :param dtype: data type
-    :type dtype: type
     :return: identity matrix
     :rtype: list
     """
-    return [[dtype(1.0) if i == j else dtype(0.0) for i in range(n)] for j in range(n)]
+    dt = kwargs.get('dtype', GeomdlFloat)
+    return [[dt(1.0) if i == j else dt(0.0) for i in range(n)] for j in range(n)]
 
 
 def matrix_pivot(m, sign=False, **kwargs):
@@ -269,14 +269,14 @@ def matrix_pivot(m, sign=False, **kwargs):
     :return: a tuple containing the matrix product of M x P, P and det(P)
     :rtype: tuple
     """
-    dtype = kwargs.get('dtype', type(m[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     mp = deepcopy(m)
     n = len(mp)
-    p = matrix_identity(n, dtype=dtype)  # permutation matrix
+    p = matrix_identity(n, dtype=dt)  # permutation matrix
     num_rowswap = 0
     for j in range(0, n):
         row = j
-        a_max = dtype(0.0)
+        a_max = dt(0.0)
         for i in range(j, n):
             a_abs = abs(mp[i][j])
             if a_abs > a_max:
@@ -301,9 +301,9 @@ def matrix_inverse(m, **kwargs):
     :return: inverse of the matrix
     :rtype: list
     """
-    dtype = kwargs.get('dtype', type(m[0][0]))
-    mp, p = matrix_pivot(m, dtype=dtype)
-    m_inv = lu_solve(mp, p, dtype=dtype)
+    dt = kwargs.get('dtype', GeomdlFloat)
+    mp, p = matrix_pivot(m, dtype=dt)
+    m_inv = lu_solve(mp, p, dtype=dt)
     return m_inv
 
 
@@ -314,9 +314,9 @@ def matrix_determinant(m, **kwargs):
     :type m: list, tuple
     :return: determinant of the matrix
     """
-    dtype = kwargs.get('dtype', type(m[0][0]))
-    mp, p, sign = matrix_pivot(m, sign=True, dtype=dtype)
-    m_l, m_u = lu_decomposition(mp, dtype=dtype)
+    dt = kwargs.get('dtype', GeomdlFloat)
+    mp, p, sign = matrix_pivot(m, sign=True, dtype=dt)
+    m_l, m_u = lu_decomposition(mp, dtype=dt)
     det = 1.0
     for i in range(len(m)):
         det *= m_l[i][i] * m_u[i][i]
@@ -357,23 +357,23 @@ def matrix_multiply(mat1, mat2, **kwargs):
     :return: resultant matrix with dimensions :math:`(n \\times m)`
     :rtype: list
     """
-    dtype = kwargs.get('dtype', type(mat1[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     n = len(mat1)
     p1 = len(mat1[0])
     p2 = len(mat2)
     if p1 != p2:
-        raise ValueError("Column - row size mismatch")
+        raise GeomdlError("Column - row size mismatch")
     try:
         # Matrix - matrix multiplication
         m = len(mat2[0])
-        mat3 = [[dtype(0.0) for _ in range(m)] for _ in range(n)]
+        mat3 = [[dt(0.0) for _ in range(m)] for _ in range(n)]
         for i in range(n):
             for j in range(m):
                 for k in range(p2):
                     mat3[i][j] += mat1[i][k] * mat2[k][j]
     except TypeError:
         # Matrix - vector multiplication
-        mat3 = [dtype(0.0) for _ in range(n)]
+        mat3 = [dt(0.0) for _ in range(n)]
         for i in range(n):
             for k in range(p2):
                 mat3[i] += mat1[i][k] * mat2[k]
@@ -411,25 +411,25 @@ def triangle_normal(tri):
     return vector_cross(vec1, vec2)
 
 
-def triangle_center(tri, uv=False):
+def triangle_center(tri, **kwargs):
     """ Computes the center of mass of the input triangle.
 
     :param tri: triangle object
     :type tri: elements.Triangle
-    :param uv: if True, then finds parametric position of the center of mass
-    :type uv: bool
     :return: center of mass of the triangle
     :rtype: tuple
     """
-    data, mid = ([t.uv for t in tri], [tri.dtype(0.0) for _ in range(2)]) if uv \
-        else (tri.vertices, [tri.dtype(0.0) for _ in range(3)])
+    dt = kwargs.get('dtype', GeomdlFloat)
+    uv = kwargs.get('uv', False)
+    data, mid = ([t.uv for t in tri], [dt(0.0) for _ in range(2)]) if uv \
+        else (tri.vertices, [dt(0.0) for _ in range(3)])
     for vert in data:
         mid = [m + v for m, v in zip(mid, vert)]
     return (truediv(m, 3) for m in mid)
 
 
 @lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
-def binomial_coefficient(k, i, dtype=float):
+def binomial_coefficient(k, i, **kwargs):
     """ Computes the binomial coefficient (denoted by *k choose i*).
 
     Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
@@ -438,19 +438,18 @@ def binomial_coefficient(k, i, dtype=float):
     :type k: int
     :param i: size of the subsets
     :type i: int
-    :param dtype: data type
-    :type dtype: type
     :return: combination of *k* and *i*
     :rtype: float
     """
+    dt = kwargs.get('dtype', GeomdlFloat)
     # Special case
     if i > k:
-        return dtype(0.0)
+        return dt(0.0)
     # Compute binomial coefficient
     k_fact = math.factorial(k)
     i_fact = math.factorial(i)
     k_i_fact = math.factorial(k - i)
-    return dtype(truediv(k_fact, (k_i_fact * i_fact)))
+    return dt(truediv(k_fact, (k_i_fact * i_fact)))
 
 
 def lu_decomposition(matrix_a, **kwargs):
@@ -499,17 +498,17 @@ def lu_decomposition(matrix_a, **kwargs):
         return ml, mu
 
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
 
     # Check if the 2-dimensional input matrix is a square matrix
     q = len(matrix_a)
     for idx, m_a in enumerate(matrix_a):
         if len(m_a) != q:
-            raise ValueError("The input must be a square matrix. " +
-                             "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
+            raise GeomdlError("The input must be a square matrix. " +
+                              "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
 
     # Return L and U matrices
-    return _doolittle(matrix_a, dtype)
+    return _doolittle(matrix_a, dt)
 
 
 def forward_substitution(matrix_l, matrix_b, **kwargs):
@@ -525,9 +524,9 @@ def forward_substitution(matrix_l, matrix_b, **kwargs):
     :return: y, column matrix
     :rtype: list
     """
-    dtype = kwargs.get('dtype', type(matrix_l[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     q = len(matrix_b)
-    matrix_y = [dtype(0.0) for _ in range(q)]
+    matrix_y = [dt(0.0) for _ in range(q)]
     matrix_y[0] = truediv(matrix_b[0], matrix_l[0][0])
     for i in range(1, q):
         matrix_y[i] = matrix_b[i] - sum([matrix_l[i][j] * matrix_y[j] for j in range(0, i)])
@@ -548,9 +547,9 @@ def backward_substitution(matrix_u, matrix_y, **kwargs):
     :return: x, column matrix
     :rtype: list
     """
-    dtype = kwargs.get('dtype', type(matrix_u[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     q = len(matrix_y)
-    matrix_x = [dtype(0.0) for _ in range(q)]
+    matrix_x = [dt(0.0) for _ in range(q)]
     matrix_x[q - 1] = truediv(matrix_y[q - 1], matrix_u[q - 1][q - 1])
     for i in range(q - 2, -1, -1):
         matrix_x[i] = matrix_y[i] - sum([matrix_u[i][j] * matrix_x[j] for j in range(i, q)])
@@ -574,20 +573,20 @@ def lu_solve(matrix_a, b, **kwargs):
     :rtype: list
     """
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
-    x = [[dtype(0.0) for _ in range(dim)] for _ in range(num_x)]
+    x = [[dt(0.0) for _ in range(dim)] for _ in range(num_x)]
 
     # LU decomposition
-    ml, mu = lu_decomposition(matrix_a, dtype=dtype)
+    ml, mu = lu_decomposition(matrix_a, dtype=dt)
 
     # Solve the system of linear equations
     for i in range(dim):
         bt = [b1[i] for b1 in b]
-        y = forward_substitution(ml, bt, dtype=dtype)
-        xt = backward_substitution(mu, y, dtype=dtype)
+        y = forward_substitution(ml, bt, dtype=dt)
+        xt = backward_substitution(mu, y, dtype=dt)
         for j in range(num_x):
             x[j][i] = xt[j]
 
@@ -611,15 +610,15 @@ def lu_factor(matrix_a, b, **kwargs):
     :rtype: list
     """
     # Data type, e.g. float, Decimal, etc.
-    dtype = kwargs.get('dtype', type(matrix_a[0][0]))
+    dt = kwargs.get('dtype', GeomdlFloat)
     # Variable initialization
     dim = len(b[0])
     num_x = len(b)
-    x = [[dtype(0.0) for _ in range(dim)] for _ in range(num_x)]
+    x = [[dt(0.0) for _ in range(dim)] for _ in range(num_x)]
 
     # LUP decomposition
-    mp, p = matrix_pivot(matrix_a, dtype=dtype)
-    ml, mu = lu_decomposition(mp, dtype=dtype)
+    mp, p = matrix_pivot(matrix_a, dtype=dt)
+    ml, mu = lu_decomposition(mp, dtype=dt)
 
     # Solve the system of linear equations
     for i in range(dim):
@@ -633,7 +632,7 @@ def lu_factor(matrix_a, b, **kwargs):
     return x
 
 
-def linspace(start, stop, num, dtype=float):
+def linspace(start, stop, num, **kwargs):
     """ Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
@@ -647,8 +646,9 @@ def linspace(start, stop, num, dtype=float):
     :return: a list of equally spaced numbers
     :rtype: list
     """
-    start = dtype(start)
-    stop = dtype(stop)
+    dt = kwargs.get('dtype', GeomdlFloat)
+    start = dt(start)
+    stop = dt(stop)
     if abs(start - stop) <= 10e-8:
         return [start]
     num = int(num)
@@ -659,7 +659,7 @@ def linspace(start, stop, num, dtype=float):
     return [start]
 
 
-def frange(start, stop, step=1.0, dtype=float):
+def frange(start, stop, step=1.0, **kwargs):
     """ Implementation of Python's ``range()`` function which works non-int numeric types.
 
     Reference to this implementation: https://stackoverflow.com/a/36091634
@@ -667,18 +667,17 @@ def frange(start, stop, step=1.0, dtype=float):
     :param start: start value
     :param stop: end value
     :param step: increment
-    :param dtype: data type
-    :type dtype: type
     :return: Python generator instance
     :rtype: generator
     """
-    i = dtype(0.0)
-    x = dtype(start)  # Prevent yielding integers.
+    dt = kwargs.get('dtype', GeomdlFloat)
+    i = dt(0.0)
+    x = dt(start)  # Prevent yielding integers.
     x0 = x
     epsilon = truediv(step, 2)
     yield x  # always yield first value
     while x + epsilon < stop:
-        i += dtype(1.0)
+        i += dt(1.0)
         x = x0 + i * step
         yield x
     if stop > x:
