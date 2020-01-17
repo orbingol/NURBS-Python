@@ -160,7 +160,7 @@ def test_point_data2():
     cpman = control_points.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv = cpman.ptdata('testdata2', p)
-    assert retv == None
+    assert retv is None
 
 
 def test_point_data3():
