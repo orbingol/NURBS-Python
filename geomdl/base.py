@@ -403,6 +403,9 @@ class GeomdlObject(object):
             )
         )  # dict for storing the configuration variables
 
+    def __getattr__(self, name):
+        return object.__getattribute__(self, name)
+
     def __setattr__(self, name, value):
         object.__setattr__(self, name, value)
         # Run callbacks
