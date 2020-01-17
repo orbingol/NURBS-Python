@@ -52,44 +52,44 @@ def test_separate_ctrlpts_weights():
 
 @pytest.fixture
 def cpman1d():
-    cpman = base.CPManager(6)
+    cpman = control_points.CPManager(6)
     return cpman
 
 
 @pytest.fixture
 def cpman2d():
-    cpman = base.CPManager(3, 2)
+    cpman = control_points.CPManager(3, 2)
     return cpman
 
 
 @pytest.fixture
 def cpman3d():
-    cpman = base.CPManager(2, 3, 2)
+    cpman = control_points.CPManager(2, 3, 2)
     return cpman
 
 
 def test_point_assignment1(cpman1d):
     cpman1d.points = GEOMDL_TEST_CPTS1
     for i in range(len(GEOMDL_TEST_CPTS1[1])):
-        assert cpman1d.get_pt(1)[i] == GEOMDL_TEST_CPTS1[1][i]
+        assert cpman1d.pt(1)[i] == GEOMDL_TEST_CPTS1[1][i]
 
 
 def test_point_assignment2(cpman2d):
     cpman2d.points = GEOMDL_TEST_CPTS2
     for i in range(len(GEOMDL_TEST_CPTS3[3])):
-        assert cpman2d.get_pt(0, 1)[i] == GEOMDL_TEST_CPTS2[3][i]
+        assert cpman2d.pt(0, 1)[i] == GEOMDL_TEST_CPTS2[3][i]
 
 
 def test_point_assignment3(cpman3d):
     cpman3d.points = GEOMDL_TEST_CPTS3
     for i in range(len(GEOMDL_TEST_CPTS3[11])):
-        assert cpman3d.get_pt(1, 2, 1)[i] == GEOMDL_TEST_CPTS3[11][i]
+        assert cpman3d.pt(1, 2, 1)[i] == GEOMDL_TEST_CPTS3[11][i]
 
 
 def test_point_assignment4(cpman3d):
     cpman3d.points = GEOMDL_TEST_CPTS3
     for i in range(len(GEOMDL_TEST_CPTS3[0])):
-        assert cpman3d.get_pt(0, 0, 0)[i] == GEOMDL_TEST_CPTS3[0][i]
+        assert cpman3d.pt(0, 0, 0)[i] == GEOMDL_TEST_CPTS3[0][i]
 
 
 def test_point_assignment5(cpman3d):
@@ -108,14 +108,14 @@ def test_point_get_set1(cpman1d):
     pt = (2, 3, 4)
     cpman1d.set_pt(pt, 2)
     for i in range(0, 3):
-        assert cpman1d.get_pt(2)[i] == pt[i]
+        assert cpman1d.pt(2)[i] == pt[i]
 
 
 def test_point_get_set2(cpman1d):
     pt = (2, 3, 4)
     cpman1d[2] = pt
     for i in range(0, 3):
-        assert cpman1d.get_pt(2)[i] == pt[i]
+        assert cpman1d.pt(2)[i] == pt[i]
 
 
 def test_point_dim(cpman1d):
@@ -144,10 +144,10 @@ def test_point_data1():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = base.CPManager(sz, testdata=4)
+    cpman = control_points.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
-    retv1 = cpman.get_ptdata('testdata', p)
-    retv2 = cpman.get_ptdata('testdata', p + 1)
+    retv1 = cpman.ptdata('testdata', p)
+    retv2 = cpman.ptdata('testdata', p + 1)
     assert retv1[2] == 2.0
     assert retv2[2] == 0.0
 
@@ -157,9 +157,9 @@ def test_point_data2():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = base.CPManager(sz, testdata=4)
+    cpman = control_points.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
-    retv = cpman.get_ptdata('testdata2', p)
+    retv = cpman.ptdata('testdata2', p)
     assert retv == None
 
 
@@ -169,7 +169,7 @@ def test_point_data3():
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12
-        cpman = base.CPManager(sz, testdata=3)
+        cpman = control_points.CPManager(sz, testdata=3)
         cpman.set_ptdata(dict(testdata=d), p)
 
 
@@ -178,6 +178,6 @@ def test_point_data4():
     d = 13
     p = 5
     sz = 12
-    cpman = base.CPManager(sz, testdata=1)
+    cpman = control_points.CPManager(sz, testdata=1)
     cpman.set_ptdata(dict(testdata=d), p)
-    assert cpman.get_ptdata('testdata', 5) == 13
+    assert cpman.ptdata('testdata', 5) == 13
