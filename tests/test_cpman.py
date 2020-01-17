@@ -1,7 +1,7 @@
 """
-    Tests for the NURBS-Python package
+    Tests for the NURBS-Python (geomdl) package
     Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2019 Onur Rauf Bingol
+    Copyright (c) 2019-2020 Onur Rauf Bingol
 
     Tests geomdl.control_points module. Requires "pytest" to run.
 """

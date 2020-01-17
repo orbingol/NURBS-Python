@@ -1,7 +1,7 @@
 """
-    Tests for the NURBS-Python package
+    Tests for the NURBS-Python (geomdl) package
     Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018 Onur Rauf Bingol
+    Copyright (c) 2018-2020 Onur Rauf Bingol
 
     Tests geomdl.linalg module. Requires "pytest" to run.
 """
@@ -9,6 +9,7 @@
 import pytest
 import math
 from decimal import setcontext, Context
+from geomdl import base
 from geomdl import linalg
 
 GEOMDL_DELTA = 10e-6
@@ -32,14 +33,14 @@ def test_vector_dot():
 
 
 def test_vector_cross1():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         vec1 = ()
         vec2 = ()
         linalg.vector_cross(vec1, vec2)
 
 
 def test_vector_cross2():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         vec1 = (1, 2, 3, 4)
         vec2 = (1, 5, 7, 9)
         linalg.vector_cross(vec1, vec2)
@@ -67,7 +68,7 @@ def test_vector_cross5():
 
 
 def test_vector_normalize1():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         vec = (0, 0)
         linalg.vector_normalize(vec)
 

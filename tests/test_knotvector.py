@@ -1,31 +1,32 @@
 """
-    Tests for the NURBS-Python package
+    Tests for the NURBS-Python (geomdl) package
     Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018-2019 Onur Rauf Bingol
+    Copyright (c) 2018-2020 Onur Rauf Bingol
 
     Tests geomdl.knotvector module. Requires "pytest" to run.
 """
 
 import pytest
+from geomdl import base
 from geomdl import knotvector
 
 
 def test_generate_knot_vector1():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         degree = 0
         num_ctrlpts = 12
         knotvector.generate(degree, num_ctrlpts)
 
 
 def test_generate_knot_vector2():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         degree = 4
         num_ctrlpts = 0
         knotvector.generate(degree, num_ctrlpts)
 
 
 def test_generate_knot_vector3():
-    with pytest.raises(ValueError):
+    with pytest.raises(base.GeomdlError):
         degree = 0
         num_ctrlpts = 0
         knotvector.generate(degree, num_ctrlpts)
