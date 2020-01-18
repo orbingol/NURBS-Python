@@ -9,10 +9,9 @@
 
 import math
 import copy
-import warnings
 from . import abstract, helpers, linalg, compatibility
 from . import _operations as ops
-from .base import export, GeomdlTypeSequence, GeomdlError
+from .base import export, GeomdlTypeSequence, GeomdlError, GeomdlWarning
 
 
 @export
@@ -1028,7 +1027,7 @@ def derivative_curve(obj):
     # Unfortunately, rational curves do NOT have this property
     # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
     if obj.rational:
-        warnings.warn("Cannot compute hodograph curve for a rational curve")
+        GeomdlWarning("Cannot compute hodograph curve for a rational curve")
         return obj
 
     # Find the control points of the derivative curve
@@ -1310,7 +1309,7 @@ def derivative_surface(obj):
         raise GeomdlError("Input shape must be an instance of abstract.Surface class")
 
     if obj.rational:
-        warnings.warn("Cannot compute hodograph surface for a rational surface")
+        GeomdlWarning("Cannot compute hodograph surface for a rational surface")
         return obj
 
     # Find the control points of the derivative surface
