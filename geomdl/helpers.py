@@ -356,7 +356,7 @@ def basis_function_ders(degree, knot_vector, span, knot, order):
             ders[k][r] = d
 
             # Switch rows
-            j, s1, s2 = s1, s2, j
+            s1, s2 = s2, s1
 
     # Multiply through by the the correct factors
     r = GeomdlFloat(degree)
@@ -393,7 +393,6 @@ def basis_function_ders_one(degree, knot_vector, span, knot, order):
     if (knot < knot_vector[span]) or (knot >= knot_vector[span + degree + 1]):
         for k in range(0, order + 1):
             ders[k] = GeomdlFloat(0.0)
-
         return ders
 
     N = [[GeomdlFloat(0.0) for _ in range(0, degree + 1)] for _ in range(0, degree + 1)]
