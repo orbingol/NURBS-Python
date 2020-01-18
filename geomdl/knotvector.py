@@ -9,10 +9,12 @@
 
 from operator import truediv
 from .linalg import linspace
-from .base import export, GeomdlError, GeomdlFloat
+from .base import GeomdlError, GeomdlFloat
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
-@export
 def generate(degree, num_ctrlpts, **kwargs):
     """ Generates an equally spaced knot vector
 
@@ -67,7 +69,6 @@ def generate(degree, num_ctrlpts, **kwargs):
     return knot_vector
 
 
-@export
 def normalize(knot_vector, **kwargs):
     """ Normalizes the input knot vector to [0, 1] domain
 
@@ -86,7 +87,6 @@ def normalize(knot_vector, **kwargs):
     return [truediv(dt(kv) - first_knot, denominator) for kv in knot_vector]
 
 
-@export
 def check(degree, knot_vector, num_ctrlpts):
     """ Checks the validity of the input knot vector
 
