@@ -144,7 +144,7 @@ class SplineGeometry(Geometry):
     """
     __slots__ = (
          '_pdim', '_dinit', '_attribs', '_rational', '_degree', '_knot_vector', '_control_points', '_control_points_size',
-         '_delta', '_bounding_box', '_evaluator', '_vis_component'
+         '_delta', '_bounding_box', '_evaluator'
     )
 
     def __init__(self, *args, **kwargs):
@@ -160,7 +160,6 @@ class SplineGeometry(Geometry):
         self._control_points = CPManager()  # control points
         self._bounding_box = list()  # bounding box
         self._evaluator = None  # evaluator instance
-        self._vis_component = None  # visualization component
         self._degree = GeomdlList(  # degree
             [0 for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_degree_value]
@@ -504,26 +503,6 @@ class SplineGeometry(Geometry):
         if not isinstance(value, GeomdlEvaluator):
             raise GeomdlError("The evaluator must be an instance of AbstractEvaluator")
         self._evaluator = value
-
-    @property
-    def vis(self):
-        """ Visualization component
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the visualization component
-        :setter: Sets the visualization component
-        :type: vis.VisAbstract
-        """
-        return self._vis_component
-
-    @vis.setter
-    def vis(self, value):
-        if not isinstance(value, vis.VisAbstract):
-            GeomdlWarning("Visualization component must be an instance of VisAbstract")
-            return
-        self._vis_component = value
 
     @property
     def data(self):
