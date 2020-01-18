@@ -203,12 +203,12 @@ def make_quad_mesh(points, size_u, size_v):
 
     # Generate quads
     quads = []
-    for i in range(0, size_u - 1):
-        for j in range(0, size_v - 1):
-            v1 = vertices[j + (size_v * i)]
-            v2 = vertices[j + (size_v * (i + 1))]
-            v3 = vertices[j + 1 + (size_v * (i + 1))]
-            v4 = vertices[j + 1 + (size_v * i)]
+    for j in range(0, size_v - 1):
+        for i in range(0, size_u - 1):
+            v1 = vertices[i + (size_u * j)]
+            v2 = vertices[i + (size_u * (j + 1))]
+            v3 = vertices[i + 1 + (size_u * (j + 1))]
+            v4 = vertices[i + 1 + (size_u * j)]
             qd = Quad(v1, v2, v3, v4, id=quad_idx)
             quads.append(qd)
             quad_idx += 1
