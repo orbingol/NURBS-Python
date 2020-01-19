@@ -12,7 +12,7 @@ from .six import add_metaclass
 from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning
 from .base import GeomdlFloat, GeomdlList, GeomdlDict, GeomdlTypeSequence
 from .control_points import CPManager
-from . import vis, knotvector, utilities
+from . import knotvector, utilities
 
 
 @add_metaclass(abc.ABCMeta)
