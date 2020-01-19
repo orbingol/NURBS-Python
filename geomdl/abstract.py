@@ -546,7 +546,7 @@ class SplineGeometry(Geometry):
             raise GeomdlError("Number of arguments after ctrlpts must be " + str(self._pdim))
 
         # Set control points and sizes
-        self._control_points = CPManager([int(arg) for arg in args])
+        self._control_points = CPManager(args)
         self._control_points.points = ctrlpts
         # Reset bounding box
         self._bounding_box = list()
