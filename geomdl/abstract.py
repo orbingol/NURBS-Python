@@ -149,12 +149,11 @@ class SplineGeometry(Geometry):
 
     def __init__(self, *args, **kwargs):
         super(SplineGeometry, self).__init__(*args, **kwargs)
-        # Update the following if defined in the child class
-        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
-        self._dinit = GeomdlFloat(0.1) if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
-        self._attribs = tuple() if not hasattr(self, '_attribs') else self._attribs  # dynamic attributes
 
         # Initialize variables
+        self._pdim = 0 # parametric dimension
+        self._dinit = GeomdlFloat(0.1)  # evaluation delta init value
+        self._attribs = tuple()  # dynamic attributes
         self._geom_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
         self._control_points = CPManager()  # control points
