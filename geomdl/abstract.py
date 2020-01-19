@@ -148,27 +148,28 @@ class SplineGeometry(Geometry):
     )
 
     def __init__(self, *args, **kwargs):
+        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list())))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
         # Initialize variables
-        self._pdim = 0 # parametric dimension
-        self._dinit = GeomdlFloat(0.1)  # evaluation delta init value
-        self._attribs = tuple()  # dynamic attributes
+        self._pdim = kwargs.get('pdimension', 0) # number of parametric dimensions
+        self._dinit = GeomdlFloat(kwargs.get('dinit', 0.1))  # evaluation delta init value
+        self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
         self._geom_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
         self._control_points = CPManager()  # control points
         self._bounding_box = list()  # bounding box
         self._evaluator = None  # evaluator instance
         self._degree = GeomdlList(  # degree
-            [0 for _ in range(self._pdim)], attribs=self._attribs,
+            *[0 for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_degree_value]
         )
         self._knot_vector = GeomdlList(  # knot vector
-            [list() for _ in range(self._pdim)], attribs=self._attribs,
+            *[list() for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_knotvector_value]
         )
         self._delta = GeomdlList(  # evaluation delta
-            [self._dinit for _ in range(self._pdim)], attribs=self._attribs,
+            *[self._dinit for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_delta_value]
         )
 
@@ -546,7 +547,7 @@ class SplineGeometry(Geometry):
             raise GeomdlError("Number of arguments after ctrlpts must be " + str(self._pdim))
 
         # Set control points and sizes
-        self._control_points = CPManager(args)
+        self._control_points = CPManager(*args)
         self._control_points.points = ctrlpts
         # Reset bounding box
         self._bounding_box = list()

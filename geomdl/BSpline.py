@@ -58,10 +58,8 @@ class Curve(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
+        kwargs.update(dict(pdimension=1, dinit=0.01, attribs=('u',)))
         super(Curve, self).__init__(*args, **kwargs)
-        self._pdim = 1  # number of parametric directions
-        self._dinit = GeomdlFloat(0.01)  # evaluation delta init value
-        self._attribs = ('u',)  # dynamic attributes
         self._evaluator = evaluators.CurveEvaluator()  # initialize evaluator
 
     def evaluate(self, **kwargs):
@@ -178,10 +176,8 @@ class Surface(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
+        kwargs.update(dict(pdimension=2, dinit=0.01, attribs=('u', 'v')))
         super(Surface, self).__init__(*args, **kwargs)
-        self._pdim = 2  # number of parametric directions
-        self._dinit = GeomdlFloat(0.01)  # evaluation delta init value
-        self._attribs = ('u', 'v')  # dynamic attributes
         self._evaluator = evaluators.SurfaceEvaluator()
         self._trims = list()  # trimming curves
         self._tsl_component = tessellate.TriangularTessellate()  # tessellation component
@@ -445,10 +441,8 @@ class Volume(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
+        kwargs.update(dict(pdimension=3, dinit=0.05, attribs=('u', 'v', 'w')))
         super(Volume, self).__init__(*args, **kwargs)
-        self._pdim = 3  # number of parametric directions
-        self._dinit = GeomdlFloat(0.05)  # evaluation delta init value
-        self._attribs = ('u', 'v', 'w')  # dynamic attributes
         self._evaluator = evaluators.VolumeEvaluator()
 
     def evaluate(self, **kwargs):

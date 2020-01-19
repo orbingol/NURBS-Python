@@ -521,14 +521,18 @@ class GeomdlBase(GeomdlObject):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache')
+    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache_vars', '_cache')
 
     def __init__(self, *args, **kwargs):
         super(GeomdlBase, self).__init__(*args, **kwargs)
         self._dimension = 0  # spatial dimension
         self._geom_type = str()  # geometry type
         self._opt_data = GeomdlDict()  # dict for storing arbitrary data
-        self._cache = GeomdlDict()  # cache dict
+        self._cache_vars = kwargs.get('cache_vars', dict())
+        self._cache = self._init_cache()  # cache dict
+
+    def _init_cache(self):
+        return GeomdlDict(self._cache_vars)
 
     @property
     def dimension(self):
@@ -619,7 +623,7 @@ class GeomdlBase(GeomdlObject):
     def reset(self):
         """ Clears computed/generated data, such as caches """
         self._opt_data = GeomdlDict()
-        self._cache = GeomdlDict()
+        self._cache = self._init_cache()
 
 
 @add_metaclass(abc.ABCMeta)
