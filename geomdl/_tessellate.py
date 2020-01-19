@@ -10,7 +10,7 @@
 from . import linalg
 from . import ray
 from .base import GeomdlFloat
-from .elements import Vertex, Triangle, Quad
+from .entity import Vertex, Triangle, Quad
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
