@@ -323,25 +323,20 @@ class GeomdlList(object):
         try:
             idx = object.__getattribute__(self, '_attribs').index(name)
             return object.__getattribute__(self, '_data')[idx]
-        except ValueError:
-            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
-        except AttributeError:
+        except Exception:
             return object.__getattribute__(self, name)
 
     def __setattr__(self, name, value):
-        if name in object.__getattribute__(self, '__slots__'):
+        try:
+            idx = object.__getattribute__(self, '_attribs').index(name)
+            temp = object.__getattribute__(self, '_data')
+            temp[idx] = value
+            object.__setattr__(self, '_data', temp)
+            # Run callback functions
+            for c in self._cb: c()
+            for cd in self._cb_dynamic: cd(name, value)
+        except Exception:
             object.__setattr__(self, name, value)
-        else:
-            try:
-                idx = object.__getattribute__(self, '_attribs').index(name)
-                temp = object.__getattribute__(self, '_data')
-                temp[idx] = value
-                object.__setattr__(self, '_data', temp)
-                # Run callback functions
-                for c in self._cb: c()
-                for cd in self._cb_dynamic: cd(name, value)
-            except ValueError:
-                raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + name + "'")
 
     @property
     def data(self):
