@@ -6,7 +6,7 @@
     Tests geomdl.control_points module. Requires "pytest" to run.
 """
 
-import pytest
+from pytest import fixture, raises
 from geomdl import control_points
 from geomdl.base import GeomdlError
 
@@ -50,22 +50,27 @@ def test_separate_ctrlpts_weights():
     assert W == c_weights
 
 
-@pytest.fixture
+@fixture
 def cpman1d():
     cpman = control_points.CPManager(6)
     return cpman
 
 
-@pytest.fixture
+@fixture
 def cpman2d():
     cpman = control_points.CPManager(3, 2)
     return cpman
 
 
-@pytest.fixture
+@fixture
 def cpman3d():
     cpman = control_points.CPManager(2, 3, 2)
     return cpman
+
+
+def test_create_empty_cpman():
+    cpman = control_points.CPManager()
+    assert len(cpman.size) == 1
 
 
 def test_point_assignment1(cpman1d):
@@ -139,6 +144,22 @@ def test_point_iter(cpman2d):
             assert pt[j] == GEOMDL_TEST_CPTS2[i][j]
 
 
+def test_dynamic_attributes1(cpman3d):
+    assert cpman3d.size.u == 2
+    assert cpman3d.size.v == 3
+    assert cpman3d.size.w == 2
+
+
+def test_dynamic_attributes2(cpman2d):
+    with raises(AttributeError):
+        cpman2d.size.w = 2
+
+
+def test_dynamic_attributes3(cpman1d):
+    with raises(AttributeError):
+        assert cpman1d.size.v
+
+
 def test_point_data1():
     """ Control Points Manager: get-set attachment (valid, list) """
     d = [0.0, 1.0, 2.0, 3.0]
@@ -165,7 +186,7 @@ def test_point_data2():
 
 def test_point_data3():
     """ Control Points Manager: get-set attachment (exception) """
-    with pytest.raises(GeomdlError):
+    with raises(GeomdlError):
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12
@@ -181,3 +202,31 @@ def test_point_data4():
     cpman = control_points.CPManager(sz, testdata=1)
     cpman.set_ptdata(dict(testdata=d), p)
     assert cpman.ptdata('testdata', 5) == 13
+
+
+def test_reset1(cpman1d):
+    cpman1d[2] = [5.0, 6.0]
+    cpman1d.size = 10
+    assert all([a == b for a, b in zip(cpman1d[2], [5.0, 6.0])])
+    assert all([a == b for a, b in zip(cpman1d.size, [10])])
+    assert cpman1d.count == 10
+
+
+def test_reset2(cpman2d):
+    cpman2d[0, 1] = [5.0, 9.0]
+    cpman2d.size = 10, 15
+    cpman2d.size.v = 17
+    assert len(cpman2d[0, 1]) == 0
+    assert all([a == b for a, b in zip(cpman2d[0, 1], [5.0, 9.0])])
+    assert all([a == b for a, b in zip(cpman2d.size, [10, 17])])
+    assert cpman2d.count == 170
+
+
+def test_pointers1(cpman1d):
+    cpman1d[2] = [5.0, 5.0]
+    assert len(cpman1d[4]) == 0
+
+
+def test_pointers2(cpman2d):
+    cpman2d[1, 1] = [5.0, 5.0]
+    assert len(cpman2d[0, 1]) == 0

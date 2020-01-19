@@ -8,7 +8,7 @@
 """
 
 from functools import reduce
-from .base import export, GeomdlBase, GeomdlDict, GeomdlFloat, GeomdlTypeSequence, GeomdlError
+from .base import export, GeomdlBase, GeomdlDict, GeomdlList, GeomdlFloat, GeomdlTypeSequence, GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -239,8 +239,7 @@ class CPManager(GeomdlBase):
     * ``func_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
     * ``func_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_count', '_pts', '_ptsd', '_iter_index')
-    PDIM_ATTRIBS = ('size_u', 'size_v', 'size_w')
+    __slots__ = ('_size', '_pts', '_ptsd', '_iter_index')
 
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
@@ -249,10 +248,10 @@ class CPManager(GeomdlBase):
         self._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_ctrlpts_set)  # points set function
         self._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_ctrlpt_set)  # single point set function
         self._cfg['func_find_index'] = kwargs.pop('func_find_index', default_find_index)  # index finding function
-        # Update size and count
-        self._size = tuple(int(arg) for arg in args)  # size in all parametric dimensions
-        self._count = reduce(lambda x, y: x * y, self.size)  # total number of control points
-        # Initialize control points and associated data container
+        # Prepare and update size
+        sz = [int(arg) for arg in args] if args else [0]
+        self._size = GeomdlList(*sz, attribs=('u', 'v', 'w'), cb=[self.reset])
+        # Initialize the control points and the associated data container
         self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def __call__(self, points):
@@ -307,17 +306,6 @@ class CPManager(GeomdlBase):
         else:
             raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
-    def __getattr__(self, attr):
-        try:
-            idx = super(CPManager, self).__getattr__('PDIM_ATTRIBS').index(attr)
-            return super(CPManager, self).__getattr__('_size')[idx]
-        except ValueError:
-            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
-        except IndexError:
-            raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
-        except AttributeError:
-            return super(CPManager, self).__getattr__(attr)
-
     @property
     def points(self):
         """ Control points
@@ -355,9 +343,14 @@ class CPManager(GeomdlBase):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the number of the control points (as a ``tuple``)
+        :getter: Gets the number of the control points
+        :setter: Sets the number of the control points
         """
         return self._size
+
+    @size.setter
+    def size(self, value):
+        self._size.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
 
     @property
     def count(self):
@@ -368,14 +361,14 @@ class CPManager(GeomdlBase):
 
         :getter: Gets the total number of the control points (as an ``int``)
         """
-        return self._count
+        return reduce(lambda x, y: x * y, self.size)
 
     def reset(self, **kwargs):
         """ Resets the control points """
         # Call parent method
         super(CPManager, self).reset(**kwargs)
-        # Reset the control points and the attached data
-        self._cfg['func_pts_init'](self.count, **kwargs)
+        # Reinitialize the control points and the associated data container
+        self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def pt(self, *args):
         """ Gets the control point from the input position """
