@@ -479,11 +479,11 @@ class CurveEvaluator2(CurveEvaluator):
 
         CK = [[GeomdlFloat(0.0) for _ in range(dimension)] for _ in range(deriv_order + 1)]
 
-        span = helpers.find_span_linear(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos)
-        bfuns = helpers.basis_function_all(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos)
+        span = helpers.find_span_linear(datadict['degree'][0], datadict['knotvector'][0], datadict['size'][0], parpos[0])
+        bfuns = helpers.basis_function_all(datadict['degree'][0], datadict['knotvector'][0], span, parpos[0])
 
         # Algorithm A3.3
-        PK = helpers.curve_deriv_cpts(dimension, datadict['degree'][0], datadict['knotvector'][0], ctrlpts = datadict['control_points'].data,
+        PK = helpers.curve_deriv_cpts(dimension, datadict['degree'][0], datadict['knotvector'][0], datadict['control_points'].points,
                                       rs=((span - datadict['degree'][0]), span), deriv_order=du)
 
         for k in range(0, du + 1):
@@ -521,7 +521,7 @@ class SurfaceEvaluator2(SurfaceEvaluator):
         # Geometry data from datadict
         degree = datadict['degree']
         knotvector = datadict['knotvector']
-        ctrlpts = datadict['control_points'].data
+        ctrlpts = datadict['control_points'].points
         size = datadict['size']
         dimension = datadict['dimension'] + 1 if datadict['rational'] else datadict['dimension']
         pdimension = datadict['pdimension']
