@@ -7,6 +7,7 @@
 
 """
 
+from numbers import Number
 from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlFloat, GeomdlTypeSequence
 from .abstract import SplineGeometry
 from . import evaluators, tessellate, utilities
@@ -95,7 +96,11 @@ class Curve(SplineGeometry):
         # Call parent method
         super(Curve, self).evaluate_single(param)
 
-        # Evaluate the curve point
+        # Evaluator input is a always a sequence
+        if isinstance(param, Number):
+            param = [param]
+
+        # Evaluate the point
         pt = self._evaluator.evaluate(self.data, start=param, stop=param)
         return pt[0]
 
@@ -125,6 +130,10 @@ class Curve(SplineGeometry):
         """
         # Call parent method
         super(Curve, self).derivatives(param=param, order=order, **kwargs)
+
+        # Evaluator input is a always a sequence
+        if isinstance(param, Number):
+            param = [param]
 
         # Evaluate and return the derivative at knot u
         return self._evaluator.derivatives(self.data, parpos=param, deriv_order=order)
