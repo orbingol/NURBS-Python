@@ -7,7 +7,7 @@
 """
 
 from pytest import fixture, mark
-from geomdl import BSpline
+from geomdl import BSpline, NURBS
 from geomdl import evaluators
 
 GEOMDL_DELTA = 0.001
@@ -15,11 +15,19 @@ GEOMDL_DELTA = 0.001
 
 @fixture
 def bsplcurve():
-    """ Creates a spline Curve """
+    """ Creates a B-spline Curve """
     curve = BSpline.Curve()
     curve.degree = 3
     curve.set_ctrlpts([[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]])
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
+    return curve
+
+
+@fixture
+def nbcurve(bsplcurve):
+    """ Creates a NURBS curve from a B-spline curve """
+    curve = NURBS.Curve.from_bspline(bsplcurve)
+    curve.weights = [1.0, 1.0, 0.75, 1.0, 0.25, 0.4]
     return curve
 
 
@@ -81,3 +89,23 @@ def test_bsplcurve2d_deriv_eval(bsplcurve, param):
     assert abs(der1[0][1] - evalpt[1]) < GEOMDL_DELTA
     assert abs(der2[0][0] - evalpt[0]) < GEOMDL_DELTA
     assert abs(der2[0][1] - evalpt[1]) < GEOMDL_DELTA
+
+
+def test_bsplcurve2d_to_nurbs(bsplcurve):
+    nbcurve = NURBS.Curve.from_bspline(bsplcurve)
+    assert all([x == 1.0 for x in nbcurve.weights])
+
+
+def test_nbcurve2d_weights(nbcurve):
+    assert all([x == y for x, y in zip(nbcurve.weights, [1.0, 1.0, 0.75, 1.0, 0.25, 0.4])])
+
+
+def test_nbcurve2d_ctrlpts(nbcurve):
+    for pta, ptb in zip(nbcurve.ctrlpts, [[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]]):
+        assert all([x == y for x, y in zip(pta, ptb)])
+
+
+def test_nbcurve2d_ctrlptsw(nbcurve):
+    ctrlptsw = [[c * w for c in pt] + [w] for pt, w in zip([[5.0, 5.0], [10.0, 10.0], [20.0, 15.0], [35.0, 15.0], [45.0, 10.0], [50.0, 5.0]], [1.0, 1.0, 0.75, 1.0, 0.25, 0.4])]
+    for pta, ptb in zip(nbcurve.ctrlptsw, ctrlptsw):
+        assert all([x == y for x, y in zip(pta, ptb)])
