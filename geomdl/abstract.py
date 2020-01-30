@@ -148,7 +148,7 @@ class SplineGeometry(Geometry):
     )
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), weights=list())))
+        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=list(), weights=list())))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
         # Initialize variables
@@ -338,8 +338,8 @@ class SplineGeometry(Geometry):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
         self._control_points = value
-        # Reset bounding box
-        self._bounding_box = list()
+        # Clear caches
+        self.reset()
 
     @property
     def weights(self):
@@ -364,9 +364,11 @@ class SplineGeometry(Geometry):
     def weights(self, value):
         if self.rational:
             # Generate weighted control points using the new weights
-            ctrlptsw = combine_ctrlpts_weights(self.ctrlpts.data, value)
+            ctrlptsw = combine_ctrlpts_weights(self.ctrlpts, value)
             # Set new weighted control points
-            self._control_points.data = ctrlptsw
+            self._control_points.points = ctrlptsw
+            # Clear caches
+            self.reset()
 
     @property
     def ctrlpts_size(self):
@@ -557,8 +559,8 @@ class SplineGeometry(Geometry):
         # Set control points and sizes
         self._control_points = CPManager(*args)
         self._control_points.points = ctrlpts
-        # Reset bounding box
-        self._bounding_box = list()
+        # Clear caches
+        self.reset()
 
     def check_variables(self):
         """ Checks if the evaluation is possible by validating the variables """
@@ -572,6 +574,12 @@ class SplineGeometry(Geometry):
                 raise GeomdlError("Input is not a valid knot vector for the parametric dimension " + self._attribs[i])
             # Check delta values
             validate_delta_value(self._attribs[i], self._delta[i])
+
+    def reset(self, **kwargs):
+        """ Clears computed/generated data, such as caches and evaluated points """
+        super(SplineGeometry, self).reset(**kwargs)
+        # Reset bounding box
+        self._bounding_box = list()
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):

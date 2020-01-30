@@ -65,8 +65,8 @@ class Curve(BSpline.Curve):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
         self._control_points = value
-        # Reset bounding box
-        self._bounding_box = list()
+        # Clear caches
+        self.reset()
 
     @property
     def ctrlpts(self):
@@ -100,6 +100,9 @@ class Curve(BSpline.Curve):
 
         # Set new weighted control points
         self._control_points = value
+
+        # Clear caches
+        self.reset()
 
 
 @export
@@ -155,8 +158,8 @@ class Surface(BSpline.Surface):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
         self._control_points = value
-        # Reset bounding box
-        self._bounding_box = list()
+        # Clear caches
+        self.reset()
 
     @property
     def ctrlpts(self):
@@ -190,6 +193,9 @@ class Surface(BSpline.Surface):
 
         # Set new weighted control points
         self._control_points = value
+
+        # Clear caches
+        self.reset()
 
 
 @export
@@ -245,8 +251,8 @@ class Volume(BSpline.Volume):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
         self._control_points = value
-        # Reset bounding box
-        self._bounding_box = list()
+        # Clear caches
+        self.reset()
 
     @property
     def ctrlpts(self):
@@ -280,3 +286,6 @@ class Volume(BSpline.Volume):
 
         # Set new weighted control points
         self._control_points = value
+
+        # Clear caches
+        self.reset()
