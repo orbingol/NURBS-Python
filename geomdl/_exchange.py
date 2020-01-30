@@ -8,7 +8,7 @@
 """
 
 import math
-from . import utilities, shortcuts
+from . import utilities
 from .base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports

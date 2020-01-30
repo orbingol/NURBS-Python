@@ -12,7 +12,7 @@ from . import voxelize
 
 RENDER_OPTIONS = dict(
     cpcolor='blue',
-    evalcolor='black',
+    evalcolor='green',
     bboxcolor='darkorange',
     trimcolor='black',
     colormap=None,
@@ -38,7 +38,7 @@ def render(spg, vism, **kwargs):
     # Add control points as points
     if vism.mconf['ctrlpts'] == 'points':
         vism.add(
-            ptsarr=spg.ctrlpts.data,
+            ptsarr=spg.ctrlpts.points,
             name="control points",
             color=op['cpcolor'],
             plot_type='ctrlpts'
@@ -47,7 +47,7 @@ def render(spg, vism, **kwargs):
     # Add control points as quads
     if vism.mconf['ctrlpts'] == 'quads':
         qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] else tessellate.QuadTessellate()
-        qtsl.tessellate(spg.ctrlpts.data, size_u=spg.ctrlpts_size.u, size_v=spg.ctrlpts_size.v)
+        qtsl.tessellate(spg.ctrlpts.points, size_u=spg.ctrlpts_size.u, size_v=spg.ctrlpts_size.v)
         vism.add(
             ptsarr=[qtsl.vertices, qtsl.faces],
             name="control points",

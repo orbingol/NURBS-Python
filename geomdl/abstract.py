@@ -300,7 +300,7 @@ class SplineGeometry(Geometry):
 
     @degree.setter
     def degree(self, value):
-        self._degree.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
+        self._degree.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value for _ in range(self._pdim)]
 
     @property
     def knotvector(self):
@@ -317,7 +317,7 @@ class SplineGeometry(Geometry):
 
     @knotvector.setter
     def knotvector(self, value):
-        val = value.data if isinstance(value, GeomdlList) else value if isinstance(value[0], GeomdlTypeSequence) else [value]
+        val = value.data if isinstance(value, GeomdlList) else value if isinstance(value[0], GeomdlTypeSequence) else [value for _ in range(self._pdim)]
         self._knot_vector.data = [knotvector.normalize(v) if self._cfg['bool_normalize_kv'] else v for v in val]
 
     @property
@@ -415,7 +415,7 @@ class SplineGeometry(Geometry):
         :getter: Gets the total number of control points
         :type: int
         """
-        return tuple(self._control_points.size)
+        return self._control_points.size
 
     @property
     def sample_size(self):
@@ -478,7 +478,7 @@ class SplineGeometry(Geometry):
 
     @delta.setter
     def delta(self, value):
-        self._delta.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
+        self._delta.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value for _ in range(self._pdim)]
 
     @property
     def domain(self):
@@ -610,6 +610,9 @@ class SplineGeometry(Geometry):
             # Check knot vector validity
             if not knotvector.check(self._degree[i], self._knot_vector[i], self._control_points.size[i]):
                 raise GeomdlError("Input is not a valid knot vector for the parametric dimension " + self._attribs[i])
+            # Make sure that the knot vector is normalized when normalize_kv = True
+            if self._cfg['bool_normalize_kv']:
+                self._knot_vector[i] = knotvector.normalize(self._knot_vector[i])
             # Check delta values
             validate_delta_value(self._attribs[i], self._delta[i])
 

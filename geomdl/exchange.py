@@ -10,7 +10,7 @@
 import struct
 import json
 from io import StringIO
-from . import operations, elements, linalg
+from . import operations, entity, linalg
 from . import _exchange as exch
 from .base import export, GeomdlError
 

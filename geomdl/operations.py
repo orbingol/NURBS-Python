@@ -9,7 +9,7 @@
 
 import math
 import copy
-from . import abstract, helpers, linalg, compatibility
+from . import abstract, helpers, linalg
 from . import _operations as ops
 from .base import export, GeomdlTypeSequence, GeomdlError, GeomdlWarning
 
