@@ -14,7 +14,7 @@ GEOMDL_DELTA = 0.001
 
 
 @fixture
-def splsurf():
+def bsplsurf():
     """ Creates a B-spline surface instance """
     # Create a surface instance
     surf = BSpline.Surface()
@@ -42,34 +42,34 @@ def splsurf():
     return surf
 
 
-def test_bspline_curve_name(splsurf):
-    splsurf.name = "Surface Testing"
-    assert splsurf.name == "Surface Testing"
+def test_bspline_surface_name(bsplsurf):
+    bsplsurf.name = "Surface Testing"
+    assert bsplsurf.name == "Surface Testing"
 
 
-def test_bspline_surface_degree(splsurf):
-    assert all([x == y for x, y in zip(splsurf.degree, [3, 3])])
+def test_bspline_surface_degree(bsplsurf):
+    assert all([x == y for x, y in zip(bsplsurf.degree, [3, 3])])
 
 
-def test_bspline_surface_degree_u(splsurf):
-    assert splsurf.degree.u == 3
+def test_bspline_surface_degree_u(bsplsurf):
+    assert bsplsurf.degree.u == 3
 
 
-def test_bspline_surface_degree_v(splsurf):
-    assert splsurf.degree.v == 3
+def test_bspline_surface_degree_v(bsplsurf):
+    assert bsplsurf.degree.v == 3
 
 
-def test_bspline_surface_ctrlpts(splsurf):
-    assert all([x == y for x, y in zip(splsurf.ctrlpts[1, 1], [-15.0, -15.0, -4.0])])
-    assert splsurf.dimension == 3
+def test_bspline_surface_ctrlpts(bsplsurf):
+    assert all([x == y for x, y in zip(bsplsurf.ctrlpts[1, 1], [-15.0, -15.0, -4.0])])
+    assert bsplsurf.dimension == 3
 
 
-def test_bspline_surface_knot_vector_u(splsurf):
-    assert all([x == y for x, y in zip(splsurf.knotvector.u, [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0])])
+def test_bspline_surface_knot_vector_u(bsplsurf):
+    assert all([x == y for x, y in zip(bsplsurf.knotvector.u, [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0])])
 
 
-def test_bspline_surface_knot_vector_v(splsurf):
-    assert all([x == y for x, y in zip(splsurf.knotvector.v, [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0])])
+def test_bspline_surface_knot_vector_v(bsplsurf):
+    assert all([x == y for x, y in zip(bsplsurf.knotvector.v, [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0])])
 
 
 @mark.parametrize("param, res", [
@@ -86,17 +86,17 @@ def test_bspline_surface_knot_vector_v(splsurf):
     ((1.0, 0.8), (25.0, 11.636, -2.751)),
     ((1.0, 1.0), (25.0, 25.0, -10.0))
 ])
-def test_bspline_surface_eval(splsurf, param, res):
-    evalpt = splsurf.evaluate_single(param)
+def test_bspline_surface_eval(bsplsurf, param, res):
+    evalpt = bsplsurf.evaluate_single(param)
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-def test_bspline_surface_deriv(splsurf):
-    der1 = splsurf.derivatives(param=(0.35, 0.35), order=2)
-    splsurf.evaluator = evaluators.SurfaceEvaluator2()
-    der2 = splsurf.derivatives(param=(0.35, 0.35), order=2)
+def test_bspline_surface_deriv(bsplsurf):
+    der1 = bsplsurf.derivatives(param=(0.35, 0.35), order=2)
+    bsplsurf.evaluator = evaluators.SurfaceEvaluator2()
+    der2 = bsplsurf.derivatives(param=(0.35, 0.35), order=2)
     for k in range(0, 3):
         for l in range(0, 3 - k):
             assert abs(der1[k][l][0] - der2[k][l][0]) < GEOMDL_DELTA
