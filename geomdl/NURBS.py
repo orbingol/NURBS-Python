@@ -8,8 +8,8 @@
 """
 
 from . import BSpline, evaluators
-from .base import export, GeomdlError
-from .control_points import separate_ctrlpts_weights, combine_ctrlpts_weights
+from .base import export, GeomdlError, GeomdlTypeSequence
+from .control_points import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
 
 
 @export
@@ -34,10 +34,10 @@ class Curve(BSpline.Curve):
         """
         if obj.pdimension != 1:
             raise GeomdlError("Parametric dimension mismatch")
-        rspl = cls.__class__()
+        rspl = cls()
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts.data
+        rspl.ctrlpts = obj.ctrlpts
         rspl.delta = obj.delta
         return rspl
 
@@ -58,11 +58,15 @@ class Curve(BSpline.Curve):
         :getter: Gets the weighted control points
         :setter: Sets the weighted control points
         """
-        return super(Curve, self).ctrlpts
+        return self._control_points
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
-        super(Curve, self).ctrlpts = value
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+        self._control_points = value
+        # Reset bounding box
+        self._bounding_box = list()
 
     @property
     def ctrlpts(self):
@@ -77,11 +81,14 @@ class Curve(BSpline.Curve):
         """
         # Populate the cache, if necessary
         if not self._cache['ctrlpts']:
-            self._cache['ctrlpts'], self._cache['weights'] = separate_ctrlpts_weights(self._control_points.data)
+            self._cache['ctrlpts'], self._cache['weights'] = separate_ctrlpts_weights(self._control_points.points)
         return self._cache['ctrlpts']
 
     @ctrlpts.setter
     def ctrlpts(self, value):
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
             weights = [1.0 for _ in range(len(value))]
@@ -89,34 +96,11 @@ class Curve(BSpline.Curve):
             weights = self.weights
 
         # Generate weighted control points using the new control points
-        ctrlptsw = combine_ctrlpts_weights(value, weights)
+        value.points  = combine_ctrlpts_weights(value.points, weights)
 
         # Set new weighted control points
-        super(Curve, self).ctrlpts = ctrlptsw
+        self._control_points = value
 
-    @property
-    def weights(self):
-        """ Weights vector
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the weights vector
-        :setter: Sets the weights vector
-        :type: list
-        """
-        # Populate the cache, if necessary
-        if not self._cache['weights']:
-            self._cache['ctrlpts'], self._cache['weights']  = separate_ctrlpts_weights(self._control_points.data)
-        return self._cache['weights']
-
-    @weights.setter
-    def weights(self, value):
-        # Generate weighted control points using the new weights
-        ctrlptsw = combine_ctrlpts_weights(self.ctrlpts.data, value)
-
-        # Set new weighted control points
-        super(Curve, self).ctrlpts = ctrlptsw
 
 @export
 class Surface(BSpline.Surface):
@@ -145,10 +129,10 @@ class Surface(BSpline.Surface):
         """
         if obj.pdimension != 2:
             raise GeomdlError("Parametric dimension mismatch")
-        rspl = cls.__class__()
+        rspl = cls()
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts.data
+        rspl.ctrlpts = obj.ctrlpts
         rspl.delta = obj.delta
         return rspl
 
@@ -164,11 +148,15 @@ class Surface(BSpline.Surface):
         :getter: Gets the weighted control points
         :setter: Sets the weighted control points
         """
-        return super(Surface, self).ctrlpts
+        return self._control_points
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
-        super(Surface, self).ctrlpts = value
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+        self._control_points = value
+        # Reset bounding box
+        self._bounding_box = list()
 
     @property
     def ctrlpts(self):
@@ -188,6 +176,9 @@ class Surface(BSpline.Surface):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
             weights = [1.0 for _ in range(len(value))]
@@ -195,34 +186,10 @@ class Surface(BSpline.Surface):
             weights = self.weights
 
         # Generate weighted control points using the new control points
-        ctrlptsw = combine_ctrlpts_weights(value, weights)
+        value.points  = combine_ctrlpts_weights(value.points, weights)
 
         # Set new weighted control points
-        super(Surface, self).ctrlpts = ctrlptsw
-
-    @property
-    def weights(self):
-        """ Weights vector
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the weights vector
-        :setter: Sets the weights vector
-        :type: list
-        """
-        # Populate the cache, if necessary
-        if not self._cache['weights']:
-            self._cache['ctrlpts'], self._cache['weights']  = separate_ctrlpts_weights(self._control_points.data)
-        return self._cache['weights']
-
-    @weights.setter
-    def weights(self, value):
-        # Generate weighted control points using the new weights
-        ctrlptsw = combine_ctrlpts_weights(self.ctrlpts.data, value)
-
-        # Set new weighted control points
-        super(Surface, self).ctrlpts = ctrlptsw
+        self._control_points = value
 
 
 @export
@@ -252,10 +219,10 @@ class Volume(BSpline.Volume):
         """
         if obj.pdimension != 3:
             raise GeomdlError("Parametric dimension mismatch")
-        rspl = cls.__class__()
+        rspl = cls()
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts.data
+        rspl.ctrlpts = obj.ctrlpts
         rspl.delta = obj.delta
         return rspl
 
@@ -271,11 +238,15 @@ class Volume(BSpline.Volume):
         :getter: Gets the weighted control points
         :setter: Sets the weighted control points
         """
-        return super(Volume, self).ctrlpts
+        return self._control_points
 
     @ctrlptsw.setter
     def ctrlptsw(self, value):
-        super(Volume, self).ctrlpts = value
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+        self._control_points = value
+        # Reset bounding box
+        self._bounding_box = list()
 
     @property
     def ctrlpts(self):
@@ -295,6 +266,9 @@ class Volume(BSpline.Volume):
 
     @ctrlpts.setter
     def ctrlpts(self, value):
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+
         # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
         if not self.weights:
             weights = [1.0 for _ in range(len(value))]
@@ -302,31 +276,7 @@ class Volume(BSpline.Volume):
             weights = self.weights
 
         # Generate weighted control points using the new control points
-        ctrlptsw = combine_ctrlpts_weights(value, weights)
+        value.points  = combine_ctrlpts_weights(value.points, weights)
 
         # Set new weighted control points
-        super(Volume, self).ctrlpts = ctrlptsw
-
-    @property
-    def weights(self):
-        """ Weights vector
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the weights vector
-        :setter: Sets the weights vector
-        :type: list
-        """
-        # Populate the cache, if necessary
-        if not self._cache['weights']:
-            self._cache['ctrlpts'], self._cache['weights']  = separate_ctrlpts_weights(self._control_points.data)
-        return self._cache['weights']
-
-    @weights.setter
-    def weights(self, value):
-        # Generate weighted control points using the new weights
-        ctrlptsw = combine_ctrlpts_weights(self.ctrlpts.data, value)
-
-        # Set new weighted control points
-        super(Volume, self).ctrlpts = ctrlptsw
+        self._control_points = value

@@ -11,7 +11,7 @@ import abc
 from .six import add_metaclass
 from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning
 from .base import GeomdlFloat, GeomdlList, GeomdlDict, GeomdlTypeSequence
-from .control_points import CPManager
+from .control_points import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
 from . import knotvector, utilities
 
 
@@ -148,7 +148,7 @@ class SplineGeometry(Geometry):
     )
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list())))
+        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), weights=list())))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
         # Initialize variables
@@ -351,14 +351,22 @@ class SplineGeometry(Geometry):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the weights
-        :setter: Sets the weights
+        :getter: Gets the weights vector
+        :setter: Sets the weights vector
+        :type: list
         """
-        return tuple()
+        # Populate the cache, if necessary
+        if not self._cache['weights'] and self.rational:
+            self._cache['ctrlpts'], self._cache['weights']  = separate_ctrlpts_weights(self._control_points.points)
+        return self._cache['weights']
 
     @weights.setter
     def weights(self, value):
-        pass
+        if self.rational:
+            # Generate weighted control points using the new weights
+            ctrlptsw = combine_ctrlpts_weights(self.ctrlpts.data, value)
+            # Set new weighted control points
+            self._control_points.data = ctrlptsw
 
     @property
     def ctrlpts_size(self):
