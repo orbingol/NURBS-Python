@@ -570,7 +570,7 @@ class SplineGeometry(Geometry):
             degree=tuple(self.degree),
             knotvector=tuple(self.knotvector),
             size=tuple(self.ctrlpts_size),
-            control_points=self.ctrlpts  # CPManager instance
+            control_points=self.ctrlptsw  # CPManager instance
         )
         data.update(spl_data)
         return data
