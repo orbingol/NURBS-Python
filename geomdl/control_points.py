@@ -326,9 +326,8 @@ class CPManager(GeomdlBase):
         # Check input length
         if len(value) != self.count:
             raise GeomdlError("Number of control points must be " + str(self.count))
-        # Determine dimension, if required
-        if self.dimension < 1:
-            self._dimension = len(value[0])
+        # Update dimension
+        self._dimension = len(value[0])
         # Set control points
         self._cfg['func_pts_set'](value, self.dimension, self._pts)
 
