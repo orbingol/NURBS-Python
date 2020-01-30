@@ -148,7 +148,7 @@ class SplineGeometry(Geometry):
     )
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=list(), weights=list())))
+        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=CPManager(), weights=list())))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
         # Initialize variables
@@ -331,13 +331,29 @@ class SplineGeometry(Geometry):
         :setter: Sets the control points
         :type: list
         """
-        return self._control_points
+        if not self._cache['ctrlpts'] and self.rational:
+            self._cache['ctrlpts'].size = self._control_points.size
+            self._cache['ctrlpts'].points, self._cache['weights'] = separate_ctrlpts_weights(self._control_points.points)
+        return self._cache['ctrlpts'] if self.rational else self._control_points
 
     @ctrlpts.setter
     def ctrlpts(self, value):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
+
+        if self.rational:
+            # Check if we can retrieve the existing weights. If not, generate a weights vector of 1.0s.
+            if not self.weights:
+                weights = [1.0 for _ in range(len(value))]
+            else:
+                weights = self.weights
+
+            # Generate weighted control points using the new control points
+            value.points  = combine_ctrlpts_weights(value.points, weights)
+
+        # Set new control points
         self._control_points = value
+
         # Clear caches
         self.reset()
 
@@ -346,7 +362,7 @@ class SplineGeometry(Geometry):
         """ Weights vector
 
         The weights vector is a part of control points definition. It is usually denoted by :math:`w`.
-        For non-rational B-spline implementations, this property will return an empty tuple
+        For non-rational B-spline implementations, this property will return an empty list
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -369,6 +385,28 @@ class SplineGeometry(Geometry):
             self._control_points.points = ctrlptsw
             # Clear caches
             self.reset()
+
+    @property
+    def ctrlptsw(self):
+        """ Weighted control points (Pw)
+
+        Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+
+        :getter: Gets the weighted control points
+        :setter: Sets the weighted control points
+        """
+        return self._control_points
+
+    @ctrlptsw.setter
+    def ctrlptsw(self, value):
+        if not isinstance(value, CPManager):
+            raise GeomdlError("Control points must be an instance of CPManager")
+        self._control_points = value
+        # Clear caches
+        self.reset()
 
     @property
     def ctrlpts_size(self):
