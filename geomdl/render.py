@@ -1,7 +1,7 @@
 """
 .. module:: render
     :platform: Unix, Windows
-    :synopsis: Provides basic rendering capability
+    :synopsis: Provides visualization options for NURBS-Python (geomdl)
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
@@ -46,7 +46,7 @@ def render(spg, vism, **kwargs):
 
     # Add control points as quads
     if vism.mconf['ctrlpts'] == 'quads':
-        qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] else tessellate.QuadTessellate()
+        qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] is not None else tessellate.QuadTessellate()
         qtsl.tessellate(spg.ctrlpts.points, size_u=spg.ctrlpts_size.u, size_v=spg.ctrlpts_size.v)
         vism.add(
             ptsarr=[qtsl.vertices, qtsl.faces],
@@ -66,8 +66,8 @@ def render(spg, vism, **kwargs):
 
     # Add evaluated points as quads
     if vism.mconf['evalpts'] == 'quads':
-        qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] else tessellate.QuadTessellate()
-        qtsl.tessellate(spg.evalpts, size_u=spg.sample_size.u, size_v=spg.sample_size.v)
+        qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] is not None else tessellate.QuadTessellate()
+        qtsl.tessellate(spg.evalpts, size_u=spg.sample_size[0], size_v=spg.sample_size[1])
         vism.add(
             ptsarr=[qtsl.vertices, qtsl.faces],
             name=spg.name,
@@ -77,7 +77,8 @@ def render(spg, vism, **kwargs):
 
     # Add evaluated points as vertices and triangles
     if vism.mconf['evalpts'] == 'triangles':
-        tsl = op['config_tsl_tri'] if op['config_tsl_tri'] else tessellate.TrimTessellate()
+        tsl = op['config_tsl_tri'] if op['config_tsl_tri'] is not None else tessellate.TrimTessellate()
+        tsl.tessellate(spg.evalpts, size_u=spg.sample_size[0], size_v=spg.sample_size[1])
         vism.add(
             ptsarr=[tsl.vertices, tsl.faces],
             name=spg.name,
