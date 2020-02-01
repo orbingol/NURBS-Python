@@ -183,7 +183,7 @@ class GeomdlFloat(float):
         c = super(GeomdlFloat, self).__abs__()
         return self.__class__(c)
 
-    def __round__(self, n):
+    def __round__(self, n=0):
         c = super(GeomdlFloat, self).__round__(n)
         return self.__class__(c)
 
