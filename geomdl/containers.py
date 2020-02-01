@@ -1,27 +1,26 @@
 """
-.. module:: Multi
+.. module:: containers
     :platform: Unix, Windows
-    :synopsis: Provides container classes for spline geometries
+    :synopsis: Provides container classes for geometry objects
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import abc
 from .six import add_metaclass
 from .base import export, GeomdlError, GeomdlTypeSequence
-from .abstract import Geometry, SplineGeometry
+from .abstract import Geometry
 from . import utilities
 
 
-@add_metaclass(abc.ABCMeta)
-class AbstractContainer(Geometry):
+@export
+class GeometryContainer(Geometry):
     """ Abstract class for geometry containers """
     def __init__(self, *args, **kwargs):
         cache_vars = kwargs.get('cache_vars', dict())
         cache_vars.update(dict(evalpts=list()))
         kwargs.update(dict(cache_vars=cache_vars))
-        super(AbstractContainer, self).__init__(*args, **kwargs)
+        super(GeometryContainer, self).__init__(*args, **kwargs)
         self._geometry_type = "container"
         self._geoms = []
         for arg in args:
@@ -65,20 +64,6 @@ class AbstractContainer(Geometry):
         return self._cache['evalpts']
 
     @property
-    def bbox(self):
-        """ Bounding box.
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the bounding box of all contained geometries
-        """
-        all_box = []
-        for g in self._geoms:
-            all_box += list(g.bbox)
-        return utilities.evaluate_bounding_box(all_box)
-
-    @property
     def data(self):
         """ Returns a dict which contains the geometry data.
 
@@ -97,7 +82,7 @@ class AbstractContainer(Geometry):
         if isinstance(geom, (self.__class__, GeomdlTypeSequence)):
             for g in geom:
                 self.add(g)
-        elif isinstance(geom, SplineGeometry):
+        elif isinstance(geom, Geometry):
             self._geoms.append(geom)
         else:
             raise GeomdlError("Cannot add the element to the container")
@@ -107,24 +92,3 @@ class AbstractContainer(Geometry):
 
     # Make container look like a list
     append = add
-
-
-@export
-class CurveContainer(AbstractContainer):
-    """ Container for B-spline and NURBS curves """
-    def __init__(self, *args, **kwargs):
-        super(CurveContainer, self).__init__(*args, **kwargs)
-
-
-@export
-class SurfaceContainer(AbstractContainer):
-    """ Container forB-spline and NURBS surfaces """
-    def __init__(self, *args, **kwargs):
-        super(SurfaceContainer, self).__init__(*args, **kwargs)
-
-
-@export
-class VolumeContainer(AbstractContainer):
-    """ Container for B-spline and NURBS volumes """
-    def __init__(self, *args, **kwargs):
-        super(VolumeContainer, self).__init__(*args, **kwargs)
