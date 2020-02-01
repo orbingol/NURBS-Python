@@ -148,7 +148,9 @@ class SplineGeometry(Geometry):
     )
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(cache_vars=dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=CPManager(), weights=list())))
+        cache_vars = kwargs.get('cache_vars', dict())
+        cache_vars.update(dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=CPManager(), weights=list()))
+        kwargs.update(dict(cache_vars=cache_vars))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
         # Initialize variables
