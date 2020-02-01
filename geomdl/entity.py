@@ -87,7 +87,7 @@ class Vertex(AbstractEntity):
 
     def __bool__(self):
         # For Python 3 compatibility
-        return self.opt_get("inside")
+        return self.get_opt("inside")
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
@@ -230,7 +230,7 @@ class Vertex(AbstractEntity):
         :setter: Sets the flag
         :type: bool
         """
-        return self.opt_get("inside")
+        return self.get_opt("inside")
 
     @inside.setter
     def inside(self, value):
@@ -274,7 +274,7 @@ class Triangle(AbstractEntity):
 
     def __bool__(self):
         # For Python 3 compatibility
-        return self.opt_get("inside")
+        return self.get_opt("inside")
 
     @property
     def vertices(self):
@@ -334,7 +334,7 @@ class Triangle(AbstractEntity):
         :setter: Sets the flag
         :type: bool
         """
-        return self.opt_get("inside")
+        return self.get_opt("inside")
 
     @inside.setter
     def inside(self, value):
