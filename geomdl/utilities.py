@@ -138,16 +138,16 @@ def make_quadtree(points, size_u, size_v, **kwargs):
 
     # Convert control points array into 2-dimensional form
     points2d = []
-    for i in range(0, size_u):
+    for j in range(0, size_v):
         row_list = []
-        for j in range(0, size_v):
-            row_list.append(points[j + (i * size_v)])
+        for i in range(0, size_u):
+            row_list.append(points[i + (j * size_u)])
         points2d.append(row_list)
 
     # Traverse 2-dimensional control points to find neighbors
     qtree = []
-    for u in range(size_u):
-        for v in range(size_v):
+    for v in range(size_v):
+        for u in range(size_u):
             temp = [points2d[u][v]]
             # Note: negative indexing actually works in Python, so we need explicit checking
             if u + 1 < size_u:
