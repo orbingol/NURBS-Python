@@ -1,13 +1,13 @@
 """
 .. module:: VisPlotly
     :platform: Unix, Windows
-    :synopsis: Plotly visualization component for NURBS-Python
+    :synopsis: Plotly visualization component for NURBS-Python (geomdl)
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from . import vis
+from . import abstract
 import numpy as np
 import plotly
 from plotly import graph_objs
@@ -21,7 +21,7 @@ except ImportError:
     from plotly.offline import plot, iplot
 
 
-class VisConfig(vis.VisConfigAbstract):
+class VisConfig(abstract.VisConfigAbstract):
     """ Configuration class for Plotly visualization module.
 
     This class is only required when you would like to change the visual defaults of the plots and the figure,
@@ -100,7 +100,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.line_width = kwargs.get('line_width', 2)
 
 
-class VisCurve2D(vis.VisAbstract):
+class VisCurve2D(abstract.VisAbstract):
     """ Plotly visualization module for 2D curves. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisCurve2D, self).__init__(config, **kwargs)
@@ -221,7 +221,7 @@ class VisCurve2D(vis.VisAbstract):
         self.vconf.plotfn(fig, **plotfn_dict)
 
 
-class VisCurve3D(vis.VisAbstract):
+class VisCurve3D(abstract.VisAbstract):
     """ Plotly visualization module for 3D curves. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisCurve3D, self).__init__(config, **kwargs)
@@ -368,7 +368,7 @@ class VisCurve3D(vis.VisAbstract):
         return fig
 
 
-class VisSurface(vis.VisAbstract):
+class VisSurface(abstract.VisAbstract):
     """ Plotly visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
@@ -540,7 +540,7 @@ class VisSurface(vis.VisAbstract):
         return fig
 
 
-class VisVolume(vis.VisAbstract):
+class VisVolume(abstract.VisAbstract):
     """ Plotly visualization module for volumes. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisVolume, self).__init__(config, **kwargs)

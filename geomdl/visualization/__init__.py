@@ -1,13 +1,9 @@
-""" Visualization Modules for NURBS-Python
+""" Visualization Modules for NURBS-Python (geomdl)
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 __author__ = "Onur Rauf Bingol"
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __license__ = "MIT"
-
-# Import core library visualization module
-from .. import linalg
-from .. import vis

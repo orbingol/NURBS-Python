@@ -1,21 +1,21 @@
 """
 .. module:: VisVTK
     :platform: Unix, Windows
-    :synopsis: VTK visualization component for NURBS-Python
+    :synopsis: VTK visualization component for NURBS-Python (geomdl)
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from random import random
-from . import vis
+from . import abstract
 from . import vtk_helpers as vtkh
+from random import random
 import numpy as np
 from vtk.util.numpy_support import numpy_to_vtk
 from vtk import VTK_FLOAT
 
 
-class VisConfig(vis.VisConfigAbstract):
+class VisConfig(abstract.VisConfigAbstract):
     """ Configuration class for VTK visualization module.
 
     This class is only required when you would like to change the visual defaults of the plots and the figure.
@@ -112,7 +112,7 @@ class VisConfig(vis.VisConfigAbstract):
         render_window.Render()
 
 
-class VisCurve3D(vis.VisAbstract):
+class VisCurve3D(abstract.VisAbstract):
     """ VTK visualization module for curves. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisCurve3D, self).__init__(config, **kwargs)
@@ -165,7 +165,7 @@ class VisCurve3D(vis.VisAbstract):
 VisCurve2D = VisCurve3D
 
 
-class VisSurface(vis.VisAbstract):
+class VisSurface(abstract.VisAbstract):
     """ VTK visualization module for surfaces. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisSurface, self).__init__(config, **kwargs)
@@ -225,7 +225,7 @@ class VisSurface(vis.VisAbstract):
                                          figure_size=self.vconf.figure_size)
 
 
-class VisVolume(vis.VisAbstract):
+class VisVolume(abstract.VisAbstract):
     """ VTK visualization module for volumes. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisVolume, self).__init__(config, **kwargs)
@@ -266,7 +266,7 @@ class VisVolume(vis.VisAbstract):
                                          figure_size=self.vconf.figure_size)
 
 
-class VisVoxel(vis.VisAbstract):
+class VisVoxel(abstract.VisAbstract):
     """ VTK visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisVoxel, self).__init__(config, **kwargs)

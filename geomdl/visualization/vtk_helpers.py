@@ -1,13 +1,13 @@
 """
 .. module:: vtk_helpers
     :platform: Unix, Windows
-    :synopsis: Helper functions for VTK visualization component for NURBS-Python
+    :synopsis: Helper functions for VTK visualization component for NURBS-Python (geomdl)
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from . import linalg
+import numpy as np
 import vtk
 
 
@@ -27,7 +27,7 @@ def create_render_window(actors, callbacks, **kwargs):
     center_points = []
     for actor in actors:
         center_points.append(actor.GetCenter())
-    camera_focal_point = linalg.vector_mean(*center_points)
+    camera_focal_point = np.mean(center_points, axis=1)
 
     # Create camera
     camera = vtk.vtkCamera()

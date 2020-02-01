@@ -8,8 +8,8 @@
 """
 
 import abc
-from .six import add_metaclass
-from .base import GeomdlFloat, GeomdlError, GeomdlTypeSequence
+from geomdl.six import add_metaclass
+from geomdl.base import GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
