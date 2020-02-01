@@ -8,8 +8,10 @@
 """
 
 import math
-from . import utilities
+from . import knotvector, control_points
 from .base import GeomdlError
+from .NURBS import Curve, Surface, Volume
+from .freeform import Freeform
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -52,7 +54,7 @@ def process_template(file_src):
 
     # Load custom functions into the Jinja2 environment
     template_funcs = dict(
-        knot_vector=utilities.generate_knot_vector,
+        knot_vector=knotvector.generate,
         sqrt=tmpl_sqrt,
         cubert=tmpl_cubert,
         pow=tmpl_pow,
@@ -75,9 +77,9 @@ def read_file(file_name, **kwargs):
             content = fp.read() if callback is None else callback(fp)
         return content
     except IOError as e:
-        raise GeomdlError("An error occurred during reading '{0}': {1}".format(file_name, e.args[-1]))
+        raise GeomdlError("During reading of '{0}' - {1}".format(file_name, e.args[-1]))
     except Exception as e:
-        raise GeomdlError("An error occurred: {0}".format(str(e)))
+        raise GeomdlError("{0}".format(str(e)))
 
 
 def write_file(file_name, content, **kwargs):
@@ -91,19 +93,21 @@ def write_file(file_name, content, **kwargs):
                 callback(fp, content)
         return True
     except IOError as e:
-        raise GeomdlError("An error occurred during writing '{0}': {1}".format(file_name, e.args[-1]))
+        raise GeomdlError("During writing of '{0}' - {1}".format(file_name, e.args[-1]))
     except Exception as e:
-        raise GeomdlError("An error occurred: {0}".format(str(e)))
+        raise GeomdlError("{0}".format(str(e)))
 
 
 def import_dict_crv(data):
-    shape = shortcuts.generate_curve(rational=True)
+    shape = Curve()
 
     # Mandatory keys
     try:
         shape.degree = data['degree']
-        shape.ctrlpts = data['control_points']['points']
         shape.knotvector = data['knotvector']
+        cpman = control_points.CPManager(*data['size'])
+        cpman.points = data['control_points']['points']
+        shape.ctrlpts = cpman
     except KeyError as e:
         raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
 
@@ -125,15 +129,16 @@ def import_dict_crv(data):
 
 def export_dict_crv(obj):
     data = dict(
-        type="spline",
+        type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree=obj.degree,
-        knotvector=list(obj.knotvector),
+        degree=[v for v in obj.degree],
+        knotvector=[v for v in obj.knotvector],
+        size=[v for v in obj.ctrlpts_size],
         control_points=dict(
-            points=obj.ctrlpts
+            points=obj.ctrlpts.points
         ),
-        delta=obj.delta
+        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
@@ -147,7 +152,7 @@ def export_dict_crv(obj):
 
 
 def import_dict_ff(data):
-    shape = shortcuts.generate_freeform()
+    shape = Freeform()
 
     # Mandatory keys
     try:
@@ -222,17 +227,15 @@ def export_dict_multi_crv(obj):
 
 
 def import_dict_surf(data):
-    shape = shortcuts.generate_surface(rational=True)
+    shape = Surface()
 
     # Mandatory keys
     try:
-        shape.degree_u = data['degree_u']
-        shape.degree_v = data['degree_v']
-        shape.ctrlpts_size_u = data['size_u']
-        shape.ctrlpts_size_v = data['size_v']
-        shape.ctrlpts = data['control_points']['points']
-        shape.knotvector_u = data['knotvector_u']
-        shape.knotvector_v = data['knotvector_v']
+        shape.degree = data['degree']
+        shape.knotvector = data['knotvector']
+        cpman = control_points.CPManager(*data['size'])
+        cpman.points = data['control_points']['points']
+        shape.ctrlpts = cpman
     except KeyError as e:
         raise GeomdlError("Required key does not exist in the input data: {}".format(e.args[-1]))
 
@@ -263,19 +266,16 @@ def import_dict_surf(data):
 
 def export_dict_surf(obj):
     data = dict(
-        type="spline",
+        type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree_u=obj.degree_u,
-        degree_v=obj.degree_v,
-        knotvector_u=list(obj.knotvector_u),
-        knotvector_v=list(obj.knotvector_v),
-        size_u=obj.ctrlpts_size_u,
-        size_v=obj.ctrlpts_size_v,
+        degree=[v for v in obj.degree],
+        knotvector=[v for v in obj.knotvector],
+        size=[v for v in obj.ctrlpts_size],
         control_points=dict(
-            points=obj.ctrlpts
+            points=obj.ctrlpts.points
         ),
-        delta=obj.delta
+        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
@@ -311,22 +311,17 @@ def export_dict_surf(obj):
 
 
 def import_dict_vol(data):
-    shape = shortcuts.generate_volume(rational=True)
+    shape = Volume()
 
     # Mandatory keys
     try:
-        shape.degree_u = data['degree_u']
-        shape.degree_v = data['degree_v']
-        shape.degree_w = data['degree_w']
-        shape.ctrlpts_size_u = data['size_u']
-        shape.ctrlpts_size_v = data['size_v']
-        shape.ctrlpts_size_w = data['size_w']
-        shape.ctrlpts = data['control_points']['points']
-        shape.knotvector_u = data['knotvector_u']
-        shape.knotvector_v = data['knotvector_v']
-        shape.knotvector_w = data['knotvector_w']
+        shape.degree = data['degree']
+        shape.knotvector = data['knotvector']
+        cpman = control_points.CPManager(*data['size'])
+        cpman.points = data['control_points']['points']
+        shape.ctrlpts = cpman
     except KeyError as e:
-        raise GeomdlError("Required key does not exist in the input data: {}".format(e.args[-1]))
+        raise GeomdlError("Required key '{}' does not exist in the input data".format(e.args[-1]))
 
     # Optional keys
     if 'weights' in data['control_points']:
@@ -344,22 +339,16 @@ def import_dict_vol(data):
 
 def export_dict_vol(obj):
     data = dict(
-        type="spline",
+        type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree_u=obj.degree_u,
-        degree_v=obj.degree_v,
-        degree_w=obj.degree_w,
-        knotvector_u=list(obj.knotvector_u),
-        knotvector_v=list(obj.knotvector_v),
-        knotvector_w=list(obj.knotvector_w),
-        size_u=obj.ctrlpts_size_u,
-        size_v=obj.ctrlpts_size_v,
-        size_w=obj.ctrlpts_size_w,
+        degree=[v for v in obj.degree],
+        knotvector=[v for v in obj.knotvector],
+        size=[v for v in obj.ctrlpts_size],
         control_points=dict(
-            points=obj.ctrlpts
+            points=obj.ctrlpts.points
         ),
-        delta=obj.delta
+        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
