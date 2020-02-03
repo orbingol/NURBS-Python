@@ -146,7 +146,7 @@ def extract_ctrlpts3d(cm):
 
 
 @export
-def combine_ctrlpts_weights(ctrlpts, weights=None):
+def combine_ctrlpts_weights(ctrlpts, weights=()):
     """ Multiplies control points by the weights to generate weighted control points.
 
     This function is dimension agnostic, i.e. control points can be in any dimension but weights should be 1-dimensional.
@@ -161,7 +161,7 @@ def combine_ctrlpts_weights(ctrlpts, weights=None):
     :return: weighted control points
     :rtype: list
     """
-    if weights is None:
+    if not weights:
         weights = [GeomdlFloat(1.0) for _ in range(len(ctrlpts))]
 
     ctrlptsw = [[] for _ in range(len(ctrlpts))]
