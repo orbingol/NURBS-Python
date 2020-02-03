@@ -7,7 +7,7 @@
 
 """
 
-from . import compatibility, knotvector, shortcuts
+from . import NURBS, control_points, knotvector
 from .base import GeomdlError
 
 
@@ -42,57 +42,52 @@ def construct_surface(direction, *args, **kwargs):
     rational = kwargs.get('rational', args[0].rational)
 
     # Construct the control points of the new surface
-    degree = args[0].degree
-    num_ctrlpts = args[0].ctrlpts_size
+    degree = args[0].degree.u
+    num_ctrlpts = args[0].ctrlpts.count
     new_ctrlpts = []
     new_weights = []
     for idx, arg in enumerate(args):
-        if degree != arg.degree:
+        if degree != arg.degree.u:
             raise GeomdlError("Input curves must have the same degrees",
                               data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
-        if num_ctrlpts != arg.ctrlpts_size:
+        if num_ctrlpts != arg.ctrlpts.count:
             raise GeomdlError("Input curves must have the same number of control points",
-                              data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size))
+                              data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts.count))
         new_ctrlpts += list(arg.ctrlpts)
         if rational:
-            if arg.weights is None:
+            if not arg.weights:
                 raise GeomdlError("Expecting a rational curve",
                                   data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
             new_weights += list(arg.weights)
 
     # Set variables w.r.t. input direction
-    if direction == 'u':
-        degree_u = degree_other
-        degree_v = degree
-        knotvector_u = knotvector_other
-        knotvector_v = args[0].knotvector
-        size_u = size_other
-        size_v = num_ctrlpts
-    else:
+    if direction == 'v':
         degree_u = degree
         degree_v = degree_other
-        knotvector_u = args[0].knotvector
+        knotvector_u = args[0].knotvector.u
         knotvector_v = knotvector_other
         size_u = num_ctrlpts
         size_v = size_other
+    else:
+        degree_u = degree_other
+        degree_v = degree
+        knotvector_u = knotvector_other
+        knotvector_v = args[0].knotvector.u
+        size_u = size_other
+        size_v = num_ctrlpts
+        new_ctrlpts = [new_ctrlpts[i + (j * num_ctrlpts)] for i in range(num_ctrlpts) for j in range(size_other)]
         if rational:
-            ctrlptsw = compatibility.combine_ctrlpts_weights(new_ctrlpts, new_weights)
-            ctrlptsw = compatibility.flip_ctrlpts_u(ctrlptsw, size_u, size_v)
-            new_ctrlpts, new_weights = compatibility.separate_ctrlpts_weights(ctrlptsw)
-        else:
-            new_ctrlpts = compatibility.flip_ctrlpts_u(new_ctrlpts, size_u, size_v)
+            new_weights = [new_weights[i + (j * num_ctrlpts)] for i in range(num_ctrlpts) for j in range(size_other)]
 
     # Generate the surface
-    ns = shortcuts.generate_surface(rational)
-    ns.degree_u = degree_u
-    ns.degree_v = degree_v
-    ns.ctrlpts_size_u = size_u
-    ns.ctrlpts_size_v = size_v
-    ns.ctrlpts = new_ctrlpts
+    ns = NURBS.Surface()
+    ns.degree = (degree_u, degree_v)
+    ns.knotvector = (knotvector_u, knotvector_v)
+    cpm = control_points.CPManager(size_u, size_v)
+    cpm.points = new_ctrlpts
+    ns.ctrlpts = cpm
     if rational:
         ns.weights = new_weights
-    ns.knotvector_u = knotvector_u
-    ns.knotvector_v = knotvector_v
 
     # Return constructed surface
     return ns
