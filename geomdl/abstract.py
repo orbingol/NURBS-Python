@@ -188,7 +188,7 @@ class SplineGeometry(Geometry):
         if self.rational != other.rational:
             return False
         try:
-            for s, o in zip(self._control_points_size, other._control_points_size):
+            for s, o in zip(self._control_points.size, other._control_points.size):
                 if s != o:
                     return False
             chk_degree = []
@@ -203,7 +203,7 @@ class SplineGeometry(Geometry):
                     return False
                 chk = []
                 for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < self._precision else False
+                    tmp = True if abs(s - o) < 10e-7 else False
                     chk.append(tmp)
                 chk_kv.append(all(chk))
             if not all(chk_kv):
@@ -214,7 +214,7 @@ class SplineGeometry(Geometry):
                     return False
                 chk = []
                 for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < self._precision else False
+                    tmp = True if abs(s - o) < 10e-7 else False
                     chk.append(tmp)
                 chk_ctrlpts.append(all(chk))
             if not all(chk_kv):
