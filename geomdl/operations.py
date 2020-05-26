@@ -342,10 +342,10 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(idx=idx, num=val))
 
     # Start curve knot removal
-    if isinstance(obj, abstract.Curve):
+    if obj.pdimension == 1:
         if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
-            s = helpers.find_multiplicity(param[0], obj.knotvector)
+            s = helpers.find_multiplicity(param[0], obj.knotvector.u)
 
             # It is impossible to remove knots if num > s
             if check_num and num[0] > s:
@@ -353,25 +353,25 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[0], num=num[0], multiplicity=s))
 
             # Find knot span
-            span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
+            span = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Compute new control points
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            ctrlpts_new = helpers.knot_removal(obj.degree, obj.knotvector, cpts, param[0], num=num[0], s=s, span=span)
+            cpts = obj.ctrlptsw
+            ctrlpts_new = helpers.knot_removal(obj.degree.u, obj.knotvector.u, cpts, param[0], num=num[0], s=s, span=span)
 
             # Compute new knot vector
-            kv_new = helpers.knot_removal_kv(obj.knotvector, span, num[0])
+            kv_new = helpers.knot_removal_kv(obj.knotvector.u, span, num[0])
 
             # Update curve
             obj.set_ctrlpts(ctrlpts_new)
-            obj.knotvector = kv_new
+            obj.knotvector.u = kv_new
 
     # Start surface knot removal
-    if isinstance(obj, abstract.Surface):
+    if obj.pdimension == 2:
         # u-direction
         if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
-            s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
+            s_u = helpers.find_multiplicity(param[0], obj.knotvector.u)
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > s_u:
@@ -379,29 +379,29 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[0], num=num[0], multiplicity=s_u))
 
             # Find knot span
-            span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
+            span_u = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Get curves
             ctrlpts_new = []
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
             for v in range(obj.ctrlpts_size_v):
-                ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
-                ctrlpts_tmp = helpers.knot_removal(obj.degree_u, obj.knotvector_u, ccu, param[0],
+                ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
+                ctrlpts_tmp = helpers.knot_removal(obj.degree.u, obj.knotvector.u, ccu, param[0],
                                                    num=num[0], s=s_u, span=span_u)
                 ctrlpts_new += ctrlpts_tmp
 
             # Compute new knot vector
-            kv_u = helpers.knot_removal_kv(obj.knotvector_u, span_u, num[0])
+            kv_u = helpers.knot_removal_kv(obj.knotvector.u, span_u, num[0])
 
             # Update the surface after knot removal
             obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v),
                             obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v)
-            obj.knotvector_u = kv_u
+            obj.knotvector.u = kv_u
 
         # v-direction
         if param[1] is not None and num[1] > 0:
             # Find knot multiplicity
-            s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
+            s_v = helpers.find_multiplicity(param[1], obj.knotvector.v)
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > s_v:
@@ -409,30 +409,30 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[1], num=num[1], multiplicity=s_v))
 
             # Find knot span
-            span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
+            span_v = helpers.find_span_linear(obj.degree.v, obj.knotvector.v, obj.ctrlpts_size.v, param[1])
 
             # Get curves
             ctrlpts_new = []
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            for u in range(obj.ctrlpts_size_u):
-                ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
-                ctrlpts_tmp = helpers.knot_removal(obj.degree_v, obj.knotvector_v, ccv, param[1],
+            cpts = obj.ctrlptsw
+            for u in range(obj.ctrlpts_size.u):
+                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
+                ctrlpts_tmp = helpers.knot_removal(obj.degree.v, obj.knotvector.v, ccv, param[1],
                                                    num=num[1], s=s_v, span=span_v)
                 ctrlpts_new += ctrlpts_tmp
 
             # Compute new knot vector
-            kv_v = helpers.knot_removal_kv(obj.knotvector_v, span_v, num[1])
+            kv_v = helpers.knot_removal_kv(obj.knotvector.v, span_v, num[1])
 
             # Update the surface after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v - num[1])
-            obj.knotvector_v = kv_v
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v - num[1])
+            obj.knotvector.v = kv_v
 
     # Start volume knot removal
-    if isinstance(obj, abstract.Volume):
+    if obj.pdimension == 3:
         # u-direction
         if param[0] is not None and num[0] > 0:
             # Find knot multiplicity
-            s_u = helpers.find_multiplicity(param[0], obj.knotvector_u)
+            s_u = helpers.find_multiplicity(param[0], obj.knotvector.u)
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > s_u:
@@ -440,44 +440,44 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[0], num=num[0], multiplicity=s_u))
 
             # Find knot span
-            span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
+            span_u = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for u in range(obj.ctrlpts_size_u):
+            for u in range(obj.ctrlpts_size.u):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size_w):
-                    for v in range(obj.ctrlpts_size_v):
-                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                for w in range(obj.ctrlpts_size.w):
+                    for v in range(obj.ctrlpts_size.v):
+                        temp_pt = cpts[u + (v * obj.ctrlpts_size.v) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                         temp_surf.append(temp_pt)
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_u, obj.knotvector_u, cpt2d, param[0],
+            ctrlpts_tmp = helpers.knot_removal(obj.degree.u, obj.knotvector.u, cpt2d, param[0],
                                                num=num[0], s=s_u, span=span_u)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size_w):
-                for u in range(obj.ctrlpts_size_u - num[0]):
-                    for v in range(obj.ctrlpts_size_v):
+            for w in range(obj.ctrlpts_size.w):
+                for u in range(obj.ctrlpts_size.u - num[0]):
+                    for v in range(obj.ctrlpts_size.v):
                         temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size_v)]
                         ctrlpts_new.append(temp_pt)
 
             # Compute new knot vector
-            kv_u = helpers.knot_removal_kv(obj.knotvector_u, span_u, num[0])
+            kv_u = helpers.knot_removal_kv(obj.knotvector.u, span_u, num[0])
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v, obj.ctrlpts_size_w)
-            obj.knotvector_u = kv_u
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u - num[0], obj.ctrlpts_size.v, obj.ctrlpts_size.w)
+            obj.knotvector.u = kv_u
 
         # v-direction
         if param[1] is not None and num[1] > 0:
             # Find knot multiplicity
-            s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
+            s_v = helpers.find_multiplicity(param[1], obj.knotvector.v)
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > s_v:
@@ -485,44 +485,44 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[1], num=num[1], multiplicity=s_v))
 
             # Find knot span
-            span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
+            span_v = helpers.find_span_linear(obj.degree.v, obj.knotvector.v, obj.ctrlpts_size.v, param[1])
 
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for v in range(obj.ctrlpts_size_v):
+            for v in range(obj.ctrlpts_size.v):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size_w):
-                    for u in range(obj.ctrlpts_size_u):
-                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                for w in range(obj.ctrlpts_size.w):
+                    for u in range(obj.ctrlpts_size.u):
+                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                         temp_surf.append(temp_pt)
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_v, obj.knotvector_v, cpt2d, param[1],
+            ctrlpts_tmp = helpers.knot_removal(obj.degree.v, obj.knotvector.v, cpt2d, param[1],
                                                num=num[1], s=s_v, span=span_v)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size_w):
-                for u in range(obj.ctrlpts_size_u):
-                    for v in range(obj.ctrlpts_size_v - num[1]):
+            for w in range(obj.ctrlpts_size.w):
+                for u in range(obj.ctrlpts_size.u):
+                    for v in range(obj.ctrlpts_size.v - num[1]):
                         temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size_u)]
                         ctrlpts_new.append(temp_pt)
 
             # Compute new knot vector
-            kv_v = helpers.knot_removal_kv(obj.knotvector_v, span_v, num[1])
+            kv_v = helpers.knot_removal_kv(obj.knotvector.v, span_v, num[1])
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v - num[1], obj.ctrlpts_size_w)
-            obj.knotvector_v = kv_v
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v - num[1], obj.ctrlpts_size.w)
+            obj.knotvector.v = kv_v
 
         # w-direction
         if param[2] is not None and num[2] > 0:
             # Find knot multiplicity
-            s_w = helpers.find_multiplicity(param[2], obj.knotvector_w)
+            s_w = helpers.find_multiplicity(param[2], obj.knotvector.w)
 
             # Check if it is possible add that many number of knots
             if check_num and num[2] > s_w:
@@ -530,33 +530,33 @@ def remove_knot(obj, param, num, **kwargs):
                                   data=dict(knot=param[2], num=num[2], multiplicity=s_w))
 
             # Find knot span
-            span_w = helpers.find_span_linear(obj.degree_w, obj.knotvector_w, obj.ctrlpts_size_w, param[2])
+            span_w = helpers.find_span_linear(obj.degree.w, obj.knotvector.w, obj.ctrlpts_size.w, param[2])
 
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for w in range(obj.ctrlpts_size_w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
-                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+            for w in range(obj.ctrlpts_size.w):
+                temp_surf = [cpts[uv + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)] for uv in
+                             range(obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_w, obj.knotvector_w, cpt2d, param[2],
+            ctrlpts_tmp = helpers.knot_removal(obj.degree.w, obj.knotvector.w, cpt2d, param[2],
                                                num=num[2], s=s_w, span=span_w)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size_w - num[2]):
+            for w in range(obj.ctrlpts_size.w - num[2]):
                 ctrlpts_new += ctrlpts_tmp[w]
 
             # Compute new knot vector
-            kv_w = helpers.knot_removal_kv(obj.knotvector_w, span_w, num[2])
+            kv_w = helpers.knot_removal_kv(obj.knotvector.w, span_w, num[2])
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v, obj.ctrlpts_size_w - num[2])
-            obj.knotvector_w = kv_w
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, obj.ctrlpts_size.w - num[2])
+            obj.knotvector.w = kv_w
 
     # Return updated spline geometry
     return obj
@@ -632,32 +632,32 @@ def refine_knotvector(obj, param, **kwargs):
                               data=dict(pdim=obj.pdimension, param_len=len(param)))
 
     # Start curve knot refinement
-    if isinstance(obj, abstract.Curve):
+    if obj.pdimension == 1:
         if param[0] > 0:
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            new_cpts, new_kv = helpers.knot_refinement(obj.degree, obj.knotvector, cpts, density=param[0])
+            cpts = obj.ctrlptsw
+            new_cpts, new_kv = helpers.knot_refinement(obj.degree.u, obj.knotvector.u, cpts, density=param[0])
             obj.set_ctrlpts(new_cpts)
-            obj.knotvector = new_kv
+            obj.knotvector.u = new_kv
 
     # Start surface knot refinement
-    if isinstance(obj, abstract.Surface):
+    if obj.pdimension == 2:
         # u-direction
         if param[0] > 0:
             # Get curves
             new_cpts = []
             new_cpts_size = 0
             new_kv = []
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
             for v in range(obj.ctrlpts_size_v):
-                ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
-                ptmp, new_kv = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, ccu, density=param[0])
+                ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
+                ptmp, new_kv = helpers.knot_refinement(obj.degree.u, obj.knotvector.u, ccu, density=param[0])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
             # Update the surface after knot refinement
             obj.set_ctrlpts(compatibility.flip_ctrlpts_u(new_cpts, new_cpts_size, obj.ctrlpts_size_v),
                             new_cpts_size, obj.ctrlpts_size_v)
-            obj.knotvector_u = new_kv
+            obj.knotvector.u = new_kv
 
         # v-direction
         if param[1] > 0:
@@ -665,95 +665,95 @@ def refine_knotvector(obj, param, **kwargs):
             new_cpts = []
             new_cpts_size = 0
             new_kv = []
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            for u in range(obj.ctrlpts_size_u):
-                ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
-                ptmp, new_kv = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, ccv, density=param[1])
+            cpts = obj.ctrlptsw
+            for u in range(obj.ctrlpts_size.u):
+                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
+                ptmp, new_kv = helpers.knot_refinement(obj.degree.v, obj.knotvector.v, ccv, density=param[1])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
             # Update the surface after knot refinement
-            obj.set_ctrlpts(new_cpts, obj.ctrlpts_size_u, new_cpts_size)
-            obj.knotvector_v = new_kv
+            obj.set_ctrlpts(new_cpts, obj.ctrlpts_size.u, new_cpts_size)
+            obj.knotvector.v = new_kv
 
     # Start volume knot refinement
-    if isinstance(obj, abstract.Volume):
+    if obj.pdimension == 3:
         # u-direction
         if param[0] > 0:
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for u in range(obj.ctrlpts_size_u):
+            for u in range(obj.ctrlpts_size.u):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size_w):
-                    for v in range(obj.ctrlpts_size_v):
-                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                for w in range(obj.ctrlpts_size.w):
+                    for v in range(obj.ctrlpts_size.v):
+                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                         temp_surf.append(temp_pt)
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_u, obj.knotvector_u, cpt2d, density=param[0])
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree.u, obj.knotvector.u, cpt2d, density=param[0])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size_w):
+            for w in range(obj.ctrlpts_size.w):
                 for u in range(new_cpts_size):
-                    for v in range(obj.ctrlpts_size_v):
-                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size_v)]
+                    for v in range(obj.ctrlpts_size.v):
+                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size.v)]
                         ctrlpts_new.append(temp_pt)
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, new_cpts_size, obj.ctrlpts_size_v, obj.ctrlpts_size_w)
-            obj.knotvector_u = kv_new
+            obj.set_ctrlpts(ctrlpts_new, new_cpts_size, obj.ctrlpts_size.v, obj.ctrlpts_size.w)
+            obj.knotvector.u = kv_new
 
         # v-direction
         if param[1] > 0:
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for v in range(obj.ctrlpts_size_v):
+            for v in range(obj.ctrlpts_size.v):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size_w):
-                    for u in range(obj.ctrlpts_size_u):
-                        temp_pt = cpts[v + (u * obj.ctrlpts_size_v) + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                for w in range(obj.ctrlpts_size.w):
+                    for u in range(obj.ctrlpts_size.u):
+                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                         temp_surf.append(temp_pt)
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_v, obj.knotvector_v, cpt2d, density=param[1])
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree.v, obj.knotvector.v, cpt2d, density=param[1])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size_w):
-                for u in range(obj.ctrlpts_size_u):
+            for w in range(obj.ctrlpts_size.w):
+                for u in range(obj.ctrlpts_size.u):
                     for v in range(new_cpts_size):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size_u)]
+                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
                         ctrlpts_new.append(temp_pt)
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, new_cpts_size, obj.ctrlpts_size_w)
-            obj.knotvector_v = kv_new
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, new_cpts_size, obj.ctrlpts_size.w)
+            obj.knotvector.v = kv_new
 
         # w-direction
         if param[2] > 0:
             # Use Pw if rational
-            cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
-            for w in range(obj.ctrlpts_size_w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
-                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+            for w in range(obj.ctrlpts_size.w):
+                temp_surf = [cpts[uv + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)] for uv in
+                             range(obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
-            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree_w, obj.knotvector_w, cpt2d, density=param[2])
+            ctrlpts_tmp, kv_new = helpers.knot_refinement(obj.degree.w, obj.knotvector.w, cpt2d, density=param[2])
             new_cpts_size = len(ctrlpts_tmp)
 
             # Flatten to 1-dimensional structure
@@ -762,8 +762,8 @@ def refine_knotvector(obj, param, **kwargs):
                 ctrlpts_new += ctrlpts_tmp[w]
 
             # Update the volume after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size_u, obj.ctrlpts_size_v, new_cpts_size)
-            obj.knotvector_w = kv_new
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, new_cpts_size)
+            obj.knotvector.w = kv_new
 
     # Return updated spline geometry
     return obj
@@ -783,13 +783,13 @@ def degree_operations(obj, param, **kwargs):
             raise GeomdlError("Input spline geometry must have degree > 1")
 
     # Start curve degree manipulation operations
-    if isinstance(obj, abstract.Curve):
+    if obj.pdimension == 1:
         if param[0] is not None and param[0] != 0:
             # Find multiplicity of the internal knots
-            int_knots = set(obj.knotvector[obj.degree + 1:-(obj.degree + 1)])
+            int_knots = set(obj.knotvector[obj.degree.u + 1:-(obj.degree.u + 1)])
             mult_arr = []
             for ik in int_knots:
-                s = helpers.find_multiplicity(ik, obj.knotvector)
+                s = helpers.find_multiplicity(ik, obj.knotvector.u)
                 mult_arr.append(s)
 
             # Decompose the input by knot insertion
@@ -799,34 +799,34 @@ def degree_operations(obj, param, **kwargs):
             if param[0] > 0:
                 # Loop through to apply degree elevation
                 for crv in crv_list:
-                    cpts = crv.ctrlptsw if crv.rational else crv.ctrlpts
-                    new_cpts = helpers.degree_elevation(crv.degree, cpts, num=param[0])
+                    cpts = crv.ctrlptsw
+                    new_cpts = helpers.degree_elevation(crv.degree.u, cpts, num=param[0])
                     crv.degree += param[0]
                     crv.set_ctrlpts(new_cpts)
-                    crv.knotvector = [crv.knotvector[0] for _ in range(param[0])] + list(crv.knotvector) + [crv.knotvector[-1] for _ in range(param[0])]
+                    crv.knotvector.u = [crv.knotvector.u[0] for _ in range(param[0])] + list(crv.knotvector.u) + [crv.knotvector.u[-1] for _ in range(param[0])]
 
                 # Compute new degree
-                nd = obj.degree + param[0]
+                nd = obj.degree.u + param[0]
 
                 # Number of knot removals
-                num = obj.degree + 1
+                num = obj.degree.u + 1
             else:
                 # Validate degree reduction operation
-                validate_reduction(obj.degree)
+                validate_reduction(obj.degree.u)
 
                 # Loop through to apply degree reduction
                 for crv in crv_list:
-                    cpts = crv.ctrlptsw if crv.rational else crv.ctrlpts
-                    new_cpts = helpers.degree_reduction(crv.degree, cpts)
+                    cpts = crv.ctrlptsw
+                    new_cpts = helpers.degree_reduction(crv.degree.u, cpts)
                     crv.degree -= 1
                     crv.set_ctrlpts(new_cpts)
-                    crv.knotvector = list(crv.knotvector[1:-1])
+                    crv.knotvector = list(crv.knotvector.u[1:-1])
 
                 # Compute new degree
-                nd = obj.degree - 1
+                nd = obj.degree.u - 1
 
                 # Number of knot removals
-                num = obj.degree - 1
+                num = obj.degree.u - 1
 
             # Link curves together (reverse of decomposition)
             kv, cpts, ws, knots = ops.link_curves(*crv_list, validate=False)
@@ -846,7 +846,7 @@ def degree_operations(obj, param, **kwargs):
             obj.knotvector = kv
 
     # Start surface degree manipulation operations
-    if isinstance(obj, abstract.Surface):
+    if obj.pdimension == 2:
         # u-direction
         if param[0] is not None and param[0] != 0:
 
@@ -855,7 +855,7 @@ def degree_operations(obj, param, **kwargs):
                 pass
             else:
                 # Apply degree reduction operation
-                validate_reduction(obj.degree_u)
+                validate_reduction(obj.degree.u)
 
         # v-direction
         if param[1] is not None and param[1] != 0:
@@ -865,10 +865,10 @@ def degree_operations(obj, param, **kwargs):
                 pass
             else:
                 # Validate degree reduction operation
-                validate_reduction(obj.degree_v)
+                validate_reduction(obj.degree.v)
 
     # Start surface degree manipulation operations
-    if isinstance(obj, abstract.Volume):
+    if obj.pdimension == 3:
         raise GeomdlError("Degree manipulation operations are not available for spline volumes")
 
     # Return updated spline geometry
@@ -941,8 +941,8 @@ def split_curve(obj, param, **kwargs):
     insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot and define how many times we need to add the knot
-    ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), param) - obj.degree + 1
-    s = helpers.find_multiplicity(param, obj.knotvector)
+    ks = span_func(obj.degree, obj.knotvector.u, len(obj.ctrlpts), param) - obj.degree.u + 1
+    s = helpers.find_multiplicity(param, obj.knotvector.u)
     r = obj.degree - s
 
     # Create backups of the original curve
@@ -952,15 +952,15 @@ def split_curve(obj, param, **kwargs):
     insert_knot_func(temp_obj, [param], num=[r], check_num=False)
 
     # Knot vectors
-    knot_span = span_func(temp_obj.degree, temp_obj.knotvector, len(temp_obj.ctrlpts), param) + 1
-    curve1_kv = list(temp_obj.knotvector[0:knot_span])
+    knot_span = span_func(temp_obj.degree.u, temp_obj.knotvector.u, len(temp_obj.ctrlpts), param) + 1
+    curve1_kv = list(temp_obj.knotvector.u[0:knot_span])
     curve1_kv.append(param)
-    curve2_kv = list(temp_obj.knotvector[knot_span:])
+    curve2_kv = list(temp_obj.knotvector.u[knot_span:])
     for _ in range(0, temp_obj.degree + 1):
         curve2_kv.insert(0, param)
 
     # Control points (use Pw if rational)
-    cpts = temp_obj.ctrlptsw if obj.rational else temp_obj.ctrlpts
+    cpts = temp_obj.ctrlptsw.points
     curve1_ctrlpts = cpts[0:ks + r]
     curve2_ctrlpts = cpts[ks + r - 1:]
 
@@ -968,13 +968,13 @@ def split_curve(obj, param, **kwargs):
     curve1 = temp_obj.__class__()
     curve1.degree = temp_obj.degree
     curve1.set_ctrlpts(curve1_ctrlpts)
-    curve1.knotvector = curve1_kv
+    curve1.knotvector = (curve1_kv,)
 
     # Create another curve fot the second half
     curve2 = temp_obj.__class__()
     curve2.degree = temp_obj.degree
     curve2.set_ctrlpts(curve2_ctrlpts)
-    curve2.knotvector = curve2_kv
+    curve2.knotvector = (curve2_kv,)
 
     # Return the split curves
     ret_val = [curve1, curve2]
