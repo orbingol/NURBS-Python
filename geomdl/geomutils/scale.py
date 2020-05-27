@@ -9,10 +9,11 @@
 
 import copy
 from .. import linalg
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+__all__ = []
 
 
-@export
 def apply_scaling(obj, multiplier, **kwargs):
     """ Scales curves, surfaces or volumes by the input multiplier.
 

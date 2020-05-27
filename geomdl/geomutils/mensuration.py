@@ -11,10 +11,11 @@
 # Ref 2: https://en.wikipedia.org/wiki/Mensuration
 
 from .. import linalg
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+__all__ = []
 
 
-@export
 def length_curve(obj):
     """ Computes the approximate length of the parametric curve.
 

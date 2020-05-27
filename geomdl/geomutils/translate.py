@@ -9,10 +9,11 @@
 
 import copy
 from .. import linalg
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+__all__ = []
 
 
-@export
 def apply_translation(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 

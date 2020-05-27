@@ -10,8 +10,10 @@
 import copy
 import math
 from .. import linalg
-from ..base import export, GeomdlError
+from ..base import GeomdlError
 from . import translate
+
+__all__ = []
 
 
 def rotate_x(ncs, opt, alpha):
@@ -71,7 +73,6 @@ def rotate_z(ncs, opt, alpha):
     translate.apply_translation(ncs, [-tv for tv in translate_vector], inplace=True)
 
 
-@export
 def apply_rotation(obj, angle, **kwargs):
     """ Rotates curves, surfaces or volumes about the chosen axis.
 

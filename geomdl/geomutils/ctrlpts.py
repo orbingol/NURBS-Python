@@ -8,7 +8,9 @@
 """
 
 from .. import helpers
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+__all__ = []
 
 
 def find_ctrlpts_curve(t, curve, **kwargs):
@@ -76,8 +78,6 @@ def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
     return surf_ctrlpts
 
 
-
-@export
 def find_ctrlpts(obj, u, v=None, **kwargs):
     """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
