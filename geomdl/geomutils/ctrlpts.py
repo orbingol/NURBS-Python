@@ -1,7 +1,7 @@
 """
-.. module:: geomutils.mensuration
+.. module:: geomutils.ctrlpts
     :platform: Unix, Windows
-    :synopsis: Provides measurement functionality
+    :synopsis: Provides utility functions related to control points
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
