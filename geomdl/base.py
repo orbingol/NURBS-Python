@@ -400,6 +400,7 @@ class GeomdlObject(object):
                 iter_callbacks=kwargs.pop('callbacks', tuple()),
             )
         )  # dict for storing the configuration variables
+        self._iter_index = 0
 
     def __getattr__(self, name):
         return object.__getattribute__(self, name)
