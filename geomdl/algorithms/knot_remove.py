@@ -10,6 +10,8 @@
 from .. import helpers
 from ..base import GeomdlError, GeomdlTypeSequence
 
+__all__ = []
+
 
 def remove_knot(obj, param, num, **kwargs):
     """ Removes knots n-times from a spline geometry.

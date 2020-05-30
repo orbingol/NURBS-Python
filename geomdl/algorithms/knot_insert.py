@@ -10,6 +10,8 @@
 from .. import helpers
 from ..base import GeomdlError, GeomdlTypeSequence
 
+__all__ = []
+
 
 def insert_knot(obj, param, num, **kwargs):
     """ Inserts knots n-times to a spline geometry.

@@ -10,6 +10,8 @@
 from .. import helpers
 from ..base import GeomdlError, GeomdlTypeSequence
 
+__all__ = []
+
 
 def refine_knotvector(obj, param, **kwargs):
     """ Refines the knot vector(s) of a spline geometry.
