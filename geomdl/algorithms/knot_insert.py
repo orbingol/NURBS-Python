@@ -70,7 +70,7 @@ def insert_knot(obj, param, num, **kwargs):
             s = helpers.find_multiplicity(param[0], obj.knotvector.u)
 
             # Check if it is possible add that many number of knots
-            if check_num and num[0] > obj.degree - s:
+            if check_num and num[0] > obj.degree.u - s:
                 raise GeomdlError("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
                                   data=dict(knot=param[0], num=num[0], multiplicity=s))
 
@@ -81,7 +81,8 @@ def insert_knot(obj, param, num, **kwargs):
             kv_new = helpers.knot_insertion_kv(obj.knotvector.u, param[0], span, num[0])
 
             # Compute new control points
-            cpts_tmp = helpers.knot_insertion(obj.degree, obj.knotvector, obj.ctrlptsw.points, param[0],
+            cpts = list(obj.ctrlptsw.points)
+            cpts_tmp = helpers.knot_insertion(obj.degree.u, obj.knotvector.u, cpts, param[0],
                                               num=num[0], s=s, span=span)
 
             # Update curve
@@ -217,7 +218,7 @@ def insert_knot(obj, param, num, **kwargs):
             kv_v = helpers.knot_insertion_kv(obj.knotvector.v, param[1], span_v, num[1])
 
             # Use Pw if rational
-            cpts = obj.ctrlptsw.points
+            cpts = list(obj.ctrlptsw.points)
 
             # Construct 2-dimensional structure
             cpt2d = []

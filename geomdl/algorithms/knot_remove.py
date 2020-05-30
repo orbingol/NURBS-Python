@@ -78,7 +78,7 @@ def remove_knot(obj, param, num, **kwargs):
             span = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Compute new control points
-            cpts = obj.ctrlptsw
+            cpts = list(obj.ctrlptsw.points)
             ctrlpts_new = helpers.knot_removal(obj.degree.u, obj.knotvector.u, cpts, param[0], num=num[0], s=s, span=span)
 
             # Compute new knot vector
