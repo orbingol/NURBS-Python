@@ -111,6 +111,9 @@ class GeomdlFloat(float):
     def __new__(cls, value):
         return super(GeomdlFloat, cls).__new__(cls, apply_precision(value))
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __add__(self, other):
         c = super(GeomdlFloat, self).__add__(other)
         return self.__class__(c)
