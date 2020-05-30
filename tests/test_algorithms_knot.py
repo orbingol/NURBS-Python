@@ -73,35 +73,3 @@ def test_bspline_curve2d_knot_refine(curve7, density, kv):
     algorithms.refine_knotvector(curve7, [density])
     for a, b in zip(kv, curve7.knotvector.u):
         assert abs(a - b) < GEOMDL_DELTA
-
-
-# @pytest.mark.usefixtures("curve7")
-# def test_bspline_curve2d_degree_elevate_degree(curve7):
-#     dops = 1
-#     degree_new = curve7.degree.u + dops
-#     operations.degree_operations(curve7, [dops])
-#     assert curve7.degree.u == degree_new
-
-
-# @pytest.mark.usefixtures("curve7")
-# def test_bspline_curve2d_degree_elevate_ctrlpts_size(curve7):
-#     dops = 1
-#     ctrlpts_size = curve7.ctrlpts_size.u + dops
-#     operations.degree_operations(curve7, [dops])
-#     assert curve7.ctrlpts_size.u == ctrlpts_size
-
-
-# @pytest.mark.usefixtures("curve7")
-# def test_bspline_curve2d_degree_reduce_degree(curve7):
-#     dops = -1
-#     degree_new = curve7.degree.u + dops
-#     operations.degree_operations(curve7, [dops])
-#     assert curve7.degree.u == degree_new
-
-
-# @pytest.mark.usefixtures("curve7")
-# def test_bspline_curve2d_degree_reduce_ctrlpts_size(curve7):
-#     dops = -1
-#     ctrlpts_size_new = curve7.ctrlpts_size.u + dops
-#     operations.degree_operations(curve7, [dops])
-#     assert curve7.ctrlpts_size.u == ctrlpts_size_new
