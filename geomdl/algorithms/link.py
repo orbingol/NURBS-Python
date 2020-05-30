@@ -1,16 +1,15 @@
 """
-.. module:: _operations
+.. module:: algorithms.link
     :platform: Unix, Windows
-    :synopsis: Helper functions for operations module
+    :synopsis: Linking algorithms
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-from . import linalg, helpers
-from .base import GeomdlError
+from .. import linalg, helpers
+from ..base import GeomdlError
 
-# Initialize an empty __all__ for controlling imports
 __all__ = []
 
 

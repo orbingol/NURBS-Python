@@ -9,6 +9,8 @@
 
 from .. import helpers
 from ..base import GeomdlError, GeomdlTypeSequence
+from .decompose import decompose_curve
+from .link import link_curves
 
 __all__ = []
 
@@ -73,7 +75,7 @@ def degree_operations(obj, param, **kwargs):
                 num = obj.degree.u - 1
 
             # Link curves together (reverse of decomposition)
-            kv, cpts, ws, knots = ops.link_curves(*crv_list, validate=False)
+            kv, cpts, ws, knots = link_curves(*crv_list, validate=False)
 
             # Organize control points (if necessary)
             ctrlpts = compatibility.combine_ctrlpts_weights(cpts, ws) if obj.rational else cpts
