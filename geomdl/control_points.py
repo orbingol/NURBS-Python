@@ -95,7 +95,7 @@ def default_ctrlpt_set(pts_arr, idx, cpt):
     :param cpt: control point
     :type cpt: list, tuple
     """
-    pts_arr[idx] = tuple(GeomdlFloat(c) for c in cpt)
+    pts_arr[idx] = [GeomdlFloat(c) for c in cpt]
 
 
 def extract_ctrlpts2d(cm, reset=False):
