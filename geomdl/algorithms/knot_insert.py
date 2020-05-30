@@ -97,7 +97,7 @@ def insert_knot(obj, param, num, **kwargs):
             s_u = helpers.find_multiplicity(param[0], obj.knotvector.u)
 
             # Check if it is possible add that many number of knots
-            if check_num and num[0] > obj.degree_u - s_u:
+            if check_num and num[0] > obj.degree.u - s_u:
                 raise GeomdlError("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
                                   data=dict(knot=param[0], num=num[0], multiplicity=s_u))
 
@@ -105,7 +105,7 @@ def insert_knot(obj, param, num, **kwargs):
             span_u = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Compute new knot vector
-            kv_u = helpers.knot_insertion_kv(obj.knotvector_u, param[0], span_u, num[0])
+            kv_u = helpers.knot_insertion_kv(obj.knotvector.u, param[0], span_u, num[0])
 
             # Get curves
             cpts_tmp = []
@@ -123,7 +123,7 @@ def insert_knot(obj, param, num, **kwargs):
         # v-direction
         if param[1] is not None and num[1] > 0:
             # Find knot multiplicity
-            s_v = helpers.find_multiplicity(param[1], obj.knotvector_v)
+            s_v = helpers.find_multiplicity(param[1], obj.knotvector.v)
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > obj.degree.v - s_v:
@@ -140,7 +140,7 @@ def insert_knot(obj, param, num, **kwargs):
             cpts_tmp = []
             cpts = obj.ctrlptsw.points
             for u in range(obj.ctrlpts_size.u):
-                ccv = [cpts[u + (obj.ctrlpts_size_u * v)] for v in range(obj.ctrlpts_size_v)]
+                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
                 ctrlpts_tmp = helpers.knot_insertion(obj.degree.v, obj.knotvector.v, ccv, param[1],
                                                      num=num[1], s=s_v, span=span_v)
                 cpts_tmp += ctrlpts_tmp
@@ -239,7 +239,7 @@ def insert_knot(obj, param, num, **kwargs):
             for w in range(obj.ctrlpts_size.w):
                 for u in range(obj.ctrlpts_size.u):
                     for v in range(obj.ctrlpts_size.v + num[1]):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size_u)]  # FIX
+                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
                         ctrlpts_new.append(temp_pt)
 
             # Update the volume after knot insertion
@@ -283,7 +283,7 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Update the volume after knot insertion
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, obj.ctrlpts_size.w + num[2])
-            obj.knotvector_w = kv_w
+            obj.knotvector.w = kv_w
 
     # Return updated spline geometry
     return obj

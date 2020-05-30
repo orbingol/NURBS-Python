@@ -106,7 +106,7 @@ def remove_knot(obj, param, num, **kwargs):
             # Get curves
             ctrlpts_new = []
             cpts = obj.ctrlptsw
-            for v in range(obj.ctrlpts_size_v):
+            for v in range(obj.ctrlpts_size.v):
                 ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
                 ctrlpts_tmp = helpers.knot_removal(obj.degree.u, obj.knotvector.u, ccu, param[0],
                                                    num=num[0], s=s_u, span=span_u)
@@ -117,7 +117,7 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Update the surface after knot removal
             obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v),
-                            obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v)
+                            obj.ctrlpts_size.u - num[0], obj.ctrlpts_size.v)
             obj.knotvector.u = kv_u
 
         # v-direction
@@ -186,7 +186,7 @@ def remove_knot(obj, param, num, **kwargs):
             for w in range(obj.ctrlpts_size.w):
                 for u in range(obj.ctrlpts_size.u - num[0]):
                     for v in range(obj.ctrlpts_size.v):
-                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size_v)]
+                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size.v)]
                         ctrlpts_new.append(temp_pt)
 
             # Compute new knot vector
@@ -231,7 +231,7 @@ def remove_knot(obj, param, num, **kwargs):
             for w in range(obj.ctrlpts_size.w):
                 for u in range(obj.ctrlpts_size.u):
                     for v in range(obj.ctrlpts_size.v - num[1]):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size_u)]
+                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
                         ctrlpts_new.append(temp_pt)
 
             # Compute new knot vector

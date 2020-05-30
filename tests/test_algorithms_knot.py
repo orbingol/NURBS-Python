@@ -73,3 +73,91 @@ def test_bspline_curve2d_knot_refine(curve7, density, kv):
     algorithms.refine_knotvector(curve7, [density])
     for a, b in zip(kv, curve7.knotvector.u):
         assert abs(a - b) < GEOMDL_DELTA
+
+
+@pytest.mark.usefixtures("surface5")
+@pytest.mark.parametrize("params, num, uv, res", [
+    ((0.3, 0.4), (1, 1), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+    ((0.3, None), (2, 0), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+    ((None, 0.3), (0, 2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+])
+def test_bspline_surface_insert_knot_eval(surface5, params, num, uv, res):
+    # Insert knot
+    algorithms.insert_knot(surface5, params, num)
+
+    # Evaluate surface
+    evalpt = surface5.evaluate_single(uv)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
+
+
+@pytest.mark.usefixtures("surface5")
+@pytest.mark.parametrize("params, num, idx, val", [
+    ((None, 0.3), (0, 2), 4, 0.3),
+    ((None, 0.3), (0, 2), 6, 0.33)
+])
+def test_bspline_surface_insert_knot_kv_v(surface5, params, num, idx, val):
+    # Insert knot
+    algorithms.insert_knot(surface5, params, num)
+
+    assert surface5.knotvector.v[idx] == val
+
+
+@pytest.mark.usefixtures("surface5")
+@pytest.mark.parametrize("params, num, idx, val", [
+    ((0.33, None), (2, 0), 3, 0.0),
+    ((0.33, None), (1, 0), 6, 0.66)
+])
+def test_bspline_surface_insert_kv_u(surface5, params, num, idx, val):
+    # Insert knot
+    algorithms.insert_knot(surface5, params, num)
+
+    assert surface5.knotvector.u[idx] == val
+
+
+# @pytest.mark.parametrize("param, num_remove", [
+#     (0.33, 1),
+#     (0.66, 1)
+# ])
+# def test_bspline_surface_remove_knot_u(spline_surf, param, num_remove):
+#     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_u)
+#     c_pre = spline_surf.ctrlpts_size_u
+#     spline_surf.remove_knot(u=param, num_u=num_remove)
+#     s_post = helpers.find_multiplicity(param, spline_surf.knotvector_u)
+#     c_post = spline_surf.ctrlpts_size_u
+
+#     assert c_pre - num_remove == c_post
+#     assert s_pre - num_remove == s_post
+
+
+# @pytest.mark.parametrize("param, num_remove", [
+#     (0.33, 1),
+#     (0.66, 1)
+# ])
+# def test_bspline_surface_remove_knot_v(spline_surf, param, num_remove):
+#     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_v)
+#     c_pre = spline_surf.ctrlpts_size_v
+#     spline_surf.remove_knot(v=param, num_v=num_remove)
+#     s_post = helpers.find_multiplicity(param, spline_surf.knotvector_v)
+#     c_post = spline_surf.ctrlpts_size_v
+
+#     assert c_pre - num_remove == c_post
+#     assert s_pre - num_remove == s_post
+
+
+# def test_bspline_surface_remove_knot_kv_u(spline_surf):
+#     spline_surf.remove_knot(u=0.66, num_u=1)
+#     s = helpers.find_multiplicity(0.66, spline_surf.knotvector_u)
+
+#     assert 0.66 not in spline_surf.knotvector_u
+#     assert s == 0
+
+
+# def test_bspline_surface_remove_knot_kv_v(spline_surf):
+#     spline_surf.remove_knot(v=0.33, num_v=1)
+#     s = helpers.find_multiplicity(0.33, spline_surf.knotvector_v)
+
+#     assert 0.33 not in spline_surf.knotvector_v
+#     assert s == 0
