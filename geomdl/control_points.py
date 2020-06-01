@@ -98,53 +98,51 @@ def default_ctrlpt_set(pts_arr, idx, cpt):
     pts_arr[idx] = [GeomdlFloat(c) for c in cpt]
 
 
-def extract_ctrlpts2d(cm, reset=False):
+def extract_ctrlpts2d(cm):
     """ Extracts control points in u- and v-dimensions
 
     :param cm: control points manager
-    :param reset: flag to rebuild control points
     :type cm: CPManager
     """
-    if cm.get_opt('points_u') is None or reset:
-        pt_u = []
-        for v in range(cm.size_v):
-            pt_u += [cm[u, v] for u in range(cm.size_u)]
-        cm.opt = ('points_u', pt_u)
+    ptd = {
+        'points_u': [],
+        'points_v': []
+    }
 
-    if cm.get_opt('points_v') is None or reset:
-        pt_v = []
-        for u in range(cm.size_u):
-            pt_v += [cm[u, v] for v in range(cm.size_v)]
-        cm.opt = ('points_v', pt_v)
+    for v in range(cm.size_v):
+        ptd['points_u'] += [cm[u, v] for u in range(cm.size_u)]
+
+    for u in range(cm.size_u):
+        ptd['points_v'] += [cm[u, v] for v in range(cm.size_v)]
+
+    return ptd
 
 
-def extract_ctrlpts3d(cm, reset=False):
+def extract_ctrlpts3d(cm):
     """ Extracts control points in u-, v- and w-dimensions
 
     :param cm: control points manager
-    :param reset: flag to rebuild control points
     :type cm: CPManager
     """
-    if cm.get_opt('points_u') is None or reset:
-        pt_u = []
-        for w in range(cm.size_w):
-            for v in range(cm.size_v):
-                pt_u += [cm[u, v, w] for u in range(cm.size_u)]
-        cm.opt = ('points_u', pt_u)
+    ptd = {
+        'points_u': [],
+        'points_v': [],
+        'points_w': []
+    }
 
-    if cm.get_opt('points_v') is None or reset:
-        pt_v = []
-        for w in range(cm.size_w):
-            for u in range(cm.size_u):
-                pt_v += [cm[u, v, w] for v in range(cm.size_v)]
-        cm.opt = ('points_v', pt_v)
-
-    if cm.get_opt('points_w') is None or reset:
-        pt_w = []
+    for w in range(cm.size_w):
         for v in range(cm.size_v):
-            for u in range(cm.size_u):
-                pt_w += [cm[u, v, w] for w in range(cm.size_w)]
-        cm.opt = ('points_w', pt_w)
+            ptd['points_u'] += [cm[u, v, w] for u in range(cm.size_u)]
+
+    for w in range(cm.size_w):
+        for u in range(cm.size_u):
+            ptd['points_v'] += [cm[u, v, w] for v in range(cm.size_v)]
+
+    for v in range(cm.size_v):
+        for u in range(cm.size_u):
+            ptd['points_w'] += [cm[u, v, w] for w in range(cm.size_w)]
+
+    return ptd
 
 
 @export
@@ -189,7 +187,6 @@ def separate_ctrlpts_weights(ctrlptsw):
         ctrlpts[idx] = [GeomdlFloat(pw / ptw[-1]) for pw in ptw[:-1]]
         weights[idx] = GeomdlFloat(ptw[-1])
     return ctrlpts, weights
-
 
 
 @export
