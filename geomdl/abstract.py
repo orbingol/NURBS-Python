@@ -334,7 +334,7 @@ class SplineGeometry(Geometry):
         :type: list
         """
         if not self._cache['ctrlpts'] and self.rational:
-            self._cache['ctrlpts'].size = self._control_points.size
+            self._cache['ctrlpts'] = CPManager(*self._control_points.size)
             self._cache['ctrlpts'].points, self._cache['weights'] = separate_ctrlpts_weights(self._control_points.points)
         return self._cache['ctrlpts'] if self.rational else self._control_points
 
@@ -599,6 +599,7 @@ class SplineGeometry(Geometry):
         # Set control points and sizes
         self._control_points = CPManager(*args)
         self._control_points.points = ctrlpts
+
         # Clear caches
         self.reset()
 
