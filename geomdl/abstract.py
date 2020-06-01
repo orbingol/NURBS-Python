@@ -375,7 +375,7 @@ class SplineGeometry(Geometry):
         """
         # Populate the cache, if necessary
         if not self._cache['weights'] and self.rational:
-            self._cache['ctrlpts'], self._cache['weights']  = separate_ctrlpts_weights(self._control_points.points)
+            _, self._cache['weights']  = separate_ctrlpts_weights(self._control_points.points)
         return self._cache['weights']
 
     @weights.setter
