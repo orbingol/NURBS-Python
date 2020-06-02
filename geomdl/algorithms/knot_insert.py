@@ -109,9 +109,9 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Get curves
             cpts_tmp = []
-            cpts = obj.ctrlptsw.points
+            cpts = obj.ctrlptsw
             for v in range(obj.ctrlpts_size.v):
-                ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
+                ccu = [cpts[u, v] for u in range(obj.ctrlpts_size.u)]
                 ctrlpts_tmp = helpers.knot_insertion(obj.degree.u, obj.knotvector.u, ccu, param[0],
                                                      num=num[0], s=s_u, span=span_u)
                 cpts_tmp += ctrlpts_tmp
@@ -138,9 +138,9 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Get curves
             cpts_tmp = []
-            cpts = obj.ctrlptsw.points
+            cpts = obj.ctrlptsw
             for u in range(obj.ctrlpts_size.u):
-                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
+                ccv = [cpts[u, v] for v in range(obj.ctrlpts_size.v)]
                 ctrlpts_tmp = helpers.knot_insertion(obj.degree.v, obj.knotvector.v, ccv, param[1],
                                                      num=num[1], s=s_v, span=span_v)
                 cpts_tmp += ctrlpts_tmp
@@ -149,7 +149,7 @@ def insert_knot(obj, param, num, **kwargs):
             ctrlpts_new = []
             for v in range(obj.ctrlpts_size.v + num[1]):
                 for u in range(obj.ctrlpts_size.u):
-                    ctrlpts_new.append(cpts_tmp[v + (u * obj.ctrlpts_size.v + num[1])])
+                    ctrlpts_new.append(cpts_tmp[u + (v * obj.ctrlpts_size.u)])
 
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v + num[1])
             obj.knotvector.v = kv_v
@@ -172,17 +172,16 @@ def insert_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_u = helpers.knot_insertion_kv(obj.knotvector.u, param[0], span_u, num[0])
 
-            # Use Pw if rational
-            cpts = obj.ctrlptsw.points
+            # Use Pw
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for u in range(obj.ctrlpts_size.u):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
@@ -192,10 +191,9 @@ def insert_knot(obj, param, num, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(obj.ctrlpts_size.u + num[0]):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size.v)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u + num[0]):
+                        ctrlpts_new.append(ctrlpts_tmp[u][w + (v * obj.ctrlpts_size.w)])
 
             # Update the volume after knot insertion
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u + num[0], obj.ctrlpts_size.v, obj.ctrlpts_size.w)
@@ -217,17 +215,16 @@ def insert_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_v = helpers.knot_insertion_kv(obj.knotvector.v, param[1], span_v, num[1])
 
-            # Use Pw if rational
-            cpts = list(obj.ctrlptsw.points)
+            # Use Pw
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for v in range(obj.ctrlpts_size.v):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for u in range(obj.ctrlpts_size.u):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for u in range(obj.ctrlpts_size.u):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
@@ -237,10 +234,9 @@ def insert_knot(obj, param, num, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(obj.ctrlpts_size.u):
-                    for v in range(obj.ctrlpts_size.v + num[1]):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v + num[1]):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[v][w + (u * obj.ctrlpts_size.w)])
 
             # Update the volume after knot insertion
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v + num[1], obj.ctrlpts_size.w)
@@ -262,14 +258,16 @@ def insert_knot(obj, param, num, **kwargs):
             # Compute new knot vector
             kv_w = helpers.knot_insertion_kv(obj.knotvector.w, param[2], span_w, num[2])
 
-            # Use Pw if rational
-            cpts = obj.ctrlptsw.points
+            # Use Pw
+            cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size.w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)] for uv in
-                             range(obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
+                temp_surf = []
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
@@ -279,7 +277,9 @@ def insert_knot(obj, param, num, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w + num[2]):
-                ctrlpts_new += ctrlpts_tmp[w]
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[w][u + (v * obj.ctrlpts_size.u)])
 
             # Update the volume after knot insertion
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, obj.ctrlpts_size.w + num[2])
