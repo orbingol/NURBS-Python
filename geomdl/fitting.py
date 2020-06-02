@@ -34,8 +34,10 @@ def interpolate_curve(points, degree, **kwargs):
     # Number of control points
     num_points = len(points)
 
-    # Get uk
-    uk = compute_params_curve(points, use_centripetal)
+    # Get uk as argument or compute it
+    uk = kwargs.get('uk', None)
+    if uk is None:
+        uk = compute_params_curve(points, use_centripetal)
 
     # Compute knot vector
     kv = compute_knot_vector(degree, num_points, uk)
@@ -49,6 +51,7 @@ def interpolate_curve(points, degree, **kwargs):
     curve.degree = degree
     curve.ctrlpts = ctrlpts
     curve.knotvector = kv
+    curve.uk = uk
 
     return curve
 
