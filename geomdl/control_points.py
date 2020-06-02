@@ -109,11 +109,11 @@ def extract_ctrlpts2d(cm):
         'points_v': []
     }
 
-    for v in range(cm.size_v):
-        ptd['points_u'] += [cm[u, v] for u in range(cm.size_u)]
+    for v in range(cm.size.v):
+        ptd['points_u'] += [cm[u, v] for u in range(cm.size.u)]
 
-    for u in range(cm.size_u):
-        ptd['points_v'] += [cm[u, v] for v in range(cm.size_v)]
+    for u in range(cm.size.u):
+        ptd['points_v'] += [cm[u, v] for v in range(cm.size.v)]
 
     return ptd
 
@@ -130,17 +130,17 @@ def extract_ctrlpts3d(cm):
         'points_w': []
     }
 
-    for w in range(cm.size_w):
-        for v in range(cm.size_v):
-            ptd['points_u'] += [cm[u, v, w] for u in range(cm.size_u)]
+    for w in range(cm.size.w):
+        for v in range(cm.size.v):
+            ptd['points_u'] += [cm[u, v, w] for u in range(cm.size.u)]
 
-    for w in range(cm.size_w):
-        for u in range(cm.size_u):
-            ptd['points_v'] += [cm[u, v, w] for v in range(cm.size_v)]
+    for w in range(cm.size.w):
+        for u in range(cm.size.u):
+            ptd['points_v'] += [cm[u, v, w] for v in range(cm.size.v)]
 
-    for v in range(cm.size_v):
-        for u in range(cm.size_u):
-            ptd['points_w'] += [cm[u, v, w] for w in range(cm.size_w)]
+    for v in range(cm.size.v):
+        for u in range(cm.size.u):
+            ptd['points_w'] += [cm[u, v, w] for w in range(cm.size.w)]
 
     return ptd
 
