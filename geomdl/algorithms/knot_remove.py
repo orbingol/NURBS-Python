@@ -104,20 +104,19 @@ def remove_knot(obj, param, num, **kwargs):
             span_u = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
             # Get curves
-            ctrlpts_new = []
+            cpts_tmp = []
             cpts = obj.ctrlptsw
             for v in range(obj.ctrlpts_size.v):
-                ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
+                ccu = [cpts[u, v] for u in range(obj.ctrlpts_size.u)]
                 ctrlpts_tmp = helpers.knot_removal(obj.degree.u, obj.knotvector.u, ccu, param[0],
-                                                   num=num[0], s=s_u, span=span_u)
-                ctrlpts_new += ctrlpts_tmp
+                                                     num=num[0], s=s_u, span=span_u)
+                cpts_tmp += ctrlpts_tmp
 
             # Compute new knot vector
             kv_u = helpers.knot_removal_kv(obj.knotvector.u, span_u, num[0])
 
-            # Update the surface after knot removal
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v),
-                            obj.ctrlpts_size.u - num[0], obj.ctrlpts_size.v)
+            # Update the surface
+            obj.set_ctrlpts(cpts_tmp, obj.ctrlpts_size.u + num[0], obj.ctrlpts_size.v)
             obj.knotvector.u = kv_u
 
         # v-direction
@@ -134,19 +133,25 @@ def remove_knot(obj, param, num, **kwargs):
             span_v = helpers.find_span_linear(obj.degree.v, obj.knotvector.v, obj.ctrlpts_size.v, param[1])
 
             # Get curves
-            ctrlpts_new = []
+            cpts_tmp = []
             cpts = obj.ctrlptsw
             for u in range(obj.ctrlpts_size.u):
-                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
+                ccv = [cpts[u, v] for v in range(obj.ctrlpts_size.v)]
                 ctrlpts_tmp = helpers.knot_removal(obj.degree.v, obj.knotvector.v, ccv, param[1],
-                                                   num=num[1], s=s_v, span=span_v)
-                ctrlpts_new += ctrlpts_tmp
+                                                     num=num[1], s=s_v, span=span_v)
+                cpts_tmp += ctrlpts_tmp
 
             # Compute new knot vector
             kv_v = helpers.knot_removal_kv(obj.knotvector.v, span_v, num[1])
 
-            # Update the surface after knot removal
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v - num[1])
+            # Rearrange control points
+            ctrlpts_new = []
+            for v in range(obj.ctrlpts_size.v + num[1]):
+                for u in range(obj.ctrlpts_size.u):
+                    ctrlpts_new.append(cpts_tmp[u + (v * obj.ctrlpts_size.u)])
+
+            # Update the surface
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v + num[1])
             obj.knotvector.v = kv_v
 
     # Start volume knot removal
@@ -164,30 +169,28 @@ def remove_knot(obj, param, num, **kwargs):
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree.u, obj.knotvector.u, obj.ctrlpts_size.u, param[0])
 
-            # Use Pw if rational
+            # Use Pw
             cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for u in range(obj.ctrlpts_size.u):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.v) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
             ctrlpts_tmp = helpers.knot_removal(obj.degree.u, obj.knotvector.u, cpt2d, param[0],
-                                               num=num[0], s=s_u, span=span_u)
+                                                 num=num[0], s=s_u, span=span_u)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(obj.ctrlpts_size.u - num[0]):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size.v)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u + num[0]):
+                        ctrlpts_new.append(ctrlpts_tmp[u][w + (v * obj.ctrlpts_size.w)])
 
             # Compute new knot vector
             kv_u = helpers.knot_removal_kv(obj.knotvector.u, span_u, num[0])
@@ -209,30 +212,28 @@ def remove_knot(obj, param, num, **kwargs):
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree.v, obj.knotvector.v, obj.ctrlpts_size.v, param[1])
 
-            # Use Pw if rational
+            # Use Pw
             cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for v in range(obj.ctrlpts_size.v):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for u in range(obj.ctrlpts_size.u):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for u in range(obj.ctrlpts_size.u):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
             ctrlpts_tmp = helpers.knot_removal(obj.degree.v, obj.knotvector.v, cpt2d, param[1],
-                                               num=num[1], s=s_v, span=span_v)
+                                                 num=num[1], s=s_v, span=span_v)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(obj.ctrlpts_size.u):
-                    for v in range(obj.ctrlpts_size.v - num[1]):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v + num[1]):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[v][w + (u * obj.ctrlpts_size.w)])
 
             # Compute new knot vector
             kv_v = helpers.knot_removal_kv(obj.knotvector.v, span_v, num[1])
@@ -254,24 +255,28 @@ def remove_knot(obj, param, num, **kwargs):
             # Find knot span
             span_w = helpers.find_span_linear(obj.degree.w, obj.knotvector.w, obj.ctrlpts_size.w, param[2])
 
-            # Use Pw if rational
+            # Use Pw
             cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size.w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)] for uv in
-                             range(obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
+                temp_surf = []
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Compute new control points
             ctrlpts_tmp = helpers.knot_removal(obj.degree.w, obj.knotvector.w, cpt2d, param[2],
-                                               num=num[2], s=s_w, span=span_w)
+                                                 num=num[2], s=s_w, span=span_w)
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
-            for w in range(obj.ctrlpts_size.w - num[2]):
-                ctrlpts_new += ctrlpts_tmp[w]
+            for w in range(obj.ctrlpts_size.w + num[2]):
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[w][u + (v * obj.ctrlpts_size.u)])
 
             # Compute new knot vector
             kv_w = helpers.knot_removal_kv(obj.knotvector.w, span_w, num[2])
