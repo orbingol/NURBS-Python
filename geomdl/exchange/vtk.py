@@ -1,5 +1,5 @@
 """
-.. module:: exchange_vtk
+.. module:: exchange.vtk
     :platform: Unix, Windows
     :synopsis: Provides exchange capabilities for VTK file formats
 
@@ -7,11 +7,12 @@
 
 """
 
-from . import tessellate
-from .base import export, GeomdlError, GeomdlWarning
-from . import _exchange as exch
+from .. import tessellate
+from ..base import export, GeomdlError, GeomdlWarning
+from . import exc_helpers
 
 
+@export
 def export_polydata_str(obj, **kwargs):
     """ Saves control points or evaluated points in VTK Polydata format (string).
 
@@ -61,15 +62,14 @@ def export_polydata_str(obj, **kwargs):
         # Prepare data array
         if point_type == "ctrlpts":
             if do_tessellate and o.pdimension == 2:
-                tsl = tessellate.QuadTessellate()
-                tsl.tessellate(o.ctrlpts, size_u=o.ctrlpts_size_u, size_v=o.ctrlpts_size_v)
-                data_array = ([v.data for v in tsl.vertices], [q.data for q in tsl.faces])
+                vertices, faces = tessellate.make_quad_mesh(o.ctrlpts.points, o.ctrlpts_size.u, o.ctrlpts_size_v)
+                data_array = ([v.data for v in vertices], [q.data for q in faces])
             else:
                 data_array = (o.ctrlpts, [])
         elif point_type == "evalpts":
             if do_tessellate and o.pdimension == 2:
-                o.tessellate()
-                data_array = ([v.data for v in o.vertices], [t.data for t in o.faces])
+                vertices, faces = tessellate.make_triangle_mesh(o.evalpts, o.sample_size.u, o.sample_size.v)
+                data_array = ([v.data for v in vertices], [t.data for t in faces])
             else:
                 data_array = (o.evalpts, [])
         else:
@@ -136,5 +136,4 @@ def export_polydata(obj, file_name, **kwargs):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
-    content = export_polydata_str(obj, **kwargs)
-    return exch.write_file(file_name, content)
+    return exc_helpers.write_file(file_name, export_polydata_str(obj, **kwargs))

@@ -1,0 +1,96 @@
+"""
+.. module:: exchange.stl
+    :platform: Unix, Windows
+    :synopsis: Provides exchange capabilities for STL file format
+
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
+
+"""
+
+import struct
+from . import exc_helpers
+from .. import linalg
+from ..base import export, GeomdlError
+
+
+@export
+def export_stl_str(surface, **kwargs):
+    """ Exports surface(s) as a .stl file in plain text or binary format (string).
+
+    Keyword Arguments:
+        * ``binary``: flag to generate a binary STL file. *Default: False*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
+        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
+
+    :param surface: surface or surfaces to be saved
+    :type surface: abstract.Surface or multi.SurfaceContainer
+    :return: contents of the .stl file generated
+    :rtype: str
+    """
+    binary = kwargs.get('binary', False)
+    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
+    update_delta = kwargs.get('update_delta', True)
+
+    # Input validity checking
+    if surface.pdimension != 2:
+        raise GeomdlError("Can only export surfaces")
+    if vertex_spacing < 1:
+        raise GeomdlError("Vertex spacing should be bigger than zero")
+
+    triangles_list = []
+    for srf in surface:
+        # Set surface evaluation delta
+        if update_delta:
+            srf.sample_size_u = surface.sample_size_u
+            srf.sample_size_v = surface.sample_size_v
+
+        # Tessellate surface
+        srf.tessellate(vertex_spacing=vertex_spacing)
+        triangles = srf.tessellator.faces
+
+        triangles_list += triangles
+
+    # Write triangle list to ASCII or  binary STL file
+    if binary:
+        line = b'\0' * 80  # header
+        line += struct.pack('<i', len(triangles_list))  # number of triangles
+        for t in triangles_list:
+            line += struct.pack('<3f', *linalg.triangle_normal(t))  # normal
+            for v in t.vertices:
+                line += struct.pack('<3f', *v.data)  # vertices
+            line += b'\0\0'  # attribute byte count
+    else:
+        line = "solid Surface\n"
+        for t in triangles_list:
+            nvec = linalg.triangle_normal(t)
+            line += "\tfacet normal " + str(nvec[0]) + " " + str(nvec[1]) + " " + str(nvec[2]) + "\n"
+            line += "\t\touter loop\n"
+            for v in t.vertices:
+                line += "\t\t\tvertex " + str(v.x) + " " + str(v.y) + " " + str(v.z) + "\n"
+            line += "\t\tendloop\n"
+            line += "\tendfacet\n"
+        line += "endsolid Surface\n"
+
+    return line
+
+
+@export
+def export_stl(surface, file_name, **kwargs):
+    """ Exports surface(s) as a .stl file in plain text or binary format.
+
+    Keyword Arguments:
+        * ``binary``: flag to generate a binary STL file. *Default: True*
+        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
+        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: True*
+
+    :param surface: surface or surfaces to be saved
+    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises GeomdlException: an error occurred writing the file
+    """
+    binary = kwargs.get('binary', True)
+    if 'binary' in kwargs:
+        kwargs.pop('binary')
+    content = export_stl_str(surface, binary=binary, **kwargs)
+    return exc_helpers.write_file(file_name, content, binary=binary)

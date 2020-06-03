@@ -1,17 +1,17 @@
 """
-.. module:: _exchange
+.. module:: exchange.exc_helpers
     :platform: Unix, Windows
-    :synopsis: Helper functions for exchange module
+    :synopsis: Helper functions for the exchange module
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
 import math
-from . import knotvector, control_points
-from .base import GeomdlError
-from .NURBS import Curve, Surface, Volume
-from .freeform import Freeform
+from .. import knotvector, control_points, linalg
+from ..base import GeomdlError
+from ..NURBS import Curve, Surface, Volume
+from ..freeform import Freeform
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -425,3 +425,27 @@ def export_dict_str(obj, callback):
     exported_data = callback(data)
 
     return exported_data
+
+
+def surface_normal(obj, uv, normalize):
+    """ Evaluates the surface normal vector at the given (u, v) parameter pair.
+
+    The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
+
+    :param obj: input surface
+    :type obj: Surface
+    :param uv: (u,v) parameter pair
+    :type uv: list or tuple
+    :param normalize: if True, the returned normal vector is converted to a unit vector
+    :type normalize: bool
+    :return: a list in the order of "surface point" and "normal vector"
+    :rtype: list
+    """
+    # Take the 1st derivative of the surface
+    skl = obj.derivatives(uv, 1)
+
+    point = skl[0][0]
+    vector = linalg.vector_cross(skl[1][0], skl[0][1])
+    vector = linalg.vector_normalize(vector) if normalize else vector
+
+    return tuple(point), tuple(vector)
