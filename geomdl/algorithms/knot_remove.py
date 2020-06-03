@@ -285,5 +285,5 @@ def remove_knot(obj, param, num, **kwargs):
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, obj.ctrlpts_size.w - num[2])
             obj.knotvector.w = kv_w
 
-    # Return updated spline geometry
+    # Return updated geometry
     return obj

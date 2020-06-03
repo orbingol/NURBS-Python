@@ -116,7 +116,7 @@ def insert_knot(obj, param, num, **kwargs):
                                                      num=num[0], s=s_u, span=span_u)
                 cpts_tmp += ctrlpts_tmp
 
-            # Update the surface after knot insertion
+            # Update the surface
             obj.set_ctrlpts(cpts_tmp, obj.ctrlpts_size.u + num[0], obj.ctrlpts_size.v)
             obj.knotvector.u = kv_u
 
@@ -145,7 +145,7 @@ def insert_knot(obj, param, num, **kwargs):
                                                      num=num[1], s=s_v, span=span_v)
                 cpts_tmp += ctrlpts_tmp
 
-            # Update the surface after knot insertion
+            # Update the surface
             ctrlpts_new = []
             for v in range(obj.ctrlpts_size.v + num[1]):
                 for u in range(obj.ctrlpts_size.u):
@@ -285,5 +285,5 @@ def insert_knot(obj, param, num, **kwargs):
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, obj.ctrlpts_size.w + num[2])
             obj.knotvector.w = kv_w
 
-    # Return updated spline geometry
+    # Return updated geometry
     return obj
