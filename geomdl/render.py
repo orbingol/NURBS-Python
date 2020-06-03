@@ -20,23 +20,25 @@ RENDER_OPTIONS = dict(
     plot=True,
     extras=list(),
     animate=False,
-    config_tsl_tri=None,
-    config_tsl_quad=None
 )
 
+def render(bsplg, vism, **kwargs):
+    """ Renders B-spline geometries
 
-def render(spg, vism, **kwargs):
+    :param bsplg: B-spline geometry
+    :param vism: visualization module
+    """
     op = RENDER_OPTIONS
     op.update(kwargs)
 
     # Evaluate the geometry
-    spg.evaluate()
+    bsplg.evaluate()
 
     # Clear the visualization component
     vism.clear()
 
-    ssz = len(spg)
-    for si, s in enumerate(spg):
+    ssz = len(bsplg)
+    for si, s in enumerate(bsplg):
         # Add control points as points
         if vism.mconf['ctrlpts'] == 'points':
             vism.add(
@@ -48,10 +50,9 @@ def render(spg, vism, **kwargs):
 
         # Add control points as quads
         if vism.mconf['ctrlpts'] == 'quads':
-            qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] is not None else tessellate.QuadTessellate()
-            qtsl.tessellate(s.ctrlpts.points, size_u=s.ctrlpts_size[0], size_v=s.ctrlpts_size[1])
+            v, f = tessellate.make_quad_mesh(s.ctrlpts.points, size_u=s.ctrlpts_size[0], size_v=s.ctrlpts_size[1])
             vism.add(
-                ptsarr=[qtsl.vertices, qtsl.faces],
+                ptsarr=[v, f],
                 name="control points" if ssz == 1 else "control points {}".format(si + 1),
                 color=op['cpcolor'][si],
                 plot_type='ctrlpts'
@@ -68,10 +69,9 @@ def render(spg, vism, **kwargs):
 
         # Add evaluated points as quads
         if vism.mconf['evalpts'] == 'quads':
-            qtsl = op['config_tsl_quad'] if op['config_tsl_quad'] is not None else tessellate.QuadTessellate()
-            qtsl.tessellate(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
+            v, f = tessellate.make_quad_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
-                ptsarr=[qtsl.vertices, qtsl.faces],
+                ptsarr=[v, f],
                 name=s.name if ssz == 1 else "geometry {}".format(si + 1),
                 color=op['evalcolor'][si],
                 plot_type='evalpts'
@@ -79,10 +79,9 @@ def render(spg, vism, **kwargs):
 
         # Add evaluated points as vertices and triangles
         if vism.mconf['evalpts'] == 'triangles':
-            tsl = op['config_tsl_tri'] if op['config_tsl_tri'] is not None else tessellate.TrimTessellate()
-            tsl.tessellate(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
+            v, f = tessellate.make_triangle_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
-                ptsarr=[tsl.vertices, tsl.faces],
+                ptsarr=[v, f],
                 name=s.name if ssz == 1 else "geometry {}".format(si + 1),
                 color=op['evalcolor'][si],
                 plot_type='evalpts'
@@ -100,8 +99,8 @@ def render(spg, vism, **kwargs):
             )
 
         # Add trim curves
-        if spg.trims:
-            for idx, trim in enumerate(spg.trims):
+        if bsplg.trims:
+            for idx, trim in enumerate(bsplg.trims):
                 vism.add(
                     ptsarr=s.evaluate_list(trim.evalpts),
                     name="trim {}".format(idx + 1) if ssz == 1 else "trim {} for geometry {}".format(idx + 1, si + 1),
