@@ -8,7 +8,7 @@
 
 import pytest
 from geomdl import NURBS
-from geomdl import construct
+from geomdl.geomutils import construct, extract
 from geomdl.base import GeomdlError
 
 
@@ -87,12 +87,12 @@ def test_construct_volume_w_degree(surface1, surface2):
 @pytest.mark.usefixtures("volume1")
 def test_extract_curves_error1(volume1):
     with pytest.raises(GeomdlError):
-        construct.extract_curves(volume1)
+        extract.extract_curves(volume1)
 
 
 @pytest.mark.usefixtures("surface1")
 def test_extract_curves1(surface1):
-    cs = construct.extract_curves(surface1)
+    cs = extract.extract_curves(surface1)
     assert isinstance(cs, dict)
     assert "u" in cs.keys()
     assert "v" in cs.keys()
@@ -100,7 +100,7 @@ def test_extract_curves1(surface1):
 
 @pytest.mark.usefixtures("surface1")
 def test_extract_curves2(surface1):
-    cs = construct.extract_curves(surface1)
+    cs = extract.extract_curves(surface1)
     assert len(cs['u']) == surface1.ctrlpts_size.v
     assert len(cs['v']) == surface1.ctrlpts_size.u
 
@@ -108,12 +108,12 @@ def test_extract_curves2(surface1):
 @pytest.mark.usefixtures("surface1")
 def test_extract_surfaces_error1(surface1):
     with pytest.raises(GeomdlError):
-        construct.extract_surfaces(surface1)
+        extract.extract_surfaces(surface1)
 
 
 @pytest.mark.usefixtures("volume1")
 def test_extract_surfaces1(volume1):
-    ss = construct.extract_surfaces(volume1)
+    ss = extract.extract_surfaces(volume1)
     assert isinstance(ss, dict)
     assert "uv" in ss.keys()
     assert "uw" in ss.keys()
@@ -122,7 +122,7 @@ def test_extract_surfaces1(volume1):
 
 @pytest.mark.usefixtures("volume1")
 def test_extract_surfaces2(volume1):
-    ss = construct.extract_surfaces(volume1)
+    ss = extract.extract_surfaces(volume1)
     assert len(ss['uv']) == volume1.ctrlpts_size.w
     assert len(ss['uw']) == volume1.ctrlpts_size.v
     assert len(ss['vw']) == volume1.ctrlpts_size.u
