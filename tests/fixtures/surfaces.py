@@ -6,7 +6,7 @@
 
 import pytest
 from geomdl import BSpline, NURBS
-from geomdl import construct
+from geomdl.geomutils import construct
 
 
 @pytest.fixture
