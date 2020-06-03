@@ -12,6 +12,7 @@ from .. import knotvector, control_points, linalg
 from ..base import GeomdlError
 from ..NURBS import Curve, Surface, Volume
 from ..freeform import Freeform
+from .. import containers
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -184,7 +185,7 @@ def export_dict_ff(obj):
 
 
 def import_dict_multi_crv(data):
-    shape = shortcuts.generate_container_curve()
+    shape = containers.GeometryContainer()
     curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff)
     for trim in data['data']:
         if trim['type'] in curve_typemap:
