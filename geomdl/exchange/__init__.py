@@ -1,5 +1,5 @@
 """
-.. module:: exchange.cfg
+.. module:: exchange
     :platform: Unix, Windows
     :synopsis: Provides exchange capabilities for NURBS-Python (geomdl)
 
