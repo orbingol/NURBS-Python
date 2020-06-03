@@ -86,6 +86,8 @@ def refine_knotvector(obj, param, **kwargs):
         if param[0] > 0:
             cpts = obj.ctrlptsw
             new_cpts, new_kv = helpers.knot_refinement(obj.degree.u, obj.knotvector.u, cpts, density=param[0])
+
+            # Update the curve
             obj.set_ctrlpts(new_cpts)
             obj.knotvector.u = new_kv
 
@@ -98,15 +100,14 @@ def refine_knotvector(obj, param, **kwargs):
             new_cpts_size = 0
             new_kv = []
             cpts = obj.ctrlptsw
-            for v in range(obj.ctrlpts_size_v):
-                ccu = [cpts[u + (obj.ctrlpts_size.u * v)] for u in range(obj.ctrlpts_size.u)]
+            for v in range(obj.ctrlpts_size.v):
+                ccu = [cpts[u, v] for u in range(obj.ctrlpts_size.u)]
                 ptmp, new_kv = helpers.knot_refinement(obj.degree.u, obj.knotvector.u, ccu, density=param[0])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
-            # Update the surface after knot refinement
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(new_cpts, new_cpts_size, obj.ctrlpts_size_v),
-                            new_cpts_size, obj.ctrlpts_size_v)
+            # Update the surface
+            obj.set_ctrlpts(new_cpts, new_cpts_size, obj.ctrlpts_size.v)
             obj.knotvector.u = new_kv
 
         # v-direction
@@ -117,30 +118,35 @@ def refine_knotvector(obj, param, **kwargs):
             new_kv = []
             cpts = obj.ctrlptsw
             for u in range(obj.ctrlpts_size.u):
-                ccv = [cpts[u + (obj.ctrlpts_size.u * v)] for v in range(obj.ctrlpts_size.v)]
+                ccv = [cpts[u, v] for v in range(obj.ctrlpts_size.v)]
                 ptmp, new_kv = helpers.knot_refinement(obj.degree.v, obj.knotvector.v, ccv, density=param[1])
                 new_cpts_size = len(ptmp)
                 new_cpts += ptmp
 
-            # Update the surface after knot refinement
-            obj.set_ctrlpts(new_cpts, obj.ctrlpts_size.u, new_cpts_size)
+            # Update control points
+            ctrlpts_new = []
+            for v in range(new_cpts_size):
+                for u in range(obj.ctrlpts_size.u):
+                    ctrlpts_new.append(new_cpts[u + (v * obj.ctrlpts_size.u)])
+
+            # Update the surface
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, new_cpts_size)
             obj.knotvector.v = new_kv
 
     # Start volume knot refinement
     if obj.pdimension == 3:
         # u-direction
         if param[0] > 0:
-            # Use Pw if rational
+            # Use Pw
             cpts = obj.ctrlptsw
 
             # Construct 2-dimensional structure
             cpt2d = []
             for u in range(obj.ctrlpts_size.u):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
@@ -150,12 +156,11 @@ def refine_knotvector(obj, param, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(new_cpts_size):
-                    for v in range(obj.ctrlpts_size.v):
-                        temp_pt = ctrlpts_tmp[u][v + (w * obj.ctrlpts_size.v)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(new_cpts_size):
+                        ctrlpts_new.append(ctrlpts_tmp[u][w + (v * obj.ctrlpts_size.w)])
 
-            # Update the volume after knot removal
+            # Update the volume
             obj.set_ctrlpts(ctrlpts_new, new_cpts_size, obj.ctrlpts_size.v, obj.ctrlpts_size.w)
             obj.knotvector.u = kv_new
 
@@ -168,10 +173,9 @@ def refine_knotvector(obj, param, **kwargs):
             cpt2d = []
             for v in range(obj.ctrlpts_size.v):
                 temp_surf = []
-                for w in range(obj.ctrlpts_size.w):
-                    for u in range(obj.ctrlpts_size.u):
-                        temp_pt = cpts[u + (v * obj.ctrlpts_size.u) + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
-                        temp_surf.append(temp_pt)
+                for u in range(obj.ctrlpts_size.u):
+                    for w in range(obj.ctrlpts_size.w):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
@@ -181,12 +185,11 @@ def refine_knotvector(obj, param, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(obj.ctrlpts_size.w):
-                for u in range(obj.ctrlpts_size.u):
-                    for v in range(new_cpts_size):
-                        temp_pt = ctrlpts_tmp[v][u + (w * obj.ctrlpts_size.u)]
-                        ctrlpts_new.append(temp_pt)
+                for v in range(new_cpts_size):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[v][w + (u * obj.ctrlpts_size.w)])
 
-            # Update the volume after knot removal
+            # Update the volume
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, new_cpts_size, obj.ctrlpts_size.w)
             obj.knotvector.v = kv_new
 
@@ -198,8 +201,10 @@ def refine_knotvector(obj, param, **kwargs):
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size.w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size.u * obj.ctrlpts_size.v)] for uv in
-                             range(obj.ctrlpts_size.u * obj.ctrlpts_size.v)]
+                temp_surf = []
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        temp_surf.append(cpts[u, v, w])
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
@@ -209,11 +214,13 @@ def refine_knotvector(obj, param, **kwargs):
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
             for w in range(new_cpts_size):
-                ctrlpts_new += ctrlpts_tmp[w]
+                for v in range(obj.ctrlpts_size.v):
+                    for u in range(obj.ctrlpts_size.u):
+                        ctrlpts_new.append(ctrlpts_tmp[w][u + (v * obj.ctrlpts_size.u)])
 
-            # Update the volume after knot removal
+            # Update the volume
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v, new_cpts_size)
             obj.knotvector.w = kv_new
 
-    # Return updated spline geometry
+    # Return updated geometry
     return obj
