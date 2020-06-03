@@ -14,7 +14,8 @@ __all__ = []
 from .knot_insert import insert_knot
 from .knot_remove import remove_knot
 from .knot_refine import refine_knotvector
+from .degree_elevate import elevate_degree
+from .degree_reduce import reduce_degree
 from .derivative import derivative_curve, derivative_surface
 from .split import split_curve, split_surface_u, split_surface_v
 from .decompose import decompose_curve, decompose_surface
-from .degree import degree_operations

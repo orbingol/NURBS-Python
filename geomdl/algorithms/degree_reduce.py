@@ -16,7 +16,7 @@ from .link import link_curves
 __all__ = []
 
 
-def degree_reduce(obj, param, **kwargs):
+def reduce_degree(obj, param, **kwargs):
     """ Applies degree reduction algorithms to B-spline geometries.
 
     :param obj: spline geometry

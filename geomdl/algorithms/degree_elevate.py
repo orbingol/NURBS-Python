@@ -16,8 +16,8 @@ from .link import link_curves
 __all__ = []
 
 
-def degree_elevate(obj, param, **kwargs):
-    """ Applies degree elevation B-spline geometries.
+def elevate_degree(obj, param, **kwargs):
+    """ Applies degree elevation algorithms to B-spline geometries.
 
     :param obj: spline geometry
     :type obj: abstract.SplineGeometry
