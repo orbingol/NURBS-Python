@@ -1,19 +1,17 @@
 """
-.. module:: operations
+.. module:: geomutils.dimension
     :platform: Unix, Windows
-    :synopsis: Provides geometric operations for spline geometry classes
+    :synopsis: Provides dimensional change functionality
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import math
 import copy
-from . import abstract, helpers, linalg
-from .base import export, GeomdlTypeSequence, GeomdlError, GeomdlWarning
+from .. import abstract
+from ..base import GeomdlError
 
 
-@export
 def add_dimension(obj, **kwargs):
     """ Elevates the spatial dimension of the spline geometry.
 
