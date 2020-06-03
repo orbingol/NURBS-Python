@@ -114,8 +114,6 @@ def import_dict_crv(data):
     # Optional keys
     if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
     if 'id' in data:
@@ -138,7 +136,6 @@ def export_dict_crv(obj):
         control_points=dict(
             points=obj.ctrlpts.points
         ),
-        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
@@ -242,8 +239,6 @@ def import_dict_surf(data):
     # Optional keys
     if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
     if 'id' in data:
@@ -275,7 +270,6 @@ def export_dict_surf(obj):
         control_points=dict(
             points=obj.ctrlpts.points
         ),
-        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
@@ -326,8 +320,6 @@ def import_dict_vol(data):
     # Optional keys
     if 'weights' in data['control_points']:
         shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
     if 'name' in data:
         shape.name = data['name']
     if 'id' in data:
@@ -348,7 +340,6 @@ def export_dict_vol(obj):
         control_points=dict(
             points=obj.ctrlpts.points
         ),
-        delta=[v for v in obj.delta]
     )
     if obj.rational:
         data['control_points']['weights'] = list(obj.weights)
@@ -378,7 +369,7 @@ def export_text_data(obj, sep, result=""):
     return result
 
 
-def import_dict_str(file_src, delta, callback, tmpl):
+def import_dict_str(file_src, callback, tmpl):
     mapping = {'curve': import_dict_crv, 'surface': import_dict_surf, 'volume': import_dict_vol}
 
     # Process template
@@ -390,10 +381,7 @@ def import_dict_str(file_src, delta, callback, tmpl):
     # Process imported data
     ret_list = []
     for data in imported_data['shape']['data']:
-        temp = mapping[imported_data['shape']['type']](data)
-        if 0.0 < delta < 1.0:
-            temp.delta = delta
-        ret_list.append(temp)
+        ret_list.append(mapping[imported_data['shape']['type']](data))
 
     # Return imported data
     return ret_list

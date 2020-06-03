@@ -28,14 +28,13 @@ def import_json(file_name, **kwargs):
         return json.loads(data)
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
     use_template = kwargs.get('jinja2', False)
 
     # Read file
     file_src = exc_helpers.read_file(file_name)
 
     # Import data
-    return exc_helpers.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
+    return exc_helpers.import_dict_str(file_src=file_src, callback=callback, tmpl=use_template)
 
 
 @export
