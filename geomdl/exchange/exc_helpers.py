@@ -363,7 +363,7 @@ def import_text_data(content, sep):
 
 
 def export_text_data(obj, sep, result=""):
-    ctrlpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
+    ctrlpts = obj.ctrlptsw.points if obj.rational else obj.ctrlpts.points
     # Loop through points
     for pt in ctrlpts:
         result += sep.join(str(c) for c in pt) + "\n"

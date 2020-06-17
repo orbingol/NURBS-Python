@@ -8,19 +8,20 @@
 """
 
 import struct
-from . import exc_helpers
 from .. import linalg
-from ..base import export, GeomdlError
+from .. import tessellate
+from ..base import GeomdlError
+from . import exc_helpers
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
-@export
 def export_stl_str(surface, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format (string).
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: False*
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
-        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: False*
 
     :param surface: surface or surfaces to be saved
     :type surface: abstract.Surface or multi.SurfaceContainer
@@ -28,27 +29,16 @@ def export_stl_str(surface, **kwargs):
     :rtype: str
     """
     binary = kwargs.get('binary', False)
-    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
-    update_delta = kwargs.get('update_delta', True)
 
     # Input validity checking
     if surface.pdimension != 2:
         raise GeomdlError("Can only export surfaces")
-    if vertex_spacing < 1:
-        raise GeomdlError("Vertex spacing should be bigger than zero")
 
     triangles_list = []
     for srf in surface:
-        # Set surface evaluation delta
-        if update_delta:
-            srf.sample_size_u = surface.sample_size_u
-            srf.sample_size_v = surface.sample_size_v
-
         # Tessellate surface
-        srf.tessellate(vertex_spacing=vertex_spacing)
-        triangles = srf.tessellator.faces
-
-        triangles_list += triangles
+        vertices, faces = tessellate.make_triangle_mesh(srf.evalpts, srf.sample_size[0], srf.sample_size[1])
+        triangles_list += faces
 
     # Write triangle list to ASCII or  binary STL file
     if binary:
@@ -74,14 +64,12 @@ def export_stl_str(surface, **kwargs):
     return line
 
 
-@export
 def export_stl(surface, file_name, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format.
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: True*
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
-        * ``update_delta``: use multi-surface evaluation delta for all surfaces. *Default: True*
 
     :param surface: surface or surfaces to be saved
     :type surface: abstract.Surface or multi.SurfaceContainer

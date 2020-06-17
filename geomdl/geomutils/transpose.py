@@ -60,7 +60,6 @@ def apply_transpose(surf, **kwargs):
     return geom
 
 
-@export
 def apply_flip(surf, **kwargs):
     """ Flips the control points grid of the input surface(s).
 

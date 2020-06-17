@@ -8,11 +8,13 @@
 """
 
 from .. import tessellate
-from ..base import export, GeomdlError, GeomdlWarning
+from ..base import GeomdlError, GeomdlWarning
 from . import exc_helpers
 
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
-@export
+
 def export_polydata_str(obj, **kwargs):
     """ Saves control points or evaluated points in VTK Polydata format (string).
 
@@ -62,13 +64,13 @@ def export_polydata_str(obj, **kwargs):
         # Prepare data array
         if point_type == "ctrlpts":
             if do_tessellate and o.pdimension == 2:
-                vertices, faces = tessellate.make_quad_mesh(o.ctrlpts.points, o.ctrlpts_size.u, o.ctrlpts_size_v)
+                vertices, faces = tessellate.make_quad_mesh(o.ctrlpts.points, o.ctrlpts_size[0], o.ctrlpts_size[1])
                 data_array = ([v.data for v in vertices], [q.data for q in faces])
             else:
                 data_array = (o.ctrlpts, [])
         elif point_type == "evalpts":
             if do_tessellate and o.pdimension == 2:
-                vertices, faces = tessellate.make_triangle_mesh(o.evalpts, o.sample_size.u, o.sample_size.v)
+                vertices, faces = tessellate.make_triangle_mesh(o.evalpts, o.sample_size[0], o.sample_size[1])
                 data_array = ([v.data for v in vertices], [t.data for t in faces])
             else:
                 data_array = (o.evalpts, [])
@@ -120,7 +122,6 @@ def export_polydata_str(obj, **kwargs):
     return line
 
 
-@export
 def export_polydata(obj, file_name, **kwargs):
     """ Exports control points or evaluated points in VTK Polydata format.
 

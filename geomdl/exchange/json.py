@@ -9,10 +9,12 @@
 
 import json
 from . import exc_helpers
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
-@export
 def import_json(file_name, **kwargs):
     """ Imports curves and surfaces from files in JSON format.
 
@@ -37,7 +39,6 @@ def import_json(file_name, **kwargs):
     return exc_helpers.import_dict_str(file_src=file_src, callback=callback, tmpl=use_template)
 
 
-@export
 def export_json_str(obj, file_name):
     """ Exports curves and surfaces in JSON format (string).
 
@@ -57,7 +58,6 @@ def export_json_str(obj, file_name):
     return exc_helpers.export_dict_str(obj=obj, callback=callback)
 
 
-@export
 def export_json(obj, file_name):
     """ Exports curves and surfaces in JSON format.
 

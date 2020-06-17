@@ -8,10 +8,12 @@
 """
 
 from . import exc_helpers
-from ..base import export, GeomdlError
+from ..base import GeomdlError
+
+# Initialize an empty __all__ for controlling imports
+__all__ = []
 
 
-@export
 def import_txt(file_name, **kwargs):
     """ Reads control points from a text file and generates a 1-dimensional list of control points.
 
@@ -54,7 +56,6 @@ def import_txt(file_name, **kwargs):
     return exc_helpers.import_text_data(content, sep)
 
 
-@export
 def export_txt_str(obj, file_name, **kwargs):
     """ Exports control points as a text file (string).
 
@@ -76,7 +77,6 @@ def export_txt_str(obj, file_name, **kwargs):
     return exc_helpers.export_text_data(obj, sep)
 
 
-@export
 def export_txt(obj, file_name, **kwargs):
     """ Exports control points as a text file.
 
