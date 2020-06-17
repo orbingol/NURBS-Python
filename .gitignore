@@ -8,6 +8,8 @@ build/
 dist/
 wheelhouse/
 *.egg-info/*
+.coverage
+htmlcov/
 docs/_build/*
 !docs/_build/.gitkeep
 docs/_static/*
