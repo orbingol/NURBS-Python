@@ -93,6 +93,35 @@ class Geometry(GeomdlBase):
 
 
 @add_metaclass(abc.ABCMeta)
+class AnalyticGeometry(Geometry):
+    """ Abstract base class for analytic-type geometry classes """
+    def __init__(self, **kwargs):
+        super(AnalyticGeometry, self).__init__(**kwargs)
+        self._geometry_type = "analytic"
+
+    @property
+    def data(self):
+        """ Returns a dict which contains the geometry data.
+
+        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
+        on using this class member.
+        """
+        return dict(
+            type=self.type,
+            points=tuple(self.evalpts)
+        )
+
+    @abc.abstractmethod
+    def evaluate(self, **kwargs):
+        """ Evaluates/computes the points that form the geometry.
+
+        .. note::
+
+            This is an abstract method and it must be implemented in the subclass.
+        """
+
+
+@add_metaclass(abc.ABCMeta)
 class SplineGeometry(Geometry):
     """ Abstract base class for defining spline geometry objects.
 
