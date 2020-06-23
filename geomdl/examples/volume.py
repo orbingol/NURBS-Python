@@ -83,14 +83,13 @@ def scordelis_lo(radius=25, thickness=0.25, length=50, angle=40, **kwargs):
 
 
 def volume_ex1():
-    """ Creates an example NURBS surface
+    """ Creates an example NURBS volume
 
     degree_u=3, degree_v=2, degree_w=1, size_u=6, size_v=5, size_w=2
 
-    return: surface
-    rtype: NURBS.Surface
+    return: volume
+    rtype: NURBS.Volume
     """
-
     # Create control points manager
     cpman = CPManager(6, 5, 2)
     cpman.points = [
