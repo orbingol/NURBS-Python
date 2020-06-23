@@ -44,7 +44,7 @@ matrix:
       if: branch = master OR branch = travisci-testing
 
     - name: "Performance testing on PyPy 3.5"
-      python: pypy3.5
+      python: pypy3
       env: TOXENV=pypy3,performance
       if: branch = master OR branch = travisci-testing
 
