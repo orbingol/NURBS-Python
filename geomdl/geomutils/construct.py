@@ -7,8 +7,9 @@
 
 """
 
-from .. import NURBS, control_points, knotvector
+from .. import NURBS, knotvector
 from ..base import GeomdlError
+from ..ptmanager import CPManager
 
 
 def construct_surface(direction, *args, **kwargs):
@@ -82,7 +83,7 @@ def construct_surface(direction, *args, **kwargs):
     ns = NURBS.Surface()
     ns.degree = (degree_u, degree_v)
     ns.knotvector = (knotvector_u, knotvector_v)
-    cpm = control_points.CPManager(size_u, size_v)
+    cpm = CPManager(size_u, size_v)
     cpm.points = new_ctrlpts
     ns.ctrlpts = cpm
     if rational:
@@ -182,7 +183,7 @@ def construct_volume(direction, *args, **kwargs):
     nv = NURBS.Volume()
     nv.degree = (degree_u, degree_v, degree_w)
     nv.knotvector = (kv_u, kv_v, kv_w)
-    cpm = control_points.CPManager(size_u, size_v, size_w)
+    cpm = CPManager(size_u, size_v, size_w)
     cpm.points = new_ctrlpts
     nv.ctrlpts = cpm
     if rational:

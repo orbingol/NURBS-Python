@@ -9,7 +9,7 @@
 
 from . import BSpline, evaluators
 from .base import export, GeomdlError, GeomdlTypeSequence
-from .control_points import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
+from .ptmanager import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
 
 
 @export

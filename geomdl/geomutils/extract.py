@@ -7,7 +7,7 @@
 
 """
 
-from .. import NURBS, control_points, knotvector
+from .. import NURBS, knotvector
 from ..base import GeomdlError
 
 

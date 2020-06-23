@@ -8,7 +8,7 @@
 """
 
 from .. import helpers
-from .. import control_points
+from .. import ptmanager
 from ..base import GeomdlError, GeomdlTypeSequence
 from .decompose import decompose_curve
 from .link import link_curves
@@ -56,7 +56,7 @@ def elevate_degree(obj, param, **kwargs):
             kv, cpts, ws, knots = link_curves(*crv_list, validate=False)
 
             # Organize control points (if necessary)
-            ctrlpts = control_points.combine_ctrlpts_weights(cpts, ws) if obj.rational else cpts
+            ctrlpts = ptmanager.combine_ctrlpts_weights(cpts, ws) if obj.rational else cpts
 
             # Apply knot removal
             for k, s in zip(knots, mult_arr):

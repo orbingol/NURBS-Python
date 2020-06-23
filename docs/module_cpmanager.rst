@@ -1,13 +1,13 @@
 Control Points Manager
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ``control_points`` module provides classes for managing control points. The classes are designed to eliminate
+The ``ptmanager`` module provides classes for managing control points. The classes are designed to eliminate
 confusion when more than one parametric dimension is involved in generation of the spline geometry.
 
 Usage Instructions
 ==================
 
-:class:`.control_points.CPManager` class provides an easy way to set control points without knowing the internal data
+:class:`.ptmanager.CPManager` class provides an easy way to set control points without knowing the internal data
 structure of the geometry classes. The manager class is initialized with the number of control points in all parametric
 dimensions.
 
@@ -18,7 +18,7 @@ a single integer value.
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Assuming that the curve has 10 control points
     manager = CPManager(10)
@@ -27,7 +27,7 @@ Getting the control points:
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Number of control points in all parametric dimensions
     size_u = crv.ctrlpts_size
@@ -48,7 +48,7 @@ Setting the control points:
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Number of control points in all parametric dimensions
     size_u = 5
@@ -75,7 +75,7 @@ two integer values.
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Assuming that the surface has size_u = 5 and size_v = 7 control points
     manager = CPManager(5, 7)
@@ -84,7 +84,7 @@ Getting the control points:
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Number of control points in all parametric dimensions
     size_u = surf.ctrlpts_size_u
@@ -107,7 +107,7 @@ Setting the control points:
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Number of control points in all parametric dimensions
     size_u = 5
@@ -136,7 +136,7 @@ there integer values.
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Assuming that the volume has size_u = 5, size_v = 12 and size_w = 3 control points
     manager = CPManager(5, 12, 3)
@@ -168,7 +168,7 @@ Setting the control points:
 
 .. code-block:: python
 
-    from geomdl.control_points import CPManager
+    from geomdl.ptmanager import CPManager
 
     # Number of control points in all parametric dimensions
     size_u = 5
@@ -199,10 +199,10 @@ Dynamic attributes
 
 .. code-block:: python
 
-    from geomdl import control_points
+    from geomdl.ptmanager import CPManager
 
     # Generate a control points manager instance with 5, 7 and 10 control points in u, v and w dimensions, respectively
-    cpt_man = control_points.CPManager(5, 7, 10)
+    cpt_man = CPManager(5, 7, 10)
 
     # Get number of control points on u
     num_ctrlpts_u = cpt_man.size_u
@@ -219,7 +219,7 @@ attributes. For curves, there will be only ``size_u`` attribute.
 Class Reference
 ===============
 
-.. automodule:: geomdl.control_points
+.. automodule:: geomdl.ptmanager
     :members:
     :inherited-members:
     :exclude-members: next

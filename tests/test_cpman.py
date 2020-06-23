@@ -3,11 +3,11 @@
     Released under The MIT License. See LICENSE file for details.
     Copyright (c) 2019-2020 Onur Rauf Bingol
 
-    Tests geomdl.control_points module. Requires "pytest" to run.
+    Tests geomdl.ptmanager module. Requires "pytest" to run.
 """
 
 from pytest import fixture, raises
-from geomdl import control_points
+from geomdl import ptmanager
 from geomdl.base import GeomdlError
 
 GEOMDL_TEST_CPTS1 = [
@@ -31,20 +31,20 @@ PW_ONES = [[1, 2, 3, 1], [4, 5, 6, 1], [7, 8, 9, 1]]
 
 # Combine with a predefined set of weights
 def test_combine_ctrlpts_weights1():
-    check = control_points.combine_ctrlpts_weights(P, W)
+    check = ptmanager.combine_ctrlpts_weights(P, W)
 
     assert PW == check
 
 
 # Combine with default weights
 def test_combine_ctrlpts_weights2():
-    check = control_points.combine_ctrlpts_weights(P)
+    check = ptmanager.combine_ctrlpts_weights(P)
 
     assert PW_ONES == check
 
 
 def test_separate_ctrlpts_weights():
-    c_ctrlpts, c_weights = control_points.separate_ctrlpts_weights(PW)
+    c_ctrlpts, c_weights = ptmanager.separate_ctrlpts_weights(PW)
 
     assert P == c_ctrlpts
     assert W == c_weights
@@ -52,24 +52,24 @@ def test_separate_ctrlpts_weights():
 
 @fixture
 def cpman1d():
-    cpman = control_points.CPManager(6)
+    cpman = ptmanager.CPManager(6)
     return cpman
 
 
 @fixture
 def cpman2d():
-    cpman = control_points.CPManager(3, 2)
+    cpman = ptmanager.CPManager(3, 2)
     return cpman
 
 
 @fixture
 def cpman3d():
-    cpman = control_points.CPManager(2, 3, 2)
+    cpman = ptmanager.CPManager(2, 3, 2)
     return cpman
 
 
 def test_create_empty_cpman():
-    cpman = control_points.CPManager()
+    cpman = ptmanager.CPManager()
     assert len(cpman.size) == 1
 
 
@@ -165,7 +165,7 @@ def test_point_data1():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = control_points.CPManager(sz, testdata=4)
+    cpman = ptmanager.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv1 = cpman.ptdata('testdata', p)
     retv2 = cpman.ptdata('testdata', p + 1)
@@ -178,7 +178,7 @@ def test_point_data2():
     d = [0.0, 1.0, 2.0, 3.0]
     p = 5
     sz = 12
-    cpman = control_points.CPManager(sz, testdata=4)
+    cpman = ptmanager.CPManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv = cpman.ptdata('testdata2', p)
     assert retv is None
@@ -190,7 +190,7 @@ def test_point_data3():
         d = [0.0, 1.0, 2.0, 3.0]
         p = 5
         sz = 12
-        cpman = control_points.CPManager(sz, testdata=3)
+        cpman = ptmanager.CPManager(sz, testdata=3)
         cpman.set_ptdata(dict(testdata=d), p)
 
 
@@ -199,7 +199,7 @@ def test_point_data4():
     d = 13
     p = 5
     sz = 12
-    cpman = control_points.CPManager(sz, testdata=1)
+    cpman = ptmanager.CPManager(sz, testdata=1)
     cpman.set_ptdata(dict(testdata=d), p)
     assert cpman.ptdata('testdata', 5) == 13
 

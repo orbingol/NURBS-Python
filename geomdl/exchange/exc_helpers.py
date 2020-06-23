@@ -8,11 +8,12 @@
 """
 
 import math
-from .. import knotvector, control_points, linalg
+from .. import knotvector, linalg
 from ..base import GeomdlError
 from ..NURBS import Curve, Surface, Volume
 from ..freeform import Freeform
 from .. import containers
+from ..ptmanager import CPManager
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
@@ -106,7 +107,7 @@ def import_dict_crv(data):
     try:
         shape.degree = data['degree']
         shape.knotvector = data['knotvector']
-        cpman = control_points.CPManager(*data['size'])
+        cpman = CPManager(*data['size'])
         cpman.points = data['control_points']['points']
         shape.ctrlpts = cpman
     except KeyError as e:
@@ -231,7 +232,7 @@ def import_dict_surf(data):
     try:
         shape.degree = data['degree']
         shape.knotvector = data['knotvector']
-        cpman = control_points.CPManager(*data['size'])
+        cpman = CPManager(*data['size'])
         cpman.points = data['control_points']['points']
         shape.ctrlpts = cpman
     except KeyError as e:
@@ -312,7 +313,7 @@ def import_dict_vol(data):
     try:
         shape.degree = data['degree']
         shape.knotvector = data['knotvector']
-        cpman = control_points.CPManager(*data['size'])
+        cpman = CPManager(*data['size'])
         cpman.points = data['control_points']['points']
         shape.ctrlpts = cpman
     except KeyError as e:
