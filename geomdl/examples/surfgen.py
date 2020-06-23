@@ -8,7 +8,7 @@
 """
 
 import random
-from . import base
+from .. import base
 
 
 class Grid(object):
@@ -95,20 +95,16 @@ class Grid(object):
         current_x = self._origin[0]
 
         # Start looping
-        for _ in range(0, num_u + 1):
-            # Initialize a temporary list for storing the 3nd dimension
-            row = []
+        for _ in range(0, num_v + 1):
             # Set initial position for y
             current_y = self._origin[1]
-            for _ in range(0, num_v + 1):
+            for _ in range(0, num_u + 1):
                 # Add the first point
-                row.append([current_x, current_y, self._z_value])
+                self._grid_points.append([current_x, current_y, self._z_value])
                 # Set the y value for the next row
-                current_y = current_y + spacing_y
-            # Update the list to be returned
-            self._grid_points.append(row)
+                current_y += spacing_y
             # Set x the value for the next column
-            current_x = current_x + spacing_x
+            current_x += spacing_x
 
         # Set class variables
         self._size_u = num_u
@@ -172,10 +168,6 @@ class Grid(object):
         # Initialize a list to store bumps
         bump_list = []
 
-        # Find size of the grid
-        len_u = len(self._grid_points)
-        len_v = len(self._grid_points[0])
-
         # Set a max number of trials for the point finding algorithm
         max_trials = int(max_trials)
 
@@ -184,8 +176,8 @@ class Grid(object):
             trials = 0
             while trials < max_trials:
                 # Choose u and v positions inside the grid (i.e. not on the edges)
-                u = random.randint(base_extent, (len_u - 1) - base_extent)
-                v = random.randint(base_extent, (len_v - 1) - base_extent)
+                u = random.randint(base_extent, (self._size_u - 1) - base_extent)
+                v = random.randint(base_extent, (self._size_v - 1) - base_extent)
                 temp = [u, v]
                 if self._check_bump(bump_list, temp, base_extent, padding):
                     bump_list.append(temp)
@@ -237,12 +229,11 @@ class Grid(object):
         start_v = v - jump
         stop_v = v + jump + 1
 
-        for i in range(start_u, stop_u):
-            for j in range(start_v, stop_v):
-                    self._grid_points[i][j][2] = height
+        for i in range(start_v, stop_v):
+            for j in range(start_u, stop_u):
+                    self._grid_points[i + (self._size_u * j)][2] = height
 
 
-@export
 class GridWeighted(Grid):
     """ Simple control points grid generator to use with rational surfaces.
 
