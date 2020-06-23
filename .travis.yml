@@ -23,9 +23,6 @@ matrix:
     - python: 2.7
       env: TOXENV=py27,test,codecov
 
-    - python: 3.4
-      env: TOXENV=py34,test
-
     - python: 3.5
       env: TOXENV=py35,test
 
