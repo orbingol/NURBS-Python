@@ -19,17 +19,17 @@ def default_find_index(pts_size, *args):
 
     .. code-block:: python
 
-        from geomdl.control_points import find_index
+        from geomdl.points import find_index
 
         # parametric position: u=2, v=1, w=5
         # ctrlpts_size: number of control points in all parametric dimensions, e.g. (6, 7, 11)
         idx = find_index((6, 7, 11), 2, 1, 5)
 
-    :param pts_size: number of control points in all parametric dimensions
+    :param pts_size: number of points in all parametric dimensions
     :type pts_size: list, tuple
     :param args: position in the parametric space
     :type args: tuple
-    :return: index of the control points at the specified parametric position
+    :return: index of the points at the specified parametric position
     :rtype: int
     """
     idx = 0
@@ -42,28 +42,41 @@ def default_find_index(pts_size, *args):
     return idx
 
 
-def default_ctrlpts_init(num_ctrlpts, **kwargs):
-    """ Initializes the control points container (default)
+def default_pts_init(num_pts, **kwargs):
+    """ Initializes the points container (default)
 
     Default functions use the container types included in the Python Standard Library.
 
-    :param num_ctrlpts: total number of control points
-    :type num_ctrlpts: int
-    :return: a tuple containing initialized control points (as a ``list``) and data dictionary (as a ``dict``)
-    :rtype: tuple
+    :param num_pts: total number of points
+    :type num_pts: int
+    :return: a list containing the initialized points
+    :rtype: list
     """
-    points = [() for _ in range(num_ctrlpts)]
+    points = [() for _ in range(num_pts)]
+    return points
+
+
+def default_ptsd_init(num_pts, **kwargs):
+    """ Initializes the points data container (default)
+
+    Default functions use the container types included in the Python Standard Library.
+
+    :param num_pts: total number of points
+    :type num_pts: int
+    :return: a list containing the initialized data dictionary (as a ``dict``)
+    :rtype: list
+    """
     points_data = GeomdlDict()
     for k, v in kwargs.items():
         if v > 1:
-            points_data[k] = [[GeomdlFloat(0.0) for _ in range(v)] for _ in range(num_ctrlpts)]
+            points_data[k] = [[GeomdlFloat(0.0) for _ in range(v)] for _ in range(num_pts)]
         else:
-            points_data[k] = [GeomdlFloat(0.0) for _ in range(num_ctrlpts)]
-    return points, points_data
+            points_data[k] = [GeomdlFloat(0.0) for _ in range(num_pts)]
+    return points_data
 
 
-def default_ctrlpts_set(pts_in, dim, pts_out):
-    """ Fills the control points container with the input points (default)
+def default_pts_set(pts_in, dim, pts_out):
+    """ Fills the points container with the input points (default)
 
     Default functions use the container types included in the Python Standard Library.
 
@@ -81,12 +94,12 @@ def default_ctrlpts_set(pts_in, dim, pts_out):
             raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
         if len(cpt) != dim:
             raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
-        default_ctrlpt_set(pts_out, idx, cpt)
+        default_pt_set(pts_out, idx, cpt)
     return pts_out
 
 
-def default_ctrlpt_set(pts_arr, idx, cpt):
-    """ Assigns value to a single control point position inside the container (default)
+def default_pt_set(pts_arr, idx, cpt):
+    """ Assigns value to a single point position inside the container (default)
 
     :param pts_arr: control points container
     :type pts_arr: list
@@ -190,11 +203,11 @@ def separate_ctrlpts_weights(ctrlptsw):
 
 
 @export
-class CPManager(GeomdlBase):
-    """ Control points manager class
+class PointsManager(GeomdlBase):
+    """ Points manager class
 
-    Control points manager class provides an easy way to set control points without knowing the internal data structure
-    of the geometry classes. The manager class is initialized with the number of control points in all parametric
+    Points manager class provides an easy way to set points without knowing the internal data structure
+    of the geometry classes. The manager class is initialized with the number of points in all parametric
     dimensions.
 
     This class inherits the following properties:
@@ -218,7 +231,6 @@ class CPManager(GeomdlBase):
     This class provides the following properties:
 
     * :py:attr:`points`
-    * :py:attr:`points_data`
     * :py:attr:`size`
     * :py:attr:`count`
     * :py:attr:`dimension`
@@ -227,31 +239,29 @@ class CPManager(GeomdlBase):
 
     * :py:meth:`pt`
     * :py:meth:`set_pt`
-    * :py:meth:`ptdata`
-    * :py:meth:`set_ptdata`
     * :py:meth:`reset`
 
     This class provides the following keyword arguments:
 
-    * ``func_pts_init``: function to initialize the control points container. *Default:* ``default_ctrlpts_init``
-    * ``func_pts_set``: function to fill the control points container. *Default:* ``default_ctrlpts_set``
-    * ``func_pt_set``: function to assign a single control point. *Default:* ``default_ctrlpt_set``
-    * ``func_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
+    * ``func_pts_init``: function to initialize the points container. *Default:* ``default_pts_init``
+    * ``func_pts_set``: function to fill the points container. *Default:* ``default_pts_set``
+    * ``func_pt_set``: function to assign a single point. *Default:* ``default_pt_set``
+    * ``func_find_index``: function to find the index of the point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_pts', '_ptsd', '_iter_index')
+    __slots__ = ('_size', '_pts', '_iter_index')
 
     def __init__(self, *args, **kwargs):
-        super(CPManager, self).__init__(*args, **kwargs)
+        super(PointsManager, self).__init__(*args, **kwargs)
         # Update configuration dictionary
-        self._cfg['func_pts_init'] = kwargs.pop('func_pts_init', default_ctrlpts_init)  # points init function
-        self._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_ctrlpts_set)  # points set function
-        self._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_ctrlpt_set)  # single point set function
+        self._cfg['func_pts_init'] = kwargs.pop('func_pts_init', default_pts_init)  # points init function
+        self._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_pts_set)  # points set function
+        self._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_pt_set)  # single point set function
         self._cfg['func_find_index'] = kwargs.pop('func_find_index', default_find_index)  # index finding function
         # Prepare and update size
         sz = [int(arg) for arg in args] if args else [0]
         self._size = GeomdlList(*sz, attribs=('u', 'v', 'w'), cb=[self.reset])
-        # Initialize the control points and the associated data container
-        self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
+        # Initialize the points
+        self._pts = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def __call__(self, points):
         self.points = points
@@ -307,13 +317,13 @@ class CPManager(GeomdlBase):
 
     @property
     def points(self):
-        """ Control points
+        """ Points
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the control points (as a ``tuple``)
-        :setter: Sets the control points
+        :getter: Gets the points (as a ``tuple``)
+        :setter: Sets the points
         """
         return tuple(self._pts)
 
@@ -321,28 +331,24 @@ class CPManager(GeomdlBase):
     def points(self, value):
         # Check input type
         if not isinstance(value, GeomdlTypeSequence):
-            raise GeomdlError("Control points input must be a sequence")
+            raise GeomdlError("Points input must be a sequence")
         # Check input length
         if len(value) != self.count:
-            raise GeomdlError("Number of control points must be " + str(self.count))
+            raise GeomdlError("Number of points must be " + str(self.count))
         # Update dimension
         self._dimension = len(value[0])
-        # Set control points
+        # Set points
         self._cfg['func_pts_set'](value, self.dimension, self._pts)
 
     @property
-    def points_data(self):
-        return self._ptsd
-
-    @property
     def size(self):
-        """ Number of the control points in all parametric dimensions
+        """ Number of the points in all parametric dimensions
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the number of the control points
-        :setter: Sets the number of the control points
+        :getter: Gets the number of the points
+        :setter: Sets the number of the points
         """
         return self._size
 
@@ -352,7 +358,7 @@ class CPManager(GeomdlBase):
 
     @property
     def count(self):
-        """ Total number of the control points
+        """ Total number of the points
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -362,23 +368,94 @@ class CPManager(GeomdlBase):
         return reduce(lambda x, y: x * y, self.size)
 
     def reset(self, **kwargs):
-        """ Resets the control points """
+        """ Resets the points """
         # Call parent method
-        super(CPManager, self).reset(**kwargs)
-        # Reinitialize the control points and the associated data container
-        self._pts, self._ptsd = self._cfg['func_pts_init'](self.count, **kwargs)
+        super(PointsManager, self).reset(**kwargs)
+        # Reinitialize the control points
+        self._pts = self._cfg['func_pts_init'](self.count, **kwargs)
 
     def pt(self, *args):
-        """ Gets the control point from the input position """
+        """ Gets the point from the input position """
         return self[args]
 
     def set_pt(self, pt, *args):
-        """ Puts the control point to the input position
+        """ Puts the point to the input position
 
-        :param pt: control point
+        :param pt: point
         :type pt: list, tuple
         """
         self[args] = pt
+
+
+@export
+class CPManager(PointsManager):
+    """ Control points manager class
+
+    Control points manager class provides an easy way to set control points without knowing the internal data structure
+    of the geometry classes. The manager class is initialized with the number of control points in all parametric
+    dimensions.
+
+    This class inherits the following properties:
+
+    * :py:attr:`type`
+    * :py:attr:`id`
+    * :py:attr:`name`
+    * :py:attr:`dimension`
+    * :py:attr:`opt`
+
+    This class inherits the following methods:
+
+    * :py:meth:`get_opt`
+    * :py:meth:`reset`
+
+    This class inherits the following keyword arguments:
+
+    * ``id``: object ID (as an integer). *Default: 0*
+    * ``name``: object name. *Default: name of the class*
+
+    This class provides the following properties:
+
+    * :py:attr:`points`
+    * :py:attr:`points_data`
+    * :py:attr:`size`
+    * :py:attr:`count`
+    * :py:attr:`dimension`
+
+    This class provides the following methods:
+
+    * :py:meth:`pt`
+    * :py:meth:`set_pt`
+    * :py:meth:`ptdata`
+    * :py:meth:`set_ptdata`
+    * :py:meth:`reset`
+
+    This class provides the following keyword arguments:
+
+    * ``func_pts_init``: function to initialize the control points container. *Default:* ``default_pts_init``
+    * ``func_ptsd_init``: function to initialize the data dictionary. *Default:* ``default_ptsd_init``
+    * ``func_pts_set``: function to fill the control points container. *Default:* ``default_pts_set``
+    * ``func_pt_set``: function to assign a single control point. *Default:* ``default_pt_set``
+    * ``func_find_index``: function to find the index of the control point/vertex. *Default:* ``default_find_index``
+    """
+    __slots__ = ('_ptsd',)
+
+    def __init__(self, *args, **kwargs):
+        super(CPManager, self).__init__(*args, **kwargs)
+        # Update configuration dictionary
+        self._cfg['func_ptsd_init'] = kwargs.pop('func_pts_init', default_ptsd_init)  # data dict init function
+        # Initialize the data container
+        self._ptsd = self._cfg['func_ptsd_init'](self.count, **kwargs)
+
+    @property
+    def points_data(self):
+        return self._ptsd
+
+    def reset(self, **kwargs):
+        """ Resets the control points """
+        # Call parent method
+        super(CPManager, self).reset(**kwargs)
+        # Reinitialize the data container
+        self._ptsd = self._cfg['func_ptsd_init'](self.count, **kwargs)
 
     def ptdata(self, dkey, *args):
         """ Gets the data attached to the control point
