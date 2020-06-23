@@ -10,7 +10,8 @@ cache: pip
 branches:
   only:
     - master  # latest version
-    - devmaster  # latest development version
+    - 5.x-dev # v5.x development
+    - 5.x  # v5.x series
     - 4.x  # v4.x series
     - 3.x  # v3.x series
     - 2.x  # v2.x series
