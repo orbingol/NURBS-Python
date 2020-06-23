@@ -5,7 +5,7 @@
 setuptools>=40.6.3
 
 # For compiling geomdl.core module
-cython; platform_python_implementation != 'PyPy'
+cython
 
 # Required packages for visualization
 numpy==1.15.4
