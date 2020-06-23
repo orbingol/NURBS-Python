@@ -15,10 +15,7 @@ docs/_build/*
 docs/_static/*
 !docs/_static/.gitkeep
 geomdl/core
-geomdl/cli
-geomdl/shapes
 geomdl/iga
-geomdl/evaluators
 .ipynb*
 *.pyc
 *.c
