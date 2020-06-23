@@ -7,4 +7,4 @@
 import pytest
 from tests.fixtures.curves import *
 from tests.fixtures.surfaces import *
-from tests.fixtures.volumes import volume1
+from tests.fixtures.volumes import *

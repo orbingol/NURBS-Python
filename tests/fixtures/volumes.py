@@ -5,11 +5,17 @@
 """
 
 import pytest
-from geomdl import NURBS
+from geomdl import BSpline, NURBS, knotvector
 from geomdl.geomutils import construct
+from geomdl.examples.volume import volume_ex2
 
 
 @pytest.fixture
 def volume1(surface1, surface2):
     v = construct.construct_volume("w", surface1, surface2)
     return v
+
+
+@pytest.fixture
+def volume2():
+    return volume_ex2()
