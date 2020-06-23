@@ -16,6 +16,7 @@ shallow_clone: true
 branches:
   only:
     - master
+    - 5.x
     - 4.x
     - 3.x
     - 2.x
