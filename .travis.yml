@@ -1,6 +1,6 @@
 # https://travis-ci.org/orbingol/NURBS-Python
 
-dist: xenial
+dist: bionic
 sudo: false
 
 language: python
