@@ -8,10 +8,11 @@
 """
 
 import math
-from .. import NURBS
+from .. import BSpline, NURBS, knotvector
 from .. import fitting
 from .. import geomutils
 from ..ptmanager import CPManager
+from .surfgen import Grid
 
 
 def scordelis_lo(radius=25, thickness=0.25, length=50, angle=40, **kwargs):
@@ -117,3 +118,71 @@ def volume_ex1():
 
     # Return the volume
     return vol
+
+def volume_ex2():
+    """ Creates an example NURBS volume using surface generator
+
+    degree_u=1, degree_v=1, degree_w=1, size_u=8, size_v=8, size_w=3
+
+    return: volume
+    rtype: NURBS.Volume
+    """
+    # Generate control points grid for Surface #1
+    sg01 = Grid(15, 10, z_value=0.0)
+    sg01.generate(8, 8)
+
+    # Create a BSpline surface instance
+    surf01 = BSpline.Surface()
+
+    # Set degrees
+    surf01.degree.u = 1
+    surf01.degree.v = 1
+
+    # Get the control points from the generated grid
+    surf01.set_ctrlpts(sg01.grid, 9, 9)
+
+    # Set knot vectors
+    surf01.knotvector.u = knotvector.generate(surf01.degree.u, surf01.ctrlpts_size.u)
+    surf01.knotvector.v = knotvector.generate(surf01.degree.v, surf01.ctrlpts_size.v)
+
+    # Generate control points grid for Surface #2
+    sg02 = Grid(15, 10, z_value=1.0)
+    sg02.generate(8, 8)
+
+    # Create a BSpline surface instance
+    surf02 = BSpline.Surface()
+
+    # Set degrees
+    surf02.degree.u = 1
+    surf02.degree.v = 1
+
+    # Get the control points from the generated grid
+    surf02.set_ctrlpts(sg02.grid, 9, 9)
+
+    # Set knot vectors
+    surf02.knotvector.u = knotvector.generate(surf02.degree.u, surf02.ctrlpts_size.u)
+    surf02.knotvector.v = knotvector.generate(surf02.degree.v, surf02.ctrlpts_size.v)
+
+    # Generate control points grid for Surface #3
+    sg03 = Grid(15, 10, z_value=2.0)
+    sg03.generate(8, 8)
+
+    # Create a BSpline surface instance
+    surf03 = BSpline.Surface()
+
+    # Set degrees
+    surf03.degree.u = 1
+    surf03.degree.v = 1
+
+    # Get the control points from the generated grid
+    surf03.set_ctrlpts(sg03.grid, 9, 9)
+
+    # Set knot vectors
+    surf03.knotvector.u = knotvector.generate(surf03.degree.u, surf03.ctrlpts_size.u)
+    surf03.knotvector.v = knotvector.generate(surf03.degree.v, surf03.ctrlpts_size.v)
+
+    # Construct the volume
+    pvolume = geomutils.construct_volume('w', surf01, surf02, surf03, degree=1)
+
+    return pvolume
+
