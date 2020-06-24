@@ -40,7 +40,7 @@ def get_property(prop, project):
 
 
 # Ref: https://docs.pytest.org/en/latest/goodpractices.html
-class PyTest(test_command):
+class TestCommand(test_command):
     """ Allows test command to call py.test """
     user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
 
@@ -58,7 +58,7 @@ class PyTest(test_command):
         sys.exit(errno)
 
 
-class SetuptoolsClean(clean_command):
+class CleanCommand(clean_command):
     """ Cleans Cython-generated source files and setuptools-generated directories """
     def run(self):
         # Call parent method
@@ -94,9 +94,9 @@ data = dict(
         'geomdl.geomutils',
         'geomdl.visualization'
     ],
-    install_requires=[],
+    install_requires=['six'],
     tests_require=['pytest>=3.6.0'],
-    cmdclass={'test': PyTest, 'clean': SetuptoolsClean},
+    cmdclass={'test': TestCommand, 'clean': CleanCommand},
     ext_modules=[],
     zip_safe=False,
     classifiers=[
