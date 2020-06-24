@@ -1,7 +1,7 @@
 """
 .. module:: surfgen
     :platform: Unix, Windows
-    :synopsis: A control points grid generator for parametric surfaces
+    :synopsis: Surface generator
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
@@ -47,7 +47,7 @@ class Grid(object):
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
-        :getter: Gets the 2-dimensional list of points in [u][v] format
+        :getter: Gets the list of points
         """
         return self._grid_points
 
@@ -60,21 +60,23 @@ class Grid(object):
             self._size_v = 0
             self._origin = [0.0, 0.0, 0.0]
 
-    # Generates the grid using the input division parameters
+    # Generates the grid
     def generate(self, num_u, num_v):
-        """ Generates grid using the input division parameters.
+        """ Generates the grid with a size of u x v.
 
-        :param num_u: number of divisions in x-direction
+        Number of divisions will be u - 1 x v - 1.
+
+        :param num_u: number of control points in u-direction
         :type num_u: int
-        :param num_v: number of divisions in y-direction
+        :param num_v: number of control points in v-direction
         :type num_v: int
         """
         # Some error checking and fixing
-        if num_u < 1:
-            raise ValueError("Divisions in the x-direction (num_u) cannot be less than 1")
+        if num_u < 2:
+            raise ValueError("num_u cannot be less than 2")
 
-        if num_v < 1:
-            raise ValueError("Divisions in the y-direction (num_v) cannot be less than 1")
+        if num_v < 2:
+            raise ValueError("num_v cannot be less than 2")
 
         if not isinstance(num_u, int):
             num_u = int(num_u)
@@ -95,10 +97,10 @@ class Grid(object):
         current_x = self._origin[0]
 
         # Start looping
-        for _ in range(0, num_v + 1):
+        for _ in range(0, num_v):
             # Set initial position for y
             current_y = self._origin[1]
-            for _ in range(0, num_u + 1):
+            for _ in range(0, num_u):
                 # Add the first point
                 self._grid_points.append([current_x, current_y, self._z_value])
                 # Set the y value for the next row

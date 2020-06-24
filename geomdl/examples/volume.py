@@ -139,7 +139,7 @@ def volume_ex2():
     surf01.degree.v = 1
 
     # Get the control points from the generated grid
-    surf01.set_ctrlpts(sg01.grid, 9, 9)
+    surf01.set_ctrlpts(sg01.grid, 8, 8)
 
     # Set knot vectors
     surf01.knotvector.u = knotvector.generate(surf01.degree.u, surf01.ctrlpts_size.u)
@@ -157,7 +157,7 @@ def volume_ex2():
     surf02.degree.v = 1
 
     # Get the control points from the generated grid
-    surf02.set_ctrlpts(sg02.grid, 9, 9)
+    surf02.set_ctrlpts(sg02.grid, 8, 8)
 
     # Set knot vectors
     surf02.knotvector.u = knotvector.generate(surf02.degree.u, surf02.ctrlpts_size.u)
@@ -175,7 +175,7 @@ def volume_ex2():
     surf03.degree.v = 1
 
     # Get the control points from the generated grid
-    surf03.set_ctrlpts(sg03.grid, 9, 9)
+    surf03.set_ctrlpts(sg03.grid, 8, 8)
 
     # Set knot vectors
     surf03.knotvector.u = knotvector.generate(surf03.degree.u, surf03.ctrlpts_size.u)
@@ -185,4 +185,3 @@ def volume_ex2():
     pvolume = geomutils.construct_volume('w', surf01, surf02, surf03, degree=1)
 
     return pvolume
-
