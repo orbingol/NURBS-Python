@@ -11,7 +11,7 @@ import struct
 from . import exc_helpers
 from .. import linalg
 from .. import entity
-from .. import tessellate
+from ..tessellate import triangular
 from ..base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
@@ -125,7 +125,7 @@ def export_obj_str(surface, **kwargs):
     # Loop through SurfaceContainer object
     for srf in surface:
         # Tessellate surface
-        vertices, triangles = tessellate.make_triangle_mesh(srf.evalpts, srf.sample_size[0], srf.sample_size[1])
+        vertices, triangles = triangular.make_triangle_mesh(srf.evalpts, srf.sample_size[0], srf.sample_size[1])
 
         # Collect vertices
         for vert in vertices:

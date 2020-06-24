@@ -8,11 +8,10 @@
 """
 
 import struct
-from .base import export, GeomdlTypeSequence
+from ..base import GeomdlTypeSequence
 from . import _voxelize as vxl
 
 
-@export
 def voxelize(obj, **kwargs):
     """ Generates binary voxel representation of the surfaces and volumes.
 
@@ -85,7 +84,6 @@ def convert_bb_to_faces(voxel_grid):
     return new_vg
 
 
-@export
 def save_voxel_grid(voxel_grid, file_name):
     """ Saves binary voxel grid as a binary file.
 

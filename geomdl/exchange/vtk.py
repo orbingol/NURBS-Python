@@ -7,7 +7,7 @@
 
 """
 
-from .. import tessellate
+from ..tessellate import triangular, quadrilateral
 from ..base import GeomdlError, GeomdlWarning
 from . import exc_helpers
 
@@ -64,13 +64,13 @@ def export_polydata_str(obj, **kwargs):
         # Prepare data array
         if point_type == "ctrlpts":
             if do_tessellate and o.pdimension == 2:
-                vertices, faces = tessellate.make_quad_mesh(o.ctrlpts.points, o.ctrlpts_size[0], o.ctrlpts_size[1])
+                vertices, faces = quadrilateral.make_quad_mesh(o.ctrlpts.points, o.ctrlpts_size[0], o.ctrlpts_size[1])
                 data_array = ([v.data for v in vertices], [q.data for q in faces])
             else:
                 data_array = (o.ctrlpts, [])
         elif point_type == "evalpts":
             if do_tessellate and o.pdimension == 2:
-                vertices, faces = tessellate.make_triangle_mesh(o.evalpts, o.sample_size[0], o.sample_size[1])
+                vertices, faces = triangular.make_triangle_mesh(o.evalpts, o.sample_size[0], o.sample_size[1])
                 data_array = ([v.data for v in vertices], [t.data for t in faces])
             else:
                 data_array = (o.evalpts, [])

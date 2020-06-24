@@ -7,8 +7,8 @@
 
 """
 
-from . import tessellate
-from . import voxelize
+from ..tessellate import triangular, quadrilateral
+from ..voxelate import voxelize
 
 RENDER_OPTIONS = dict(
     cpcolor=['blue'],
@@ -21,6 +21,7 @@ RENDER_OPTIONS = dict(
     extras=list(),
     animate=False,
 )
+
 
 def render(bsplg, vism, **kwargs):
     """ Renders B-spline geometries
@@ -50,7 +51,7 @@ def render(bsplg, vism, **kwargs):
 
         # Add control points as quads
         if vism.mconf['ctrlpts'] == 'quads':
-            v, f = tessellate.make_quad_mesh(s.ctrlpts.points, size_u=s.ctrlpts_size[0], size_v=s.ctrlpts_size[1])
+            v, f = quadrilateral.make_quad_mesh(s.ctrlpts.points, size_u=s.ctrlpts_size[0], size_v=s.ctrlpts_size[1])
             vism.add(
                 ptsarr=[v, f],
                 name="control points" if ssz == 1 else "control points {}".format(si + 1),
@@ -69,7 +70,7 @@ def render(bsplg, vism, **kwargs):
 
         # Add evaluated points as quads
         if vism.mconf['evalpts'] == 'quads':
-            v, f = tessellate.make_quad_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
+            v, f = quadrilateral.make_quad_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
                 ptsarr=[v, f],
                 name=s.name if ssz == 1 else "geometry {}".format(si + 1),
@@ -79,7 +80,7 @@ def render(bsplg, vism, **kwargs):
 
         # Add evaluated points as vertices and triangles
         if vism.mconf['evalpts'] == 'triangles':
-            v, f = tessellate.make_triangle_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
+            v, f = triangular.make_triangle_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
                 ptsarr=[v, f],
                 name=s.name if ssz == 1 else "geometry {}".format(si + 1),

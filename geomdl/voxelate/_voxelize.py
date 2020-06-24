@@ -8,9 +8,9 @@
 """
 
 from functools import partial
-from . import linalg
-from .ext_utils import pool_context
-from .base import GeomdlError
+from .. import linalg
+from ..ext_utils import pool_context
+from ..base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []

@@ -9,7 +9,7 @@
 
 import struct
 from .. import linalg
-from .. import tessellate
+from ..tessellate import triangular
 from ..base import GeomdlError
 from . import exc_helpers
 
@@ -37,7 +37,7 @@ def export_stl_str(surface, **kwargs):
     triangles_list = []
     for srf in surface:
         # Tessellate surface
-        vertices, faces = tessellate.make_triangle_mesh(srf.evalpts, srf.sample_size[0], srf.sample_size[1])
+        vertices, faces = triangular.make_triangle_mesh(srf.evalpts, srf.sample_size[0], srf.sample_size[1])
         triangles_list += faces
 
     # Write triangle list to ASCII or  binary STL file
