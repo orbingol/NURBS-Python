@@ -87,25 +87,32 @@ class CleanCommand(clean_command):
             d_path = os.path.join(os.path.dirname(__file__), d)
             shutil.rmtree(d_path, ignore_errors=True)
 
-        # Find list of files with .c extension
-        flist_c, flist_c_path = read_files("geomdl", ".c")
 
-        # Clean files with .c extensions
-        if flist_c_path:
-            print("Removing Cython-generated source files with .c extension")
-            for f in flist_c_path:
-                f_path = os.path.join(os.path.dirname(__file__), f)
-                os.unlink(f_path)
+        for p in packages:
+            # Fix paths
+            p_split = p.split('.')
+            if len(p_split) == 2:
+                dir_name = p_split[0]
+            else:
+                dir_name = p_split[0] + "/" + p_split[2]
 
-        # Find list of files with .cpp extension
-        flist_cpp, flist_cpp_path = read_files("geomdl", ".cpp")
+            # Find list of files with .c extension
+            flist_c, flist_c_path = read_files(dir_name, '.c')
 
-        # Clean files with .cpp extensions
-        if flist_cpp_path:
-            print("Removing Cython-generated source files with .cpp extension")
-            for f in flist_cpp_path:
-                f_path = os.path.join(os.path.dirname(__file__), f)
-                os.unlink(f_path)
+            # Clean files with .c extensions
+            if flist_c_path:
+                for f in flist_c_path:
+                    f_path = os.path.join(os.path.dirname(__file__), f)
+                    os.unlink(f_path)
+
+            # Find list of files with .cpp extension
+            flist_cpp, flist_cpp_path = read_files(dir_name, '.cpp')
+
+            # Clean files with .cpp extensions
+            if flist_cpp_path:
+                for f in flist_cpp_path:
+                    f_path = os.path.join(os.path.dirname(__file__), f)
+                    os.unlink(f_path)
 
 
 def read_files(project, ext):
