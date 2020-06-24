@@ -100,11 +100,16 @@ data = dict(
     ext_modules=[],
     zip_safe=False,
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha'
+        #'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
+        'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Scientific/Engineering :: Visualization',
+        'Topic :: Multimedia :: Graphics',
+        'Topic :: Multimedia :: Graphics :: 3D Modeling',
+        'Topic :: Software Development :: Libraries',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
