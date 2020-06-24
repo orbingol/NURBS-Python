@@ -8,7 +8,7 @@
 """
 
 import abc
-from ..six import add_metaclass
+from six import add_metaclass
 from ..base import GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 # Initialize an empty __all__ for controlling imports

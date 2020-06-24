@@ -8,7 +8,7 @@
 """
 
 import abc
-from .six import add_metaclass
+from six import add_metaclass
 from .base import export, GeomdlBase, GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 

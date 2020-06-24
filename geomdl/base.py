@@ -11,7 +11,7 @@ import os
 import sys
 import abc
 import copy
-from .six import add_metaclass
+from six import add_metaclass
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
