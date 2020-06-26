@@ -172,7 +172,7 @@ class SplineGeometry(Geometry):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
     __slots__ = (
-         '_pdim', '_dinit', '_attribs', '_rational', '_degree', '_knot_vector', '_control_points', '_control_points_size',
+         '_pdim', '_dinit', '_attribs', '_rational', '_degree', '_knot_vector', '_control_points',
          '_delta', '_bounding_box', '_evaluator'
     )
 

@@ -408,8 +408,11 @@ class GeomdlObject(object):
     def __setattr__(self, name, value):
         object.__setattr__(self, name, value)
         # Run callbacks
-        for cb in object.__getattribute__(self, '_cfg')['iter_callbacks']:
-            cb(name, value)
+        try:
+            for cb in object.__getattribute__(self, '_cfg')['iter_callbacks']:
+                cb(name, value)
+        except AttributeError:
+            pass
 
     def __iter__(self):
         self._iter_index = 0
@@ -446,8 +449,9 @@ class GeomdlObject(object):
         result = cls.__new__(cls)
         # Don't copy self reference
         memo[id(self)] = result
-        # Don't copy the cache
-        memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
+        # Don't copy the cache - if it exists
+        if hasattr(self, "_cache"):
+            memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
         # Deep copy all other attributes
         for var in self.__slots__:
             setattr(result, var, copy.deepcopy(getattr(self, var), memo))
