@@ -399,10 +399,10 @@ class GeomdlObject(object):
         obj = super(GeomdlObject, cls).__new__(cls)
         obj._name = kwargs.get('name', obj.__class__.__name__) # object name
         obj._id = int(kwargs.get('id', 0))  # object ID
-        obj._cfg['iter_callbacks'] = kwargs.pop('callbacks', tuple())
         return obj
 
     def __init__(self, *args, **kwargs):
+        self._cfg['iter_callbacks'] = kwargs.pop('callbacks', tuple())
         self._iter_index = 0
 
     def __getattr__(self, name):
