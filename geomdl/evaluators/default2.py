@@ -1,20 +1,18 @@
 """
-.. module:: evaluators.default_ext
+.. module:: evaluators.default2
     :platform: Unix, Windows
-    :synopsis: Default evaluation algorithms - extended version
+    :synopsis: Default evaluation algorithms (non-rational)
 
 .. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
-import copy
-from .. import linalg, helpers
-from ..base import GeomdlFloat
+from .. import helpers
+from ..base import export, GeomdlFloat
 from .default import CurveEvaluator, SurfaceEvaluator
 
-__all__ = []
 
-
+@export
 class CurveEvaluator2(CurveEvaluator):
     """ Sequential curve evaluation algorithms (alternative)
 
@@ -61,6 +59,7 @@ class CurveEvaluator2(CurveEvaluator):
         return CK
 
 
+@export
 class SurfaceEvaluator2(SurfaceEvaluator):
     """ Sequential surface evaluation algorithms (alternative)
 

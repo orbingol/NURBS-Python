@@ -9,8 +9,8 @@
 
 from numbers import Number
 from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlFloat, GeomdlTypeSequence
-from .abstract import SplineGeometry
-from . import evaluators, tessellate, utilities
+from .abstract import SplineGeometry, validate_params
+from .evaluators import default as defeval
 
 
 @export
@@ -61,7 +61,7 @@ class Curve(SplineGeometry):
     def __init__(self, *args, **kwargs):
         kwargs.update(dict(pdimension=1, dinit=0.01, attribs=('u',)))
         super(Curve, self).__init__(*args, **kwargs)
-        self._evaluator = evaluators.CurveEvaluator()  # initialize evaluator
+        self._evaluator = defeval.CurveEvaluator()  # initialize evaluator
 
     def evaluate(self, **kwargs):
         """ Evaluates the curve.
@@ -211,7 +211,7 @@ class Surface(SplineGeometry):
     def __init__(self, *args, **kwargs):
         kwargs.update(dict(pdimension=2, dinit=0.01, attribs=('u', 'v')))
         super(Surface, self).__init__(*args, **kwargs)
-        self._evaluator = evaluators.SurfaceEvaluator()
+        self._evaluator = defeval.SurfaceEvaluator()
         self._trims = list()  # trimming curves
 
     def reset(self, **kwargs):
@@ -405,7 +405,7 @@ class Volume(SplineGeometry):
     def __init__(self, *args, **kwargs):
         kwargs.update(dict(pdimension=3, dinit=0.05, attribs=('u', 'v', 'w')))
         super(Volume, self).__init__(*args, **kwargs)
-        self._evaluator = evaluators.VolumeEvaluator()
+        self._evaluator = defeval.VolumeEvaluator()
 
     def evaluate(self, **kwargs):
         """ Evaluates the volume.

@@ -7,9 +7,10 @@
 
 """
 
-from . import BSpline, evaluators
+from . import BSpline
 from .base import export, GeomdlError, GeomdlTypeSequence
 from .ptmanager import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
+from .evaluators import default_rational as defeval
 
 
 @export
@@ -44,7 +45,7 @@ class Curve(BSpline.Curve):
     def __init__(self, *args, **kwargs):
         super(Curve, self).__init__(*args, **kwargs)
         self._rational = True
-        self._evaluator = evaluators.CurveEvaluatorRational()
+        self._evaluator = defeval.CurveEvaluatorRational()
 
 
 @export
@@ -63,7 +64,7 @@ class Surface(BSpline.Surface):
     def __init__(self, *args, **kwargs):
         super(Surface, self).__init__(*args, **kwargs)
         self._rational = True
-        self._evaluator = evaluators.SurfaceEvaluatorRational()
+        self._evaluator = defeval.SurfaceEvaluatorRational()
 
     @classmethod
     def from_bspline(cls, obj):
@@ -98,7 +99,7 @@ class Volume(BSpline.Volume):
     def __init__(self, *args, **kwargs):
         super(Volume, self).__init__(*args, **kwargs)
         self._rational = True
-        self._evaluator = evaluators.VolumeEvaluatorRational()
+        self._evaluator = defeval.VolumeEvaluatorRational()
 
     @classmethod
     def from_bspline(cls, obj):

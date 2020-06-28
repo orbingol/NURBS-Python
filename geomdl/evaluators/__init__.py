@@ -7,16 +7,8 @@
 
 """
 
-# Disallow import-star (from XXX import *)
-__all__ = []
-
-# Import functions for convenience
-from .default import CurveEvaluator
-from .default import CurveEvaluatorRational
-from .default import SurfaceEvaluator
-from .default import SurfaceEvaluatorRational
-from .default import VolumeEvaluator
-from .default import VolumeEvaluatorRational
-
-from .default_ext import CurveEvaluator2
-from .default_ext import SurfaceEvaluator2
+__all__ = [
+    'default',
+    'default2'
+    'default_rational'
+]
