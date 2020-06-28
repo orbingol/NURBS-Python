@@ -389,30 +389,29 @@ class GeomdlObject(object):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_name', '_id', '_cfg', '_iter_index')
+    __slots__ = ('_name', '_id', '_iter_index')
+    _cfg = GeomdlDict(
+        iter_callbacks=tuple()
+    )  # read-only dict for storing the configuration variables
+
+    def __new__(cls, *args, **kwargs):
+        obj = super(GeomdlObject, cls).__new__(cls)
+        obj._name = kwargs.get('name', obj.__class__.__name__) # object name
+        obj._id = int(kwargs.get('id', 0))  # object ID
+        obj._cfg['iter_callbacks'] = kwargs.pop('callbacks', tuple())
+        return obj
 
     def __init__(self, *args, **kwargs):
-        # Use object.__setattr__ to bypass self.__setattr__
-        object.__setattr__(self, '_name', kwargs.get('name', self.__class__.__name__))  # object name
-        object.__setattr__(self, '_id', int(kwargs.get('id', 0)))  # object ID
-        object.__setattr__(self, '_cfg',
-            GeomdlDict(
-                iter_callbacks=kwargs.pop('callbacks', tuple()),
-            )
-        )  # dict for storing the configuration variables
         self._iter_index = 0
 
     def __getattr__(self, name):
-        return object.__getattribute__(self, name)
+        return super(GeomdlObject, self).__getattribute__(name)
 
     def __setattr__(self, name, value):
-        object.__setattr__(self, name, value)
+        super(GeomdlObject, self).__setattr__(name, value)
         # Run callbacks
-        try:
-            for cb in object.__getattribute__(self, '_cfg')['iter_callbacks']:
-                cb(name, value)
-        except AttributeError:
-            pass
+        for cb in getattr(self, '_cfg')['iter_callbacks']:
+            cb(name, value)
 
     def __iter__(self):
         self._iter_index = 0
