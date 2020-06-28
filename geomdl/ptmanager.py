@@ -111,53 +111,6 @@ def default_pt_set(pts_arr, idx, cpt):
     pts_arr[idx] = [GeomdlFloat(c) for c in cpt]
 
 
-def extract_ctrlpts2d(cm):
-    """ Extracts control points in u- and v-dimensions
-
-    :param cm: control points manager
-    :type cm: CPManager
-    """
-    ptd = {
-        'points_u': [],
-        'points_v': []
-    }
-
-    for v in range(cm.size.v):
-        ptd['points_u'] += [cm[u, v] for u in range(cm.size.u)]
-
-    for u in range(cm.size.u):
-        ptd['points_v'] += [cm[u, v] for v in range(cm.size.v)]
-
-    return ptd
-
-
-def extract_ctrlpts3d(cm):
-    """ Extracts control points in u-, v- and w-dimensions
-
-    :param cm: control points manager
-    :type cm: CPManager
-    """
-    ptd = {
-        'points_u': [],
-        'points_v': [],
-        'points_w': []
-    }
-
-    for w in range(cm.size.w):
-        for v in range(cm.size.v):
-            ptd['points_u'] += [cm[u, v, w] for u in range(cm.size.u)]
-
-    for w in range(cm.size.w):
-        for u in range(cm.size.u):
-            ptd['points_v'] += [cm[u, v, w] for v in range(cm.size.v)]
-
-    for v in range(cm.size.v):
-        for u in range(cm.size.u):
-            ptd['points_w'] += [cm[u, v, w] for w in range(cm.size.w)]
-
-    return ptd
-
-
 @export
 def combine_ctrlpts_weights(ctrlpts, weights=()):
     """ Multiplies control points by the weights to generate weighted control points.
