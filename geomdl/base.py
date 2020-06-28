@@ -11,6 +11,7 @@ import os
 import sys
 import abc
 import copy
+from itertools import chain
 from six import add_metaclass
 
 # Initialize an empty __all__ for controlling imports
@@ -436,8 +437,10 @@ class GeomdlObject(object):
         # Create a new instance
         cls = self.__class__
         result = cls.__new__(cls)
+        # Get all __slots__ of the derived class
+        slots = chain.from_iterable(getattr(s, '__slots__', []) for s in self.__class__.__mro__)
         # Copy all attributes
-        for var in self.__slots__:
+        for var in slots:
             setattr(result, var, copy.copy(getattr(self, var)))
         # Return updated instance
         return result
@@ -451,8 +454,10 @@ class GeomdlObject(object):
         # Don't copy the cache - if it exists
         if hasattr(self, "_cache"):
             memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
+        # Get all __slots__ of the derived class
+        slots = chain.from_iterable(getattr(s, '__slots__', []) for s in self.__class__.__mro__)
         # Deep copy all other attributes
-        for var in self.__slots__:
+        for var in slots:
             setattr(result, var, copy.deepcopy(getattr(self, var), memo))
         # Return updated instance
         return result
