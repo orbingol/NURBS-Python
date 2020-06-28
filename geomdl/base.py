@@ -442,6 +442,8 @@ class GeomdlObject(object):
         # Copy all attributes
         for var in slots:
             setattr(result, var, copy.copy(getattr(self, var)))
+        # Update configuration dictionary
+        result._cfg.update(self._cfg)
         # Return updated instance
         return result
 
@@ -459,6 +461,8 @@ class GeomdlObject(object):
         # Deep copy all other attributes
         for var in slots:
             setattr(result, var, copy.deepcopy(getattr(self, var), memo))
+        # Update configuration dictionary
+        result._cfg.update(self._cfg)
         # Return updated instance
         return result
 
