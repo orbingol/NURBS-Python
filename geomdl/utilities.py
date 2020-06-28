@@ -211,22 +211,6 @@ def evaluate_bounding_box(ctrlpts):
     return tuple(bbmin), tuple(bbmax)
 
 
-def check_params(params):
-    """ Checks if the parameters are defined in the domain [0, 1].
-
-    :param params: parameters (u, v, w)
-    :type params: list, tuple
-    :return: True if defined in the domain [0, 1]. False, otherwise.
-    :rtype: bool
-    """
-    # Check parameters
-    for prm in params:
-        if prm is not None:
-            if not 0.0 <= prm <= 1.0:
-                return False
-    return True
-
-
 def compute_delta_from_sample_size(sample_size, domain, domain_range):
     """ Computes delta from sample size
 

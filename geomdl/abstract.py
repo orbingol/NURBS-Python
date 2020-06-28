@@ -685,7 +685,7 @@ class SplineGeometry(Geometry):
 
         # Check parameters
         if self._cfg['bool_normalize_kv']:
-            if not utilities.check_params(param):
+            if not validate_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
     def evaluate_list(self, params):
@@ -701,7 +701,7 @@ class SplineGeometry(Geometry):
         res = []
         for prm in params:
             if self._cfg['bool_normalize_kv']:
-                if utilities.check_params([prm]):
+                if validate_params([prm]):
                     res.append(self.evaluate_single(prm))
             else:
                 res.append(self.evaluate_single(prm))
@@ -729,7 +729,7 @@ class SplineGeometry(Geometry):
 
         # Check parameters
         if self._cfg['bool_normalize_kv']:
-            if not utilities.check_params(param):
+            if not validate_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
 
@@ -750,3 +750,19 @@ def validate_delta_value(key, value):
         raise GeomdlError("Delta value must be a float value for the dimension " + str(key))
     if value <= 0 or value >= 1:
         raise GeomdlError("Delta should be between 0.0 and 1.0 for the dimension " + str(key))
+
+
+def validate_params(params):
+    """ Checks if the parameters are defined in the domain [0, 1].
+
+    :param params: parameters (u, v, w)
+    :type params: list, tuple
+    :return: True if defined in the domain [0, 1]. False, otherwise.
+    :rtype: bool
+    """
+    # Check parameters
+    for prm in params:
+        if prm is not None:
+            if not 0.0 <= prm <= 1.0:
+                return False
+    return True
