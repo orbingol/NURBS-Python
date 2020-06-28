@@ -470,7 +470,7 @@ def prepare_evaluation(start, stop, domain, is_kv_normalized):
     # Check parameters
     if is_kv_normalized:
         for st, sp in zip(start, stop):
-            if not utilities.check_params([st, sp]):
+            if not validate_params([st, sp]):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
     return start, stop
