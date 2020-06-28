@@ -206,6 +206,7 @@ class Surface(SplineGeometry):
     * ``name``: object name. *Default: name of the class*
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
+    __slots__ = ('_trims',)
 
     def __init__(self, *args, **kwargs):
         kwargs.update(dict(pdimension=2, dinit=0.01, attribs=('u', 'v')))
