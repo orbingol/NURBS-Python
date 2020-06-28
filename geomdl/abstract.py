@@ -43,7 +43,7 @@ class Geometry(GeomdlBase):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_eval_points')
+    __slots__ = ('_eval_points',)
 
     def __init__(self, *args, **kwargs):
         super(Geometry, self).__init__(*args, **kwargs)
