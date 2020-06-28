@@ -203,14 +203,21 @@ class PointsManager(GeomdlBase):
     """
     __slots__ = ('_size', '_pts', '_iter_index')
 
+    def __new__(cls, *args, **kwargs):
+        obj = super(PointsManager, cls).__new__(cls)
+        # Create/update configuration dictionary
+        obj._cfg['func_pts_init'] = kwargs.pop('func_pts_init', default_pts_init)  # points init function
+        obj._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_pts_set)  # points set function
+        obj._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_pt_set)  # single point set function
+        obj._cfg['func_find_index'] = kwargs.pop('func_find_index', default_find_index)  # index finding function
+        # Create/update size and points
+        obj._size = []
+        obj._pts = []
+        return obj
+
     def __init__(self, *args, **kwargs):
         super(PointsManager, self).__init__(*args, **kwargs)
-        # Update configuration dictionary
-        self._cfg['func_pts_init'] = kwargs.pop('func_pts_init', default_pts_init)  # points init function
-        self._cfg['func_pts_set'] = kwargs.pop('func_pts_set', default_pts_set)  # points set function
-        self._cfg['func_pt_set'] = kwargs.pop('func_pt_set', default_pt_set)  # single point set function
-        self._cfg['func_find_index'] = kwargs.pop('func_find_index', default_find_index)  # index finding function
-        # Prepare and update size
+        # Update size
         sz = [int(arg) for arg in args] if args else [0]
         self._size = GeomdlList(*sz, attribs=('u', 'v', 'w'), cb=[self.reset])
         # Initialize the points
@@ -318,7 +325,7 @@ class PointsManager(GeomdlBase):
 
         :getter: Gets the total number of the control points (as an ``int``)
         """
-        return reduce(lambda x, y: x * y, self.size)
+        return reduce(lambda x, y: x * y, self.size) if self._size else 0
 
     def reset(self, **kwargs):
         """ Resets the points """
