@@ -33,7 +33,7 @@ def render(bsplg, vism, **kwargs):
         trimcolor=['black'],
         colormap=list(),
         filename=None,
-        plot=True,
+        display=True,
         extras=list(),
         animate=False,
     )
@@ -152,5 +152,5 @@ def render(bsplg, vism, **kwargs):
 
     # Display the figure
     if op['animate']:
-        return vism.animate(fig_save_as=op['filename'], display_plot=op['plot'], colormap=op['colormap'])
-    return vism.render(fig_save_as=op['filename'], display_plot=op['plot'], colormap=op['colormap'])
+        return vism.animate(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
+    return vism.render(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
