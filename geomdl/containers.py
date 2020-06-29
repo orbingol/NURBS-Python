@@ -7,14 +7,13 @@
 
 """
 
-from six import add_metaclass
 from .base import export, GeomdlError, GeomdlTypeSequence
 from .abstract import Geometry
 
 
 @export
 class GeometryContainer(Geometry):
-    """ Abstract class for geometry containers """
+    """ Geometry container class """
     def __init__(self, *args, **kwargs):
         cache_vars = kwargs.get('cache_vars', dict())
         cache_vars.update(dict(evalpts=list()))

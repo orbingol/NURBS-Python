@@ -9,7 +9,6 @@
 
 import json
 from . import exc_helpers
-from ..base import GeomdlError
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []

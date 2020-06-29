@@ -8,7 +8,6 @@
 """
 
 from .. import linalg, helpers, BSpline
-from ..base import GeomdlTypeSequence
 from . import common
 
 __all__ = []

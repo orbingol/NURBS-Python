@@ -8,7 +8,7 @@
 """
 
 from numbers import Number
-from .base import export, GeomdlError, GeomdlWarning, GeomdlDict, GeomdlFloat, GeomdlTypeSequence
+from .base import export, GeomdlError, GeomdlDict, GeomdlFloat, GeomdlTypeSequence
 from .abstract import SplineGeometry, validate_params
 from .evaluators import default as defeval
 
