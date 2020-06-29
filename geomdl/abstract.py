@@ -8,15 +8,13 @@
 """
 
 import abc
-from six import add_metaclass
 from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning
 from .base import GeomdlFloat, GeomdlList, GeomdlDict, GeomdlTypeSequence
 from .ptmanager import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
 from . import knotvector, utilities
 
 
-@add_metaclass(abc.ABCMeta)
-class Geometry(GeomdlBase):
+class Geometry(GeomdlBase, metaclass=abc.ABCMeta):
     """ Abstract base class for defining geometry objects.
 
     This class provides the following properties:
@@ -92,8 +90,7 @@ class Geometry(GeomdlBase):
         """
 
 
-@add_metaclass(abc.ABCMeta)
-class AnalyticGeometry(Geometry):
+class AnalyticGeometry(Geometry, metaclass=abc.ABCMeta):
     """ Abstract base class for analytic-type geometry classes """
     def __init__(self, **kwargs):
         super(AnalyticGeometry, self).__init__(**kwargs)
@@ -121,8 +118,7 @@ class AnalyticGeometry(Geometry):
         """
 
 
-@add_metaclass(abc.ABCMeta)
-class SplineGeometry(Geometry):
+class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     """ Abstract base class for defining spline geometry objects.
 
     This class provides the following properties:

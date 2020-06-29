@@ -8,15 +8,13 @@
 """
 
 import abc
-from six import add_metaclass
 from ..base import GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
 
-@add_metaclass(abc.ABCMeta)
-class VisConfigAbstract(object):
+class VisConfigAbstract(object, metaclass=abc.ABCMeta):
     """ Abstract base class for user configuration of the visualization module
 
     Defines an abstract base for NURBS-Python (geomdl) visualization configuration.
@@ -26,8 +24,7 @@ class VisConfigAbstract(object):
         pass
 
 
-@add_metaclass(abc.ABCMeta)
-class VisAbstract(object):
+class VisAbstract(object, metaclass=abc.ABCMeta):
     """ Abstract base class for visualization
 
     Defines an abstract base for NURBS-Python (geomdl) visualization modules.

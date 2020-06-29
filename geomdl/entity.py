@@ -8,12 +8,10 @@
 """
 
 import abc
-from six import add_metaclass
 from .base import export, GeomdlBase, GeomdlFloat, GeomdlError, GeomdlTypeSequence
 
 
-@add_metaclass(abc.ABCMeta)
-class AbstractEntity(GeomdlBase):
+class AbstractEntity(GeomdlBase, metaclass=abc.ABCMeta):
     """ Abstract base class for all geometric entities. """
     __slots__ = ('_data', '_iter_index')
 

@@ -12,13 +12,10 @@ import sys
 import abc
 import copy
 from itertools import chain
-from six import add_metaclass
 
 # Initialize an empty __all__ for controlling imports
 __all__ = []
 
-# Get Python version
-_pyversion = sys.version_info[0]
 # Get precision, i.e. number of decimals to round to
 _precision = os.environ.get('GEOMDL_PRECISION', '12')
 
@@ -151,19 +148,6 @@ class GeomdlFloat(float):
         c = super(GeomdlFloat, self).__mul__(other)
         return self.__class__(c)
 
-    if _pyversion < 3:
-        def __div__(self, other):
-            c = super(GeomdlFloat, self).__div__(other)
-            return self.__class__(c)
-
-        def __rdiv__(self, other):
-            c = super(GeomdlFloat, self).__rdiv__(other)
-            return self.__class__(c)
-
-        def __idiv__(self, other):
-            c = super(GeomdlFloat, self).__div__(other)
-            return self.__class__(c)
-
     def __truediv__(self, other):
         c = super(GeomdlFloat, self).__truediv__(other)
         return self.__class__(c)
@@ -242,14 +226,6 @@ class GeomdlNotifyList(list):
     __setitem__ = notifylist_callback(list.__setitem__)
     __iadd__ = notifylist_callback(list.__iadd__)
     __imul__ = notifylist_callback(list.__imul__)
-
-    # Take care to return a new NotifyList if we slice it.
-    if _pyversion < 3:
-        __setslice__ = notifylist_callback(list.__setslice__)
-        __delslice__ = notifylist_callback(list.__delslice__)
-
-        def __getslice__(self, *args):
-            return self.__class__(list.__getslice__(self, *args))
 
     def __getitem__(self, item):
         if isinstance(item, slice):
@@ -376,8 +352,7 @@ class GeomdlList(object):
         self._attribs = tuple(val)
 
 
-@add_metaclass(abc.ABCMeta)
-class GeomdlObject(object):
+class GeomdlObject(object, metaclass=abc.ABCMeta):
     """ Abstract base class for defining simple objects in geomdl
 
     This class provides the following properties:
@@ -515,8 +490,7 @@ class GeomdlObject(object):
         self._name = str()
 
 
-@add_metaclass(abc.ABCMeta)
-class GeomdlBase(GeomdlObject):
+class GeomdlBase(GeomdlObject, metaclass=abc.ABCMeta):
     """ Abstract base class for defining geomdl objects
 
     This class provides the following properties:
@@ -643,8 +617,7 @@ class GeomdlBase(GeomdlObject):
         self._cache = self._init_cache()
 
 
-@add_metaclass(abc.ABCMeta)
-class GeomdlEvaluator(GeomdlObject):
+class GeomdlEvaluator(GeomdlObject, metaclass=abc.ABCMeta):
     """ Abstract base class for implementations of fundamental algorithms
 
     This class provides the following properties:
@@ -694,11 +667,9 @@ class GeomdlEvaluator(GeomdlObject):
 
 
 # Following classes allows extensibility via registering additional input types.
-@add_metaclass(abc.ABCMeta)
-class GeomdlTypeSequence(object):
+class GeomdlTypeSequence(object, metaclass=abc.ABCMeta):
     """ Abstract base class for supported sequence types """
 
 
-@add_metaclass(abc.ABCMeta)
-class GeomdlTypeString(object):
+class GeomdlTypeString(object, metaclass=abc.ABCMeta):
     """ Abstract base class for supported string types """
