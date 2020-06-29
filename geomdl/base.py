@@ -366,7 +366,7 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_name', '_id', '_iter_index')
+    __slots__ = ('_name', '_id', '_cache_vars', '_cache', '_iter_index')
     _cfg = GeomdlDict(
         iter_callbacks=tuple()
     )  # read-only dict for storing the configuration variables
@@ -379,8 +379,12 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
 
     def __init__(self, *args, **kwargs):
         self._cfg['iter_callbacks'] = kwargs.pop('callbacks', tuple())
+        self._cache = GeomdlDict()  # cache dict
+        self._cache_vars = kwargs.get('cache_vars', dict())
         self._iter_index = 0
 
+    def _init_cache(self):
+        self._cache.update(self._cache_vars)
     def __getattr__(self, name):
         return super(GeomdlObject, self).__getattribute__(name)
 
@@ -429,9 +433,8 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
         result = cls.__new__(cls)
         # Don't copy self reference
         memo[id(self)] = result
-        # Don't copy the cache - if it exists
-        if hasattr(self, "_cache"):
-            memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
+        # Don't copy the cache
+        memo[id(self._cache)] = self._cache.__new__(GeomdlDict)
         # Get all __slots__ of the derived class
         slots = chain.from_iterable(getattr(s, '__slots__', []) for s in self.__class__.__mro__)
         # Deep copy all other attributes
@@ -512,18 +515,13 @@ class GeomdlBase(GeomdlObject, metaclass=abc.ABCMeta):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_dimension', '_geom_type', '_opt_data', '_cache_vars', '_cache')
+    __slots__ = ('_dimension', '_geom_type', '_opt_data')
 
     def __init__(self, *args, **kwargs):
         super(GeomdlBase, self).__init__(*args, **kwargs)
         self._dimension = 0  # spatial dimension
         self._geom_type = str()  # geometry type
         self._opt_data = GeomdlDict()  # dict for storing arbitrary data
-        self._cache_vars = kwargs.get('cache_vars', dict())
-        self._cache = self._init_cache()  # cache dict
-
-    def _init_cache(self):
-        return GeomdlDict(self._cache_vars)
 
     @property
     def dimension(self):
@@ -614,7 +612,7 @@ class GeomdlBase(GeomdlObject, metaclass=abc.ABCMeta):
     def reset(self, **kwargs):
         """ Clears computed/generated data, such as caches """
         self._opt_data = GeomdlDict()
-        self._cache = self._init_cache()
+        self._init_cache()
 
 
 class GeomdlEvaluator(GeomdlObject, metaclass=abc.ABCMeta):
