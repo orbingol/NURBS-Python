@@ -7,35 +7,50 @@
 
 """
 
+from ..base import GeomdlError
 from ..tessellate import triangular, quadrilateral
 from ..voxelate import voxelize
-
-RENDER_OPTIONS = dict(
-    cpcolor=['blue'],
-    evalcolor=['green'],
-    bboxcolor=['darkorange'],
-    trimcolor=['black'],
-    colormap=list(),
-    filename=None,
-    plot=True,
-    extras=list(),
-    animate=False,
-)
+from .visutils import color_generator
 
 
 def render(bsplg, vism, **kwargs):
     """ Renders B-spline geometries
 
     :param bsplg: B-spline geometry
+    :type bsplg: abstract.SplineGeometry
     :param vism: visualization module
+    :type vism: visabstract.VisAbstract
+    :raises GeomdlError: invalid user input
     """
-    op = RENDER_OPTIONS
+    # Get number of geometries
+    ssz = len(bsplg)
+
+    # Update configuration
+    op = dict(
+        cpcolor=['blue'] if ssz == 1 else color_generator(num=ssz),
+        evalcolor=['green'] if ssz == 1 else color_generator(num=ssz),
+        bboxcolor=['darkorange'] if ssz == 1 else color_generator(num=ssz),
+        trimcolor=['black'],
+        colormap=list(),
+        filename=None,
+        plot=True,
+        extras=list(),
+        animate=False,
+    )
     op.update(kwargs)
+
+    # Validate user input
+    if len(op['cpcolor'] != ssz):
+        raise GeomdlError("Number of color values for the control points must be " + str(ssz))
+    if len(op['evalcolor'] != ssz):
+        raise GeomdlError("Number of color values for the evaluated points must be " + str(ssz))
+    if len(op['bboxcolor'] != ssz):
+        raise GeomdlError("Number of color values for the boundary box must be " + str(ssz))
 
     # Clear the visualization component
     vism.clear()
 
-    ssz = len(bsplg)
+    # Start geometry loop
     for si, s in enumerate(bsplg):
         # Add control points as points
         if vism.mconf['ctrlpts'] == 'points' and vism.vconf.display_ctrlpts:
