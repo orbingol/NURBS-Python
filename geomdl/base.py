@@ -385,6 +385,7 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
 
     def _init_cache(self):
         self._cache.update(self._cache_vars)
+
     def __getattr__(self, name):
         return super(GeomdlObject, self).__getattribute__(name)
 
@@ -442,6 +443,8 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
             setattr(result, var, copy.deepcopy(getattr(self, var), memo))
         # Update configuration dictionary
         result._cfg.update(self._cfg)
+        # Regenerate the cache
+        result._init_cache()
         # Return updated instance
         return result
 
