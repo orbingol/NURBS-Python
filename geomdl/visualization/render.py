@@ -38,7 +38,7 @@ def render(bsplg, vism, **kwargs):
     ssz = len(bsplg)
     for si, s in enumerate(bsplg):
         # Add control points as points
-        if vism.mconf['ctrlpts'] == 'points':
+        if vism.mconf['ctrlpts'] == 'points' and vism.vconf.display_ctrlpts:
             vism.add(
                 ptsarr=s.ctrlpts.points,
                 name="control points" if ssz == 1 else  "control points {}".format(si + 1),
@@ -47,7 +47,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add control points as quads
-        if vism.mconf['ctrlpts'] == 'quads':
+        if vism.mconf['ctrlpts'] == 'quads' and vism.vconf.display_ctrlpts:
             v, f = quadrilateral.make_quad_mesh(s.ctrlpts.points, size_u=s.ctrlpts_size[0], size_v=s.ctrlpts_size[1])
             vism.add(
                 ptsarr=[v, f],
@@ -57,7 +57,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add evaluated points as points
-        if vism.mconf['evalpts'] == 'points':
+        if vism.mconf['evalpts'] == 'points' and vism.vconf.display_evalpts:
             vism.add(
                 ptsarr=s.evalpts,
                 name=s.name if ssz == 1 else "geometry {}".format(si + 1),
@@ -66,7 +66,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add evaluated points as quads
-        if vism.mconf['evalpts'] == 'quads':
+        if vism.mconf['evalpts'] == 'quads' and vism.vconf.display_evalpts:
             v, f = quadrilateral.make_quad_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
                 ptsarr=[v, f],
@@ -76,7 +76,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add evaluated points as vertices and triangles
-        if vism.mconf['evalpts'] == 'triangles':
+        if vism.mconf['evalpts'] == 'triangles' and vism.vconf.display_evalpts:
             v, f = triangular.make_triangle_mesh(s.evalpts, size_u=s.sample_size[0], size_v=s.sample_size[1])
             vism.add(
                 ptsarr=[v, f],
@@ -86,7 +86,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add evaluated points as voxels
-        if vism.mconf['evalpts'] == 'voxels':
+        if vism.mconf['evalpts'] == 'voxels' and vism.vconf.display_evalpts:
             grid, filled = voxelize.voxelize(s, **kwargs)
             faces = voxelize.convert_bb_to_faces(grid)
             vism.add(
@@ -97,7 +97,7 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add trim curves
-        if s.trims:
+        if s.trims and vism.vconf.display_trims:
             for idx, trim in enumerate(s.trims):
                 vism.add(
                     ptsarr=s.evaluate_list(trim.evalpts),
@@ -107,12 +107,13 @@ def render(bsplg, vism, **kwargs):
                 )
 
         # Add bounding box
-        vism.add(
-            ptsarr=s.bbox,
-            name="bounding box" if ssz == 1 else "bounding box {}".format(si + 1),
-            color=op['bboxcolor'][si],
-            plot_type='bbox'
-        )
+        if vism.vconf.display_bbox:
+            vism.add(
+                ptsarr=s.bbox,
+                name="bounding box" if ssz == 1 else "bounding box {}".format(si + 1),
+                color=op['bboxcolor'][si],
+                plot_type='bbox'
+            )
 
         # Add user plots
         for ep in op['extras']:
