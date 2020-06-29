@@ -30,7 +30,7 @@ def render(bsplg, vism, **kwargs):
         cpcolor=['blue'] if ssz == 1 else color_generator(num=ssz),
         evalcolor=['green'] if ssz == 1 else color_generator(num=ssz),
         bboxcolor=['darkorange'] if ssz == 1 else color_generator(num=ssz),
-        trimcolor=['black'],
+        trimcolor=['black' for _ in range(ssz)],
         colormap=list(),
         filename=None,
         display=True,
@@ -46,6 +46,8 @@ def render(bsplg, vism, **kwargs):
         raise GeomdlError("Number of color values for the evaluated points must be " + str(ssz))
     if len(op['bboxcolor']) != ssz:
         raise GeomdlError("Number of color values for the boundary box must be " + str(ssz))
+    if len(op['trimcolor']) != ssz:
+        raise GeomdlError("Number of color values for the trims must be " + str(ssz))
 
     # Clear the visualization component
     vism.clear()
