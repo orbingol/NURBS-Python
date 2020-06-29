@@ -32,9 +32,6 @@ def render(bsplg, vism, **kwargs):
     op = RENDER_OPTIONS
     op.update(kwargs)
 
-    # Evaluate the geometry
-    bsplg.evaluate()
-
     # Clear the visualization component
     vism.clear()
 
