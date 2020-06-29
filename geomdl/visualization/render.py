@@ -16,6 +16,15 @@ from .visutils import color_generator
 def render(bsplg, vism, **kwargs):
     """ Renders B-spline geometries
 
+    This function provides the following keyword arguments:
+
+    * ``cpcolor``: color of the control points
+    * ``evalcolor``: color of the evaluated points
+    * ``bboxcolor``: color of the boundary box
+    * ``trimcolor``: color of the trims
+    * ``filename``: file name for saving the figure
+    * ``display``: flag to control the figure display
+
     :param bsplg: B-spline geometry
     :type bsplg: abstract.SplineGeometry
     :param vism: visualization module
