@@ -10,7 +10,7 @@
 from .. import linalg
 from .. import ray
 from ..base import GeomdlFloat
-from ..entity import Vertex, Triangle, Quad
+from ..entity import Vertex, Triangle
 
 
 def make_triangle_mesh(points, size_u, size_v, **kwargs):

@@ -10,7 +10,6 @@
 import copy
 from .. import helpers
 from ..base import GeomdlError, GeomdlWarning
-from .knot_insert import insert_knot
 
 __all__ = []
 

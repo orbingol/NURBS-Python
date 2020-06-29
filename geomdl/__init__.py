@@ -21,24 +21,21 @@ __keywords__ = 'NURBS B-Spline curve surface volume computational-geometry CAD m
 # @see: https://stackoverflow.com/a/35710527
 __all__ = [
     'BSpline',
-    'compatibility',
-    'construct',
-    'control_points',
-    'convert',
-    'elements',
-    'evaluators',
-    'exchange',
-    'exchange_vtk',
-    'fitting',
-    'helpers',
-    'linalg',
-    'multi',
     'NURBS',
-    'operations',
-    'ray',
+    'freeform',
+    'knotvector',
+    'helpers',
+    'evaluators',
+    'algorithms',
+    'fitting',
+    'geomutils',
     'tessellate',
-    'utilities',
-    'voxelize'
+    'voxelate',
+    'exchange',
+    'entity',
+    'ray',
+    'linalg',
+    'utilities'
 ]
 
 # Register default types for isinstance() checking

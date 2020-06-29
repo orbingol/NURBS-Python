@@ -7,7 +7,7 @@
 
 """
 
-from .. import linalg, helpers
+from .. import linalg
 from ..base import GeomdlError
 
 __all__ = []

@@ -8,8 +8,7 @@
 """
 
 from . import BSpline
-from .base import export, GeomdlError, GeomdlTypeSequence
-from .ptmanager import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
+from .base import export, GeomdlError
 from .evaluators import default_rational as defeval
 
 

@@ -7,10 +7,9 @@
 
 """
 
-import abc
 import math
-from . import abstract
-from . import linalg
+from .. import abstract
+from .. import linalg
 
 
 class Circle(abstract.AnalyticGeometry):

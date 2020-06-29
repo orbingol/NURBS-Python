@@ -10,7 +10,6 @@
 from six import add_metaclass
 from .base import export, GeomdlError, GeomdlTypeSequence
 from .abstract import Geometry
-from . import utilities
 
 
 @export

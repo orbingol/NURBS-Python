@@ -7,9 +7,7 @@
 
 """
 
-import struct
 from . import exc_helpers
-from .. import linalg
 from .. import entity
 from ..tessellate import triangular
 from ..base import GeomdlError

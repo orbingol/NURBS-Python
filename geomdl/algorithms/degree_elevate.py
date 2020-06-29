@@ -9,7 +9,7 @@
 
 from .. import helpers
 from .. import ptmanager
-from ..base import GeomdlError, GeomdlTypeSequence
+from ..base import GeomdlError
 from .decompose import decompose_curve
 from .link import link_curves
 
