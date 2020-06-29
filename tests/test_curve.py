@@ -8,7 +8,7 @@
 
 import pytest
 from geomdl import BSpline, NURBS
-from geomdl import evaluators
+from geomdl.evaluators import default2
 
 GEOMDL_DELTA = 0.001
 
@@ -55,7 +55,7 @@ def test_bsplcurve2d_eval(curve7, param, res):
 @pytest.mark.parametrize("param", [0.11, 0.35, 0.67, 0.99])
 def test_bsplcurve2d_deriv(curve7, param):
     der1 = curve7.derivatives(param=(param,), order=2)
-    curve7.evaluator = evaluators.CurveEvaluator2()
+    curve7.evaluator = default2.CurveEvaluator2()
     der2 = curve7.derivatives(param=(param,), order=2)
 
     assert abs(der1[0][0] - der2[0][0]) < GEOMDL_DELTA
@@ -71,7 +71,7 @@ def test_bsplcurve2d_deriv(curve7, param):
 def test_bsplcurve2d_deriv_eval(curve7, param):
     evalpt = curve7.evaluate_single(param)
     der1 = curve7.derivatives(param=param)
-    curve7.evaluator = evaluators.CurveEvaluator2()
+    curve7.evaluator = default2.CurveEvaluator2()
     der2 = curve7.derivatives(param=param)
 
     assert abs(der1[0][0] - evalpt[0]) < GEOMDL_DELTA

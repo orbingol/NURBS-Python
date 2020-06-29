@@ -8,7 +8,7 @@
 
 import pytest
 from geomdl import BSpline, NURBS
-from geomdl import evaluators
+from geomdl.evaluators import default2
 
 GEOMDL_DELTA = 0.001
 
@@ -91,7 +91,7 @@ def test_bspline_surface_eval(surface5, param, res):
 @pytest.mark.usefixtures("surface5")
 def test_bspline_surface_deriv(surface5):
     der1 = surface5.derivatives(param=(0.35, 0.35), order=2)
-    surface5.evaluator = evaluators.SurfaceEvaluator2()
+    surface5.evaluator = default2.SurfaceEvaluator2()
     der2 = surface5.derivatives(param=(0.35, 0.35), order=2)
     for k in range(0, 3):
         for l in range(0, 3 - k):
