@@ -11,10 +11,7 @@ import os
 from copy import deepcopy
 from . import linalg
 from .base import GeomdlError, GeomdlFloat, GeomdlTypeSequence
-try:
-    from functools import lru_cache
-except ImportError:
-    from .functools_lru_cache import lru_cache
+from functools import lru_cache
 
 
 def find_span_binsearch(degree, knot_vector, num_ctrlpts, knot, **kwargs):

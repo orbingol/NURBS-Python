@@ -11,11 +11,7 @@ import os
 import math
 from operator import add, sub, mul, truediv
 from copy import deepcopy
-from functools import reduce
-try:
-    from functools import lru_cache
-except ImportError:
-    from .functools_lru_cache import lru_cache
+from functools import reduce, lru_cache
 from .base import GeomdlError, GeomdlFloat
 
 
