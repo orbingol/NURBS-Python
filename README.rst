@@ -89,10 +89,7 @@ Please see `CONTRIBUTORS.rst <CONTRIBUTORS.rst>`_ file for the acknowledgements.
 License
 =======
 
-NURBS-Python (geomdl) is licensed under the terms of `MIT License <LICENSE>`_ and it contains the following modules:
-
-* ``six`` is licensed under the terms of `MIT License <https://github.com/benjaminp/six/blob/1.12.0/LICENSE>`_
-* ``backports.functools_lru_cache`` is licensed under the terms of `MIT License <https://github.com/jaraco/backports.functools_lru_cache/blob/1.5/LICENSE>`_
+NURBS-Python (geomdl) is licensed under the terms of `MIT License <LICENSE>`_.
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
