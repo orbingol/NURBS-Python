@@ -9,6 +9,6 @@
 
 __all__ = [
     'default',
-    'default2'
+    'default2',
     'default_rational'
 ]
