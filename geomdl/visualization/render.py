@@ -40,11 +40,11 @@ def render(bsplg, vism, **kwargs):
     op.update(kwargs)
 
     # Validate user input
-    if len(op['cpcolor'] != ssz):
+    if len(op['cpcolor']) != ssz:
         raise GeomdlError("Number of color values for the control points must be " + str(ssz))
-    if len(op['evalcolor'] != ssz):
+    if len(op['evalcolor']) != ssz:
         raise GeomdlError("Number of color values for the evaluated points must be " + str(ssz))
-    if len(op['bboxcolor'] != ssz):
+    if len(op['bboxcolor']) != ssz:
         raise GeomdlError("Number of color values for the boundary box must be " + str(ssz))
 
     # Clear the visualization component
