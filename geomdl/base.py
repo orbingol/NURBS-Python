@@ -131,9 +131,9 @@ class GeomdlFloat(float):
         c = super(GeomdlFloat, self).__sub__(other)
         return self.__class__(c)
 
-    # def __rsub__(self, other):
-    #     c = super(GeomdlFloat, self).__rsub__(other)
-    #     return self.__class__(c)
+    def __rsub__(self, other):
+        c = super(GeomdlFloat, self).__rsub__(other)
+        return self.__class__(c)
 
     def __isub__(self, other):
         c = super(GeomdlFloat, self).__sub__(other)
@@ -143,33 +143,34 @@ class GeomdlFloat(float):
         c = super(GeomdlFloat, self).__mul__(other)
         return self.__class__(c)
 
-    # def __rmul__(self, other):
-    #     c = super(GeomdlFloat, self).__rmul__(other)
-    #     return self.__class__(c)
+    def __rmul__(self, other):
+        c = super(GeomdlFloat, self).__rmul__(other)
+        return self.__class__(c)
 
     def __imul__(self, other):
         c = super(GeomdlFloat, self).__mul__(other)
         return self.__class__(c)
 
-    def __div__(self, other):
-        c = super(GeomdlFloat, self).__div__(other)
-        return self.__class__(c)
+    if _pyversion < 3:
+        def __div__(self, other):
+            c = super(GeomdlFloat, self).__div__(other)
+            return self.__class__(c)
 
-    # def __rdiv__(self, other):
-    #     c = super(GeomdlFloat, self).__rdiv__(other)
-    #     return self.__class__(c)
+        def __rdiv__(self, other):
+            c = super(GeomdlFloat, self).__rdiv__(other)
+            return self.__class__(c)
 
-    def __idiv__(self, other):
-        c = super(GeomdlFloat, self).__div__(other)
-        return self.__class__(c)
+        def __idiv__(self, other):
+            c = super(GeomdlFloat, self).__div__(other)
+            return self.__class__(c)
 
     def __truediv__(self, other):
         c = super(GeomdlFloat, self).__truediv__(other)
         return self.__class__(c)
 
-    # def __rtruediv__(self, other):
-    #     c = super(GeomdlFloat, self).__rtruediv__(other)
-    #     return self.__class__(c)
+    def __rtruediv__(self, other):
+        c = super(GeomdlFloat, self).__rtruediv__(other)
+        return self.__class__(c)
 
     def __itruediv__(self, other):
         c = super(GeomdlFloat, self).__truediv__(other)
