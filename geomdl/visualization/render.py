@@ -97,8 +97,8 @@ def render(bsplg, vism, **kwargs):
             )
 
         # Add trim curves
-        if bsplg.trims:
-            for idx, trim in enumerate(bsplg.trims):
+        if s.trims:
+            for idx, trim in enumerate(s.trims):
                 vism.add(
                     ptsarr=s.evaluate_list(trim.evalpts),
                     name="trim {}".format(idx + 1) if ssz == 1 else "trim {} for geometry {}".format(idx + 1, si + 1),
