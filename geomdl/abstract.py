@@ -138,7 +138,6 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     * :py:attr:`weights` (for completeness)
     * :py:attr:`ctrlpts_size`
     * :py:attr:`sample_size`
-    * :py:attr:`delta`
     * :py:attr:`domain`
     * :py:attr:`range`
     * :py:attr:`bbox`
@@ -168,8 +167,8 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     """
     __slots__ = (
-         '_pdim', '_dinit', '_attribs', '_rational', '_degree', '_knot_vector', '_control_points',
-         '_delta', '_bounding_box', '_evaluator'
+         '_pdim', '_attribs', '_rational', '_degree', '_knot_vector', '_control_points',
+         '_ssinit', '_sample_size', '_bounding_box', '_evaluator'
     )
 
     def __init__(self, *args, **kwargs):
@@ -180,7 +179,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
         # Initialize variables
         self._pdim = kwargs.get('pdimension', 0) # number of parametric dimensions
-        self._dinit = GeomdlFloat(kwargs.get('dinit', 0.1))  # evaluation delta init value
+        self._ssinit = GeomdlFloat(kwargs.get('dinit', 50))  # sample size init value
         self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
         self._geom_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
@@ -195,9 +194,9 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             *[list() for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_knotvector_value]
         )
-        self._delta = GeomdlList(  # evaluation delta
-            *[self._dinit for _ in range(self._pdim)], attribs=self._attribs,
-            cb=[self.reset], cbd=[validate_delta_value]
+        self._sample_size = GeomdlList(  # sample size for evaluation
+            *[self._ssinit for _ in range(self._pdim)], attribs=self._attribs,
+            cb=[self.reset], cbd=[validate_sample_size_value]
         )
 
         # Get keyword arguments
@@ -448,13 +447,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     def sample_size(self):
         """ Sample size
 
-        Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
-
-        The following figure illustrates the working principles of sample size property:
-
-        .. math::
-
-            \\underbrace {\\left[ {{u_{start}}, \\ldots ,{u_{end}}} \\right]}_{{n_{sample}}}
+        Sample size defines the number of evaluated points to generate.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -463,49 +456,11 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         :setter: Sets sample size
         :type: int
         """
-        if not self._cache['sample_size']:
-            self._cache['sample_size'] = [utilities.compute_sample_size_from_delta(d) for d in self._delta]
-        return tuple(self._cache['sample_size'])
+        return self._sample_size
 
     @sample_size.setter
     def sample_size(self, value):
-        for i in range(self.pdimension):
-            if not isinstance(value[i], int):
-                raise GeomdlError("Sample size must be an integer value")
-            if not self._knot_vector[i] or self._degree[i] == 0:
-                GeomdlWarning("Cannot determine the delta value. Please set knot vector and degree before sample size.")
-                return
-
-        # Set delta value(s)
-        val = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
-        self._delta.data = [utilities.compute_delta_from_sample_size(val[i], self.domain[i], self.range[i]) for i in range(self.pdimension)]
-
-    @property
-    def delta(self):
-        """ Evaluation delta
-
-        Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
-        generate curve points. Decreasing step size results in generation of more curve points.
-        Therefore; smaller the delta value, smoother the curve.
-
-        The following figure illustrates the working principles of the delta property:
-
-        .. math::
-
-            \\left[{{u_{start}},{u_{start}} + \\delta ,({u_{start}} + \\delta ) + \\delta , \\ldots ,{u_{end}}} \\right]
-
-        Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
-        on using this class member.
-
-        :getter: Gets the delta value
-        :setter: Sets the delta value
-        :type: list
-        """
-        return self._delta
-
-    @delta.setter
-    def delta(self, value):
-        self._delta.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value for _ in range(self._pdim)]
+        self._sample_size.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value for _ in range(self._pdim)]
 
     @property
     def domain(self):
@@ -592,8 +547,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         spl_data = GeomdlDict(
             rational=self.rational,
             pdimension=self.pdimension,
-            delta=tuple(self._delta),
-            sample_size=tuple(self.sample_size),
+            sample_size=tuple(self._sample_size),
             degree=tuple(self.degree),
             knotvector=tuple(self.knotvector),
             size=tuple(self.ctrlpts_size),
@@ -641,8 +595,8 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             # Make sure that the knot vector is normalized when normalize_kv = True
             if self._cfg['bool_normalize_kv']:
                 self._knot_vector[i] = knotvector.normalize(self._knot_vector[i])
-            # Check delta values
-            validate_delta_value(self._attribs[i], self._delta[i])
+            # Check sample size values
+            validate_sample_size_value(self._attribs[i], self._sample_size[i])
 
     def reset(self, **kwargs):
         """ Clears computed/generated data, such as caches and evaluated points """
@@ -741,11 +695,11 @@ def validate_knotvector_value(key, value):
         raise GeomdlError("Knot vector " + str(key) + " is empty")
 
 
-def validate_delta_value(key, value):
-    if not isinstance(value, float):
-        raise GeomdlError("Delta value must be a float value for the dimension " + str(key))
-    if value <= 0 or value >= 1:
-        raise GeomdlError("Delta should be between 0.0 and 1.0 for the dimension " + str(key))
+def validate_sample_size_value(key, value):
+    if not isinstance(value, int):
+        raise GeomdlError("Sample size must be a int value for the dimension " + str(key))
+    if value <= 1:
+        raise GeomdlError("Sample size must be bigger than 1 for the dimension " + str(key))
 
 
 def validate_params(params):

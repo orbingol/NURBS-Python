@@ -33,7 +33,6 @@ class Curve(SplineGeometry):
     * :py:attr:`ctrlpts`
     * :py:attr:`ctrlpts_size`
     * :py:attr:`sample_size`
-    * :py:attr:`delta`
     * :py:attr:`domain`
     * :py:attr:`range`
     * :py:attr:`bbox`
@@ -182,7 +181,6 @@ class Surface(SplineGeometry):
     * :py:attr:`ctrlpts`
     * :py:attr:`ctrlpts_size`
     * :py:attr:`sample_size`
-    * :py:attr:`delta`
     * :py:attr:`domain`
     * :py:attr:`range`
     * :py:attr:`bbox`
@@ -377,7 +375,6 @@ class Volume(SplineGeometry):
     * :py:attr:`ctrlpts`
     * :py:attr:`ctrlpts_size`
     * :py:attr:`sample_size`
-    * :py:attr:`delta`
     * :py:attr:`domain`
     * :py:attr:`range`
     * :py:attr:`bbox`
