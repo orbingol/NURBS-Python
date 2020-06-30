@@ -24,6 +24,7 @@ def render(bsplg, vism, **kwargs):
     * ``trimcolor``: color of the trims
     * ``filename``: file name for saving the figure
     * ``display``: flag to control the figure display
+    * ``sample_size``: sample size of all geometries
 
     :param bsplg: B-spline geometry
     :type bsplg: abstract.SplineGeometry
@@ -45,6 +46,7 @@ def render(bsplg, vism, **kwargs):
         display=True,
         extras=list(),
         animate=False,
+        sample_size=None
     )
     op.update(kwargs)
 
@@ -63,6 +65,10 @@ def render(bsplg, vism, **kwargs):
 
     # Start geometry loop
     for si, s in enumerate(bsplg):
+        # Update sample size
+        if op['sample_size'] is not None and vism.vconf.display_evalpts:
+            s.sample_size = op['sample_size']
+
         # Add control points as points
         if vism.mconf['ctrlpts'] == 'points' and vism.vconf.display_ctrlpts:
             vism.add(
