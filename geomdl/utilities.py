@@ -163,33 +163,6 @@ def make_quadtree(points, size_u, size_v, **kwargs):
     return tuple(qtree)
 
 
-def evaluate_bounding_box(ctrlpts):
-    """ Computes the minimum bounding box of the point set.
-
-    The (minimum) bounding box is the smallest enclosure in which all the input points lie.
-
-    :param ctrlpts: points
-    :type ctrlpts: list, tuple
-    :return: bounding box in the format [min, max]
-    :rtype: tuple
-    """
-    # Estimate dimension from the first element of the control points
-    dimension = len(ctrlpts[0])
-
-    # Evaluate bounding box
-    bbmin = [GeomdlFloat('inf') for _ in range(0, dimension)]
-    bbmax = [GeomdlFloat('-inf') for _ in range(0, dimension)]
-    for cpt in ctrlpts:
-        for i, arr in enumerate(zip(cpt, bbmin)):
-            if arr[0] < arr[1]:
-                bbmin[i] = arr[0]
-        for i, arr in enumerate(zip(cpt, bbmax)):
-            if arr[0] > arr[1]:
-                bbmax[i] = arr[0]
-
-    return tuple(bbmin), tuple(bbmax)
-
-
 def compute_delta_from_sample_size(sample_size, domain, domain_range):
     """ Computes delta from sample size
 

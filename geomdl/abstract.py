@@ -11,7 +11,7 @@ import abc
 from .base import GeomdlBase, GeomdlEvaluator, GeomdlError, GeomdlWarning
 from .base import GeomdlFloat, GeomdlList, GeomdlDict, GeomdlTypeSequence
 from .ptmanager import CPManager, separate_ctrlpts_weights, combine_ctrlpts_weights
-from . import knotvector, utilities
+from . import knotvector
 
 
 class Geometry(GeomdlBase, metaclass=abc.ABCMeta):
@@ -499,7 +499,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         :type: tuple
         """
         if self._bounding_box is None or len(self._bounding_box) == 0:
-            self._bounding_box = utilities.evaluate_bounding_box(self.ctrlpts)
+            self._bounding_box = evaluate_bounding_box(self.ctrlpts)
         return self._bounding_box
 
     @property
@@ -716,3 +716,30 @@ def validate_params(params):
             if not 0.0 <= prm <= 1.0:
                 return False
     return True
+
+
+def evaluate_bounding_box(ctrlpts):
+    """ Computes the minimum bounding box of the point set.
+
+    The (minimum) bounding box is the smallest enclosure in which all the input points lie.
+
+    :param ctrlpts: points
+    :type ctrlpts: list, tuple
+    :return: bounding box in the format [min, max]
+    :rtype: tuple
+    """
+    # Estimate dimension from the first element of the control points
+    dimension = len(ctrlpts[0])
+
+    # Evaluate bounding box
+    bbmin = [GeomdlFloat('inf') for _ in range(0, dimension)]
+    bbmax = [GeomdlFloat('-inf') for _ in range(0, dimension)]
+    for cpt in ctrlpts:
+        for i, arr in enumerate(zip(cpt, bbmin)):
+            if arr[0] < arr[1]:
+                bbmin[i] = arr[0]
+        for i, arr in enumerate(zip(cpt, bbmax)):
+            if arr[0] > arr[1]:
+                bbmax[i] = arr[0]
+
+    return tuple(bbmin), tuple(bbmax)
