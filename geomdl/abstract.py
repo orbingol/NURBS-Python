@@ -594,7 +594,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             if not knotvector.check(self._degree[i], self._knot_vector[i], self._control_points.size[i]):
                 raise GeomdlError("Input is not a valid knot vector for the parametric dimension " + self._attribs[i])
             # Make sure that the knot vector is normalized when normalize_kv = True
-            if self._cfg['bool_normalize_kv']:
+            if self._cfg['normalize_kv']:
                 self._knot_vector[i] = knotvector.normalize(self._knot_vector[i])
             # Check sample size values
             validate_sample_size_value(self._attribs[i], self._sample_size[i])
@@ -635,7 +635,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             param = [GeomdlFloat(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._cfg['bool_normalize_kv']:
+        if self._cfg['normalize_kv']:
             if not validate_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 
@@ -651,7 +651,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         # Evaluate parameter list
         res = []
         for prm in params:
-            if self._cfg['bool_normalize_kv']:
+            if self._cfg['normalize_kv']:
                 if validate_params([prm]):
                     res.append(self.evaluate_single(prm))
             else:
@@ -679,7 +679,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             param = [GeomdlFloat(param) for _ in range(self.pdimension)]
 
         # Check parameters
-        if self._cfg['bool_normalize_kv']:
+        if self._cfg['normalize_kv']:
             if not validate_params(param):
                 raise GeomdlError("Parameters should be between 0 and 1")
 

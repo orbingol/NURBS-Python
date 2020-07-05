@@ -98,7 +98,7 @@ class Curve(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._cfg['bool_normalize_kv'],
+            self._cfg['normalize_kv'],
         )
 
         # Reset cached variables
@@ -256,7 +256,7 @@ class Surface(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._cfg['bool_normalize_kv'],
+            self._cfg['normalize_kv'],
         )
 
         # Reset cached variables
@@ -417,7 +417,7 @@ class Volume(SplineGeometry):
             kwargs.get('start', None),
             kwargs.get('stop', None),
             self.domain,
-            self._cfg['bool_normalize_kv'],
+            self._cfg['normalize_kv'],
         )
 
         # Reset cached variables
