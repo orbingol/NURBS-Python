@@ -179,7 +179,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
         # Initialize variables
         self._pdim = kwargs.get('pdimension', 0) # number of parametric dimensions
-        self._ssinit = GeomdlFloat(kwargs.get('dinit', 50))  # sample size init value
+        self._ssinit = int(kwargs.get('dinit', 50))  # sample size init value
         self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
         self._geom_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
