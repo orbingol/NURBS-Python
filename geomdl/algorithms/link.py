@@ -32,7 +32,7 @@ def link_curves(*args, **kwargs):
     if validate:
         for idx in range(len(args) - 1):
             if linalg.point_distance(args[idx].ctrlpts[-1], args[idx + 1].ctrlpts[0]) > tol:
-                raise GeomdlError("Curve #" + str(idx) + " and Curve #" + str(idx + 1) + " don't touch each other")
+                raise GeomdlError("Curve #" + str(idx) + " and Curve #" + str(idx + 1) + " are far away from each other")
 
     kv = []  # new knot vector
     cpts = []  # new control points array
