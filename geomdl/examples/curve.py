@@ -7,9 +7,9 @@
 
 """
 
-from .. import BSpline, NURBS
+from .. import BSpline, NURBS, knotvector
 from ..base import GeomdlError
-from ..ptmanager import CPManager, knotvector
+from ..ptmanager import CPManager
 
 
 # Generates a NURBS circle from 9 control points
