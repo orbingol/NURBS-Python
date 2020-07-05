@@ -149,7 +149,7 @@ def insert_knot(obj, param, num, **kwargs):
             ctrlpts_new = []
             for v in range(obj.ctrlpts_size.v + num[1]):
                 for u in range(obj.ctrlpts_size.u):
-                    ctrlpts_new.append(cpts_tmp[u + (v * obj.ctrlpts_size.u)])
+                    ctrlpts_new.append(cpts_tmp[v + (u * (obj.ctrlpts_size.v + num[1]))])
 
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v + num[1])
             obj.knotvector.v = kv_v

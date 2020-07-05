@@ -116,7 +116,7 @@ def remove_knot(obj, param, num, **kwargs):
             kv_u = helpers.knot_removal_kv(obj.knotvector.u, span_u, num[0])
 
             # Update the surface
-            obj.set_ctrlpts(cpts_tmp, obj.ctrlpts_size.u + num[0], obj.ctrlpts_size.v)
+            obj.set_ctrlpts(cpts_tmp, obj.ctrlpts_size.u - num[0], obj.ctrlpts_size.v)
             obj.knotvector.u = kv_u
 
         # v-direction
@@ -146,12 +146,12 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Rearrange control points
             ctrlpts_new = []
-            for v in range(obj.ctrlpts_size.v + num[1]):
+            for v in range(obj.ctrlpts_size.v - num[1]):
                 for u in range(obj.ctrlpts_size.u):
-                    ctrlpts_new.append(cpts_tmp[u + (v * obj.ctrlpts_size.u)])
+                    ctrlpts_new.append(cpts_tmp[v + (u * (obj.ctrlpts_size.v - num[1]))])
 
             # Update the surface
-            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v + num[1])
+            obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, obj.ctrlpts_size.v - num[1])
             obj.knotvector.v = kv_v
 
     # Start volume knot removal

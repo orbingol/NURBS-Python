@@ -127,7 +127,7 @@ def refine_knotvector(obj, param, **kwargs):
             ctrlpts_new = []
             for v in range(new_cpts_size):
                 for u in range(obj.ctrlpts_size.u):
-                    ctrlpts_new.append(new_cpts[u + (v * obj.ctrlpts_size.u)])
+                    ctrlpts_new.append(new_cpts[v + (u * new_cpts_size)])
 
             # Update the surface
             obj.set_ctrlpts(ctrlpts_new, obj.ctrlpts_size.u, new_cpts_size)
