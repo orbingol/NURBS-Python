@@ -10,7 +10,7 @@
 import copy
 from .. import helpers
 from ..base import GeomdlError
-from .split import split_curve, split_surface_u, split_surface_v
+from .split import split_curve, split_surface
 
 
 def decompose_curve(obj, **kwargs):
@@ -58,12 +58,12 @@ def decompose_surface(obj, **kwargs):
     :return: a list of Bezier patches
     :rtype: list
     """
-    def decompose(srf, idx, split_func_list, **kws):
+    def decompose(srf, idx, sdir, **kws):
         srf_list = []
         knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
         while knots:
             knot = knots[0]
-            srfs = split_func_list[idx](srf, param=knot, **kws)
+            srfs = split_surface(srf, knot, sdir, **kws)
             srf_list.append(srfs[0])
             srf = srfs[1]
             knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
@@ -72,35 +72,32 @@ def decompose_surface(obj, **kwargs):
 
     # Validate input
     if obj.pdimension != 2:
-        raise GeomdlError("Input must be a B-Spline surface")
+        raise GeomdlError("Input must be a surface")
 
     # Get keyword arguments
     decompose_dir = kwargs.get('decompose_dir', 'uv')  # possible directions: u, v, uv
     if "decompose_dir" in kwargs:
         kwargs.pop("decompose_dir")
 
-    # List of split functions
-    split_funcs = [split_surface_u, split_surface_v]
-
     # Work with an identical copy
     surf = copy.deepcopy(obj)
 
     # Only u-direction
     if decompose_dir == 'u':
-        return decompose(surf, 0, split_funcs, **kwargs)
+        return decompose(surf, 0, decompose_dir, **kwargs)
 
     # Only v-direction
     if decompose_dir == 'v':
-        return decompose(surf, 1, split_funcs, **kwargs)
+        return decompose(surf, 1, decompose_dir, **kwargs)
 
     # Both u- and v-directions
     if decompose_dir == 'uv':
         multi_surf = []
         # Process u-direction
-        surfs_u = decompose(surf, 0, split_funcs, **kwargs)
+        surfs_u = decompose(surf, 0, "u", **kwargs)
         # Process v-direction
         for sfu in surfs_u:
-            multi_surf += decompose(sfu, 1, split_funcs, **kwargs)
+            multi_surf += decompose(sfu, 1, "v", **kwargs)
         return multi_surf
     else:
         raise GeomdlError("Cannot decompose in " + str(decompose_dir) + " direction. Acceptable values: u, v, uv")
