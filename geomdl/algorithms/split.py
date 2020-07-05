@@ -32,13 +32,13 @@ def split_curve(obj, param, **kwargs):
     if obj.pdimension != 1:
         raise GeomdlError("Input must be a B-Spline curve")
 
-    if param == obj.domain[0] or param == obj.domain[1]:
+    if param == obj.domain[0][0] or param == obj.domain[0][1]:
         raise GeomdlError("Cannot split from the domain edge")
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = helpers.find_span_linear(obj.degree, obj.knotvector.u, obj.ctrlpts.count, param) - obj.degree.u + 1
     s = helpers.find_multiplicity(param, obj.knotvector.u)
-    r = obj.degree - s
+    r = obj.degree.u - s
 
     # Create backups of the original curve
     temp_obj = copy.deepcopy(obj)
@@ -51,7 +51,7 @@ def split_curve(obj, param, **kwargs):
     curve1_kv = list(temp_obj.knotvector.u[0:knot_span])
     curve1_kv.append(param)
     curve2_kv = list(temp_obj.knotvector.u[knot_span:])
-    for _ in range(0, temp_obj.degree + 1):
+    for _ in range(0, temp_obj.degree.u + 1):
         curve2_kv.insert(0, param)
 
     # Control points (use Pw if rational)
@@ -61,13 +61,13 @@ def split_curve(obj, param, **kwargs):
 
     # Create a new curve for the first half
     curve1 = temp_obj.__class__()
-    curve1.degree.u = temp_obj.degree
+    curve1.degree.u = temp_obj.degree.u
     curve1.set_ctrlpts(curve1_ctrlpts)
     curve1.knotvector.u = curve1_kv
 
     # Create another curve fot the second half
     curve2 = temp_obj.__class__()
-    curve2.degree.u = temp_obj.degree
+    curve2.degree.u = temp_obj.degree.u
     curve2.set_ctrlpts(curve2_ctrlpts)
     curve2.knotvector.u = curve2_kv
 

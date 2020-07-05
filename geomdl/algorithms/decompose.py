@@ -32,13 +32,13 @@ def decompose_curve(obj, **kwargs):
 
     multi_curve = []
     curve = copy.deepcopy(obj)
-    knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+    knots = curve.knotvector.u[curve.degree.u + 1:-(curve.degree.u + 1)]
     while knots:
         knot = knots[0]
         curves = split_curve(curve, param=knot, **kwargs)
         multi_curve.append(curves[0])
         curve = curves[1]
-        knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+        knots = curve.knotvector.u[curve.degree.u + 1:-(curve.degree.u + 1)]
     multi_curve.append(curve)
 
     return multi_curve
