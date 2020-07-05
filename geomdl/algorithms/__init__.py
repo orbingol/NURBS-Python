@@ -12,6 +12,5 @@ __all__ = [
     'degree',
     'decompose',
     'split',
-    'link',
     'derivative'
 ]
