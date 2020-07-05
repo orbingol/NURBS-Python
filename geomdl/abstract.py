@@ -308,7 +308,8 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         """
         # Check cache for order
         if not self._cache['order']:
-            self._cache['order'] = GeomdlList([p + 1 for p in self._degree], attribs=self.degree.attribs)
+            temp = [p + 1 for p in self._degree]
+            self._cache['order'] = GeomdlList(*temp, attribs=self.degree.attribs)
         return self._cache['order']
 
     @property
