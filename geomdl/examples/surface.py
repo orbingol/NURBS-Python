@@ -53,14 +53,15 @@ def cylinder(radius=1.0, height=1.0):
 
 
 def surface_ex1():
+def surface_ex2():
     """ Creates an example NURBS surface
 
     degree_u=3, degree_v=3, size_u=6, size_v=6
 
     This example is contributed by Dr. Adarsh Krishnamurthy <adarsh@iastate.edu>
 
-    return: surface
-    rtype: NURBS.Surface
+    :return: surface
+    :rtype: NURBS.Surface
     """
 
     # Create control points manager
