@@ -36,10 +36,10 @@ def full_circle(radius=1):
     # Generate the curve
     curve = NURBS.Curve()
     curve.name = "circle from 9 control points"
-    curve.degree = 2
+    curve.degree.u = 2
     curve.ctrlpts = cpman
     curve.weights = weights
-    curve.knotvector = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
+    curve.knotvector.u = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
 
     # Return the generated curve
     return curve
