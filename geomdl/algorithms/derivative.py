@@ -34,15 +34,14 @@ def derivative_curve(obj):
         return obj
 
     # Find the control points of the derivative curve
-    pkl = helpers.curve_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts,
-                                          rs=(0, obj.ctrlpts_size - 1), deriv_order=1)
+    pkl = helpers.curve_deriv_cpts(obj.dimension, obj.degree.u, obj.knotvector.u, obj.ctrlpts.points,
+                                          rs=(0, obj.ctrlpts_size.u - 1), deriv_order=1)
 
     # Generate the derivative curve
     curve = obj.__class__()
-    curve.degree = obj.degree - 1
-    curve.ctrlpts = pkl[1][0:-1]
-    curve.knotvector = obj.knotvector[1:-1]
-    curve.delta = obj.delta
+    curve.degree.u = obj.degree.u - 1
+    curve.set_ctrlpts(pkl[1][0:-1])
+    curve.knotvector.u = obj.knotvector.u[1:-1]
 
     return curve
 
@@ -73,40 +72,48 @@ def derivative_surface(obj):
 
     # Find the control points of the derivative surface
     d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
-    pkl = helpers.surface_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts, obj.cpsize,
-                                            rs=(0, obj.ctrlpts_size_u - 1), ss=(0, obj.ctrlpts_size_v - 1), deriv_order=d)
+    pkl = helpers.surface_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts, obj.ctrlpts_size,
+                                            rs=(0, obj.ctrlpts_size.u - 1), ss=(0, obj.ctrlpts_size.v - 1), deriv_order=d)
 
-    ctrlpts2d_u = []
-    for i in range(0, len(pkl[1][0]) - 1):
-        ctrlpts2d_u.append(pkl[1][0][i])
+    # u-derivative surface
+    ctrlpts_u = []
+    size_u = len(pkl[1][0]) - 1
+    size_v = len(pkl[1][0][0])
+    for j in range(0, size_v):
+        for i in range(0, size_u):
+            ctrlpts_u.append(pkl[1][0][i][j])
 
     surf_u = copy.deepcopy(obj)
-    surf_u.degree_u = obj.degree_u - 1
-    surf_u.ctrlpts2d = ctrlpts2d_u
-    surf_u.knotvector_u = obj.knotvector_u[1:-1]
-    surf_u.delta = obj.delta
+    surf_u.degree.u = obj.degree.u - 1
+    surf_u.knotvector.u = obj.knotvector.u[1:-1]
+    surf_u.set_ctrlpts(ctrlpts_u, size_u, size_v)
 
-    ctrlpts2d_v = []
-    for i in range(0, len(pkl[0][1])):
-        ctrlpts2d_v.append(pkl[0][1][i][0:-1])
+    # v-derivative surface
+    ctrlpts_v = []
+    size_u = len(pkl[0][1])
+    size_v = len(pkl[0][1][0]) - 1
+    for j in range(0, size_v):
+        for i in range(0, size_u):
+            ctrlpts_v.append(pkl[0][1][i][j])
 
     surf_v = copy.deepcopy(obj)
-    surf_v.degree_v = obj.degree_v - 1
-    surf_v.ctrlpts2d = ctrlpts2d_v
-    surf_v.knotvector_v = obj.knotvector_v[1:-1]
-    surf_v.delta = obj.delta
+    surf_v.degree.v = obj.degree.v - 1
+    surf_v.knotvector.v = obj.knotvector.v[1:-1]
+    surf_v.set_ctrlpts(ctrlpts_v, size_u, size_v)
 
-    ctrlpts2d_uv = []
-    for i in range(0, len(pkl[1][1]) - 1):
-        ctrlpts2d_uv.append(pkl[1][1][i][0:-1])
+    ctrlpts_uv = []
+    size_u = len(pkl[1][1]) - 1
+    size_v = len(pkl[1][1][0]) - 1
+    for j in range(0, size_v):
+        for i in range(0, size_u):
+            ctrlpts_uv.append(pkl[1][1][i][j])
 
-    # Generate the derivative curve
+    # uv-derivative surface
     surf_uv = obj.__class__()
-    surf_uv.degree_u = obj.degree_u - 1
-    surf_uv.degree_v = obj.degree_v - 1
-    surf_uv.ctrlpts2d = ctrlpts2d_uv
-    surf_uv.knotvector_u = obj.knotvector_u[1:-1]
-    surf_uv.knotvector_v = obj.knotvector_v[1:-1]
-    surf_uv.delta = obj.delta
+    surf_uv.degree.u = obj.degree.u - 1
+    surf_uv.degree.v = obj.degree.v - 1
+    surf_uv.knotvector.u = obj.knotvector.u[1:-1]
+    surf_uv.knotvector.v = obj.knotvector.v[1:-1]
+    surf_uv.set_ctrlpts(ctrlpts_uv, size_u, size_v)
 
     return surf_u, surf_v, surf_uv
