@@ -64,12 +64,14 @@ def split_curve(obj, param, **kwargs):
     curve1.degree.u = temp_obj.degree.u
     curve1.set_ctrlpts(curve1_ctrlpts)
     curve1.knotvector.u = curve1_kv
+    curve1.check_variables()
 
     # Create another curve fot the second half
     curve2 = temp_obj.__class__()
     curve2.degree.u = temp_obj.degree.u
     curve2.set_ctrlpts(curve2_ctrlpts)
     curve2.knotvector.u = curve2_kv
+    curve2.check_variables()
 
     # Return the split curves
     ret_val = [curve1, curve2]
@@ -163,6 +165,7 @@ def split_surface(obj, param, pdir, **kwargs):
     surf1.knotvector.u = surf1_kv_u
     surf1.knotvector.v = surf1_kv_v
     surf1.set_ctrlpts(surf1_ctrlpts, surf1_size_u, surf1_size_v)
+    surf1.check_variables()
 
     # Create another surface for the second half
     surf2 = temp_obj.__class__()
@@ -171,6 +174,7 @@ def split_surface(obj, param, pdir, **kwargs):
     surf2.knotvector.u = surf2_kv_u
     surf2.knotvector.v = surf2_kv_v
     surf2.set_ctrlpts(surf2_ctrlpts, surf2_size_u, surf2_size_v)
+    surf2.check_variables()
 
     # Return the new surfaces
     ret_val = [surf1, surf2]
