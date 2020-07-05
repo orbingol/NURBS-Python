@@ -58,7 +58,7 @@ class Curve(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(pdimension=1, dinit=0.01, attribs=('u',)))
+        kwargs.update(dict(pdimension=1, dinit=100, attribs=('u',)))
         super(Curve, self).__init__(*args, **kwargs)
         self._evaluator = defeval.CurveEvaluator()  # initialize evaluator
 
@@ -207,7 +207,7 @@ class Surface(SplineGeometry):
     __slots__ = ('_trims',)
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(pdimension=2, dinit=0.01, attribs=('u', 'v')))
+        kwargs.update(dict(pdimension=2, dinit=100, attribs=('u', 'v')))
         super(Surface, self).__init__(*args, **kwargs)
         self._evaluator = defeval.SurfaceEvaluator()
         self._trims = list()  # trimming curves
@@ -400,7 +400,7 @@ class Volume(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(pdimension=3, dinit=0.05, attribs=('u', 'v', 'w')))
+        kwargs.update(dict(pdimension=3, dinit=50, attribs=('u', 'v', 'w')))
         super(Volume, self).__init__(*args, **kwargs)
         self._evaluator = defeval.VolumeEvaluator()
 
