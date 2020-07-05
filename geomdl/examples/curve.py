@@ -58,7 +58,7 @@ def curve_ex1():
     # Create a B-Spline curve
     curve = BSpline.Curve()
     curve.degree.u = 4
-    curve.knotvector.u = knotvector.generate(curve.degree, curve.ctrlpts.count)
     curve.set_ctrlpts(cpts)
+    curve.knotvector.u = knotvector.generate(curve.degree.u, curve.ctrlpts.count)
 
     return curve
