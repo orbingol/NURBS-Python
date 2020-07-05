@@ -7,9 +7,9 @@
 
 """
 
-from .. import NURBS
+from .. import BSpline, NURBS
 from ..base import GeomdlError
-from ..ptmanager import CPManager
+from ..ptmanager import CPManager, knotvector
 
 
 # Generates a NURBS circle from 9 control points
@@ -42,4 +42,23 @@ def full_circle(radius=1):
     curve.knotvector = [0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1]
 
     # Return the generated curve
+    return curve
+
+
+def curve_ex1():
+    """ Creates an example 2-D curve
+
+    degree_u=4, size_u=9
+
+    :return: 2-dimensional curve
+    :rtype:
+    """
+    cpts = [ [5, 10], [15, 25], [30, 30], [45, 5], [55, 5], [70, 40], [60, 60], [35, 60], [20, 40] ]
+
+    # Create a B-Spline curve
+    curve = BSpline.Curve()
+    curve.degree.u = 4
+    curve.knotvector.u = knotvector.generate(curve.degree, curve.ctrlpts.count)
+    curve.set_ctrlpts(cpts)
+
     return curve
