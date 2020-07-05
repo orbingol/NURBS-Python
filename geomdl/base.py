@@ -366,19 +366,17 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
     * ``name``: object name. *Default: name of the class*
     * ``callbacks``: a list of callback functions to be called after setting the attributes
     """
-    __slots__ = ('_name', '_id', '_cache_vars', '_cache', '_iter_index')
-    _cfg = GeomdlDict(
-        iter_callbacks=tuple()
-    )  # read-only dict for storing the configuration variables
+    __slots__ = ('_name', '_id', '_cache_vars', '_cache', '_cfg', '_iter_index')
 
     def __new__(cls, *args, **kwargs):
         obj = super(GeomdlObject, cls).__new__(cls)
+        super(GeomdlObject, obj).__setattr__('_cfg', GeomdlDict(callbacks=tuple()))  # dict for storing the configuration variables
         obj._name = kwargs.get('name', obj.__class__.__name__) # object name
         obj._id = int(kwargs.get('id', 0))  # object ID
         return obj
 
     def __init__(self, *args, **kwargs):
-        self._cfg['iter_callbacks'] = kwargs.pop('callbacks', tuple())
+        self._cfg.update(kwargs.get('cfg', GeomdlDict()))
         self._cache = GeomdlDict()  # cache dict
         self._cache_vars = kwargs.get('cache_vars', dict())
         self._iter_index = 0
@@ -392,7 +390,7 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
     def __setattr__(self, name, value):
         super(GeomdlObject, self).__setattr__(name, value)
         # Run callbacks
-        for cb in getattr(self, '_cfg')['iter_callbacks']:
+        for cb in getattr(self, '_cfg')['callbacks']:
             cb(name, value)
 
     def __iter__(self):
@@ -423,8 +421,6 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
         # Copy all attributes
         for var in slots:
             setattr(result, var, copy.copy(getattr(self, var)))
-        # Update configuration dictionary
-        result._cfg.update(self._cfg)
         # Return updated instance
         return result
 
@@ -441,8 +437,6 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
         # Deep copy all other attributes
         for var in slots:
             setattr(result, var, copy.deepcopy(getattr(self, var), memo))
-        # Update configuration dictionary
-        result._cfg.update(self._cfg)
         # Regenerate the cache
         result._init_cache()
         # Return updated instance

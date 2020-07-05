@@ -171,6 +171,11 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
          '_ssinit', '_sample_size', '_bounding_box', '_evaluator'
     )
 
+    def __new__(cls, *args, **kwargs):
+        obj = super(SplineGeometry, cls).__new__(cls, *args, **kwargs)
+        obj._cfg['normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
+        return obj
+
     def __init__(self, *args, **kwargs):
         cache_vars = kwargs.get('cache_vars', dict())
         cache_vars.update(dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=CPManager(), weights=list()))
@@ -198,9 +203,6 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             *[self._ssinit for _ in range(self._pdim)], attribs=self._attribs,
             cb=[self.reset], cbd=[validate_sample_size_value]
         )
-
-        # Get keyword arguments
-        self._cfg['bool_normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
 
     def __eq__(self, other):
         if not hasattr(other, '_pdim'):
