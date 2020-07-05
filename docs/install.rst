@@ -115,60 +115,6 @@ Then, you can execute the following from your favorite IDE or from the command l
 
 pytest will automatically find the tests under ``tests/`` directory, execute them and show the results.
 
-Compile with Cython
-===================
-
-To improve performance, the :doc:`Core Library <modules>` of NURBS-Python can be compiled and installed using the
-following command along with the pure Python version.
-
-.. code-block:: console
-
-    $ pip install --user . --install-option="--use-cython"
-
-This command will generate .c files (i.e. cythonization) and compile the .c files into binary Python modules.
-
-The following command can be used to directly compile and install from the existing .c files, skipping the cythonization
-step:
-
-.. code-block:: console
-
-    $ pip install --user . --install-option="--use-source"
-
-To update the compiled module with the latest changes, you need to re-cythonize the code.
-
-To enable Cython-compiled module in development mode;
-
-.. code-block:: console
-
-    $ python setup.py build_ext --use-cython --inplace
-
-After the successful execution of the command, the you can import and use the compiled library as follows:
-
-.. code-block:: python
-    :linenos:
-
-    # Importing NURBS module
-    from geomdl.core import NURBS
-    # Importing visualization module
-    from geomdl.visualization import VisMPL as vis
-
-    # Creating a curve instance
-    crv = NURBS.Curve()
-
-    # Make a quadratic curve
-    crv.degree = 2
-
-    #######################################################
-    # Skipping control points and knot vector assignments #
-    #######################################################
-
-    # Set the visualization component and render the curve
-    crv.vis = vis.VisCurve3D()
-    crv.render()
-
-Before Cython compilation, please make sure that you have `Cython <https://cython.org/>`_ module and a valid compiler
-installed for your operating system.
-
 Docker Containers
 =================
 

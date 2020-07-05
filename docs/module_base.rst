@@ -1,7 +1,7 @@
-Geometry Abstract
+Geometry Base
 ^^^^^^^^^^^^^^^^^
 
-.. automodule:: geomdl.abstract
+.. automodule:: geomdl.base
     :members:
     :inherited-members:
     :show-inheritance:

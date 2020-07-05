@@ -1,15 +1,13 @@
-NURBS-Python v5.x Documentation
+NURBS-Python v6.x Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |DOI|_ |PYPI|_ |ANACONDA|_
 
 |TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_
 
-Welcome to the **NURBS-Python (geomdl) v5.x** documentation!
-
-NURBS-Python (geomdl) is a cross-platform (pure Python), object-oriented B-Spline and NURBS library.
-It is compatible with Python versions 2.7.x, 3.4.x and later.
-It supports rational and non-rational curves, surfaces and volumes.
+NURBS-Python (geomdl) is a object-oriented pure Python B-spline and NURBS library.
+It is compatible with Python versions 3.5.x and later.
+It supports rational and non-rational B-spline curves, surfaces and volumes.
 
 NURBS-Python (geomdl) provides easy-to-use data structures for storing geometry descriptions
 in addition to the fundamental and advanced evaluation algorithms.
@@ -28,7 +26,6 @@ This documentation is organized into a couple sections:
 
     introduction
     citing
-    q_a
 
 .. _using:
 
@@ -58,9 +55,7 @@ This documentation is organized into a couple sections:
     modules
     modules_visualization
     modules_cli
-    modules_shapes
     modules_rhino
-    modules_acis
 
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg

@@ -19,5 +19,4 @@ Class Reference
     :members:
     :undoc-members:
     :inherited-members:
-    :exclude-members: next
     :show-inheritance:
