@@ -400,7 +400,7 @@ class Volume(SplineGeometry):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(dict(pdimension=3, dinit=50, attribs=('u', 'v', 'w')))
+        kwargs.update(dict(pdimension=3, dinit=25, attribs=('u', 'v', 'w')))
         super(Volume, self).__init__(*args, **kwargs)
         self._evaluator = defeval.VolumeEvaluator()
 
