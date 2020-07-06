@@ -8,8 +8,8 @@
 """
 
 import math
-from . import linalg, shortcuts
-from .base import export, GeomdlError
+from .. import linalg, shortcuts
+from ..base import export, GeomdlError
 
 
 @export

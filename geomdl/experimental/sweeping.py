@@ -8,8 +8,8 @@
 """
 
 from copy import deepcopy
-from . import linalg, construct
-from .base import export, GeomdlError
+from .. import linalg, construct
+from ..base import export, GeomdlError
 
 
 @export
