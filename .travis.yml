@@ -39,6 +39,7 @@ matrix:
 # install packages
 install:
   - npm install -g npm  # for plotly static image export
+  - python -m pip install --upgrade pip  # upgrade pip
   - pip install tox
 
 # run tox
