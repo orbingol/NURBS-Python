@@ -7,6 +7,7 @@
 
 """
 
+import copy
 from .. import helpers
 from .. import ptmanager
 from ..base import GeomdlError
@@ -25,14 +26,17 @@ def elevate_degree(obj, param, **kwargs):
     :type param: list, tuple
     :return: updated spline geometry
     """
+    # Create a copy of the geometry object
+    objc = copy.deepcopy(obj)
+
     # Start curve degree manipulation operations
-    if obj.pdimension == 1:
+    if objc.pdimension == 1:
         if param[0] is not None and param[0] > 0:
             # Find multiplicity of the internal knots
-            int_knots = set(obj.knotvector.u[obj.degree.u + 1:-(obj.degree.u + 1)])
+            int_knots = set(objc.knotvector.u[objc.degree.u + 1:-(objc.degree.u + 1)])
             mult_arr = []
             for ik in int_knots:
-                s = helpers.find_multiplicity(ik, obj.knotvector.u)
+                s = helpers.find_multiplicity(ik, objc.knotvector.u)
                 mult_arr.append(s)
 
             # Decompose the input by knot insertion
@@ -47,10 +51,10 @@ def elevate_degree(obj, param, **kwargs):
                 crv.knotvector.u = [crv.knotvector.u[0] for _ in range(param[0])] + list(crv.knotvector.u) + [crv.knotvector.u[-1] for _ in range(param[0])]
 
             # Compute new degree
-            nd = obj.degree.u + param[0]
+            nd = objc.degree.u + param[0]
 
             # Number of knot removals
-            num = obj.degree.u + 1
+            num = objc.degree.u + 1
 
             # Link curves together (reverse of decomposition)
             kv, cpts, knots = link_curves(*crv_list, validate=False)
@@ -62,12 +66,12 @@ def elevate_degree(obj, param, **kwargs):
                 kv = helpers.knot_removal_kv(kv, span, num-s)
 
             # Update input curve
-            obj.degree.u = nd
-            obj.set_ctrlpts(cpts)
-            obj.knotvector.u = kv
+            objc.degree.u = nd
+            objc.set_ctrlpts(cpts)
+            objc.knotvector.u = kv
 
     # Start surface degree manipulation operations
-    if obj.pdimension == 2:
+    if objc.pdimension == 2:
         # u-direction
         if param[0] is not None and param[0] > 0:
             pass
@@ -77,11 +81,11 @@ def elevate_degree(obj, param, **kwargs):
             pass
 
     # Start surface degree manipulation operations
-    if obj.pdimension == 3:
+    if objc.pdimension == 3:
         raise GeomdlError("Degree elevation has not been implemented for B-spline volumes")
 
     # Return updated geometry
-    return obj
+    return objc
 
 
 def reduce_degree(obj, param, **kwargs):
@@ -97,21 +101,24 @@ def reduce_degree(obj, param, **kwargs):
         if degree < 2:
             raise GeomdlError("Input geometry must have degree > 1")
 
+    # Create a copy of the geometry object
+    objc = copy.deepcopy(obj)
+
     # Start curve degree manipulation operations
-    if obj.pdimension == 1:
+    if objc.pdimension == 1:
         if param[0] is not None and param[0] > 0:
             # Find multiplicity of the internal knots
-            int_knots = set(obj.knotvector.u[obj.degree.u + 1:-(obj.degree.u + 1)])
+            int_knots = set(objc.knotvector.u[objc.degree.u + 1:-(objc.degree.u + 1)])
             mult_arr = []
             for ik in int_knots:
-                s = helpers.find_multiplicity(ik, obj.knotvector.u)
+                s = helpers.find_multiplicity(ik, objc.knotvector.u)
                 mult_arr.append(s)
 
             # Decompose the input by knot insertion
             crv_list = decompose_curve(obj, **kwargs)
 
             # Validate degree reduction operation
-            validate_reduction(obj.degree.u)
+            validate_reduction(objc.degree.u)
 
             # Loop through to apply degree reduction
             for crv in crv_list:
@@ -122,10 +129,10 @@ def reduce_degree(obj, param, **kwargs):
                 crv.knotvector.u = list(crv.knotvector.u[1:-1])
 
             # Compute new degree
-            nd = obj.degree.u - 1
+            nd = objc.degree.u - 1
 
             # Number of knot removals
-            num = obj.degree.u - 1
+            num = objc.degree.u - 1
 
             # Link curves together (inverse of decomposition)
             kv, cpts, knots = link_curves(*crv_list, validate=False)
@@ -137,25 +144,25 @@ def reduce_degree(obj, param, **kwargs):
                 kv = helpers.knot_removal_kv(kv, span, num-s)
 
             # Update input curve
-            obj.degree.u = nd
-            obj.set_ctrlpts(cpts)
-            obj.knotvector.u = kv
+            objc.degree.u = nd
+            objc.set_ctrlpts(cpts)
+            objc.knotvector.u = kv
 
     # Start surface degree manipulation operations
-    if obj.pdimension == 2:
+    if objc.pdimension == 2:
         # u-direction
         if param[0] is not None and param[0] > 0:
             # Apply degree reduction operation
-            validate_reduction(obj.degree.u)
+            validate_reduction(objc.degree.u)
 
         # v-direction
         if param[1] is not None and param[1] > 0:
             # Validate degree reduction operation
-            validate_reduction(obj.degree.v)
+            validate_reduction(objc.degree.v)
 
     # Start surface degree manipulation operations
-    if obj.pdimension == 3:
+    if objc.pdimension == 3:
         raise GeomdlError("Degree elevation has not been implemented for B-spline volumes")
 
     # Return updated geometry
-    return obj
+    return objc
