@@ -2,7 +2,7 @@
 # Python requirements for CI test runs and Docker image building
 
 # Python packaging tools
-setuptools>=40.6.3
+setuptools
 
 # For compiling geomdl.core module
 cython; platform_python_implementation != 'PyPy'
