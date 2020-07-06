@@ -75,7 +75,7 @@ data = dict(
         'geomdl.visualization'
     ],
     install_requires=[],
-    tests_require=['pytest>=3.6.0'],
+    tests_require=['pytest'],
     cmdclass={'clean': CleanCommand},
     ext_modules=[],
     zip_safe=False,

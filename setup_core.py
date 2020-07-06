@@ -162,7 +162,7 @@ data = dict(
     keywords=get_property('__keywords__', 'geomdl/core'),
     packages=[],
     install_requires=['cython'],
-    tests_require=['pytest>=3.6.0'],
+    tests_require=['pytest'],
     cmdclass={'clean': CleanCommand},
     ext_modules=cythonize(exts, compiler_directives={'language_level': sys.version_info[0]}),
     zip_safe=False,
