@@ -7,4 +7,5 @@
 
 """
 
+# Disallow import-star (from XXX import *)
 __all__ = []
