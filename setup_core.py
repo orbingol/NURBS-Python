@@ -40,7 +40,9 @@ packages = [
     'geomdl.core.examples',
     'geomdl.core.exchange',
     'geomdl.core.fitting',
-    'geomdl.core.geomutils'
+    'geomdl.core.geomutils',
+    'geomdl.core.tessellate',
+    'geomdl.core.voxelate'
 ]
 
 
