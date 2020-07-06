@@ -200,6 +200,10 @@ class VisCurve3D(visabstract.VisAbstract):
         for plot in self._plots:
             pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
 
+            # Try not to fail if the input is 2D
+            if pts.shape[1] == 2:
+                pts = np.c_[pts, np.zeros(pts.shape[0])]
+
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter3d(
