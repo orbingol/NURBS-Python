@@ -8,7 +8,7 @@
 
 import pytest
 from geomdl import helpers
-from geomdl import algorithms
+from geomdl.algorithms import knot
 
 GEOMDL_DELTA = 0.001
 
@@ -21,9 +21,9 @@ GEOMDL_DELTA = 0.001
 ])
 def test_bspline_curve2d_insert_knot(curve7, param, num_insert, res):
     s_pre = helpers.find_multiplicity(param, curve7.knotvector.u)
-    algorithms.insert_knot(curve7, [param,], [num_insert,])
-    s_post = helpers.find_multiplicity(param, curve7.knotvector.u)
-    evalpt = curve7.evaluate_single(param)
+    ki = knot.insert_knot(curve7, [param,], [num_insert,])
+    s_post = helpers.find_multiplicity(param, ki.knotvector.u)
+    evalpt = ki.evaluate_single(param)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
@@ -32,10 +32,10 @@ def test_bspline_curve2d_insert_knot(curve7, param, num_insert, res):
 
 @pytest.mark.usefixtures("curve7")
 def test_bspline_curve2d_insert_knot_kv(curve7):
-    algorithms.insert_knot(curve7, (0.66,), (2,))
-    s = helpers.find_multiplicity(0.66, curve7.knotvector.u)
+    ki = knot.insert_knot(curve7, (0.66,), (2,))
+    s = helpers.find_multiplicity(0.66, ki.knotvector.u)
 
-    assert curve7.knotvector.u[5] == 0.66
+    assert ki.knotvector.u[5] == 0.66
     assert s == 3
 
 
@@ -47,9 +47,9 @@ def test_bspline_curve2d_insert_knot_kv(curve7):
 def test_bspline_curve2d_remove_knot(curve7, param, num_remove):
     s_pre = helpers.find_multiplicity(param, curve7.knotvector.u)
     c_pre = curve7.ctrlpts_size.u
-    algorithms.remove_knot(curve7, [param,], [num_remove,])
-    s_post = helpers.find_multiplicity(param, curve7.knotvector.u)
-    c_post = curve7.ctrlpts_size.u
+    kr = knot.remove_knot(curve7, [param,], [num_remove,])
+    s_post = helpers.find_multiplicity(param, kr.knotvector.u)
+    c_post = kr.ctrlpts_size.u
 
     assert c_pre - num_remove == c_post
     assert s_pre - num_remove == s_post
@@ -57,10 +57,10 @@ def test_bspline_curve2d_remove_knot(curve7, param, num_remove):
 
 @pytest.mark.usefixtures("curve7")
 def test_bspline_curve2d_remove_knot_kv(curve7):
-    algorithms.remove_knot(curve7, (0.66,), (1,))
-    s = helpers.find_multiplicity(0.66, curve7.knotvector.u)
+    kr = knot.remove_knot(curve7, (0.66,), (1,))
+    s = helpers.find_multiplicity(0.66, kr.knotvector.u)
 
-    assert 0.66 not in curve7.knotvector.u
+    assert 0.66 not in kr.knotvector.u
     assert s == 0
 
 
@@ -70,8 +70,8 @@ def test_bspline_curve2d_remove_knot_kv(curve7):
     (1, [0.0, 0.0, 0.0, 0.0, 0.165, 0.165, 0.165, 0.33, 0.33, 0.33, 0.495, 0.495, 0.495, 0.66, 0.66, 0.66, 0.830, 0.830, 0.830, 1.0, 1.0, 1.0, 1.0]),
 ])
 def test_bspline_curve2d_knot_refine(curve7, density, kv):
-    algorithms.refine_knotvector(curve7, [density])
-    for a, b in zip(kv, curve7.knotvector.u):
+    kk = knot.refine_knot(curve7, [density])
+    for a, b in zip(kv, kk.knotvector.u):
         assert abs(a - b) < GEOMDL_DELTA
 
 
@@ -83,10 +83,10 @@ def test_bspline_curve2d_knot_refine(curve7, density, kv):
 ])
 def test_bspline_surface_insert_knot_eval(surface5, params, num, uv, res):
     # Insert knot
-    algorithms.insert_knot(surface5, params, num)
+    ki = knot.insert_knot(surface5, params, num)
 
     # Evaluate surface
-    evalpt = surface5.evaluate_single(uv)
+    evalpt = ki.evaluate_single(uv)
 
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
     assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
@@ -100,9 +100,9 @@ def test_bspline_surface_insert_knot_eval(surface5, params, num, uv, res):
 ])
 def test_bspline_surface_insert_knot_kv_v(surface5, params, num, idx, val):
     # Insert knot
-    algorithms.insert_knot(surface5, params, num)
+    ki = knot.insert_knot(surface5, params, num)
 
-    assert surface5.knotvector.v[idx] == val
+    assert ki.knotvector.v[idx] == val
 
 
 @pytest.mark.usefixtures("surface5")
@@ -112,9 +112,9 @@ def test_bspline_surface_insert_knot_kv_v(surface5, params, num, idx, val):
 ])
 def test_bspline_surface_insert_kv_u(surface5, params, num, idx, val):
     # Insert knot
-    algorithms.insert_knot(surface5, params, num)
+    ki = knot.insert_knot(surface5, params, num)
 
-    assert surface5.knotvector.u[idx] == val
+    assert ki.knotvector.u[idx] == val
 
 
 # @pytest.mark.parametrize("param, num_remove", [
