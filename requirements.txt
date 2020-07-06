@@ -4,6 +4,9 @@
 # Python packaging tools
 setuptools>=40.6.3
 
+# For compiling geomdl.core module
+cython; platform_python_implementation != 'PyPy'
+
 # Required packages for visualization
 numpy
 matplotlib
