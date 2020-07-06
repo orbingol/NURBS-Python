@@ -1,6 +1,6 @@
 # https://travis-ci.org/orbingol/NURBS-Python
 
-dist: xenial
+dist: bionic
 sudo: false
 
 language: python
@@ -9,42 +9,31 @@ cache: pip
 # branches to build
 branches:
   only:
-    - master  # latest version
-    - devmaster  # latest development version
+    - 6.x-dev # v6.x development
+    - 5.x-dev # v5.x development
+    - 6.x  # v6.x series
+    - 5.x  # v5.x series
     - 4.x  # v4.x series
     - 3.x  # v3.x series
     - 2.x  # v2.x series
-    - travisci-testing  # Travis-CI testing
+    - master  # master branch
+    - travisci-testing  # CI testing
 
 # build matrix
 matrix:
   include:
-    - python: 2.7
-      env: TOXENV=py27,test,codecov
-
-    - python: 3.4
-      env: TOXENV=py34,test
-
-    - python: 3.5
-      env: TOXENV=py35,test
-
     - python: 3.6
       env: TOXENV=py36,test
 
     - python: 3.7
-      env: TOXENV=py37,test,codecov
+      env: TOXENV=py37,test
 
-    - python: pypy3.5
-      env: TOXENV=pypy3,test
+    - python: 3.8
+      env: TOXENV=py38,test,codecov
 
-    - name: "Performance testing on Python 3.5"
-      python: 3.5
-      env: TOXENV=py35,performance-full
-      if: branch = master OR branch = travisci-testing
-
-    - name: "Performance testing on PyPy 3.5"
-      python: pypy3.5
-      env: TOXENV=pypy3,performance
+    - name: "Performance testing on Python 3.6"
+      python: 3.6
+      env: TOXENV=py36,performance-full
       if: branch = master OR branch = travisci-testing
 
 # install packages

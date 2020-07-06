@@ -15,10 +15,12 @@ shallow_clone: true
 # Branch configuration
 branches:
   only:
-    - master
+    - 6.x
+    - 5.x
     - 4.x
     - 3.x
     - 2.x
+    - master
     - appveyor-testing
 
 # Build environment
@@ -27,36 +29,16 @@ environment:
     MPLBACKEND: "Agg"
 
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      PYTHON: "C:\\Python27"
-      PYTHON_ARCH: "32"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: "C:\\Python35"
-      PYTHON_ARCH: "32"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: "C:\\Python36"
-      PYTHON_ARCH: "32"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: "C:\\Python37"
-      PYTHON_ARCH: "32"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      PYTHON: "C:\\Python27-x64"
-      PYTHON_ARCH: "64"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: "C:\\Python35-x64"
-      PYTHON_ARCH: "64"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python36-x64"
       PYTHON_ARCH: "64"
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python37-x64"
+      PYTHON_ARCH: "64"
+    
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python38-x64"
       PYTHON_ARCH: "64"
 
 # PR settings
