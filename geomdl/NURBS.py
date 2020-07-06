@@ -38,7 +38,7 @@ class Curve(BSpline.Curve):
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
         rspl.ctrlpts = obj.ctrlpts
-        rspl.delta = obj.delta
+        rspl.sample_size = obj.sample_size
         return rspl
 
     def __init__(self, *args, **kwargs):
@@ -78,7 +78,7 @@ class Surface(BSpline.Surface):
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
         rspl.ctrlpts = obj.ctrlpts
-        rspl.delta = obj.delta
+        rspl.sample_size = obj.sample_size
         return rspl
 
 
@@ -113,5 +113,5 @@ class Volume(BSpline.Volume):
         rspl.degree = obj.degree
         rspl.knotvector = obj.knotvector
         rspl.ctrlpts = obj.ctrlpts
-        rspl.delta = obj.delta
+        rspl.sample_size = obj.sample_size
         return rspl
