@@ -347,7 +347,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     @knotvector.setter
     def knotvector(self, value):
         val = value.data if isinstance(value, GeomdlList) else value if isinstance(value[0], GeomdlTypeSequence) else [value for _ in range(self._pdim)]
-        self._knot_vector.data = [knotvector.normalize(v) if self._cfg['bool_normalize_kv'] else v for v in val]
+        self._knot_vector.data = [knotvector.normalize(v) if self._cfg['normalize_kv'] else v for v in val]
 
     @property
     def ctrlpts(self):
