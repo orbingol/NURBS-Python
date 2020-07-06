@@ -9,16 +9,7 @@
 
 from . import visabstract
 import numpy as np
-import plotly
 from plotly import graph_objs
-
-# Migrate to Plotly v4.x
-try:
-    # Online plotting functionality is moved to chart-studio package
-    from chart_studio.plotly import plot, iplot
-except ImportError:
-    # Load offline plotting functionality in case of an import error
-    from plotly.offline import plot, iplot
 
 
 class VisConfig(visabstract.VisConfigAbstract):
@@ -68,24 +59,7 @@ class VisConfig(visabstract.VisConfigAbstract):
         super(VisConfig, self).__init__(**kwargs)
         self.dtype = np.float
         # Set Plotly custom variables
-        self.figure_image_filename = "temp-figure"
-        self.figure_image_format = "png"
-        self.figure_filename = "temp-plot.html"
-
-        # Enable online plotting (default is offline plotting as it works perfectly without any issues)
-        # @see: https://plot.ly/python/getting-started/#initialization-for-online-plotting
-        online_plotting = kwargs.get('online', False)
-
-        # Detect jupyter and/or ipython environment
-        try:
-            get_ipython
-            from plotly.offline import download_plotlyjs, init_notebook_mode
-            init_notebook_mode(connected=True)
-            self.plotfn = iplot if online_plotting else plotly.offline.iplot
-            self.no_ipython = False
-        except NameError:
-            self.plotfn = plot if online_plotting else plotly.offline.plot
-            self.no_ipython = True
+        self.figure_image_filename = "temp-plot.html"
 
         # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
@@ -203,22 +177,11 @@ class VisCurve2D(visabstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
-        # Prepare plot configuration
-        plotfn_dict = {
-            'show_link': False,
-            'filename': self.vconf.figure_filename,
-            'image': None if fig_display else self.vconf.figure_image_format,
-        }
-        if self.vconf.no_ipython:
-            plotfn_dict_extra = {
-                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
-                'auto_open': fig_display,
-            }
-            # Python < 3.5 does not support starred expressions inside dicts
-            plotfn_dict.update(plotfn_dict_extra)
-
         # Display the plot
-        self.vconf.plotfn(fig, **plotfn_dict)
+        if fig_display:
+            fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+        else:
+            fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
 
 class VisCurve3D(visabstract.VisAbstract):
@@ -347,25 +310,11 @@ class VisCurve3D(visabstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
-        # Prepare plot configuration
-        plotfn_dict = {
-            'show_link': False,
-            'filename': self.vconf.figure_filename,
-            'image': None if fig_display else self.vconf.figure_image_format,
-        }
-        if self.vconf.no_ipython:
-            plotfn_dict_extra = {
-                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
-                'auto_open': fig_display,
-            }
-            # Python < 3.5 does not support starred expressions inside dicts
-            plotfn_dict.update(plotfn_dict_extra)
-
         # Display the plot
-        self.vconf.plotfn(fig, **plotfn_dict)
-
-        # Return the figure object
-        return fig
+        if fig_display:
+            fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+        else:
+            fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
 
 class VisSurface(visabstract.VisAbstract):
@@ -519,25 +468,11 @@ class VisSurface(visabstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
-        # Prepare plot configuration
-        plotfn_dict = {
-            'show_link': False,
-            'filename': self.vconf.figure_filename,
-            'image': None if fig_display else self.vconf.figure_image_format,
-        }
-        if self.vconf.no_ipython:
-            plotfn_dict_extra = {
-                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
-                'auto_open': fig_display,
-            }
-            # Python < 3.5 does not support starred expressions inside dicts
-            plotfn_dict.update(plotfn_dict_extra)
-
         # Display the plot
-        self.vconf.plotfn(fig, **plotfn_dict)
-
-        # Return the figure object
-        return fig
+        if fig_display:
+            fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+        else:
+            fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
 
 class VisVolume(visabstract.VisAbstract):
@@ -662,22 +597,8 @@ class VisVolume(visabstract.VisAbstract):
         fig_filename = kwargs.get('fig_save_as', None)
         fig_display = kwargs.get('display_plot', True)
 
-        # Prepare plot configuration
-        plotfn_dict = {
-            'show_link': False,
-            'filename': self.vconf.figure_filename,
-            'image': None if fig_display else self.vconf.figure_image_format,
-        }
-        if self.vconf.no_ipython:
-            plotfn_dict_extra = {
-                'image_filename': self.vconf.figure_image_filename if fig_filename is None else fig_filename,
-                'auto_open': fig_display,
-            }
-            # Python < 3.5 does not support starred expressions inside dicts
-            plotfn_dict.update(plotfn_dict_extra)
-
         # Display the plot
-        self.vconf.plotfn(fig, **plotfn_dict)
-
-        # Return the figure object
-        return fig
+        if fig_display:
+            fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+        else:
+            fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
