@@ -292,9 +292,6 @@ class VisCurve3D(vis.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
 
 class VisSurface(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -412,8 +409,6 @@ class VisSurface(vis.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -553,13 +548,6 @@ class VisSurface(vis.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
-
-# VisSurfTriangle is an alias for VisSurface class
-VisSurfTriangle = VisSurface
-
 
 class VisSurfWireframe(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -670,9 +658,6 @@ class VisSurfWireframe(vis.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
 
 
 class VisSurfScatter(vis.VisAbstract):
@@ -786,9 +771,6 @@ class VisSurfScatter(vis.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
 
 class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
@@ -875,9 +857,6 @@ class VisVolume(vis.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
 
 
 class VisVoxel(vis.VisAbstract):
@@ -977,6 +956,3 @@ class VisVoxel(vis.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
