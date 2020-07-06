@@ -135,3 +135,37 @@ def test_surf_ctrlpts_offset(surface1):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_vol_fig_nowindow(volume1):
+    conf = vis.VisConfig()
+    vism = vis.VisVolume(config=conf)
+
+    fname = conf.figure_image_filename
+
+    render.render(volume1, vism, display=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(conf.figure_image_filename):
+        os.remove(conf.figure_image_filename)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_vol_fig_save(volume1):
+    conf = vis.VisConfig()
+    vism = vis.VisVolume(config=conf)
+
+    fname = "test-surface.png"
+
+    render.render(volume1, vism, filename=fname, display=False)
+
+    assert os.path.isfile(fname)
+    assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
