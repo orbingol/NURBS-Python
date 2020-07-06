@@ -22,7 +22,6 @@
 
 from setuptools import setup
 from setuptools import Extension
-from setuptools.command.test import test as test_command
 from distutils.command.clean import clean as clean_command
 import sys
 import os
@@ -54,25 +53,6 @@ def read(file_name):
 def get_property(prop, project):
     result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open(project + '/__init__.py').read())
     return result.group(1)
-
-
-# Reference: https://docs.pytest.org/en/latest/goodpractices.html
-class TestCommand(test_command):
-    """ Allows test command to call py.test """
-    user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
-
-    def initialize_options(self):
-        test_command.initialize_options(self)
-        self.pytest_args = ""
-
-    def run_tests(self):
-        import shlex
-
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-
-        errno = pytest.main(shlex.split(self.pytest_args))
-        sys.exit(errno)
 
 
 class CleanCommand(clean_command):
@@ -183,7 +163,7 @@ data = dict(
     packages=[],
     install_requires=['cython'],
     tests_require=['pytest>=3.6.0'],
-    cmdclass={'test': TestCommand, 'clean': CleanCommand},
+    cmdclass={'clean': CleanCommand},
     ext_modules=cythonize(exts, compiler_directives={'language_level': sys.version_info[0]}),
     zip_safe=False,
     classifiers=[
