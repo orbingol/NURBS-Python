@@ -8,12 +8,11 @@
 """
 
 import copy
-from ..base import GeomdlError
-
-__all__ = []
+from ..base import export, GeomdlError
 
 
-def apply_scaling(obj, multiplier, **kwargs):
+@export
+def scale(obj, multiplier, **kwargs):
     """ Scales curves, surfaces or volumes by the input multiplier.
 
     Keyword Arguments:

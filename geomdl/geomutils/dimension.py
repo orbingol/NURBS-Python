@@ -9,9 +9,10 @@
 
 import copy
 from .. import abstract
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 
 
+@export
 def add_dimension(obj, **kwargs):
     """ Elevates the spatial dimension of the spline geometry.
 

@@ -8,9 +8,10 @@
 """
 
 from .. import NURBS
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 
 
+@export
 def extract_curves(psurf, **kwargs):
     """ Extracts curves from a surface.
 
@@ -72,6 +73,7 @@ def extract_curves(psurf, **kwargs):
     return dict(u=crvlist_u, v=crvlist_v)
 
 
+@export
 def extract_surfaces(pvol):
     """ Extracts surfaces from a volume.
 
@@ -141,6 +143,7 @@ def extract_surfaces(pvol):
     return dict(uv=surflist_uv, uw=surflist_uw, vw=surflist_vw)
 
 
+@export
 def extract_isosurface(pvol):
     """ Extracts the largest isosurface from a volume.
 

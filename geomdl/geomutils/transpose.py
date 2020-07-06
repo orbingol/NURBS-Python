@@ -8,12 +8,11 @@
 """
 
 import copy
-from ..base import GeomdlError
-
-__all__ = []
+from ..base import export, GeomdlError
 
 
-def apply_transpose(surf, **kwargs):
+@export
+def transpose(surf, **kwargs):
     """ Transposes the input surface(s) by swapping u and v parametric directions.
 
     Keyword Arguments:
@@ -60,7 +59,8 @@ def apply_transpose(surf, **kwargs):
     return geom
 
 
-def apply_flip(surf, **kwargs):
+@export
+def flip(surf, **kwargs):
     """ Flips the control points grid of the input surface(s).
 
     Keyword Arguments:

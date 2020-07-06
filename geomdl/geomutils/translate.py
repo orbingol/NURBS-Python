@@ -8,12 +8,11 @@
 """
 
 import copy
-from ..base import GeomdlError
-
-__all__ = []
+from ..base import export, GeomdlError
 
 
-def apply_translation(obj, vec, **kwargs):
+@export
+def translate(obj, vec, **kwargs):
     """ Translates curves, surface or volumes by the input vector.
 
     Keyword Arguments:

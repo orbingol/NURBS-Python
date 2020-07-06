@@ -8,10 +8,11 @@
 """
 
 from .. import NURBS, knotvector
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 from ..ptmanager import CPManager
 
 
+@export
 def construct_surface(direction, *args, **kwargs):
     """ Generates surfaces from curves.
 
@@ -93,6 +94,7 @@ def construct_surface(direction, *args, **kwargs):
     return ns
 
 
+@export
 def construct_volume(direction, *args, **kwargs):
     """ Generates volumes from surfaces.
 

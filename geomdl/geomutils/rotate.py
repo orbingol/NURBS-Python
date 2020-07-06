@@ -10,10 +10,8 @@
 import copy
 import math
 from .. import linalg
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 from . import translate
-
-__all__ = []
 
 
 def rotate_x(ncs, opt, alpha):
@@ -21,7 +19,7 @@ def rotate_x(ncs, opt, alpha):
     translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
     # Translate to the origin
-    translate.apply_translation(ncs, translate_vector, inplace=True)
+    translate.translate(ncs, translate_vector, inplace=True)
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
@@ -33,14 +31,14 @@ def rotate_x(ncs, opt, alpha):
     ncs.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
-    translate.apply_translation(ncs, [-tv for tv in translate_vector], inplace=True)
+    translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
 def rotate_y(ncs, opt, alpha):
     # Generate translation vector
     translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
     # Translate to the origin
-    translate.apply_translation(ncs, translate_vector, inplace=True)
+    translate.translate(ncs, translate_vector, inplace=True)
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
@@ -52,14 +50,14 @@ def rotate_y(ncs, opt, alpha):
     ncs.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
-    translate.apply_translation(ncs, [-tv for tv in translate_vector], inplace=True)
+    translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
 def rotate_z(ncs, opt, alpha):
     # Generate translation vector
     translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
 
     # Translate to the origin
-    translate.apply_translation(ncs, translate_vector, inplace=True)
+    translate.translate(ncs, translate_vector, inplace=True)
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
@@ -70,10 +68,11 @@ def rotate_z(ncs, opt, alpha):
     ncs.ctrlpts = new_ctrlpts
 
     # Finally, translate back to the starting location
-    translate.apply_translation(ncs, [-tv for tv in translate_vector], inplace=True)
+    translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
 
-def apply_rotation(obj, angle, **kwargs):
+@export
+def rotate(obj, angle, **kwargs):
     """ Rotates curves, surfaces or volumes about the chosen axis.
 
     Keyword Arguments:
