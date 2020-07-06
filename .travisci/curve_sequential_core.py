@@ -3,7 +3,7 @@ import os
 import sys
 import platform
 import timeit
-from geomdl.core import NURBS, utilities
+from geomdl.core import NURBS, knotvector
 
 
 # Setup test
@@ -12,9 +12,9 @@ def setup_test():
                [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
 
     ns = NURBS.Curve()
-    ns.degree = 3
-    ns.ctrlpts = ctrlpts
-    ns.knotvector = utilities.generate_knot_vector(ns.degree, ns.ctrlpts_size)
+    ns.degree = [3]
+    ns.set_ctrlpts(ctrlpts)
+    ns.knotvector = [knotvector.generate(ns.degree.u, ns.ctrlpts_size.u)]
     ns.sample_size = 16384
 
     return ns
