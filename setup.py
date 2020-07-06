@@ -45,7 +45,7 @@ class CleanCommand(clean_command):
         clean_command.run(self)
 
         # Clean setuptools-generated directories
-        st_dirs = ['dist', 'build', 'geomdl.egg-info', 'geomdl.core.egg-info']
+        st_dirs = ['dist', 'build', 'geomdl.egg-info']
 
         print("Removing setuptools-generated directories")
         for d in st_dirs:
