@@ -7,12 +7,7 @@
 
 """
 
-# Disallow import-star (from XXX import *)
-__all__ = []
-
-from .interpolate_global import interpolate_curve
-from .interpolate_global import interpolate_surface
-
-from .approximate_global import approximate_curve
-from .approximate_global import approximate_surface
-
+__all__ = [
+    'interpolate_global',
+    'approximate_global'
+]
