@@ -9,8 +9,8 @@
 
 import math
 from .. import BSpline, NURBS, knotvector
-from .. import fitting
-from .. import geomutils
+from ..fitting import approximate_global
+from ..geomutils import construct
 from ..ptmanager import CPManager
 from .surfgen import Grid
 
@@ -71,13 +71,13 @@ def scordelis_lo(radius=25, thickness=0.25, length=50, angle=40, **kwargs):
         size_v += 1
 
     # Approximate bottom surface
-    surf_bottom = fitting.approximate_surface(points_bottom, size_u, size_v, degree_u, degree_v, ctrlpts_size_u=degree_u + 2, ctrlpts_size_v=degree_v + 2)
+    surf_bottom = approximate_global.approximate_surface(points_bottom, size_u, size_v, degree_u, degree_v, ctrlpts_size_u=degree_u + 2, ctrlpts_size_v=degree_v + 2)
 
     # Approximate top surface
-    surf_top = fitting.approximate_surface(points_top, size_u, size_v, degree_u, degree_v, ctrlpts_size_u=degree_u + 2, ctrlpts_size_v=degree_v + 2)
+    surf_top = approximate_global.approximate_surface(points_top, size_u, size_v, degree_u, degree_v, ctrlpts_size_u=degree_u + 2, ctrlpts_size_v=degree_v + 2)
 
     # Generate Scordelis-Lo Roof as a spline volume
-    slroof = geomutils.construct_volume("w", surf_bottom, surf_top)
+    slroof = construct.construct_volume("w", surf_bottom, surf_top)
 
     # Return the generated volume
     return slroof
@@ -182,6 +182,6 @@ def volume_ex2():
     surf03.knotvector.v = knotvector.generate(surf03.degree.v, surf03.ctrlpts_size.v)
 
     # Construct the volume
-    pvolume = geomutils.construct_volume('w', surf01, surf02, surf03, degree=1)
+    pvolume = construct.construct_volume('w', surf01, surf02, surf03, degree=1)
 
     return pvolume
