@@ -292,9 +292,6 @@ class VisCurve3D(visabstract.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
 
 class VisSurface(visabstract.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -412,8 +409,6 @@ class VisSurface(visabstract.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -553,13 +548,6 @@ class VisSurface(visabstract.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
-
-# VisSurfTriangle is an alias for VisSurface class
-VisSurfTriangle = VisSurface
-
 
 class VisSurfWireframe(visabstract.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -670,9 +658,6 @@ class VisSurfWireframe(visabstract.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
 
 
 class VisSurfScatter(visabstract.VisAbstract):
@@ -786,9 +771,6 @@ class VisSurfScatter(visabstract.VisAbstract):
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
 
-            # Return the figure object
-            return fig
-
 
 class VisVolume(visabstract.VisAbstract):
     """ Matplotlib visualization module for volumes. """
@@ -875,9 +857,6 @@ class VisVolume(visabstract.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
 
 
 class VisVoxel(visabstract.VisAbstract):
@@ -977,6 +956,3 @@ class VisVoxel(visabstract.VisAbstract):
 
             # Save the figure
             self.vconf.save_figure_as(fig, fig_filename)
-
-            # Return the figure object
-            return fig
