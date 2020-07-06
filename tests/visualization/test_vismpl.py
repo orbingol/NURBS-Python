@@ -15,11 +15,10 @@ from geomdl.visualization import VisMPL as vis
 from geomdl.visualization import render
 
 
-# Test if plotting a 2-dimensional curve without a window is possible
 @pytest.mark.usefixtures("curve7")
 def test_curve2d_fig_nowindow(curve7):
     conf = vis.VisConfig()
-    vism = vis.VisCurve3D(config=conf)
+    vism = vis.VisCurve2D(config=conf)
 
     fname = conf.figure_image_filename
 
@@ -33,7 +32,6 @@ def test_curve2d_fig_nowindow(curve7):
         os.remove(conf.figure_image_filename)
 
 
-# Test if using a different file name is possible
 @pytest.mark.usefixtures("curve8")
 def test_curve2d_fig_save(curve8):
     conf = vis.VisConfig()
@@ -51,11 +49,10 @@ def test_curve2d_fig_save(curve8):
         os.remove(fname)
 
 
-# Test if plotting a 3-dimensional curve without a window is possible
 @pytest.mark.usefixtures("curve6")
 def test_curve3d_fig_nowindow(curve6):
     conf = vis.VisConfig()
-    vism = vis.VisCurve2D(config=conf)
+    vism = vis.VisCurve3D(config=conf)
 
     fname = conf.figure_image_filename
 
@@ -69,7 +66,6 @@ def test_curve3d_fig_nowindow(curve6):
         os.remove(conf.figure_image_filename)
 
 
-# Test if using a different file name is possible
 @pytest.mark.usefixtures("curve6")
 def test_curve3d_fig_save(curve6):
     conf = vis.VisConfig()
@@ -87,7 +83,6 @@ def test_curve3d_fig_save(curve6):
         os.remove(fname)
 
 
-# Test if plotting a surface without a window is possible
 @pytest.mark.usefixtures("surface1")
 def test_surf_fig_nowindow(surface1):
     conf = vis.VisConfig()
@@ -105,7 +100,6 @@ def test_surf_fig_nowindow(surface1):
         os.remove(conf.figure_image_filename)
 
 
-# Test if using a different file name is possible
 @pytest.mark.usefixtures("surface1")
 def test_surf_fig_save(surface1):
     conf = vis.VisConfig()
@@ -123,7 +117,6 @@ def test_surf_fig_save(surface1):
         os.remove(fname)
 
 
-# Test offsetting control points grid
 @pytest.mark.usefixtures("surface1")
 def test_surf_ctrlpts_offset(surface1):
     conf = vis.VisConfig()
