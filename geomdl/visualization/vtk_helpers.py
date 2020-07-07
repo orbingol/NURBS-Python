@@ -22,6 +22,8 @@ def create_render_window(actors, callbacks, **kwargs):
     # Get keyword arguments
     figure_size = kwargs.get('figure_size', (800, 600))
     camera_position = kwargs.get('camera_position', (0, 0, 100))
+    display_plot = kwargs.get('display_plot', True)
+    image_filename = kwargs.get('image_filename', "screenshot.png")
 
     # Find camera focal point
     center_points = []
@@ -47,14 +49,7 @@ def create_render_window(actors, callbacks, **kwargs):
     render_window = vtk.vtkRenderWindow()
     render_window.AddRenderer(renderer)
     render_window.SetSize(*figure_size)
-
-    # Render window interactor
-    window_interactor = vtk.vtkRenderWindowInteractor()
-    window_interactor.SetRenderWindow(render_window)
-
-    # Add event observers
-    for cb in callbacks:
-        window_interactor.AddObserver(cb, callbacks[cb][0], callbacks[cb][1])  # cb name, cb function ref, cb priority
+    render_window.SetOffScreenRendering(not display_plot)
 
     # Render actors
     render_window.Render()
@@ -62,15 +57,32 @@ def create_render_window(actors, callbacks, **kwargs):
     # Set window name after render() is called
     render_window.SetWindowName("geomdl")
 
-    # Use trackball camera
-    interactor_style = vtk.vtkInteractorStyleTrackballCamera()
-    window_interactor.SetInteractorStyle(interactor_style)
+    if display_plot:
+        # Render window interactor
+        window_interactor = vtk.vtkRenderWindowInteractor()
+        window_interactor.SetRenderWindow(render_window)
 
-    # Start interactor
-    window_interactor.Start()
+        # Add event observers
+        for cb in callbacks:
+            window_interactor.AddObserver(cb, callbacks[cb][0], callbacks[cb][1])  # cb name, cb function ref, cb priority
 
-    # Return window interactor instance
-    return window_interactor
+        # Use trackball camera
+        interactor_style = vtk.vtkInteractorStyleTrackballCamera()
+        window_interactor.SetInteractorStyle(interactor_style)
+
+        # Start interactor
+        window_interactor.Start()
+    else:
+        # Get the screenshot
+        window_image = vtk.vtkWindowToImageFilter()
+        window_image.SetInput(render_window)
+        window_image.Update()
+
+        # Export screenshot to an image file
+        window_image_writer = vtk.vtkPNGWriter()
+        window_image_writer.SetFileName(image_filename)
+        window_image_writer.SetInputConnection(window_image.GetOutputPort())
+        window_image_writer.Write()
 
 
 def create_color(color):
