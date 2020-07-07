@@ -13,6 +13,6 @@ omit =
     tests/*
     docs/*
     setup.py
+    setup_core.py
     geomdl/__init__.py
-    geomdl/shapes/*
-    geomdl/visualization/*
+    geomdl/*/__init__.py
