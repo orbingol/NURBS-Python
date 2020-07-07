@@ -79,7 +79,7 @@ class CleanCommand(clean_command):
                 dir_name = p_split[0] + "/" + p_split[2]
 
             # Find list of files with .c extension
-            flist_c, flist_c_path = read_files(dir_name, '.c')
+            _, flist_c_path = read_files(dir_name, '.c')
 
             # Clean files with .c extensions
             if flist_c_path:
@@ -88,7 +88,7 @@ class CleanCommand(clean_command):
                     os.unlink(f_path)
 
             # Find list of files with .cpp extension
-            flist_cpp, flist_cpp_path = read_files(dir_name, '.cpp')
+            _, flist_cpp_path = read_files(dir_name, '.cpp')
 
             # Clean files with .cpp extensions
             if flist_cpp_path:
@@ -119,19 +119,19 @@ def make_dir(project):
         shutil.rmtree(project_path)
     # Create the directory
     os.mkdir(project_path)
-    # We need a __init__.py file inside the directory
-    with open(os.path.join(project_path, '__init__.py'), 'w') as fp:
-        fp.write('__version__ = "' + str(get_property('__version__', 'geomdl')) + '"\n')
-        fp.write('__author__ = "' + str(get_property('__author__', 'geomdl')) + '"\n')
-        fp.write('__license__ = "' + str(get_property('__license__', 'geomdl')) + '"\n')
-        fp.write('__keywords__ = "' + str(get_property('__keywords__', 'geomdl')) + '"\n')
+
+
+def copy_init_py(dirname, dirname_core):
+    init_py_path = os.path.join(dirname, "__init__.py")
+    shutil.copy2(init_py_path, dirname_core)
 
 
 # Prepare for cythonize
 exts = []
 for p in packages:
     # Create Cython-compiled module directory
-    make_dir(p.replace('.', '/'))
+    dir_name_core = p.replace('.', '/')
+    make_dir(dir_name_core)
 
     # Fix paths
     p_split = p.split('.')
@@ -139,6 +139,9 @@ for p in packages:
         dir_name = p_split[0]
     else:
         dir_name = p_split[0] + "/" + p_split[2]
+
+    # Copy __init__.py files
+    copy_init_py(dir_name, dir_name_core)
 
     # Create extensions
     fnames, fnames_path = read_files(dir_name, '.py')
@@ -150,16 +153,16 @@ for p in packages:
 # Input for setuptools.setup
 data = dict(
     name='geomdl.core',
-    version=get_property('__version__', 'geomdl/core'),
+    version=get_property('__version__', 'geomdl'),
     description="Cython-compiled version of geomdl",
     long_description=textwrap.dedent("""\
         Cython-compiled version of NURBS-Python (geomdl)
     """),
-    license=get_property('__license__', 'geomdl/core'),
-    author=get_property('__author__', 'geomdl/core'),
+    license=get_property('__license__', 'geomdl'),
+    author=get_property('__author__', 'geomdl'),
     author_email='nurbs-python@googlegroups.com',
     url='https://github.com/orbingol/NURBS-Python',
-    keywords=get_property('__keywords__', 'geomdl/core'),
+    keywords=get_property('__keywords__', 'geomdl'),
     packages=[],
     install_requires=['cython'],
     tests_require=['pytest'],

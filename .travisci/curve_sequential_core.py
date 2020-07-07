@@ -3,17 +3,20 @@ import os
 import sys
 import platform
 import timeit
-from geomdl.core import NURBS, knotvector
+from geomdl.core import NURBS, ptmanager, knotvector
 
 
 # Setup test
 def setup_test():
-    ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-               [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    cpman = ptmanager.CPManager(10)
+    cpman.points = [
+        [5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
+        [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]
+    ]
 
     ns = NURBS.Curve()
     ns.degree = [3]
-    ns.set_ctrlpts(ctrlpts)
+    ns.ctrlpts = cpman
     ns.knotvector = [knotvector.generate(ns.degree.u, ns.ctrlpts_size.u)]
     ns.sample_size = 16384
 

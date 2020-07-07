@@ -3,6 +3,21 @@
 dist: bionic
 sudo: false
 
+# enable x server
+services:
+  - xvfb
+
+# apt install the required packages
+addons:
+  apt:
+    packages:
+      - libgtk2.0-0
+      - libxss1
+      - libgconf-2-4
+      - libnss3
+      - libasound2
+      - poppler-utils
+
 language: python
 cache: pip
 
@@ -38,8 +53,6 @@ matrix:
 
 # install packages
 install:
-  - npm install -g npm  # for plotly static image export
-  - python -m pip install --upgrade pip  # upgrade pip
   - pip install tox
 
 # run tox
