@@ -38,10 +38,12 @@ class VisConfig(vis.VisConfigAbstract):
         self._bg_id = 0  # used for keeping track of the background numbering
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
+        self.display_bbox = kwargs.get('bbox', False)
         self.display_trims = kwargs.get('trims', True)
         self.trim_size = kwargs.get('trim_size', 4)
         self.figure_size = kwargs.get('figure_size', (800, 600))  # size of the render window
         self.line_width = kwargs.get('line_width', 1.0)
+        self.figure_image_filename = "temp-figure.png"
 
     def keypress_callback(self, obj, ev):
         """ VTK callback for keypress events.
@@ -156,9 +158,20 @@ class VisCurve3D(vis.VisAbstract):
                                                    name=plot['name'], index=plot['idx'], size=self.vconf.line_width * 2)
                 vtk_actors.append(actor1)
 
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
+
         # Render actors
-        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                         figure_size=self.vconf.figure_size)
+        vtkh.create_render_window(
+            vtk_actors,
+            dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+            figure_size=self.vconf.figure_size,
+            display_plot=fig_display,
+            image_filename=fig_filename
+        )
 
 
 # It is easier to plot 2-dimensional curves with VisCurve3D
@@ -220,9 +233,20 @@ class VisSurface(vis.VisAbstract):
                                                        name=plot['name'], index=plot['idx'], size=self.vconf.trim_size)
                     vtk_actors.append(actor1)
 
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
+
         # Render actors
-        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                         figure_size=self.vconf.figure_size)
+        vtkh.create_render_window(
+            vtk_actors,
+            dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+            figure_size=self.vconf.figure_size,
+            display_plot=fig_display,
+            image_filename=fig_filename
+        )
 
 
 class VisVolume(vis.VisAbstract):
@@ -261,9 +285,20 @@ class VisVolume(vis.VisAbstract):
                                                    name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
+
         # Render actors
-        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                         figure_size=self.vconf.figure_size)
+        vtkh.create_render_window(
+            vtk_actors,
+            dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+            figure_size=self.vconf.figure_size,
+            display_plot=fig_display,
+            image_filename=fig_filename
+        )
 
 
 class VisVoxel(vis.VisAbstract):
@@ -302,6 +337,17 @@ class VisVoxel(vis.VisAbstract):
                                                           name=plot['name'], index=plot['idx'])
                 vtk_actors.append(temp_actor)
 
+        # Process keyword arguments
+        fig_filename = kwargs.get('fig_save_as', None)
+        fig_display = kwargs.get('display_plot', True)
+
+        fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
+
         # Render actors
-        return vtkh.create_render_window(vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
-                                         figure_size=self.vconf.figure_size)
+        vtkh.create_render_window(
+            vtk_actors,
+            dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)),
+            figure_size=self.vconf.figure_size,
+            display_plot=fig_display,
+            image_filename=fig_filename
+        )
