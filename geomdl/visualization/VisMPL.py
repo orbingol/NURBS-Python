@@ -194,14 +194,12 @@ class VisCurve2D(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisCurve3D(visabstract.VisAbstract):
@@ -283,14 +281,12 @@ class VisCurve3D(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurface(visabstract.VisAbstract):
@@ -400,14 +396,12 @@ class VisSurface(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
     def render(self, **kwargs):
@@ -539,14 +533,12 @@ class VisSurface(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurfWireframe(visabstract.VisAbstract):
@@ -650,14 +642,12 @@ class VisSurfWireframe(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisSurfScatter(visabstract.VisAbstract):
@@ -762,14 +752,12 @@ class VisSurfScatter(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisVolume(visabstract.VisAbstract):
@@ -849,14 +837,12 @@ class VisVolume(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
 
 
 class VisVoxel(visabstract.VisAbstract):
@@ -948,11 +934,9 @@ class VisVoxel(visabstract.VisAbstract):
 
         # Check if running inside a Jupyter notebook
         if not self.vconf.is_notebook():
-            # Display the plot
+            # Display the plot or save the figure
             if fig_display:
                 plt.show()
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
-
-            # Save the figure
-            self.vconf.save_figure_as(fig, fig_filename)
+                self.vconf.save_figure_as(fig, fig_filename)
