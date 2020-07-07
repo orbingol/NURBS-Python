@@ -25,16 +25,16 @@ def create_render_window(actors, callbacks, **kwargs):
     display_plot = kwargs.get('display_plot', True)
     image_filename = kwargs.get('image_filename', "screenshot.png")
 
-    # Find camera focal point
-    center_points = []
-    for actor in actors:
-        center_points.append(actor.GetCenter())
-    camera_focal_point = np.mean(center_points, axis=1)
+    # # Find camera focal point
+    # center_points = []
+    # for actor in actors:
+    #     center_points.append(actor.GetCenter())
+    # camera_focal_point = np.mean(center_points, axis=1)
 
     # Create camera
     camera = vtk.vtkCamera()
     camera.SetPosition(*camera_position)
-    camera.SetFocalPoint(*camera_focal_point)
+    # camera.SetFocalPoint(*camera_focal_point)
 
     # Create renderer
     renderer = vtk.vtkRenderer()
