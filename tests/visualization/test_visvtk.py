@@ -20,7 +20,7 @@ def test_curve2d_fig_nowindow(curve7):
 
     fname = conf.figure_image_filename
 
-    render.render(curve7, vism)
+    render.render(curve7, vism, display=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -54,7 +54,7 @@ def test_curve3d_fig_nowindow(curve6):
 
     fname = conf.figure_image_filename
 
-    render.render(curve6, vism)
+    render.render(curve6, vism, display=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -88,7 +88,7 @@ def test_surf_fig_nowindow(surface1):
 
     fname = conf.figure_image_filename
 
-    render.render(surface1, vism)
+    render.render(surface1, vism, display=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
@@ -142,7 +142,7 @@ def test_vol_fig_nowindow(volume1):
 
     fname = conf.figure_image_filename
 
-    render.render(volume1, vism)
+    render.render(volume1, vism, display=False)
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
