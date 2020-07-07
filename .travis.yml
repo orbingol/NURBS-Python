@@ -37,16 +37,24 @@ branches:
 # build matrix
 matrix:
   include:
-    - python: 3.6
+    - os: linux
+      arch: amd64
+      python: 3.6
       env: TOXENV=py36,test
 
-    - python: 3.7
+    - os: linux
+      arch: amd64
+      python: 3.7
       env: TOXENV=py37,test
 
-    - python: 3.8
+    - os: linux
+      arch: amd64
+      python: 3.8
       env: TOXENV=py38,test,codecov
 
     - name: "Performance testing on Python 3.6"
+      os: linux
+      arch: amd64
       python: 3.6
       env: TOXENV=py36,performance-full
       if: branch = master OR branch = travisci-testing
