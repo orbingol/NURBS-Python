@@ -18,9 +18,6 @@ addons:
       - libasound2
       - poppler-utils
 
-language: python
-cache: pip
-
 # branches to build
 branches:
   only:
@@ -34,35 +31,64 @@ branches:
     - master  # master branch
     - travisci-testing  # CI testing
 
-# build matrix
-matrix:
-  include:
-    - os: linux
-      arch: amd64
-      python: 3.6
-      env: TOXENV=py36,test
+# environmental variables
+env:
+  - MPLBACKEND=Agg
 
-    - os: linux
-      arch: amd64
-      python: 3.7
-      env: TOXENV=py37,test
+# Ref: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/use-conda-with-travis-ci.html
+language: python
 
-    - os: linux
-      arch: amd64
-      python: 3.8
-      env: TOXENV=py38,test,codecov
+python:
+  # We don't actually use the Travis Python, but this keeps it organized.
+  - "3.5"
+  - "3.6"
+  - "3.7"
 
-    - name: "Performance testing on Python 3.6"
-      os: linux
-      arch: amd64
-      python: 3.6
-      env: TOXENV=py36,performance-full
-      if: branch = master OR branch = travisci-testing
-
-# install packages
 install:
-  - pip install tox
+  - sudo apt update
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # useful for debugging any issues with conda
+  - conda info -a
+  # install dependencies
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib plotly vtk cython pytest pytest-cov codecov
+  # activate test environment
+  - conda activate test-environment
+  # install plotly dependencies
+  - conda install psutil requests
+  - conda install -c plotly plotly-orca
+  # install packages
+  - python setup.py develop
+  - python setup_core.py build_ext --inplace
 
-# run tox
+# test geomdl.core installation
+before_script:
+  - python -c "from geomdl.core import NURBS; ns = NURBS.Surface(); print(ns.name)"
+
+# run pytest
 script:
-  - tox
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+      pytest --cov=./;
+    else
+      pytest;
+    fi
+
+# post-testing tasks
+after_script:
+  # run codecov
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+      codecov -e $TRAVIS_PYTHON_VERSION;
+    fi
+  # run performance scripts
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+      python .travisci/curve_sequential_pure.py;
+      python .travisci/curve_sequential_core.py;
+    fi
