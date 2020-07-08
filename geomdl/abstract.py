@@ -264,8 +264,8 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def _evalpts_reset(self):
-        self._cfg['evalpts_needs_reset'] = True
+    def _evalpts_reset(self, value=True):
+        self._cfg['evalpts_needs_reset'] = value
 
     @property
     def rational(self):
@@ -617,6 +617,8 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
                 self._knot_vector[i] = knotvector.normalize(self._knot_vector[i])
             # Check sample size values
             validate_sample_size_value(self._attribs[i], self._sample_size[i])
+        # Update config
+        self._evalpts_reset(False)
 
     def reset(self, **kwargs):
         """ Clears computed/generated data, such as caches and evaluated points """
