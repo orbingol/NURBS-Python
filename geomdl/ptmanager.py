@@ -42,7 +42,7 @@ def default_find_index(pts_size, *args):
     return idx
 
 
-def default_pts_init(num_pts, **kwargs):
+def default_pts_init(num_pts):
     """ Initializes the points container (default)
 
     Default functions use the container types included in the Python Standard Library.
@@ -221,7 +221,7 @@ class PointsManager(GeomdlBase):
         sz = [int(arg) for arg in args] if args else [0]
         self._size = GeomdlList(*sz, attribs=('u', 'v', 'w'), cb=[self.reset])
         # Initialize the points
-        self._pts = self._cfg['func_pts_init'](self.count, **kwargs)
+        self._pts = self._cfg['func_pts_init'](self.count)  # initialize the points
 
     def __call__(self, points):
         self.points = points
@@ -332,7 +332,7 @@ class PointsManager(GeomdlBase):
         # Call parent method
         super(PointsManager, self).reset(**kwargs)
         # Reinitialize the control points
-        self._pts = self._cfg['func_pts_init'](self.count, **kwargs)
+        self._pts = self._cfg['func_pts_init'](self.count)
 
     def pt(self, *args):
         """ Gets the point from the input position """
