@@ -183,7 +183,14 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
     def __init__(self, *args, **kwargs):
         cache_vars = kwargs.get('cache_vars', dict())
-        cache_vars.update(dict(order=list(), sample_size=list(), domain=list(), range=list(), ctrlpts=CPManager(), weights=list()))
+        cache_vars.update(
+            dict(order=list(),
+            sample_size=list(),
+            domain=list(),
+            range=list(),
+            ctrlpts=CPManager(cb=[self._evalpts_reset]),
+            weights=list())
+        )
         kwargs.update(dict(cache_vars=cache_vars))
         super(SplineGeometry, self).__init__(*args, **kwargs)
 
@@ -193,7 +200,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
         self._geom_type = "spline"  # geometry type
         self._rational = False  # defines whether the B-spline object is rational or not
-        self._control_points = CPManager()  # control points
+        self._control_points = CPManager(cb=[self._evalpts_reset])  # control points
         self._bounding_box = list()  # bounding box
         self._evaluator = None  # evaluator instance
         self._degree = GeomdlList(  # degree
@@ -256,6 +263,9 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def _evalpts_reset(self):
+        self._cfg['evalpts_needs_reset'] = True
 
     @property
     def rational(self):
@@ -366,7 +376,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         :type: list
         """
         if not self._cache['ctrlpts'] and self.rational:
-            self._cache['ctrlpts'] = CPManager(*self._control_points.size)
+            self._cache['ctrlpts'].size = self._control_points.size
             self._cache['ctrlpts'].points, self._cache['weights'] = separate_ctrlpts_weights(self._control_points.points)
         return self._cache['ctrlpts'] if self.rational else self._control_points
 
@@ -387,6 +397,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
         # Set new control points
         self._control_points = value
+        self._control_points.set_callbacks([self._evalpts_reset])
 
         # Clear caches
         self.reset()
@@ -439,6 +450,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         if not isinstance(value, CPManager):
             raise GeomdlError("Control points must be an instance of CPManager")
         self._control_points = value
+        self._control_points.set_callbacks([self._evalpts_reset])
         # Clear caches
         self.reset()
 
@@ -584,7 +596,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             raise GeomdlError("Number of arguments after ctrlpts must be " + str(self._pdim))
 
         # Set control points and sizes
-        self._control_points = CPManager(*args)
+        self._control_points = CPManager(*args, cb=[self._evalpts_reset])
         self._control_points.points = ctrlpts
 
         # Clear caches
