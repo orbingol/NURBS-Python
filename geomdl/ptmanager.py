@@ -423,10 +423,16 @@ class CPManager(PointsManager):
     """
     __slots__ = ('_ptsd',)
 
+    def __new__(cls, *args, **kwargs):
+        obj = super(CPManager, cls).__new__(cls, *args, **kwargs)
+        # Create/update the configuration dictionary
+        obj._cfg['func_ptsd_init'] = kwargs.pop('func_pts_init', default_ptsd_init)  # data dict init function
+        # Create/update the data container
+        obj._ptsd = []
+        return obj
+
     def __init__(self, *args, **kwargs):
         super(CPManager, self).__init__(*args, **kwargs)
-        # Update configuration dictionary
-        self._cfg['func_ptsd_init'] = kwargs.pop('func_pts_init', default_ptsd_init)  # data dict init function
         # Initialize the data container
         self._ptsd = self._cfg['func_ptsd_init'](self.count, **kwargs)
 
