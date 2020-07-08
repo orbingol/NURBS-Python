@@ -1,9 +1,15 @@
 # geomdl Changelog
 
+## v5.2.10 released on 2020-07-07
+
+* Fixed a bug causing double matplotlib figures when run on a Jupyter notebook
+* Fixed `filename` argument when plotly visualization module is used
+* Added offscreen rendering support for VTK visualization module
+
 ## v5.2.9 released on 2019-09-10
 
 * Fixed issues #59, #61 and #62
-* ``evaluators`` API and documentation updates 
+* ``evaluators`` API and documentation updates
 * Documentation updates
 * Docker configuration updates: ``latest`` tag points to Python v3.6
 
