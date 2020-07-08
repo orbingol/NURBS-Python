@@ -25,3 +25,4 @@ geomdl/evaluators
 *.pyd
 *.whl
 *.tar.gz
+.coverage
