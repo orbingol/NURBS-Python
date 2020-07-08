@@ -14,5 +14,4 @@ omit =
     docs/*
     setup.py
     geomdl/__init__.py
-    geomdl/shapes/*
     geomdl/visualization/*
