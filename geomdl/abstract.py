@@ -43,6 +43,11 @@ class Geometry(GeomdlBase, metaclass=abc.ABCMeta):
     """
     __slots__ = ('_eval_points',)
 
+    def __new__(cls, *args, **kwargs):
+        obj = super(Geometry, cls).__new__(cls, *args, **kwargs)
+        obj._cfg['evalpts_needs_reset'] = False
+        return obj
+
     def __init__(self, *args, **kwargs):
         super(Geometry, self).__init__(*args, **kwargs)
         self._geom_type = "default"  # geometry type
@@ -57,7 +62,7 @@ class Geometry(GeomdlBase, metaclass=abc.ABCMeta):
 
         :getter: Gets the coordinates of the evaluated points
         """
-        if not self._eval_points:
+        if not self._eval_points or self._cfg['evalpts_needs_reset']:
             self.evaluate()
         return self._eval_points
 
