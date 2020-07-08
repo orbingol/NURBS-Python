@@ -314,6 +314,8 @@ class PointsManager(GeomdlBase):
     def size(self):
         """ Number of the points in all parametric dimensions
 
+        Setting a new size will automatically reset the points to zero.
+
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
 
@@ -325,6 +327,8 @@ class PointsManager(GeomdlBase):
     @size.setter
     def size(self, value):
         self._size.data = value.data if isinstance(value, GeomdlList) else value if isinstance(value, GeomdlTypeSequence) else [value]
+        # Reset the control points
+        self.reset()
 
     @property
     def count(self):
