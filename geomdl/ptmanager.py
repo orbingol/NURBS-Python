@@ -66,8 +66,11 @@ def default_ptsd_init(num_pts, **kwargs):
     :return: a list containing the initialized data dictionary (as a ``dict``)
     :rtype: list
     """
+    excludes = ['func_pts_init', 'func_pts_set', 'func_pt_set', 'func_find_index', 'cb']
     points_data = GeomdlDict()
     for k, v in kwargs.items():
+        if k in excludes:
+            continue
         if v > 1:
             points_data[k] = [[GeomdlFloat(0.0) for _ in range(v)] for _ in range(num_pts)]
         else:
