@@ -75,7 +75,7 @@ def default_ptsd_init(num_pts, **kwargs):
     return points_data
 
 
-def default_pts_set(pts_in, dim, pts_out):
+def default_pts_set(pts_in, dim, pts_out, cb):
     """ Fills the points container with the input points (default)
 
     Default functions use the container types included in the Python Standard Library.
@@ -86,6 +86,8 @@ def default_pts_set(pts_in, dim, pts_out):
     :type dim: int
     :param pts_out: output list of control points
     :type pts_out: list
+    :param cb: callback functions
+    :type cb: list, tuple
     :return: ``pts_out`` will be returned
     :rtype: list
     """
@@ -94,11 +96,11 @@ def default_pts_set(pts_in, dim, pts_out):
             raise GeomdlError("input[" + str(idx) + "] not valid. Must be a sequence.")
         if len(cpt) != dim:
             raise GeomdlError(str(cpt) + " not valid. Must be a " + str(dim) + "-dimensional list.")
-        default_pt_set(pts_out, idx, cpt)
+        default_pt_set(pts_out, idx, cpt, cb)
     return pts_out
 
 
-def default_pt_set(pts_arr, idx, cpt):
+def default_pt_set(pts_arr, idx, cpt, cb):
     """ Assigns value to a single point position inside the container (default)
 
     :param pts_arr: control points container
@@ -107,8 +109,11 @@ def default_pt_set(pts_arr, idx, cpt):
     :type idx: int
     :param cpt: control point
     :type cpt: list, tuple
+    :param cb: callback functions
+    :type cb: list, tuple
     """
     pts_arr[idx] = [GeomdlFloat(c) for c in cpt]
+    for c in cb: c()  # run callbacks
 
 
 @export
@@ -201,7 +206,7 @@ class PointsManager(GeomdlBase):
     * ``func_pt_set``: function to assign a single point. *Default:* ``default_pt_set``
     * ``func_find_index``: function to find the index of the point/vertex. *Default:* ``default_find_index``
     """
-    __slots__ = ('_size', '_pts', '_iter_index')
+    __slots__ = ('_size', '_pts', '_cb')
 
     def __new__(cls, *args, **kwargs):
         obj = super(PointsManager, cls).__new__(cls)
@@ -213,6 +218,8 @@ class PointsManager(GeomdlBase):
         # Create/update size and points
         obj._size = []
         obj._pts = []
+        # Callbacks for setitem and points setter
+        obj._cb = kwargs.pop('cb', [lambda: None])
         return obj
 
     def __init__(self, *args, **kwargs):
@@ -266,12 +273,12 @@ class PointsManager(GeomdlBase):
 
         # Set the item
         if isinstance(key, int):
-            self._cfg['func_pt_set'](self._pts, key, value)
+            self._cfg['func_pt_set'](self._pts, key, value, self._cb)
         elif isinstance(key, tuple):
             if len(key) != len(self.size):
                 raise ValueError("The n-dimensional indices must be equal to number of parametric dimensions")
             idx = self._cfg['func_find_index'](self.size, *key)
-            self._cfg['func_pt_set'](self._pts, idx, value)
+            self._cfg['func_pt_set'](self._pts, idx, value, self._cb)
         else:
             raise TypeError(self.__class__.__name__ + " indices must be integer or tuple, not " + key.__class__.__name__)
 
@@ -298,7 +305,7 @@ class PointsManager(GeomdlBase):
         # Update dimension
         self._dimension = len(value[0])
         # Set points
-        self._cfg['func_pts_set'](value, self.dimension, self._pts)
+        self._cfg['func_pts_set'](value, self.dimension, self._pts, self._cb)
 
     @property
     def size(self):
@@ -345,6 +352,16 @@ class PointsManager(GeomdlBase):
         :type pt: list, tuple
         """
         self[args] = pt
+
+    def set_callbacks(self, cb):
+        """ Sets callback functions to be executed when a point is set to a new value
+
+        :param cb: list of callback functions
+        :type cb: list, tuple
+        """
+        if not isinstance(cb, GeomdlTypeSequence):
+            raise GeomdlError("The input must be a list/tuple of callback functions")
+        self._cb = list(cb)
 
 
 @export
