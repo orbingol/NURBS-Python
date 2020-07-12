@@ -97,8 +97,8 @@ License
 .. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=6.x&svg=true
 .. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
 
-.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/master.svg?style=shield
-.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/master
+.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/6.x.svg?style=shield
+.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/6.x
 
 .. |PYPI| image:: https://img.shields.io/pypi/v/geomdl.svg
 .. _PYPI: https://pypi.org/project/geomdl/
