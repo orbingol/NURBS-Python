@@ -7,6 +7,7 @@
 """
 
 import os
+from random import randint
 import pytest
 from geomdl.exchange import *
 
@@ -46,6 +47,108 @@ def test_export_json_volume_single(volume1):
 
     assert os.path.isfile(fname)
     assert os.path.getsize(fname) > 0
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("curve1")
+def test_import_json_curve_single_size(curve1):
+    fname = FILE_NAME + ".curve.json"
+    # Export json
+    json.export_json(curve1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    assert len(res) == 1
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("surface1")
+def test_import_json_surface_single_size(surface1):
+    fname = FILE_NAME + ".surface.json"
+    # Export json
+    json.export_json(surface1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    assert len(res) == 1
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_import_json_volume_single_size(volume1):
+    fname = FILE_NAME + ".volume.json"
+    # Export json
+    json.export_json(volume1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    assert len(res) == 1
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("curve1")
+def test_import_json_curve_single(curve1):
+    fname = FILE_NAME + ".curve.json"
+    # Export json
+    json.export_json(curve1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    # Generate random index
+    idx = randint(0, curve1.ctrlpts.count - 1)
+
+    for a, b in zip(curve1.ctrlpts[idx], res[0].ctrlpts[idx]):
+        assert a == b
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("surface1")
+def test_import_json_surface_single(surface1):
+    fname = FILE_NAME + ".surface.json"
+    # Export json
+    json.export_json(surface1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    # Generate random index
+    idx = randint(0, surface1.ctrlpts.count - 1)
+
+    for a, b in zip(surface1.ctrlpts[idx], res[0].ctrlpts[idx]):
+        assert a == b
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_import_json_volume_single(volume1):
+    fname = FILE_NAME + ".volume.json"
+    # Export json
+    json.export_json(volume1, fname)
+    # Import json
+    res = json.import_json(fname)
+
+    # Generate random index
+    idx = randint(0, volume1.ctrlpts.count - 1)
+
+    for a, b in zip(volume1.ctrlpts[idx], res[0].ctrlpts[idx]):
+        assert a == b
 
     # Clean up temporary file if exists
     if os.path.isfile(fname):
