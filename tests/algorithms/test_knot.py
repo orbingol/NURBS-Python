@@ -167,6 +167,25 @@ def test_bspline_surface_remove_knot_kv_v(surface5):
     assert 0.33 not in kr.knotvector.v
     assert s == 0
 
+
+@pytest.mark.usefixtures("surface5")
+def test_bspline_surface_refine_knot_kv_u(surface5):
+    kk = knot.refine_knot(surface5, (1, 0))
+
+    for k in kk.knotvector.u[kk.degree.u:kk.degree.u-1]:
+        s = helpers.find_multiplicity(k, kk.knotvector.u)
+        assert s == kk.degree.u
+
+
+@pytest.mark.usefixtures("surface5")
+def test_bspline_surface_refine_knot_kv_v(surface5):
+    kk = knot.refine_knot(surface5, (0, 1))
+
+    for k in kk.knotvector.v[kk.degree.v:kk.degree.v-1]:
+        s = helpers.find_multiplicity(k, kk.knotvector.v)
+        assert s == kk.degree.v
+
+
 # Volume knot algorithms
 @pytest.mark.usefixtures("volume3")
 @pytest.mark.parametrize("params, num, uvw, res", [
@@ -294,3 +313,30 @@ def test_bspline_volume_remove_knot_kv_w(volume2):
 
     assert 0.5 not in kr.knotvector.w
     assert s == 0
+
+
+@pytest.mark.usefixtures("volume3")
+def test_bspline_volume_refine_knot_kv_u(volume3):
+    kk = knot.refine_knot(volume3, (1, 0, 0))
+
+    for k in kk.knotvector.u[kk.degree.u:kk.degree.u-1]:
+        s = helpers.find_multiplicity(k, kk.knotvector.u)
+        assert s == kk.degree.u
+
+
+@pytest.mark.usefixtures("volume3")
+def test_bspline_volume_refine_knot_kv_v(volume3):
+    kk = knot.refine_knot(volume3, (0, 1, 0))
+
+    for k in kk.knotvector.v[kk.degree.v:kk.degree.v-1]:
+        s = helpers.find_multiplicity(k, kk.knotvector.v)
+        assert s == kk.degree.v
+
+
+@pytest.mark.usefixtures("volume2")
+def test_bspline_volume_refine_knot_kv_w(volume3):
+    kk = knot.refine_knot(volume3, (0, 0, 1))
+
+    for k in kk.knotvector.v[kk.degree.w:kk.degree.w-1]:
+        s = helpers.find_multiplicity(k, kk.knotvector.w)
+        assert s == kk.degree.w
