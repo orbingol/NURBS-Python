@@ -88,7 +88,7 @@ after_script:
       codecov -e $TRAVIS_PYTHON_VERSION;
     fi
   # run performance scripts
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
       python .travisci/curve_sequential_pure.py;
       python .travisci/curve_sequential_core.py;
     fi
