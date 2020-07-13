@@ -7,7 +7,7 @@
 import pytest
 from geomdl import BSpline, NURBS, knotvector
 from geomdl.geomutils import construct
-from geomdl.examples.volume import volume_ex2
+from geomdl.examples.volume import volume_ex1, volume_ex2
 
 
 @pytest.fixture
@@ -19,3 +19,8 @@ def volume1(surface1, surface2):
 @pytest.fixture
 def volume2():
     return volume_ex2()
+
+
+@pytest.fixture
+def volume3():
+    return volume_ex1()

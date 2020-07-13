@@ -167,53 +167,130 @@ def test_bspline_surface_remove_knot_kv_v(surface5):
     assert 0.33 not in kr.knotvector.v
     assert s == 0
 
+# Volume knot algorithms
+@pytest.mark.usefixtures("volume3")
+@pytest.mark.parametrize("params, num, uvw, res", [
+    ((0.3, 0.4, 0.25), (1, 1, 1), (0.3, 0.4, 0.25), (5.250, 2.625, 0.5)),
+    ((0.3, None, None), (1, 0, 0), (0.3, 0.4, 0.25), (5.250, 2.625, 0.5)),
+    ((None, 0.4, None), (0, 1, 0), (0.3, 0.4, 0.25), (5.250, 2.625, 0.5)),
+    ((None, None, 0.25), (0, 0, 1), (0.3, 0.4, 0.25), (5.250, 2.625, 0.5)),
+])
+def test_bspline_volume_insert_knot_eval(volume2, params, num, uvw, res):
     # Insert knot
-    ki = knot.insert_knot(surface5, params, num)
+    ki = knot.insert_knot(volume2, params, num)
+
+    # Evaluate surface
+    evalpt = ki.evaluate_single(uvw)
+
+    assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
+    assert abs(evalpt[1] - res[1]) < GEOMDL_DELTA
+    assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
+
+
+@pytest.mark.usefixtures("volume2")
+@pytest.mark.parametrize("params, num, idx, val", [
+    ((0.33, None, None), (1, 0, 0), 4, 0.33),
+    ((0.33, None, None), (1, 0, 0), 9, 1.0)
+])
+def test_bspline_volume_insert_knot_kv_u(volume2, params, num, idx, val):
+    ki = knot.insert_knot(volume2, params, num)
 
     assert ki.knotvector.u[idx] == val
 
 
-# @pytest.mark.parametrize("param, num_remove", [
-#     (0.33, 1),
-#     (0.66, 1)
-# ])
-# def test_bspline_surface_remove_knot_u(spline_surf, param, num_remove):
-#     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_u)
-#     c_pre = spline_surf.ctrlpts_size_u
-#     spline_surf.remove_knot(u=param, num_u=num_remove)
-#     s_post = helpers.find_multiplicity(param, spline_surf.knotvector_u)
-#     c_post = spline_surf.ctrlpts_size_u
+@pytest.mark.usefixtures("volume2")
+@pytest.mark.parametrize("params, num, idx, val", [
+    ((None, 0.33, None), (0, 1, 0), 4, 0.33),
+    ((None, 0.33, None), (0, 1, 0), 9, 1.0)
+])
+def test_bspline_volume_insert_knot_kv_v(volume2, params, num, idx, val):
+    ki = knot.insert_knot(volume2, params, num)
 
-#     assert c_pre - num_remove == c_post
-#     assert s_pre - num_remove == s_post
+    assert ki.knotvector.v[idx] == val
 
 
-# @pytest.mark.parametrize("param, num_remove", [
-#     (0.33, 1),
-#     (0.66, 1)
-# ])
-# def test_bspline_surface_remove_knot_v(spline_surf, param, num_remove):
-#     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_v)
-#     c_pre = spline_surf.ctrlpts_size_v
-#     spline_surf.remove_knot(v=param, num_v=num_remove)
-#     s_post = helpers.find_multiplicity(param, spline_surf.knotvector_v)
-#     c_post = spline_surf.ctrlpts_size_v
+@pytest.mark.usefixtures("volume3")
+@pytest.mark.parametrize("params, num, idx, val", [
+    ((None, None, 0.25), (0, 0, 1), 2, 0.25),
+    ((None, None, 0.75), (0, 0, 1), 3, 1.0),
+])
+def test_bspline_volume_insert_knot_kv_w(volume3, params, num, idx, val):
+    ki = knot.insert_knot(volume3, params, num)
 
-#     assert c_pre - num_remove == c_post
-#     assert s_pre - num_remove == s_post
+    print(ki.knotvector.w)
+
+    assert ki.knotvector.w[idx] == val
 
 
-# def test_bspline_surface_remove_knot_kv_u(spline_surf):
-#     spline_surf.remove_knot(u=0.66, num_u=1)
-#     s = helpers.find_multiplicity(0.66, spline_surf.knotvector_u)
+@pytest.mark.usefixtures("volume3")
+@pytest.mark.parametrize("param, num_remove", [
+    ((0.333333333333, None, None), (1, 0, 0)),
+    ((0.666666666667, None, None), (1, 0, 0))
+])
+def test_bspline_volume_remove_knot_u(volume3, param, num_remove):
+    s_pre = helpers.find_multiplicity(param[0], volume3.knotvector.u)
+    c_pre = volume3.ctrlpts_size.u
+    kr = knot.remove_knot(volume3, param, num_remove)
+    s_post = helpers.find_multiplicity(param[0], kr.knotvector.u)
+    c_post = kr.ctrlpts_size.u
 
-#     assert 0.66 not in spline_surf.knotvector_u
-#     assert s == 0
+    assert c_pre - num_remove[0] == c_post
+    assert s_pre - num_remove[0] == s_post
 
 
-# def test_bspline_surface_remove_knot_kv_v(spline_surf):
-#     spline_surf.remove_knot(v=0.33, num_v=1)
-#     s = helpers.find_multiplicity(0.33, spline_surf.knotvector_v)
+@pytest.mark.usefixtures("volume3")
+@pytest.mark.parametrize("param, num_remove", [
+    ((None, 0.333333333333, None), (0, 1, 0)),
+    ((None, 0.666666666667, None), (0, 1, 0))
+])
+def test_bspline_volume_remove_knot_v(volume3, param, num_remove):
+    s_pre = helpers.find_multiplicity(param[1], volume3.knotvector.v)
+    c_pre = volume3.ctrlpts_size.v
+    kr = knot.remove_knot(volume3, param, num_remove)
+    s_post = helpers.find_multiplicity(param[1], kr.knotvector.v)
+    c_post = kr.ctrlpts_size.v
 
-#     assert 0.33 not in spline_surf.knotvector_v
-#     assert s == 0
+    assert c_pre - num_remove[1] == c_post
+    assert s_pre - num_remove[1] == s_post
+
+
+@pytest.mark.usefixtures("volume2")
+@pytest.mark.parametrize("param, num_remove", [
+    ((None, None, 0.5), (0, 0, 1)),
+])
+def test_bspline_volume_remove_knot_w(volume2, param, num_remove):
+    s_pre = helpers.find_multiplicity(param[2], volume2.knotvector.w)
+    c_pre = volume2.ctrlpts_size.w
+    kr = knot.remove_knot(volume2, param, num_remove)
+    s_post = helpers.find_multiplicity(param[2], kr.knotvector.w)
+    c_post = kr.ctrlpts_size.w
+
+    assert c_pre - num_remove[2] == c_post
+    assert s_pre - num_remove[2] == s_post
+
+
+@pytest.mark.usefixtures("volume3")
+def test_bspline_volume_remove_knot_kv_u(volume3):
+    kr = knot.remove_knot(volume3, (0.666666666667, None, None), (1, 0, 0))
+    s = helpers.find_multiplicity(0.666666666667, kr.knotvector.u)
+
+    assert 0.666666666667 not in kr.knotvector.u
+    assert s == 0
+
+
+@pytest.mark.usefixtures("volume3")
+def test_bspline_volume_remove_knot_kv_v(volume3):
+    kr = knot.remove_knot(volume3, (None, 0.333333333333, None), (0, 1, 0))
+    s = helpers.find_multiplicity(0.333333333333, kr.knotvector.v)
+
+    assert 0.333333333333 not in kr.knotvector.v
+    assert s == 0
+
+
+@pytest.mark.usefixtures("volume2")
+def test_bspline_volume_remove_knot_kv_w(volume2):
+    kr = knot.remove_knot(volume2, (None, None, 0.5), (0, 0, 1))
+    s = helpers.find_multiplicity(0.5, kr.knotvector.w)
+
+    assert 0.5 not in kr.knotvector.w
+    assert s == 0
