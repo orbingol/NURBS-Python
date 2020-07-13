@@ -74,7 +74,7 @@ data = dict(
         'geomdl.geomutils',
         'geomdl.visualization'
     ],
-    install_requires=[],
+    install_requires=['doubledouble'],
     tests_require=['pytest'],
     cmdclass={'clean': CleanCommand},
     ext_modules=[],

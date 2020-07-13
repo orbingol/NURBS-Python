@@ -7,7 +7,7 @@
 
 """
 import sys
-from .doubledouble import DoubleDouble
+from doubledouble import DoubleDouble
 from . import linalg
 from .base import export, GeomdlTypeSequence
 

@@ -164,7 +164,7 @@ data = dict(
     url='https://github.com/orbingol/NURBS-Python',
     keywords=get_property('__keywords__', 'geomdl'),
     packages=[],
-    install_requires=['cython'],
+    install_requires=['doubledouble', 'cython'],
     tests_require=['pytest'],
     cmdclass={'clean': CleanCommand},
     ext_modules=cythonize(exts, compiler_directives={'language_level': sys.version_info[0]}),
