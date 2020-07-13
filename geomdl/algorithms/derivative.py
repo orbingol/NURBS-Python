@@ -9,11 +9,10 @@
 
 import copy
 from .. import helpers
-from ..base import GeomdlError, GeomdlWarning
-
-__all__ = []
+from ..base import export, GeomdlError
 
 
+@export
 def derivative_curve(obj):
     """ Computes the hodograph (first derivative) curve of the input curve.
 
@@ -30,8 +29,7 @@ def derivative_curve(obj):
     # Unfortunately, rational curves do NOT have this property
     # Ref: https://pages.mtu.edu/~shene/COURSES/cs3621/LAB/curve/1st-2nd.html
     if obj.rational:
-        GeomdlWarning("Cannot compute hodograph curve for a rational curve")
-        return obj
+        raise GeomdlError("Cannot compute hodograph curve for a rational curve")
 
     # Find the control points of the derivative curve
     pkl = helpers.curve_deriv_cpts(obj.dimension, obj.degree.u, obj.knotvector.u, obj.ctrlpts.points,
@@ -46,6 +44,7 @@ def derivative_curve(obj):
     return curve
 
 
+@export
 def derivative_surface(obj):
     """ Computes the hodograph (first derivative) surface of the input surface.
 
@@ -67,8 +66,7 @@ def derivative_surface(obj):
         raise GeomdlError("Input shape must be an instance of abstract.Surface class")
 
     if obj.rational:
-        GeomdlWarning("Cannot compute hodograph surface for a rational surface")
-        return obj
+        raise GeomdlError("Cannot compute hodograph surface for a rational surface")
 
     # Find the control points of the derivative surface
     d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
