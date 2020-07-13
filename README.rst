@@ -110,4 +110,4 @@ License
 .. _ANACONDA: https://anaconda.org/orbingol/geomdl
 
 .. |CODECOV| image:: https://codecov.io/gh/orbingol/NURBS-Python/branch/6.x-dev/graph/badge.svg
-.. _CODECOV: https://codecov.io/gh/orbingol/NURBS-Python
+.. _CODECOV: https://codecov.io/gh/orbingol/NURBS-Python/branch/6.x-dev
