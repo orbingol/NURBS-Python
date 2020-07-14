@@ -40,10 +40,12 @@ __all__ = [
 
 # Register default types for isinstance() checking
 from .base import GeomdlTypeSequence, GeomdlTypeString
+from .base import GeomdlList
 
 # Default types for sequences
 GeomdlTypeSequence.register(list)
 GeomdlTypeSequence.register(tuple)
+GeomdlTypeSequence.register(GeomdlList)
 
 # Default types for strings
 GeomdlTypeString.register(str)
