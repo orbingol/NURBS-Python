@@ -338,6 +338,9 @@ class GeomdlList(MutableSequence):
         except:
             object.__setattr__(self, name, value)
 
+    def __dir__(self):
+        return super(GeomdlList, self).__dir__() + [str(k) for k in self._attribs]
+
     def insert(self, index, value):
         """ Insert value at the index
 
