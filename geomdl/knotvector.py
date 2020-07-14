@@ -7,7 +7,6 @@
 
 """
 
-from operator import truediv
 from .linalg import linspace
 from .base import GeomdlError, GeomdlFloat
 
@@ -84,7 +83,7 @@ def normalize(knot_vector, **kwargs):
     last_knot = dt(knot_vector[-1])
     denominator = last_knot - first_knot
 
-    return [truediv(dt(kv) - first_knot, denominator) for kv in knot_vector]
+    return [((dt(kv) - first_knot) / denominator) for kv in knot_vector]
 
 
 def check(degree, knot_vector, num_ctrlpts):
