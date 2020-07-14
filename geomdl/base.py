@@ -286,9 +286,6 @@ class GeomdlList(object):
         self._iter_index = 0
         return self
 
-    def next(self):
-        return self.__next__()
-
     def __next__(self):
         try:
             result = self._data[self._iter_index]
