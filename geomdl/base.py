@@ -272,7 +272,7 @@ class GeomdlList(object):
 
     def __init__(self, *args, **kwargs):
         self._data = list(args)  # container object
-        self._attribs = kwargs.get('attribs', tuple())  # dynamic attributes
+        self._attribs = tuple(str(v) for v in kwargs.get('attribs', tuple()))  # dynamic attributes
         self._cb = kwargs.get('cb', [lambda: None])  # callbacks for setters
         self._cb_dynamic = kwargs.get('cbd', [lambda k, v: None])  # callbacks for dynamic atribute setters
 
@@ -361,7 +361,7 @@ class GeomdlList(object):
     def attribs(self, val):
         if not isinstance(val, GeomdlTypeSequence):
             raise TypeError("Input for 'attribs' attribute should be a GeomdlTypeSequence")
-        self._attribs = tuple(val)
+        self._attribs = tuple(str(v) for v in val)
 
 
 class GeomdlObject(object, metaclass=abc.ABCMeta):
