@@ -75,6 +75,7 @@ def surface_ex1():
     surf.knotvector.u = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
     surf.knotvector.v = [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
     surf.set_ctrlpts(cpts, 6, 6)
+    surf.check_variables()  # required for validation
 
     return surf
 
@@ -114,6 +115,7 @@ def surface_ex2():
         [0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]
     ]
     surf.ctrlptsw = cpman
+    surf.check_variables()  # required for validation
 
     # Return the surface
     return surf
