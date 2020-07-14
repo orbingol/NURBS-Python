@@ -305,16 +305,21 @@ class GeomdlList(object):
 
     def __setitem__(self, key, value):
         self._data[key] = value
-        # Run callback functions
+        # Run callback functions for the setters
         for c in self._cb: c()
+        # Run callback functions for the dynamic attribute setters
         for cd in self._cb_dynamic: cd(key, value)
 
     def __getattr__(self, name):
+        # try dynamic attributes
         try:
             idx = object.__getattribute__(self, '_attribs').index(name)
             return object.__getattribute__(self, '_data')[idx]
-        except Exception:
-            return object.__getattribute__(self, name)
+        except:
+            pass
+
+        # fall back to regular attributes
+        return object.__getattribute__(self, name)
 
     def __setattr__(self, name, value):
         try:
@@ -322,10 +327,11 @@ class GeomdlList(object):
             temp = object.__getattribute__(self, '_data')
             temp[idx] = value
             object.__setattr__(self, '_data', temp)
-            # Run callback functions
+            # Run callback functions for the setters
             for c in self._cb: c()
+            # Run callback functions for the dynamic attribute setters
             for cd in self._cb_dynamic: cd(name, value)
-        except Exception:
+        except:
             object.__setattr__(self, name, value)
 
     @property
