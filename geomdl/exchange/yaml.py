@@ -8,7 +8,7 @@
 """
 
 from io import StringIO
-from ..base import export, GeomdlError
+from ..base import export, GeomdlError, GeomdlFloat
 from . import exc_helpers
 
 
