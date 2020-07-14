@@ -16,4 +16,5 @@ omit =
     setup_core.py
     geomdl/__init__.py
     geomdl/*/__init__.py
+    geomdl/examples/*
     geomdl/experimental/*
