@@ -65,7 +65,9 @@ install:
   # install plotly dependencies
   - conda install psutil requests
   - conda install -c plotly plotly-orca
-  # install packages
+  # install additional dependencies from pypi
+  - python -m pip install libconf ruamel.yaml jinja2
+  # install geomdl
   - python setup.py develop
   - python setup_core.py build_ext --inplace
 

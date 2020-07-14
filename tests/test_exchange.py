@@ -364,3 +364,87 @@ def test_export_csv_surface_evalpts(surface2):
     # Clean up temporary file if exists
     if os.path.isfile(fname):
         os.remove(fname)
+
+
+@pytest.mark.usefixtures("curve2")
+def test_import_cfg_curve(curve2):
+    fname = FILE_NAME + ".cfg"
+    cfg.export_cfg(curve2, fname)
+    # import
+    res = cfg.import_cfg(fname)
+
+    assert res[0] == curve2
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("surface2")
+def test_import_cfg_surface(surface2):
+    fname = FILE_NAME + ".cfg"
+    cfg.export_cfg(surface2, fname)
+    # import
+    res = cfg.import_cfg(fname)
+
+    assert res[0] == surface2
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_import_cfg_volume(volume1):
+    fname = FILE_NAME + ".cfg"
+    cfg.export_cfg(volume1, fname)
+    # import
+    res = cfg.import_cfg(fname)
+
+    assert res[0] == volume1
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("curve2")
+def test_import_yaml_curve(curve2):
+    fname = FILE_NAME + ".cfg"
+    yaml.export_yaml(curve2, fname)
+    # import
+    res = yaml.import_yaml(fname)
+
+    assert res[0] == curve2
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("surface2")
+def test_import_yaml_surface(surface2):
+    fname = FILE_NAME + ".yaml"
+    yaml.export_yaml(surface2, fname)
+    # import
+    res = yaml.import_yaml(fname)
+
+    assert res[0] == surface2
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+@pytest.mark.usefixtures("volume1")
+def test_import_yaml_volume(volume1):
+    fname = FILE_NAME + ".yaml"
+    yaml.export_yaml(volume1, fname)
+    # import
+    res = yaml.import_yaml(fname)
+
+    assert res[0] == volume1
+
+    # Clean up temporary file if exists
+    if os.path.isfile(fname):
+        os.remove(fname)
