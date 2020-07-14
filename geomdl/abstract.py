@@ -225,39 +225,36 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             return False
         if self.rational != other.rational:
             return False
-        try:
-            for s, o in zip(self._control_points.size, other._control_points.size):
-                if s != o:
-                    return False
-            chk_degree = []
-            for s, o in zip(self._degree, other._degree):
-                tmp = True if s == o else False
-                chk_degree.append(tmp)
-            if not all(chk_degree):
+        for s, o in zip(self._control_points.size, other._control_points.size):
+            if s != o:
                 return False
-            chk_kv = []
-            for sk, ok in zip(self._knot_vector, other._knot_vector):
-                if len(sk) != len(ok):
-                    return False
-                chk = []
-                for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < 10e-7 else False
-                    chk.append(tmp)
-                chk_kv.append(all(chk))
-            if not all(chk_kv):
+        chk_degree = []
+        for s, o in zip(self._degree, other._degree):
+            tmp = True if s == o else False
+            chk_degree.append(tmp)
+        if not all(chk_degree):
+            return False
+        chk_kv = []
+        for sk, ok in zip(self._knot_vector, other._knot_vector):
+            if len(sk) != len(ok):
                 return False
-            chk_ctrlpts = []
-            for sk, ok in zip(self._control_points, other._control_points):
-                if len(sk) != len(ok):
-                    return False
-                chk = []
-                for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < 10e-7 else False
-                    chk.append(tmp)
-                chk_ctrlpts.append(all(chk))
-            if not all(chk_kv):
+            chk = []
+            for s, o in zip(sk, ok):
+                tmp = True if abs(s - o) < 10e-7 else False
+                chk.append(tmp)
+            chk_kv.append(all(chk))
+        if not all(chk_kv):
+            return False
+        chk_ctrlpts = []
+        for sk, ok in zip(self._control_points, other._control_points):
+            if len(sk) != len(ok):
                 return False
-        except Exception:
+            chk = []
+            for s, o in zip(sk, ok):
+                tmp = True if abs(s - o) < 10e-7 else False
+                chk.append(tmp)
+            chk_ctrlpts.append(all(chk))
+        if not all(chk_ctrlpts):
             return False
         return True
 
