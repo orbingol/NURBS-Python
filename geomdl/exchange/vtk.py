@@ -8,13 +8,11 @@
 """
 
 from ..tessellate import triangular, quadrilateral
-from ..base import GeomdlError, GeomdlWarning
+from ..base import export, GeomdlError, GeomdlWarning
 from . import exc_helpers
 
-# Initialize an empty __all__ for controlling imports
-__all__ = []
 
-
+@export
 def export_polydata_str(obj, **kwargs):
     """ Saves control points or evaluated points in VTK Polydata format (string).
 
@@ -24,12 +22,10 @@ def export_polydata_str(obj, **kwargs):
         * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
         * ``tessellate``: tessellates the points (works only for surfaces)
 
-    :param obj: geometry object
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry
     :return: contents of the VTK file
     :rtype: str
-    :raises GeomdlException: point type is not supported
-    :raises UserWarning: file title is bigger than 256 characters
     """
     # Get keyword arguments
     point_type = kwargs.get('point_type', "evalpts")
@@ -122,6 +118,7 @@ def export_polydata_str(obj, **kwargs):
     return line
 
 
+@export
 def export_polydata(obj, file_name, **kwargs):
     """ Exports control points or evaluated points in VTK Polydata format.
 
@@ -131,8 +128,8 @@ def export_polydata(obj, file_name, **kwargs):
         * ``point_type``: **ctrlpts** for control points or **evalpts** for evaluated points
         * ``tessellate``: tessellates the points (works only for surfaces)
 
-    :param obj: geometry object
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
+    :param obj: input geometry
+    :type obj: abstract.SplineGeometry
     :param file_name: output file name
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file

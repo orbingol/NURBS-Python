@@ -8,12 +8,10 @@
 """
 
 from . import exc_helpers
-from ..base import GeomdlError
-
-# Initialize an empty __all__ for controlling imports
-__all__ = []
+from ..base import export, GeomdlError
 
 
+@export
 def import_csv(file_name, **kwargs):
     """ Reads control points from a CSV file and generates a 1-dimensional list of control points.
 
@@ -45,21 +43,30 @@ def import_csv(file_name, **kwargs):
     return exc_helpers.import_text_data(content, sep)
 
 
-def export_csv_str(obj, file_name, point_type='evalpts', **kwargs):
-    """ Exports control points or evaluated points as a CSV file (string).
+@export
+def export_csv_str(obj, **kwargs):
+    """ Exports control points or evaluated points as a CSV string.
 
-    :param obj: a spline geometry object
+    This function exports evaluated points by default, ``point_type="evalpts"``.
+    To export control points, use ``point_type="ctrlpts"``:
+
+    .. code-block:: python
+        :linenos:
+
+        from geomdl.exchange import csv
+
+        # weighted control points if rational
+        csv_string = csv.export_csv_str(obj, point_type="ctrlpts")
+
+    :param obj: input geometry
     :type obj: abstract.SplineGeometry
-    :param file_name: output file name
-    :type file_name: str
-    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
-    :type point_type: str
     :raises GeomdlException: an error occurred writing the file
     """
     # Pick correct points from the object
-    if point_type == 'ctrlpts':
-        points = obj.ctrlptsw if obj.rational else obj.ctrlpts
-    elif point_type == 'evalpts':
+    point_type = kwargs.get('point_type', "evalpts")
+    if point_type == "ctrlpts":
+        points = obj.ctrlptsw
+    elif point_type == "evalpts":
         points = obj.evalpts
     else:
         raise GeomdlError("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
@@ -74,15 +81,25 @@ def export_csv_str(obj, file_name, point_type='evalpts', **kwargs):
     return exc_helpers.export_text_data(obj, ',', line)
 
 
-def export_csv(obj, file_name, point_type='evalpts', **kwargs):
+@export
+def export_csv(obj, file_name, **kwargs):
     """ Exports control points or evaluated points as a CSV file.
 
-    :param obj: a spline geometry object
+    This function exports evaluated points by default, ``point_type="evalpts"``.
+    To export control points, use ``point_type="ctrlpts"``:
+
+    .. code-block:: python
+        :linenos:
+
+        from geomdl.exchange import csv
+
+        # weighted control points if rational
+        csv_string = csv.export_csv(obj, "my_geom_cpts.csv", point_type="ctrlpts")
+
+    :param obj: input geometry
     :type obj: abstract.SplineGeometry
     :param file_name: output file name
     :type file_name: str
-    :param point_type: ``ctrlpts`` for control points or ``evalpts`` for evaluated points
-    :type point_type: str
     :raises GeomdlException: an error occurred writing the file
     """
-    return exc_helpers.write_file(file_name, export_csv_str(obj, file_name, point_type, **kwargs))
+    return exc_helpers.write_file(file_name, export_csv_str(obj, **kwargs))

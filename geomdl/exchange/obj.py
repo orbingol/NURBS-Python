@@ -10,23 +10,19 @@
 from . import exc_helpers
 from .. import entity
 from ..tessellate import triangular
-from ..base import GeomdlError
-
-# Initialize an empty __all__ for controlling imports
-__all__ = []
+from ..base import export, GeomdlError
 
 
-
-
+@export
 def export_obj_str(surface, **kwargs):
-    """ Exports surface(s) as a .obj file (string).
+    """ Exports surface(s) in Wavefront OBJ format as a string.
 
     Keyword Arguments:
-        * ``vertex_normals``: if True, then computes vertex normals. *Default: False*
-        * ``parametric_vertices``: if True, then adds parameter space vertices. *Default: False*
+        * ``vertex_normals``: if True, computes vertex normals (``vn`` element). *Default: False*
+        * ``parametric_vertices``: if True, adds parameter space vertices (``vp`` element). *Default: False*
 
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
     :return: contents of the .obj file generated
     :rtype: str
     """
@@ -100,12 +96,11 @@ def export_obj(surface, file_name, **kwargs):
     """ Exports surface(s) as a .obj file.
 
     Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of surface points sampled. *Default: 2*
-        * ``vertex_normals``: if True, then computes vertex normals. *Default: False*
-        * ``parametric_vertices``: if True, then adds parameter space vertices. *Default: False*
+        * ``vertex_normals``: if True, computes vertex normals (``vn`` element). *Default: False*
+        * ``parametric_vertices``: if True, adds parameter space vertices (``vp`` element). *Default: False*
 
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file

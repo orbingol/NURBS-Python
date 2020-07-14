@@ -8,12 +8,10 @@
 """
 
 from . import exc_helpers
-from ..base import GeomdlError
-
-# Initialize an empty __all__ for controlling imports
-__all__ = []
+from ..base import export, GeomdlError
 
 
+@export
 def import_cfg(file_name, **kwargs):
     """ Imports curves and surfaces from files in libconfig format.
 
@@ -25,9 +23,8 @@ def import_cfg(file_name, **kwargs):
 
     :param file_name: name of the input file
     :type file_name: str
-    :return: a list of rational spline geometries
+    :return: a list of B-spline geometries
     :rtype: list
-    :raises GeomdlException: an error occurred writing the file
     """
     def callback(data):
         return libconf.loads(data)
@@ -39,18 +36,18 @@ def import_cfg(file_name, **kwargs):
         raise GeomdlError("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
     use_template = kwargs.get('jinja2', False)
 
     # Read file
     file_src = exc_helpers.read_file(file_name)
 
     # Import data
-    return exc_helpers.import_dict_str(file_src=file_src, delta=delta, callback=callback, tmpl=use_template)
+    return exc_helpers.import_dict_str(file_src=file_src, callback=callback, tmpl=use_template)
 
 
-def export_cfg_str(obj, file_name):
-    """ Exports curves and surfaces in libconfig format.
+@export
+def export_cfg_str(obj):
+    """ Exports curves and surfaces in libconfig format as a string.
 
     .. note::
 
@@ -60,10 +57,7 @@ def export_cfg_str(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input geometry
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
-    :param file_name: name of the output file
-    :type file_name: str
-    :raises GeomdlException: an error occurred writing the file
+    :type obj: abstract.SplineGeometry
     """
     def callback(data):
         return libconf.dumps(data)
@@ -78,8 +72,9 @@ def export_cfg_str(obj, file_name):
     return exc_helpers.export_dict_str(obj=obj, callback=callback)
 
 
+@export
 def export_cfg(obj, file_name):
-    """ Exports curves and surfaces in libconfig format.
+    """ Exports curves and surfaces in libconfig format as a file.
 
     .. note::
 
@@ -89,10 +84,9 @@ def export_cfg(obj, file_name):
     as a way to input shape data from the command line.
 
     :param obj: input geometry
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
+    :type obj: abstract.SplineGeometry
     :param file_name: name of the output file
     :type file_name: str
-    :raises GeomdlException: an error occurred writing the file
     """
     # Write to file
-    return exc_helpers.write_file(file_name, export_cfg_str(obj, file_name))
+    return exc_helpers.write_file(file_name, export_cfg_str(obj))

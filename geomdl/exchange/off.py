@@ -8,34 +8,16 @@
 """
 
 from ..tessellate import triangular
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 from . import exc_helpers
 
-# Initialize an empty __all__ for controlling imports
-__all__ = []
 
-
-def export_off(surface, file_name, **kwargs):
-    """ Exports surface(s) as a .off file.
-
-    Keyword Arguments:
-        * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
-
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
-    :param file_name: name of the output file
-    :type file_name: str
-    :raises GeomdlException: an error occurred writing the file
-    """
-    content = export_off_str(surface, **kwargs)
-    return exc_helpers.write_file(file_name, content)
-
-
+@export
 def export_off_str(surface, **kwargs):
-    """ Exports surface(s) as a .off file (string).
+    """ Exports surface(s) in OFF format as a string.
 
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
     :return: contents of the .off file generated
     :rtype: str
     """
@@ -82,3 +64,17 @@ def export_off_str(surface, **kwargs):
         line += lf
 
     return line
+
+
+@export
+def export_off(surface, file_name, **kwargs):
+    """ Exports surface(s) as a .off file.
+
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
+    :param file_name: name of the output file
+    :type file_name: str
+    :raises GeomdlException: an error occurred writing the file
+    """
+    content = export_off_str(surface, **kwargs)
+    return exc_helpers.write_file(file_name, content)

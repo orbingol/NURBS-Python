@@ -8,13 +8,11 @@
 """
 
 from io import StringIO
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 from . import exc_helpers
 
-# Initialize an empty __all__ for controlling imports
-__all__ = []
 
-
+@export
 def import_yaml(file_name, **kwargs):
     """ Imports curves and surfaces from files in YAML format.
 
@@ -50,20 +48,16 @@ def import_yaml(file_name, **kwargs):
     return exc_helpers.import_dict_str(file_src=file_src, callback=callback, tmpl=use_template)
 
 
-def export_yaml_str(obj, file_name):
-    """ Exports curves and surfaces in YAML format.
+@export
+def export_yaml_str(obj):
+    """ Exports curves and surfaces in YAML format as a string.
 
     .. note::
 
         Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
 
-    YAML format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
-    as a way to input shape data from the command line.
-
     :param obj: input geometry
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
-    :param file_name: name of the output file
-    :type file_name: str
+    :type obj: abstract.SplineGeometry
     :raises GeomdlException: an error occurred writing the file
     """
     def callback(data):
@@ -83,21 +77,19 @@ def export_yaml_str(obj, file_name):
     return exc_helpers.export_dict_str(obj=obj, callback=callback)
 
 
+@export
 def export_yaml(obj, file_name):
-    """ Exports curves and surfaces in YAML format.
+    """ Exports curves and surfaces in YAML format as a file.
 
     .. note::
 
         Requires `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`_ package.
 
-    YAML format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
-    as a way to input shape data from the command line.
-
     :param obj: input geometry
-    :type obj: abstract.SplineGeometry, multi.AbstractContainer
+    :type obj: abstract.SplineGeometry
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
     # Write to file
-    return exc_helpers.write_file(file_name, export_yaml_str(obj, file_name))
+    return exc_helpers.write_file(file_name, export_yaml_str(obj))

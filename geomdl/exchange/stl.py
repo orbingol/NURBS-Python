@@ -10,21 +10,19 @@
 import struct
 from .. import linalg
 from ..tessellate import triangular
-from ..base import GeomdlError
+from ..base import export, GeomdlError
 from . import exc_helpers
 
-# Initialize an empty __all__ for controlling imports
-__all__ = []
 
-
+@export
 def export_stl_str(surface, **kwargs):
     """ Exports surface(s) as a .stl file in plain text or binary format (string).
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: False*
 
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
     :return: contents of the .stl file generated
     :rtype: str
     """
@@ -71,8 +69,8 @@ def export_stl(surface, file_name, **kwargs):
         * ``binary``: flag to generate a binary STL file. *Default: True*
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
 
-    :param surface: surface or surfaces to be saved
-    :type surface: abstract.Surface or multi.SurfaceContainer
+    :param surface: input surface(s)
+    :type surface: BSpline.Surface
     :param file_name: name of the output file
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file

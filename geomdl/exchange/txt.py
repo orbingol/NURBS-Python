@@ -8,12 +8,10 @@
 """
 
 from . import exc_helpers
-from ..base import GeomdlError
-
-# Initialize an empty __all__ for controlling imports
-__all__ = []
+from ..base import export, GeomdlError
 
 
+@export
 def import_txt(file_name, **kwargs):
     """ Reads control points from a text file and generates a 1-dimensional list of control points.
 
@@ -30,11 +28,13 @@ def import_txt(file_name, **kwargs):
     .. code-block:: python
         :linenos:
 
+        from geomdl.exchange import txt
+
         # Import control points from a text file
-        ctrlpts = exchange.import_txt(file_name="control_points.txt")
+        ctrlpts = txt.import_txt("control_points.txt")
 
         # Import control points from a text file delimited with space
-        ctrlpts = exchange.import_txt(file_name="control_points.txt", separator=" ")
+        ctrlpts = txt.import_txt("control_points.txt", separator=" ")
 
     :param file_name: file name of the text file
     :type file_name: str
@@ -56,15 +56,12 @@ def import_txt(file_name, **kwargs):
     return exc_helpers.import_text_data(content, sep)
 
 
-def export_txt_str(obj, file_name, **kwargs):
-    """ Exports control points as a text file (string).
+@export
+def export_txt_str(obj, **kwargs):
+    """ Exports control points in TXT format as a string.
 
-    Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
-
-    :param obj: a spline geometry object
+    :param obj: input geometry
     :type obj: abstract.SplineGeometry
-    :param file_name: file name of the text file to be saved
-    :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
     # Check if the user has set any control points
@@ -77,15 +74,14 @@ def export_txt_str(obj, file_name, **kwargs):
     return exc_helpers.export_text_data(obj, sep)
 
 
+@export
 def export_txt(obj, file_name, **kwargs):
     """ Exports control points as a text file.
 
-    Please see :py:func:`.exchange.import_txt()` for detailed description of the keyword arguments.
-
-    :param obj: a spline geometry object
+    :param obj: input geometry
     :type obj: abstract.SplineGeometry
     :param file_name: file name of the text file to be saved
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
-    return exc_helpers.write_file(file_name, export_txt_str(obj, file_name, **kwargs))
+    return exc_helpers.write_file(file_name, export_txt_str(obj, **kwargs))
