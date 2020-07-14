@@ -194,6 +194,18 @@ class GeomdlFloat(float):
     def __ge__(self, other):
         return float(self).__ge__(other)
 
+    @classmethod
+    def to_yaml(cls, representer, node):
+        """ Decorator for ruamel.yaml
+
+        Reference: https://yaml.readthedocs.io/en/latest/dumpcls.html
+
+        :param representer: round-trip representer
+        :param node: GeomdlFloat instance to be converted to YAML
+        :return: scalar node
+        """
+        return representer.represent_float(float(node))
+
 
 class GeomdlDict(dict):
     """ A weak referencable dict class """

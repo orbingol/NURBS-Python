@@ -64,6 +64,7 @@ def export_yaml_str(obj):
         # Ref: https://yaml.readthedocs.io/en/latest/example.html#output-of-dump-as-a-string
         stream = StringIO()
         yaml = YAML()
+        yaml.register_class(GeomdlFloat)  # register GeomdlFloat
         yaml.dump(data, stream)
         return stream.getvalue()
 
