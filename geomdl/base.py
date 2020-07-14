@@ -11,6 +11,7 @@ import os
 import sys
 import abc
 import copy
+from collections.abc import MutableSequence
 from itertools import chain
 
 # Initialize an empty __all__ for controlling imports
@@ -266,8 +267,8 @@ class GeomdlNotifyList(list):
         return self._callbacks
 
 
-class GeomdlList(object):
-    """ A list-like container class which allows dynamically created attributes """
+class GeomdlList(MutableSequence):
+    """ An implementation of MutableSequence ABC which allows dynamically-created attributes """
     __slots__ = ('_data', '_attribs', '_cb', '_cb_dynamic', '_iter_index')
 
     def __init__(self, *args, **kwargs):
@@ -310,6 +311,9 @@ class GeomdlList(object):
         # Run callback functions for the dynamic attribute setters
         for cd in self._cb_dynamic: cd(key, value)
 
+    def __delitem__(self, key):
+        del self._data[key]
+
     def __getattr__(self, name):
         # try dynamic attributes
         try:
@@ -333,6 +337,22 @@ class GeomdlList(object):
             for cd in self._cb_dynamic: cd(name, value)
         except:
             object.__setattr__(self, name, value)
+
+    def insert(self, index, value):
+        """ Insert value at the index
+
+        Implementation of ``collections.abc.MutableSequence.insert()`` method.
+
+        :param index: index of the list
+        :param value: value to be inserted
+        """
+        try:
+            self._data[index] = value
+        except IndexError as e:
+            if len(self) == index:
+                self._data.append(value)
+            else:
+                raise e
 
     @property
     def data(self):
