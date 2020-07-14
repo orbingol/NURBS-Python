@@ -10,7 +10,7 @@
 import math
 from .. import knotvector, linalg
 from ..base import GeomdlError
-from ..NURBS import Curve, Surface, Volume
+from .. import BSpline, NURBS
 from ..freeform import Freeform
 from .. import containers
 from ..ptmanager import CPManager
@@ -101,7 +101,7 @@ def write_file(file_name, content, **kwargs):
 
 
 def import_dict_crv(data):
-    shape = Curve()
+    shape = NURBS.Curve() if data['rational'] else BSpline.Curve()
 
     # Mandatory keys
     try:
@@ -132,9 +132,9 @@ def export_dict_crv(obj):
         type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree=[v for v in obj.degree],
-        knotvector=[v for v in obj.knotvector],
-        size=[v for v in obj.ctrlpts_size],
+        degree=tuple(obj.degree),
+        knotvector=tuple(obj.knotvector),
+        size=tuple(obj.ctrlpts_size),
         control_points=dict(
             points=obj.ctrlpts.points
         ),
@@ -226,7 +226,7 @@ def export_dict_multi_crv(obj):
 
 
 def import_dict_surf(data):
-    shape = Surface()
+    shape = NURBS.Surface() if data['rational'] else BSpline.Surface()
 
     # Mandatory keys
     try:
@@ -266,9 +266,9 @@ def export_dict_surf(obj):
         type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree=[v for v in obj.degree],
-        knotvector=[v for v in obj.knotvector],
-        size=[v for v in obj.ctrlpts_size],
+        degree=tuple(obj.degree),
+        knotvector=tuple(obj.knotvector),
+        size=tuple(obj.ctrlpts_size),
         control_points=dict(
             points=obj.ctrlpts.points
         ),
@@ -307,7 +307,7 @@ def export_dict_surf(obj):
 
 
 def import_dict_vol(data):
-    shape = Volume()
+    shape = NURBS.Volume() if data['rational'] else BSpline.Volume()
 
     # Mandatory keys
     try:
@@ -336,9 +336,9 @@ def export_dict_vol(obj):
         type=obj.type,
         rational=obj.rational,
         dimension=obj.dimension,
-        degree=[v for v in obj.degree],
-        knotvector=[v for v in obj.knotvector],
-        size=[v for v in obj.ctrlpts_size],
+        degree=tuple(obj.degree),
+        knotvector=tuple(obj.knotvector),
+        size=tuple(obj.ctrlpts_size),
         control_points=dict(
             points=obj.ctrlpts.points
         ),
