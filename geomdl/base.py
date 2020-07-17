@@ -444,7 +444,7 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
     def __len__(self):
         return 1
 
-    def __getitem__(self, index):
+    def __getitem__(self, key):
         return self
 
     def __copy__(self):
