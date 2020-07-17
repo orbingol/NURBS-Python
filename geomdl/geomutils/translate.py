@@ -8,6 +8,7 @@
 """
 
 import copy
+from ..ptmanager import CPManager
 from ..base import export, GeomdlError
 
 
@@ -46,6 +47,6 @@ def translate(obj, vec, **kwargs):
         for pt in g.ctrlpts:
             temp = [v + vec[i] for i, v in enumerate(pt)]
             new_ctrlpts.append(temp)
-        g.ctrlpts = new_ctrlpts
+        g.ctrlpts.points = new_ctrlpts
 
     return geom

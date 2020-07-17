@@ -9,6 +9,7 @@
 
 import copy
 from .. import abstract
+from ..ptmanager import CPManager
 from ..base import export, GeomdlError
 
 
@@ -29,20 +30,19 @@ def add_dimension(obj, **kwargs):
 
     # Keyword arguments
     inplace = kwargs.get('inplace', False)
-    array_init = kwargs.get('array_init', [[] for _ in range(len(obj.ctrlpts))])
     offset_value = kwargs.get('offset', 0.0)
 
     # Update control points
-    new_ctrlpts = array_init
+    new_ctrlpts = [[] for _ in range(obj.ctrlpts.count)]
     for idx, point in enumerate(obj.ctrlpts):
         temp = [float(p) for p in point[0:obj.dimension]]
         temp.append(offset_value)
         new_ctrlpts[idx] = temp
 
     if inplace:
-        obj.ctrlpts = new_ctrlpts
+        obj.ctrlpts.points = new_ctrlpts
         return obj
     else:
         ret = copy.deepcopy(obj)
-        ret.ctrlpts = new_ctrlpts
+        ret.ctrlpts.points = new_ctrlpts
         return ret

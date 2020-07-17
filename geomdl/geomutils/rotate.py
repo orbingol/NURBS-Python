@@ -10,6 +10,7 @@
 import copy
 import math
 from .. import linalg
+from ..ptmanager import CPManager
 from ..base import export, GeomdlError
 from . import translate
 
@@ -23,12 +24,12 @@ def rotate_x(ncs, opt, alpha):
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
-    new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(len(ncs.ctrlpts))]
+    new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(ncs.ctrlpts.count)]
     for idx, pt in enumerate(ncs.ctrlpts):
         new_ctrlpts[idx][0] = pt[0]
         new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) - (pt[2] * math.sin(rot))
         new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[1] * math.sin(rot))
-    ncs.ctrlpts = new_ctrlpts
+    ncs.ctrlpts.points = new_ctrlpts
 
     # Finally, translate back to the starting location
     translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
@@ -42,12 +43,12 @@ def rotate_y(ncs, opt, alpha):
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
-    new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(len(ncs.ctrlpts))]
+    new_ctrlpts = [[0.0 for _ in range(ncs.dimension)] for _ in range(ncs.ctrlpts.count)]
     for idx, pt in enumerate(ncs.ctrlpts):
         new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[2] * math.sin(rot))
         new_ctrlpts[idx][1] = pt[1]
         new_ctrlpts[idx][2] = (pt[2] * math.cos(rot)) + (pt[0] * math.sin(rot))
-    ncs.ctrlpts = new_ctrlpts
+    ncs.ctrlpts.points = new_ctrlpts
 
     # Finally, translate back to the starting location
     translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
@@ -61,11 +62,11 @@ def rotate_z(ncs, opt, alpha):
 
     # Then, rotate about the axis
     rot = math.radians(alpha)
-    new_ctrlpts = [list(ncs.ctrlpts[i]) for i in range(len(ncs.ctrlpts))]
+    new_ctrlpts = [list(ncs.ctrlpts.points[i]) for i in range(ncs.ctrlpts.count)]
     for idx, pt in enumerate(ncs.ctrlpts):
         new_ctrlpts[idx][0] = (pt[0] * math.cos(rot)) - (pt[1] * math.sin(rot))
         new_ctrlpts[idx][1] = (pt[1] * math.cos(rot)) + (pt[0] * math.sin(rot))
-    ncs.ctrlpts = new_ctrlpts
+    ncs.ctrlpts.points = new_ctrlpts
 
     # Finally, translate back to the starting location
     translate.translate(ncs, [-tv for tv in translate_vector], inplace=True)
