@@ -435,9 +435,6 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
         self._iter_index = 0
         return self
 
-    def next(self):
-        return self.__next__()
-
     def __next__(self):
         if self._iter_index > 0:
             raise StopIteration
