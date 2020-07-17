@@ -20,6 +20,14 @@ def test_geomutils_transpose(surface2):
 
 
 @pytest.mark.usefixtures("surface2")
+def test_geomutils_transpose_ctrlpts(surface2):
+    res = transpose.transpose(surface2)
+
+    for a, b in zip(surface2.ctrlpts[2, 3], res.ctrlpts[3, 2]):
+        assert a == b
+
+
+@pytest.mark.usefixtures("surface2")
 def test_geomutils_ctrlpts_surface(surface2):
     res = transpose.flip(surface2)
 
