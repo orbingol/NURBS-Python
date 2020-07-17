@@ -524,6 +524,11 @@ class GeomdlObject(object, metaclass=abc.ABCMeta):
     def name(self):
         self._name = str()
 
+    def reset(self, **kwargs):
+        """ Clears computed/generated data """
+        self._cache = GeomdlDict()
+        self._init_cache()
+
 
 class GeomdlBase(GeomdlObject, metaclass=abc.ABCMeta):
     """ Abstract base class for defining geomdl objects
@@ -642,9 +647,9 @@ class GeomdlBase(GeomdlObject, metaclass=abc.ABCMeta):
             return None
 
     def reset(self, **kwargs):
-        """ Clears computed/generated data, such as caches """
+        """ Clears computed/generated data """
+        super(GeomdlBase, self).reset(**kwargs)
         self._opt_data = GeomdlDict()
-        self._init_cache()
 
 
 class GeomdlEvaluator(GeomdlObject, metaclass=abc.ABCMeta):
