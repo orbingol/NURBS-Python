@@ -35,26 +35,20 @@ def transpose(surf, **kwargs):
 
     for g in geom:
         # Get existing data
-        degree_u_new = g.degree_v
-        degree_v_new = g.degree_u
-        kv_u_new = g.knotvector_v
-        kv_v_new = g.knotvector_u
-        ctrlpts2d_old = g.ctrlpts2d
+        degree_u_new = g.degree.v
+        degree_v_new = g.degree.u
+        kv_u_new = g.knotvector.v
+        kv_v_new = g.knotvector.u
 
         # Find new control points
-        ctrlpts2d_new = []
-        for v in range(0, g.ctrlpts_size_v):
-            ctrlpts_u = []
-            for u in range(0, g.ctrlpts_size_u):
-                temp = ctrlpts2d_old[u][v]
-                ctrlpts_u.append(temp)
-            ctrlpts2d_new.append(ctrlpts_u)
+        ctrlpts_new = []
+        for u in range(0, g.ctrlpts_size.v):
+            for v in range(0, g.ctrlpts_size.u):
+                ctrlpts_new.append(g.ctrlptsw[u, v])
 
-        g.degree_u = degree_u_new
-        g.degree_v = degree_v_new
-        g.ctrlpts2d = ctrlpts2d_new
-        g.knotvector_u = kv_u_new
-        g.knotvector_v = kv_v_new
+        g.degree = (degree_u_new, degree_v_new)
+        g.knotvector = (kv_u_new, kv_v_new)
+        g.set_ctrlpts(ctrlpts_new, g.ctrlpts_size.v, g.ctrlpts_size.u)
 
     return geom
 
@@ -67,7 +61,7 @@ def flip(surf, **kwargs):
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
 
     :param surf: input surface(s)
-    :type surf: abstract.Surface, multi.SurfaceContainer
+    :type surf: abstract.Surface
     :return: flipped surface(s)
     """
     if surf.pdimension != 2:
@@ -81,15 +75,12 @@ def flip(surf, **kwargs):
     else:
         geom = surf
 
-    for g in geom:
-        size_u = g.ctrlpts_size_u
-        size_v = g.ctrlpts_size_v
-        cpts = g.ctrlptsw if g.rational else g.ctrlpts
-        new_cpts = [[] for _ in range(g.ctrlpts_size)]
-        idx = g.ctrlpts_size - 1
-        for pt in cpts:
+    for i, g in enumerate(geom):
+        new_cpts = [[] for _ in range(g.ctrlptsw.count)]
+        idx = g.ctrlptsw.count - 1
+        for pt in g.ctrlptsw:
             new_cpts[idx] = pt
             idx -= 1
-        g.set_ctrlpts(new_cpts, size_u, size_v)
+        geom[i].set_ctrlpts(new_cpts, g.ctrlpts_size.u, g.ctrlpts_size.v)
 
     return geom
