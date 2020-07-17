@@ -42,8 +42,8 @@ def transpose(surf, **kwargs):
 
         # Find new control points
         ctrlpts_new = []
-        for u in range(0, g.ctrlpts_size.v):
-            for v in range(0, g.ctrlpts_size.u):
+        for u in range(0, g.ctrlpts_size.u):
+            for v in range(0, g.ctrlpts_size.v):
                 ctrlpts_new.append(g.ctrlptsw[u, v])
 
         g.degree = (degree_u_new, degree_v_new)
