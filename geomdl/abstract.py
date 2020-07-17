@@ -179,6 +179,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
     def __new__(cls, *args, **kwargs):
         obj = super(SplineGeometry, cls).__new__(cls, *args, **kwargs)
         obj._cfg['normalize_kv'] = kwargs.pop('normalize_kv', True)  # flag to control knot vector normalization
+        obj._cfg['ctrlptsw_needs_reset'] = False
         return obj
 
     def __init__(self, *args, **kwargs):
@@ -188,7 +189,7 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
             sample_size=list(),
             domain=list(),
             range=list(),
-            ctrlpts=CPManager(cb=[self._evalpts_reset]),
+            ctrlpts=CPManager(cb=[self._evalpts_reset, self._ctrlptsw_reset]),
             weights=list())
         )
         kwargs.update(dict(cache_vars=cache_vars))
@@ -263,6 +264,9 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
 
     def _evalpts_reset(self, value=True):
         self._cfg['evalpts_needs_reset'] = value
+
+    def _ctrlptsw_reset(self, value=True):
+        self._cfg['ctrlptsw_needs_reset'] = value if self.rational else False
 
     @property
     def rational(self):
@@ -440,6 +444,9 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         :getter: Gets the weighted control points
         :setter: Sets the weighted control points
         """
+        if self._cfg['ctrlptsw_needs_reset']:
+            self._control_points.points = combine_ctrlpts_weights(self.ctrlpts.points, self.weights)
+            self._ctrlptsw_reset(False)
         return self._control_points
 
     @ctrlptsw.setter
