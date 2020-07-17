@@ -169,5 +169,5 @@ def render(bsplg, vism, **kwargs):
 
     # Display the figure
     if op['animate']:
-        return vism.animate(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
-    return vism.render(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
+        vism.animate(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
+    vism.render(fig_save_as=op['filename'], display_plot=op['display'], colormap=op['colormap'])
