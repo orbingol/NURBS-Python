@@ -7,6 +7,7 @@
 
 """
 
+import copy
 from . import BSpline
 from .base import export, GeomdlError
 from .evaluators import default_rational as defeval
@@ -35,10 +36,10 @@ class Curve(BSpline.Curve):
         if obj.pdimension != 1:
             raise GeomdlError("Parametric dimension mismatch")
         rspl = cls()
-        rspl.degree = obj.degree
-        rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts
-        rspl.sample_size = obj.sample_size
+        rspl.degree = copy.deepcopy(obj.degree)
+        rspl.knotvector = copy.deepcopy(obj.knotvector)
+        rspl.ctrlpts = copy.deepcopy(obj.ctrlpts)
+        rspl.sample_size = copy.deepcopy(obj.sample_size)
         return rspl
 
     def __init__(self, *args, **kwargs):
@@ -75,10 +76,10 @@ class Surface(BSpline.Surface):
         if obj.pdimension != 2:
             raise GeomdlError("Parametric dimension mismatch")
         rspl = cls()
-        rspl.degree = obj.degree
-        rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts
-        rspl.sample_size = obj.sample_size
+        rspl.degree = copy.deepcopy(obj.degree)
+        rspl.knotvector = copy.deepcopy(obj.knotvector)
+        rspl.ctrlpts = copy.deepcopy(obj.ctrlpts)
+        rspl.sample_size = copy.deepcopy(obj.sample_size)
         return rspl
 
 
@@ -110,8 +111,8 @@ class Volume(BSpline.Volume):
         if obj.pdimension != 3:
             raise GeomdlError("Parametric dimension mismatch")
         rspl = cls()
-        rspl.degree = obj.degree
-        rspl.knotvector = obj.knotvector
-        rspl.ctrlpts = obj.ctrlpts
-        rspl.sample_size = obj.sample_size
+        rspl.degree = copy.deepcopy(obj.degree)
+        rspl.knotvector = copy.deepcopy(obj.knotvector)
+        rspl.ctrlpts = copy.deepcopy(obj.ctrlpts)
+        rspl.sample_size = copy.deepcopy(obj.sample_size)
         return rspl
