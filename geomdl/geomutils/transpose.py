@@ -33,7 +33,7 @@ def transpose(surf, **kwargs):
     else:
         geom = surf
 
-    for g in geom:
+    for i, g in enumerate(geom):
         # Get existing data
         degree_u_new = g.degree.v
         degree_v_new = g.degree.u
@@ -46,9 +46,9 @@ def transpose(surf, **kwargs):
             for v in range(0, g.ctrlpts_size.v):
                 ctrlpts_new.append(g.ctrlptsw[u, v])
 
-        g.degree = (degree_u_new, degree_v_new)
-        g.knotvector = (kv_u_new, kv_v_new)
-        g.set_ctrlpts(ctrlpts_new, g.ctrlpts_size.v, g.ctrlpts_size.u)
+        geom[i].degree = (degree_u_new, degree_v_new)
+        geom[i].knotvector = (kv_u_new, kv_v_new)
+        geom[i].set_ctrlpts(ctrlpts_new, g.ctrlpts_size.v, g.ctrlpts_size.u)
 
     return geom
 
