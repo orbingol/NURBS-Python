@@ -629,6 +629,9 @@ class SplineGeometry(Geometry, metaclass=abc.ABCMeta):
         super(SplineGeometry, self).reset(**kwargs)
         # Reset bounding box
         self._bounding_box = list()
+        # Make sure we generated a new instance of CPManager
+        if self.rational:
+            self._cache['ctrlpts'] = CPManager(cb=[self._evalpts_reset, self._ctrlptsw_reset])
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
