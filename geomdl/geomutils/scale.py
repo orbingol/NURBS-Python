@@ -38,9 +38,9 @@ def scale(obj, multiplier, **kwargs):
 
     # Scale control points
     for g in geom:
-        new_ctrlpts = [[] for _ in range(g.ctrlpts_size)]
+        new_ctrlpts = [[] for _ in range(g.ctrlpts.count)]
         for idx, pts in enumerate(g.ctrlpts):
             new_ctrlpts[idx] = [p * float(multiplier) for p in pts]
-        g.ctrlpts = new_ctrlpts
+        g.ctrlpts.points = new_ctrlpts
 
     return geom
