@@ -14,61 +14,28 @@ from geomdl.geomutils import rotate
 @pytest.mark.usefixtures("surface7")
 def test_geomutils_rotate_x(surface7):
     res = rotate.rotate(surface7, 45, axis=0)
-    # mid points should be the same
-    mid_pt1 = surface7.evaluate_single((0.5, 0.5))
-    mid_pt2 = res.evaluate_single((0.5, 0.5))
+    pt1 = surface7.evaluate_single((1.0, 0.0))
+    pt2 = res.evaluate_single((1.0, 0.0))
 
-    for a, b in zip(mid_pt1, mid_pt2):
+    for a, b in zip(pt1, pt2):
         assert a == b
 
 
 @pytest.mark.usefixtures("surface7")
 def test_geomutils_rotate_y(surface7):
     res = rotate.rotate(surface7, 45, axis=1)
-    # mid points should be the same
-    mid_pt1 = surface7.evaluate_single((0.5, 0.5))
-    mid_pt2 = res.evaluate_single((0.5, 0.5))
+    pt1 = surface7.evaluate_single((0.0, 1.0))
+    pt2 = res.evaluate_single((0.0, 1.0))
 
-    for a, b in zip(mid_pt1, mid_pt2):
+    for a, b in zip(pt1, pt2):
         assert a == b
 
 
 @pytest.mark.usefixtures("surface7")
 def test_geomutils_rotate_z(surface7):
     res = rotate.rotate(surface7, 45, axis=2)
-    # mid points should be the same
-    mid_pt1 = surface7.evaluate_single((0.5, 0.5))
-    mid_pt2 = res.evaluate_single((0.5, 0.5))
+    pt1 = surface7.evaluate_single((0.0, 0.0))
+    pt2 = res.evaluate_single((0.0, 0.0))
 
-    for a, b in zip(mid_pt1, mid_pt2):
+    for a, b in zip(pt1, pt2):
         assert a == b
-
-
-@pytest.mark.usefixtures("surface7")
-def test_geomutils_rotate_x2(surface7):
-    res = rotate.rotate(surface7, 45, axis=0)
-    mid_pt1 = surface7.evaluate_single((0.0, 0.0))
-    mid_pt2 = res.evaluate_single((0.0, 0.0))
-
-    for a, b in zip(mid_pt1, mid_pt2):
-        assert a != b
-
-
-@pytest.mark.usefixtures("surface7")
-def test_geomutils_rotate_y2(surface7):
-    res = rotate.rotate(surface7, 45, axis=1)
-    mid_pt1 = surface7.evaluate_single((0.0, 0.0))
-    mid_pt2 = res.evaluate_single((0.0, 0.0))
-
-    for a, b in zip(mid_pt1, mid_pt2):
-        assert a != b
-
-
-@pytest.mark.usefixtures("surface7")
-def test_geomutils_rotate_z2(surface7):
-    res = rotate.rotate(surface7, 45, axis=2)
-    mid_pt1 = surface7.evaluate_single((0.2, 0.2))
-    mid_pt2 = res.evaluate_single((0.2, 0.2))
-
-    for a, b in zip(mid_pt1, mid_pt2):
-        assert a != b
