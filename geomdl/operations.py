@@ -1421,39 +1421,12 @@ def normal(obj, params, **kwargs):
     """
     normalize = kwargs.get('normalize', True)
     if isinstance(obj, abstract.Curve):
-        if isinstance(params, (list, tuple)):
-            return ops.normal_curve_single_list(obj, params, normalize)
-        else:
-            return ops.normal_curve_single(obj, params, normalize)
+        raise GeomdlException("Not implemented for curves")
     if isinstance(obj, abstract.Surface):
         if isinstance(params[0], float):
             return ops.normal_surface_single(obj, params, normalize)
         else:
             return ops.normal_surface_single_list(obj, params, normalize)
-
-
-@export
-def binormal(obj, params, **kwargs):
-    """ Evaluates the binormal vector of the curves or surfaces at the input parameter values.
-
-    This function is designed to evaluate binormal vectors of the B-Spline and NURBS shapes at single or
-    multiple parameter positions.
-
-    :param obj: input shape
-    :type obj: abstract.Curve or abstract.Surface
-    :param params: parameters
-    :type params: float, list or tuple
-    :return: a list containing "point" and "vector" pairs
-    :rtype: tuple
-    """
-    normalize = kwargs.get('normalize', True)
-    if isinstance(obj, abstract.Curve):
-        if isinstance(params, (list, tuple)):
-            return ops.binormal_curve_single_list(obj, params, normalize)
-        else:
-            return ops.binormal_curve_single(obj, params, normalize)
-    if isinstance(obj, abstract.Surface):
-        raise GeomdlException("Binormal vector evaluation for the surfaces is not implemented!")
 
 
 @export
