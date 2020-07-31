@@ -29,6 +29,7 @@ This documentation is organized into a couple sections:
     introduction
     citing
     q_a
+    contributing
 
 .. _using:
 

@@ -70,26 +70,6 @@ you may have.
 
 Alternatively, you may send an email to ``nurbs-python@googlegroups.com``.
 
-Issues and Reporting
-====================
-
-Bugs and Feature Requests
--------------------------
-
-NURBS-Python project uses the `issue tracker on GitHub <https://github.com/orbingol/NURBS-Python/issues>`_ for
-reporting bugs and requesting for a new feature. Please use the provided templates on GitHub.
-
-Contributions
--------------
-
-All contributions to NURBS-Python are welcomed and I appreciate your time and efforts in advance. I have posted
-some `guidelines for contributing <https://github.com/orbingol/NURBS-Python/blob/master/.github/CONTRIBUTING.md>`_
-and I would be really happy if you could follow these guidelines if you would like to contribute to NURBS-Python.
-
-It is suggested to open `a new ticket <https://github.com/orbingol/NURBS-Python/issues/new>`_ GitHub to discuss what
-you would like to fix or add as a new feature, as it may already been fixed/implemented in some of the development
-branches.
-
 How can I add a new feature?
 ============================
 
