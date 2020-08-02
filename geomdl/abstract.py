@@ -10,6 +10,7 @@
 import copy
 import abc
 import warnings
+import math
 from . import vis, helpers, knotvector, voxelize, utilities
 from . import tessellate
 from .evaluators import AbstractEvaluator
@@ -850,7 +851,7 @@ class Curve(SplineGeometry):
         :setter: Sets sample size
         :type: int
         """
-        return int(1.0 / self.delta) + 1
+        return math.floor((1.0 / self.delta) + 0.5)
 
     @sample_size.setter
     def sample_size(self, value):
@@ -866,7 +867,7 @@ class Curve(SplineGeometry):
         stop = self.knotvector[-(self.degree+1)]
 
         # Set delta value
-        self.delta = (stop - start) / float(value - 1)
+        self.delta = (stop - start) / float(value)
 
     @property
     def delta(self):
@@ -1490,7 +1491,7 @@ class Surface(SplineGeometry):
         :setter: Sets sample size for the u-direction
         :type: int
         """
-        return int(1.0 / self.delta_u) + 1
+        return math.floor((1.0 / self.delta_u) + 0.5)
 
     @sample_size_u.setter
     def sample_size_u(self, value):
@@ -1506,7 +1507,7 @@ class Surface(SplineGeometry):
         stop_u = self.knotvector_u[-(self.degree_u+1)]
 
         # Set delta values
-        self.delta_u = (stop_u - start_u) / float(value - 1)
+        self.delta_u = (stop_u - start_u) / float(value)
 
     @property
     def sample_size_v(self):
@@ -1521,7 +1522,7 @@ class Surface(SplineGeometry):
         :setter: Sets sample size for the v-direction
         :type: int
         """
-        return int(1.0 / self.delta_v) + 1
+        return math.floor((1.0 / self.delta_v) + 0.5)
 
     @sample_size_v.setter
     def sample_size_v(self, value):
@@ -1537,7 +1538,7 @@ class Surface(SplineGeometry):
         stop_v = self.knotvector_v[-(self.degree_v+1)]
 
         # Set delta values
-        self.delta_v = (stop_v - start_v) / float(value - 1)
+        self.delta_v = (stop_v - start_v) / float(value)
 
     @property
     def sample_size(self):
@@ -1558,8 +1559,8 @@ class Surface(SplineGeometry):
         :setter: Sets sample size for both u- and v-directions
         :type: int
         """
-        sample_size_u = int(1.0 / self.delta_u) + 1
-        sample_size_v = int(1.0 / self.delta_v) + 1
+        sample_size_u = math.floor((1.0 / self.delta_u) + 0.5)
+        sample_size_v = math.floor((1.0 / self.delta_v) + 0.5)
         return sample_size_u, sample_size_v
 
     @sample_size.setter
@@ -1576,8 +1577,8 @@ class Surface(SplineGeometry):
         stop_v = self.knotvector_v[-(self.degree_v+1)]
 
         # Set delta values
-        self.delta_u = (stop_u - start_u) / float(value - 1)
-        self.delta_v = (stop_v - start_v) / float(value - 1)
+        self.delta_u = (stop_u - start_u) / float(value)
+        self.delta_v = (stop_v - start_v) / float(value)
 
     @property
     def delta_u(self):
@@ -2538,7 +2539,7 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the u-direction
         :type: int
         """
-        return int(1.0 / self.delta_u) + 1
+        return math.floor((1.0 / self.delta_u) + 0.5)
 
     @sample_size_u.setter
     def sample_size_u(self, value):
@@ -2554,7 +2555,7 @@ class Volume(SplineGeometry):
         stop_u = self.knotvector_u[-(self.degree_u + 1)]
 
         # Set delta values
-        self.delta_u = (stop_u - start_u) / float(value - 1)
+        self.delta_u = (stop_u - start_u) / float(value)
 
     @property
     def sample_size_v(self):
@@ -2569,7 +2570,7 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the v-direction
         :type: int
         """
-        return int(1.0 / self.delta_v) + 1
+        return math.floor((1.0 / self.delta_v) + 0.5)
 
     @sample_size_v.setter
     def sample_size_v(self, value):
@@ -2585,7 +2586,7 @@ class Volume(SplineGeometry):
         stop_v = self.knotvector_v[-(self.degree_v + 1)]
 
         # Set delta values
-        self.delta_v = (stop_v - start_v) / float(value - 1)
+        self.delta_v = (stop_v - start_v) / float(value)
 
     @property
     def sample_size_w(self):
@@ -2600,7 +2601,7 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the w-direction
         :type: int
         """
-        return int(1.0 / self.delta_w) + 1
+        return math.floor((1.0 / self.delta_w) + 0.5)
 
     @sample_size_w.setter
     def sample_size_w(self, value):
@@ -2616,7 +2617,7 @@ class Volume(SplineGeometry):
         stop_w = self.knotvector_w[-(self.degree_w + 1)]
 
         # Set delta values
-        self.delta_w = (stop_w - start_w) / float(value - 1)
+        self.delta_w = (stop_w - start_w) / float(value)
 
     @property
     def sample_size(self):
@@ -2637,9 +2638,9 @@ class Volume(SplineGeometry):
         :setter: Sets sample size value for both u-, v- and w-directions
         :type: int
         """
-        sample_size_u = int(1.0 / self.delta_u) + 1
-        sample_size_v = int(1.0 / self.delta_v) + 1
-        sample_size_w = int(1.0 / self.delta_w) + 1
+        sample_size_u = math.floor((1.0 / self.delta_u) + 0.5)
+        sample_size_v = math.floor((1.0 / self.delta_v) + 0.5)
+        sample_size_w = math.floor((1.0 / self.delta_w) + 0.5)
         return sample_size_u, sample_size_v, sample_size_w
 
     @sample_size.setter
@@ -2659,9 +2660,9 @@ class Volume(SplineGeometry):
         stop_w = self.knotvector_w[-(self.degree_w + 1)]
 
         # Set delta values
-        self.delta_u = (stop_u - start_u) / float(value - 1)
-        self.delta_v = (stop_v - start_v) / float(value - 1)
-        self.delta_w = (stop_w - start_w) / float(value - 1)
+        self.delta_u = (stop_u - start_u) / float(value)
+        self.delta_v = (stop_v - start_v) / float(value)
+        self.delta_w = (stop_w - start_w) / float(value)
 
     @property
     def delta_u(self):
