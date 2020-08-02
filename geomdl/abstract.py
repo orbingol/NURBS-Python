@@ -851,7 +851,8 @@ class Curve(SplineGeometry):
         :setter: Sets sample size
         :type: int
         """
-        return math.floor((1.0 / self.delta) + 0.5)
+        ss = math.floor((1.0 / self.delta) + 0.5)
+        return int(ss)
 
     @sample_size.setter
     def sample_size(self, value):
@@ -1491,7 +1492,8 @@ class Surface(SplineGeometry):
         :setter: Sets sample size for the u-direction
         :type: int
         """
-        return math.floor((1.0 / self.delta_u) + 0.5)
+        ss = math.floor((1.0 / self.delta_u) + 0.5)
+        return int(ss)
 
     @sample_size_u.setter
     def sample_size_u(self, value):
@@ -1522,7 +1524,8 @@ class Surface(SplineGeometry):
         :setter: Sets sample size for the v-direction
         :type: int
         """
-        return math.floor((1.0 / self.delta_v) + 0.5)
+        ss = math.floor((1.0 / self.delta_v) + 0.5)
+        return int(ss)
 
     @sample_size_v.setter
     def sample_size_v(self, value):
@@ -1561,7 +1564,7 @@ class Surface(SplineGeometry):
         """
         sample_size_u = math.floor((1.0 / self.delta_u) + 0.5)
         sample_size_v = math.floor((1.0 / self.delta_v) + 0.5)
-        return sample_size_u, sample_size_v
+        return int(sample_size_u), int(sample_size_v)
 
     @sample_size.setter
     def sample_size(self, value):
@@ -2539,7 +2542,8 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the u-direction
         :type: int
         """
-        return math.floor((1.0 / self.delta_u) + 0.5)
+        ss = math.floor((1.0 / self.delta_u) + 0.5)
+        return int(ss)
 
     @sample_size_u.setter
     def sample_size_u(self, value):
@@ -2570,7 +2574,8 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the v-direction
         :type: int
         """
-        return math.floor((1.0 / self.delta_v) + 0.5)
+        ss = math.floor((1.0 / self.delta_v) + 0.5)
+        return int(ss)
 
     @sample_size_v.setter
     def sample_size_v(self, value):
@@ -2601,7 +2606,8 @@ class Volume(SplineGeometry):
         :setter: Sets sample size for the w-direction
         :type: int
         """
-        return math.floor((1.0 / self.delta_w) + 0.5)
+        ss = math.floor((1.0 / self.delta_w) + 0.5)
+        return int(ss)
 
     @sample_size_w.setter
     def sample_size_w(self, value):
@@ -2641,7 +2647,7 @@ class Volume(SplineGeometry):
         sample_size_u = math.floor((1.0 / self.delta_u) + 0.5)
         sample_size_v = math.floor((1.0 / self.delta_v) + 0.5)
         sample_size_w = math.floor((1.0 / self.delta_w) + 0.5)
-        return sample_size_u, sample_size_v, sample_size_w
+        return int(sample_size_u), int(sample_size_v), int(sample_size_w)
 
     @sample_size.setter
     def sample_size(self, value):
