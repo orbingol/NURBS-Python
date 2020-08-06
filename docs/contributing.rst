@@ -18,7 +18,7 @@ Before working on a pull request, please contact the author or open a ticket on 
 Feature requests
 ----------------
 
-Please email the author for feature requests.
+Please email the author for feature requests with the details of your feature request.
 
 Questions and comments
 ----------------------
