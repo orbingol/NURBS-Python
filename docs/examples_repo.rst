@@ -28,4 +28,4 @@ Please refer to the `NURBS-Python wiki <https://github.com/orbingol/NURBS-Python
 for more details on using NURBS-Python Matplotlib and Plotly visualization modules with Jupyter notebooks.
 
 
-.. _Examples: https://github.com/orbingol/NURBS-Python_Examples
+.. _Examples: https://github.com/orbingol/geomdl-examples
