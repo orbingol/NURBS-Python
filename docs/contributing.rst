@@ -5,10 +5,12 @@ Contributing
 Bugs reports
 ------------
 
-Please use the **Bug Reporting Template** on the `issue tracker <https://github.com/orbingol/NURBS-Python/issues>`_ to report bugs.
+You are encouraged to use the **Bug Reporting Template** on the `issue tracker <https://github.com/orbingol/NURBS-Python/issues>`_ for reporting bugs.
 Please fill all required fields and be clear as much as possible. You may attach scripts and sample data to the ticket.
 
-Tickets with missing or unclear information may be ignored.
+All bug reports must be reproducable. Tickets with missing or unclear information may be ignored.
+
+Please email the author if you have any questions about bug reporting.
 
 Pull requests
 -------------
