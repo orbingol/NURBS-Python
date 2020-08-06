@@ -1,5 +1,11 @@
 # geomdl Changelog
 
+## v5.3.0 released on 2020-08-05
+
+* Deprecated some methods that produce incorrect results
+* Fixed sample_size computation
+* Minor fixes and documnetation updates
+
 ## v5.2.10 released on 2020-07-07
 
 * Fixed a bug causing double matplotlib figures when run on a Jupyter notebook
