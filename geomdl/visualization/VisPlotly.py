@@ -7,6 +7,7 @@
 
 """
 
+import sys
 from . import vis
 import numpy as np
 from plotly import graph_objs
@@ -60,6 +61,7 @@ class VisConfig(vis.VisConfigAbstract):
         self.dtype = np.float
         # Set Plotly custom variables
         self.figure_image_filename = "temp-plot.html"
+        self.use_renderer = kwargs.get("use_renderer", False)
 
         # Get keyword arguments
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
@@ -72,6 +74,10 @@ class VisConfig(vis.VisConfigAbstract):
         self.figure_size = kwargs.get('figure_size', [1024, 768])
         self.trim_size = kwargs.get('trim_size', 1)
         self.line_width = kwargs.get('line_width', 2)
+
+    # https://stackoverflow.com/a/37661854/3345747
+    def in_notebook(self):
+        return 'ipykernel' in sys.modules
 
 
 class VisCurve2D(vis.VisAbstract):
@@ -178,7 +184,9 @@ class VisCurve2D(vis.VisAbstract):
         fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
-        if fig_display:
+        if self.vconf.in_notebook() or self.vconf.use_renderer:
+            fig.show()
+        elif fig_display:
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
@@ -315,7 +323,9 @@ class VisCurve3D(vis.VisAbstract):
         fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
-        if fig_display:
+        if self.vconf.in_notebook() or self.vconf.use_renderer:
+            fig.show()
+        elif fig_display:
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
@@ -473,7 +483,9 @@ class VisSurface(vis.VisAbstract):
         fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
-        if fig_display:
+        if self.vconf.in_notebook() or self.vconf.use_renderer:
+            fig.show()
+        elif fig_display:
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
@@ -602,7 +614,9 @@ class VisVolume(vis.VisAbstract):
         fig_display = kwargs.get('display_plot', True)
 
         # Display the plot
-        if fig_display:
+        if self.vconf.in_notebook() or self.vconf.use_renderer:
+            fig.show()
+        elif fig_display:
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
