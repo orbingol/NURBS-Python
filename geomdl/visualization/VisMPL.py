@@ -218,7 +218,8 @@ class VisCurve3D(vis.VisAbstract):
 
         # Draw control points polygon and the 3D curve
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
 
         # Start plotting
         for plot in self._plots:
@@ -331,7 +332,8 @@ class VisSurface(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
 
         # Start plotting
         surf_count = 0
@@ -428,7 +430,9 @@ class VisSurface(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
+
 
         surf_count = 0
         # Start plotting
@@ -562,7 +566,9 @@ class VisSurfWireframe(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
+
 
         # Start plotting
         for plot in self._plots:
@@ -671,7 +677,8 @@ class VisSurfScatter(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
 
         # Start plotting
         for plot in self._plots:
@@ -778,7 +785,8 @@ class VisVolume(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
 
         # Start plotting
         for plot in self._plots:
@@ -863,7 +871,8 @@ class VisVoxel(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = Axes3D(fig, auto_add_to_figure=False)
+        fig.add_axes(ax)
 
         # Start plotting
         for plot in self._plots:
