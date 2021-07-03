@@ -660,6 +660,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
         temp = [[] for _ in range((2 * degree) + 1)]
 
     # Loop for Eqs 5.28 & 5.29
+    tx = 1
     for t in range(0, num):
         temp[0] = ctrlpts[first - 1]
         temp[last - first + 2] = ctrlpts[last + 1]
@@ -713,28 +714,29 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
                 ctrlpts_new[j] = temp[j - first + 1]
                 i += 1
                 j -= 1
+            tx += 1
 
         # Update indices
         first -= 1
         last += 1
 
-    # Fix indexing
-    t += 1
-
     # Shift control points (refer to p.183 of The NURBS Book, 2nd Edition)
-    j = int((2*r - s - degree) / 2)  # first control point out
-    i = j
-    for k in range(1, t):
-        if k % 2 == 1:
-            i += 1
-        else:
-            j -= 1
-    for k in range(i+1, len(ctrlpts)):
-        ctrlpts_new[j] = ctrlpts[k]
-        j += 1
+    if tx > 1:
+        j = int((2*r - s - degree) / 2)  # first control point out
+        i = j
+        for k in range(1, tx):
+            if k % 2 == 1:
+                i += 1
+            else:
+                j -= 1
+        for k in range(i+1, len(ctrlpts)):
+            ctrlpts_new[j] = ctrlpts_new[k]
+            j += 1
 
-    # Slice to get the new control points
-    ctrlpts_new = ctrlpts_new[0:-t]
+        # Slice to get the new control points
+        ctrlpts_new = ctrlpts_new[0:-t]
+    else:
+        raise GeomdlException("Cannot remove knot: " + str(u))
 
     return ctrlpts_new
 
