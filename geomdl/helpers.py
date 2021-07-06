@@ -734,7 +734,7 @@ def knot_removal(degree, knotvector, ctrlpts, u, **kwargs):
             j += 1
 
         # Slice to get the new control points
-        ctrlpts_new = ctrlpts_new[0:-t]
+        ctrlpts_new = ctrlpts_new[0:-(tx-1)]
     else:
         raise GeomdlException("Cannot remove knot: " + str(u))
 
