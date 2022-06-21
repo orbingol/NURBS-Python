@@ -8,6 +8,6 @@ setuptools>=40.6.3
 cython
 
 # Required packages for visualization
-numpy==1.15.4
+numpy==1.22.0
 matplotlib==2.2.3
 plotly
