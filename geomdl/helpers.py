@@ -869,8 +869,8 @@ def knot_refinement(degree, knotvector, ctrlpts, **kwargs):
         if not isinstance(density, int):
             raise GeomdlException("Density value must be an integer", data=dict(density=density))
 
-        if density < 1:
-            raise GeomdlException("Density value cannot be less than 1", data=dict(density=density))
+        if density < 0:
+            raise GeomdlException("Density value cannot be less than 0", data=dict(density=density))
 
     # Add additional knots to be refined
     if add_knot_list:
