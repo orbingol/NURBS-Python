@@ -132,10 +132,10 @@ class VisCurve3D(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
-                pts = np.array(plot['ptsarr'], dtype=np.float)
+                pts = np.array(plot['ptsarr'], dtype=np.float64)
                 # Handle 2-dimensional data
                 if pts.shape[1] == 2:
-                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
+                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float64)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -148,10 +148,10 @@ class VisCurve3D(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=np.float)
+                pts = np.array(plot['ptsarr'], dtype=np.float64)
                 # Handle 2-dimensional data
                 if pts.shape[1] == 2:
-                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
+                    pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float64)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -200,14 +200,14 @@ class VisSurface(vis.VisAbstract):
                 vertices = [v.data for v in plot['ptsarr'][0]]
                 faces = [q.data for q in plot['ptsarr'][1]]
                 # Points as spheres
-                pts = np.array(vertices, dtype=np.float)
+                pts = np.array(vertices, dtype=np.float64)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 actor1 = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
                                                name=plot['name'], index=plot['idx'])
                 vtk_actors.append(actor1)
                 # Quad mesh
-                lines = np.array(faces, dtype=np.int)
+                lines = np.array(faces, dtype=int)
                 actor2 = vtkh.create_actor_mesh(pts=vtkpts, lines=lines, color=vtkh.create_color(plot['color']),
                                                 name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
                 vtk_actors.append(actor2)
@@ -218,7 +218,7 @@ class VisSurface(vis.VisAbstract):
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 faces = [t.data for t in plot['ptsarr'][1]]
-                tris = np.array(faces, dtype=np.int)
+                tris = np.array(faces, dtype=int)
                 actor1 = vtkh.create_actor_tri(pts=vtkpts, tris=tris, color=vtkh.create_color(plot['color']),
                                                name=plot['name'], index=plot['idx'])
                 vtk_actors.append(actor1)
@@ -226,7 +226,7 @@ class VisSurface(vis.VisAbstract):
             # Plot trim curves
             if self.vconf.display_trims:
                 if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=np.float)
+                    pts = np.array(plot['ptsarr'], dtype=np.float64)
                     vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                     vtkpts.SetName(plot['name'])
                     actor1 = vtkh.create_actor_polygon(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -269,7 +269,7 @@ class VisVolume(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
-                pts = np.array(plot['ptsarr'], dtype=np.float)
+                pts = np.array(plot['ptsarr'], dtype=np.float64)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -278,7 +278,7 @@ class VisVolume(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=np.float)
+                pts = np.array(plot['ptsarr'], dtype=np.float64)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -321,7 +321,7 @@ class VisVoxel(vis.VisAbstract):
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
-                pts = np.array(plot['ptsarr'], dtype=np.float)
+                pts = np.array(plot['ptsarr'], dtype=np.float64)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 temp_actor = vtkh.create_actor_pts(pts=vtkpts, color=vtkh.create_color(plot['color']),
@@ -330,8 +330,8 @@ class VisVoxel(vis.VisAbstract):
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                faces = np.array(plot['ptsarr'][1], dtype=np.float)
-                filled = np.array(plot['ptsarr'][2], dtype=np.int)
+                faces = np.array(plot['ptsarr'][1], dtype=np.float64)
+                filled = np.array(plot['ptsarr'][2], dtype=int)
                 grid_filled = faces[filled == 1]
                 temp_actor = vtkh.create_actor_hexahedron(grid=grid_filled, color=vtkh.create_color(plot['color']),
                                                           name=plot['name'], index=plot['idx'])

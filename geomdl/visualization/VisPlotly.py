@@ -58,7 +58,7 @@ class VisConfig(vis.VisConfigAbstract):
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self.dtype = np.float
+        self.dtype = np.float64
         # Set Plotly custom variables
         self.figure_image_filename = "temp-plot.html"
         self.use_renderer = kwargs.get("use_renderer", False)
