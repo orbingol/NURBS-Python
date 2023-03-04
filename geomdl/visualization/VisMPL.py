@@ -68,7 +68,7 @@ class VisConfig(vis.VisConfigAbstract):
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self.dtype = np.float
+        self.dtype = np.float64
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
         self.display_bbox = kwargs.get('bbox', False)
