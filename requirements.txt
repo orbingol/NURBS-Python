@@ -2,12 +2,12 @@
 # Python requirements for CI test runs and Docker image building
 
 # Python packaging tools
-setuptools>=40.6.3
+setuptools>=69.0.0
 
 # For compiling geomdl.core module
 cython
 
-# Required packages for visualization
-numpy==1.15.4
-matplotlib==2.2.3
-plotly
+# For visualization
+numpy>=1.24.4
+matplotlib>=3.6.3
+plotly>=5.19.0
