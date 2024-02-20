@@ -191,6 +191,9 @@ class VisCurve2D(vis.VisAbstract):
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisCurve3D(vis.VisAbstract):
     """ Plotly visualization module for 3D curves. """
@@ -329,6 +332,9 @@ class VisCurve3D(vis.VisAbstract):
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisSurface(vis.VisAbstract):
@@ -490,6 +496,9 @@ class VisSurface(vis.VisAbstract):
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
@@ -620,3 +629,6 @@ class VisVolume(vis.VisAbstract):
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+
+        # Return the figure
+        return fig

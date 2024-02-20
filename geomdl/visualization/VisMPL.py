@@ -201,6 +201,9 @@ class VisCurve2D(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
@@ -287,6 +290,9 @@ class VisCurve3D(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisSurface(vis.VisAbstract):
@@ -402,6 +408,9 @@ class VisSurface(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
 
 
     def render(self, **kwargs):
@@ -540,6 +549,9 @@ class VisSurface(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisSurfWireframe(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -648,6 +660,9 @@ class VisSurfWireframe(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisSurfScatter(vis.VisAbstract):
@@ -759,6 +774,9 @@ class VisSurfScatter(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
@@ -843,6 +861,9 @@ class VisVolume(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisVoxel(vis.VisAbstract):
@@ -940,3 +961,6 @@ class VisVoxel(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
