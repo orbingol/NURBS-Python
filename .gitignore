@@ -1,5 +1,5 @@
 .idea/*
-.vscode/*
+.vs*/*
 .pytest_cache/*
 .mypy_cache/*
 .cache/*
@@ -26,3 +26,5 @@ geomdl/evaluators
 *.whl
 *.tar.gz
 .coverage
+.python-version
+.DS_Store
