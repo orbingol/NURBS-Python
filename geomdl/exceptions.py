@@ -14,7 +14,7 @@ ERROR_PREFIX = "GEOMDL ERROR: "
 
 @export
 class GeomdlException(Exception):
-    """ Custom exception for controlling geometric errors.
+    """Custom exception for controlling geometric errors.
 
     The error details can be retrieved by querying ``data`` class member. The following snippet illustrates a sample
     usage of this exception.
@@ -35,6 +35,7 @@ class GeomdlException(Exception):
             # Stop execution of the function
             return
     """
+
     def __init__(self, msg, data=None):
         super(GeomdlException, self).__init__(ERROR_PREFIX + msg)
         self.data = data

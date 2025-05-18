@@ -15,10 +15,11 @@ from . import _utilities as utl
 
 @utl.add_metaclass(abc.ABCMeta)
 class AbstractEntity(object):
-    """ Abstract base class for all geometric entities. """
+    """Abstract base class for all geometric entities."""
+
     def __init__(self, *args, **kwargs):
         self._name = "entity"  # object name
-        self._id = int(kwargs.get('id', 0))  # object ID
+        self._id = int(kwargs.get("id", 0))  # object ID
         self._opt_data = dict()  # custom data dict
         self._cache = {}  # cache dict
         self._data = []  # data storage array
@@ -92,7 +93,7 @@ class AbstractEntity(object):
 
     @property
     def id(self):
-        """ Object ID (as an integer).
+        """Object ID (as an integer).
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -113,7 +114,7 @@ class AbstractEntity(object):
 
     @property
     def name(self):
-        """ Object name (as a string)
+        """Object name (as a string)
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -134,7 +135,7 @@ class AbstractEntity(object):
 
     @property
     def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
+        """Dictionary for storing custom data in the current geometry object.
 
         ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
         You can use ``opt`` property to store custom data inside the geometry object. For instance:
@@ -180,7 +181,7 @@ class AbstractEntity(object):
         self._opt_data = dict()
 
     def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
+        """Safely query for the value from the :py:attr:`opt` property.
 
         :param value: a key in the :py:attr:`opt` property
         :type value: str
@@ -194,13 +195,14 @@ class AbstractEntity(object):
 
 @utl.export
 class Vertex(AbstractEntity):
-    """ 3-dimensional Vertex entity with spatial and parametric position. """
+    """3-dimensional Vertex entity with spatial and parametric position."""
+
     def __init__(self, *args, **kwargs):
         super(Vertex, self).__init__(*args, **kwargs)
         self._name = "vertex"
         self.data = [float(arg) for arg in args] if args else [0.0, 0.0, 0.0]  # spatial coordinates
         self._uv = [0.0, 0.0]  # parametric coordinates
-        self._opt_data['inside'] = False  # flag for trimming
+        self._opt_data["inside"] = False  # flag for trimming
 
     def __nonzero__(self):
         # For Python 2 compatibility
@@ -257,7 +259,7 @@ class Vertex(AbstractEntity):
 
     @property
     def x(self):
-        """ x-component of the vertex
+        """x-component of the vertex
 
         :getter: Gets the x-component of the vertex
         :setter: Sets the x-component of the vertex
@@ -271,7 +273,7 @@ class Vertex(AbstractEntity):
 
     @property
     def y(self):
-        """ y-component of the vertex
+        """y-component of the vertex
 
         :getter: Gets the y-component of the vertex
         :setter: Sets the y-component of the vertex
@@ -285,7 +287,7 @@ class Vertex(AbstractEntity):
 
     @property
     def z(self):
-        """ z-component of the vertex
+        """z-component of the vertex
 
         :getter: Gets the z-component of the vertex
         :setter: Sets the z-component of the vertex
@@ -299,7 +301,7 @@ class Vertex(AbstractEntity):
 
     @property
     def u(self):
-        """ Parametric u-component of the vertex
+        """Parametric u-component of the vertex
 
         :getter: Gets the u-component of the vertex
         :setter: Sets the u-component of the vertex
@@ -313,7 +315,7 @@ class Vertex(AbstractEntity):
 
     @property
     def v(self):
-        """ Parametric v-component of the vertex
+        """Parametric v-component of the vertex
 
         :getter: Gets the v-component of the vertex
         :setter: Sets the v-component of the vertex
@@ -327,7 +329,7 @@ class Vertex(AbstractEntity):
 
     @property
     def uv(self):
-        """ Parametric (u,v) pair of the vertex
+        """Parametric (u,v) pair of the vertex
 
         :getter: Gets the uv-component of the vertex
         :setter: Sets the uv-component of the vertex
@@ -345,7 +347,7 @@ class Vertex(AbstractEntity):
 
     @property
     def inside(self):
-        """ Inside-outside flag
+        """Inside-outside flag
 
         :getter: Gets the flag
         :setter: Sets the flag
@@ -359,7 +361,7 @@ class Vertex(AbstractEntity):
 
     @property
     def data(self):
-        """ (x,y,z) components of the vertex.
+        """(x,y,z) components of the vertex.
 
         :getter: Gets the 3-dimensional components
         :setter: Sets the 3-dimensional components
@@ -378,15 +380,16 @@ class Vertex(AbstractEntity):
 
 @utl.export
 class Triangle(AbstractEntity):
-    """ Triangle entity which represents a triangle composed of vertices.
+    """Triangle entity which represents a triangle composed of vertices.
 
     A Triangle entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
     return the :class:`Vertex` instances that compose the triangular structure.
     """
+
     def __init__(self, *args, **kwargs):
         super(Triangle, self).__init__(*args, **kwargs)
         self._name = "triangle"
-        self._opt_data['inside'] = False  # flag for trimming
+        self._opt_data["inside"] = False  # flag for trimming
         if args:
             self.add_vertex(*args)
 
@@ -400,7 +403,7 @@ class Triangle(AbstractEntity):
 
     @property
     def vertices(self):
-        """ Vertices of the triangle
+        """Vertices of the triangle
 
         :getter: Gets the list of vertices
         :type: tuple
@@ -409,7 +412,7 @@ class Triangle(AbstractEntity):
 
     @property
     def vertices_closed(self):
-        """ Vertices which generates a closed triangle
+        """Vertices which generates a closed triangle
 
         Adds the first vertex as a last element of the return value (good for plotting)
 
@@ -426,7 +429,7 @@ class Triangle(AbstractEntity):
 
     @property
     def edges(self):
-        """ Edges of the triangle
+        """Edges of the triangle
 
         :getter: Gets the list of vertices that generates the edges of the triangle
         :type: list
@@ -439,7 +442,7 @@ class Triangle(AbstractEntity):
 
     @property
     def vertex_ids(self):
-        """ Vertex indices
+        """Vertex indices
 
         .. note:: Please use :attr:`data` instead of this property.
 
@@ -450,7 +453,7 @@ class Triangle(AbstractEntity):
 
     @property
     def inside(self):
-        """ Inside-outside flag
+        """Inside-outside flag
 
         :getter: Gets the flag
         :setter: Sets the flag
@@ -464,7 +467,7 @@ class Triangle(AbstractEntity):
 
     @property
     def data(self):
-        """ Vertices composing the triangular structure.
+        """Vertices composing the triangular structure.
 
         :getter: Gets the vertex indices (as int values)
         :setter: Sets the vertices (as Vertex objects)
@@ -480,7 +483,7 @@ class Triangle(AbstractEntity):
         self.add_vertex(*value)
 
     def add_vertex(self, *args):
-        """ Adds vertices to the Triangle object.
+        """Adds vertices to the Triangle object.
 
         This method takes a single or a list of vertices as its function arguments.
         """
@@ -497,7 +500,7 @@ class Triangle(AbstractEntity):
 
 @utl.export
 class Quad(AbstractEntity):
-    """ Quad entity which represents a quadrilateral structure composed of vertices.
+    """Quad entity which represents a quadrilateral structure composed of vertices.
 
     A Quad entity stores the vertices in its data structure. :attr:`data` returns the vertex IDs and :attr:`vertices`
     return the :class:`Vertex` instances that compose the quadrilateral structure.
@@ -511,7 +514,7 @@ class Quad(AbstractEntity):
 
     @property
     def vertices(self):
-        """ Vertices composing the quadrilateral structure.
+        """Vertices composing the quadrilateral structure.
 
         :getter: Gets the vertices
         """
@@ -519,7 +522,7 @@ class Quad(AbstractEntity):
 
     @property
     def data(self):
-        """ Vertices composing the quadrilateral structure.
+        """Vertices composing the quadrilateral structure.
 
         :getter: Gets the vertex indices (as int values)
         :setter: Sets the vertices (as Vertex objects)
@@ -535,7 +538,7 @@ class Quad(AbstractEntity):
         self.add_vertex(*value)
 
     def add_vertex(self, *args):
-        """ Adds vertices to the Quad object.
+        """Adds vertices to the Quad object.
 
         This method takes a single or a list of vertices as its function arguments.
         """
@@ -552,7 +555,8 @@ class Quad(AbstractEntity):
 
 @utl.export
 class Face(AbstractEntity):
-    """ Representation of Face entity which is composed of triangles or quads. """
+    """Representation of Face entity which is composed of triangles or quads."""
+
     def __init__(self, *args, **kwargs):
         super(Face, self).__init__(*args, **kwargs)
         self._name = "face"
@@ -564,7 +568,7 @@ class Face(AbstractEntity):
 
     @property
     def triangles(self):
-        """ Triangles of the face
+        """Triangles of the face
 
         :getter: Gets the list of triangles
         :type: tuple
@@ -572,7 +576,7 @@ class Face(AbstractEntity):
         return tuple(self._data)
 
     def add_triangle(self, *args):
-        """ Adds triangles to the Face object.
+        """Adds triangles to the Face object.
 
         This method takes a single or a list of triangles as its function arguments.
         """
@@ -587,7 +591,8 @@ class Face(AbstractEntity):
 
 @utl.export
 class Body(AbstractEntity):
-    """ Representation of Body entity which is composed of faces. """
+    """Representation of Body entity which is composed of faces."""
+
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
         self._name = "body"
@@ -599,7 +604,7 @@ class Body(AbstractEntity):
 
     @property
     def faces(self):
-        """ Faces of the body
+        """Faces of the body
 
         :getter: Gets the list of faces
         :type: tuple
@@ -607,7 +612,7 @@ class Body(AbstractEntity):
         return tuple(self._data)
 
     def add_face(self, *args):
-        """ Adds faces to the Body object.
+        """Adds faces to the Body object.
 
         This method takes a single or a list of faces as its function arguments.
         """

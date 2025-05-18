@@ -20,7 +20,7 @@ from . import _utilities as utl
 
 @utl.add_metaclass(abc.ABCMeta)
 class GeomdlBase(object):
-    """ Abstract base class for defining geomdl objects.
+    """Abstract base class for defining geomdl objects.
 
     This class provides the following properties:
 
@@ -35,16 +35,17 @@ class GeomdlBase(object):
     * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
+
     # __slots__ = ('_precision', '_id', '_dimension', '_geometry_type', '_name', '_opt_data', '_cache')
 
     def __init__(self, **kwargs):
-        self._dimension = 0 if not hasattr(self, '_dimension') else self._dimension  # spatial dimension
-        self._geometry_type = "none" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
-        self._name = "base object" if not hasattr(self, '_name') else self._name  # object name
-        self._opt_data = dict() if not hasattr(self, '_opt_data') else self._opt_data  # custom data dict
-        self._cache = dict() if not hasattr(self, '_cache') else self._cache  # cache dict
-        self._precision = int(kwargs.get('precision', 18))  # number of decimal places to round to
-        self._id = int(kwargs.get('id', 0))  # object ID
+        self._dimension = 0 if not hasattr(self, "_dimension") else self._dimension  # spatial dimension
+        self._geometry_type = "none" if not hasattr(self, "_geometry_type") else self._geometry_type  # geometry type
+        self._name = "base object" if not hasattr(self, "_name") else self._name  # object name
+        self._opt_data = dict() if not hasattr(self, "_opt_data") else self._opt_data  # custom data dict
+        self._cache = dict() if not hasattr(self, "_cache") else self._cache  # cache dict
+        self._precision = int(kwargs.get("precision", 18))  # number of decimal places to round to
+        self._id = int(kwargs.get("id", 0))  # object ID
 
     def __copy__(self):
         cls = self.__class__
@@ -71,7 +72,7 @@ class GeomdlBase(object):
 
     @property
     def dimension(self):
-        """ Spatial dimension.
+        """Spatial dimension.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -83,7 +84,7 @@ class GeomdlBase(object):
 
     @property
     def type(self):
-        """ Geometry type
+        """Geometry type
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -95,7 +96,7 @@ class GeomdlBase(object):
 
     @property
     def id(self):
-        """ Object ID (as an integer).
+        """Object ID (as an integer).
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -118,7 +119,7 @@ class GeomdlBase(object):
 
     @property
     def name(self):
-        """ Object name (as a string)
+        """Object name (as a string)
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -139,7 +140,7 @@ class GeomdlBase(object):
 
     @property
     def opt(self):
-        """ Dictionary for storing custom data in the current geometry object.
+        """Dictionary for storing custom data in the current geometry object.
 
         ``opt`` is a wrapper to a dict in *key => value* format, where *key* is string, *value* is any Python object.
         You can use ``opt`` property to store custom data inside the geometry object. For instance:
@@ -188,7 +189,7 @@ class GeomdlBase(object):
         self._opt_data = dict()
 
     def opt_get(self, value):
-        """ Safely query for the value from the :py:attr:`opt` property.
+        """Safely query for the value from the :py:attr:`opt` property.
 
         :param value: a key in the :py:attr:`opt` property
         :type value: str
@@ -202,7 +203,7 @@ class GeomdlBase(object):
 
 @utl.add_metaclass(abc.ABCMeta)
 class Geometry(GeomdlBase):
-    """ Abstract base class for defining geometry objects.
+    """Abstract base class for defining geometry objects.
 
     This class provides the following properties:
 
@@ -218,12 +219,13 @@ class Geometry(GeomdlBase):
     * ``id``: object ID (as integer)
     * ``precision``: number of decimal places to round to. *Default: 18*
     """
+
     # __slots__ = ('_iter_index', '_array_type', '_eval_points')
 
     def __init__(self, **kwargs):
-        self._geometry_type = "default" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
+        self._geometry_type = "default" if not hasattr(self, "_geometry_type") else self._geometry_type  # geometry type
         super(Geometry, self).__init__(**kwargs)
-        self._array_type = list if not hasattr(self, '_array_type') else self._array_type  # array storage type
+        self._array_type = list if not hasattr(self, "_array_type") else self._array_type  # array storage type
         self._eval_points = self._init_array()  # evaluated points
 
     def __iter__(self):
@@ -246,14 +248,14 @@ class Geometry(GeomdlBase):
         return self
 
     def _init_array(self):
-        """ Initializes the arrays. """
+        """Initializes the arrays."""
         if callable(self._array_type):
             return self._array_type()
         return list()
 
     @property
     def evalpts(self):
-        """ Evaluated points.
+        """Evaluated points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -267,7 +269,7 @@ class Geometry(GeomdlBase):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Abstract method for the implementation of evaluation algorithm.
+        """Abstract method for the implementation of evaluation algorithm.
 
         .. note::
 
@@ -278,7 +280,7 @@ class Geometry(GeomdlBase):
 
 @utl.add_metaclass(abc.ABCMeta)
 class SplineGeometry(Geometry):
-    """ Abstract base class for defining spline geometry objects.
+    """Abstract base class for defining spline geometry objects.
 
     This class provides the following properties:
 
@@ -306,16 +308,17 @@ class SplineGeometry(Geometry):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
+
     # __slots__ = (
     #     '_pdim', '_dinit', '_rational', '_degree', '_knot_vector', '_control_points', '_control_points_size',
     #     '_delta', '_bounding_box', '_evaluator', '_vis_component', '_span_func', '_kv_normalize'
     # )
 
     def __init__(self, **kwargs):
-        self._geometry_type = "spline" if not hasattr(self, '_geometry_type') else self._geometry_type  # geometry type
+        self._geometry_type = "spline" if not hasattr(self, "_geometry_type") else self._geometry_type  # geometry type
         super(SplineGeometry, self).__init__(**kwargs)
-        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # parametric dimension
-        self._dinit = 0.1 if not hasattr(self, '_dinit') else self._dinit  # evaluation delta init value
+        self._pdim = 0 if not hasattr(self, "_pdim") else self._pdim  # parametric dimension
+        self._dinit = 0.1 if not hasattr(self, "_dinit") else self._dinit  # evaluation delta init value
         self._rational = False  # defines whether the B-spline object is rational or not
         self._degree = [0 for _ in range(self._pdim)]  # degree
         self._knot_vector = [self._init_array() for _ in range(self._pdim)]  # knot vector
@@ -325,13 +328,13 @@ class SplineGeometry(Geometry):
         self._bounding_box = self._init_array()  # bounding box
         self._evaluator = None  # evaluator instance
         self._vis_component = None  # visualization component
-        self._span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # default "find_span" function
-        self._kv_normalize = kwargs.get('normalize_kv', True)  # flag to control knot vector normalization
+        self._span_func = kwargs.get("find_span_func", helpers.find_span_linear)  # default "find_span" function
+        self._kv_normalize = kwargs.get("normalize_kv", True)  # flag to control knot vector normalization
 
     def __eq__(self, other):
-        if not hasattr(other, '_pdim'):
+        if not hasattr(other, "_pdim"):
             return False
-        if not hasattr(other, '_degree') or not hasattr(other, '_knot_vector') or not hasattr(other, '_control_points'):
+        if not hasattr(other, "_degree") or not hasattr(other, "_knot_vector") or not hasattr(other, "_control_points"):
             return False
         if self.pdimension != other.pdimension:
             return False
@@ -378,7 +381,7 @@ class SplineGeometry(Geometry):
 
     @property
     def rational(self):
-        """ Defines the rational and non-rational B-spline shapes.
+        """Defines the rational and non-rational B-spline shapes.
 
         Rational shapes use homogeneous coordinates which includes a weight alongside with the Cartesian coordinates.
         Rational B-splines are also named as NURBS (Non-uniform rational basis spline) and non-rational B-splines are
@@ -394,7 +397,7 @@ class SplineGeometry(Geometry):
 
     @property
     def dimension(self):
-        """ Spatial dimension.
+        """Spatial dimension.
 
         Spatial dimension will be automatically estimated from the first element of the control points array.
 
@@ -410,7 +413,7 @@ class SplineGeometry(Geometry):
 
     @property
     def pdimension(self):
-        """ Parametric dimension.
+        """Parametric dimension.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -422,7 +425,7 @@ class SplineGeometry(Geometry):
 
     @property
     def degree(self):
-        """ Degree
+        """Degree
 
         .. note::
 
@@ -443,7 +446,7 @@ class SplineGeometry(Geometry):
 
     @property
     def knotvector(self):
-        """ Knot vector
+        """Knot vector
 
         .. note::
 
@@ -464,7 +467,7 @@ class SplineGeometry(Geometry):
 
     @property
     def ctrlpts(self):
-        """ Control points.
+        """Control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -481,7 +484,7 @@ class SplineGeometry(Geometry):
 
     @property
     def weights(self):
-        """ Weights.
+        """Weights.
 
         .. note::
 
@@ -501,7 +504,7 @@ class SplineGeometry(Geometry):
 
     @property
     def cpsize(self):
-        """ Number of control points in all parametric directions.
+        """Number of control points in all parametric directions.
 
         .. note::
 
@@ -522,7 +525,7 @@ class SplineGeometry(Geometry):
 
     @property
     def ctrlpts_size(self):
-        """ Total number of control points.
+        """Total number of control points.
 
         :getter: Gets the total number of control points
         :type: int
@@ -534,7 +537,7 @@ class SplineGeometry(Geometry):
 
     @property
     def domain(self):
-        """ Domain.
+        """Domain.
 
         Domain is determined using the knot vector(s).
 
@@ -547,7 +550,7 @@ class SplineGeometry(Geometry):
 
     @property
     def range(self):
-        """ Domain range.
+        """Domain range.
 
         :getter: Gets the range
         """
@@ -558,7 +561,7 @@ class SplineGeometry(Geometry):
 
     @property
     def bbox(self):
-        """ Bounding box.
+        """Bounding box.
 
         Evaluates the bounding box and returns the minimum and maximum coordinates.
 
@@ -574,7 +577,7 @@ class SplineGeometry(Geometry):
 
     @property
     def evaluator(self):
-        """ Evaluator instance.
+        """Evaluator instance.
 
         Evaluators allow users to use different algorithms for B-Spline and NURBS evaluations. Please see the
         documentation on ``Evaluator`` classes.
@@ -597,7 +600,7 @@ class SplineGeometry(Geometry):
 
     @property
     def vis(self):
-        """ Visualization component.
+        """Visualization component.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -616,7 +619,7 @@ class SplineGeometry(Geometry):
         self._vis_component = value
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
-        """ Sets control points and checks if the data is consistent.
+        """Sets control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -634,13 +637,19 @@ class SplineGeometry(Geometry):
         :param args: number of control points corresponding to each parametric dimension
         :type args: tuple
         """
+
         def validate_and_clean(pts_in, check_for, dimension, pts_out, **kws):
             for idx, cpt in enumerate(pts_in):
                 if not isinstance(cpt, check_for):
                     raise ValueError("Element number " + str(idx) + " is not a valid input")
                 if len(cpt) != dimension:
-                    raise ValueError("The input must be " + str(self._dimension) + " dimensional list - " + str(cpt) +
-                                     " is not a valid control point")
+                    raise ValueError(
+                        "The input must be "
+                        + str(self._dimension)
+                        + " dimensional list - "
+                        + str(cpt)
+                        + " is not a valid control point"
+                    )
                 # Convert to list of floats
                 pts_out[idx] = [float(coord) for coord in cpt]
             return pts_out
@@ -652,13 +661,13 @@ class SplineGeometry(Geometry):
             raise ValueError("Number of arguments after ctrlpts must be " + str(self._pdim))
 
         # Keyword arguments
-        array_init = kwargs.get('array_init', [[] for _ in range(len(ctrlpts))])
-        array_check_for = kwargs.get('array_check_for', (list, tuple))
-        callback_func = kwargs.get('callback', validate_and_clean)
-        self._dimension = kwargs.get('dimension', len(ctrlpts[0]))
+        array_init = kwargs.get("array_init", [[] for _ in range(len(ctrlpts))])
+        array_check_for = kwargs.get("array_check_for", (list, tuple))
+        callback_func = kwargs.get("callback", validate_and_clean)
+        self._dimension = kwargs.get("dimension", len(ctrlpts[0]))
 
         # Pop existing keywords from kwargs dict
-        existing_kws = ['array_init', 'array_check_for', 'callback', 'dimension']
+        existing_kws = ["array_init", "array_check_for", "callback", "dimension"]
         for ekw in existing_kws:
             if ekw in kwargs:
                 kwargs.pop(ekw)
@@ -669,7 +678,7 @@ class SplineGeometry(Geometry):
 
     @abc.abstractmethod
     def render(self, **kwargs):
-        """ Abstract method for spline rendering and visualization.
+        """Abstract method for spline rendering and visualization.
 
         .. note::
 
@@ -680,7 +689,7 @@ class SplineGeometry(Geometry):
 
 @utl.add_metaclass(abc.ABCMeta)
 class Curve(SplineGeometry):
-    """ Abstract base class for defining spline curves.
+    """Abstract base class for defining spline curves.
 
     Curve ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -742,7 +751,7 @@ class Curve(SplineGeometry):
 
     @property
     def order(self):
-        """ Order.
+        """Order.
 
         Defined as ``order = degree + 1``
 
@@ -761,7 +770,7 @@ class Curve(SplineGeometry):
 
     @property
     def degree(self):
-        """ Degree.
+        """Degree.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -786,7 +795,7 @@ class Curve(SplineGeometry):
 
     @property
     def knotvector(self):
-        """ Knot vector.
+        """Knot vector.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -817,7 +826,7 @@ class Curve(SplineGeometry):
 
     @property
     def ctrlpts(self):
-        """ Control points.
+        """Control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -834,7 +843,7 @@ class Curve(SplineGeometry):
 
     @property
     def sample_size(self):
-        """ Sample size.
+        """Sample size.
 
         Sample size defines the number of evaluated points to generate. It also sets the ``delta`` property.
 
@@ -865,14 +874,14 @@ class Curve(SplineGeometry):
 
         # To make it operate like linspace, we have to know the starting and ending points.
         start = self.knotvector[self.degree]
-        stop = self.knotvector[-(self.degree+1)]
+        stop = self.knotvector[-(self.degree + 1)]
 
         # Set delta value
         self.delta = (stop - start) / float(value)
 
     @property
     def delta(self):
-        """ Evaluation delta.
+        """Evaluation delta.
 
         Evaluation delta corresponds to the *step size* while ``evaluate`` function iterates on the knot vector to
         generate curve points. Decreasing step size results in generation of more curve points.
@@ -907,7 +916,7 @@ class Curve(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -923,11 +932,11 @@ class Curve(SplineGeometry):
             degree=tuple(self._degree),
             knotvector=tuple(self._knot_vector),
             size=(self.ctrlpts_size,),
-            control_points=tuple(self._control_points)
+            control_points=tuple(self._control_points),
         )
 
     def reverse(self):
-        """ Reverses the curve """
+        """Reverses the curve"""
         self._control_points = list(reversed(self._control_points))
         max_k = self.knotvector[-1]
         new_kv = [max_k - k for k in self.knotvector]
@@ -935,7 +944,7 @@ class Curve(SplineGeometry):
         self.reset(evalpts=True)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
-        """ Sets control points and checks if the data is consistent.
+        """Sets control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -969,7 +978,7 @@ class Curve(SplineGeometry):
         super(Curve, self).set_ctrlpts(ctrlpts, **kwargs)
 
     def render(self, **kwargs):
-        """ Renders the curve using the visualization component
+        """Renders the curve using the visualization component
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1014,13 +1023,13 @@ class Curve(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.pop('cpcolor', 'blue')
-        evalcolor = kwargs.pop('evalcolor', 'black')
-        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
-        filename = kwargs.pop('filename', None)
-        plot_visible = kwargs.pop('plot', True)
-        extra_plots = kwargs.pop('extras', None)
-        animate_plot = kwargs.pop('animate', False)
+        cpcolor = kwargs.pop("cpcolor", "blue")
+        evalcolor = kwargs.pop("evalcolor", "black")
+        bboxcolor = kwargs.pop("bboxcolor", "darkorange")
+        filename = kwargs.pop("filename", None)
+        plot_visible = kwargs.pop("plot", True)
+        extra_plots = kwargs.pop("extras", None)
+        animate_plot = kwargs.pop("animate", False)
 
         # Check all parameters are set
         self._check_variables()
@@ -1033,23 +1042,24 @@ class Curve(SplineGeometry):
         self._vis_component.clear()
 
         # Control points
-        self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
+        self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type="ctrlpts")
 
         # Evaluated points
-        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+        self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type="evalpts")
 
         # Bounding box
-        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type="bbox")
 
         # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
-                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
-                                        color=(ep['color'], ep['size']), plot_type='extras')
+                self._vis_component.add(
+                    ptsarr=ep["points"], name=ep["name"], color=(ep["color"], ep["size"]), plot_type="extras"
+                )
 
         # Data requested by the visualization module
-        if self._vis_component.mconf['others']:
-            vis_other = self._vis_component.mconf['others'].split(",")
+        if self._vis_component.mconf["others"]:
+            vis_other = self._vis_component.mconf["others"].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
@@ -1065,15 +1075,15 @@ class Curve(SplineGeometry):
             return self._vis_component.render(fig_save_as=filename, display_plot=plot_visible)
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         if reset_ctrlpts:
             self._control_points = self._init_array()
@@ -1088,19 +1098,19 @@ class Curve(SplineGeometry):
         param_list = []
         if self.degree == 0:
             works = False
-            param_list.append('degree')
+            param_list.append("degree")
         if self._control_points is None or len(self._control_points) == 0:
             works = False
-            param_list.append('ctrlpts')
+            param_list.append("ctrlpts")
         if self.knotvector is None or len(self.knotvector) == 0:
             works = False
-            param_list.append('knotvector')
+            param_list.append("knotvector")
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the curve.
+        """Evaluates the curve.
 
         .. note::
 
@@ -1112,7 +1122,7 @@ class Curve(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_single(self, param):
-        """ Evaluates the curve at the given parameter.
+        """Evaluates the curve at the given parameter.
 
         .. note::
 
@@ -1133,7 +1143,7 @@ class Curve(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
-        """ Evaluates the curve for an input range of parameters.
+        """Evaluates the curve for an input range of parameters.
 
         .. note::
 
@@ -1146,7 +1156,7 @@ class Curve(SplineGeometry):
 
     @abc.abstractmethod
     def derivatives(self, u, order, **kwargs):
-        """ Evaluates the derivatives of the curve at parameter u.
+        """Evaluates the derivatives of the curve at parameter u.
 
         .. note::
 
@@ -1168,7 +1178,7 @@ class Curve(SplineGeometry):
 
 @utl.add_metaclass(abc.ABCMeta)
 class Surface(SplineGeometry):
-    """ Abstract base class for defining spline surfaces.
+    """Abstract base class for defining spline surfaces.
 
     Surface ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -1221,6 +1231,7 @@ class Surface(SplineGeometry):
     * ``normalize_kv``: if True, knot vector(s) will be normalized to [0,1] domain. *Default: True*
     * ``find_span_func``: default knot span finding algorithm. *Default:* :func:`.helpers.find_span_linear`
     """
+
     # __slots__ = ('_tsl_component', '_trims')
 
     def __init__(self, **kwargs):
@@ -1233,7 +1244,7 @@ class Surface(SplineGeometry):
 
     @property
     def order_u(self):
-        """ Order for the u-direction.
+        """Order for the u-direction.
 
         Defined as ``order = degree + 1``
 
@@ -1252,7 +1263,7 @@ class Surface(SplineGeometry):
 
     @property
     def order_v(self):
-        """ Order for the v-direction.
+        """Order for the v-direction.
 
         Defined as ``order = degree + 1``
 
@@ -1271,7 +1282,7 @@ class Surface(SplineGeometry):
 
     @property
     def degree(self):
-        """ Degree for u- and v-directions
+        """Degree for u- and v-directions
 
         :getter: Gets the degree
         :setter: Sets the degree
@@ -1288,7 +1299,7 @@ class Surface(SplineGeometry):
 
     @property
     def degree_u(self):
-        """ Degree for the u-direction.
+        """Degree for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1311,7 +1322,7 @@ class Surface(SplineGeometry):
 
     @property
     def degree_v(self):
-        """ Degree for the v-direction.
+        """Degree for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1334,7 +1345,7 @@ class Surface(SplineGeometry):
 
     @property
     def knotvector(self):
-        """ Knot vector for u- and v-directions
+        """Knot vector for u- and v-directions
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -1351,7 +1362,7 @@ class Surface(SplineGeometry):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for the u-direction.
+        """Knot vector for the u-direction.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -1382,7 +1393,7 @@ class Surface(SplineGeometry):
 
     @property
     def knotvector_v(self):
-        """ Knot vector for the v-direction.
+        """Knot vector for the v-direction.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -1413,7 +1424,7 @@ class Surface(SplineGeometry):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional array of control points.
+        """1-dimensional array of control points.
 
         .. note::
 
@@ -1437,7 +1448,7 @@ class Surface(SplineGeometry):
 
     @property
     def ctrlpts_size_u(self):
-        """ Number of control points for the u-direction.
+        """Number of control points for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1459,7 +1470,7 @@ class Surface(SplineGeometry):
 
     @property
     def ctrlpts_size_v(self):
-        """ Number of control points for the v-direction.
+        """Number of control points for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1481,7 +1492,7 @@ class Surface(SplineGeometry):
 
     @property
     def sample_size_u(self):
-        """ Sample size for the u-direction.
+        """Sample size for the u-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta_u`` property.
 
@@ -1506,14 +1517,14 @@ class Surface(SplineGeometry):
 
         # To make it operate like linspace, we have to know the starting and ending points.
         start_u = self.knotvector_u[self.degree_u]
-        stop_u = self.knotvector_u[-(self.degree_u+1)]
+        stop_u = self.knotvector_u[-(self.degree_u + 1)]
 
         # Set delta values
         self.delta_u = (stop_u - start_u) / float(value)
 
     @property
     def sample_size_v(self):
-        """ Sample size for the v-direction.
+        """Sample size for the v-direction.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta_v`` property.
 
@@ -1538,14 +1549,14 @@ class Surface(SplineGeometry):
 
         # To make it operate like linspace, we have to know the starting and ending points.
         start_v = self.knotvector_v[self.degree_v]
-        stop_v = self.knotvector_v[-(self.degree_v+1)]
+        stop_v = self.knotvector_v[-(self.degree_v + 1)]
 
         # Set delta values
         self.delta_v = (stop_v - start_v) / float(value)
 
     @property
     def sample_size(self):
-        """ Sample size for both u- and v-directions.
+        """Sample size for both u- and v-directions.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
@@ -1568,16 +1579,19 @@ class Surface(SplineGeometry):
 
     @sample_size.setter
     def sample_size(self, value):
-        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or\
-                (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0):
+        if (
+            (self.knotvector_u is None or len(self.knotvector_u) == 0)
+            or self.degree_u == 0
+            or (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0)
+        ):
             warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
             return
 
         # To make it operate like linspace, we have to know the starting and ending points.
         start_u = self.knotvector_u[self.degree_u]
-        stop_u = self.knotvector_u[-(self.degree_u+1)]
+        stop_u = self.knotvector_u[-(self.degree_u + 1)]
         start_v = self.knotvector_v[self.degree_v]
-        stop_v = self.knotvector_v[-(self.degree_v+1)]
+        stop_v = self.knotvector_v[-(self.degree_v + 1)]
 
         # Set delta values
         self.delta_u = (stop_u - start_u) / float(value)
@@ -1585,7 +1599,7 @@ class Surface(SplineGeometry):
 
     @property
     def delta_u(self):
-        """ Evaluation delta for the u-direction.
+        """Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -1617,7 +1631,7 @@ class Surface(SplineGeometry):
 
     @property
     def delta_v(self):
-        """ Evaluation delta for the v-direction.
+        """Evaluation delta for the v-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -1649,7 +1663,7 @@ class Surface(SplineGeometry):
 
     @property
     def delta(self):
-        """ Evaluation delta for both u- and v-directions.
+        """Evaluation delta for both u- and v-directions.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -1689,7 +1703,7 @@ class Surface(SplineGeometry):
 
     @property
     def tessellator(self):
-        """ Tessellation component.
+        """Tessellation component.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1709,7 +1723,7 @@ class Surface(SplineGeometry):
 
     @property
     def vertices(self):
-        """ Vertices generated by the tessellation operation.
+        """Vertices generated by the tessellation operation.
 
         If the tessellation component is set to None, the result will be an empty list.
 
@@ -1723,7 +1737,7 @@ class Surface(SplineGeometry):
 
     @property
     def faces(self):
-        """ Faces (triangles, quads, etc.) generated by the tessellation operation.
+        """Faces (triangles, quads, etc.) generated by the tessellation operation.
 
         If the tessellation component is set to None, the result will be an empty list.
 
@@ -1737,7 +1751,7 @@ class Surface(SplineGeometry):
 
     @property
     def trims(self):
-        """ Curves for trimming the surface.
+        """Curves for trimming the surface.
 
         Surface trims are 2-dimensional curves which are introduced on the parametric space of the surfaces. Trim curves
         can be a spline curve, an analytic curve or a 2-dimensional freeform shape. To visualize the trimmed surfaces,
@@ -1778,7 +1792,7 @@ class Surface(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -1795,11 +1809,11 @@ class Surface(SplineGeometry):
             knotvector=tuple(self._knot_vector),
             size=tuple(self._control_points_size),
             control_points=tuple(self._control_points),
-            trims=tuple([t.data for t in self._trims])
+            trims=tuple([t.data for t in self._trims]),
         )
 
     def add_trim(self, trim):
-        """ Adds a trim to the surface.
+        """Adds a trim to the surface.
 
         A trim is a 2-dimensional curve defined on the parametric domain of the surface. Therefore, x-coordinate
         of the trimming curve corresponds to u parametric direction of the surfaceand y-coordinate of the trimming
@@ -1815,7 +1829,7 @@ class Surface(SplineGeometry):
         self._trims.append(trim)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
-        """ Sets the control points and checks if the data is consistent.
+        """Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -1852,7 +1866,7 @@ class Surface(SplineGeometry):
         super(Surface, self).set_ctrlpts(ctrlpts, *args, **kwargs)
 
     def render(self, **kwargs):
-        """ Renders the surface using the visualization component.
+        """Renders the surface using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1902,18 +1916,18 @@ class Surface(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.pop('cpcolor', 'blue')
-        evalcolor = kwargs.pop('evalcolor', 'green')
-        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
-        trimcolor = kwargs.pop('trimcolor', 'black')
-        filename = kwargs.pop('filename', None)
-        plot_visible = kwargs.pop('plot', True)
-        extra_plots = kwargs.pop('extras', None)
-        animate_plot = kwargs.pop('animate', False)
-        force_tsl = bool(kwargs.pop('force', False))  # force re-tessellation
+        cpcolor = kwargs.pop("cpcolor", "blue")
+        evalcolor = kwargs.pop("evalcolor", "green")
+        bboxcolor = kwargs.pop("bboxcolor", "darkorange")
+        trimcolor = kwargs.pop("trimcolor", "black")
+        filename = kwargs.pop("filename", None)
+        plot_visible = kwargs.pop("plot", True)
+        extra_plots = kwargs.pop("extras", None)
+        animate_plot = kwargs.pop("animate", False)
+        force_tsl = bool(kwargs.pop("force", False))  # force re-tessellation
 
         # Get colormap and convert to a list
-        surf_cmap = kwargs.get('colormap', None)
+        surf_cmap = kwargs.get("colormap", None)
         surf_cmap = [surf_cmap] if surf_cmap else []
 
         # Check all parameters are set
@@ -1927,50 +1941,61 @@ class Surface(SplineGeometry):
         self._vis_component.clear()
 
         # Add control points
-        if self._vis_component.mconf['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
+        if self._vis_component.mconf["ctrlpts"] == "points":
+            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type="ctrlpts")
 
         # Add control points as quads
-        if self._vis_component.mconf['ctrlpts'] == 'quads':
+        if self._vis_component.mconf["ctrlpts"] == "quads":
             qtsl = tessellate.QuadTessellate()
             qtsl.tessellate(self.ctrlpts, size_u=self.ctrlpts_size_u, size_v=self.ctrlpts_size_v)
-            self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
-                                    name="control points", color=cpcolor, plot_type='ctrlpts')
+            self._vis_component.add(
+                ptsarr=[qtsl.vertices, qtsl.faces], name="control points", color=cpcolor, plot_type="ctrlpts"
+            )
 
         # Add surface points
-        if self._vis_component.mconf['evalpts'] == 'points':
-            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+        if self._vis_component.mconf["evalpts"] == "points":
+            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type="evalpts")
 
         # Add surface points as quads
-        if self._vis_component.mconf['evalpts'] == 'quads':
+        if self._vis_component.mconf["evalpts"] == "quads":
             qtsl = tessellate.QuadTessellate()
             qtsl.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v)
-            self._vis_component.add(ptsarr=[qtsl.vertices, qtsl.faces],
-                                    name=self.name, color=evalcolor, plot_type='evalpts')
+            self._vis_component.add(
+                ptsarr=[qtsl.vertices, qtsl.faces], name=self.name, color=evalcolor, plot_type="evalpts"
+            )
 
         # Add surface points as vertices and triangles
-        if self._vis_component.mconf['evalpts'] == 'triangles':
+        if self._vis_component.mconf["evalpts"] == "triangles":
             self.tessellate(force=force_tsl)
-            self._vis_component.add(ptsarr=[self.tessellator.vertices, self.tessellator.faces],
-                                    name=self.name, color=evalcolor, plot_type='evalpts')
+            self._vis_component.add(
+                ptsarr=[self.tessellator.vertices, self.tessellator.faces],
+                name=self.name,
+                color=evalcolor,
+                plot_type="evalpts",
+            )
 
         # Visualize the trim curve
         for idx, trim in enumerate(self._trims):
-            self._vis_component.add(ptsarr=self.evaluate_list(trim.evalpts),
-                                    name="Trim Curve " + str(idx + 1), color=trimcolor, plot_type='trimcurve')
+            self._vis_component.add(
+                ptsarr=self.evaluate_list(trim.evalpts),
+                name="Trim Curve " + str(idx + 1),
+                color=trimcolor,
+                plot_type="trimcurve",
+            )
 
         # Bounding box
-        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type="bbox")
 
         # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
-                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
-                                        color=(ep['color'], ep['size']), plot_type='extras')
+                self._vis_component.add(
+                    ptsarr=ep["points"], name=ep["name"], color=(ep["color"], ep["size"]), plot_type="extras"
+                )
 
         # Data requested by the visualization module
-        if self._vis_component.mconf['others']:
-            vis_other = self._vis_component.mconf['others'].split(",")
+        if self._vis_component.mconf["others"]:
+            vis_other = self._vis_component.mconf["others"].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
@@ -1987,12 +2012,12 @@ class Surface(SplineGeometry):
             return self._vis_component.render(fig_save_as=filename, display_plot=plot_visible, colormap=surf_cmap)
 
     def tessellate(self, **kwargs):
-        """ Tessellates the surface.
+        """Tessellates the surface.
 
         Keyword arguments are directly passed to the tessellation component.
         """
         # Keyword arguments
-        force_tessellate = kwargs.pop('force', False)  # force re-tessellation
+        force_tessellate = kwargs.pop("force", False)  # force re-tessellation
 
         # No need to re-tessellate if we have already tessellated the surface
         if self._tsl_component.is_tessellated() and not force_tessellate:
@@ -2005,8 +2030,9 @@ class Surface(SplineGeometry):
                 kwargs.pop(kw)
 
         # Call tessellation component for vertex and triangle generation
-        self._tsl_component.tessellate(self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v,
-                                       trims=self.trims, **kwargs)
+        self._tsl_component.tessellate(
+            self.evalpts, size_u=self.sample_size_u, size_v=self.sample_size_v, trims=self.trims, **kwargs
+        )
 
         # Re-evaluate vertex coordinates
         for idx in range(len(self._tsl_component.vertices)):
@@ -2016,15 +2042,15 @@ class Surface(SplineGeometry):
             self._tsl_component.vertices[idx].data = self.evaluate_single(uv)
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         if reset_ctrlpts:
             self._control_points = self._init_array()
@@ -2044,25 +2070,25 @@ class Surface(SplineGeometry):
         param_list = []
         if self.degree_u == 0:
             works = False
-            param_list.append('degree_u')
+            param_list.append("degree_u")
         if self.degree_v == 0:
             works = False
-            param_list.append('degree_v')
+            param_list.append("degree_v")
         if len(self._control_points) == 0:
             works = False
-            param_list.append('ctrlpts')
+            param_list.append("ctrlpts")
         if len(self.knotvector_u) == 0:
             works = False
-            param_list.append('knotvector_u')
+            param_list.append("knotvector_u")
         if len(self.knotvector_v) == 0:
             works = False
-            param_list.append('knotvector_v')
+            param_list.append("knotvector_v")
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the parametric surface.
+        """Evaluates the parametric surface.
 
         .. note::
 
@@ -2074,7 +2100,7 @@ class Surface(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_single(self, param):
-        """ Evaluates the parametric surface at the given (u, v) parameter.
+        """Evaluates the parametric surface at the given (u, v) parameter.
 
         .. note::
 
@@ -2095,7 +2121,7 @@ class Surface(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
-        """ Evaluates the parametric surface for an input range of (u, v) parameters.
+        """Evaluates the parametric surface for an input range of (u, v) parameters.
 
         .. note::
 
@@ -2108,7 +2134,7 @@ class Surface(SplineGeometry):
 
     @abc.abstractmethod
     def derivatives(self, u, v, order, **kwargs):
-        """ Evaluates the derivatives of the parametric surface at parameter (u, v).
+        """Evaluates the derivatives of the parametric surface at parameter (u, v).
 
         .. note::
 
@@ -2132,7 +2158,7 @@ class Surface(SplineGeometry):
 
 @utl.add_metaclass(abc.ABCMeta)
 class Volume(SplineGeometry):
-    """ Abstract base class for defining spline volumes.
+    """Abstract base class for defining spline volumes.
 
     Volume ABC is inherited from abc.ABCMeta class which is included in Python standard library by default. Due to
     differences between Python 2 and 3 on defining a metaclass, the compatibility module ``six`` is employed. Using
@@ -2191,7 +2217,7 @@ class Volume(SplineGeometry):
 
     @property
     def order_u(self):
-        """ Order for the u-direction.
+        """Order for the u-direction.
 
         Defined as ``order = degree + 1``
 
@@ -2210,7 +2236,7 @@ class Volume(SplineGeometry):
 
     @property
     def order_v(self):
-        """ Order for the v-direction.
+        """Order for the v-direction.
 
         Defined as ``order = degree + 1``
 
@@ -2229,7 +2255,7 @@ class Volume(SplineGeometry):
 
     @property
     def order_w(self):
-        """ Order for the w-direction.
+        """Order for the w-direction.
 
         Defined as ``order = degree + 1``
 
@@ -2248,7 +2274,7 @@ class Volume(SplineGeometry):
 
     @property
     def degree(self):
-        """ Degree for u-, v- and w-directions
+        """Degree for u-, v- and w-directions
 
         :getter: Gets the degree
         :setter: Sets the degree
@@ -2266,7 +2292,7 @@ class Volume(SplineGeometry):
 
     @property
     def degree_u(self):
-        """ Degree for the u-direction.
+        """Degree for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2289,7 +2315,7 @@ class Volume(SplineGeometry):
 
     @property
     def degree_v(self):
-        """ Degree for the v-direction.
+        """Degree for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2312,7 +2338,7 @@ class Volume(SplineGeometry):
 
     @property
     def degree_w(self):
-        """ Degree for the w-direction.
+        """Degree for the w-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2335,7 +2361,7 @@ class Volume(SplineGeometry):
 
     @property
     def knotvector(self):
-        """ Knot vector for u-, v- and w-directions
+        """Knot vector for u-, v- and w-directions
 
         :getter: Gets the knot vector
         :setter: Sets the knot vector
@@ -2353,7 +2379,7 @@ class Volume(SplineGeometry):
 
     @property
     def knotvector_u(self):
-        """ Knot vector for the u-direction.
+        """Knot vector for the u-direction.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -2384,7 +2410,7 @@ class Volume(SplineGeometry):
 
     @property
     def knotvector_v(self):
-        """ Knot vector for the v-direction.
+        """Knot vector for the v-direction.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -2415,7 +2441,7 @@ class Volume(SplineGeometry):
 
     @property
     def knotvector_w(self):
-        """ Knot vector for the w-direction.
+        """Knot vector for the w-direction.
 
         The knot vector will be normalized to [0, 1] domain if the class is initialized with ``normalize_kv=True``
         argument.
@@ -2446,7 +2472,7 @@ class Volume(SplineGeometry):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional array of control points.
+        """1-dimensional array of control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2465,7 +2491,7 @@ class Volume(SplineGeometry):
 
     @property
     def ctrlpts_size_u(self):
-        """ Number of control points for the u-direction.
+        """Number of control points for the u-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2487,7 +2513,7 @@ class Volume(SplineGeometry):
 
     @property
     def ctrlpts_size_v(self):
-        """ Number of control points for the v-direction.
+        """Number of control points for the v-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2509,7 +2535,7 @@ class Volume(SplineGeometry):
 
     @property
     def ctrlpts_size_w(self):
-        """ Number of control points for the w-direction.
+        """Number of control points for the w-direction.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2531,7 +2557,7 @@ class Volume(SplineGeometry):
 
     @property
     def sample_size_u(self):
-        """ Sample size for the u-direction.
+        """Sample size for the u-direction.
 
         Sample size defines the number of evaluated points to generate. It also sets the ``delta_u`` property.
 
@@ -2563,7 +2589,7 @@ class Volume(SplineGeometry):
 
     @property
     def sample_size_v(self):
-        """ Sample size for the v-direction.
+        """Sample size for the v-direction.
 
         Sample size defines the number of evaluated points to generate. It also sets the ``delta_v`` property.
 
@@ -2595,7 +2621,7 @@ class Volume(SplineGeometry):
 
     @property
     def sample_size_w(self):
-        """ Sample size for the w-direction.
+        """Sample size for the w-direction.
 
         Sample size defines the number of evaluated points to generate. It also sets the ``delta_w`` property.
 
@@ -2627,7 +2653,7 @@ class Volume(SplineGeometry):
 
     @property
     def sample_size(self):
-        """ Sample size for both u- and v-directions.
+        """Sample size for both u- and v-directions.
 
         Sample size defines the number of surface points to generate. It also sets the ``delta`` property.
 
@@ -2651,9 +2677,12 @@ class Volume(SplineGeometry):
 
     @sample_size.setter
     def sample_size(self, value):
-        if (self.knotvector_u is None or len(self.knotvector_u) == 0) or self.degree_u == 0 or \
-                (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0) or \
-                (self.knotvector_w is None or len(self.knotvector_w) == 0 or self.degree_w == 0):
+        if (
+            (self.knotvector_u is None or len(self.knotvector_u) == 0)
+            or self.degree_u == 0
+            or (self.knotvector_v is None or len(self.knotvector_v) == 0 or self.degree_v == 0)
+            or (self.knotvector_w is None or len(self.knotvector_w) == 0 or self.degree_w == 0)
+        ):
             warnings.warn("Cannot determine 'delta' value. Please set knot vectors and degrees before sample size.")
             return
 
@@ -2672,7 +2701,7 @@ class Volume(SplineGeometry):
 
     @property
     def delta_u(self):
-        """ Evaluation delta for the u-direction.
+        """Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -2704,7 +2733,7 @@ class Volume(SplineGeometry):
 
     @property
     def delta_v(self):
-        """ Evaluation delta for the v-direction.
+        """Evaluation delta for the v-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -2736,7 +2765,7 @@ class Volume(SplineGeometry):
 
     @property
     def delta_w(self):
-        """ Evaluation delta for the w-direction.
+        """Evaluation delta for the w-direction.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -2768,7 +2797,7 @@ class Volume(SplineGeometry):
 
     @property
     def delta(self):
-        """ Evaluation delta for u-, v- and w-directions.
+        """Evaluation delta for u-, v- and w-directions.
 
         Evaluation delta corresponds to the *step size* while ``evaluate()`` function iterates on the knot vector to
         generate surface points. Decreasing step size results in generation of more surface points.
@@ -2810,7 +2839,7 @@ class Volume(SplineGeometry):
 
     @property
     def trims(self):
-        """ Trimming surfaces.
+        """Trimming surfaces.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2834,7 +2863,7 @@ class Volume(SplineGeometry):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -2851,11 +2880,11 @@ class Volume(SplineGeometry):
             knotvector=tuple(self._knot_vector),
             size=tuple(self._control_points_size),
             control_points=tuple(self._control_points),
-            trims=tuple([t.data for t in self._trims])
+            trims=tuple([t.data for t in self._trims]),
         )
 
     def add_trim(self, trim):
-        """ Adds a trim to the volume.
+        """Adds a trim to the volume.
 
         :attr:`trims` uses this method to add trims to the volume.
 
@@ -2867,15 +2896,15 @@ class Volume(SplineGeometry):
         self._trims.append(trim)
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
             * ``evalpts``: if True, then resets evaluated points
             * ``ctrlpts`` if True, then resets control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         if reset_ctrlpts:
             self._control_points = self._init_array()
@@ -2886,35 +2915,35 @@ class Volume(SplineGeometry):
             self._eval_points = self._init_array()
 
     def _check_variables(self):
-        """ Checks whether the evaluation is possible or not. """
+        """Checks whether the evaluation is possible or not."""
         works = True
         param_list = []
         if self.degree_u == 0:
             works = False
-            param_list.append('degree_u')
+            param_list.append("degree_u")
         if self.degree_v == 0:
             works = False
-            param_list.append('degree_v')
+            param_list.append("degree_v")
         if self.degree_w == 0:
             works = False
-            param_list.append('degree_w')
+            param_list.append("degree_w")
         if self._control_points is None or len(self._control_points) == 0:
             works = False
-            param_list.append('ctrlpts')
+            param_list.append("ctrlpts")
         if self.knotvector_u is None or len(self.knotvector_u) == 0:
             works = False
-            param_list.append('knotvector_u')
+            param_list.append("knotvector_u")
         if self.knotvector_v is None or len(self.knotvector_v) == 0:
             works = False
-            param_list.append('knotvector_v')
+            param_list.append("knotvector_v")
         if self.knotvector_w is None or len(self.knotvector_w) == 0:
             works = False
-            param_list.append('knotvector_w')
+            param_list.append("knotvector_w")
         if not works:
             raise ValueError("Please set the following variables before evaluation: " + ",".join(param_list))
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
-        """ Sets the control points and checks if the data is consistent.
+        """Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -2946,7 +2975,7 @@ class Volume(SplineGeometry):
         super(Volume, self).set_ctrlpts(ctrlpts, *args, **kwargs)
 
     def render(self, **kwargs):
-        """ Renders the volume using the visualization component.
+        """Renders the volume using the visualization component.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -2992,13 +3021,13 @@ class Volume(SplineGeometry):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.pop('cpcolor', 'blue')
-        evalcolor = kwargs.pop('evalcolor', 'green')
-        bboxcolor = kwargs.pop('bboxcolor', 'darkorange')
-        filename = kwargs.pop('filename', None)
-        plot_visible = kwargs.pop('plot', True)
-        extra_plots = kwargs.pop('extras', None)
-        animate_plot = kwargs.pop('animate', False)
+        cpcolor = kwargs.pop("cpcolor", "blue")
+        evalcolor = kwargs.pop("evalcolor", "green")
+        bboxcolor = kwargs.pop("bboxcolor", "darkorange")
+        filename = kwargs.pop("filename", None)
+        plot_visible = kwargs.pop("plot", True)
+        extra_plots = kwargs.pop("extras", None)
+        animate_plot = kwargs.pop("animate", False)
 
         # Check all parameters are set
         self._check_variables()
@@ -3011,31 +3040,32 @@ class Volume(SplineGeometry):
         self._vis_component.clear()
 
         # Add control points
-        if self._vis_component.mconf['ctrlpts'] == 'points':
-            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type='ctrlpts')
+        if self._vis_component.mconf["ctrlpts"] == "points":
+            self._vis_component.add(ptsarr=self.ctrlpts, name="control points", color=cpcolor, plot_type="ctrlpts")
 
         # Add evaluated points
-        if self._vis_component.mconf['evalpts'] == 'points':
-            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type='evalpts')
+        if self._vis_component.mconf["evalpts"] == "points":
+            self._vis_component.add(ptsarr=self.evalpts, name=self.name, color=evalcolor, plot_type="evalpts")
 
         # Add evaluated points as voxels
-        if self._vis_component.mconf['evalpts'] == 'voxels':
+        if self._vis_component.mconf["evalpts"] == "voxels":
             grid, filled = voxelize.voxelize(self, **kwargs)
             faces = voxelize.convert_bb_to_faces(grid)
-            self._vis_component.add(ptsarr=[grid, faces, filled], name=self.name, color=evalcolor, plot_type='evalpts')
+            self._vis_component.add(ptsarr=[grid, faces, filled], name=self.name, color=evalcolor, plot_type="evalpts")
 
         # Bounding box
-        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type='bbox')
+        self._vis_component.add(ptsarr=self.bbox, name="Bounding Box", color=bboxcolor, plot_type="bbox")
 
         # User-defined plots
         if extra_plots is not None:
             for ep in extra_plots:
-                self._vis_component.add(ptsarr=ep['points'], name=ep['name'],
-                                        color=(ep['color'], ep['size']), plot_type='extras')
+                self._vis_component.add(
+                    ptsarr=ep["points"], name=ep["name"], color=(ep["color"], ep["size"]), plot_type="extras"
+                )
 
         # Data requested by the visualization module
-        if self._vis_component.mconf['others']:
-            vis_other = self._vis_component.mconf['others'].split(",")
+        if self._vis_component.mconf["others"]:
+            vis_other = self._vis_component.mconf["others"].split(",")
             for vo in vis_other:
                 vo_clean = vo.strip()
                 # Send center point of the parametric space to the visualization module
@@ -3054,7 +3084,7 @@ class Volume(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate(self, **kwargs):
-        """ Evaluates the parametric volume.
+        """Evaluates the parametric volume.
 
         .. note::
 
@@ -3066,7 +3096,7 @@ class Volume(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_single(self, param):
-        """ Evaluates the parametric surface at the given (u, v, w) parameter.
+        """Evaluates the parametric surface at the given (u, v, w) parameter.
 
         .. note::
 
@@ -3087,7 +3117,7 @@ class Volume(SplineGeometry):
 
     @abc.abstractmethod
     def evaluate_list(self, param_list):
-        """ Evaluates the parametric volume for an input range of (u, v, w) parameter pairs.
+        """Evaluates the parametric volume for an input range of (u, v, w) parameter pairs.
 
         .. note::
 

@@ -19,7 +19,7 @@ from ._utilities import export
 
 @export
 def import_txt(file_name, two_dimensional=False, **kwargs):
-    """ Reads control points from a text file and generates a 1-dimensional list of control points.
+    """Reads control points from a text file and generates a 1-dimensional list of control points.
 
     The following code examples illustrate importing different types of text files for curves and surfaces:
 
@@ -78,20 +78,20 @@ def import_txt(file_name, two_dimensional=False, **kwargs):
     content = exch.read_file(file_name)
 
     # Are we using a Jinja2 template?
-    j2tmpl = kwargs.get('jinja2', False)
+    j2tmpl = kwargs.get("jinja2", False)
     if j2tmpl:
         content = exch.process_template(content)
 
     # File delimiters
-    col_sep = kwargs.get('col_separator', ";")
-    sep = kwargs.get('separator', ",")
+    col_sep = kwargs.get("col_separator", ";")
+    sep = kwargs.get("separator", ",")
 
     return exch.import_text_data(content, sep, col_sep, two_dimensional)
 
 
 @export
 def export_txt(obj, file_name, two_dimensional=False, **kwargs):
-    """ Exports control points as a text file.
+    """Exports control points as a text file.
 
     For curves the output is always a list of control points. For surfaces, it is possible to generate a 2-dimensional
     control point output file using ``two_dimensional``.
@@ -116,8 +116,8 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
         two_dimensional = False
 
     # File delimiters
-    col_sep = kwargs.get('col_separator', ";")
-    sep = kwargs.get('separator', ",")
+    col_sep = kwargs.get("col_separator", ";")
+    sep = kwargs.get("separator", ",")
 
     content = exch.export_text_data(obj, sep, col_sep, two_dimensional)
     return exch.write_file(file_name, content)
@@ -125,7 +125,7 @@ def export_txt(obj, file_name, two_dimensional=False, **kwargs):
 
 @export
 def import_csv(file_name, **kwargs):
-    """ Reads control points from a CSV file and generates a 1-dimensional list of control points.
+    """Reads control points from a CSV file and generates a 1-dimensional list of control points.
 
     It is possible to use a different value separator via ``separator`` keyword argument. The following code segment
     illustrates the usage of ``separator`` keyword argument.
@@ -149,15 +149,15 @@ def import_csv(file_name, **kwargs):
     :raises GeomdlException: an error occurred reading the file
     """
     # File delimiters
-    sep = kwargs.get('separator', ",")
+    sep = kwargs.get("separator", ",")
 
     content = exch.read_file(file_name, skip_lines=1)
     return exch.import_text_data(content, sep)
 
 
 @export
-def export_csv(obj, file_name, point_type='evalpts', **kwargs):
-    """ Exports control points or evaluated points as a CSV file.
+def export_csv(obj, file_name, point_type="evalpts", **kwargs):
+    """Exports control points or evaluated points as a CSV file.
 
     :param obj: a spline geometry object
     :type obj: abstract.SplineGeometry
@@ -171,9 +171,9 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
         raise exch.GeomdlException("Input object should be a curve or a surface")
 
     # Pick correct points from the object
-    if point_type == 'ctrlpts':
+    if point_type == "ctrlpts":
         points = obj.ctrlptsw if obj.rational else obj.ctrlpts
-    elif point_type == 'evalpts':
+    elif point_type == "evalpts":
         points = obj.evalpts
     else:
         raise exch.GeomdlException("Please choose a valid point type option. Possible types: ctrlpts, evalpts")
@@ -181,7 +181,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
     # Prepare CSV header
     dim = len(points[0])
     line = "dim "
-    for i in range(dim-1):
+    for i in range(dim - 1):
         line += str(i + 1) + ", dim "
     line += str(dim) + "\n"
 
@@ -195,7 +195,7 @@ def export_csv(obj, file_name, point_type='evalpts', **kwargs):
 
 @export
 def import_cfg(file_name, **kwargs):
-    """ Imports curves and surfaces from files in libconfig format.
+    """Imports curves and surfaces from files in libconfig format.
 
     .. note::
 
@@ -209,6 +209,7 @@ def import_cfg(file_name, **kwargs):
     :rtype: list
     :raises GeomdlException: an error occurred writing the file
     """
+
     def callback(data):
         return libconf.loads(data)
 
@@ -219,8 +220,8 @@ def import_cfg(file_name, **kwargs):
         raise exch.GeomdlException("Please install 'libconf' package to use libconfig format: pip install libconf")
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
-    use_template = kwargs.get('jinja2', False)
+    delta = kwargs.get("delta", -1.0)
+    use_template = kwargs.get("jinja2", False)
 
     # Read file
     file_src = exch.read_file(file_name)
@@ -231,7 +232,7 @@ def import_cfg(file_name, **kwargs):
 
 @export
 def export_cfg(obj, file_name):
-    """ Exports curves and surfaces in libconfig format.
+    """Exports curves and surfaces in libconfig format.
 
     .. note::
 
@@ -246,6 +247,7 @@ def export_cfg(obj, file_name):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
+
     def callback(data):
         return libconf.dumps(data)
 
@@ -264,7 +266,7 @@ def export_cfg(obj, file_name):
 
 @export
 def import_yaml(file_name, **kwargs):
-    """ Imports curves and surfaces from files in YAML format.
+    """Imports curves and surfaces from files in YAML format.
 
     .. note::
 
@@ -278,6 +280,7 @@ def import_yaml(file_name, **kwargs):
     :rtype: list
     :raises GeomdlException: an error occurred reading the file
     """
+
     def callback(data):
         yaml = YAML()
         return yaml.load(data)
@@ -289,8 +292,8 @@ def import_yaml(file_name, **kwargs):
         raise exch.GeomdlException("Please install 'ruamel.yaml' package to use YAML format: pip install ruamel.yaml")
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
-    use_template = kwargs.get('jinja2', False)
+    delta = kwargs.get("delta", -1.0)
+    use_template = kwargs.get("jinja2", False)
 
     # Read file
     file_src = exch.read_file(file_name)
@@ -301,7 +304,7 @@ def import_yaml(file_name, **kwargs):
 
 @export
 def export_yaml(obj, file_name):
-    """ Exports curves and surfaces in YAML format.
+    """Exports curves and surfaces in YAML format.
 
     .. note::
 
@@ -316,6 +319,7 @@ def export_yaml(obj, file_name):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
+
     def callback(data):
         # Ref: https://yaml.readthedocs.io/en/latest/example.html#output-of-dump-as-a-string
         stream = StringIO()
@@ -338,7 +342,7 @@ def export_yaml(obj, file_name):
 
 @export
 def import_json(file_name, **kwargs):
-    """ Imports curves and surfaces from files in JSON format.
+    """Imports curves and surfaces from files in JSON format.
 
     Use ``jinja2=True`` to activate Jinja2 template processing. Please refer to the documentation for details.
 
@@ -348,12 +352,13 @@ def import_json(file_name, **kwargs):
     :rtype: list
     :raises GeomdlException: an error occurred reading the file
     """
+
     def callback(data):
         return json.loads(data)
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
-    use_template = kwargs.get('jinja2', False)
+    delta = kwargs.get("delta", -1.0)
+    use_template = kwargs.get("jinja2", False)
 
     # Read file
     file_src = exch.read_file(file_name)
@@ -364,7 +369,7 @@ def import_json(file_name, **kwargs):
 
 @export
 def export_json(obj, file_name):
-    """ Exports curves and surfaces in JSON format.
+    """Exports curves and surfaces in JSON format.
 
     JSON format is also used by the `geomdl command-line application <https://github.com/orbingol/geomdl-cli>`_
     as a way to input shape data from the command line.
@@ -375,6 +380,7 @@ def export_json(obj, file_name):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
+
     def callback(data):
         return json.dumps(data, indent=4)
 
@@ -387,7 +393,7 @@ def export_json(obj, file_name):
 
 @export
 def import_obj(file_name, **kwargs):
-    """ Reads .obj files and generates faces.
+    """Reads .obj files and generates faces.
 
     Keyword Arguments:
         * ``callback``: reference to the function that processes the faces for customized output
@@ -406,11 +412,12 @@ def import_obj(file_name, **kwargs):
     :return: output of the callback function (default is a list of faces)
     :rtype: list
     """
+
     def default_callback(face_list):
         return face_list
 
     # Keyword arguments
-    callback_func = kwargs.get('callback', default_callback)
+    callback_func = kwargs.get("callback", default_callback)
 
     # Read and process the input file
     content = exch.read_file(file_name)
@@ -462,7 +469,7 @@ def import_obj(file_name, **kwargs):
 
 @export
 def export_obj(surface, file_name, **kwargs):
-    """ Exports surface(s) as a .obj file.
+    """Exports surface(s) as a .obj file.
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of surface points sampled. *Default: 2*
@@ -481,7 +488,7 @@ def export_obj(surface, file_name, **kwargs):
 
 
 def export_obj_str(surface, **kwargs):
-    """ Exports surface(s) as a .obj file (string).
+    """Exports surface(s) as a .obj file (string).
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of surface points sampled. *Default: 2*
@@ -495,10 +502,10 @@ def export_obj_str(surface, **kwargs):
     :rtype: str
     """
     # Get keyword arguments
-    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
-    include_vertex_normal = kwargs.get('vertex_normals', False)
-    include_param_vertex = kwargs.get('parametric_vertices', False)
-    update_delta = kwargs.get('update_delta', True)
+    vertex_spacing = int(kwargs.get("vertex_spacing", 1))
+    include_vertex_normal = kwargs.get("vertex_normals", False)
+    include_param_vertex = kwargs.get("parametric_vertices", False)
+    update_delta = kwargs.get("update_delta", True)
 
     # Input validity checking
     if surface.pdimension != 2:
@@ -549,10 +556,15 @@ def export_obj_str(surface, **kwargs):
         # Collect faces (1-indexed)
         for t in triangles:
             vl = t.data
-            temp = "f " + \
-                   str(vl[0] + 1 + vertex_offset) + " " + \
-                   str(vl[1] + 1 + vertex_offset) + " " + \
-                   str(vl[2] + 1 + vertex_offset) + "\n"
+            temp = (
+                "f "
+                + str(vl[0] + 1 + vertex_offset)
+                + " "
+                + str(vl[1] + 1 + vertex_offset)
+                + " "
+                + str(vl[2] + 1 + vertex_offset)
+                + "\n"
+            )
             str_f.append(temp)
 
         # Update vertex offset
@@ -573,7 +585,7 @@ def export_obj_str(surface, **kwargs):
 
 @export
 def export_stl(surface, file_name, **kwargs):
-    """ Exports surface(s) as a .stl file in plain text or binary format.
+    """Exports surface(s) as a .stl file in plain text or binary format.
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: True*
@@ -586,15 +598,15 @@ def export_stl(surface, file_name, **kwargs):
     :type file_name: str
     :raises GeomdlException: an error occurred writing the file
     """
-    binary = kwargs.get('binary', True)
-    if 'binary' in kwargs:
-        kwargs.pop('binary')
+    binary = kwargs.get("binary", True)
+    if "binary" in kwargs:
+        kwargs.pop("binary")
     content = export_stl_str(surface, binary=binary, **kwargs)
     return exch.write_file(file_name, content, binary=binary)
 
 
 def export_stl_str(surface, **kwargs):
-    """ Exports surface(s) as a .stl file in plain text or binary format (string).
+    """Exports surface(s) as a .stl file in plain text or binary format (string).
 
     Keyword Arguments:
         * ``binary``: flag to generate a binary STL file. *Default: False*
@@ -606,9 +618,9 @@ def export_stl_str(surface, **kwargs):
     :return: contents of the .stl file generated
     :rtype: str
     """
-    binary = kwargs.get('binary', False)
-    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
-    update_delta = kwargs.get('update_delta', True)
+    binary = kwargs.get("binary", False)
+    vertex_spacing = int(kwargs.get("vertex_spacing", 1))
+    update_delta = kwargs.get("update_delta", True)
 
     # Input validity checking
     if surface.pdimension != 2:
@@ -631,13 +643,13 @@ def export_stl_str(surface, **kwargs):
 
     # Write triangle list to ASCII or  binary STL file
     if binary:
-        line = b'\0' * 80  # header
-        line += struct.pack('<i', len(triangles_list))  # number of triangles
+        line = b"\0" * 80  # header
+        line += struct.pack("<i", len(triangles_list))  # number of triangles
         for t in triangles_list:
-            line += struct.pack('<3f', *linalg.triangle_normal(t))  # normal
+            line += struct.pack("<3f", *linalg.triangle_normal(t))  # normal
             for v in t.vertices:
-                line += struct.pack('<3f', *v.data)  # vertices
-            line += b'\0\0'  # attribute byte count
+                line += struct.pack("<3f", *v.data)  # vertices
+            line += b"\0\0"  # attribute byte count
     else:
         line = "solid Surface\n"
         for t in triangles_list:
@@ -655,7 +667,7 @@ def export_stl_str(surface, **kwargs):
 
 @export
 def export_off(surface, file_name, **kwargs):
-    """ Exports surface(s) as a .off file.
+    """Exports surface(s) as a .off file.
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
@@ -672,7 +684,7 @@ def export_off(surface, file_name, **kwargs):
 
 
 def export_off_str(surface, **kwargs):
-    """ Exports surface(s) as a .off file (string).
+    """Exports surface(s) as a .off file (string).
 
     Keyword Arguments:
         * ``vertex_spacing``: size of the triangle edge in terms of points sampled on the surface. *Default: 1*
@@ -684,8 +696,8 @@ def export_off_str(surface, **kwargs):
     :rtype: str
     """
     # Get keyword arguments
-    vertex_spacing = int(kwargs.get('vertex_spacing', 1))
-    update_delta = kwargs.get('update_delta', True)
+    vertex_spacing = int(kwargs.get("vertex_spacing", 1))
+    update_delta = kwargs.get("update_delta", True)
 
     # Input validity checking
     if surface.pdimension != 2:
@@ -719,10 +731,15 @@ def export_off_str(surface, **kwargs):
         # Collect faces (zero-indexed)
         for t in triangles:
             vl = t.data
-            line = "3 " + \
-                   str(vl[0] + vertex_offset) + " " + \
-                   str(vl[1] + vertex_offset) + " " + \
-                   str(vl[2] + vertex_offset) + "\n"
+            line = (
+                "3 "
+                + str(vl[0] + vertex_offset)
+                + " "
+                + str(vl[1] + vertex_offset)
+                + " "
+                + str(vl[2] + vertex_offset)
+                + "\n"
+            )
             str_f.append(line)
 
         # Update vertex offset
@@ -743,7 +760,7 @@ def export_off_str(surface, **kwargs):
 
 @export
 def import_smesh(file):
-    """ Generates NURBS surface(s) from surface mesh (smesh) file(s).
+    """Generates NURBS surface(s) from surface mesh (smesh) file(s).
 
     *smesh* files are some text files which contain a set of NURBS surfaces. Each file in the set corresponds to one
     NURBS surface. Most of the time, you receive multiple *smesh* files corresponding to an complete object composed of
@@ -775,7 +792,7 @@ def import_smesh(file):
 
 @export
 def export_smesh(surface, file_name, **kwargs):
-    """ Exports surface(s) as surface mesh (smesh) files.
+    """Exports surface(s) as surface mesh (smesh) files.
 
     Please see :py:func:`.import_smesh()` for details on the file format.
 
@@ -790,7 +807,7 @@ def export_smesh(surface, file_name, **kwargs):
         raise exch.GeomdlException("Can only export surfaces")
 
     # Get keyword arguments
-    decimals = kwargs.get('decimals', 18)
+    decimals = kwargs.get("decimals", 18)
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
@@ -824,7 +841,7 @@ def export_smesh(surface, file_name, **kwargs):
 
 @export
 def import_vmesh(file):
-    """ Imports NURBS volume(s) from volume mesh (vmesh) file(s).
+    """Imports NURBS volume(s) from volume mesh (vmesh) file(s).
 
     :param file: path to a directory containing mesh files or a single mesh file
     :type file: str
@@ -846,7 +863,7 @@ def import_vmesh(file):
 
 @export
 def export_vmesh(volume, file_name, **kwargs):
-    """ Exports volume(s) as volume mesh (vmesh) files.
+    """Exports volume(s) as volume mesh (vmesh) files.
 
     :param volume: volume(s) to be exported
     :type volume: abstract.Volume
@@ -858,7 +875,7 @@ def export_vmesh(volume, file_name, **kwargs):
         raise exch.GeomdlException("Can only export volumes")
 
     # Get keyword arguments
-    decimals = kwargs.get('decimals', 18)
+    decimals = kwargs.get("decimals", 18)
 
     # Split file name and extension
     fname, fext = os.path.splitext(file_name)
@@ -880,7 +897,7 @@ def export_vmesh(volume, file_name, **kwargs):
         # Convert control points into (x, y, z, w)
         ctrlptsw = []
         for w in range(v.ctrlpts_size_w):
-            srfpts = pts[(w * v.ctrlpts_size_u * v.ctrlpts_size_v):((w + 1) * v.ctrlpts_size_u * v.ctrlpts_size_v)]
+            srfpts = pts[(w * v.ctrlpts_size_u * v.ctrlpts_size_v) : ((w + 1) * v.ctrlpts_size_u * v.ctrlpts_size_v)]
             # Flip control points
             ctrlptsw += compatibility.flip_ctrlpts(srfpts, v.ctrlpts_size_u, v.ctrlpts_size_v)
         # Convert control points into (x, y, z, w) format
@@ -897,7 +914,7 @@ def export_vmesh(volume, file_name, **kwargs):
 
 @export
 def import_3dm(file_name, **kwargs):
-    """ Imports curves and surfaces from Rhinoceros/OpenNURBS .3dm files.
+    """Imports curves and surfaces from Rhinoceros/OpenNURBS .3dm files.
 
     .. deprecated:: 5.2.2
 
@@ -912,7 +929,7 @@ def import_3dm(file_name, **kwargs):
 
 @export
 def export_3dm(obj, file_name, **kwargs):
-    """ Exports NURBS curves and surfaces to Rhinoceros/OpenNURBS .3dm files.
+    """Exports NURBS curves and surfaces to Rhinoceros/OpenNURBS .3dm files.
 
     .. deprecated:: 5.2.2
 

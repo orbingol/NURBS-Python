@@ -15,7 +15,7 @@ from .exceptions import GeomdlException
 
 @utl.export
 class Curve(abstract.Curve):
-    """ Data storage and evaluation class for n-variate B-spline (non-rational) curves.
+    """Data storage and evaluation class for n-variate B-spline (non-rational) curves.
 
     This class provides the following properties:
 
@@ -68,16 +68,17 @@ class Curve(abstract.Curve):
 
     Please refer to the :py:class:`.abstract.Curve()` documentation for more details.
     """
+
     # __slots__ = ('_insert_knot_func', '_remove_knot_func')
 
     def __init__(self, **kwargs):
         super(Curve, self).__init__(**kwargs)
         self._evaluator = evaluators.CurveEvaluator(find_span_func=self._span_func)
-        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
-        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
+        self._insert_knot_func = kwargs.get("insert_knot_func", operations.insert_knot)
+        self._remove_knot_func = kwargs.get("remove_knot_func", operations.remove_knot)
 
     def save(self, file_name):
-        """  Saves the curve as a pickled file.
+        """Saves the curve as a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -89,7 +90,7 @@ class Curve(abstract.Curve):
         return None
 
     def load(self, file_name):
-        """ Loads the curve from a pickled file.
+        """Loads the curve from a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -101,7 +102,7 @@ class Curve(abstract.Curve):
         return None
 
     def evaluate(self, **kwargs):
-        """ Evaluates the curve.
+        """Evaluates the curve.
 
         The evaluated points are stored in :py:attr:`evalpts` property.
 
@@ -132,8 +133,8 @@ class Curve(abstract.Curve):
         super(Curve, self).evaluate(**kwargs)
 
         # Find evaluation start and stop parameter values
-        start = kwargs.get('start', self.knotvector[self.degree])
-        stop = kwargs.get('stop', self.knotvector[-(self.degree + 1)])
+        start = kwargs.get("start", self.knotvector[self.degree])
+        stop = kwargs.get("stop", self.knotvector[-(self.degree + 1)])
 
         # Check parameters
         if self._kv_normalize:
@@ -147,7 +148,7 @@ class Curve(abstract.Curve):
         self._eval_points = self._evaluator.evaluate(self.data, start=start, stop=stop)
 
     def evaluate_single(self, param):
-        """ Evaluates the curve at the input parameter.
+        """Evaluates the curve at the input parameter.
 
         :param param: parameter
         :type param: float
@@ -168,7 +169,7 @@ class Curve(abstract.Curve):
         return pt[0]
 
     def evaluate_list(self, param_list):
-        """ Evaluates the curve for an input range of parameters.
+        """Evaluates the curve for an input range of parameters.
 
         :param param_list: list of parameters
         :type param_list: list, tuple
@@ -189,7 +190,7 @@ class Curve(abstract.Curve):
         return res
 
     def derivatives(self, u, order=0, **kwargs):
-        """ Evaluates n-th order curve derivatives at the given parameter value.
+        """Evaluates n-th order curve derivatives at the given parameter value.
 
         The output of this method is list of n-th order derivatives. If ``order`` is ``0``, then it will only output
         the evaluated point. Similarly, if ``order`` is ``2``, then it will output the evaluated point, 1st derivative
@@ -218,7 +219,7 @@ class Curve(abstract.Curve):
         return self._evaluator.derivatives(self.data, parpos=u, deriv_order=order)
 
     def insert_knot(self, param, **kwargs):
-        """ Inserts the knot and updates the control points array and the knot vector.
+        """Inserts the knot and updates the control points array and the knot vector.
 
         Keyword Arguments:
             * ``num``: Number of knot insertions. *Default: 1*
@@ -235,8 +236,8 @@ class Curve(abstract.Curve):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num = kwargs.get('num', 1)  # number of knot insertions
-        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of insertions
+        num = kwargs.get("num", 1)  # number of knot insertions
+        check_num = kwargs.get("check_r", True)  # can be set to False when the caller checks number of insertions
 
         # Insert knot
         try:
@@ -250,7 +251,7 @@ class Curve(abstract.Curve):
             self.evaluate()
 
     def remove_knot(self, param, **kwargs):
-        """ Removes the knot and updates the control points array and the knot vector.
+        """Removes the knot and updates the control points array and the knot vector.
 
         Keyword Arguments:
             * ``num``: Number of knot removals. *Default: 1*
@@ -267,8 +268,8 @@ class Curve(abstract.Curve):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num = kwargs.get('num', 1)  # number of knot removals
-        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
+        num = kwargs.get("num", 1)  # number of knot removals
+        check_num = kwargs.get("check_r", True)  # can be set to False when the caller checks number of removals
 
         # Remove knot
         try:
@@ -282,7 +283,7 @@ class Curve(abstract.Curve):
             self.evaluate()
 
     def tangent(self, parpos, **kwargs):
-        """ Evaluates the tangent vector of the curve at the given parametric position(s).
+        """Evaluates the tangent vector of the curve at the given parametric position(s).
 
         .. deprecated: 5.3.0
 
@@ -296,7 +297,7 @@ class Curve(abstract.Curve):
         return tuple()
 
     def normal(self, parpos, **kwargs):
-        """ Evaluates the normal to the tangent vector of the curve at the given parametric position(s).
+        """Evaluates the normal to the tangent vector of the curve at the given parametric position(s).
 
         .. deprecated: 5.3.0
 
@@ -308,7 +309,7 @@ class Curve(abstract.Curve):
         return tuple()
 
     def binormal(self, parpos, **kwargs):
-        """ Evaluates the binormal vector of the curve at the given parametric position(s).
+        """Evaluates the binormal vector of the curve at the given parametric position(s).
 
         .. deprecated: 5.3.0
 
@@ -322,7 +323,7 @@ class Curve(abstract.Curve):
 
 @utl.export
 class Surface(abstract.Surface):
-    """ Data storage and evaluation class for B-spline (non-rational) surfaces.
+    """Data storage and evaluation class for B-spline (non-rational) surfaces.
 
     This class provides the following properties:
 
@@ -394,6 +395,7 @@ class Surface(abstract.Surface):
 
     Please refer to the :py:class:`.abstract.Surface()` documentation for more details.
     """
+
     # __slots__ = ('_insert_knot_func', '_remove_knot_func', '_control_points2D')
 
     def __init__(self, **kwargs):
@@ -401,12 +403,12 @@ class Surface(abstract.Surface):
         self._evaluator = evaluators.SurfaceEvaluator(find_span_func=self._span_func)
         self._tsl_component = tessellate.TriangularTessellate()
         self._control_points2D = self._init_array()  # control points, 2-D array [u][v]
-        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
-        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
+        self._insert_knot_func = kwargs.get("insert_knot_func", operations.insert_knot)
+        self._remove_knot_func = kwargs.get("remove_knot_func", operations.remove_knot)
 
     @property
     def ctrlpts2d(self):
-        """ 2-dimensional array of control points.
+        """2-dimensional array of control points.
 
         The getter returns a tuple of 2D control points (weighted control points + weights if NURBS) in *[u][v]* format.
         The rows of the returned tuple correspond to v-direction and the columns correspond to u-direction.
@@ -490,7 +492,7 @@ class Surface(abstract.Surface):
         self.set_ctrlpts(ctrlpts, size_u, size_v)
 
     def set_ctrlpts(self, ctrlpts, *args, **kwargs):
-        """ Sets the control points and checks if the data is consistent.
+        """Sets the control points and checks if the data is consistent.
 
         This method is designed to provide a consistent way to set control points whether they are weighted or not.
         It directly sets the control points member of the class, and therefore it doesn't return any values.
@@ -511,7 +513,7 @@ class Surface(abstract.Surface):
         super(Surface, self).set_ctrlpts(ctrlpts, *args, **kwargs)
 
         # Generate a 2-dimensional list of control points
-        array_init2d = kwargs.get('array_init2d', [[[] for _ in range(args[1])] for _ in range(args[0])])
+        array_init2d = kwargs.get("array_init2d", [[[] for _ in range(args[1])] for _ in range(args[0])])
         ctrlpts_float2d = array_init2d
         for i in range(0, self.ctrlpts_size_u):
             for j in range(0, self.ctrlpts_size_v):
@@ -521,7 +523,7 @@ class Surface(abstract.Surface):
         self._control_points2D = ctrlpts_float2d
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
             * ``evalpts``: if True, then resets evaluated points
@@ -532,12 +534,12 @@ class Surface(abstract.Surface):
         super(Surface, self).reset(**kwargs)
 
         # Reset ctrlpts2d
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
         if reset_ctrlpts:
             self._control_points2D = self._init_array()
 
     def save(self, file_name):
-        """ Saves the surface as a pickled file.
+        """Saves the surface as a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -549,7 +551,7 @@ class Surface(abstract.Surface):
         return None
 
     def load(self, file_name):
-        """ Loads the surface from a pickled file.
+        """Loads the surface from a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -561,12 +563,12 @@ class Surface(abstract.Surface):
         return None
 
     def transpose(self):
-        """ Transposes the surface by swapping u and v parametric directions. """
+        """Transposes the surface by swapping u and v parametric directions."""
         operations.transpose(self, inplace=True)
         self.reset(evalpts=True)
 
     def evaluate(self, **kwargs):
-        """ Evaluates the surface.
+        """Evaluates the surface.
 
         The evaluated points are stored in :py:attr:`evalpts` property.
 
@@ -599,10 +601,10 @@ class Surface(abstract.Surface):
         super(Surface, self).evaluate(**kwargs)
 
         # Find evaluation start and stop parameter values
-        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
-        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u + 1)])
-        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
-        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v + 1)])
+        start_u = kwargs.get("start_u", self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get("stop_u", self.knotvector_u[-(self.degree_u + 1)])
+        start_v = kwargs.get("start_v", self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get("stop_v", self.knotvector_v[-(self.degree_v + 1)])
 
         # Check parameters
         if self._kv_normalize:
@@ -613,12 +615,10 @@ class Surface(abstract.Surface):
         self.reset(evalpts=True)
 
         # Evaluate and cache
-        self._eval_points = self._evaluator.evaluate(self.data,
-                                                     start=(start_u, start_v),
-                                                     stop=(stop_u, stop_v))
+        self._eval_points = self._evaluator.evaluate(self.data, start=(start_u, start_v), stop=(stop_u, stop_v))
 
     def evaluate_single(self, param):
-        """ Evaluates the surface at the input (u, v) parameter pair.
+        """Evaluates the surface at the input (u, v) parameter pair.
 
         :param param: parameter pair (u, v)
         :type param: list, tuple
@@ -634,7 +634,7 @@ class Surface(abstract.Surface):
         return pt[0]
 
     def evaluate_list(self, param_list):
-        """ Evaluates the surface for a given list of (u, v) parameters.
+        """Evaluates the surface for a given list of (u, v) parameters.
 
         :param param_list: list of parameter pairs (u, v)
         :type param_list: list, tuple
@@ -656,7 +656,7 @@ class Surface(abstract.Surface):
 
     # Evaluates n-th order surface derivatives at the given (u,v) parameter
     def derivatives(self, u, v, order=0, **kwargs):
-        """ Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
+        """Evaluates n-th order surface derivatives at the given (u, v) parameter pair.
 
         * SKL[0][0] will be the surface point itself
         * SKL[0][1] will be the 1st derivative w.r.t. v
@@ -678,7 +678,7 @@ class Surface(abstract.Surface):
         return self._evaluator.derivatives(self.data, parpos=(u, v), deriv_order=order)
 
     def insert_knot(self, u=None, v=None, **kwargs):
-        """ Inserts knot(s) on the u- or v-directions
+        """Inserts knot(s) on the u- or v-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot insertions on the u-direction. *Default: 1*
@@ -698,9 +698,9 @@ class Surface(abstract.Surface):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
-        num_v = kwargs.get('num_v', 1)  # number of knot insertions on the v-direction
-        check_num = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
+        num_u = kwargs.get("num_u", 1)  # number of knot insertions on the u-direction
+        num_v = kwargs.get("num_v", 1)  # number of knot insertions on the v-direction
+        check_num = kwargs.get("check_r", True)  # Enables/disables number of knot insertions checking
 
         # Insert knots
         try:
@@ -714,7 +714,7 @@ class Surface(abstract.Surface):
             self.evaluate()
 
     def remove_knot(self, u=None, v=None, **kwargs):
-        """ Inserts knot(s) on the u- or v-directions
+        """Inserts knot(s) on the u- or v-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot removals on the u-direction. *Default: 1*
@@ -734,9 +734,9 @@ class Surface(abstract.Surface):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
-        num_v = kwargs.get('num_v', 1)  # number of knot removals on the v-direction
-        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
+        num_u = kwargs.get("num_u", 1)  # number of knot removals on the u-direction
+        num_v = kwargs.get("num_v", 1)  # number of knot removals on the v-direction
+        check_num = kwargs.get("check_r", True)  # can be set to False when the caller checks number of removals
 
         # Remove knots
         try:
@@ -750,7 +750,7 @@ class Surface(abstract.Surface):
             self.evaluate()
 
     def tangent(self, parpos, **kwargs):
-        """ Evaluates the tangent vectors of the surface at the given parametric position(s).
+        """Evaluates the tangent vectors of the surface at the given parametric position(s).
 
         .. deprecated: 5.3.0
 
@@ -764,7 +764,7 @@ class Surface(abstract.Surface):
         return tuple()
 
     def normal(self, parpos, **kwargs):
-        """ Evaluates the normal vector of the surface at the given parametric position(s).
+        """Evaluates the normal vector of the surface at the given parametric position(s).
 
         .. deprecated: 5.3.0
 
@@ -780,7 +780,7 @@ class Surface(abstract.Surface):
 
 @utl.export
 class Volume(abstract.Volume):
-    """ Data storage and evaluation class for B-spline (non-rational) volumes.
+    """Data storage and evaluation class for B-spline (non-rational) volumes.
 
     This class provides the following properties:
 
@@ -824,16 +824,17 @@ class Volume(abstract.Volume):
 
     Please refer to the :py:class:`.abstract.Volume()` documentation for more details.
     """
+
     # __slots__ = ('_insert_knot_func', '_remove_knot_func')
 
     def __init__(self, **kwargs):
         super(Volume, self).__init__(**kwargs)
         self._evaluator = evaluators.VolumeEvaluator(find_span_func=self._span_func)
-        self._insert_knot_func = kwargs.get('insert_knot_func', operations.insert_knot)
-        self._remove_knot_func = kwargs.get('remove_knot_func', operations.remove_knot)
+        self._insert_knot_func = kwargs.get("insert_knot_func", operations.insert_knot)
+        self._remove_knot_func = kwargs.get("remove_knot_func", operations.remove_knot)
 
     def save(self, file_name):
-        """ Saves the volume as a pickled file.
+        """Saves the volume as a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -845,7 +846,7 @@ class Volume(abstract.Volume):
         return None
 
     def load(self, file_name):
-        """ Loads the volume from a pickled file.
+        """Loads the volume from a pickled file.
 
         .. deprecated:: 5.2.4
 
@@ -857,7 +858,7 @@ class Volume(abstract.Volume):
         return None
 
     def evaluate(self, **kwargs):
-        """ Evaluates the volume.
+        """Evaluates the volume.
 
         The evaluated points are stored in :py:attr:`evalpts` property.
 
@@ -874,12 +875,12 @@ class Volume(abstract.Volume):
         super(Volume, self).evaluate(**kwargs)
 
         # Find evaluation start and stop parameter values
-        start_u = kwargs.get('start_u', self.knotvector_u[self.degree_u])
-        stop_u = kwargs.get('stop_u', self.knotvector_u[-(self.degree_u + 1)])
-        start_v = kwargs.get('start_v', self.knotvector_v[self.degree_v])
-        stop_v = kwargs.get('stop_v', self.knotvector_v[-(self.degree_v + 1)])
-        start_w = kwargs.get('start_w', self.knotvector_w[self.degree_w])
-        stop_w = kwargs.get('stop_w', self.knotvector_w[-(self.degree_w + 1)])
+        start_u = kwargs.get("start_u", self.knotvector_u[self.degree_u])
+        stop_u = kwargs.get("stop_u", self.knotvector_u[-(self.degree_u + 1)])
+        start_v = kwargs.get("start_v", self.knotvector_v[self.degree_v])
+        stop_v = kwargs.get("stop_v", self.knotvector_v[-(self.degree_v + 1)])
+        start_w = kwargs.get("start_w", self.knotvector_w[self.degree_w])
+        stop_w = kwargs.get("stop_w", self.knotvector_w[-(self.degree_w + 1)])
 
         # Check if all the input parameters are in the range
         if self._kv_normalize:
@@ -890,12 +891,12 @@ class Volume(abstract.Volume):
         self.reset(evalpts=True)
 
         # Evaluate and cache
-        self._eval_points = self._evaluator.evaluate(self.data,
-                                                     start=(start_u, start_v, start_w),
-                                                     stop=(stop_u, stop_v, stop_w))
+        self._eval_points = self._evaluator.evaluate(
+            self.data, start=(start_u, start_v, start_w), stop=(stop_u, stop_v, stop_w)
+        )
 
     def evaluate_single(self, param):
-        """ Evaluates the volume at the input (u, v, w) parameter.
+        """Evaluates the volume at the input (u, v, w) parameter.
 
         :param param: parameter (u, v, w)
         :type param: list, tuple
@@ -915,7 +916,7 @@ class Volume(abstract.Volume):
         return pt[0]
 
     def evaluate_list(self, param_list):
-        """ Evaluates the volume for a given list of (u, v, w) parameters.
+        """Evaluates the volume for a given list of (u, v, w) parameters.
 
         :param param_list: list of parameters in format (u, v, w)
         :type param_list: list, tuple
@@ -936,7 +937,7 @@ class Volume(abstract.Volume):
         return res
 
     def insert_knot(self, u=None, v=None, w=None, **kwargs):
-        """ Inserts knot(s) on the u-, v- and w-directions
+        """Inserts knot(s) on the u-, v- and w-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot insertions on the u-direction. *Default: 1*
@@ -959,10 +960,10 @@ class Volume(abstract.Volume):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num_u = kwargs.get('num_u', 1)  # number of knot insertions on the u-direction
-        num_v = kwargs.get('num_v', 1)  # number of knot insertions on the v-direction
-        num_w = kwargs.get('num_w', 1)  # number of knot insertions on the w-direction
-        check_num = kwargs.get('check_r', True)  # Enables/disables number of knot insertions checking
+        num_u = kwargs.get("num_u", 1)  # number of knot insertions on the u-direction
+        num_v = kwargs.get("num_v", 1)  # number of knot insertions on the v-direction
+        num_w = kwargs.get("num_w", 1)  # number of knot insertions on the w-direction
+        check_num = kwargs.get("check_r", True)  # Enables/disables number of knot insertions checking
 
         # Insert knots
         try:
@@ -976,7 +977,7 @@ class Volume(abstract.Volume):
             self.evaluate()
 
     def remove_knot(self, u=None, v=None, w=None, **kwargs):
-        """ Inserts knot(s) on the u-, v- and w-directions
+        """Inserts knot(s) on the u-, v- and w-directions
 
         Keyword Arguments:
             * ``num_u``: Number of knot removals on the u-direction. *Default: 1*
@@ -999,10 +1000,10 @@ class Volume(abstract.Volume):
                 raise GeomdlException("Parameters should be between 0 and 1")
 
         # Get keyword arguments
-        num_u = kwargs.get('num_u', 1)  # number of knot removals on the u-direction
-        num_v = kwargs.get('num_v', 1)  # number of knot removals on the v-direction
-        num_w = kwargs.get('num_w', 1)  # number of knot insertions on the w-direction
-        check_num = kwargs.get('check_r', True)  # can be set to False when the caller checks number of removals
+        num_u = kwargs.get("num_u", 1)  # number of knot removals on the u-direction
+        num_v = kwargs.get("num_v", 1)  # number of knot removals on the v-direction
+        num_w = kwargs.get("num_w", 1)  # number of knot insertions on the w-direction
+        check_num = kwargs.get("check_r", True)  # can be set to False when the caller checks number of removals
 
         # Remove knots
         try:

@@ -16,7 +16,7 @@ __all__ = []
 
 
 def tangent_curve_single(obj, u, normalize):
-    """ Evaluates the curve tangent vector at the given parameter value.
+    """Evaluates the curve tangent vector at the given parameter value.
 
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
@@ -39,7 +39,7 @@ def tangent_curve_single(obj, u, normalize):
 
 
 def tangent_curve_single_list(obj, param_list, normalize):
-    """ Evaluates the curve tangent vectors at the given list of parameter values.
+    """Evaluates the curve tangent vectors at the given list of parameter values.
 
     :param obj: input curve
     :type obj: abstract.Curve
@@ -58,7 +58,7 @@ def tangent_curve_single_list(obj, param_list, normalize):
 
 
 def tangent_surface_single(obj, uv, normalize):
-    """ Evaluates the surface tangent vector at the given (u,v) parameter pair.
+    """Evaluates the surface tangent vector at the given (u,v) parameter pair.
 
     The output returns a list containing the starting point (i.e., origin) of the vector and the vectors themselves.
 
@@ -82,7 +82,7 @@ def tangent_surface_single(obj, uv, normalize):
 
 
 def tangent_surface_single_list(obj, param_list, normalize):
-    """ Evaluates the surface tangent vectors at the given list of parameter values.
+    """Evaluates the surface tangent vectors at the given list of parameter values.
 
     :param obj: input surface
     :type obj: abstract.Surface
@@ -101,7 +101,7 @@ def tangent_surface_single_list(obj, param_list, normalize):
 
 
 def normal_surface_single(obj, uv, normalize):
-    """ Evaluates the surface normal vector at the given (u, v) parameter pair.
+    """Evaluates the surface normal vector at the given (u, v) parameter pair.
 
     The output returns a list containing the starting point (i.e. origin) of the vector and the vector itself.
 
@@ -125,7 +125,7 @@ def normal_surface_single(obj, uv, normalize):
 
 
 def normal_surface_single_list(obj, param_list, normalize):
-    """ Evaluates the surface normal vectors at the given list of parameter values.
+    """Evaluates the surface normal vectors at the given list of parameter values.
 
     :param obj: input surface
     :type obj: abstract.Surface
@@ -144,7 +144,7 @@ def normal_surface_single_list(obj, param_list, normalize):
 
 
 def find_ctrlpts_curve(t, curve, **kwargs):
-    """ Finds the control points involved in the evaluation of the curve point defined by the input parameter.
+    """Finds the control points involved in the evaluation of the curve point defined by the input parameter.
 
     This function uses a modified version of the algorithm *A3.1 CurvePoint* from The NURBS Book by Piegl & Tiller.
 
@@ -156,7 +156,7 @@ def find_ctrlpts_curve(t, curve, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+    span_func = kwargs.get("find_span_func", helpers.find_span_linear)
 
     # Find spans and the constant index
     span = span_func(curve.degree, curve.knotvector, len(curve.ctrlpts), t)
@@ -172,7 +172,7 @@ def find_ctrlpts_curve(t, curve, **kwargs):
 
 
 def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
-    """ Finds the control points involved in the evaluation of the surface point defined by the input parameter pair.
+    """Finds the control points involved in the evaluation of the surface point defined by the input parameter pair.
 
     This function uses a modified version of the algorithm *A3.5 SurfacePoint* from The NURBS Book by Piegl & Tiller.
 
@@ -186,7 +186,7 @@ def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)
+    span_func = kwargs.get("find_span_func", helpers.find_span_linear)
 
     # Find spans
     span_u = span_func(surf.degree_u, surf.knotvector_u, surf.ctrlpts_size_u, t_u)
@@ -209,7 +209,7 @@ def find_ctrlpts_surface(t_u, t_v, surf, **kwargs):
 
 
 def link_curves(*args, **kwargs):
-    """ Links the input curves together.
+    """Links the input curves together.
 
     The end control point of the curve k has to be the same with the start control point of the curve k + 1.
 
@@ -220,8 +220,8 @@ def link_curves(*args, **kwargs):
     :return: a tuple containing knot vector, control points, weights vector and knots
     """
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)
-    validate = kwargs.get('validate', False)
+    tol = kwargs.get("tol", 10e-8)
+    validate = kwargs.get("validate", False)
 
     # Validate input
     if validate:
@@ -239,7 +239,9 @@ def link_curves(*args, **kwargs):
     for arg in args:
         # Process knot vectors
         if not kv:
-            kv += list(arg.knotvector[:-(arg.degree + 1)])  # get rid of the last superfluous knot to maintain split curve notation
+            kv += list(
+                arg.knotvector[: -(arg.degree + 1)]
+            )  # get rid of the last superfluous knot to maintain split curve notation
             cpts += list(arg.ctrlpts)
             # Process control points
             if arg.rational:
@@ -248,7 +250,7 @@ def link_curves(*args, **kwargs):
                 tmp_w = [1.0 for _ in range(arg.ctrlpts_size)]
                 wgts += tmp_w
         else:
-            tmp_kv = [pdomain_end + k for k in arg.knotvector[1:-(arg.degree + 1)]]
+            tmp_kv = [pdomain_end + k for k in arg.knotvector[1 : -(arg.degree + 1)]]
             kv += tmp_kv
             cpts += list(arg.ctrlpts[1:])
             # Process control points

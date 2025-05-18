@@ -14,7 +14,7 @@ from ._utilities import export
 
 @export
 class Grid(object):
-    """ Simple control points grid generator to use with non-rational surfaces.
+    """Simple control points grid generator to use with non-rational surfaces.
 
     This class stores grid points in [x, y, z] format and the grid (control) points can be retrieved from the
     :py:attr:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
@@ -32,7 +32,7 @@ class Grid(object):
         self._size_y = float(size_y)  # height of the grid
         self._size_u = 0  # grid size in x-direction
         self._size_v = 0  # grid size in y-direction
-        self._z_value = kwargs.get('z_value', 0.0)  # z-coordinate of the grid points
+        self._z_value = kwargs.get("z_value", 0.0)  # z-coordinate of the grid points
         self._grid_points = []  # 2-dimensional grid (control) points
         self._delta = 10e-8  # default tolerance
         self._cache = {}  # cache dictionary
@@ -44,7 +44,7 @@ class Grid(object):
 
     @property
     def grid(self):
-        """ Grid points.
+        """Grid points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -55,7 +55,7 @@ class Grid(object):
 
     # Resets the grid to its initial state
     def reset(self):
-        """ Resets the grid. """
+        """Resets the grid."""
         if self._grid_points:
             self._grid_points[:] = []
             self._size_u = 0
@@ -64,7 +64,7 @@ class Grid(object):
 
     # Generates the grid using the input division parameters
     def generate(self, num_u, num_v):
-        """ Generates grid using the input division parameters.
+        """Generates grid using the input division parameters.
 
         :param num_u: number of divisions in x-direction
         :type num_u: int
@@ -118,15 +118,15 @@ class Grid(object):
 
     # Generates hills (a.k.a. bumps) on the grid
     def bumps(self, num_bumps, **kwargs):
-        """ Generates arbitrary bumps (i.e. hills) on the 2-dimensional grid.
-        
+        """Generates arbitrary bumps (i.e. hills) on the 2-dimensional grid.
+
         This method generates hills on the grid defined by the **num_bumps** argument. It is possible to control the
         z-value using **bump_height** argument. **bump_height** can be a positive or negative numeric value or it can
         be a list of numeric values.
-         
+
         Please note that, not all grids can be modified to have **num_bumps** number of bumps. Therefore, this function
         uses a brute-force algorithm to determine whether the bumps can be generated or not. For instance::
-        
+
             test_grid = Grid(5, 10) # generates a 5x10 rectangle
             test_grid.generate(4, 4) # splits the rectangle into 2x2 pieces
             test_grid.bumps(100) # impossible, it will return an error message
@@ -143,7 +143,7 @@ class Grid(object):
         """
         bump_height = kwargs.get("bump_height", 5.0)
         base_extent = kwargs.get("base_extent", 2)
-        padding = kwargs.get('base_adjust', 0)
+        padding = kwargs.get("base_adjust", 0)
         max_trials = kwargs.get("max_trials", 25)
 
         # Check if the grid points are generated
@@ -152,8 +152,9 @@ class Grid(object):
 
         if not isinstance(num_bumps, int):
             num_bumps = int(num_bumps)
-            warnings.warn("Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps,
-                          UserWarning)
+            warnings.warn(
+                "Number of bumps must be an integer value. Automatically rounding to %d" % num_bumps, UserWarning
+            )
 
         if isinstance(bump_height, (list, tuple)):
             if len(bump_height) != num_bumps:
@@ -167,8 +168,7 @@ class Grid(object):
         if base_extent < 1:
             raise ValueError("Base size must be bigger than 1 grid point")
 
-        if (2 * base_extent) + padding > self._size_u \
-                or (2 * base_extent) + padding > self._size_v:
+        if (2 * base_extent) + padding > self._size_u or (2 * base_extent) + padding > self._size_v:
             raise ValueError("The area of the base must be less than the area of the grid")
 
         # Initialize a list to store bumps
@@ -196,9 +196,11 @@ class Grid(object):
                 else:
                     trials = trials + 1
             if trials == max_trials:
-                raise RuntimeError("Cannot generate %d bumps with a base extent of %d on this grid. "
-                                   "You need to generate a grid larger than %dx%d."
-                                   % (num_bumps, base_extent, self._size_u, self._size_v))
+                raise RuntimeError(
+                    "Cannot generate %d bumps with a base extent of %d on this grid. "
+                    "You need to generate a grid larger than %dx%d."
+                    % (num_bumps, base_extent, self._size_u, self._size_v)
+                )
 
         idx = 0
         # Update the grid with the bumps
@@ -241,12 +243,12 @@ class Grid(object):
 
         for i in range(start_u, stop_u):
             for j in range(start_v, stop_v):
-                    self._grid_points[i][j][2] = height
+                self._grid_points[i][j][2] = height
 
 
 @export
 class GridWeighted(Grid):
-    """ Simple control points grid generator to use with rational surfaces.
+    """Simple control points grid generator to use with rational surfaces.
 
     This class stores grid points in [x*w, y*w, z*w, w] format and the grid (control) points can be retrieved from the
     :py:attr:`grid` attribute. The z-coordinate of the control points can be set via the keyword argument ``z_value``
@@ -262,11 +264,11 @@ class GridWeighted(Grid):
         super(GridWeighted, self).__init__(size_x, size_y, **kwargs)
         self._weights = []
         # Variables for caching
-        self._cache['gridptsw'] = []
+        self._cache["gridptsw"] = []
 
     @property
     def weight(self):
-        """ Weight (w) component of the grid points.
+        """Weight (w) component of the grid points.
 
         The input can be a single int or a float value, then all weights will be set to the same value.
 
@@ -296,15 +298,15 @@ class GridWeighted(Grid):
             raise TypeError("The input should be a list, tuple or a single int, float value")
 
     def reset(self):
-        """ Resets the grid. """
+        """Resets the grid."""
         super(GridWeighted, self).reset()
         if self._grid_points or self._weights:
-            self._cache['gridptsw'][:] = []
+            self._cache["gridptsw"][:] = []
             self._weights[:] = []
 
     @property
     def grid(self):
-        """ Weighted grid points.
+        """Weighted grid points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -312,17 +314,17 @@ class GridWeighted(Grid):
         :getter: Gets the 2-dimensional list of weighted points in [u][v] format
         """
         # Generate default weights if they haven't been set
-        if not self._weights :
+        if not self._weights:
             self._weights = [1.0 for _ in range(len(self))]
 
         # Start adding weights, if not cached
-        if not self._cache['gridptsw']:
+        if not self._cache["gridptsw"]:
             for idx, cols in enumerate(self._grid_points):
                 weighted_gp_row = []
                 for row in cols:
                     temp = [r * self._weights[idx] for r in row]
                     temp.append(self._weights[idx])
                     weighted_gp_row.append(temp)
-                self._cache['gridptsw'].append(weighted_gp_row)
+                self._cache["gridptsw"].append(weighted_gp_row)
 
-        return self._cache['gridptsw']
+        return self._cache["gridptsw"]

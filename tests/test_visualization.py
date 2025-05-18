@@ -1,9 +1,9 @@
 """
-    Tests for the NURBS-Python package
-    Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018 Onur Rauf Bingol
+Tests for the NURBS-Python package
+Released under The MIT License. See LICENSE file for details.
+Copyright (c) 2018 Onur Rauf Bingol
 
-    Tests visualization modules. Requires "pytest" to run.
+Tests visualization modules. Requires "pytest" to run.
 """
 
 import os
@@ -13,7 +13,8 @@ from geomdl import multi
 from geomdl import operations
 
 import matplotlib
-matplotlib.use('agg')
+
+matplotlib.use("agg")
 from geomdl.visualization import VisMPL
 
 SAMPLE_SIZE = 5
@@ -21,7 +22,7 @@ SAMPLE_SIZE = 5
 
 @pytest.fixture
 def bspline_curve2d():
-    """ Creates a 2-dimensional B-Spline curve instance """
+    """Creates a 2-dimensional B-Spline curve instance"""
     # Create a curve instance
     curve = BSpline.Curve()
 
@@ -43,7 +44,7 @@ def bspline_curve2d():
 
 @pytest.fixture
 def bspline_curve3d():
-    """ Creates a 3-dimensional B-Spline curve instance """
+    """Creates a 3-dimensional B-Spline curve instance"""
     # Create a curve instance
     curve = BSpline.Curve()
 
@@ -51,8 +52,18 @@ def bspline_curve3d():
     curve.degree = 4
 
     # Set control points
-    curve.ctrlpts = [[5.0, 15.0, 0.0], [10.0, 25.0, 5.0], [20.0, 20.0, 10.0], [15.0, -5.0, 15.0], [7.5, 10.0, 20.0],
-                     [12.5, 15.0, 25.0], [15.0, 0.0, 30.0], [5.0, -10.0, 35.0], [10.0, 15.0, 40.0], [5.0, 15.0, 30.0]]
+    curve.ctrlpts = [
+        [5.0, 15.0, 0.0],
+        [10.0, 25.0, 5.0],
+        [20.0, 20.0, 10.0],
+        [15.0, -5.0, 15.0],
+        [7.5, 10.0, 20.0],
+        [12.5, 15.0, 25.0],
+        [15.0, 0.0, 30.0],
+        [5.0, -10.0, 35.0],
+        [10.0, 15.0, 40.0],
+        [5.0, 15.0, 30.0],
+    ]
 
     # Set knot vector
     curve.knotvector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -66,7 +77,7 @@ def bspline_curve3d():
 
 @pytest.fixture
 def bspline_surface():
-    """ Creates a B-Spline surface instance """
+    """Creates a B-Spline surface instance"""
     # Create a surface instance
     surf = BSpline.Surface()
 
@@ -77,15 +88,44 @@ def bspline_surface():
     # Set control points
     surf.ctrlpts_size_u = 6
     surf.ctrlpts_size_v = 6
-    surf.ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-                    [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-                    [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-                    [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-                    [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-                    [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-                    [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-                    [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-                    [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
+    surf.ctrlpts = [
+        [-25.0, -25.0, -10.0],
+        [-25.0, -15.0, -5.0],
+        [-25.0, -5.0, 0.0],
+        [-25.0, 5.0, 0.0],
+        [-25.0, 15.0, -5.0],
+        [-25.0, 25.0, -10.0],
+        [-15.0, -25.0, -8.0],
+        [-15.0, -15.0, -4.0],
+        [-15.0, -5.0, -4.0],
+        [-15.0, 5.0, -4.0],
+        [-15.0, 15.0, -4.0],
+        [-15.0, 25.0, -8.0],
+        [-5.0, -25.0, -5.0],
+        [-5.0, -15.0, -3.0],
+        [-5.0, -5.0, -8.0],
+        [-5.0, 5.0, -8.0],
+        [-5.0, 15.0, -3.0],
+        [-5.0, 25.0, -5.0],
+        [5.0, -25.0, -3.0],
+        [5.0, -15.0, -2.0],
+        [5.0, -5.0, -8.0],
+        [5.0, 5.0, -8.0],
+        [5.0, 15.0, -2.0],
+        [5.0, 25.0, -3.0],
+        [15.0, -25.0, -8.0],
+        [15.0, -15.0, -4.0],
+        [15.0, -5.0, -4.0],
+        [15.0, 5.0, -4.0],
+        [15.0, 15.0, -4.0],
+        [15.0, 25.0, -8.0],
+        [25.0, -25.0, -10.0],
+        [25.0, -15.0, -5.0],
+        [25.0, -5.0, 2.0],
+        [25.0, 5.0, 2.0],
+        [25.0, 15.0, -5.0],
+        [25.0, 25.0, -10.0],
+    ]
 
     # Set knot vectors
     surf.knotvector_u = [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]

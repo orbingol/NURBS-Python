@@ -1,5 +1,5 @@
 .idea/*
-.vscode/*
+.vs*/*
 .pytest_cache/*
 .mypy_cache/*
 .cache/*
@@ -7,10 +7,10 @@
 build/
 dist/
 wheelhouse/
-*.egg-info/*
-docs/_build/*
+*.egg-info/
+docs/_build/
 !docs/_build/.gitkeep
-docs/_static/*
+docs/_static/
 !docs/_static/.gitkeep
 geomdl/core
 geomdl/cli
@@ -26,3 +26,7 @@ geomdl/evaluators
 *.whl
 *.tar.gz
 .coverage
+.python-version
+.DS_Store
+.ruff_cache
+VERSION.txt

@@ -23,7 +23,7 @@ surface_trim_tessellate = tsl.surface_trim_tessellate
 
 @add_metaclass(abc.ABCMeta)
 class AbstractTessellate(object):
-    """ Abstract base class for tessellation algorithms. """
+    """Abstract base class for tessellation algorithms."""
 
     def __init__(self, **kwargs):
         self._tsl_func = None
@@ -33,7 +33,7 @@ class AbstractTessellate(object):
 
     @property
     def vertices(self):
-        """ Vertex objects generated after tessellation.
+        """Vertex objects generated after tessellation.
 
         :getter: Gets the vertices
         :type: elements.AbstractEntity
@@ -42,7 +42,7 @@ class AbstractTessellate(object):
 
     @property
     def faces(self):
-        """ Objects generated after tessellation.
+        """Objects generated after tessellation.
 
         :getter: Gets the faces
         :type: elements.AbstractEntity
@@ -51,7 +51,7 @@ class AbstractTessellate(object):
 
     @property
     def arguments(self):
-        """ Arguments passed to the tessellation function.
+        """Arguments passed to the tessellation function.
 
         This property allows customization of the tessellation algorithm, and mainly designed to allow users to pass
         additional arguments to the tessellation function or change the behavior of the algorithm at runtime. This
@@ -73,12 +73,12 @@ class AbstractTessellate(object):
         self._arguments = dict()
 
     def reset(self):
-        """ Clears stored vertices and faces. """
+        """Clears stored vertices and faces."""
         self._vertices[:] = []
         self._faces[:] = []
 
     def is_tessellated(self):
-        """ Checks if vertices and faces are generated.
+        """Checks if vertices and faces are generated.
 
         :return: tessellation status
         :rtype: bool
@@ -87,7 +87,7 @@ class AbstractTessellate(object):
 
     @abc.abstractmethod
     def tessellate(self, points, **kwargs):
-        """ Abstract method for the implementation of the tessellation algorithm.
+        """Abstract method for the implementation of the tessellation algorithm.
 
         This algorithm should update :py:attr:`~vertices` and :py:attr:`~faces` properties.
 
@@ -102,14 +102,14 @@ class AbstractTessellate(object):
 
 @export
 class TriangularTessellate(AbstractTessellate):
-    """  Triangular tessellation algorithm for surfaces. """
+    """Triangular tessellation algorithm for surfaces."""
 
     def __init__(self, **kwargs):
         super(TriangularTessellate, self).__init__(**kwargs)
         self._tsl_func = tsl.make_triangle_mesh
 
     def tessellate(self, points, **kwargs):
-        """ Applies triangular tessellation.
+        """Applies triangular tessellation.
 
         This function does not check if the points have already been tessellated.
 
@@ -129,7 +129,7 @@ class TriangularTessellate(AbstractTessellate):
 
 @export
 class TrimTessellate(AbstractTessellate):
-    """  Triangular tessellation algorithm for trimmed surfaces. """
+    """Triangular tessellation algorithm for trimmed surfaces."""
 
     def __init__(self, **kwargs):
         super(TrimTessellate, self).__init__(**kwargs)
@@ -137,7 +137,7 @@ class TrimTessellate(AbstractTessellate):
         self._tsl_trim_func = tsl.surface_trim_tessellate
 
     def tessellate(self, points, **kwargs):
-        """ Applies triangular tessellation w/ trimming curves.
+        """Applies triangular tessellation w/ trimming curves.
 
         Keyword Arguments:
             * ``size_u``: number of points on the u-direction
@@ -150,28 +150,29 @@ class TrimTessellate(AbstractTessellate):
         super(TrimTessellate, self).tessellate(points, **kwargs)
 
         # Get trims from the keyword arguments
-        trims = kwargs.pop('trims', [])
+        trims = kwargs.pop("trims", [])
 
         # Update sense if it is not set
         for trim in trims:
-            if trim.opt_get('reversed') is None:
-                trim.opt = ['reversed', 0]  # always trim the enclosed area by the curve
+            if trim.opt_get("reversed") is None:
+                trim.opt = ["reversed", 0]  # always trim the enclosed area by the curve
 
         # Apply default triangular mesh generator function with trimming customization
-        self._vertices, self._faces = self._tsl_func(points, trims=trims, tessellate_func=self._tsl_trim_func,
-                                                     tessellate_args=self.arguments, **kwargs)
+        self._vertices, self._faces = self._tsl_func(
+            points, trims=trims, tessellate_func=self._tsl_trim_func, tessellate_args=self.arguments, **kwargs
+        )
 
 
 @export
 class QuadTessellate(AbstractTessellate):
-    """  Quadrilateral tessellation algorithm for surfaces. """
+    """Quadrilateral tessellation algorithm for surfaces."""
 
     def __init__(self, **kwargs):
         super(QuadTessellate, self).__init__(**kwargs)
         self._tsl_func = tsl.make_quad_mesh
 
     def tessellate(self, points, **kwargs):
-        """ Applies quadrilateral tessellation.
+        """Applies quadrilateral tessellation.
 
         This function does not check if the points have already been tessellated.
 

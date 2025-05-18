@@ -1,4 +1,4 @@
-""" Visualization Modules for NURBS-Python
+"""Visualization Modules for NURBS-Python
 
 .. moduleauthor:: Onur R. Bingol <code@quantumworx.net>
 

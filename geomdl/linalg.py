@@ -13,6 +13,7 @@ from copy import deepcopy
 from functools import reduce
 from .exceptions import GeomdlException
 from . import _linalg
+
 try:
     from functools import lru_cache
 except ImportError:
@@ -20,7 +21,7 @@ except ImportError:
 
 
 def vector_cross(vector1, vector2):
-    """ Computes the cross-product of the input vectors.
+    """Computes the cross-product of the input vectors.
 
     :param vector1: input vector 1
     :type vector1: list, tuple
@@ -53,16 +54,18 @@ def vector_cross(vector1, vector2):
         v2 = vector2
 
     # Compute cross product
-    vector_out = [(v1[1] * v2[2]) - (v1[2] * v2[1]),
-                  (v1[2] * v2[0]) - (v1[0] * v2[2]),
-                  (v1[0] * v2[1]) - (v1[1] * v2[0])]
+    vector_out = [
+        (v1[1] * v2[2]) - (v1[2] * v2[1]),
+        (v1[2] * v2[0]) - (v1[0] * v2[2]),
+        (v1[0] * v2[1]) - (v1[1] * v2[0]),
+    ]
 
     # Return the cross product of the input vectors
     return vector_out
 
 
 def vector_dot(vector1, vector2):
-    """ Computes the dot-product of the input vectors.
+    """Computes the dot-product of the input vectors.
 
     :param vector1: input vector 1
     :type vector1: list, tuple
@@ -90,7 +93,7 @@ def vector_dot(vector1, vector2):
 
 
 def vector_multiply(vector_in, scalar):
-    """ Multiplies the vector with a scalar value.
+    """Multiplies the vector with a scalar value.
 
     This operation is also called *vector scaling*.
 
@@ -106,7 +109,7 @@ def vector_multiply(vector_in, scalar):
 
 
 def vector_sum(vector1, vector2, coeff=1.0):
-    """ Sums the vectors.
+    """Sums the vectors.
 
     This function computes the result of the vector operation :math:`\\overline{v}_{1} + c * \\overline{v}_{2}`, where
     :math:`\\overline{v}_{1}` is ``vector1``, :math:`\\overline{v}_{2}`  is ``vector2`` and :math:`c` is ``coeff``.
@@ -125,7 +128,7 @@ def vector_sum(vector1, vector2, coeff=1.0):
 
 
 def vector_normalize(vector_in, decimals=18):
-    """ Generates a unit vector from the input.
+    """Generates a unit vector from the input.
 
     :param vector_in: vector to be normalized
     :type vector_in: list, tuple
@@ -159,7 +162,7 @@ def vector_normalize(vector_in, decimals=18):
 
 
 def vector_generate(start_pt, end_pt, normalize=False):
-    """ Generates a vector from 2 input points.
+    """Generates a vector from 2 input points.
 
     :param start_pt: start point of the vector
     :type start_pt: list, tuple
@@ -189,7 +192,7 @@ def vector_generate(start_pt, end_pt, normalize=False):
 
 
 def vector_mean(*args):
-    """ Computes the mean (average) of a list of vectors.
+    """Computes the mean (average) of a list of vectors.
 
     The function computes the arithmetic mean of a list of vectors, which are also organized as a list of
     integers or floating point numbers.
@@ -214,13 +217,13 @@ def vector_mean(*args):
     sz = len(args)
     mean_vector = [0.0 for _ in range(len(args[0]))]
     for input_vector in args:
-        mean_vector = [a+b for a, b in zip(mean_vector, input_vector)]
+        mean_vector = [a + b for a, b in zip(mean_vector, input_vector)]
     mean_vector = [a / sz for a in mean_vector]
     return mean_vector
 
 
 def vector_magnitude(vector_in):
-    """ Computes the magnitude of the input vector.
+    """Computes the magnitude of the input vector.
 
     :param vector_in: input vector
     :type vector_in: list, tuple
@@ -234,7 +237,7 @@ def vector_magnitude(vector_in):
 
 
 def vector_angle_between(vector1, vector2, **kwargs):
-    """ Computes the angle between the two input vectors.
+    """Computes the angle between the two input vectors.
 
     If the keyword argument ``degrees`` is set to *True*, then the angle will be in degrees. Otherwise, it will be
     in radians. By default, ``degrees`` is set to *True*.
@@ -246,7 +249,7 @@ def vector_angle_between(vector1, vector2, **kwargs):
     :return: angle between the vectors
     :rtype: float
     """
-    degrees = kwargs.get('degrees', True)
+    degrees = kwargs.get("degrees", True)
     magn1 = vector_magnitude(vector1)
     magn2 = vector_magnitude(vector2)
     acos_val = vector_dot(vector1, vector2) / (magn1 * magn2)
@@ -258,7 +261,7 @@ def vector_angle_between(vector1, vector2, **kwargs):
 
 
 def vector_is_zero(vector_in, tol=10e-8):
-    """ Checks if the input vector is a zero vector.
+    """Checks if the input vector is a zero vector.
 
     :param vector_in: input vector
     :type vector_in: list, tuple
@@ -278,7 +281,7 @@ def vector_is_zero(vector_in, tol=10e-8):
 
 
 def point_translate(point_in, vector_in):
-    """ Translates the input points using the input vector.
+    """Translates the input points using the input vector.
 
     :param point_in: input point
     :type point_in: list, tuple
@@ -303,7 +306,7 @@ def point_translate(point_in, vector_in):
 
 
 def point_distance(pt1, pt2):
-    """ Computes distance between two points.
+    """Computes distance between two points.
 
     :param pt1: point 1
     :type pt1: list, tuple
@@ -321,7 +324,7 @@ def point_distance(pt1, pt2):
 
 
 def point_mid(pt1, pt2):
-    """ Computes the midpoint of the input points.
+    """Computes the midpoint of the input points.
 
     :param pt1: point 1
     :type pt1: list, tuple
@@ -338,9 +341,9 @@ def point_mid(pt1, pt2):
     return point_translate(pt1, half_dist_vector)
 
 
-@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
+@lru_cache(maxsize=os.environ["GEOMDL_CACHE_SIZE"] if "GEOMDL_CACHE_SIZE" in os.environ else 16)
 def matrix_identity(n):
-    """ Generates a :math:`N \\times N` identity matrix.
+    """Generates a :math:`N \\times N` identity matrix.
 
     :param n: size of the matrix
     :type n: int
@@ -352,7 +355,7 @@ def matrix_identity(n):
 
 
 def matrix_pivot(m, sign=False):
-    """ Computes the pivot matrix for M, a square matrix.
+    """Computes the pivot matrix for M, a square matrix.
 
     This function computes
 
@@ -391,7 +394,7 @@ def matrix_pivot(m, sign=False):
 
 
 def matrix_inverse(m):
-    """ Computes the inverse of the matrix via LUP decomposition.
+    """Computes the inverse of the matrix via LUP decomposition.
 
     :param m: input matrix
     :type m: list, tuple
@@ -404,7 +407,7 @@ def matrix_inverse(m):
 
 
 def matrix_determinant(m):
-    """ Computes the determinant of the square matrix :math:`M` via LUP decomposition.
+    """Computes the determinant of the square matrix :math:`M` via LUP decomposition.
 
     :param m: input matrix
     :type m: list, tuple
@@ -421,7 +424,7 @@ def matrix_determinant(m):
 
 
 def matrix_transpose(m):
-    """ Transposes the input matrix.
+    """Transposes the input matrix.
 
     The input matrix :math:`m` is a 2-dimensional array.
 
@@ -442,7 +445,7 @@ def matrix_transpose(m):
 
 
 def matrix_multiply(mat1, mat2):
-    """ Matrix multiplication (iterative algorithm).
+    """Matrix multiplication (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{3})`.
 
@@ -476,7 +479,7 @@ def matrix_multiply(mat1, mat2):
 
 
 def matrix_scalar(m, sc):
-    """ Matrix multiplication by a scalar value (iterative algorithm).
+    """Matrix multiplication by a scalar value (iterative algorithm).
 
     The running time of the iterative matrix multiplication algorithm is :math:`O(n^{2})`.
 
@@ -490,12 +493,12 @@ def matrix_scalar(m, sc):
     mm = [[0.0 for _ in range(len(m[0]))] for _ in range(len(m))]
     for i in range(len(m)):
         for j in range(len(m[0])):
-                mm[i][j] = float(m[i][j] * sc)
+            mm[i][j] = float(m[i][j] * sc)
     return mm
 
 
 def triangle_normal(tri):
-    """ Computes the (approximate) normal vector of the input triangle.
+    """Computes the (approximate) normal vector of the input triangle.
 
     :param tri: triangle object
     :type tri: elements.Triangle
@@ -508,7 +511,7 @@ def triangle_normal(tri):
 
 
 def triangle_center(tri, uv=False):
-    """ Computes the center of mass of the input triangle.
+    """Computes the center of mass of the input triangle.
 
     :param tri: triangle object
     :type tri: elements.Triangle
@@ -529,9 +532,9 @@ def triangle_center(tri, uv=False):
     return tuple(mid)
 
 
-@lru_cache(maxsize=os.environ['GEOMDL_CACHE_SIZE'] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
+@lru_cache(maxsize=os.environ["GEOMDL_CACHE_SIZE"] if "GEOMDL_CACHE_SIZE" in os.environ else 128)
 def binomial_coefficient(k, i):
-    """ Computes the binomial coefficient (denoted by *k choose i*).
+    """Computes the binomial coefficient (denoted by *k choose i*).
 
     Please see the following website for details: http://mathworld.wolfram.com/BinomialCoefficient.html
 
@@ -553,7 +556,7 @@ def binomial_coefficient(k, i):
 
 
 def lu_decomposition(matrix_a):
-    """ LU-Factorization method using Doolittle's Method for solution of linear systems.
+    """LU-Factorization method using Doolittle's Method for solution of linear systems.
 
     Decomposes the matrix :math:`A` such that :math:`A = LU`.
 
@@ -569,15 +572,16 @@ def lu_decomposition(matrix_a):
     q = len(matrix_a)
     for idx, m_a in enumerate(matrix_a):
         if len(m_a) != q:
-            raise ValueError("The input must be a square matrix. " +
-                             "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + ".")
+            raise ValueError(
+                "The input must be a square matrix. " + "Row " + str(idx + 1) + " has a size of " + str(len(m_a)) + "."
+            )
 
     # Return L and U matrices
     return _linalg.doolittle(matrix_a)
 
 
 def forward_substitution(matrix_l, matrix_b):
-    """ Forward substitution method for the solution of linear systems.
+    """Forward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ly = b` using forward substitution method
     where :math:`L` is a lower triangular matrix and :math:`b` is a column matrix.
@@ -599,7 +603,7 @@ def forward_substitution(matrix_l, matrix_b):
 
 
 def backward_substitution(matrix_u, matrix_y):
-    """ Backward substitution method for the solution of linear systems.
+    """Backward substitution method for the solution of linear systems.
 
     Solves the equation :math:`Ux = y` using backward substitution method
     where :math:`U` is a upper triangular matrix and :math:`y` is a column matrix.
@@ -621,7 +625,7 @@ def backward_substitution(matrix_u, matrix_y):
 
 
 def lu_solve(matrix_a, b):
-    """ Computes the solution to a system of linear equations.
+    """Computes the solution to a system of linear equations.
 
     This function solves :math:`Ax = b` using LU decomposition. :math:`A` is a
     :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of
@@ -656,7 +660,7 @@ def lu_solve(matrix_a, b):
 
 
 def lu_factor(matrix_a, b):
-    """ Computes the solution to a system of linear equations with partial pivoting.
+    """Computes the solution to a system of linear equations with partial pivoting.
 
     This function solves :math:`Ax = b` using LUP decomposition. :math:`A` is a
     :math:`N \\times N` matrix, :math:`b` is :math:`N \\times M` matrix of
@@ -692,7 +696,7 @@ def lu_factor(matrix_a, b):
 
 
 def linspace(start, stop, num, decimals=18):
-    """ Returns a list of evenly spaced numbers over a specified interval.
+    """Returns a list of evenly spaced numbers over a specified interval.
 
     Inspired from Numpy's linspace function: https://github.com/numpy/numpy/blob/master/numpy/core/function_base.py
 
@@ -715,13 +719,15 @@ def linspace(start, stop, num, decimals=18):
     if num > 1:
         div = num - 1
         delta = stop - start
-        return [float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
-                for x in range(num)]
+        return [
+            float(("{:." + str(decimals) + "f}").format((start + (float(x) * float(delta) / float(div)))))
+            for x in range(num)
+        ]
     return [float(("{:." + str(decimals) + "f}").format(start))]
 
 
 def frange(start, stop, step=1.0):
-    """ Implementation of Python's ``range()`` function which works with floats.
+    """Implementation of Python's ``range()`` function which works with floats.
 
     Reference to this implementation: https://stackoverflow.com/a/36091634
 
@@ -748,7 +754,7 @@ def frange(start, stop, step=1.0):
 
 
 def convex_hull(points):
-    """ Returns points on convex hull in counterclockwise order according to Graham's scan algorithm.
+    """Returns points on convex hull in counterclockwise order according to Graham's scan algorithm.
 
     Reference: https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
 
@@ -765,7 +771,7 @@ def convex_hull(points):
         return (a > b) - (a < b)
 
     def turn(p, q, r):
-        return cmp((q[0] - p[0])*(r[1] - p[1]) - (r[0] - p[0])*(q[1] - p[1]), 0)
+        return cmp((q[0] - p[0]) * (r[1] - p[1]) - (r[0] - p[0]) * (q[1] - p[1]), 0)
 
     def keep_left(hull, r):
         while len(hull) > 1 and turn(hull[-2], hull[-1], r) != turn_left:
@@ -781,7 +787,7 @@ def convex_hull(points):
 
 
 def is_left(point0, point1, point2):
-    """ Tests if a point is Left|On|Right of an infinite line.
+    """Tests if a point is Left|On|Right of an infinite line.
 
     Ported from the C++ version: on http://geomalgorithms.com/a03-_inclusion.html
 
@@ -799,7 +805,7 @@ def is_left(point0, point1, point2):
 
 
 def wn_poly(point, vertices):
-    """ Winding number test for a point in a polygon.
+    """Winding number test for a point in a polygon.
 
     Ported from the C++ version: http://geomalgorithms.com/a03-_inclusion.html
 

@@ -14,7 +14,7 @@ from plotly import graph_objs
 
 
 class VisConfig(vis.VisConfigAbstract):
-    """ Configuration class for Plotly visualization module.
+    """Configuration class for Plotly visualization module.
 
     This class is only required when you would like to change the visual defaults of the plots and the figure,
     such as hiding control points plot or legend.
@@ -56,6 +56,7 @@ class VisConfig(vis.VisConfigAbstract):
 
     Please refer to the **Examples Repository** for more details.
     """
+
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
         self.dtype = float
@@ -64,29 +65,30 @@ class VisConfig(vis.VisConfigAbstract):
         self.use_renderer = kwargs.get("use_renderer", False)
 
         # Get keyword arguments
-        self.display_ctrlpts = kwargs.get('ctrlpts', True)
-        self.display_evalpts = kwargs.get('evalpts', True)
-        self.display_bbox = kwargs.get('bbox', False)
-        self.display_trims = kwargs.get('trims', True)
-        self.display_legend = kwargs.get('legend', True)
-        self.display_axes = kwargs.get('axes', True)
-        self.axes_equal = kwargs.get('axes_equal', True)
-        self.figure_size = kwargs.get('figure_size', [1024, 768])
-        self.trim_size = kwargs.get('trim_size', 1)
-        self.line_width = kwargs.get('line_width', 2)
+        self.display_ctrlpts = kwargs.get("ctrlpts", True)
+        self.display_evalpts = kwargs.get("evalpts", True)
+        self.display_bbox = kwargs.get("bbox", False)
+        self.display_trims = kwargs.get("trims", True)
+        self.display_legend = kwargs.get("legend", True)
+        self.display_axes = kwargs.get("axes", True)
+        self.axes_equal = kwargs.get("axes_equal", True)
+        self.figure_size = kwargs.get("figure_size", [1024, 768])
+        self.trim_size = kwargs.get("trim_size", 1)
+        self.line_width = kwargs.get("line_width", 2)
 
     # https://stackoverflow.com/a/37661854/3345747
     def in_notebook(self):
-        return 'ipykernel' in sys.modules
+        return "ipykernel" in sys.modules
 
 
 class VisCurve2D(vis.VisAbstract):
-    """ Plotly visualization module for 2D curves. """
+    """Plotly visualization module for 2D curves."""
+
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisCurve2D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
-        """ Plots the curve and the control points polygon. """
+        """Plots the curve and the control points polygon."""
         # Calling parent function
         super(VisCurve2D, self).render(**kwargs)
 
@@ -94,65 +96,52 @@ class VisCurve2D(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
 
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+            if plot["type"] == "ctrlpts" and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
-                    name=plot['name'],
-                    mode='lines+markers',
-                    line=dict(
-                        color=plot['color'],
-                        width=self.vconf.line_width,
-                        dash='dash'
-                    )
+                    name=plot["name"],
+                    mode="lines+markers",
+                    line=dict(color=plot["color"], width=self.vconf.line_width, dash="dash"),
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+            if plot["type"] == "evalpts" and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
-                    name=plot['name'],
-                    mode='lines',
-                    line=dict(
-                        color=plot['color'],
-                        width=self.vconf.line_width
-                    )
+                    name=plot["name"],
+                    mode="lines",
+                    line=dict(color=plot["color"], width=self.vconf.line_width),
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+            if plot["type"] == "bbox" and self.vconf.display_bbox:
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
-                    name=plot['name'],
+                    name=plot["name"],
                     line=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         width=self.vconf.line_width,
-                        dash='dashdot',
-                    )
+                        dash="dashdot",
+                    ),
                 )
                 plot_data.append(figure)
 
             # Plot extras
-            if plot['type'] == 'extras':
+            if plot["type"] == "extras":
                 figure = graph_objs.Scatter(
                     x=pts[:, 0],
                     y=pts[:, 1],
-                    name=plot['name'],
-                    mode='markers',
-                    marker=dict(
-                        color=plot['color'][0],
-                        size=plot['color'][1],
-                        line=dict(
-                            width=self.vconf.line_width
-                        )
-                    )
+                    name=plot["name"],
+                    mode="markers",
+                    marker=dict(color=plot["color"][0], size=plot["color"][1], line=dict(width=self.vconf.line_width)),
                 )
                 plot_data.append(figure)
 
@@ -173,15 +162,15 @@ class VisCurve2D(vis.VisAbstract):
                 showline=self.vconf.display_axes,
                 zeroline=self.vconf.display_axes,
                 showticklabels=self.vconf.display_axes,
-            )
+            ),
         )
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', True)
+        fig_filename = kwargs.get("fig_save_as", None)
+        fig_display = kwargs.get("display_plot", True)
 
         # Display the plot
         if self.vconf.in_notebook() or self.vconf.use_renderer:
@@ -196,12 +185,13 @@ class VisCurve2D(vis.VisAbstract):
 
 
 class VisCurve3D(vis.VisAbstract):
-    """ Plotly visualization module for 3D curves. """
+    """Plotly visualization module for 3D curves."""
+
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisCurve3D, self).__init__(config, **kwargs)
 
     def render(self, **kwargs):
-        """ Plots the curve and the control points polygon. """
+        """Plots the curve and the control points polygon."""
         # Calling parent function
         super(VisCurve3D, self).render(**kwargs)
 
@@ -209,78 +199,65 @@ class VisCurve3D(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
 
             # Try not to fail if the input is 2D
             if pts.shape[1] == 2:
                 pts = np.c_[pts, np.zeros(pts.shape[0])]
 
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+            if plot["type"] == "ctrlpts" and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='lines+markers',
-                    line=dict(
-                        color=plot['color'],
-                        width=self.vconf.line_width,
-                        dash='dash'
-                    ),
+                    name=plot["name"],
+                    mode="lines+markers",
+                    line=dict(color=plot["color"], width=self.vconf.line_width, dash="dash"),
                     marker=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         size=self.vconf.line_width * 2,
-                    )
+                    ),
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+            if plot["type"] == "evalpts" and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='lines',
-                    line=dict(
-                        color=plot['color'],
-                        width=self.vconf.line_width
-                    ),
+                    name=plot["name"],
+                    mode="lines",
+                    line=dict(color=plot["color"], width=self.vconf.line_width),
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+            if plot["type"] == "bbox" and self.vconf.display_bbox:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='lines',
+                    name=plot["name"],
+                    mode="lines",
                     line=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         width=self.vconf.line_width,
-                        dash='dashdot',
+                        dash="dashdot",
                     ),
                 )
                 plot_data.append(figure)
 
             # Plot extras
-            if plot['type'] == 'extras':
+            if plot["type"] == "extras":
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
-                    marker=dict(
-                        color=plot['color'][0],
-                        size=plot['color'][1],
-                        line=dict(
-                            width=self.vconf.line_width
-                        )
-                    )
+                    name=plot["name"],
+                    mode="markers",
+                    marker=dict(color=plot["color"][0], size=plot["color"][1], line=dict(width=self.vconf.line_width)),
                 )
                 plot_data.append(figure)
 
@@ -295,35 +272,35 @@ class VisCurve3D(vis.VisAbstract):
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 yaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 zaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
             ),
         )
 
         # Set aspect ratio
         if self.vconf.axes_equal:
-            plot_layout['scene']['aspectmode'] = 'data'
+            plot_layout["scene"]["aspectmode"] = "data"
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', True)
+        fig_filename = kwargs.get("fig_save_as", None)
+        fig_display = kwargs.get("display_plot", True)
 
         # Display the plot
         if self.vconf.in_notebook() or self.vconf.use_renderer:
@@ -338,17 +315,18 @@ class VisCurve3D(vis.VisAbstract):
 
 
 class VisSurface(vis.VisAbstract):
-    """ Plotly visualization module for surfaces.
+    """Plotly visualization module for surfaces.
 
     Triangular mesh plot for the surface and wireframe plot for the control points grid.
     """
+
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisSurface, self).__init__(config, **kwargs)
-        self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "triangles"
+        self._module_config["ctrlpts"] = "points"
+        self._module_config["evalpts"] = "triangles"
 
     def render(self, **kwargs):
-        """ Plots the surface and the control points grid. """
+        """Plots the surface and the control points grid."""
         # Calling parent function
         super(VisSurface, self).render(**kwargs)
 
@@ -357,26 +335,26 @@ class VisSurface(vis.VisAbstract):
 
         for plot in self._plots:
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            if plot["type"] == "ctrlpts" and self.vconf.display_ctrlpts:
+                pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
                 pts[:, 2] += self._ctrlpts_offset
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
+                    name=plot["name"],
+                    mode="markers",
                     marker=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         size=self.vconf.line_width * 2,
-                    )
+                    ),
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                vertices = plot['ptsarr'][0]
-                triangles = plot['ptsarr'][1]
+            if plot["type"] == "evalpts" and self.vconf.display_evalpts:
+                vertices = plot["ptsarr"][0]
+                triangles = plot["ptsarr"][1]
                 pts = [v.data for v in vertices]
                 tri = [t.data for t in triangles]
                 pts = np.array(pts, dtype=self.vconf.dtype)
@@ -385,65 +363,59 @@ class VisSurface(vis.VisAbstract):
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
+                    name=plot["name"],
                     i=tri[:, 0],
                     j=tri[:, 1],
                     k=tri[:, 2],
-                    color=plot['color'],
+                    color=plot["color"],
                     opacity=0.75,
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self.vconf.display_bbox:
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            if plot["type"] == "bbox" and self.vconf.display_bbox:
+                pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='lines',
+                    name=plot["name"],
+                    mode="lines",
                     line=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         width=self.vconf.line_width,
-                        dash='dashdot',
+                        dash="dashdot",
                     ),
                 )
                 plot_data.append(figure)
 
             # Plot trim curves
             if self.vconf.display_trims:
-                if plot['type'] == 'trimcurve':
-                    pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+                if plot["type"] == "trimcurve":
+                    pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
                     figure = graph_objs.Scatter3d(
                         x=pts[:, 0],
                         y=pts[:, 1],
                         z=pts[:, 2],
-                        name=plot['name'],
-                        mode='markers',
+                        name=plot["name"],
+                        mode="markers",
                         marker=dict(
-                            color=plot['color'],
+                            color=plot["color"],
                             size=self.vconf.trim_size * 2,
                         ),
                     )
                     plot_data.append(figure)
 
             # Plot extras
-            if plot['type'] == 'extras':
-                pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            if plot["type"] == "extras":
+                pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
-                    marker=dict(
-                        color=plot['color'][0],
-                        size=plot['color'][1],
-                        line=dict(
-                            width=self.vconf.line_width
-                        )
-                    )
+                    name=plot["name"],
+                    mode="markers",
+                    marker=dict(color=plot["color"][0], size=plot["color"][1], line=dict(width=self.vconf.line_width)),
                 )
                 plot_data.append(figure)
 
@@ -458,35 +430,35 @@ class VisSurface(vis.VisAbstract):
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 yaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 zaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
             ),
         )
 
         # Set aspect ratio
         if self.vconf.axes_equal:
-            plot_layout['scene']['aspectmode'] = 'data'
+            plot_layout["scene"]["aspectmode"] = "data"
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', True)
+        fig_filename = kwargs.get("fig_save_as", None)
+        fig_display = kwargs.get("display_plot", True)
 
         # Display the plot
         if self.vconf.in_notebook() or self.vconf.use_renderer:
@@ -501,14 +473,15 @@ class VisSurface(vis.VisAbstract):
 
 
 class VisVolume(vis.VisAbstract):
-    """ Plotly visualization module for volumes. """
+    """Plotly visualization module for volumes."""
+
     def __init__(self, config=VisConfig(), **kwargs):
         super(VisVolume, self).__init__(config, **kwargs)
-        self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "points"
+        self._module_config["ctrlpts"] = "points"
+        self._module_config["evalpts"] = "points"
 
     def render(self, **kwargs):
-        """ Plots the evaluated and the control points. """
+        """Plots the evaluated and the control points."""
         # Calling parent function
         super(VisVolume, self).render(**kwargs)
 
@@ -516,68 +489,62 @@ class VisVolume(vis.VisAbstract):
         plot_data = []
 
         for plot in self._plots:
-            pts = np.array(plot['ptsarr'], dtype=self.vconf.dtype)
+            pts = np.array(plot["ptsarr"], dtype=self.vconf.dtype)
             # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
+            if plot["type"] == "ctrlpts" and self.vconf.display_ctrlpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
+                    name=plot["name"],
+                    mode="markers",
                     marker=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         size=self.vconf.line_width,
-                    )
+                    ),
                 )
                 plot_data.append(figure)
 
             # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
+            if plot["type"] == "evalpts" and self.vconf.display_evalpts:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
+                    name=plot["name"],
+                    mode="markers",
                     marker=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         size=self.vconf.line_width * 2,
-                    )
+                    ),
                 )
                 plot_data.append(figure)
 
             # Plot bounding box
-            if plot['type'] == 'bbox' and self.vconf.display_bbox:
+            if plot["type"] == "bbox" and self.vconf.display_bbox:
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='lines',
+                    name=plot["name"],
+                    mode="lines",
                     line=dict(
-                        color=plot['color'],
+                        color=plot["color"],
                         width=self.vconf.line_width,
-                        dash='dashdot',
+                        dash="dashdot",
                     ),
                 )
                 plot_data.append(figure)
 
             # Plot extras
-            if plot['type'] == 'extras':
+            if plot["type"] == "extras":
                 figure = graph_objs.Scatter3d(
                     x=pts[:, 0],
                     y=pts[:, 1],
                     z=pts[:, 2],
-                    name=plot['name'],
-                    mode='markers',
-                    marker=dict(
-                        color=plot['color'][0],
-                        size=plot['color'][1],
-                        line= dict(
-                            width=self.vconf.line_width
-                        )
-                    )
+                    name=plot["name"],
+                    mode="markers",
+                    marker=dict(color=plot["color"][0], size=plot["color"][1], line=dict(width=self.vconf.line_width)),
                 )
                 plot_data.append(figure)
 
@@ -592,35 +559,35 @@ class VisVolume(vis.VisAbstract):
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 yaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
                 zaxis=dict(
                     showgrid=self.vconf.display_axes,
                     showline=self.vconf.display_axes,
                     zeroline=self.vconf.display_axes,
                     showticklabels=self.vconf.display_axes,
-                    title='',
+                    title="",
                 ),
             ),
         )
 
         # Set aspect ratio
         if self.vconf.axes_equal:
-            plot_layout['scene']['aspectmode'] = 'data'
+            plot_layout["scene"]["aspectmode"] = "data"
 
         # Generate the figure
         fig = graph_objs.Figure(data=plot_data, layout=plot_layout)
 
         # Process keyword arguments
-        fig_filename = kwargs.get('fig_save_as', None)
-        fig_display = kwargs.get('display_plot', True)
+        fig_filename = kwargs.get("fig_save_as", None)
+        fig_display = kwargs.get("display_plot", True)
 
         # Display the plot
         if self.vconf.in_notebook() or self.vconf.use_renderer:

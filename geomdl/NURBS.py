@@ -13,7 +13,7 @@ from ._utilities import export
 
 @export
 class Curve(BSpline.Curve):
-    """ Data storage and evaluation class for n-variate NURBS (rational) curves.
+    """Data storage and evaluation class for n-variate NURBS (rational) curves.
 
     The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
     with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
@@ -92,12 +92,12 @@ class Curve(BSpline.Curve):
         return result
 
     def init_cache(self):
-        self._cache['ctrlpts'] = self._init_array()
-        self._cache['weights'] = self._init_array()
+        self._cache["ctrlpts"] = self._init_array()
+        self._cache["weights"] = self._init_array()
 
     @property
     def ctrlptsw(self):
-        """ Weighted control points (Pw).
+        """Weighted control points (Pw).
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
@@ -115,7 +115,7 @@ class Curve(BSpline.Curve):
 
     @property
     def ctrlpts(self):
-        """ Control points (P).
+        """Control points (P).
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -125,11 +125,11 @@ class Curve(BSpline.Curve):
         :type: list
         """
         # Populate the cache, if necessary
-        if not self._cache['ctrlpts']:
+        if not self._cache["ctrlpts"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['ctrlpts']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["ctrlpts"]
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -147,7 +147,7 @@ class Curve(BSpline.Curve):
 
     @property
     def weights(self):
-        """ Weights vector.
+        """Weights vector.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -157,11 +157,11 @@ class Curve(BSpline.Curve):
         :type: list
         """
         # Populate the cache, if necessary
-        if not self._cache['weights']:
+        if not self._cache["weights"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['weights']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["weights"]
 
     @weights.setter
     def weights(self, value):
@@ -175,7 +175,7 @@ class Curve(BSpline.Curve):
         self.set_ctrlpts(ctrlptsw)
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
 
@@ -183,21 +183,21 @@ class Curve(BSpline.Curve):
             * ``ctrlpts`` if True, then resets control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         # Call parent function
         super(Curve, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
 
         if reset_ctrlpts:
             # Delete the caches
-            self._cache['ctrlpts'] = self._init_array()
-            self._cache['weights'][:] = self._init_array()
+            self._cache["ctrlpts"] = self._init_array()
+            self._cache["weights"][:] = self._init_array()
 
 
 @export
 class Surface(BSpline.Surface):
-    """ Data storage and evaluation class for NURBS (rational) surfaces.
+    """Data storage and evaluation class for NURBS (rational) surfaces.
 
     The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
     with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
@@ -296,12 +296,12 @@ class Surface(BSpline.Surface):
         return result
 
     def init_cache(self):
-        self._cache['ctrlpts'] = self._init_array()
-        self._cache['weights'] = self._init_array()
+        self._cache["ctrlpts"] = self._init_array()
+        self._cache["weights"] = self._init_array()
 
     @property
     def ctrlptsw(self):
-        """ 1-dimensional array of weighted control points (Pw).
+        """1-dimensional array of weighted control points (Pw).
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
@@ -320,7 +320,7 @@ class Surface(BSpline.Surface):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional array of control points (P).
+        """1-dimensional array of control points (P).
 
         This property sets and gets the control points in 1-D.
 
@@ -328,11 +328,11 @@ class Surface(BSpline.Surface):
         :setter: Sets unweighted control points.
         :type: list
         """
-        if not self._cache['ctrlpts']:
+        if not self._cache["ctrlpts"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['ctrlpts']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["ctrlpts"]
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -353,17 +353,17 @@ class Surface(BSpline.Surface):
 
     @property
     def weights(self):
-        """ Weights vector.
+        """Weights vector.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
         :type: list
         """
-        if not self._cache['weights']:
+        if not self._cache["weights"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['weights']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["weights"]
 
     @weights.setter
     def weights(self, value):
@@ -377,7 +377,7 @@ class Surface(BSpline.Surface):
         self.set_ctrlpts(ctrlptsw, self.ctrlpts_size_u, self.ctrlpts_size_v)
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
 
@@ -385,8 +385,8 @@ class Surface(BSpline.Surface):
             * ``ctrlpts`` if True, then resets control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         # Call parent function
         super(Surface, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
@@ -398,7 +398,7 @@ class Surface(BSpline.Surface):
 
 @export
 class Volume(BSpline.Volume):
-    """ Data storage and evaluation class for NURBS (rational) volumes.
+    """Data storage and evaluation class for NURBS (rational) volumes.
 
     The rational shapes have some minor differences between the non-rational ones. This class is designed to operate
     with weighted control points (Pw) as described in *The NURBS Book* by Piegl and Tiller. Therefore, it provides
@@ -465,11 +465,11 @@ class Volume(BSpline.Volume):
         return result
 
     def init_cache(self):
-        self._cache['ctrlpts'] = self._init_array()
-        self._cache['weights'] = self._init_array()
+        self._cache["ctrlpts"] = self._init_array()
+        self._cache["weights"] = self._init_array()
 
     def reset(self, **kwargs):
-        """ Resets control points and/or evaluated points.
+        """Resets control points and/or evaluated points.
 
         Keyword Arguments:
 
@@ -477,8 +477,8 @@ class Volume(BSpline.Volume):
             * ``ctrlpts`` if True, then resets the control points
 
         """
-        reset_ctrlpts = kwargs.get('ctrlpts', False)
-        reset_evalpts = kwargs.get('evalpts', False)
+        reset_ctrlpts = kwargs.get("ctrlpts", False)
+        reset_evalpts = kwargs.get("evalpts", False)
 
         # Call parent function
         super(Volume, self).reset(ctrlpts=reset_ctrlpts, evalpts=reset_evalpts)
@@ -489,7 +489,7 @@ class Volume(BSpline.Volume):
 
     @property
     def ctrlptsw(self):
-        """ 1-dimensional array of weighted control points (Pw).
+        """1-dimensional array of weighted control points (Pw).
 
         Weighted control points are in (x*w, y*w, z*w, w) format; where x,y,z are the coordinates and w is the weight.
 
@@ -508,7 +508,7 @@ class Volume(BSpline.Volume):
 
     @property
     def ctrlpts(self):
-        """ 1-dimensional array of control points (P).
+        """1-dimensional array of control points (P).
 
         This property sets and gets the control points in 1-D.
 
@@ -516,11 +516,11 @@ class Volume(BSpline.Volume):
         :setter: Sets unweighted control points.
         :type: list
         """
-        if not self._cache['ctrlpts']:
+        if not self._cache["ctrlpts"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['ctrlpts']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["ctrlpts"]
 
     @ctrlpts.setter
     def ctrlpts(self, value):
@@ -541,17 +541,17 @@ class Volume(BSpline.Volume):
 
     @property
     def weights(self):
-        """ Weights vector.
+        """Weights vector.
 
         :getter: Gets the weights vector
         :setter: Sets the weights vector
         :type: list
         """
-        if not self._cache['weights']:
+        if not self._cache["weights"]:
             c, w = compatibility.separate_ctrlpts_weights(self._control_points)
-            self._cache['ctrlpts'] = [crd for crd in c]
-            self._cache['weights'] = w
-        return self._cache['weights']
+            self._cache["ctrlpts"] = [crd for crd in c]
+            self._cache["weights"] = w
+        return self._cache["weights"]
 
     @weights.setter
     def weights(self, value):

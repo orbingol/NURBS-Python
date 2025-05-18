@@ -14,7 +14,7 @@ from .exceptions import GeomdlException
 
 
 def construct_surface(direction, *args, **kwargs):
-    """ Generates surfaces from curves.
+    """Generates surfaces from curves.
 
     Arguments:
         * ``args``: a list of curve instances
@@ -29,19 +29,20 @@ def construct_surface(direction, *args, **kwargs):
     :return: Surface constructed from the curves on the given parametric direction
     """
     # Input validation
-    possible_dirs = ['u', 'v']
+    possible_dirs = ["u", "v"]
     if direction not in possible_dirs:
-        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
-                              data=dict(input_dir=direction))
+        raise GeomdlException(
+            "Possible direction values: " + ", ".join([val for val in possible_dirs]), data=dict(input_dir=direction)
+        )
 
     size_other = len(args)
     if size_other < 2:
         raise GeomdlException("You need to input at least 2 curves")
 
     # Get keyword arguments
-    degree_other = kwargs.get('degree', 2)
-    knotvector_other = kwargs.get('knotvector', knotvector.generate(degree_other, size_other))
-    rational = kwargs.get('rational', args[0].rational)
+    degree_other = kwargs.get("degree", 2)
+    knotvector_other = kwargs.get("knotvector", knotvector.generate(degree_other, size_other))
+    rational = kwargs.get("rational", args[0].rational)
 
     # Construct the control points of the new surface
     degree = args[0].degree
@@ -50,20 +51,24 @@ def construct_surface(direction, *args, **kwargs):
     new_weights = []
     for idx, arg in enumerate(args):
         if degree != arg.degree:
-            raise GeomdlException("Input curves must have the same degrees",
-                                  data=dict(idx=idx, degree=degree, degree_arg=arg.degree))
+            raise GeomdlException(
+                "Input curves must have the same degrees", data=dict(idx=idx, degree=degree, degree_arg=arg.degree)
+            )
         if num_ctrlpts != arg.ctrlpts_size:
-            raise GeomdlException("Input curves must have the same number of control points",
-                                  data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size))
+            raise GeomdlException(
+                "Input curves must have the same number of control points",
+                data=dict(idx=idx, size=num_ctrlpts, size_arg=arg.ctrlpts_size),
+            )
         new_ctrlpts += list(arg.ctrlpts)
         if rational:
             if arg.weights is None:
-                raise GeomdlException("Expecting a rational curve",
-                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
+                raise GeomdlException(
+                    "Expecting a rational curve", data=dict(idx=idx, rational=rational, rational_arg=arg.rational)
+                )
             new_weights += list(arg.weights)
 
     # Set variables w.r.t. input direction
-    if direction == 'u':
+    if direction == "u":
         degree_u = degree_other
         degree_v = degree
         knotvector_u = knotvector_other
@@ -101,7 +106,7 @@ def construct_surface(direction, *args, **kwargs):
 
 
 def construct_volume(direction, *args, **kwargs):
-    """ Generates volumes from surfaces.
+    """Generates volumes from surfaces.
 
     Arguments:
         * ``args``: a list of surface instances
@@ -116,19 +121,20 @@ def construct_volume(direction, *args, **kwargs):
     :return: Volume constructed from the surfaces on the given parametric direction
     """
     # Input validation
-    possible_dirs = ['u', 'v', 'w']
+    possible_dirs = ["u", "v", "w"]
     if direction not in possible_dirs:
-        raise GeomdlException("Possible direction values: " + ", ".join([val for val in possible_dirs]),
-                              data=dict(input_dir=direction))
+        raise GeomdlException(
+            "Possible direction values: " + ", ".join([val for val in possible_dirs]), data=dict(input_dir=direction)
+        )
 
     size_other = len(args)
     if size_other < 2:
         raise GeomdlException("You need to input at least 2 surfaces")
 
     # Get keyword arguments
-    degree_other = kwargs.get('degree', 1)
-    knotvector_other = kwargs.get('knotvector', knotvector.generate(degree_other, size_other))
-    rational = kwargs.get('rational', args[0].rational)
+    degree_other = kwargs.get("degree", 1)
+    knotvector_other = kwargs.get("knotvector", knotvector.generate(degree_other, size_other))
+    rational = kwargs.get("rational", args[0].rational)
 
     # Construct the control points of the new volume
     degree_u, degree_v = args[0].degree_u, args[0].degree_v
@@ -137,23 +143,28 @@ def construct_volume(direction, *args, **kwargs):
     new_weights = []
     for idx, arg in enumerate(args):
         if degree_u != arg.degree_u or degree_v != arg.degree_v:
-            raise GeomdlException("Input surfaces must have the same degrees",
-                                  data=dict(idx=idx, degree=(degree_u, degree_v), degree_arg=(arg.degree_u, arg.degree_v)))
+            raise GeomdlException(
+                "Input surfaces must have the same degrees",
+                data=dict(idx=idx, degree=(degree_u, degree_v), degree_arg=(arg.degree_u, arg.degree_v)),
+            )
         if size_u != arg.ctrlpts_size_u or size_v != arg.ctrlpts_size_v:
-            raise GeomdlException("Input surfaces must have the same number of control points",
-                                  data=dict(idx=idx, size=(size_u, size_v), size_arg=(arg.ctrlpts_size_u, arg.ctrlpts_size_v)))
+            raise GeomdlException(
+                "Input surfaces must have the same number of control points",
+                data=dict(idx=idx, size=(size_u, size_v), size_arg=(arg.ctrlpts_size_u, arg.ctrlpts_size_v)),
+            )
         new_ctrlpts += list(arg.ctrlpts)
         if rational:
             if arg.weights is None:
-                raise GeomdlException("Expecting a rational surface",
-                                      data=dict(idx=idx, rational=rational, rational_arg=arg.rational))
+                raise GeomdlException(
+                    "Expecting a rational surface", data=dict(idx=idx, rational=rational, rational_arg=arg.rational)
+                )
             new_weights += list(arg.weights)
 
     updated_ctrlpts = []
     updated_weights = []
 
     # Set variables w.r.t. input direction
-    if direction == 'u':
+    if direction == "u":
         degree_u, degree_v, degree_w = degree_other, args[0].degree_u, args[0].degree_v
         size_u, size_v, size_w = size_other, args[0].ctrlpts_size_u, args[0].ctrlpts_size_v
         kv_u, kv_v, kv_w = knotvector_other, args[0].knotvector_u, args[0].knotvector_v
@@ -166,7 +177,7 @@ def construct_volume(direction, *args, **kwargs):
                     if rational:
                         temp_w = new_weights[v + (u * size_v) + (w * size_u * size_v)]
                         updated_weights.append(temp_w)
-    elif direction == 'v':
+    elif direction == "v":
         degree_u, degree_v, degree_w = args[0].degree_u, degree_other, args[0].degree_v
         size_u, size_v, size_w = args[0].ctrlpts_size_u, size_other, args[0].ctrlpts_size_v
         kv_u, kv_v, kv_w = args[0].knotvector_u, knotvector_other, args[0].knotvector_v
@@ -206,7 +217,7 @@ def construct_volume(direction, *args, **kwargs):
 
 
 def extract_curves(psurf, **kwargs):
-    """ Extracts curves from a surface.
+    """Extracts curves from a surface.
 
     The return value is a ``dict`` object containing the following keys:
 
@@ -229,19 +240,19 @@ def extract_curves(psurf, **kwargs):
         raise GeomdlException("Can only operate on single spline surfaces")
 
     # Get keyword arguments
-    extract_u = kwargs.get('extract_u', True)
-    extract_v = kwargs.get('extract_v', True)
+    extract_u = kwargs.get("extract_u", True)
+    extract_v = kwargs.get("extract_v", True)
 
     # Get data from the surface object
     surf_data = psurf.data
-    rational = surf_data['rational']
-    degree_u = surf_data['degree'][0]
-    degree_v = surf_data['degree'][1]
-    kv_u = surf_data['knotvector'][0]
-    kv_v = surf_data['knotvector'][1]
-    size_u = surf_data['size'][0]
-    size_v = surf_data['size'][1]
-    cpts = surf_data['control_points']
+    rational = surf_data["rational"]
+    degree_u = surf_data["degree"][0]
+    degree_v = surf_data["degree"][1]
+    kv_u = surf_data["knotvector"][0]
+    kv_v = surf_data["knotvector"][1]
+    size_u = surf_data["size"][0]
+    size_v = surf_data["size"][1]
+    cpts = surf_data["control_points"]
 
     # Determine object type
     obj = shortcuts.generate_curve(rational)
@@ -271,7 +282,7 @@ def extract_curves(psurf, **kwargs):
 
 
 def extract_surfaces(pvol):
-    """ Extracts surfaces from a volume.
+    """Extracts surfaces from a volume.
 
     :param pvol: input volume
     :type pvol: abstract.Volume
@@ -285,17 +296,17 @@ def extract_surfaces(pvol):
 
     # Get data from the volume object
     vol_data = pvol.data
-    rational = vol_data['rational']
-    degree_u = vol_data['degree'][0]
-    degree_v = vol_data['degree'][1]
-    degree_w = vol_data['degree'][2]
-    kv_u = vol_data['knotvector'][0]
-    kv_v = vol_data['knotvector'][1]
-    kv_w = vol_data['knotvector'][2]
-    size_u = vol_data['size'][0]
-    size_v = vol_data['size'][1]
-    size_w = vol_data['size'][2]
-    cpts = vol_data['control_points']
+    rational = vol_data["rational"]
+    degree_u = vol_data["degree"][0]
+    degree_v = vol_data["degree"][1]
+    degree_w = vol_data["degree"][2]
+    kv_u = vol_data["knotvector"][0]
+    kv_v = vol_data["knotvector"][1]
+    kv_w = vol_data["knotvector"][2]
+    size_u = vol_data["size"][0]
+    size_v = vol_data["size"][1]
+    size_w = vol_data["size"][2]
+    cpts = vol_data["control_points"]
 
     # Determine object type
     obj = shortcuts.generate_surface(rational)
@@ -344,7 +355,7 @@ def extract_surfaces(pvol):
 
 
 def extract_isosurface(pvol):
-    """ Extracts the largest isosurface from a volume.
+    """Extracts the largest isosurface from a volume.
 
     The following example illustrates one of the usage scenarios:
 
@@ -380,4 +391,4 @@ def extract_isosurface(pvol):
     isosrf = extract_surfaces(pvol)
 
     # Return the isosurface
-    return isosrf['uv'][0], isosrf['uv'][-1], isosrf['uw'][0], isosrf['uw'][-1], isosrf['vw'][0], isosrf['vw'][-1]
+    return isosrf["uv"][0], isosrf["uv"][-1], isosrf["uw"][0], isosrf["uw"][-1], isosrf["vw"][0], isosrf["vw"][-1]

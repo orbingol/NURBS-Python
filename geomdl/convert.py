@@ -12,7 +12,7 @@ from . import _convert as cvt
 
 
 def bspline_to_nurbs(obj, **kwargs):
-    """ Converts non-rational splines to rational ones.
+    """Converts non-rational splines to rational ones.
 
     :param obj: non-rational spline geometry
     :type obj: BSpline.Curve, BSpline.Surface or BSpline.Volume
@@ -29,12 +29,12 @@ def bspline_to_nurbs(obj, **kwargs):
         ret = cvt.convert_volume(obj, NURBS)
     else:
         raise TypeError("Input must be an instance of B-Spline curve, surface or volume")
-    
+
     return ret
 
 
 def nurbs_to_bspline(obj, **kwargs):
-    """ Converts rational splines to non-rational ones (if possible).
+    """Converts rational splines to non-rational ones (if possible).
 
     The possibility of converting a rational spline geometry to
     a non-rational one depends on the weights vector.
@@ -49,7 +49,7 @@ def nurbs_to_bspline(obj, **kwargs):
         raise TypeError("The input must be a rational geometry")
 
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get("tol", 10e-8)
 
     # Test for non-rational component extraction
     for w in obj.weights:

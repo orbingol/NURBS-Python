@@ -1,9 +1,9 @@
 """
-    Tests for the NURBS-Python package
-    Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018-2019 Onur Rauf Bingol
+Tests for the NURBS-Python package
+Released under The MIT License. See LICENSE file for details.
+Copyright (c) 2018-2019 Onur Rauf Bingol
 
-    Requires "pytest" to run.
+Requires "pytest" to run.
 """
 
 from pytest import fixture, mark
@@ -17,7 +17,7 @@ GEOMDL_DELTA = 0.001
 
 @fixture
 def spline_surf():
-    """ Creates a B-spline surface instance """
+    """Creates a B-spline surface instance"""
     # Create a surface instance
     surf = BSpline.Surface()
 
@@ -25,15 +25,44 @@ def spline_surf():
     surf.degree_u = 3
     surf.degree_v = 3
 
-    ctrlpts = [[-25.0, -25.0, -10.0], [-25.0, -15.0, -5.0], [-25.0, -5.0, 0.0], [-25.0, 5.0, 0.0],
-               [-25.0, 15.0, -5.0], [-25.0, 25.0, -10.0], [-15.0, -25.0, -8.0], [-15.0, -15.0, -4.0],
-               [-15.0, -5.0, -4.0], [-15.0, 5.0, -4.0], [-15.0, 15.0, -4.0], [-15.0, 25.0, -8.0],
-               [-5.0, -25.0, -5.0], [-5.0, -15.0, -3.0], [-5.0, -5.0, -8.0], [-5.0, 5.0, -8.0],
-               [-5.0, 15.0, -3.0], [-5.0, 25.0, -5.0], [5.0, -25.0, -3.0], [5.0, -15.0, -2.0],
-               [5.0, -5.0, -8.0], [5.0, 5.0, -8.0], [5.0, 15.0, -2.0], [5.0, 25.0, -3.0],
-               [15.0, -25.0, -8.0], [15.0, -15.0, -4.0], [15.0, -5.0, -4.0], [15.0, 5.0, -4.0],
-               [15.0, 15.0, -4.0], [15.0, 25.0, -8.0], [25.0, -25.0, -10.0], [25.0, -15.0, -5.0],
-               [25.0, -5.0, 2.0], [25.0, 5.0, 2.0], [25.0, 15.0, -5.0], [25.0, 25.0, -10.0]]
+    ctrlpts = [
+        [-25.0, -25.0, -10.0],
+        [-25.0, -15.0, -5.0],
+        [-25.0, -5.0, 0.0],
+        [-25.0, 5.0, 0.0],
+        [-25.0, 15.0, -5.0],
+        [-25.0, 25.0, -10.0],
+        [-15.0, -25.0, -8.0],
+        [-15.0, -15.0, -4.0],
+        [-15.0, -5.0, -4.0],
+        [-15.0, 5.0, -4.0],
+        [-15.0, 15.0, -4.0],
+        [-15.0, 25.0, -8.0],
+        [-5.0, -25.0, -5.0],
+        [-5.0, -15.0, -3.0],
+        [-5.0, -5.0, -8.0],
+        [-5.0, 5.0, -8.0],
+        [-5.0, 15.0, -3.0],
+        [-5.0, 25.0, -5.0],
+        [5.0, -25.0, -3.0],
+        [5.0, -15.0, -2.0],
+        [5.0, -5.0, -8.0],
+        [5.0, 5.0, -8.0],
+        [5.0, 15.0, -2.0],
+        [5.0, 25.0, -3.0],
+        [15.0, -25.0, -8.0],
+        [15.0, -15.0, -4.0],
+        [15.0, -5.0, -4.0],
+        [15.0, 5.0, -4.0],
+        [15.0, 15.0, -4.0],
+        [15.0, 25.0, -8.0],
+        [25.0, -25.0, -10.0],
+        [25.0, -15.0, -5.0],
+        [25.0, -5.0, 2.0],
+        [25.0, 5.0, 2.0],
+        [25.0, 15.0, -5.0],
+        [25.0, 25.0, -10.0],
+    ]
 
     # Set control points
     surf.set_ctrlpts(ctrlpts, 6, 6)
@@ -71,20 +100,23 @@ def test_bspline_surface_knot_vector_v(spline_surf):
     assert spline_surf.knotvector_v == [0.0, 0.0, 0.0, 0.0, 0.33, 0.66, 1.0, 1.0, 1.0, 1.0]
 
 
-@mark.parametrize("param, res", [
-    ((0.0, 0.0), (-25.0, -25.0, -10.0)),
-    ((0.0, 0.2), (-25.0, -11.403, -3.385)),
-    ((0.0, 1.0), (-25.0, 25.0, -10.0)),
-    ((0.3, 0.0), (-7.006, -25.0, -5.725)),
-    ((0.3, 0.4), [-7.006, -3.308, -6.265]),
-    ((0.3, 1.0), [-7.006, 25.0, -5.725]),
-    ((0.6, 0.0), (3.533, -25.0, -4.224)),
-    ((0.6, 0.6), (3.533, 3.533, -6.801)),
-    ((0.6, 1.0), (3.533, 25.0, -4.224)),
-    ((1.0, 0.0), (25.0, -25.0, -10.0)),
-    ((1.0, 0.8), (25.0, 11.636, -2.751)),
-    ((1.0, 1.0), (25.0, 25.0, -10.0))
-])
+@mark.parametrize(
+    "param, res",
+    [
+        ((0.0, 0.0), (-25.0, -25.0, -10.0)),
+        ((0.0, 0.2), (-25.0, -11.403, -3.385)),
+        ((0.0, 1.0), (-25.0, 25.0, -10.0)),
+        ((0.3, 0.0), (-7.006, -25.0, -5.725)),
+        ((0.3, 0.4), [-7.006, -3.308, -6.265]),
+        ((0.3, 1.0), [-7.006, 25.0, -5.725]),
+        ((0.6, 0.0), (3.533, -25.0, -4.224)),
+        ((0.6, 0.6), (3.533, 3.533, -6.801)),
+        ((0.6, 1.0), (3.533, 25.0, -4.224)),
+        ((1.0, 0.0), (25.0, -25.0, -10.0)),
+        ((1.0, 0.8), (25.0, 11.636, -2.751)),
+        ((1.0, 1.0), (25.0, 25.0, -10.0)),
+    ],
+)
 def test_bspline_surface_eval(spline_surf, param, res):
     evalpt = spline_surf.evaluate_single(param)
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
@@ -103,11 +135,14 @@ def test_bspline_surface_deriv(spline_surf):
             assert abs(der1[k][l][2] - der2[k][l][2]) < GEOMDL_DELTA
 
 
-@mark.parametrize("params, uv, res", [
-    (dict(u=0.3, v=0.4), (0.3, 0.4), (-7.006, -3.308, -6.265)),
-    (dict(u=0.3, num_u=2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
-    (dict(v=0.3, num_v=2), (0.3, 0.4), (-7.006, -3.308, -6.265))
-])
+@mark.parametrize(
+    "params, uv, res",
+    [
+        (dict(u=0.3, v=0.4), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+        (dict(u=0.3, num_u=2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+        (dict(v=0.3, num_v=2), (0.3, 0.4), (-7.006, -3.308, -6.265)),
+    ],
+)
 def test_bspline_surface_insert_knot_eval(spline_surf, params, uv, res):
     # Insert knot
     spline_surf.insert_knot(**params)
@@ -120,10 +155,7 @@ def test_bspline_surface_insert_knot_eval(spline_surf, params, uv, res):
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-@mark.parametrize("params, idx, val", [
-    (dict(v=0.3, num_v=2), 4, 0.3),
-    (dict(v=0.3, num_v=2), 6, 0.33)
-])
+@mark.parametrize("params, idx, val", [(dict(v=0.3, num_v=2), 4, 0.3), (dict(v=0.3, num_v=2), 6, 0.33)])
 def test_bspline_surface_insert_knot_kv_v(spline_surf, params, idx, val):
     # Insert knot
     spline_surf.insert_knot(**params)
@@ -131,10 +163,7 @@ def test_bspline_surface_insert_knot_kv_v(spline_surf, params, idx, val):
     assert spline_surf.knotvector_v[idx] == val
 
 
-@mark.parametrize("params, idx, val", [
-    (dict(u=0.33, num_u=2), 3, 0.0),
-    (dict(u=0.33, num_u=1), 6, 0.66)
-])
+@mark.parametrize("params, idx, val", [(dict(u=0.33, num_u=2), 3, 0.0), (dict(u=0.33, num_u=1), 6, 0.66)])
 def test_bspline_surface_insert_kv_u(spline_surf, params, idx, val):
     # Insert knot
     spline_surf.insert_knot(**params)
@@ -142,10 +171,7 @@ def test_bspline_surface_insert_kv_u(spline_surf, params, idx, val):
     assert spline_surf.knotvector_u[idx] == val
 
 
-@mark.parametrize("param, num_remove", [
-    (0.33, 1),
-    (0.66, 1)
-])
+@mark.parametrize("param, num_remove", [(0.33, 1), (0.66, 1)])
 def test_bspline_surface_remove_knot_u(spline_surf, param, num_remove):
     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_u)
     c_pre = spline_surf.ctrlpts_size_u
@@ -157,10 +183,7 @@ def test_bspline_surface_remove_knot_u(spline_surf, param, num_remove):
     assert s_pre - num_remove == s_post
 
 
-@mark.parametrize("param, num_remove", [
-    (0.33, 1),
-    (0.66, 1)
-])
+@mark.parametrize("param, num_remove", [(0.33, 1), (0.66, 1)])
 def test_bspline_surface_remove_knot_v(spline_surf, param, num_remove):
     s_pre = helpers.find_multiplicity(param, spline_surf.knotvector_v)
     c_pre = spline_surf.ctrlpts_size_v
@@ -199,20 +222,23 @@ def test_nurbs_weights(nurbs_surf):
     assert nurbs_surf.weights[5] == 1.0
 
 
-@mark.parametrize("param, res", [
-    ((0.0, 0.0), (-25.0, -25.0, -10.0)),
-    ((0.0, 0.2), (-25.0, -11.403, -3.385)),
-    ((0.0, 1.0), (-25.0, 25.0, -10.0)),
-    ((0.3, 0.0), (-7.006, -25.0, -5.725)),
-    ((0.3, 0.4), [-7.006, -3.308, -6.265]),
-    ((0.3, 1.0), [-7.006, 25.0, -5.725]),
-    ((0.6, 0.0), (3.533, -25.0, -4.224)),
-    ((0.6, 0.6), (3.533, 3.533, -6.801)),
-    ((0.6, 1.0), (3.533, 25.0, -4.224)),
-    ((1.0, 0.0), (25.0, -25.0, -10.0)),
-    ((1.0, 0.8), (25.0, 11.636, -2.751)),
-    ((1.0, 1.0), (25.0, 25.0, -10.0))
-])
+@mark.parametrize(
+    "param, res",
+    [
+        ((0.0, 0.0), (-25.0, -25.0, -10.0)),
+        ((0.0, 0.2), (-25.0, -11.403, -3.385)),
+        ((0.0, 1.0), (-25.0, 25.0, -10.0)),
+        ((0.3, 0.0), (-7.006, -25.0, -5.725)),
+        ((0.3, 0.4), [-7.006, -3.308, -6.265]),
+        ((0.3, 1.0), [-7.006, 25.0, -5.725]),
+        ((0.6, 0.0), (3.533, -25.0, -4.224)),
+        ((0.6, 0.6), (3.533, 3.533, -6.801)),
+        ((0.6, 1.0), (3.533, 25.0, -4.224)),
+        ((1.0, 0.0), (25.0, -25.0, -10.0)),
+        ((1.0, 0.8), (25.0, 11.636, -2.751)),
+        ((1.0, 1.0), (25.0, 25.0, -10.0)),
+    ],
+)
 def test_nurbs_surface_eval(nurbs_surf, param, res):
     evalpt = nurbs_surf.evaluate_single(param)
     assert abs(evalpt[0] - res[0]) < GEOMDL_DELTA
@@ -220,10 +246,36 @@ def test_nurbs_surface_eval(nurbs_surf, param, res):
     assert abs(evalpt[2] - res[2]) < GEOMDL_DELTA
 
 
-@mark.parametrize("param, order, res", [
-    ((0.0, 0.25), 1, [[[-25.0, -9.0771, -2.3972], [5.5511e-15, 43.6910, 17.5411]], [[90.9090, 0.0, -15.0882],[-5.9750e-15, 0.0, -140.0367]]]),
-    ((0.95, 0.75), 2, [[[20.8948, 9.3097, -2.4845], [-1.1347e-14, 43.7672, -15.0153], [-5.0393e-30, 100.1022, -74.1165]], [[76.2308, -1.6965e-15, 18.0372], [9.8212e-15, -5.9448e-15, -158.5462], [4.3615e-30, -2.4356e-13, -284.3037]], [[224.5342, -5.6794e-14, 93.3843], [4.9856e-14, -4.0400e-13, -542.6274], [2.2140e-29, -1.88662e-12, -318.8808]]])
-])
+@mark.parametrize(
+    "param, order, res",
+    [
+        (
+            (0.0, 0.25),
+            1,
+            [
+                [[-25.0, -9.0771, -2.3972], [5.5511e-15, 43.6910, 17.5411]],
+                [[90.9090, 0.0, -15.0882], [-5.9750e-15, 0.0, -140.0367]],
+            ],
+        ),
+        (
+            (0.95, 0.75),
+            2,
+            [
+                [[20.8948, 9.3097, -2.4845], [-1.1347e-14, 43.7672, -15.0153], [-5.0393e-30, 100.1022, -74.1165]],
+                [
+                    [76.2308, -1.6965e-15, 18.0372],
+                    [9.8212e-15, -5.9448e-15, -158.5462],
+                    [4.3615e-30, -2.4356e-13, -284.3037],
+                ],
+                [
+                    [224.5342, -5.6794e-14, 93.3843],
+                    [4.9856e-14, -4.0400e-13, -542.6274],
+                    [2.2140e-29, -1.88662e-12, -318.8808],
+                ],
+            ],
+        ),
+    ],
+)
 def test_nurbs_surface_deriv(nurbs_surf, param, order, res):
     deriv = nurbs_surf.derivatives(*param, order=order)
 

@@ -12,7 +12,7 @@ __all__ = []
 
 
 def doolittle(matrix_a):
-    """ Doolittle's Method for LU-factorization.
+    """Doolittle's Method for LU-factorization.
 
     :param matrix_a: Input matrix (must be a square matrix)
     :type matrix_a: list, tuple
