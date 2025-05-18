@@ -58,7 +58,7 @@ class VisConfig(vis.VisConfigAbstract):
     """
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self.dtype = np.float
+        self.dtype = float
         # Set Plotly custom variables
         self.figure_image_filename = "temp-plot.html"
         self.use_renderer = kwargs.get("use_renderer", False)
@@ -190,6 +190,9 @@ class VisCurve2D(vis.VisAbstract):
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisCurve3D(vis.VisAbstract):
@@ -329,6 +332,9 @@ class VisCurve3D(vis.VisAbstract):
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+
+        # Return the figure
+        return fig
 
 
 class VisSurface(vis.VisAbstract):
@@ -490,6 +496,9 @@ class VisSurface(vis.VisAbstract):
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisVolume(vis.VisAbstract):
     """ Plotly visualization module for volumes. """
@@ -620,3 +629,6 @@ class VisVolume(vis.VisAbstract):
             fig.write_html(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
         else:
             fig.write_image(file=self.vconf.figure_image_filename if fig_filename is None else fig_filename)
+
+        # Return the figure
+        return fig

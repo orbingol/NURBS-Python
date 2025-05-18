@@ -68,7 +68,7 @@ class VisConfig(vis.VisConfigAbstract):
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self.dtype = np.float
+        self.dtype = float
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
         self.display_bbox = kwargs.get('bbox', False)
@@ -201,6 +201,9 @@ class VisCurve2D(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
@@ -218,7 +221,7 @@ class VisCurve3D(vis.VisAbstract):
 
         # Draw control points polygon and the 3D curve
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         for plot in self._plots:
@@ -288,6 +291,9 @@ class VisCurve3D(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisSurface(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -331,7 +337,7 @@ class VisSurface(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         surf_count = 0
@@ -403,6 +409,9 @@ class VisSurface(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
     def render(self, **kwargs):
         """ Plots the surface and the control points grid.
@@ -428,7 +437,7 @@ class VisSurface(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         surf_count = 0
         # Start plotting
@@ -540,6 +549,9 @@ class VisSurface(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisSurfWireframe(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -562,7 +574,7 @@ class VisSurfWireframe(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         for plot in self._plots:
@@ -649,6 +661,9 @@ class VisSurfWireframe(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisSurfScatter(vis.VisAbstract):
     """ Matplotlib visualization module for surfaces.
@@ -671,7 +686,7 @@ class VisSurfScatter(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         for plot in self._plots:
@@ -759,6 +774,9 @@ class VisSurfScatter(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisVolume(vis.VisAbstract):
     """ Matplotlib visualization module for volumes. """
@@ -778,7 +796,7 @@ class VisVolume(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         for plot in self._plots:
@@ -844,6 +862,9 @@ class VisVolume(vis.VisAbstract):
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
 
+        # Return the figure
+        return fig
+
 
 class VisVoxel(vis.VisAbstract):
     """ Matplotlib visualization module for voxel representation of the volumes. """
@@ -863,7 +884,7 @@ class VisVoxel(vis.VisAbstract):
 
         # Start plotting of the surface and the control points grid
         fig = plt.figure(figsize=self.vconf.figure_size, dpi=self.vconf.figure_dpi)
-        ax = Axes3D(fig)
+        ax = plt.axes(projection="3d")
 
         # Start plotting
         for plot in self._plots:
@@ -940,3 +961,6 @@ class VisVoxel(vis.VisAbstract):
             else:
                 fig_filename = self.vconf.figure_image_filename if fig_filename is None else fig_filename
                 self.vconf.save_figure_as(fig, fig_filename)
+
+        # Return the figure
+        return fig
