@@ -74,9 +74,9 @@ master_doc = "index"
 
 # General information about the project.
 project = "NURBS-Python"
-copyright = "2016-2019, Onur Rauf Bingol"
-author = geomdl.__author__
-description = geomdl.__description__
+copyright = "2016-2025, Onur R. Bingol"
+author = "Onur R. Bingol"
+description = "Object-oriented B-Spline and NURBS evaluation library"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

@@ -7,10 +7,6 @@
 # Library version
 __version__ = "5.3.1"
 
-# Author and license
-__author__ = "Onur Rauf Bingol"
-__license__ = "MIT"
-
 # Support for "from geomdl import *"
 # @see: https://stackoverflow.com/a/41895257
 # @see: https://stackoverflow.com/a/35710527
