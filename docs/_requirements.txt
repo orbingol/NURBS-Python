@@ -1,3 +1,4 @@
-numpy>=2.0, <3.0
+-e .
+cd donumpy>=2.0, <3.0
 matplotlib>=3.9.0
 plotly>=6.0.0
