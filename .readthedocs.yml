@@ -1,25 +1,21 @@
-# https://nurbs-python.readthedocs.io/en/latest/
+# Read the Docs configuration file for Sphinx projects
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
-# Use RTD config version 2
+# Required
 version: 2
 
-# Use RTD latest python image
 build:
-  image: latest
+  os: ubuntu-22.04
+  tools:
+    python: "3.13"
 
-# Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
 
-# Build HTML and PDF docs
 formats:
-  - htmlzip
   - pdf
+  - epub
 
-# Python options
 python:
-  version: 3.7
   install:
-    - method: setuptools  # use "python setup.py install" method
-      path: .  # execute command "python ./setup.py install"
-  system_packages: true  # needed for numpy, matplotlib, etc.
+    - requirements: docs/requirements.txt
