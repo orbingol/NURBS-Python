@@ -8,20 +8,6 @@ Introduction
 
 NURBS-Python (geomdl) is a pure Python, self-contained, object-oriented B-Spline and NURBS spline library for Python 3.
 
-The `following article <https://doi.org/10.1016/j.softx.2018.12.005>`_ outlines the design and features of NURBS-Python
-(geomdl)::
-
-    @article{bingol2019geomdl,
-      title={{NURBS-Python}: An open-source object-oriented {NURBS} modeling framework in {Python}},
-      author={Bingol, Onur Rauf and Krishnamurthy, Adarsh},
-      journal={{SoftwareX}},
-      volume={9},
-      pages={85--94},
-      year={2019},
-      publisher={Elsevier},
-      doi={https://doi.org/10.1016/j.softx.2018.12.005}
-    }
-
 Features
 ========
 
@@ -40,29 +26,35 @@ splines along with the efficient and extensible implementations of the following
 NURBS-Python (geomdl) also provides customizable visualization and animation options via Matplotlib, Plotly and VTK
 libraries. Please refer to the `documentation <http://nurbs-python.readthedocs.io/>`_ for more details.
 
-Installation
-============
+Further reading
+===============
 
-The easiest way to install NURBS-Python (geomdl) is using ``pip``:
+* Documentation: https://nurbs-python.readthedocs.io/
+* Examples: https://github.com/orbingol/NURBS-Python_Examples
+* Development: https://github.com/orbingol/NURBS-Python
 
-.. code-block:: console
+Additional file format support
+==============================
 
-    $ pip install --user geomdl
+* `rw3dm <https://github.com/orbingol/rw3dm>`_
+* `rwsat <https://github.com/orbingol/rwsat>`_
 
-It is also possible to install NURBS-Python (geomdl) using ``conda``:
+Citing
+======
 
-.. code-block:: console
+The `following article <https://doi.org/10.1016/j.softx.2018.12.005>`_ outlines the design and features of NURBS-Python
+(geomdl)::
 
-    $ conda install -c orbingol geomdl
-
-Please refer to the `Installation and Testing <http://nurbs-python.readthedocs.io/en/latest/install.html>`_ section
-of the documentation for alternative installation methods.
-
-Documentation
-=============
-
-* **Examples**: https://github.com/orbingol/NURBS-Python_Examples
-* **RtD**: http://nurbs-python.readthedocs.io/
+    @article{bingol2019geomdl,
+      title={{NURBS-Python}: An open-source object-oriented {NURBS} modeling framework in {Python}},
+      author={Bingol, Onur Rauf and Krishnamurthy, Adarsh},
+      journal={{SoftwareX}},
+      volume={9},
+      pages={85--94},
+      year={2019},
+      publisher={Elsevier},
+      doi={https://doi.org/10.1016/j.softx.2018.12.005}
+    }
 
 License
 =======
