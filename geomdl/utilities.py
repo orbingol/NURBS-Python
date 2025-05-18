@@ -12,13 +12,14 @@ from geomdl import linalg
 
 # Preserve the knot vector functions for compatibility
 from . import knotvector
+
 generate_knot_vector = knotvector.generate
 check_knot_vector = knotvector.check
 normalize_knot_vector = knotvector.normalize
 
 
 def color_generator(seed=None):
-    """ Generates random colors for control and evaluated curve/surface points plots.
+    """Generates random colors for control and evaluated curve/surface points plots.
 
     The ``seed`` argument is used to set the random seed by directly passing the value to ``random.seed()`` function.
     Please see the Python documentation for more details on the ``random`` module .
@@ -29,16 +30,18 @@ def color_generator(seed=None):
     :return: list of color strings in hex format
     :rtype: list
     """
+
     def r_int():
         return random.randint(0, 255)
+
     if seed is not None:
         random.seed(seed)
-    color_string = '#%02X%02X%02X'
+    color_string = "#%02X%02X%02X"
     return [color_string % (r_int(), r_int(), r_int()), color_string % (r_int(), r_int(), r_int())]
 
 
 def make_zigzag(points, num_cols):
-    """ Converts linear sequence of points into a zig-zag shape.
+    """Converts linear sequence of points into a zig-zag shape.
 
     This function is designed to create input for the visualization software. It orders the points to draw a zig-zag
     shape which enables generating properly connected lines without any scanlines. Please see the below sketch on the
@@ -81,7 +84,7 @@ def make_zigzag(points, num_cols):
 
 
 def make_quad(points, size_u, size_v):
-    """ Converts linear sequence of input points into a quad structure.
+    """Converts linear sequence of input points into a quad structure.
 
     :param points: list of points to be ordered
     :type points: list, tuple
@@ -113,7 +116,7 @@ def make_quad(points, size_u, size_v):
 
 
 def make_quadtree(points, size_u, size_v, **kwargs):
-    """ Generates a quadtree-like structure from surface control points.
+    """Generates a quadtree-like structure from surface control points.
 
     This function generates a 2-dimensional list of control point coordinates. Considering the object-oriented
     representation of a quadtree data structure, first dimension of the generated list corresponds to a list of
@@ -139,7 +142,7 @@ def make_quadtree(points, size_u, size_v, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    extrapolate = kwargs.get('extrapolate', True)
+    extrapolate = kwargs.get("extrapolate", True)
 
     # Convert control points array into 2-dimensional form
     points2d = []
@@ -156,28 +159,28 @@ def make_quadtree(points, size_u, size_v, **kwargs):
             temp = [points2d[u][v]]
             # Note: negative indexing actually works in Python, so we need explicit checking
             if u + 1 < size_u:
-                temp.append(points2d[u+1][v])
+                temp.append(points2d[u + 1][v])
             else:
                 if extrapolate:
                     extrapolated_edge = linalg.vector_generate(points2d[u - 1][v], points2d[u][v])
                     translated_point = linalg.point_translate(points2d[u][v], extrapolated_edge)
                     temp.append(translated_point)
             if v + 1 < size_v:
-                temp.append(points2d[u][v+1])
+                temp.append(points2d[u][v + 1])
             else:
                 if extrapolate:
                     extrapolated_edge = linalg.vector_generate(points2d[u][v - 1], points2d[u][v])
                     translated_point = linalg.point_translate(points2d[u][v], extrapolated_edge)
                     temp.append(translated_point)
             if u - 1 >= 0:
-                temp.append(points2d[u-1][v])
+                temp.append(points2d[u - 1][v])
             else:
                 if extrapolate:
                     extrapolated_edge = linalg.vector_generate(points2d[u + 1][v], points2d[u][v])
                     translated_point = linalg.point_translate(points2d[u][v], extrapolated_edge)
                     temp.append(translated_point)
             if v - 1 >= 0:
-                temp.append(points2d[u][v-1])
+                temp.append(points2d[u][v - 1])
             else:
                 if extrapolate:
                     extrapolated_edge = linalg.vector_generate(points2d[u][v + 1], points2d[u][v])
@@ -190,7 +193,7 @@ def make_quadtree(points, size_u, size_v, **kwargs):
 
 
 def evaluate_bounding_box(ctrlpts):
-    """ Computes the minimum bounding box of the point set.
+    """Computes the minimum bounding box of the point set.
 
     The (minimum) bounding box is the smallest enclosure in which all the input points lie.
 
@@ -203,8 +206,8 @@ def evaluate_bounding_box(ctrlpts):
     dimension = len(ctrlpts[0])
 
     # Evaluate bounding box
-    bbmin = [float('inf') for _ in range(0, dimension)]
-    bbmax = [float('-inf') for _ in range(0, dimension)]
+    bbmin = [float("inf") for _ in range(0, dimension)]
+    bbmax = [float("-inf") for _ in range(0, dimension)]
     for cpt in ctrlpts:
         for i, arr in enumerate(zip(cpt, bbmin)):
             if arr[0] < arr[1]:
@@ -217,7 +220,7 @@ def evaluate_bounding_box(ctrlpts):
 
 
 def check_params(params):
-    """ Checks if the parameters are defined in the domain [0, 1].
+    """Checks if the parameters are defined in the domain [0, 1].
 
     :param params: parameters (u, v, w)
     :type params: list, tuple

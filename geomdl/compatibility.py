@@ -9,7 +9,7 @@
 
 
 def flip_ctrlpts_u(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points from u-row order to v-row order.
+    """Flips a list of 1-dimensional control points from u-row order to v-row order.
 
     **u-row order**: each row corresponds to a list of u values
 
@@ -34,7 +34,7 @@ def flip_ctrlpts_u(ctrlpts, size_u, size_v):
 
 
 def flip_ctrlpts(ctrlpts, size_u, size_v):
-    """ Flips a list of 1-dimensional control points from v-row order to u-row order.
+    """Flips a list of 1-dimensional control points from v-row order to u-row order.
 
     **u-row order**: each row corresponds to a list of u values
 
@@ -59,7 +59,7 @@ def flip_ctrlpts(ctrlpts, size_u, size_v):
 
 
 def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
-    """ Flips a list of surface 2-D control points from *[u][v]* to *[v][u]* order.
+    """Flips a list of surface 2-D control points from *[u][v]* to *[v][u]* order.
 
     :param ctrlpts2d: 2-D control points
     :type ctrlpts2d: list, tuple
@@ -84,7 +84,7 @@ def flip_ctrlpts2d(ctrlpts2d, size_u=0, size_v=0):
 
 
 def generate_ctrlptsw(ctrlpts):
-    """ Generates weighted control points from unweighted ones in 1-D.
+    """Generates weighted control points from unweighted ones in 1-D.
 
     This function
 
@@ -108,7 +108,7 @@ def generate_ctrlptsw(ctrlpts):
 
 
 def generate_ctrlptsw2d(ctrlpts2d):
-    """ Generates weighted control points from unweighted ones in 2-D.
+    """Generates weighted control points from unweighted ones in 2-D.
 
     This function
 
@@ -137,7 +137,7 @@ def generate_ctrlptsw2d(ctrlpts2d):
 
 
 def generate_ctrlpts_weights(ctrlpts):
-    """ Generates unweighted control points from weighted ones in 1-D.
+    """Generates unweighted control points from weighted ones in 1-D.
 
     This function
 
@@ -161,7 +161,7 @@ def generate_ctrlpts_weights(ctrlpts):
 
 
 def generate_ctrlpts2d_weights(ctrlpts2d):
-    """ Generates unweighted control points from weighted ones in 2-D.
+    """Generates unweighted control points from weighted ones in 2-D.
 
     This function
 
@@ -188,7 +188,7 @@ def generate_ctrlpts2d_weights(ctrlpts2d):
 
 
 def combine_ctrlpts_weights(ctrlpts, weights=None):
-    """ Multiplies control points by the weights to generate weighted control points.
+    """Multiplies control points by the weights to generate weighted control points.
 
     This function is dimension agnostic, i.e. control points can be in any dimension but weights should be 1D.
 
@@ -215,7 +215,7 @@ def combine_ctrlpts_weights(ctrlpts, weights=None):
 
 
 def separate_ctrlpts_weights(ctrlptsw):
-    """ Divides weighted control points by weights to generate unweighted control points and weights vector.
+    """Divides weighted control points by weights to generate unweighted control points and weights vector.
 
     This function is dimension agnostic, i.e. control points can be in any dimension but the last element of the array
     should indicate the weight.
@@ -235,8 +235,8 @@ def separate_ctrlpts_weights(ctrlptsw):
     return [ctrlpts, weights]
 
 
-def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
-    """ Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
+def flip_ctrlpts2d_file(file_in="", file_out="ctrlpts_flip.txt"):
+    """Flips u and v directions of a 2D control points file and saves flipped coordinates to a file.
 
     :param file_in: name of the input file (to be read)
     :type file_in: str
@@ -254,8 +254,8 @@ def flip_ctrlpts2d_file(file_in='', file_out='ctrlpts_flip.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
-    """ Generates weighted control points from unweighted ones in 2-D.
+def generate_ctrlptsw2d_file(file_in="", file_out="ctrlptsw.txt"):
+    """Generates weighted control points from unweighted ones in 2-D.
 
     This function
 
@@ -281,8 +281,8 @@ def generate_ctrlptsw2d_file(file_in='', file_out='ctrlptsw.txt'):
     _save_ctrlpts2d_file(new_ctrlpts2d, size_u, size_v, file_out)
 
 
-def generate_ctrlpts2d_weights_file(file_in='', file_out='ctrlpts_weights.txt'):
-    """ Generates unweighted control points from weighted ones in 2-D.
+def generate_ctrlpts2d_weights_file(file_in="", file_out="ctrlpts_weights.txt"):
+    """Generates unweighted control points from weighted ones in 2-D.
 
     #. Takes in 2-D control points list whose coordinates are organized like (x*w, y*w, z*w, w)
     #. Converts the input control points list into (x, y, z, w) format
@@ -310,14 +310,14 @@ def _read_ctrltps2d_file(file_in):
     size_v = 0
 
     try:
-        with open(file_in, 'r') as fp:
+        with open(file_in, "r") as fp:
             for line in fp:
                 line = line.strip()
-                control_point_row = line.split(';')
+                control_point_row = line.split(";")
                 size_v = 0
                 ctrlpts_v = []
                 for cpr in control_point_row:
-                    cpt = cpr.split(',')
+                    cpt = cpr.split(",")
                     pt_temp = []
                     for pt in cpt:
                         pt_temp.append(float(pt.strip()))
@@ -336,7 +336,7 @@ def _read_ctrltps2d_file(file_in):
 
 def _save_ctrlpts2d_file(ctrlpts2d, size_u, size_v, file_out):
     try:
-        with open(file_out, 'w') as fp:
+        with open(file_out, "w") as fp:
             fp.truncate()
             for i in range(size_u):
                 line = ""

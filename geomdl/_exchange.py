@@ -19,21 +19,22 @@ __all__ = []
 
 
 def process_template(file_src):
-    """ Process Jinja2 template input
+    """Process Jinja2 template input
 
     :param file_src: file contents
     :type file_src: str
     """
+
     def tmpl_sqrt(x):
-        """ Square-root of 'x' """
+        """Square-root of 'x'"""
         return math.sqrt(x)
 
     def tmpl_cubert(x):
-        """ Cube-root of 'x' """
-        return x ** (1.0 / 3.0) if x >= 0 else -(-x) ** (1.0 / 3.0)
+        """Cube-root of 'x'"""
+        return x ** (1.0 / 3.0) if x >= 0 else -((-x) ** (1.0 / 3.0))
 
     def tmpl_pow(x, y):
-        """ 'x' to the power 'y' """
+        """'x' to the power 'y'"""
         return math.pow(x, y)
 
     # Check if it is possible to import 'jinja2'
@@ -49,8 +50,10 @@ def process_template(file_src):
     env = jinja2.Environment(
         loader=jinja2.BaseLoader(),
         trim_blocks=True,
-        block_start_string='<%', block_end_string='%>',
-        variable_start_string='<{', variable_end_string='}>'
+        block_start_string="<%",
+        block_end_string="%>",
+        variable_start_string="<{",
+        variable_end_string="}>",
     ).from_string(fsrc)
 
     # Load custom functions into the Jinja2 environment
@@ -68,11 +71,11 @@ def process_template(file_src):
 
 
 def read_file(file_name, **kwargs):
-    binary = kwargs.get('binary', False)
-    skip_lines = kwargs.get('skip_lines', 0)
-    callback = kwargs.get('callback', None)
+    binary = kwargs.get("binary", False)
+    skip_lines = kwargs.get("skip_lines", 0)
+    callback = kwargs.get("callback", None)
     try:
-        with open(file_name, 'rb' if binary else 'r') as fp:
+        with open(file_name, "rb" if binary else "r") as fp:
             for _ in range(skip_lines):
                 next(fp)
             content = fp.read() if callback is None else callback(fp)
@@ -84,10 +87,10 @@ def read_file(file_name, **kwargs):
 
 
 def write_file(file_name, content, **kwargs):
-    binary = kwargs.get('binary', False)
-    callback = kwargs.get('callback', None)
+    binary = kwargs.get("binary", False)
+    callback = kwargs.get("callback", None)
     try:
-        with open(file_name, 'wb' if binary else 'w') as fp:
+        with open(file_name, "wb" if binary else "w") as fp:
             if callback is None:
                 fp.write(content)
             else:
@@ -100,7 +103,7 @@ def write_file(file_name, content, **kwargs):
 
 
 def import_surf_mesh(file_name):
-    """ Generates a NURBS surface object from a mesh file.
+    """Generates a NURBS surface object from a mesh file.
 
     :param file_name: input mesh file
     :type file_name: str
@@ -151,7 +154,7 @@ def import_surf_mesh(file_name):
 
 
 def import_vol_mesh(file_name):
-    """ Generates a NURBS volume object from a mesh file.
+    """Generates a NURBS volume object from a mesh file.
 
     :param file_name: input mesh file
     :type file_name: str
@@ -190,7 +193,7 @@ def import_vol_mesh(file_name):
     # mesh files have the control points in u-row order format
     ctrlpts = []
     for i in range(dim_w - 1):
-        ctrlpts += compatibility.flip_ctrlpts_u(ctrlpts_mesh[surf_cpts * i:surf_cpts * (i + 1)], dim_u, dim_v)
+        ctrlpts += compatibility.flip_ctrlpts_u(ctrlpts_mesh[surf_cpts * i : surf_cpts * (i + 1)], dim_u, dim_v)
 
     # mesh files store control points in format (x, y, z, w)
     ctrlptsw = compatibility.generate_ctrlptsw(ctrlpts)
@@ -212,23 +215,23 @@ def import_dict_crv(data):
 
     # Mandatory keys
     try:
-        shape.degree = data['degree']
-        shape.ctrlpts = data['control_points']['points']
-        shape.knotvector = data['knotvector']
+        shape.degree = data["degree"]
+        shape.ctrlpts = data["control_points"]["points"]
+        shape.knotvector = data["knotvector"]
     except KeyError as e:
         raise RuntimeError("Required key does not exist in the input data: {}".format(e.args[-1]))
 
     # Optional keys
-    if 'weights' in data['control_points']:
-        shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
-    if 'name' in data:
-        shape.name = data['name']
-    if 'id' in data:
-        shape.id = data['id']
-    if 'reversed' in data:  # trim curve sense
-        shape.opt = ['reversed', data['reversed']]
+    if "weights" in data["control_points"]:
+        shape.weights = data["control_points"]["weights"]
+    if "delta" in data:
+        shape.delta = data["delta"]
+    if "name" in data:
+        shape.name = data["name"]
+    if "id" in data:
+        shape.id = data["id"]
+    if "reversed" in data:  # trim curve sense
+        shape.opt = ["reversed", data["reversed"]]
 
     # Return curve
     return shape
@@ -241,18 +244,16 @@ def export_dict_crv(obj):
         dimension=obj.dimension,
         degree=obj.degree,
         knotvector=list(obj.knotvector),
-        control_points=dict(
-            points=obj.ctrlpts
-        ),
-        delta=obj.delta
+        control_points=dict(points=obj.ctrlpts),
+        delta=obj.delta,
     )
     if obj.rational:
-        data['control_points']['weights'] = list(obj.weights)
+        data["control_points"]["weights"] = list(obj.weights)
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.opt_get("reversed")
     if sense is not None:
-        data['reversed'] = sense
+        data["reversed"] = sense
 
     return data
 
@@ -262,32 +263,27 @@ def import_dict_ff(data):
 
     # Mandatory keys
     try:
-        shape.evaluate(points=data['points'])
+        shape.evaluate(points=data["points"])
     except KeyError as e:
         raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
 
-    if 'name' in data:
-        shape.name = data['name']
-    if 'id' in data:
-        shape.id = data['id']
-    if 'reversed' in data:  # trim curve sense
-        shape.opt = ['reversed', data['reversed']]
+    if "name" in data:
+        shape.name = data["name"]
+    if "id" in data:
+        shape.id = data["id"]
+    if "reversed" in data:  # trim curve sense
+        shape.opt = ["reversed", data["reversed"]]
 
     return shape
 
 
 def export_dict_ff(obj):
-    data = dict(
-        type="freeform",
-        dimension=obj.dimension,
-        points=obj.evalpts,
-        name=obj.name
-    )
+    data = dict(type="freeform", dimension=obj.dimension, points=obj.evalpts, name=obj.name)
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.opt_get("reversed")
     if sense is not None:
-        data['reversed'] = sense
+        data["reversed"] = sense
 
     return data
 
@@ -295,16 +291,16 @@ def export_dict_ff(obj):
 def import_dict_multi_crv(data):
     shape = shortcuts.generate_container_curve()
     curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff)
-    for trim in data['data']:
-        if trim['type'] in curve_typemap:
-            tcurve = curve_typemap[trim['type']](trim)
+    for trim in data["data"]:
+        if trim["type"] in curve_typemap:
+            tcurve = curve_typemap[trim["type"]](trim)
             shape.add(tcurve)
-    if 'name' in data:
-        shape.name = data['name']
-    if 'id' in data:
-        shape.id = data['id']
-    if 'reversed' in data:  # trim curve sense
-        shape.opt = ['reversed', data['reversed']]
+    if "name" in data:
+        shape.name = data["name"]
+    if "id" in data:
+        shape.id = data["id"]
+    if "reversed" in data:  # trim curve sense
+        shape.opt = ["reversed", data["reversed"]]
     return shape
 
 
@@ -315,19 +311,15 @@ def export_dict_multi_crv(obj):
         if o.type in curve_typemap:
             tdata = curve_typemap[o.type](o)
         else:
-            tdata = curve_typemap['freeform'](o)
+            tdata = curve_typemap["freeform"](o)
         curves.append(tdata)
 
-    data = dict(
-        type="container",
-        count=len(curves),
-        data=curves
-    )
+    data = dict(type="container", count=len(curves), data=curves)
 
     # For trim curves
-    sense = obj.opt_get('reversed')
+    sense = obj.opt_get("reversed")
     if sense is not None:
-        data['reversed'] = sense
+        data["reversed"] = sense
 
     return data
 
@@ -337,35 +329,35 @@ def import_dict_surf(data):
 
     # Mandatory keys
     try:
-        shape.degree_u = data['degree_u']
-        shape.degree_v = data['degree_v']
-        shape.ctrlpts_size_u = data['size_u']
-        shape.ctrlpts_size_v = data['size_v']
-        shape.ctrlpts = data['control_points']['points']
-        shape.knotvector_u = data['knotvector_u']
-        shape.knotvector_v = data['knotvector_v']
+        shape.degree_u = data["degree_u"]
+        shape.degree_v = data["degree_v"]
+        shape.ctrlpts_size_u = data["size_u"]
+        shape.ctrlpts_size_v = data["size_v"]
+        shape.ctrlpts = data["control_points"]["points"]
+        shape.knotvector_u = data["knotvector_u"]
+        shape.knotvector_v = data["knotvector_v"]
     except KeyError as e:
         raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
 
     # Optional keys
-    if 'weights' in data['control_points']:
-        shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
-    if 'name' in data:
-        shape.name = data['name']
-    if 'id' in data:
-        shape.id = data['id']
-    if 'reversed' in data:  # surface sense
-        shape.opt = ['reversed', data['reversed']]
+    if "weights" in data["control_points"]:
+        shape.weights = data["control_points"]["weights"]
+    if "delta" in data:
+        shape.delta = data["delta"]
+    if "name" in data:
+        shape.name = data["name"]
+    if "id" in data:
+        shape.id = data["id"]
+    if "reversed" in data:  # surface sense
+        shape.opt = ["reversed", data["reversed"]]
 
     # Trim curves
-    if 'trims' in data:
+    if "trims" in data:
         trim_curve_typemap = dict(spline=import_dict_crv, freeform=import_dict_ff, container=import_dict_multi_crv)
         trim_curves = []
-        for trim in data['trims']['data']:
-            if trim['type'] in trim_curve_typemap:
-                tcurve = trim_curve_typemap[trim['type']](trim)
+        for trim in data["trims"]["data"]:
+            if trim["type"] in trim_curve_typemap:
+                tcurve = trim_curve_typemap[trim["type"]](trim)
                 trim_curves.append(tcurve)
         shape.trims = trim_curves
     # Return surface
@@ -383,25 +375,19 @@ def export_dict_surf(obj):
         knotvector_v=list(obj.knotvector_v),
         size_u=obj.ctrlpts_size_u,
         size_v=obj.ctrlpts_size_v,
-        control_points=dict(
-            points=obj.ctrlpts
-        ),
-        delta=obj.delta
+        control_points=dict(points=obj.ctrlpts),
+        delta=obj.delta,
     )
     if obj.rational:
-        data['control_points']['weights'] = list(obj.weights)
+        data["control_points"]["weights"] = list(obj.weights)
 
     # Surface sense
-    sense = obj.opt_get('reversed')
+    sense = obj.opt_get("reversed")
     if sense is not None:
-        data['reversed'] = sense
+        data["reversed"] = sense
 
     # Converter mapping for trim curves
-    trim_curve_typemap = dict(
-        spline=export_dict_crv,
-        freeform=export_dict_ff,
-        container=export_dict_multi_crv
-    )
+    trim_curve_typemap = dict(spline=export_dict_crv, freeform=export_dict_ff, container=export_dict_multi_crv)
 
     # Trim curves
     if obj.trims:
@@ -410,13 +396,10 @@ def export_dict_surf(obj):
             if trim.type in trim_curve_typemap:
                 tdata = trim_curve_typemap[trim.type](trim)
             else:
-                tdata = trim_curve_typemap['freeform'](trim)
+                tdata = trim_curve_typemap["freeform"](trim)
             trim_curves.append(tdata)
-        trim_data = dict(
-            count=len(trim_curves),
-            data=trim_curves
-        )
-        data['trims'] = trim_data
+        trim_data = dict(count=len(trim_curves), data=trim_curves)
+        data["trims"] = trim_data
 
     return data
 
@@ -426,28 +409,28 @@ def import_dict_vol(data):
 
     # Mandatory keys
     try:
-        shape.degree_u = data['degree_u']
-        shape.degree_v = data['degree_v']
-        shape.degree_w = data['degree_w']
-        shape.ctrlpts_size_u = data['size_u']
-        shape.ctrlpts_size_v = data['size_v']
-        shape.ctrlpts_size_w = data['size_w']
-        shape.ctrlpts = data['control_points']['points']
-        shape.knotvector_u = data['knotvector_u']
-        shape.knotvector_v = data['knotvector_v']
-        shape.knotvector_w = data['knotvector_w']
+        shape.degree_u = data["degree_u"]
+        shape.degree_v = data["degree_v"]
+        shape.degree_w = data["degree_w"]
+        shape.ctrlpts_size_u = data["size_u"]
+        shape.ctrlpts_size_v = data["size_v"]
+        shape.ctrlpts_size_w = data["size_w"]
+        shape.ctrlpts = data["control_points"]["points"]
+        shape.knotvector_u = data["knotvector_u"]
+        shape.knotvector_v = data["knotvector_v"]
+        shape.knotvector_w = data["knotvector_w"]
     except KeyError as e:
         raise GeomdlException("Required key does not exist in the input data: {}".format(e.args[-1]))
 
     # Optional keys
-    if 'weights' in data['control_points']:
-        shape.weights = data['control_points']['weights']
-    if 'delta' in data:
-        shape.delta = data['delta']
-    if 'name' in data:
-        shape.name = data['name']
-    if 'id' in data:
-        shape.id = data['id']
+    if "weights" in data["control_points"]:
+        shape.weights = data["control_points"]["weights"]
+    if "delta" in data:
+        shape.delta = data["delta"]
+    if "name" in data:
+        shape.name = data["name"]
+    if "id" in data:
+        shape.id = data["id"]
 
     # Return volume
     return shape
@@ -467,13 +450,11 @@ def export_dict_vol(obj):
         size_u=obj.ctrlpts_size_u,
         size_v=obj.ctrlpts_size_v,
         size_w=obj.ctrlpts_size_w,
-        control_points=dict(
-            points=obj.ctrlpts
-        ),
-        delta=obj.delta
+        control_points=dict(points=obj.ctrlpts),
+        delta=obj.delta,
     )
     if obj.rational:
-        data['control_points']['weights'] = list(obj.weights)
+        data["control_points"]["weights"] = list(obj.weights)
     return data
 
 
@@ -535,7 +516,7 @@ def export_text_data(obj, sep, col_sep=";", two_dimensional=False):
 
 
 def import_dict_str(file_src, delta, callback, tmpl):
-    mapping = {'curve': import_dict_crv, 'surface': import_dict_surf, 'volume': import_dict_vol}
+    mapping = {"curve": import_dict_crv, "surface": import_dict_surf, "volume": import_dict_vol}
 
     # Process template
     if tmpl:
@@ -545,8 +526,8 @@ def import_dict_str(file_src, delta, callback, tmpl):
 
     # Process imported data
     ret_list = []
-    for data in imported_data['shape']['data']:
-        temp = mapping[imported_data['shape']['type']](data)
+    for data in imported_data["shape"]["data"]:
+        temp = mapping[imported_data["shape"]["type"]](data)
         if 0.0 < delta < 1.0:
             temp.delta = delta
         ret_list.append(temp)
@@ -569,13 +550,7 @@ def export_dict_str(obj, callback):
         raise GeomdlException("Cannot export input geometry")
 
     # Create the dictionary
-    data = dict(
-        shape=dict(
-            type=export_type,
-            count=len(obj),
-            data=tuple(data)
-        )
-    )
+    data = dict(shape=dict(type=export_type, count=len(obj), data=tuple(data)))
 
     # Execute callback function
     exported_data = callback(data)

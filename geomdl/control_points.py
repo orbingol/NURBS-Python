@@ -16,7 +16,7 @@ from ._utilities import export, add_metaclass
 
 @add_metaclass(abc.ABCMeta)
 class AbstractManager(object):
-    """ Abstract base class for control points manager classes.
+    """Abstract base class for control points manager classes.
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
@@ -37,11 +37,12 @@ class AbstractManager(object):
     * :py:meth:`get_ptdata`
     * :py:meth:`set_ptdata`
     """
-    __slots__ = ('_size', '_num_ctrlpts', '_attachment', '_points', '_pt_data', '_cache', '_iter_index')
+
+    __slots__ = ("_size", "_num_ctrlpts", "_attachment", "_points", "_pt_data", "_cache", "_iter_index")
 
     def __init__(self, *args, **kwargs):
         self._size = [int(arg) for arg in args]  # size in all parametric dimensions
-        self._num_ctrlpts = reduce(lambda x, y: x *y, self._size)  # number of control points
+        self._num_ctrlpts = reduce(lambda x, y: x * y, self._size)  # number of control points
         self._attachment = kwargs if kwargs else dict()  # data attached to the control points
         self._points = list()  # list of control points
         self._pt_data = dict()  # dict containing lists of additional data attached to the control points
@@ -101,7 +102,7 @@ class AbstractManager(object):
 
     @property
     def ctrlpts(self):
-        """ Control points.
+        """Control points.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -116,7 +117,7 @@ class AbstractManager(object):
         self._points = value
 
     def reset(self):
-        """ Resets/initializes the internal control points array. """
+        """Resets/initializes the internal control points array."""
         self._points[:] = [[] for _ in range(self._num_ctrlpts)]
         for k, v in self._attachment.items():
             if v > 1:
@@ -125,7 +126,7 @@ class AbstractManager(object):
                 self._pt_data[k] = [0.0 for _ in range(self._num_ctrlpts)]
 
     def get_ctrlpt(self, *args):
-        """ Gets the control point from the given location in the array. """
+        """Gets the control point from the given location in the array."""
         # Find the index
         idx = self.find_index(*args)
         # Return the control point
@@ -135,7 +136,7 @@ class AbstractManager(object):
             return None
 
     def set_ctrlpt(self, pt, *args):
-        """ Puts the control point to the given location in the array.
+        """Puts the control point to the given location in the array.
 
         :param pt: control point
         :type pt: list, tuple
@@ -153,7 +154,7 @@ class AbstractManager(object):
             raise GeomdlException("Index is out of range")
 
     def get_ptdata(self, dkey, *args):
-        """ Gets the data attached to the control point.
+        """Gets the data attached to the control point.
 
         :param dkey: key of the attachment dictionary
         :param dkey: str
@@ -169,7 +170,7 @@ class AbstractManager(object):
             return None
 
     def set_ptdata(self, adct, *args):
-        """ Attaches the data to the control point.
+        """Attaches the data to the control point.
 
         :param adct: attachment dictionary
         :param adct: dict
@@ -192,7 +193,7 @@ class AbstractManager(object):
 
     @abc.abstractmethod
     def find_index(self, *args):
-        """ Finds the array index from the given parametric positions.
+        """Finds the array index from the given parametric positions.
 
         .. note::
 
@@ -202,7 +203,7 @@ class AbstractManager(object):
 
 
 class CurveManager(AbstractManager):
-    """ Curve control points manager.
+    """Curve control points manager.
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
@@ -256,6 +257,7 @@ class CurveManager(AbstractManager):
         # Set control points
         curve.ctrlpts = points.ctrlpts
     """
+
     def __init__(self, *args, **kwargs):
         super(CurveManager, self).__init__(*args, **kwargs)
 
@@ -265,7 +267,7 @@ class CurveManager(AbstractManager):
 
 
 class SurfaceManager(AbstractManager):
-    """ Surface control points manager.
+    """Surface control points manager.
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
@@ -323,6 +325,7 @@ class SurfaceManager(AbstractManager):
         # Set control points
         surf.ctrlpts = points.ctrlpts
     """
+
     def __init__(self, *args, **kwargs):
         super(SurfaceManager, self).__init__(*args, **kwargs)
 
@@ -332,7 +335,7 @@ class SurfaceManager(AbstractManager):
 
 
 class VolumeManager(AbstractManager):
-    """ Volume control points manager.
+    """Volume control points manager.
 
     Control points manager class provides an easy way to set control points without knowing
     the internal data structure of the geometry classes. The manager class is initialized
@@ -394,6 +397,7 @@ class VolumeManager(AbstractManager):
         # Set control points
         volume.ctrlpts = points.ctrlpts
     """
+
     def __init__(self, *args, **kwargs):
         super(VolumeManager, self).__init__(*args, **kwargs)
 

@@ -14,7 +14,7 @@ from ._utilities import export
 
 
 def export_polydata_str(obj, **kwargs):
-    """ Saves control points or evaluated points in VTK Polydata format (string).
+    """Saves control points or evaluated points in VTK Polydata format (string).
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 
@@ -30,15 +30,16 @@ def export_polydata_str(obj, **kwargs):
     :raises UserWarning: file title is bigger than 256 characters
     """
     # Get keyword arguments
-    point_type = kwargs.get('point_type', "evalpts")
-    file_title = kwargs.get('title', "geomdl " + repr(obj))  # file title
-    tessellate = kwargs.get('tessellate', False)
+    point_type = kwargs.get("point_type", "evalpts")
+    file_title = kwargs.get("title", "geomdl " + repr(obj))  # file title
+    tessellate = kwargs.get("tessellate", False)
 
     # Input validation
-    possible_types = ['ctrlpts', 'evalpts']
+    possible_types = ["ctrlpts", "evalpts"]
     if point_type not in possible_types:
-        raise exch.GeomdlException("Please choose a valid point type option. " +
-                                   "Possible types:", ", ".join([str(t) for t in possible_types]))
+        raise exch.GeomdlException(
+            "Please choose a valid point type option. " + "Possible types:", ", ".join([str(t) for t in possible_types])
+        )
 
     # Check for VTK standards for the file title
     if len(file_title) >= 256:
@@ -123,7 +124,7 @@ def export_polydata_str(obj, **kwargs):
 
 @export
 def export_polydata(obj, file_name, **kwargs):
-    """ Exports control points or evaluated points in VTK Polydata format.
+    """Exports control points or evaluated points in VTK Polydata format.
 
     Please see the following document for details: http://www.vtk.org/VTK/img/file-formats.pdf
 

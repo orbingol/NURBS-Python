@@ -16,7 +16,7 @@ from ._utilities import export
 
 @export
 def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
-    """ Generates 3-dimensional mapping of 2-dimensional trimming curves.
+    """Generates 3-dimensional mapping of 2-dimensional trimming curves.
 
     **Description:**
 
@@ -46,7 +46,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
         raise GeomdlException("Input geometry should be defined on, at least, 2-dimensional parametric space")
 
     # Get keyword arguments
-    delta = kwargs.get('delta', -1.0)
+    delta = kwargs.get("delta", -1.0)
 
     # Initialize return list
     ret = []
@@ -87,7 +87,7 @@ def map_trim_to_geometry(obj, trim_idx=-1, **kwargs):
 
 @export
 def fix_multi_trim_curves(obj, **kwargs):
-    """ Fixes direction, connectivity and similar issues of the trim curves.
+    """Fixes direction, connectivity and similar issues of the trim curves.
 
     This function works for surface trims in curve containers, i.e. trims
     consisting of multiple curves.
@@ -104,8 +104,8 @@ def fix_multi_trim_curves(obj, **kwargs):
         raise GeomdlException("Can only work with surfaces")
 
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)
-    eval_delta = kwargs.get('delta', 0.05)
+    tol = kwargs.get("tol", 10e-8)
+    eval_delta = kwargs.get("delta", 0.05)
 
     # Loop through the surfaces
     for o in obj:
@@ -143,25 +143,33 @@ def fix_multi_trim_curves(obj, **kwargs):
                 ###
 
                 # End of 1st curve vs start of 2nd curve
-                if abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[0][0]) <= tol and \
-                        abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[0][1]) <= tol:
+                if (
+                    abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[0][0]) <= tol
+                    and abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[0][1]) <= tol
+                ):
                     # They are in the same direction
                     new_trim.append(trim[idx])
                 # End of 1st curve vs end of 2nd curve
-                elif abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[-1][0]) <= tol and \
-                        abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[-1][1]) <= tol:
+                elif (
+                    abs(trim[idx].evalpts[-1][0] - trim[idx2].evalpts[-1][0]) <= tol
+                    and abs(trim[idx].evalpts[-1][1] - trim[idx2].evalpts[-1][1]) <= tol
+                ):
                     # Reverse the second curve inplace
                     trim[idx2].reverse()
                     new_trim.append(trim[idx])
                 # Start of 1st curve and start of 2nd curve
-                elif abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[0][0]) <= tol and \
-                        abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[0][1]) <= tol:
+                elif (
+                    abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[0][0]) <= tol
+                    and abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[0][1]) <= tol
+                ):
                     # Reverse the first curve inplace
                     trim[idx].reverse()
                     new_trim.append(trim[idx])
                 # Start of 1st curve and end of 2nd curve
-                elif abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[-1][0]) <= tol and \
-                        abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[-1][1]) <= tol:
+                elif (
+                    abs(trim[idx].evalpts[0][0] - trim[idx2].evalpts[-1][0]) <= tol
+                    and abs(trim[idx].evalpts[0][1] - trim[idx2].evalpts[-1][1]) <= tol
+                ):
                     # Reverse both curves inplace
                     trim[idx].reverse()
                     trim[idx2].reverse()
@@ -184,7 +192,7 @@ def fix_multi_trim_curves(obj, **kwargs):
                     crv.degree = 1
                     crv.ctrlpts = [start_pt, end_pt]
                     crv.knotvector = [0, 0, 1, 1]
-                    crv.opt = ['reversed', trim[idx].opt_get('reversed')]
+                    crv.opt = ["reversed", trim[idx].opt_get("reversed")]
 
                     # Add trims
                     new_trim.append(trim[idx])
@@ -193,7 +201,7 @@ def fix_multi_trim_curves(obj, **kwargs):
             # Create a curve container from the new trim list
             cc = shortcuts.generate_container_curve()
             cc.add(new_trim)
-            cc.opt = ['reversed', trim.opt_get('reversed')]
+            cc.opt = ["reversed", trim.opt_get("reversed")]
             cc.delta = eval_delta
 
             # Add curve container to the new trims list
@@ -207,7 +215,7 @@ def fix_multi_trim_curves(obj, **kwargs):
 
 @export
 def fix_trim_curves(obj):
-    """ Fixes direction, connectivity and similar issues of the trim curves.
+    """Fixes direction, connectivity and similar issues of the trim curves.
 
     This function works for surface trim curves consisting of a single curve.
 
@@ -244,13 +252,14 @@ def fix_trim_curves(obj):
 
 
 def check_trim_curve(curve, parbox, **kwargs):
-    """ Checks if the trim curve was closed and sense was set.
+    """Checks if the trim curve was closed and sense was set.
 
     :param curve: trim curve
     :param parbox: parameter space bounding box of the underlying surface
     :return: a tuple containing the status of the operation and list of extra trim curves generated
     :rtype: tuple
     """
+
     def next_idx(edge_idx, direction):
         tmp = edge_idx + direction
         if tmp < 0:
@@ -260,7 +269,7 @@ def check_trim_curve(curve, parbox, **kwargs):
         return tmp
 
     # Keyword arguments
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get("tol", 10e-8)
 
     # First, check if the curve is closed
     dist = linalg.point_distance(curve.evalpts[0], curve.evalpts[-1])
@@ -288,7 +297,7 @@ def check_trim_curve(curve, parbox, **kwargs):
             return False, []
         else:
             # Get sense of the original curve
-            c_sense = curve.opt_get('reversed')
+            c_sense = curve.opt_get("reversed")
 
             # If sense is None, then detect sense
             if c_sense is None:
@@ -303,7 +312,9 @@ def check_trim_curve(curve, parbox, **kwargs):
                     if tmp_sense != 0:
                         break
                 if tmp_sense == 0:
-                    tmp_sense2 = detect_ccw(pts[int(num_pts/3)], pts[int(2*num_pts/3)], pts[-int(num_pts/3)], tol)
+                    tmp_sense2 = detect_ccw(
+                        pts[int(num_pts / 3)], pts[int(2 * num_pts / 3)], pts[-int(num_pts / 3)], tol
+                    )
                     if tmp_sense2 != 0:
                         tmp_sense = -tmp_sense2
                     else:
@@ -313,7 +324,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                 c_sense = 0 if tmp_sense > 0 else 1
 
                 # Update sense of the original curve
-                curve.opt = ['reversed', c_sense]
+                curve.opt = ["reversed", c_sense]
 
             # Generate a curve container and add the original curve
             cont = [curve]
@@ -339,7 +350,7 @@ def check_trim_curve(curve, parbox, **kwargs):
                 crv.degree = 1
                 crv.ctrlpts = [pt_end, pt_start]
                 crv.knotvector = [0, 0, 1, 1]
-                crv.opt = ['reversed', c_sense]
+                crv.opt = ["reversed", c_sense]
 
                 pt_end = pt_start
 
@@ -351,7 +362,7 @@ def check_trim_curve(curve, parbox, **kwargs):
 
 
 def get_par_box(domain, last=False):
-    """ Returns the bounding box of the surface parametric domain in ccw direction.
+    """Returns the bounding box of the surface parametric domain in ccw direction.
 
     :param domain: parametric domain
     :type domain: list, tuple
@@ -369,7 +380,7 @@ def get_par_box(domain, last=False):
 
 
 def detect_sense(curve, tol):
-    """ Detects the sense, i.e. clockwise or counter-clockwise, of the curve.
+    """Detects the sense, i.e. clockwise or counter-clockwise, of the curve.
 
     :param curve: 2-dimensional trim curve
     :type curve: abstract.Curve
@@ -378,27 +389,27 @@ def detect_sense(curve, tol):
     :return: True if detection is successful, False otherwise
     :rtype: bool
     """
-    if curve.opt_get('reversed') is None:
+    if curve.opt_get("reversed") is None:
         # Detect sense since it is unset
         pts = curve.evalpts
         num_pts = len(pts)
         for idx in range(1, num_pts - 1):
             sense = detect_ccw(pts[idx - 1], pts[idx], pts[idx + 1], tol)
             if sense < 0:  # cw
-                curve.opt = ['reversed', 0]
+                curve.opt = ["reversed", 0]
                 return True
             elif sense > 0:  # ccw
-                curve.opt = ['reversed', 1]
+                curve.opt = ["reversed", 1]
                 return True
             else:
                 continue
         # One final test with random points to determine the orientation
-        sense = detect_ccw(pts[int(num_pts/3)], pts[int(2*num_pts/3)], pts[-int(num_pts/3)], tol)
+        sense = detect_ccw(pts[int(num_pts / 3)], pts[int(2 * num_pts / 3)], pts[-int(num_pts / 3)], tol)
         if sense < 0:  # cw
-            curve.opt = ['reversed', 0]
+            curve.opt = ["reversed", 0]
             return True
         elif sense > 0:  # ccw
-            curve.opt = ['reversed', 1]
+            curve.opt = ["reversed", 1]
             return True
         else:
             # Cannot determine the sense
@@ -420,8 +431,12 @@ def detect_ccw(pt1, pt2, pt3, tol):
 
 
 def detect_intersection(start_pt, end_pt, test_pt, tol):
-    dist_num = abs(((end_pt[1] - start_pt[1]) * test_pt[0]) - ((end_pt[0] - start_pt[0]) * test_pt[1]) +
-                   (end_pt[0] * start_pt[1]) - (end_pt[1] * start_pt[0]))
+    dist_num = abs(
+        ((end_pt[1] - start_pt[1]) * test_pt[0])
+        - ((end_pt[0] - start_pt[0]) * test_pt[1])
+        + (end_pt[0] * start_pt[1])
+        - (end_pt[1] * start_pt[0])
+    )
     dist_denom = math.sqrt(math.pow(end_pt[1] - start_pt[1], 2) + math.pow(end_pt[0] - start_pt[0], 2))
     dist = dist_num / dist_denom
     if abs(dist) < tol:

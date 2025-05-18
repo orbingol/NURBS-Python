@@ -6,6 +6,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 
 """
+
 import sys
 
 from . import linalg
@@ -14,7 +15,7 @@ from ._utilities import export
 
 @export
 class Ray(object):
-    """ Representation of a n-dimensional ray generated from 2 points.
+    """Representation of a n-dimensional ray generated from 2 points.
 
     A ray is defined by :math:`r(t)=p_{1}+t\\times\\vec{d}` where :math`t` is the parameter value,
     :math:`\\vec{d} = p_{2}-p_{1}` is the vector component of the ray, :math:`p_{1}` is the origin point and
@@ -25,6 +26,7 @@ class Ray(object):
     :param point2: 2nd point of the line segment
     :type point2:  list, tuple
     """
+
     def __init__(self, point1, point2):
         super(Ray, self).__init__()
         if not isinstance(point1, (list, tuple)):
@@ -40,7 +42,7 @@ class Ray(object):
 
     @property
     def dimension(self):
-        """ Spatial dimension of the ray
+        """Spatial dimension of the ray
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -51,7 +53,7 @@ class Ray(object):
 
     @property
     def points(self):
-        """ Start and end points of the line segment that the ray was generated
+        """Start and end points of the line segment that the ray was generated
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -62,7 +64,7 @@ class Ray(object):
 
     @property
     def p(self):
-        """ Origin point of the ray (p)
+        """Origin point of the ray (p)
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -73,7 +75,7 @@ class Ray(object):
 
     @property
     def d(self):
-        """ Vector component of the ray (d)
+        """Vector component of the ray (d)
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -83,7 +85,7 @@ class Ray(object):
         return linalg.vector_generate(self._pt1, self._pt2, normalize=False)
 
     def eval(self, t=0):
-        """ Finds the point on the line segment defined by the input parameter.
+        """Finds the point on the line segment defined by the input parameter.
 
         :math:`t=0` returns the origin (1st) point, defined by the input argument ``point1`` and :math:`t=1` returns
         the end (2nd) point, defined by the input argument ``point2``.
@@ -98,7 +100,8 @@ class Ray(object):
 
 @export
 class RayIntersection(object):
-    """ The status of the ray intersection operation """
+    """The status of the ray intersection operation"""
+
     INTERSECT = 1  # only one solution
     COLINEAR = 2  # no solution (parallel) or infinitely many solutions (coincident)
     SKEW = 3  # neither parallel nor intersecting
@@ -106,7 +109,7 @@ class RayIntersection(object):
 
 @export
 def intersect(ray1, ray2, **kwargs):
-    """ Finds intersection of 2 rays.
+    """Finds intersection of 2 rays.
 
     This functions finds the parameter values for the 1st and 2nd input rays and returns a tuple of
     ``(parameter for ray1, parameter for ray2, intersection status)``.
@@ -140,7 +143,7 @@ def intersect(ray1, ray2, **kwargs):
         raise ValueError("Dimensions of the input rays must be the same")
 
     # Keyword arguments
-    tol = kwargs.get('tol', (1 << 8) * sys.float_info.epsilon)
+    tol = kwargs.get("tol", (1 << 8) * sys.float_info.epsilon)
 
     # Call intersection method
     if ray1.dimension == 2:
@@ -179,7 +182,7 @@ def _intersect3d(ray1, ray2, tol):
     # Find common values
     p_diff = linalg.vector_generate(ray1.p, ray2.p)
     d_magn = linalg.vector_magnitude(d_cross)
-    d_magn_square = d_magn ** 2
+    d_magn_square = d_magn**2
 
     # Find t1
     pd1_cross = linalg.vector_cross(p_diff, ray2.d)

@@ -16,7 +16,7 @@ from ._utilities import export
 
 @export
 def sweep_vector(obj, vec, **kwargs):
-    """ Sweeps spline geometries along a vector.
+    """Sweeps spline geometries along a vector.
 
     This API call generates
 

@@ -22,7 +22,7 @@ from .exceptions import GeomdlException
 
 @utl.add_metaclass(abc.ABCMeta)
 class AbstractContainer(abstract.GeomdlBase):
-    """ Abstract class for geometry containers.
+    """Abstract class for geometry containers.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
@@ -43,15 +43,15 @@ class AbstractContainer(abstract.GeomdlBase):
     """
 
     def __init__(self, *args, **kwargs):
-        self._pdim = 0 if not hasattr(self, '_pdim') else self._pdim  # number of parametric dimensions
-        self._dinit = 0.01 if not hasattr(self, '_dinit') else self._dinit  # delta initialization value
+        self._pdim = 0 if not hasattr(self, "_pdim") else self._pdim  # number of parametric dimensions
+        self._dinit = 0.01 if not hasattr(self, "_dinit") else self._dinit  # delta initialization value
         super(AbstractContainer, self).__init__(**kwargs)
         self._geometry_type = "container"
         self._name = self._geometry_type
         self._delta = [float(self._dinit) for _ in range(self._pdim)]  # evaluation delta
         self._elements = []  # list of elements contained
         self._vis_component = None  # visualization component
-        self._cache['evalpts'] = []
+        self._cache["evalpts"] = []
 
     def __iter__(self):
         self._iter_index = 0
@@ -85,7 +85,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     @property
     def pdimension(self):
-        """ Parametric dimension.
+        """Parametric dimension.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -97,7 +97,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     @property
     def evalpts(self):
-        """ Evaluated points.
+        """Evaluated points.
 
         Since there are multiple geometry objects contained in the multi objects, the evaluated points will be returned in the
         format of list of individual evaluated points which is also a list of Cartesian coordinates.
@@ -121,16 +121,16 @@ class AbstractContainer(abstract.GeomdlBase):
 
         :getter: Gets the evaluated points of all contained geometries
         """
-        if not self._cache['evalpts']:
+        if not self._cache["evalpts"]:
             for elem in self._elements:
                 elem.delta = self._delta[0] if self._pdim == 1 else self._delta
                 evalpts = elem.evalpts
-                self._cache['evalpts'] += evalpts
-        return self._cache['evalpts']
+                self._cache["evalpts"] += evalpts
+        return self._cache["evalpts"]
 
     @property
     def bbox(self):
-        """ Bounding box.
+        """Bounding box.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -144,7 +144,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     @property
     def vis(self):
-        """ Visualization component.
+        """Visualization component.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -163,7 +163,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     @property
     def delta(self):
-        """ Evaluation delta (for all parametric directions).
+        """Evaluation delta (for all parametric directions).
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta value, smoother the shape.
@@ -206,13 +206,18 @@ class AbstractContainer(abstract.GeomdlBase):
     def _delta_setter_common(self, idx, value):
         # Check and set the delta value corresponding to the idx-th parametric dimension
         if float(value) <= 0 or float(value) >= 1:
-            raise ValueError("Evaluation delta should be between 0.0 and 1.0. You are trying to set it to " + str(value)
-                             + " for the " + str(idx + 1) + "st parametric dimension.")
+            raise ValueError(
+                "Evaluation delta should be between 0.0 and 1.0. You are trying to set it to "
+                + str(value)
+                + " for the "
+                + str(idx + 1)
+                + "st parametric dimension."
+            )
         self._delta[idx] = float(value)
 
     @property
     def sample_size(self):
-        """ Sample size (for all parametric directions).
+        """Sample size (for all parametric directions).
 
         Sample size defines the number of points to evaluate. It also sets the ``delta`` property.
 
@@ -265,7 +270,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
     @property
     def data(self):
-        """ Returns a dict which contains the geometry data.
+        """Returns a dict which contains the geometry data.
 
         Please refer to the `wiki <https://github.com/orbingol/NURBS-Python/wiki/Using-Python-Properties>`_ for details
         on using this class member.
@@ -273,7 +278,7 @@ class AbstractContainer(abstract.GeomdlBase):
         return tuple([e.data for e in self._elements])
 
     def add(self, element):
-        """ Adds geometry objects to the container.
+        """Adds geometry objects to the container.
 
         The input can be a single geometry, a list of geometry objects or a geometry container object.
 
@@ -282,7 +287,7 @@ class AbstractContainer(abstract.GeomdlBase):
         if isinstance(element, (self.__class__, list, tuple)):
             for elem in element:
                 self.add(elem)
-        elif hasattr(self, '_pdim'):
+        elif hasattr(self, "_pdim"):
             if element.pdimension == self.pdimension:
                 if self.dimension == 0:
                     self._dimension = element.dimension
@@ -300,13 +305,13 @@ class AbstractContainer(abstract.GeomdlBase):
     append = add
 
     def reset(self):
-        """ Resets the cache. """
-        self._cache['evalpts'][:] = []
+        """Resets the cache."""
+        self._cache["evalpts"][:] = []
 
     # Runs visualization component to render the surface
     @abc.abstractmethod
     def render(self, **kwargs):
-        """ Renders plots using the visualization component.
+        """Renders plots using the visualization component.
 
         .. note::
 
@@ -317,7 +322,7 @@ class AbstractContainer(abstract.GeomdlBase):
 
 @utl.export
 class CurveContainer(AbstractContainer):
-    """ Container class for storing multiple curves.
+    """Container class for storing multiple curves.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
@@ -355,13 +360,13 @@ class CurveContainer(AbstractContainer):
 
     def __init__(self, *args, **kwargs):
         self._pdim = 1  # number of parametric dimensions
-        self._dinit = 0.01 # evaluation delta
+        self._dinit = 0.01  # evaluation delta
         super(CurveContainer, self).__init__(*args, **kwargs)
         for arg in args:
             self.add(arg)
 
     def render(self, **kwargs):
-        """ Renders the curves.
+        """Renders the curves.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -390,27 +395,35 @@ class CurveContainer(AbstractContainer):
             return
 
         # Get the color values from keyword arguments
-        cpcolor = kwargs.get('cpcolor')
-        evalcolor = kwargs.get('evalcolor')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.get("cpcolor")
+        evalcolor = kwargs.get("evalcolor")
+        filename = kwargs.get("filename", None)
+        plot_visible = kwargs.get("plot", True)
+        animate_plot = kwargs.get("animate", False)
         # Flag to control evaluation delta updates
-        update_delta = kwargs.get('delta', True)
-        reset_names = kwargs.get('reset_names', False)
+        update_delta = kwargs.get("delta", True)
+        reset_names = kwargs.get("reset_names", False)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) < len(self._elements):
-                raise ValueError("The number of color values in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of geometries contained ("
-                                 + str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of color values in 'cpcolor' ("
+                    + str(len(cpcolor))
+                    + ") cannot be less than the number of geometries contained ("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) < len(self._elements):
-                raise ValueError("The number of color values in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of geometries contained ("
-                                 + str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of color values in 'evalcolor' ("
+                    + str(len(evalcolor))
+                    + ") cannot be less than the number of geometries contained ("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         # Run the visualization component
         self._vis_component.clear()
@@ -430,10 +443,10 @@ class CurveContainer(AbstractContainer):
             # Color selection
             color = select_color(cpcolor, evalcolor, idx=idx)
 
-            self._vis_component.add(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
-                                    color=color[0], plot_type='ctrlpts', idx=idx)
-            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
-                                    color=color[1], plot_type='evalpts', idx=idx)
+            self._vis_component.add(
+                ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"), color=color[0], plot_type="ctrlpts", idx=idx
+            )
+            self._vis_component.add(ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type="evalpts", idx=idx)
 
         # Display the figures
         if animate_plot:
@@ -444,7 +457,7 @@ class CurveContainer(AbstractContainer):
 
 @utl.export
 class SurfaceContainer(AbstractContainer):
-    """ Container class for storing multiple surfaces.
+    """Container class for storing multiple surfaces.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
@@ -491,14 +504,14 @@ class SurfaceContainer(AbstractContainer):
         self._pdim = 2  # number of parametric dimensions
         self._dinit = 0.05  # evaluation delta
         super(SurfaceContainer, self).__init__(*args, **kwargs)
-        self._cache['vertices'] = []
-        self._cache['faces'] = []
+        self._cache["vertices"] = []
+        self._cache["faces"] = []
         for arg in args:
             self.add(arg)
 
     @property
     def delta_u(self):
-        """ Evaluation delta for the u-direction.
+        """Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta, smoother the shape.
@@ -521,7 +534,7 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def delta_v(self):
-        """ Evaluation delta for the v-direction.
+        """Evaluation delta for the v-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta, smoother the shape.
@@ -544,7 +557,7 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def sample_size_u(self):
-        """ Sample size for the u-direction.
+        """Sample size for the u-direction.
 
         Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
 
@@ -563,7 +576,7 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def sample_size_v(self):
-        """ Sample size for the v-direction.
+        """Sample size for the v-direction.
 
         Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
 
@@ -582,7 +595,7 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def tessellator(self):
-        """ Tessellation component of the surfaces inside the container.
+        """Tessellation component of the surfaces inside the container.
 
         Please refer to :doc:`Tessellation <module_tessellate>` documentation for details.
 
@@ -614,30 +627,30 @@ class SurfaceContainer(AbstractContainer):
 
     @property
     def vertices(self):
-        """ Vertices generated by the tessellation operation.
+        """Vertices generated by the tessellation operation.
 
         If the tessellation component is set to None, the result will be an empty list.
 
         :getter: Gets the vertices
         """
-        if not self._cache['vertices']:
+        if not self._cache["vertices"]:
             self.tessellate()
-        return self._cache['vertices']
+        return self._cache["vertices"]
 
     @property
     def faces(self):
-        """ Faces (triangles, quads, etc.) generated by the tessellation operation.
+        """Faces (triangles, quads, etc.) generated by the tessellation operation.
 
         If the tessellation component is set to None, the result will be an empty list.
 
         :getter: Gets the faces
         """
-        if not self._cache['faces']:
+        if not self._cache["faces"]:
             self.tessellate()
-        return self._cache['faces']
+        return self._cache["faces"]
 
     def tessellate(self, **kwargs):
-        """ Tessellates the surfaces inside the container.
+        """Tessellates the surfaces inside the container.
 
         Keyword arguments are directly passed to the tessellation component.
 
@@ -665,24 +678,27 @@ class SurfaceContainer(AbstractContainer):
             * ``force``: flag to force tessellation. *Default: False*
         """
         # Keyword arguments
-        force_tsl = kwargs.get('force', False)
-        update_delta = kwargs.pop('delta', True)
+        force_tsl = kwargs.get("force", False)
+        update_delta = kwargs.pop("delta", True)
 
         # Don't re-tessellate if everything is in place
-        if all((self._cache['vertices'], self._cache['faces'])) and not force_tsl:
+        if all((self._cache["vertices"], self._cache["faces"])) and not force_tsl:
             return
 
         # Tessellate the surfaces in the container
-        num_procs = kwargs.pop('num_procs', 1)
+        num_procs = kwargs.pop("num_procs", 1)
         new_elems = []
         if num_procs > 1:
             with utl.pool_context(processes=num_procs) as pool:
-                tmp_elem = pool.map(partial(process_tessellate, delta=self.delta, update_delta=update_delta, **kwargs),
-                                    self._elements)
+                tmp_elem = pool.map(
+                    partial(process_tessellate, delta=self.delta, update_delta=update_delta, **kwargs), self._elements
+                )
                 new_elems += tmp_elem
         else:
             for idx in range(len(self._elements)):
-                tmp_elem = process_tessellate(self._elements[idx], delta=self.delta, update_delta=update_delta, **kwargs)
+                tmp_elem = process_tessellate(
+                    self._elements[idx], delta=self.delta, update_delta=update_delta, **kwargs
+                )
                 new_elems.append(tmp_elem)
         self._elements = new_elems
 
@@ -704,17 +720,17 @@ class SurfaceContainer(AbstractContainer):
             faces += f
             v_offset += len(v)
             f_offset += len(f)
-        self._cache['vertices'] = verts
-        self._cache['faces'] = faces
+        self._cache["vertices"] = verts
+        self._cache["faces"] = faces
 
     def reset(self):
-        """ Resets the cache. """
+        """Resets the cache."""
         super(SurfaceContainer, self).reset()
-        self._cache['vertices'][:] = []
-        self._cache['faces'][:] = []
+        self._cache["vertices"][:] = []
+        self._cache["faces"][:] = []
 
     def render(self, **kwargs):
-        """ Renders the surfaces.
+        """Renders the surfaces.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -751,34 +767,42 @@ class SurfaceContainer(AbstractContainer):
             return
 
         # Get the color values from keyword arguments
-        cpcolor = kwargs.get('cpcolor')
-        evalcolor = kwargs.get('evalcolor')
-        trimcolor = kwargs.get('trimcolor', 'black')
-        filename = kwargs.get('filename', None)
-        plot_visible = kwargs.get('plot', True)
-        animate_plot = kwargs.get('animate', False)
+        cpcolor = kwargs.get("cpcolor")
+        evalcolor = kwargs.get("evalcolor")
+        trimcolor = kwargs.get("trimcolor", "black")
+        filename = kwargs.get("filename", None)
+        plot_visible = kwargs.get("plot", True)
+        animate_plot = kwargs.get("animate", False)
         # Flag to control evaluation delta updates
-        update_delta = kwargs.get('delta', True)
-        reset_names = kwargs.get('reset_names', False)
+        update_delta = kwargs.get("delta", True)
+        reset_names = kwargs.get("reset_names", False)
         # Number of parallel processes
-        num_procs = kwargs.get('num_procs', 1)
-        force_tsl = bool(kwargs.pop('force', False))  # flag to force re-tessellation
+        num_procs = kwargs.get("num_procs", 1)
+        force_tsl = bool(kwargs.pop("force", False))  # flag to force re-tessellation
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) != len(self._elements):
-                raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of geometries contained(" +
-                                 str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of colors in 'cpcolor' ("
+                    + str(len(cpcolor))
+                    + ") cannot be less than the number of geometries contained("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) != len(self._elements):
-                raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of geometries contained ("
-                                 + str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of colors in 'evalcolor' ("
+                    + str(len(evalcolor))
+                    + ") cannot be less than the number of geometries contained ("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         # Get colormaps as a list
-        surf_cmaps = kwargs.get('colormap', [])
+        surf_cmaps = kwargs.get("colormap", [])
         if not isinstance(surf_cmaps, (list, tuple)):
             warnings.warn("Expecting a list of colormap values, not " + str(type(surf_cmaps)))
             surf_cmaps = []
@@ -788,17 +812,34 @@ class SurfaceContainer(AbstractContainer):
         vis_list = []
         if num_procs > 1:
             mp_lock = Lock()
-            mp_val = Value('i', 0)
+            mp_val = Value("i", 0)
             with utl.pool_context(initializer=mp_init, initargs=(mp_lock, mp_val), processes=num_procs) as pool:
-                tmp = pool.map(partial(process_elements_surface, mconf=self._vis_component.mconf,
-                                       colorval=(cpcolor, evalcolor, trimcolor), idx=-1, force_tsl=force_tsl,
-                                       update_delta=update_delta, delta=self.delta, reset_names=reset_names),
-                               self._elements)
+                tmp = pool.map(
+                    partial(
+                        process_elements_surface,
+                        mconf=self._vis_component.mconf,
+                        colorval=(cpcolor, evalcolor, trimcolor),
+                        idx=-1,
+                        force_tsl=force_tsl,
+                        update_delta=update_delta,
+                        delta=self.delta,
+                        reset_names=reset_names,
+                    ),
+                    self._elements,
+                )
                 vis_list += tmp
         else:
             for idx, elem in enumerate(self._elements):
-                tmp = process_elements_surface(elem, self._vis_component.mconf, (cpcolor, evalcolor, trimcolor),
-                                               idx, force_tsl, update_delta, self.delta, reset_names)
+                tmp = process_elements_surface(
+                    elem,
+                    self._vis_component.mconf,
+                    (cpcolor, evalcolor, trimcolor),
+                    idx,
+                    force_tsl,
+                    update_delta,
+                    self.delta,
+                    reset_names,
+                )
                 vis_list += tmp
 
         for vl in vis_list:
@@ -817,7 +858,7 @@ class SurfaceContainer(AbstractContainer):
 
 @utl.export
 class VolumeContainer(AbstractContainer):
-    """ Container class for storing multiple volumes.
+    """Container class for storing multiple volumes.
 
     This class implements Python Iterator Protocol and therefore any instance of this class can be directly used in
     a for loop.
@@ -868,7 +909,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def delta_u(self):
-        """ Evaluation delta for the u-direction.
+        """Evaluation delta for the u-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta, smoother the shape.
@@ -891,7 +932,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def delta_v(self):
-        """ Evaluation delta for the v-direction.
+        """Evaluation delta for the v-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta, smoother the shape.
@@ -914,7 +955,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def delta_w(self):
-        """ Evaluation delta for the w-direction.
+        """Evaluation delta for the w-direction.
 
         Evaluation delta corresponds to the *step size*. Decreasing the step size results in evaluation of more points.
         Therefore; smaller the delta, smoother the shape.
@@ -937,7 +978,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def sample_size_u(self):
-        """ Sample size for the u-direction.
+        """Sample size for the u-direction.
 
         Sample size defines the number of points to evaluate. It also sets the ``delta_u`` property.
 
@@ -956,7 +997,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def sample_size_v(self):
-        """ Sample size for the v-direction.
+        """Sample size for the v-direction.
 
         Sample size defines the number of points to evaluate. It also sets the ``delta_v`` property.
 
@@ -975,7 +1016,7 @@ class VolumeContainer(AbstractContainer):
 
     @property
     def sample_size_w(self):
-        """ Sample size for the w-direction.
+        """Sample size for the w-direction.
 
         Sample size defines the number of points to evaluate. It also sets the ``delta_w`` property.
 
@@ -993,7 +1034,7 @@ class VolumeContainer(AbstractContainer):
         self._sample_size_setter_common(2, value)
 
     def render(self, **kwargs):
-        """ Renders the volumes.
+        """Renders the volumes.
 
         The visualization component must be set using :py:attr:`~vis` property before calling this method.
 
@@ -1022,27 +1063,35 @@ class VolumeContainer(AbstractContainer):
             warnings.warn("No visualization component has been set")
             return
 
-        cpcolor = kwargs.pop('cpcolor', None)
-        evalcolor = kwargs.pop('evalcolor', None)
-        filename = kwargs.pop('filename', None)
-        plot_visible = kwargs.pop('plot', True)
-        animate_plot = kwargs.pop('animate', False)
+        cpcolor = kwargs.pop("cpcolor", None)
+        evalcolor = kwargs.pop("evalcolor", None)
+        filename = kwargs.pop("filename", None)
+        plot_visible = kwargs.pop("plot", True)
+        animate_plot = kwargs.pop("animate", False)
         # Flag to control evaluation delta updates
-        update_delta = kwargs.pop('delta', True)
-        reset_names = kwargs.get('reset_names', False)
+        update_delta = kwargs.pop("delta", True)
+        reset_names = kwargs.get("reset_names", False)
 
         # Check if the input list sizes are equal
         if isinstance(cpcolor, (list, tuple)):
             if len(cpcolor) != len(self._elements):
-                raise ValueError("The number of colors in 'cpcolor' (" + str(len(cpcolor)) +
-                                 ") cannot be less than the number of geometries contained(" +
-                                 str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of colors in 'cpcolor' ("
+                    + str(len(cpcolor))
+                    + ") cannot be less than the number of geometries contained("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         if isinstance(evalcolor, (list, tuple)):
             if len(evalcolor) != len(self._elements):
-                raise ValueError("The number of colors in 'evalcolor' (" + str(len(evalcolor)) +
-                                 ") cannot be less than the number of geometries contained ("
-                                 + str(len(self._elements)) + ")")
+                raise ValueError(
+                    "The number of colors in 'evalcolor' ("
+                    + str(len(evalcolor))
+                    + ") cannot be less than the number of geometries contained ("
+                    + str(len(self._elements))
+                    + ")"
+                )
 
         # Run the visualization component
         self._vis_component.clear()
@@ -1063,21 +1112,24 @@ class VolumeContainer(AbstractContainer):
             color = select_color(cpcolor, evalcolor, idx=idx)
 
             # Add control points
-            if self._vis_component.mconf['ctrlpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
-                                        color=color[0], plot_type='ctrlpts', idx=idx)
+            if self._vis_component.mconf["ctrlpts"] == "points":
+                self._vis_component.add(
+                    ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"), color=color[0], plot_type="ctrlpts", idx=idx
+                )
 
             # Add evaluated points
-            if self._vis_component.mconf['evalpts'] == 'points':
-                self._vis_component.add(ptsarr=elem.evalpts, name=elem.name,
-                                        color=color[1], plot_type='evalpts', idx=idx)
+            if self._vis_component.mconf["evalpts"] == "points":
+                self._vis_component.add(
+                    ptsarr=elem.evalpts, name=elem.name, color=color[1], plot_type="evalpts", idx=idx
+                )
 
             # Add evaluated points as voxels
-            if self._vis_component.mconf['evalpts'] == 'voxels':
+            if self._vis_component.mconf["evalpts"] == "voxels":
                 grid, filled = voxelize.voxelize(elem, **kwargs)
                 polygrid = voxelize.convert_bb_to_faces(grid)
-                self._vis_component.add(ptsarr=[polygrid, filled], name=elem.name,
-                                        color=color[1], plot_type='evalpts', idx=idx)
+                self._vis_component.add(
+                    ptsarr=[polygrid, filled], name=elem.name, color=color[1], plot_type="evalpts", idx=idx
+                )
 
         # Display the figures
         if animate_plot:
@@ -1087,7 +1139,7 @@ class VolumeContainer(AbstractContainer):
 
 
 def select_color(cpcolor, evalcolor, idx=0):
-    """ Selects item color for plotting.
+    """Selects item color for plotting.
 
     :param cpcolor: color for control points grid item
     :type cpcolor: str, list, tuple
@@ -1121,7 +1173,7 @@ def select_color(cpcolor, evalcolor, idx=0):
 
 
 def process_tessellate(elem, update_delta, delta, **kwargs):
-    """ Tessellates surfaces.
+    """Tessellates surfaces.
 
     .. note:: Helper function required for ``multiprocessing``
 
@@ -1142,7 +1194,7 @@ def process_tessellate(elem, update_delta, delta, **kwargs):
 
 
 def process_elements_surface(elem, mconf, colorval, idx, force_tsl, update_delta, delta, reset_names):
-    """ Processes visualization elements for surfaces.
+    """Processes visualization elements for surfaces.
 
     .. note:: Helper function required for ``multiprocessing``
 
@@ -1190,43 +1242,52 @@ def process_elements_surface(elem, mconf, colorval, idx, force_tsl, update_delta
     rl = []
 
     # Add control points
-    if mconf['ctrlpts'] == 'points':
-        ret = dict(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"),
-                   color=color[0], plot_type='ctrlpts', idx=idx)
+    if mconf["ctrlpts"] == "points":
+        ret = dict(ptsarr=elem.ctrlpts, name=(elem.name, "(CP)"), color=color[0], plot_type="ctrlpts", idx=idx)
         rl.append(ret)
 
     # Add control points as quads
-    if mconf['ctrlpts'] == 'quads':
+    if mconf["ctrlpts"] == "quads":
         qtsl = tessellate.QuadTessellate()
         qtsl.tessellate(elem.ctrlpts, size_u=elem.ctrlpts_size_u, size_v=elem.ctrlpts_size_v)
-        ret = dict(ptsarr=[qtsl.vertices, qtsl.faces], name=(elem.name, "(CP)"),
-                   color=color[0], plot_type='ctrlpts', idx=idx)
+        ret = dict(
+            ptsarr=[qtsl.vertices, qtsl.faces], name=(elem.name, "(CP)"), color=color[0], plot_type="ctrlpts", idx=idx
+        )
         rl.append(ret)
 
     # Add surface points
-    if mconf['evalpts'] == 'points':
-        ret = dict(ptsarr=elem.evalpts, name=(elem.name, idx), color=color[1], plot_type='evalpts', idx=idx)
+    if mconf["evalpts"] == "points":
+        ret = dict(ptsarr=elem.evalpts, name=(elem.name, idx), color=color[1], plot_type="evalpts", idx=idx)
         rl.append(ret)
 
     # Add surface points as quads
-    if mconf['evalpts'] == 'quads':
+    if mconf["evalpts"] == "quads":
         qtsl = tessellate.QuadTessellate()
         qtsl.tessellate(elem.evalpts, size_u=elem.sample_size_u, size_v=elem.sample_size_v)
-        ret = dict(ptsarr=[qtsl.vertices, qtsl.faces],
-                   name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+        ret = dict(ptsarr=[qtsl.vertices, qtsl.faces], name=elem.name, color=color[1], plot_type="evalpts", idx=idx)
         rl.append(ret)
 
     # Add surface points as vertices and triangles
-    if mconf['evalpts'] == 'triangles':
+    if mconf["evalpts"] == "triangles":
         elem.tessellate(force=force_tsl)
-        ret = dict(ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
-                   name=elem.name, color=color[1], plot_type='evalpts', idx=idx)
+        ret = dict(
+            ptsarr=[elem.tessellator.vertices, elem.tessellator.faces],
+            name=elem.name,
+            color=color[1],
+            plot_type="evalpts",
+            idx=idx,
+        )
         rl.append(ret)
 
     # Add the trim curves
     for itc, trim in enumerate(elem.trims):
-        ret = dict(ptsarr=elem.evaluate_list(trim.evalpts), name=("trim", itc),
-                   color=colorval[2], plot_type='trimcurve', idx=idx)
+        ret = dict(
+            ptsarr=elem.evaluate_list(trim.evalpts),
+            name=("trim", itc),
+            color=colorval[2],
+            plot_type="trimcurve",
+            idx=idx,
+        )
         rl.append(ret)
 
     # Return the list
@@ -1234,7 +1295,7 @@ def process_elements_surface(elem, mconf, colorval, idx, force_tsl, update_delta
 
 
 def mp_init(l, c):
-    """ Initialization function for multi-threaded operations.
+    """Initialization function for multi-threaded operations.
 
     :param l: lock
     :param c: value for common counter

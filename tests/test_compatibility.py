@@ -1,9 +1,9 @@
 """
-    Tests for the NURBS-Python package
-    Released under The MIT License. See LICENSE file for details.
-    Copyright (c) 2018 Onur Rauf Bingol
+Tests for the NURBS-Python package
+Released under The MIT License. See LICENSE file for details.
+Copyright (c) 2018 Onur Rauf Bingol
 
-    Tests geomdl.compatibility module. Requires "pytest" to run.
+Tests geomdl.compatibility module. Requires "pytest" to run.
 """
 
 from geomdl import compatibility
@@ -52,14 +52,35 @@ def test_change_ctrlpts_row_order():
     size_u = 3
     size_v = 4
     # the following is in u-order
-    ctrlpts = [[0, 0, 0], [1, 0, 6], [2, 0, 0],
-              [0, 1, 0], [1, 1, 0], [2, 1, 0],
-              [0, 2, -3], [1, 2, 0], [2, 2, 3],
-              [0, 3, 7], [1, 3, 8], [1, 3, 7]]
+    ctrlpts = [
+        [0, 0, 0],
+        [1, 0, 6],
+        [2, 0, 0],
+        [0, 1, 0],
+        [1, 1, 0],
+        [2, 1, 0],
+        [0, 2, -3],
+        [1, 2, 0],
+        [2, 2, 3],
+        [0, 3, 7],
+        [1, 3, 8],
+        [1, 3, 7],
+    ]
     # the following is in v-order
-    result = [[0, 0, 0], [0, 1, 0], [0, 2, -3], [0, 3, 7],
-              [1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8],
-              [2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]]
+    result = [
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 2, -3],
+        [0, 3, 7],
+        [1, 0, 6],
+        [1, 1, 0],
+        [1, 2, 0],
+        [1, 3, 8],
+        [2, 0, 0],
+        [2, 1, 0],
+        [2, 2, 3],
+        [1, 3, 7],
+    ]
 
     check = compatibility.flip_ctrlpts_u(ctrlpts, size_u, size_v)
 
@@ -71,15 +92,36 @@ def test_flip_ctrlpts():
     size_v = 4
 
     # the following is in v-order
-    ctrlpts = [[0, 0, 0], [0, 1, 0], [0, 2, -3], [0, 3, 7],
-               [1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8],
-               [2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]]
+    ctrlpts = [
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 2, -3],
+        [0, 3, 7],
+        [1, 0, 6],
+        [1, 1, 0],
+        [1, 2, 0],
+        [1, 3, 8],
+        [2, 0, 0],
+        [2, 1, 0],
+        [2, 2, 3],
+        [1, 3, 7],
+    ]
 
     # the following is in u-order
-    result = [[0, 0, 0], [1, 0, 6], [2, 0, 0],
-              [0, 1, 0], [1, 1, 0], [2, 1, 0],
-              [0, 2, -3], [1, 2, 0], [2, 2, 3],
-              [0, 3, 7], [1, 3, 8], [1, 3, 7]]
+    result = [
+        [0, 0, 0],
+        [1, 0, 6],
+        [2, 0, 0],
+        [0, 1, 0],
+        [1, 1, 0],
+        [2, 1, 0],
+        [0, 2, -3],
+        [1, 2, 0],
+        [2, 2, 3],
+        [0, 3, 7],
+        [1, 3, 8],
+        [1, 3, 7],
+    ]
 
     check = compatibility.flip_ctrlpts(ctrlpts, size_u, size_v)
 
@@ -88,15 +130,19 @@ def test_flip_ctrlpts():
 
 def test_flip_ctrlpts2d():
     # the following is in v-order
-    ctrlpts = [[[0, 0, 0], [0, 1, 0], [0, 2, -3], [0, 3, 7]],
-               [[1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8]],
-               [[2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]]]
+    ctrlpts = [
+        [[0, 0, 0], [0, 1, 0], [0, 2, -3], [0, 3, 7]],
+        [[1, 0, 6], [1, 1, 0], [1, 2, 0], [1, 3, 8]],
+        [[2, 0, 0], [2, 1, 0], [2, 2, 3], [1, 3, 7]],
+    ]
 
     # the following is in u-order
-    result = [[[0, 0, 0], [1, 0, 6], [2, 0, 0]],
-              [[0, 1, 0], [1, 1, 0], [2, 1, 0]],
-              [[0, 2, -3], [1, 2, 0], [2, 2, 3]],
-              [[0, 3, 7], [1, 3, 8], [1, 3, 7]]]
+    result = [
+        [[0, 0, 0], [1, 0, 6], [2, 0, 0]],
+        [[0, 1, 0], [1, 1, 0], [2, 1, 0]],
+        [[0, 2, -3], [1, 2, 0], [2, 2, 3]],
+        [[0, 3, 7], [1, 3, 8], [1, 3, 7]],
+    ]
 
     check = compatibility.flip_ctrlpts2d(ctrlpts)
 
@@ -104,9 +150,11 @@ def test_flip_ctrlpts2d():
 
 
 def test_generate_ctrlptsw2d_ops():
-    ctrlpts_weights_2d = [[[0, 0, 0, 1], [0, 1, 0, 0.5], [0, 2, -3, 0.25], [0, 3, 7, 0.75]],
-                          [[1, 0, 6, 1], [1, 1, 0, 0.5], [1, 2, 0, 0.25], [1, 3, 8, 0.75]],
-                          [[2, 0, 0, 1], [2, 1, 0, 0.5], [2, 2, 3, 0.25], [1, 3, 7, 0.75]]]
+    ctrlpts_weights_2d = [
+        [[0, 0, 0, 1], [0, 1, 0, 0.5], [0, 2, -3, 0.25], [0, 3, 7, 0.75]],
+        [[1, 0, 6, 1], [1, 1, 0, 0.5], [1, 2, 0, 0.25], [1, 3, 8, 0.75]],
+        [[2, 0, 0, 1], [2, 1, 0, 0.5], [2, 2, 3, 0.25], [1, 3, 7, 0.75]],
+    ]
 
     ctrlptsw_2d = compatibility.generate_ctrlptsw2d(ctrlpts_weights_2d)
     check = compatibility.generate_ctrlpts2d_weights(ctrlptsw_2d)

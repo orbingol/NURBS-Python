@@ -17,13 +17,13 @@ __all__ = []
 
 
 def find_inouts_st(voxel_grid, datapts, **kwargs):
-    """ Single-threaded ins and outs finding (default)
+    """Single-threaded ins and outs finding (default)
 
     :param voxel_grid: voxel grid
     :param datapts: data points
     :return: in-outs
     """
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get("tol", 10e-8)
     filled = [0 for _ in range(len(voxel_grid))]
     for idx, bb in enumerate(voxel_grid):
         pts_inside = is_point_inside_voxel(bb, datapts, tol=tol)
@@ -33,21 +33,21 @@ def find_inouts_st(voxel_grid, datapts, **kwargs):
 
 
 def find_inouts_mp(voxel_grid, datapts, **kwargs):
-    """ Multi-threaded ins and outs finding (using multiprocessing)
+    """Multi-threaded ins and outs finding (using multiprocessing)
 
     :param voxel_grid: voxel grid
     :param datapts: data points
     :return: in-outs
     """
-    tol = kwargs.get('tol', 10e-8)
-    num_procs = kwargs.get('num_procs', 4)
+    tol = kwargs.get("tol", 10e-8)
+    num_procs = kwargs.get("num_procs", 4)
     with pool_context(processes=num_procs) as pool:
         filled = pool.map(partial(is_point_inside_voxel, ptsarr=datapts, tol=tol), voxel_grid)
     return filled
 
 
 def generate_voxel_grid(bbox, szval, use_cubes=False):
-    """ Generates the voxel grid with the desired size.
+    """Generates the voxel grid with the desired size.
 
     :param bbox: bounding box
     :type bbox: list, tuple
@@ -84,7 +84,7 @@ def generate_voxel_grid(bbox, szval, use_cubes=False):
 
 
 def is_point_inside_voxel(bbox, ptsarr, **kwargs):
-    """ Finds if any point is contained inside the voxel boundaries (inouts array).
+    """Finds if any point is contained inside the voxel boundaries (inouts array).
 
     Ref: https://math.stackexchange.com/a/1552579
 
@@ -96,7 +96,7 @@ def is_point_inside_voxel(bbox, ptsarr, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)  # padding value
+    tol = kwargs.get("tol", 10e-8)  # padding value
 
     # Make bounding box vertices more readable
     bbmin = [b - tol for b in bbox[0]]
@@ -126,7 +126,7 @@ def is_point_inside_voxel(bbox, ptsarr, **kwargs):
 
 
 def get_points_inside_voxel(bbox, ptsarr, **kwargs):
-    """ Finds the list of points contained inside the voxel boundaries.
+    """Finds the list of points contained inside the voxel boundaries.
 
     Ref: https://math.stackexchange.com/a/1552579
 
@@ -138,7 +138,7 @@ def get_points_inside_voxel(bbox, ptsarr, **kwargs):
     :rtype: list
     """
     # Get keyword arguments
-    tol = kwargs.get('tol', 10e-8)
+    tol = kwargs.get("tol", 10e-8)
 
     # Make bounding box vertices more readable
     bbmin = [b - tol for b in bbox[0]]

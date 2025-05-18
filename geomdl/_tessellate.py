@@ -16,7 +16,7 @@ __all__ = []
 
 
 def make_triangle_mesh(points, size_u, size_v, **kwargs):
-    """ Generates a triangular mesh from an array of points.
+    """Generates a triangular mesh from an array of points.
 
     This function generates a triangular mesh for a NURBS or B-Spline surface on its parametric space.
     The input is the surface points and the number of points on the parametric dimensions u and v,
@@ -49,6 +49,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
     :return: a tuple containing lists of vertices and triangles
     :rtype: tuple
     """
+
     def fix_numbering(vertex_list, triangle_list):
         # Initialize variables
         final_vertices = []
@@ -76,14 +77,14 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
         return final_vertices, triangle_list
 
     # Vertex spacing for triangulation
-    vertex_spacing = kwargs.get('vertex_spacing', 1)  # defines the size of the triangles
-    trim_curves = kwargs.get('trims', [])
+    vertex_spacing = kwargs.get("vertex_spacing", 1)  # defines the size of the triangles
+    trim_curves = kwargs.get("trims", [])
 
     # Tessellation algorithm
-    tsl_func = kwargs.get('tessellate_func')
+    tsl_func = kwargs.get("tessellate_func")
     if tsl_func is None:
         tsl_func = surface_tessellate
-    tsl_args = kwargs.get('tessellate_args', dict())
+    tsl_args = kwargs.get("tessellate_args", dict())
 
     # Numbering
     vrt_idx = 0  # vertex index numbering start
@@ -149,7 +150,7 @@ def make_triangle_mesh(points, size_u, size_v, **kwargs):
 
 
 def polygon_triangulate(tri_idx, *args):
-    """ Triangulates a monotone polygon defined by a list of vertices.
+    """Triangulates a monotone polygon defined by a list of vertices.
 
     The input vertices must form a convex polygon and must be arranged in counter-clockwise order.
 
@@ -177,7 +178,7 @@ def polygon_triangulate(tri_idx, *args):
 
 
 def make_quad_mesh(points, size_u, size_v):
-    """ Generates a mesh of quadrilateral elements.
+    """Generates a mesh of quadrilateral elements.
 
     :param points: list of points
     :type points: list, tuple
@@ -215,7 +216,7 @@ def make_quad_mesh(points, size_u, size_v):
 
 
 def surface_tessellate(v1, v2, v3, v4, vidx, tidx, trim_curves, tessellate_args):
-    """ Triangular tessellation algorithm for surfaces with no trims.
+    """Triangular tessellation algorithm for surfaces with no trims.
 
     This function can be directly used as an input to :func:`.make_triangle_mesh` using ``tessellate_func`` keyword
     argument.
@@ -247,7 +248,7 @@ def surface_tessellate(v1, v2, v3, v4, vidx, tidx, trim_curves, tessellate_args)
 
 
 def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
-    """ Triangular tessellation algorithm for trimmed surfaces.
+    """Triangular tessellation algorithm for trimmed surfaces.
 
     This function can be directly used as an input to :func:`.make_triangle_mesh` using ``tessellate_func`` keyword
     argument.
@@ -273,26 +274,26 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
     """
     # Tolerance value
     tol = 10e-8
-    tols = tol ** 2
+    tols = tol**2
     vtol = ((tols, tols), (-tols, tols), (-tols, -tols), (tols, -tols))
 
     # Start processing vertices
     vertices = [v1, v2, v3, v4]
     for idx in range(len(vertices)):
         for trim in trims:
-            cf = 1 if trim.opt['reversed'] else -1
+            cf = 1 if trim.opt["reversed"] else -1
             uv = [p + (cf * t) for p, t in zip(vertices[idx].uv, vtol[idx])]
             if linalg.wn_poly(uv, trim.evalpts):
-                if trim.opt['reversed']:
-                    if vertices[idx].opt_get('trim') is None or not vertices[idx].opt_get('trim'):
+                if trim.opt["reversed"]:
+                    if vertices[idx].opt_get("trim") is None or not vertices[idx].opt_get("trim"):
                         vertices[idx].inside = False
-                        vertices[idx].opt = ['no_trim', True]  # always triangulate
+                        vertices[idx].opt = ["no_trim", True]  # always triangulate
                 else:
                     vertices[idx].inside = True
-                    vertices[idx].opt = ['trim', True]  # always trim
+                    vertices[idx].opt = ["trim", True]  # always trim
             else:
-                if trim.opt['reversed']:
-                    if vertices[idx].opt_get('no_trim') is None or not vertices[idx].opt_get('no_trim'):
+                if trim.opt["reversed"]:
+                    if vertices[idx].opt_get("no_trim") is None or not vertices[idx].opt_get("no_trim"):
                         vertices[idx].inside = True
 
     # If all vertices are marked as inside, then don't generate triangles
@@ -344,8 +345,9 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
             tris_vertices.append(vertices[idx])
 
         # If next vertex is inside the trim, there might be an intersection
-        if (not vertices[idx].inside and vertices[idx + 1].inside) or \
-                (vertices[idx].inside and not vertices[idx + 1].inside):
+        if (not vertices[idx].inside and vertices[idx + 1].inside) or (
+            vertices[idx].inside and not vertices[idx + 1].inside
+        ):
             # Try to find all intersections (multiple intersections are possible)
             isects = []
             for isect in intersections:
@@ -387,16 +389,16 @@ def surface_trim_tessellate(v1, v2, v3, v4, vidx, tidx, trims, tessellate_args):
         tri_center = linalg.triangle_center(tris[idx], uv=True)
         for trim in trims:
             if linalg.wn_poly(tri_center, trim.evalpts):
-                if trim.opt['reversed']:
-                    if tris[idx].opt_get('trim') is None or not tris[idx].opt_get('trim'):
+                if trim.opt["reversed"]:
+                    if tris[idx].opt_get("trim") is None or not tris[idx].opt_get("trim"):
                         tris[idx].inside = False
-                        tris[idx].opt = ['no_trim', True]  # always triangulate
+                        tris[idx].opt = ["no_trim", True]  # always triangulate
                 else:
                     tris[idx].inside = True
-                    tris[idx].opt = ['trim', True]  # always trim
+                    tris[idx].opt = ["trim", True]  # always trim
             else:
-                if trim.opt['reversed']:
-                    if tris[idx].opt_get('no_trim') is None or not tris[idx].opt_get('no_trim'):
+                if trim.opt["reversed"]:
+                    if tris[idx].opt_get("no_trim") is None or not tris[idx].opt_get("no_trim"):
                         tris[idx].inside = True
 
     # Extract triangles which are not inside the trim

@@ -18,7 +18,7 @@ from ._utilities import export
 
 @export
 def insert_knot(obj, param, num, **kwargs):
-    """ Inserts knots n-times to a spline geometry.
+    """Inserts knots n-times to a spline geometry.
 
     The following code snippet illustrates the usage of this function:
 
@@ -50,22 +50,24 @@ def insert_knot(obj, param, num, **kwargs):
     :return: updated spline geometry
     """
     # Get keyword arguments
-    check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of insertions
+    check_num = kwargs.get("check_num", True)  # can be set to False when the caller checks number of insertions
 
     if check_num:
         # Check the validity of number of insertions
         if not isinstance(num, (list, tuple)):
-            raise GeomdlException("The number of insertions must be a list or a tuple",
-                                  data=dict(num=num))
+            raise GeomdlException("The number of insertions must be a list or a tuple", data=dict(num=num))
 
         if len(num) != obj.pdimension:
-            raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdimension, num_len=len(num)))
+            raise GeomdlException(
+                "The length of the num array must be equal to the number of parametric dimensions",
+                data=dict(pdim=obj.pdimension, num_len=len(num)),
+            )
 
         for idx, val in enumerate(num):
             if val < 0:
-                raise GeomdlException('Number of insertions must be a positive integer value',
-                                      data=dict(idx=idx, num=val))
+                raise GeomdlException(
+                    "Number of insertions must be a positive integer value", data=dict(idx=idx, num=val)
+                )
 
     # Start curve knot insertion
     if isinstance(obj, abstract.Curve):
@@ -75,8 +77,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > obj.degree - s:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s),
+                )
 
             # Find knot span
             span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
@@ -86,8 +90,7 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Compute new control points
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
-            cpts_tmp = helpers.knot_insertion(obj.degree, obj.knotvector, cpts, param[0],
-                                              num=num[0], s=s, span=span)
+            cpts_tmp = helpers.knot_insertion(obj.degree, obj.knotvector, cpts, param[0], num=num[0], s=s, span=span)
 
             # Update curve
             obj.set_ctrlpts(cpts_tmp)
@@ -102,8 +105,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > obj.degree_u - s_u:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s_u),
+                )
 
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
@@ -116,13 +121,17 @@ def insert_knot(obj, param, num, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for v in range(obj.ctrlpts_size_v):
                 ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
-                ctrlpts_tmp = helpers.knot_insertion(obj.degree_u, obj.knotvector_u, ccu, param[0],
-                                                     num=num[0], s=s_u, span=span_u)
+                ctrlpts_tmp = helpers.knot_insertion(
+                    obj.degree_u, obj.knotvector_u, ccu, param[0], num=num[0], s=s_u, span=span_u
+                )
                 cpts_tmp += ctrlpts_tmp
 
             # Update the surface after knot insertion
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(cpts_tmp, obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v),
-                            obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v)
+            obj.set_ctrlpts(
+                compatibility.flip_ctrlpts_u(cpts_tmp, obj.ctrlpts_size_u + num[0], obj.ctrlpts_size_v),
+                obj.ctrlpts_size_u + num[0],
+                obj.ctrlpts_size_v,
+            )
             obj.knotvector_u = kv_u
 
         # v-direction
@@ -132,8 +141,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > obj.degree_v - s_v:
-                raise GeomdlException("Knot " + str(param[1]) + " cannot be inserted " + str(num[1]) + " times (v-dir)",
-                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+                raise GeomdlException(
+                    "Knot " + str(param[1]) + " cannot be inserted " + str(num[1]) + " times (v-dir)",
+                    data=dict(knot=param[1], num=num[1], multiplicity=s_v),
+                )
 
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
@@ -146,8 +157,9 @@ def insert_knot(obj, param, num, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for u in range(obj.ctrlpts_size_u):
                 ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
-                ctrlpts_tmp = helpers.knot_insertion(obj.degree_v, obj.knotvector_v, ccv, param[1],
-                                                     num=num[1], s=s_v, span=span_v)
+                ctrlpts_tmp = helpers.knot_insertion(
+                    obj.degree_v, obj.knotvector_v, ccv, param[1], num=num[1], s=s_v, span=span_v
+                )
                 cpts_tmp += ctrlpts_tmp
 
             # Update the surface after knot insertion
@@ -163,8 +175,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > obj.degree_u - s_u:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be inserted " + str(num[0]) + " times (u-dir)",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s_u),
+                )
 
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
@@ -186,8 +200,9 @@ def insert_knot(obj, param, num, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_insertion(obj.degree_u, obj.knotvector_u, cpt2d, param[0],
-                                                 num=num[0], s=s_u, span=span_u)
+            ctrlpts_tmp = helpers.knot_insertion(
+                obj.degree_u, obj.knotvector_u, cpt2d, param[0], num=num[0], s=s_u, span=span_u
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -208,8 +223,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > obj.degree_v - s_v:
-                raise GeomdlException("Knot " + str(param[1]) + " cannot be inserted " + str(num[1]) + " times (v-dir)",
-                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+                raise GeomdlException(
+                    "Knot " + str(param[1]) + " cannot be inserted " + str(num[1]) + " times (v-dir)",
+                    data=dict(knot=param[1], num=num[1], multiplicity=s_v),
+                )
 
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
@@ -231,8 +248,9 @@ def insert_knot(obj, param, num, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_insertion(obj.degree_v, obj.knotvector_v, cpt2d, param[1],
-                                                 num=num[1], s=s_v, span=span_v)
+            ctrlpts_tmp = helpers.knot_insertion(
+                obj.degree_v, obj.knotvector_v, cpt2d, param[1], num=num[1], s=s_v, span=span_v
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -253,8 +271,10 @@ def insert_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[2] > obj.degree_w - s_w:
-                raise GeomdlException("Knot " + str(param[2]) + " cannot be inserted " + str(num[2]) + " times (w-dir)",
-                                      data=dict(knot=param[2], num=num[2], multiplicity=s_w))
+                raise GeomdlException(
+                    "Knot " + str(param[2]) + " cannot be inserted " + str(num[2]) + " times (w-dir)",
+                    data=dict(knot=param[2], num=num[2], multiplicity=s_w),
+                )
 
             # Find knot span
             span_w = helpers.find_span_linear(obj.degree_w, obj.knotvector_w, obj.ctrlpts_size_w, param[2])
@@ -268,13 +288,16 @@ def insert_knot(obj, param, num, **kwargs):
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size_w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
-                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                temp_surf = [
+                    cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                    for uv in range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)
+                ]
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_insertion(obj.degree_w, obj.knotvector_w, cpt2d, param[2],
-                                                 num=num[2], s=s_w, span=span_w)
+            ctrlpts_tmp = helpers.knot_insertion(
+                obj.degree_w, obj.knotvector_w, cpt2d, param[2], num=num[2], s=s_w, span=span_w
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -291,7 +314,7 @@ def insert_knot(obj, param, num, **kwargs):
 
 @export
 def remove_knot(obj, param, num, **kwargs):
-    """ Removes knots n-times from a spline geometry.
+    """Removes knots n-times from a spline geometry.
 
     The following code snippet illustrates the usage of this function:
 
@@ -323,22 +346,24 @@ def remove_knot(obj, param, num, **kwargs):
     :return: updated spline geometry
     """
     # Get keyword arguments
-    check_num = kwargs.get('check_num', True)  # can be set to False when the caller checks number of removals
+    check_num = kwargs.get("check_num", True)  # can be set to False when the caller checks number of removals
 
     if check_num:
         # Check the validity of number of insertions
         if not isinstance(num, (list, tuple)):
-            raise GeomdlException("The number of removals must be a list or a tuple",
-                                  data=dict(num=num))
+            raise GeomdlException("The number of removals must be a list or a tuple", data=dict(num=num))
 
         if len(num) != obj.pdimension:
-            raise GeomdlException("The length of the num array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdimension, num_len=len(num)))
+            raise GeomdlException(
+                "The length of the num array must be equal to the number of parametric dimensions",
+                data=dict(pdim=obj.pdimension, num_len=len(num)),
+            )
 
         for idx, val in enumerate(num):
             if val < 0:
-                raise GeomdlException('Number of removals must be a positive integer value',
-                                      data=dict(idx=idx, num=val))
+                raise GeomdlException(
+                    "Number of removals must be a positive integer value", data=dict(idx=idx, num=val)
+                )
 
     # Start curve knot removal
     if isinstance(obj, abstract.Curve):
@@ -348,8 +373,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # It is impossible to remove knots if num > s
             if check_num and num[0] > s:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s),
+                )
 
             # Find knot span
             span = helpers.find_span_linear(obj.degree, obj.knotvector, obj.ctrlpts_size, param[0])
@@ -374,8 +401,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > s_u:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times (u-dir)",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times (u-dir)",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s_u),
+                )
 
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
@@ -385,16 +414,20 @@ def remove_knot(obj, param, num, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for v in range(obj.ctrlpts_size_v):
                 ccu = [cpts[v + (obj.ctrlpts_size_v * u)] for u in range(obj.ctrlpts_size_u)]
-                ctrlpts_tmp = helpers.knot_removal(obj.degree_u, obj.knotvector_u, ccu, param[0],
-                                                   num=num[0], s=s_u, span=span_u)
+                ctrlpts_tmp = helpers.knot_removal(
+                    obj.degree_u, obj.knotvector_u, ccu, param[0], num=num[0], s=s_u, span=span_u
+                )
                 ctrlpts_new += ctrlpts_tmp
 
             # Compute new knot vector
             kv_u = helpers.knot_removal_kv(obj.knotvector_u, span_u, num[0])
 
             # Update the surface after knot removal
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v),
-                            obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v)
+            obj.set_ctrlpts(
+                compatibility.flip_ctrlpts_u(ctrlpts_new, obj.ctrlpts_size_u - num[0], obj.ctrlpts_size_v),
+                obj.ctrlpts_size_u - num[0],
+                obj.ctrlpts_size_v,
+            )
             obj.knotvector_u = kv_u
 
         # v-direction
@@ -404,8 +437,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > s_v:
-                raise GeomdlException("Knot " + str(param[1]) + " cannot be removed " + str(num[1]) + " times (v-dir)",
-                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+                raise GeomdlException(
+                    "Knot " + str(param[1]) + " cannot be removed " + str(num[1]) + " times (v-dir)",
+                    data=dict(knot=param[1], num=num[1], multiplicity=s_v),
+                )
 
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
@@ -415,8 +450,9 @@ def remove_knot(obj, param, num, **kwargs):
             cpts = obj.ctrlptsw if obj.rational else obj.ctrlpts
             for u in range(obj.ctrlpts_size_u):
                 ccv = [cpts[v + (obj.ctrlpts_size_v * u)] for v in range(obj.ctrlpts_size_v)]
-                ctrlpts_tmp = helpers.knot_removal(obj.degree_v, obj.knotvector_v, ccv, param[1],
-                                                   num=num[1], s=s_v, span=span_v)
+                ctrlpts_tmp = helpers.knot_removal(
+                    obj.degree_v, obj.knotvector_v, ccv, param[1], num=num[1], s=s_v, span=span_v
+                )
                 ctrlpts_new += ctrlpts_tmp
 
             # Compute new knot vector
@@ -435,8 +471,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[0] > s_u:
-                raise GeomdlException("Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times (u-dir)",
-                                      data=dict(knot=param[0], num=num[0], multiplicity=s_u))
+                raise GeomdlException(
+                    "Knot " + str(param[0]) + " cannot be removed " + str(num[0]) + " times (u-dir)",
+                    data=dict(knot=param[0], num=num[0], multiplicity=s_u),
+                )
 
             # Find knot span
             span_u = helpers.find_span_linear(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param[0])
@@ -455,8 +493,9 @@ def remove_knot(obj, param, num, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_u, obj.knotvector_u, cpt2d, param[0],
-                                               num=num[0], s=s_u, span=span_u)
+            ctrlpts_tmp = helpers.knot_removal(
+                obj.degree_u, obj.knotvector_u, cpt2d, param[0], num=num[0], s=s_u, span=span_u
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -480,8 +519,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[1] > s_v:
-                raise GeomdlException("Knot " + str(param[1]) + " cannot be removed " + str(num[1]) + " times (v-dir)",
-                                      data=dict(knot=param[1], num=num[1], multiplicity=s_v))
+                raise GeomdlException(
+                    "Knot " + str(param[1]) + " cannot be removed " + str(num[1]) + " times (v-dir)",
+                    data=dict(knot=param[1], num=num[1], multiplicity=s_v),
+                )
 
             # Find knot span
             span_v = helpers.find_span_linear(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param[1])
@@ -500,8 +541,9 @@ def remove_knot(obj, param, num, **kwargs):
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_v, obj.knotvector_v, cpt2d, param[1],
-                                               num=num[1], s=s_v, span=span_v)
+            ctrlpts_tmp = helpers.knot_removal(
+                obj.degree_v, obj.knotvector_v, cpt2d, param[1], num=num[1], s=s_v, span=span_v
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -525,8 +567,10 @@ def remove_knot(obj, param, num, **kwargs):
 
             # Check if it is possible add that many number of knots
             if check_num and num[2] > s_w:
-                raise GeomdlException("Knot " + str(param[2]) + " cannot be removed " + str(num[2]) + " times (w-dir)",
-                                      data=dict(knot=param[2], num=num[2], multiplicity=s_w))
+                raise GeomdlException(
+                    "Knot " + str(param[2]) + " cannot be removed " + str(num[2]) + " times (w-dir)",
+                    data=dict(knot=param[2], num=num[2], multiplicity=s_w),
+                )
 
             # Find knot span
             span_w = helpers.find_span_linear(obj.degree_w, obj.knotvector_w, obj.ctrlpts_size_w, param[2])
@@ -537,13 +581,16 @@ def remove_knot(obj, param, num, **kwargs):
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size_w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
-                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                temp_surf = [
+                    cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                    for uv in range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)
+                ]
                 cpt2d.append(temp_surf)
 
             # Compute new control points
-            ctrlpts_tmp = helpers.knot_removal(obj.degree_w, obj.knotvector_w, cpt2d, param[2],
-                                               num=num[2], s=s_w, span=span_w)
+            ctrlpts_tmp = helpers.knot_removal(
+                obj.degree_w, obj.knotvector_w, cpt2d, param[2], num=num[2], s=s_w, span=span_w
+            )
 
             # Flatten to 1-dimensional structure
             ctrlpts_new = []
@@ -563,7 +610,7 @@ def remove_knot(obj, param, num, **kwargs):
 
 @export
 def refine_knotvector(obj, param, **kwargs):
-    """ Refines the knot vector(s) of a spline geometry.
+    """Refines the knot vector(s) of a spline geometry.
 
     The following code snippet illustrates the usage of this function:
 
@@ -620,15 +667,17 @@ def refine_knotvector(obj, param, **kwargs):
     :return: updated spline geometry
     """
     # Get keyword arguments
-    check_num = kwargs.get('check_num', True)  # enables/disables input validity checks
+    check_num = kwargs.get("check_num", True)  # enables/disables input validity checks
 
     if check_num:
         if not isinstance(param, (list, tuple)):
             raise GeomdlException("Parametric dimensions argument (param) must be a list or a tuple")
 
         if len(param) != obj.pdimension:
-            raise GeomdlException("The length of the param array must be equal to the number of parametric dimensions",
-                                  data=dict(pdim=obj.pdimension, param_len=len(param)))
+            raise GeomdlException(
+                "The length of the param array must be equal to the number of parametric dimensions",
+                data=dict(pdim=obj.pdimension, param_len=len(param)),
+            )
 
     # Start curve knot refinement
     if isinstance(obj, abstract.Curve):
@@ -654,8 +703,11 @@ def refine_knotvector(obj, param, **kwargs):
                 new_cpts += ptmp
 
             # Update the surface after knot refinement
-            obj.set_ctrlpts(compatibility.flip_ctrlpts_u(new_cpts, new_cpts_size, obj.ctrlpts_size_v),
-                            new_cpts_size, obj.ctrlpts_size_v)
+            obj.set_ctrlpts(
+                compatibility.flip_ctrlpts_u(new_cpts, new_cpts_size, obj.ctrlpts_size_v),
+                new_cpts_size,
+                obj.ctrlpts_size_v,
+            )
             obj.knotvector_u = new_kv
 
         # v-direction
@@ -747,8 +799,10 @@ def refine_knotvector(obj, param, **kwargs):
             # Construct 2-dimensional structure
             cpt2d = []
             for w in range(obj.ctrlpts_size_w):
-                temp_surf = [cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)] for uv in
-                             range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                temp_surf = [
+                    cpts[uv + (w * obj.ctrlpts_size_u * obj.ctrlpts_size_v)]
+                    for uv in range(obj.ctrlpts_size_u * obj.ctrlpts_size_v)
+                ]
                 cpt2d.append(temp_surf)
 
             # Apply knot refinement
@@ -769,7 +823,7 @@ def refine_knotvector(obj, param, **kwargs):
 
 
 def degree_operations(obj, param, **kwargs):
-    """ Applies degree elevation and degree reduction algorithms to spline geometries.
+    """Applies degree elevation and degree reduction algorithms to spline geometries.
 
     :param obj: spline geometry
     :type obj: abstract.SplineGeometry
@@ -777,6 +831,7 @@ def degree_operations(obj, param, **kwargs):
     :type param: list, tuple
     :return: updated spline geometry
     """
+
     def validate_reduction(degree):
         if degree < 2:
             raise GeomdlException("Input spline geometry must have degree > 1")
@@ -785,7 +840,7 @@ def degree_operations(obj, param, **kwargs):
     if isinstance(obj, abstract.Curve):
         if param[0] is not None and param[0] != 0:
             # Find multiplicity of the internal knots
-            int_knots = set(obj.knotvector[obj.degree + 1:-(obj.degree + 1)])
+            int_knots = set(obj.knotvector[obj.degree + 1 : -(obj.degree + 1)])
             mult_arr = []
             for ik in int_knots:
                 s = helpers.find_multiplicity(ik, obj.knotvector)
@@ -802,7 +857,11 @@ def degree_operations(obj, param, **kwargs):
                     new_cpts = helpers.degree_elevation(crv.degree, cpts, num=param[0])
                     crv.degree += param[0]
                     crv.set_ctrlpts(new_cpts)
-                    crv.knotvector = [crv.knotvector[0] for _ in range(param[0])] + list(crv.knotvector) + [crv.knotvector[-1] for _ in range(param[0])]
+                    crv.knotvector = (
+                        [crv.knotvector[0] for _ in range(param[0])]
+                        + list(crv.knotvector)
+                        + [crv.knotvector[-1] for _ in range(param[0])]
+                    )
 
                 # Compute new degree
                 nd = obj.degree + param[0]
@@ -836,8 +895,8 @@ def degree_operations(obj, param, **kwargs):
             # Apply knot removal
             for k, s in zip(knots, mult_arr):
                 span = helpers.find_span_linear(nd, kv, len(ctrlpts), k)
-                ctrlpts = helpers.knot_removal(nd, kv, ctrlpts, k, num=num-s)
-                kv = helpers.knot_removal_kv(kv, span, num-s)
+                ctrlpts = helpers.knot_removal(nd, kv, ctrlpts, k, num=num - s)
+                kv = helpers.knot_removal_kv(kv, span, num - s)
 
             # Update input curve
             obj.degree = nd
@@ -848,7 +907,6 @@ def degree_operations(obj, param, **kwargs):
     if isinstance(obj, abstract.Surface):
         # u-direction
         if param[0] is not None and param[0] != 0:
-
             # If parameter is positive, apply degree elevation. Else, apply degree reduction
             if param[0] > 0:
                 pass
@@ -858,7 +916,6 @@ def degree_operations(obj, param, **kwargs):
 
         # v-direction
         if param[1] is not None and param[1] != 0:
-
             # If parameter is positive, apply degree elevation. Otherwise, apply degree reduction
             if param[1] > 0:
                 pass
@@ -876,7 +933,7 @@ def degree_operations(obj, param, **kwargs):
 
 @export
 def add_dimension(obj, **kwargs):
-    """ Elevates the spatial dimension of the spline geometry.
+    """Elevates the spatial dimension of the spline geometry.
 
     If you pass ``inplace=True`` keyword argument, the input will be updated. Otherwise, this function does not
     change the input but returns a new instance with the updated data.
@@ -890,14 +947,14 @@ def add_dimension(obj, **kwargs):
         raise GeomdlException("Can only operate on spline geometry objects")
 
     # Keyword arguments
-    inplace = kwargs.get('inplace', False)
-    array_init = kwargs.get('array_init', [[] for _ in range(len(obj.ctrlpts))])
-    offset_value = kwargs.get('offset', 0.0)
+    inplace = kwargs.get("inplace", False)
+    array_init = kwargs.get("array_init", [[] for _ in range(len(obj.ctrlpts))])
+    offset_value = kwargs.get("offset", 0.0)
 
     # Update control points
     new_ctrlpts = array_init
     for idx, point in enumerate(obj.ctrlpts):
-        temp = [float(p) for p in point[0:obj.dimension]]
+        temp = [float(p) for p in point[0 : obj.dimension]]
         temp.append(offset_value)
         new_ctrlpts[idx] = temp
 
@@ -912,7 +969,7 @@ def add_dimension(obj, **kwargs):
 
 @export
 def split_curve(obj, param, **kwargs):
-    """ Splits the curve at the input parametric coordinate.
+    """Splits the curve at the input parametric coordinate.
 
     This method splits the curve into two pieces at the given parametric coordinate, generates two different
     curve objects and returns them. It does not modify the input curve.
@@ -936,8 +993,8 @@ def split_curve(obj, param, **kwargs):
         raise GeomdlException("Cannot split from the domain edge")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
-    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
+    span_func = kwargs.get("find_span_func", helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get("insert_knot_func", insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot and define how many times we need to add the knot
     ks = span_func(obj.degree, obj.knotvector, len(obj.ctrlpts), param) - obj.degree + 1
@@ -960,8 +1017,8 @@ def split_curve(obj, param, **kwargs):
 
     # Control points (use Pw if rational)
     cpts = temp_obj.ctrlptsw if obj.rational else temp_obj.ctrlpts
-    curve1_ctrlpts = cpts[0:ks + r]
-    curve2_ctrlpts = cpts[ks + r - 1:]
+    curve1_ctrlpts = cpts[0 : ks + r]
+    curve2_ctrlpts = cpts[ks + r - 1 :]
 
     # Create a new curve for the first half
     curve1 = temp_obj.__class__()
@@ -982,7 +1039,7 @@ def split_curve(obj, param, **kwargs):
 
 @export
 def decompose_curve(obj, **kwargs):
-    """ Decomposes the curve into Bezier curve segments of the same degree.
+    """Decomposes the curve into Bezier curve segments of the same degree.
 
     This operation does not modify the input curve, instead it returns the split curve segments.
 
@@ -1000,13 +1057,13 @@ def decompose_curve(obj, **kwargs):
 
     multi_curve = []
     curve = copy.deepcopy(obj)
-    knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+    knots = curve.knotvector[curve.degree + 1 : -(curve.degree + 1)]
     while knots:
         knot = knots[0]
         curves = split_curve(curve, param=knot, **kwargs)
         multi_curve.append(curves[0])
         curve = curves[1]
-        knots = curve.knotvector[curve.degree + 1:-(curve.degree + 1)]
+        knots = curve.knotvector[curve.degree + 1 : -(curve.degree + 1)]
     multi_curve.append(curve)
 
     return multi_curve
@@ -1014,7 +1071,7 @@ def decompose_curve(obj, **kwargs):
 
 @export
 def derivative_curve(obj):
-    """ Computes the hodograph (first derivative) curve of the input curve.
+    """Computes the hodograph (first derivative) curve of the input curve.
 
     This function constructs the hodograph (first derivative) curve from the input curve by computing the degrees,
     knot vectors and the control points of the derivative curve.
@@ -1033,8 +1090,9 @@ def derivative_curve(obj):
         return obj
 
     # Find the control points of the derivative curve
-    pkl = helpers.curve_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts,
-                                          rs=(0, obj.ctrlpts_size - 1), deriv_order=1)
+    pkl = helpers.curve_deriv_cpts(
+        obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts, rs=(0, obj.ctrlpts_size - 1), deriv_order=1
+    )
 
     # Generate the derivative curve
     curve = obj.__class__()
@@ -1048,7 +1106,7 @@ def derivative_curve(obj):
 
 @export
 def length_curve(obj):
-    """ Computes the approximate length of the parametric curve.
+    """Computes the approximate length of the parametric curve.
 
     Uses the following equation to compute the approximate length:
 
@@ -1076,7 +1134,7 @@ def length_curve(obj):
 
 @export
 def split_surface_u(obj, param, **kwargs):
-    """ Splits the surface at the input parametric coordinate on the u-direction.
+    """Splits the surface at the input parametric coordinate on the u-direction.
 
     This method splits the surface into two pieces at the given parametric coordinate on the u-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
@@ -1100,8 +1158,8 @@ def split_surface_u(obj, param, **kwargs):
         raise GeomdlException("Cannot split from the u-domain edge")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
-    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
+    span_func = kwargs.get("find_span_func", helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get("insert_knot_func", insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot
     ks = span_func(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param) - obj.degree_u + 1
@@ -1123,8 +1181,8 @@ def split_surface_u(obj, param, **kwargs):
         surf2_kv.insert(0, param)
 
     # Control points
-    surf1_ctrlpts = temp_obj.ctrlpts2d[0:ks + r]
-    surf2_ctrlpts = temp_obj.ctrlpts2d[ks + r - 1:]
+    surf1_ctrlpts = temp_obj.ctrlpts2d[0 : ks + r]
+    surf2_ctrlpts = temp_obj.ctrlpts2d[ks + r - 1 :]
 
     # Create a new surface for the first half
     surf1 = temp_obj.__class__()
@@ -1149,7 +1207,7 @@ def split_surface_u(obj, param, **kwargs):
 
 @export
 def split_surface_v(obj, param, **kwargs):
-    """ Splits the surface at the input parametric coordinate on the v-direction.
+    """Splits the surface at the input parametric coordinate on the v-direction.
 
     This method splits the surface into two pieces at the given parametric coordinate on the v-direction,
     generates two different surface objects and returns them. It does not modify the input surface.
@@ -1173,8 +1231,8 @@ def split_surface_v(obj, param, **kwargs):
         raise GeomdlException("Cannot split from the v-domain edge")
 
     # Keyword arguments
-    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
-    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
+    span_func = kwargs.get("find_span_func", helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get("insert_knot_func", insert_knot)  # Knot insertion algorithm
 
     # Find multiplicity of the knot
     ks = span_func(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param) - obj.degree_v + 1
@@ -1198,11 +1256,11 @@ def split_surface_v(obj, param, **kwargs):
     # Control points
     surf1_ctrlpts = []
     for v_row in temp_obj.ctrlpts2d:
-        temp = v_row[0:ks + r]
+        temp = v_row[0 : ks + r]
         surf1_ctrlpts.append(temp)
     surf2_ctrlpts = []
     for v_row in temp_obj.ctrlpts2d:
-        temp = v_row[ks + r - 1:]
+        temp = v_row[ks + r - 1 :]
         surf2_ctrlpts.append(temp)
 
     # Create a new surface for the first half
@@ -1228,7 +1286,7 @@ def split_surface_v(obj, param, **kwargs):
 
 @export
 def decompose_surface(obj, **kwargs):
-    """ Decomposes the surface into Bezier surface patches of the same degree.
+    """Decomposes the surface into Bezier surface patches of the same degree.
 
     This operation does not modify the input surface, instead it returns the surface patches.
 
@@ -1241,15 +1299,16 @@ def decompose_surface(obj, **kwargs):
     :return: a list of Bezier patches
     :rtype: list
     """
+
     def decompose(srf, idx, split_func_list, **kws):
         srf_list = []
-        knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
+        knots = srf.knotvector[idx][srf.degree[idx] + 1 : -(srf.degree[idx] + 1)]
         while knots:
             knot = knots[0]
             srfs = split_func_list[idx](srf, param=knot, **kws)
             srf_list.append(srfs[0])
             srf = srfs[1]
-            knots = srf.knotvector[idx][srf.degree[idx] + 1:-(srf.degree[idx] + 1)]
+            knots = srf.knotvector[idx][srf.degree[idx] + 1 : -(srf.degree[idx] + 1)]
         srf_list.append(srf)
         return srf_list
 
@@ -1258,7 +1317,7 @@ def decompose_surface(obj, **kwargs):
         raise GeomdlException("Input shape must be an instance of abstract.Surface class")
 
     # Get keyword arguments
-    decompose_dir = kwargs.get('decompose_dir', 'uv')  # possible directions: u, v, uv
+    decompose_dir = kwargs.get("decompose_dir", "uv")  # possible directions: u, v, uv
     if "decompose_dir" in kwargs:
         kwargs.pop("decompose_dir")
 
@@ -1269,15 +1328,15 @@ def decompose_surface(obj, **kwargs):
     surf = copy.deepcopy(obj)
 
     # Only u-direction
-    if decompose_dir == 'u':
+    if decompose_dir == "u":
         return decompose(surf, 0, split_funcs, **kwargs)
 
     # Only v-direction
-    if decompose_dir == 'v':
+    if decompose_dir == "v":
         return decompose(surf, 1, split_funcs, **kwargs)
 
     # Both u- and v-directions
-    if decompose_dir == 'uv':
+    if decompose_dir == "uv":
         multi_surf = []
         # Process u-direction
         surfs_u = decompose(surf, 0, split_funcs, **kwargs)
@@ -1291,7 +1350,7 @@ def decompose_surface(obj, **kwargs):
 
 @export
 def derivative_surface(obj):
-    """ Computes the hodograph (first derivative) surface of the input surface.
+    """Computes the hodograph (first derivative) surface of the input surface.
 
     This function constructs the hodograph (first derivative) surface from the input surface by computing the degrees,
     knot vectors and the control points of the derivative surface.
@@ -1316,8 +1375,16 @@ def derivative_surface(obj):
 
     # Find the control points of the derivative surface
     d = 2  # 0 <= k + l <= d, see pg. 114 of The NURBS Book, 2nd Ed.
-    pkl = helpers.surface_deriv_cpts(obj.dimension, obj.degree, obj.knotvector, obj.ctrlpts, obj.cpsize,
-                                            rs=(0, obj.ctrlpts_size_u - 1), ss=(0, obj.ctrlpts_size_v - 1), deriv_order=d)
+    pkl = helpers.surface_deriv_cpts(
+        obj.dimension,
+        obj.degree,
+        obj.knotvector,
+        obj.ctrlpts,
+        obj.cpsize,
+        rs=(0, obj.ctrlpts_size_u - 1),
+        ss=(0, obj.ctrlpts_size_v - 1),
+        deriv_order=d,
+    )
 
     ctrlpts2d_u = []
     for i in range(0, len(pkl[1][0]) - 1):
@@ -1357,7 +1424,7 @@ def derivative_surface(obj):
 
 @export
 def find_ctrlpts(obj, u, v=None, **kwargs):
-    """ Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
+    """Finds the control points involved in the evaluation of the curve/surface point defined by the input parameter(s).
 
     :param obj: curve or surface
     :type obj: abstract.Curve or abstract.Surface
@@ -1380,7 +1447,7 @@ def find_ctrlpts(obj, u, v=None, **kwargs):
 
 @export
 def tangent(obj, params, **kwargs):
-    """ Evaluates the tangent vector of the curves or surfaces at the input parameter values.
+    """Evaluates the tangent vector of the curves or surfaces at the input parameter values.
 
     This function is designed to evaluate tangent vectors of the B-Spline and NURBS shapes at single or
     multiple parameter positions.
@@ -1392,7 +1459,7 @@ def tangent(obj, params, **kwargs):
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
-    normalize = kwargs.get('normalize', True)
+    normalize = kwargs.get("normalize", True)
     if isinstance(obj, abstract.Curve):
         if isinstance(params, (list, tuple)):
             return ops.tangent_curve_single_list(obj, params, normalize)
@@ -1407,7 +1474,7 @@ def tangent(obj, params, **kwargs):
 
 @export
 def normal(obj, params, **kwargs):
-    """ Evaluates the normal vector of the curves or surfaces at the input parameter values.
+    """Evaluates the normal vector of the curves or surfaces at the input parameter values.
 
     This function is designed to evaluate normal vectors of the B-Spline and NURBS shapes at single or
     multiple parameter positions.
@@ -1419,7 +1486,7 @@ def normal(obj, params, **kwargs):
     :return: a list containing "point" and "vector" pairs
     :rtype: tuple
     """
-    normalize = kwargs.get('normalize', True)
+    normalize = kwargs.get("normalize", True)
     if isinstance(obj, abstract.Curve):
         raise GeomdlException("Not implemented for curves")
     if isinstance(obj, abstract.Surface):
@@ -1431,7 +1498,7 @@ def normal(obj, params, **kwargs):
 
 @export
 def translate(obj, vec, **kwargs):
-    """ Translates curves, surface or volumes by the input vector.
+    """Translates curves, surface or volumes by the input vector.
 
     Keyword Arguments:
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
@@ -1451,7 +1518,7 @@ def translate(obj, vec, **kwargs):
         raise GeomdlException("The input vector must have " + str(obj.dimension) + " components")
 
     # Keyword arguments
-    inplace = kwargs.get('inplace', False)
+    inplace = kwargs.get("inplace", False)
 
     if not inplace:
         geom = copy.deepcopy(obj)
@@ -1471,7 +1538,7 @@ def translate(obj, vec, **kwargs):
 
 @export
 def rotate(obj, angle, **kwargs):
-    """ Rotates curves, surfaces or volumes about the chosen axis.
+    """Rotates curves, surfaces or volumes about the chosen axis.
 
     Keyword Arguments:
         * ``axis``: rotation axis; x, y, z correspond to 0, 1, 2 respectively. *Default: 2*
@@ -1483,6 +1550,7 @@ def rotate(obj, angle, **kwargs):
     :type angle: float
     :return: rotated geometry object
     """
+
     def rotate_x(ncs, opt, alpha):
         # Generate translation vector
         translate_vector = linalg.vector_generate(opt, [0.0 for _ in range(ncs.dimension)])
@@ -1540,13 +1608,13 @@ def rotate(obj, angle, **kwargs):
         translate(ncs, [-tv for tv in translate_vector], inplace=True)
 
     # Set rotation axis
-    axis = 2 if obj.dimension == 2 else int(kwargs.get('axis', 2))
+    axis = 2 if obj.dimension == 2 else int(kwargs.get("axis", 2))
     if not 0 <= axis <= 2:
         raise GeomdlException("Value of the 'axis' argument should be 0, 1 or 2")
     rotfunc = (rotate_x, rotate_y, rotate_z)
 
     # Operate on a copy or the actual object
-    inplace = kwargs.get('inplace', False)
+    inplace = kwargs.get("inplace", False)
     if not inplace:
         geom = copy.deepcopy(obj)
     else:
@@ -1568,7 +1636,7 @@ def rotate(obj, angle, **kwargs):
 
 @export
 def scale(obj, multiplier, **kwargs):
-    """ Scales curves, surfaces or volumes by the input multiplier.
+    """Scales curves, surfaces or volumes by the input multiplier.
 
     Keyword Arguments:
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
@@ -1584,7 +1652,7 @@ def scale(obj, multiplier, **kwargs):
         raise GeomdlException("The multiplier must be a float or an integer")
 
     # Keyword arguments
-    inplace = kwargs.get('inplace', False)
+    inplace = kwargs.get("inplace", False)
 
     if not inplace:
         geom = copy.deepcopy(obj)
@@ -1603,7 +1671,7 @@ def scale(obj, multiplier, **kwargs):
 
 @export
 def transpose(surf, **kwargs):
-    """ Transposes the input surface(s) by swapping u and v parametric directions.
+    """Transposes the input surface(s) by swapping u and v parametric directions.
 
     Keyword Arguments:
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
@@ -1616,7 +1684,7 @@ def transpose(surf, **kwargs):
         raise GeomdlException("Can only transpose surfaces")
 
     # Keyword arguments
-    inplace = kwargs.get('inplace', False)
+    inplace = kwargs.get("inplace", False)
 
     if not inplace:
         geom = copy.deepcopy(surf)
@@ -1651,7 +1719,7 @@ def transpose(surf, **kwargs):
 
 @export
 def flip(surf, **kwargs):
-    """ Flips the control points grid of the input surface(s).
+    """Flips the control points grid of the input surface(s).
 
     Keyword Arguments:
         * ``inplace``: if False, operation applied to a copy of the object. *Default: False*
@@ -1664,7 +1732,7 @@ def flip(surf, **kwargs):
         raise GeomdlException("Can only flip surfaces")
 
     # Keyword arguments
-    inplace = kwargs.get('inplace', False)
+    inplace = kwargs.get("inplace", False)
 
     if not inplace:
         geom = copy.deepcopy(surf)

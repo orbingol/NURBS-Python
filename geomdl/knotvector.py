@@ -13,7 +13,7 @@ from ._utilities import export
 
 @export
 def generate(degree, num_ctrlpts, **kwargs):
-    """ Generates an equally spaced knot vector.
+    """Generates an equally spaced knot vector.
 
     It uses the following equality to generate knot vector: :math:`m = n + p + 1`
 
@@ -38,7 +38,7 @@ def generate(degree, num_ctrlpts, **kwargs):
         raise ValueError("Input values should be different than zero.")
 
     # Get keyword arguments
-    clamped = kwargs.get('clamped', True)
+    clamped = kwargs.get("clamped", True)
 
     # Number of repetitions at the start and end of the array
     num_repeat = degree
@@ -67,7 +67,7 @@ def generate(degree, num_ctrlpts, **kwargs):
 
 @export
 def normalize(knot_vector, decimals=18):
-    """ Normalizes the input knot vector to [0, 1] domain.
+    """Normalizes the input knot vector to [0, 1] domain.
 
     :param knot_vector: knot vector to be normalized
     :type knot_vector: list, tuple
@@ -89,15 +89,16 @@ def normalize(knot_vector, decimals=18):
     last_knot = float(knot_vector[-1])
     denominator = last_knot - first_knot
 
-    knot_vector_out = [float(("{:." + str(decimals) + "f}").format((float(kv) - first_knot) / denominator))
-                       for kv in knot_vector]
+    knot_vector_out = [
+        float(("{:." + str(decimals) + "f}").format((float(kv) - first_knot) / denominator)) for kv in knot_vector
+    ]
 
     return knot_vector_out
 
 
 @export
 def check(degree, knot_vector, num_ctrlpts):
-    """ Checks the validity of the input knot vector.
+    """Checks the validity of the input knot vector.
 
     Please refer to The NURBS Book (2nd Edition), p.50 for details.
 

@@ -14,7 +14,7 @@ from ._utilities import export
 
 @export
 def interpolate_curve(points, degree, **kwargs):
-    """ Curve interpolation through the data points.
+    """Curve interpolation through the data points.
 
     Please refer to Algorithm A9.1 on The NURBS Book (2nd Edition), pp.369-370 for details.
 
@@ -29,7 +29,7 @@ def interpolate_curve(points, degree, **kwargs):
     :rtype: BSpline.Curve
     """
     # Keyword arguments
-    use_centripetal = kwargs.get('centripetal', False)
+    use_centripetal = kwargs.get("centripetal", False)
 
     # Number of control points
     num_points = len(points)
@@ -55,7 +55,7 @@ def interpolate_curve(points, degree, **kwargs):
 
 @export
 def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    """ Surface interpolation through the data points.
+    """Surface interpolation through the data points.
 
     Please refer to the Algorithm A9.4 on The NURBS Book (2nd Edition), pp.380 for details.
 
@@ -76,7 +76,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     :rtype: BSpline.Surface
     """
     # Keyword arguments
-    use_centripetal = kwargs.get('centripetal', False)
+    use_centripetal = kwargs.get("centripetal", False)
 
     # Get uk and vl
     uk, vl = compute_params_surface(points, size_u, size_v, use_centripetal)
@@ -114,7 +114,7 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 @export
 def approximate_curve(points, degree, **kwargs):
-    """ Curve approximation using least squares method with fixed number of control points.
+    """Curve approximation using least squares method with fixed number of control points.
 
     Please refer to The NURBS Book (2nd Edition), pp.410-413 for details.
 
@@ -133,8 +133,8 @@ def approximate_curve(points, degree, **kwargs):
     num_dpts = len(points)  # corresponds to variable "r" in the algorithm
 
     # Get keyword arguments
-    use_centripetal = kwargs.get('centripetal', False)
-    num_cpts = kwargs.get('ctrlpts_size', num_dpts - 1)
+    use_centripetal = kwargs.get("centripetal", False)
+    num_cpts = kwargs.get("ctrlpts_size", num_dpts - 1)
 
     # Dimension
     dim = len(points[0])
@@ -210,7 +210,7 @@ def approximate_curve(points, degree, **kwargs):
 
 @export
 def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
-    """ Surface approximation using least squares method with fixed number of control points.
+    """Surface approximation using least squares method with fixed number of control points.
 
     This algorithm interpolates the corner control points and approximates the remaining control points. Please refer to
     Algorithm A9.7 of The NURBS Book (2nd Edition), pp.422-423 for details.
@@ -234,9 +234,9 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
     :rtype: BSpline.Surface
     """
     # Keyword arguments
-    use_centripetal = kwargs.get('centripetal', False)
-    num_cpts_u = kwargs.get('ctrlpts_size_u', size_u - 1)  # number of datapts, r + 1 > number of ctrlpts, n + 1
-    num_cpts_v = kwargs.get('ctrlpts_size_v', size_v - 1)  # number of datapts, s + 1 > number of ctrlpts, m + 1
+    use_centripetal = kwargs.get("centripetal", False)
+    num_cpts_u = kwargs.get("ctrlpts_size_u", size_u - 1)  # number of datapts, r + 1 > number of ctrlpts, n + 1
+    num_cpts_v = kwargs.get("ctrlpts_size_v", size_v - 1)  # number of datapts, s + 1 > number of ctrlpts, m + 1
 
     # Dimension
     dim = len(points[0])
@@ -356,7 +356,7 @@ def approximate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
 
 
 def compute_knot_vector(degree, num_points, params):
-    """ Computes a knot vector from the parameter list using averaging method.
+    """Computes a knot vector from the parameter list using averaging method.
 
     Please refer to the Equation 9.8 on The NURBS Book (2nd Edition), pp.365 for details.
 
@@ -384,7 +384,7 @@ def compute_knot_vector(degree, num_points, params):
 
 
 def compute_knot_vector2(degree, num_dpts, num_cpts, params):
-    """ Computes a knot vector ensuring that every knot span has at least one :math:`\\overline{u}_{k}`.
+    """Computes a knot vector ensuring that every knot span has at least one :math:`\\overline{u}_{k}`.
 
     Please refer to the Equations 9.68 and 9.69 on The NURBS Book (2nd Edition), p.412 for details.
 
@@ -418,7 +418,7 @@ def compute_knot_vector2(degree, num_dpts, num_cpts, params):
 
 
 def compute_params_curve(points, centripetal=False):
-    """ Computes :math:`\\overline{u}_{k}` for curves.
+    """Computes :math:`\\overline{u}_{k}` for curves.
 
     Please refer to the Equations 9.4 and 9.5 for chord length parametrization, and Equation 9.6 for centripetal method
     on The NURBS Book (2nd Edition), pp.364-365.
@@ -449,13 +449,13 @@ def compute_params_curve(points, centripetal=False):
     # Divide individual chord lengths by the total chord length
     uk = [0.0 for _ in range(num_points)]
     for i in range(num_points):
-        uk[i] = sum(cds[0:i + 1]) / d
+        uk[i] = sum(cds[0 : i + 1]) / d
 
     return uk
 
 
 def compute_params_surface(points, size_u, size_v, centripetal=False):
-    """ Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
+    """Computes :math:`\\overline{u}_{k}` and :math:`\\overline{u}_{l}` for surfaces.
 
     The data points array has a row size of ``size_v`` and column size of ``size_u`` and it is 1-dimensional. Please
     refer to The NURBS Book (2nd Edition), pp.366-367 for details on how to compute :math:`\\overline{u}_{k}` and
@@ -507,7 +507,7 @@ def compute_params_surface(points, size_u, size_v, centripetal=False):
 
 
 def _build_coeff_matrix(degree, knotvector, params, points):
-    """ Builds the coefficient matrix for global interpolation.
+    """Builds the coefficient matrix for global interpolation.
 
     This function only uses data points to build the coefficient matrix. Please refer to The NURBS Book (2nd Edition),
     pp364-370 for details.
@@ -530,14 +530,14 @@ def _build_coeff_matrix(degree, knotvector, params, points):
     matrix_a = [[0.0 for _ in range(num_points)] for _ in range(num_points)]
     for i in range(num_points):
         span = helpers.find_span_linear(degree, knotvector, num_points, params[i])
-        matrix_a[i][span-degree:span+1] = helpers.basis_function(degree, knotvector, span, params[i])
+        matrix_a[i][span - degree : span + 1] = helpers.basis_function(degree, knotvector, span, params[i])
 
     # Return coefficient matrix
     return matrix_a
 
 
 def _build_coeff_matrix_ders(degree, knotvector, params, points):
-    """ Builds the coefficient matrix for global interpolation.
+    """Builds the coefficient matrix for global interpolation.
 
     This function uses data points and first derivatives to build the coefficient matrix. Please refer to The NURBS Book
     (2nd Edition), pp373-376 for details.

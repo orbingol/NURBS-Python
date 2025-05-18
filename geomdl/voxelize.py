@@ -14,7 +14,7 @@ from ._utilities import export
 
 @export
 def voxelize(obj, **kwargs):
-    """ Generates binary voxel representation of the surfaces and volumes.
+    """Generates binary voxel representation of the surfaces and volumes.
 
     Keyword Arguments:
         * ``grid_size``: size of the voxel grid. *Default: (8, 8, 8)*
@@ -28,9 +28,9 @@ def voxelize(obj, **kwargs):
     :rtype: tuple
     """
     # Get keyword arguments
-    grid_size = kwargs.pop('grid_size', (8, 8, 8))
-    use_cubes = kwargs.pop('use_cubes', False)
-    num_procs = kwargs.get('num_procs', 1)
+    grid_size = kwargs.pop("grid_size", (8, 8, 8))
+    use_cubes = kwargs.pop("use_cubes", False)
+    num_procs = kwargs.get("num_procs", 1)
 
     if not isinstance(grid_size, (list, tuple)):
         raise TypeError("Grid size must be a list or a tuple of integers")
@@ -57,7 +57,7 @@ def voxelize(obj, **kwargs):
 
 
 def convert_bb_to_faces(voxel_grid):
-    """ Converts a voxel grid defined by min and max coordinates to a voxel grid defined by faces.
+    """Converts a voxel grid defined by min and max coordinates to a voxel grid defined by faces.
 
     :param voxel_grid: voxel grid defined by the bounding box of all voxels
     :return: voxel grid with face data
@@ -87,7 +87,7 @@ def convert_bb_to_faces(voxel_grid):
 
 @export
 def save_voxel_grid(voxel_grid, file_name):
-    """ Saves binary voxel grid as a binary file.
+    """Saves binary voxel grid as a binary file.
 
     The binary file is structured in little-endian unsigned int format.
 
@@ -97,7 +97,7 @@ def save_voxel_grid(voxel_grid, file_name):
     :type file_name: str
     """
     try:
-        with open(file_name, 'wb') as fp:
+        with open(file_name, "wb") as fp:
             for voxel in voxel_grid:
                 fp.write(struct.pack("<I", voxel))
     except IOError as e:

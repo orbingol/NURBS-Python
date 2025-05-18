@@ -18,7 +18,7 @@ __all__ = []
 
 @utl.add_metaclass(abc.ABCMeta)
 class VisConfigAbstract(object):
-    """ Abstract base class for user configuration of the visualization module
+    """Abstract base class for user configuration of the visualization module
 
     Defines an abstract base for NURBS-Python (geomdl) visualization configuration.
     """
@@ -29,7 +29,7 @@ class VisConfigAbstract(object):
 
 @utl.add_metaclass(abc.ABCMeta)
 class VisAbstract(object):
-    """ Abstract base class for visualization
+    """Abstract base class for visualization
 
     Defines an abstract base for NURBS-Python (geomdl) visualization modules.
 
@@ -41,16 +41,16 @@ class VisAbstract(object):
         if not isinstance(config, VisConfigAbstract):
             raise TypeError("Config variable must be an instance of vis.VisAbstractConfig")
         self._user_config = config.__class__(**kwargs) if kwargs else config
-        self._module_config = {'ctrlpts': 'points', 'evalpts': 'points', 'others': None}
+        self._module_config = {"ctrlpts": "points", "evalpts": "points", "others": None}
         self._plots = []
         self._ctrlpts_offset = 0.0
 
     def clear(self):
-        """ Clears the points, colors and names lists. """
+        """Clears the points, colors and names lists."""
         self._plots[:] = []
 
     def add(self, ptsarr, plot_type, name="", color="", idx=0):
-        """ Adds points sets to the visualization instance for plotting.
+        """Adds points sets to the visualization instance for plotting.
 
         :param ptsarr: control or evaluated points
         :type ptsarr: list, tuple
@@ -68,12 +68,12 @@ class VisAbstract(object):
             return
         # Add points, size, plot color and name on the legend
         plt_name = " ".join([str(n) for n in name]) if isinstance(name, (list, tuple)) else name
-        elem = {'ptsarr': ptsarr, 'name': plt_name, 'color': color, 'type': plot_type, 'idx': idx}
+        elem = {"ptsarr": ptsarr, "name": plt_name, "color": color, "type": plot_type, "idx": idx}
         self._plots.append(elem)
 
     @property
     def vconf(self):
-        """ User configuration class for visualization
+        """User configuration class for visualization
 
         :getter: Gets the user configuration class
         :type: vis.VisConfigAbstract
@@ -82,7 +82,7 @@ class VisAbstract(object):
 
     @property
     def mconf(self):
-        """ Configuration directives for the visualization module (internal).
+        """Configuration directives for the visualization module (internal).
 
         This property controls the internal configuration of the visualization module. It is for advanced use and
         testing only.
@@ -123,8 +123,11 @@ class VisAbstract(object):
                 raise GeomdlException("Plot type and its value should be string type")
 
             if value[0] not in self._module_config.keys():
-                raise GeomdlException(value[0] + " is not a configuration directive. Possible directives: " +
-                                      ", ".join([k for k in self._module_config.keys()]))
+                raise GeomdlException(
+                    value[0]
+                    + " is not a configuration directive. Possible directives: "
+                    + ", ".join([k for k in self._module_config.keys()])
+                )
 
             self._module_config[value[0]] = value[1]
         except TypeError:
@@ -132,7 +135,7 @@ class VisAbstract(object):
 
     @property
     def ctrlpts_offset(self):
-        """ Defines an offset value for the control points grid plots
+        """Defines an offset value for the control points grid plots
 
         Only makes sense to use with surfaces with dense control points grid.
 
@@ -147,7 +150,7 @@ class VisAbstract(object):
         self._ctrlpts_offset = float(offset_value)
 
     def size(self, plot_type):
-        """ Returns the number of plots defined by the plot type.
+        """Returns the number of plots defined by the plot type.
 
         :param plot_type: plot type
         :type plot_type: str
@@ -156,12 +159,12 @@ class VisAbstract(object):
         """
         count = 0
         for plot in self._plots:
-            if plot['type'] == plot_type:
+            if plot["type"] == plot_type:
                 count += 1
         return count
 
     def animate(self, **kwargs):
-        """ Generates animated plots (if supported).
+        """Generates animated plots (if supported).
 
         If the implemented visualization module supports animations, this function will create an animated figure.
         Otherwise, it will call :py:meth:`render` method by default.
@@ -171,7 +174,7 @@ class VisAbstract(object):
 
     @abc.abstractmethod
     def render(self, **kwargs):
-        """ Abstract method for rendering plots of the point sets.
+        """Abstract method for rendering plots of the point sets.
 
         This method must be implemented in all subclasses of ``VisAbstract`` class.
         """
