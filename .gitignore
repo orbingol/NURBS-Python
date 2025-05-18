@@ -28,3 +28,4 @@ geomdl/evaluators
 .coverage
 .python-version
 .DS_Store
+.ruff_cache
