@@ -7,10 +7,10 @@
 build/
 dist/
 wheelhouse/
-*.egg-info/*
-docs/_build/*
+*.egg-info/
+docs/_build/
 !docs/_build/.gitkeep
-docs/_static/*
+docs/_static/
 !docs/_static/.gitkeep
 geomdl/core
 geomdl/cli
