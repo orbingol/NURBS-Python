@@ -36,6 +36,7 @@ Issues = "https://github.com/orbingol/NURBS-Python/issues"
 [project.optional-dependencies]
 vis = ["numpy>=2.0, <3.0", "matplotlib>=3.9.0", "plotly>=6.0.0"]
 pytest = ["pytest>=8.0.0"]
+docs = ["sphinx>=8.3.0"]
 
 [tool.setuptools]
 # package-dir = {"" = "src"}
