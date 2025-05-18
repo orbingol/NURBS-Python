@@ -1,7 +1,7 @@
 NURBS-Python (geomdl)
 ^^^^^^^^^^^^^^^^^^^^^
 
-|RTD|_ |PYPI|_ |PYPIDL|_ |ANACONDA|_
+|RTD|_ |PYPI|_ |PYPIDL|_
 
 Introduction
 ============
