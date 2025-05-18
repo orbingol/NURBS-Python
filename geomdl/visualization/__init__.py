@@ -1,11 +1,11 @@
 """ Visualization Modules for NURBS-Python
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <code@quantumworx.net>
 
 """
 
-__author__ = "Onur Rauf Bingol"
-__version__ = "2.0.0"
+__author__ = "Onur R. Bingol"
+__version__ = "3.0.0"
 __license__ = "MIT"
 
 # Import core library visualization module
