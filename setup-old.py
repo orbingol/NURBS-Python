@@ -279,5 +279,5 @@ data = dict(
 )
 
 
-if __name__ == "__main__":
-    setup(**data)
+# if __name__ == "__main__":
+#     setup(**data)
