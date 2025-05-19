@@ -1,0 +1,53 @@
+name: release
+
+on:
+  release:
+    types: [ published ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.11"
+  CIBW_VERSION: "2.23.3"
+
+jobs:
+  build-wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-24.04 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==${{ env.CIBW_VERSION }}
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
+          retention-days: 1
+
+  publish-github-releases:
+    runs-on: ubuntu-24.04
+    needs: [ build-wheels ]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels-*
+          path: ./wheelhouse
+          merge-multiple: true
+      - name: Publish packages to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./wheelhouse/*
