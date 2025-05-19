@@ -1,7 +1,4 @@
-"""
-Tests for the NURBS-Python package
-Released under The MIT License. See LICENSE file for details.
-Copyright (c) 2018-2019 Onur Rauf Bingol
+"""Tests for the NURBS-Python package.
 
 Requires "pytest" to run.
 """
@@ -128,11 +125,11 @@ def test_bspline_surface_deriv(spline_surf):
     der1 = spline_surf.derivatives(u=0.35, v=0.35, order=2)
     spline_surf.evaluator = evaluators.SurfaceEvaluator2()
     der2 = spline_surf.derivatives(u=0.35, v=0.35, order=2)
-    for k in range(0, 3):
-        for l in range(0, 3 - k):
-            assert abs(der1[k][l][0] - der2[k][l][0]) < GEOMDL_DELTA
-            assert abs(der1[k][l][1] - der2[k][l][1]) < GEOMDL_DELTA
-            assert abs(der1[k][l][2] - der2[k][l][2]) < GEOMDL_DELTA
+    for ki in range(0, 3):
+        for li in range(0, 3 - ki):
+            assert abs(der1[ki][li][0] - der2[ki][li][0]) < GEOMDL_DELTA
+            assert abs(der1[ki][li][1] - der2[ki][li][1]) < GEOMDL_DELTA
+            assert abs(der1[ki][li][2] - der2[ki][li][2]) < GEOMDL_DELTA
 
 
 @mark.parametrize(
