@@ -44,3 +44,10 @@ packages = ["geomdl", "geomdl.visualization"]
 
 [tool.setuptools_scm]
 version_file = "VERSION.txt"
+
+[tool.cibuildwheel]
+archs = ["auto"]
+build = ["cp311-*"]
+skip = "*-musllinux*"
+test-requires = ["pytest>=8.0.0"]
+test-command = "pytest"
