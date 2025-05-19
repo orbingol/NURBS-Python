@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides functions for generating swept geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

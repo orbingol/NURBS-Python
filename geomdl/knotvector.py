@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides utility functions related to knot vector generation and validation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

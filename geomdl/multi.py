@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides container classes for spline geoemtries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

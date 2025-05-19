@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides spline evaluation helper functions
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

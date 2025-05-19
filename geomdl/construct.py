@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides functions for constructing and extracting spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

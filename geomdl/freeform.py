@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides freeform geometry classes
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

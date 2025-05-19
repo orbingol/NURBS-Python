@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides compatibility functions for CAD interoperability
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
