@@ -1,7 +1,4 @@
-"""
-Tests for the NURBS-Python package
-Released under The MIT License. See LICENSE file for details.
-Copyright (c) 2018-2019 Onur Rauf Bingol
+"""Tests for the NURBS-Python package.
 
 Requires "pytest" to run.
 """

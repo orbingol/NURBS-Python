@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides data storage and evaluation functionality for non-rational spline geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

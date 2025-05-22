@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides tessellation classes for surface triangulation
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

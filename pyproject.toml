@@ -35,7 +35,7 @@ Issues = "https://github.com/orbingol/NURBS-Python/issues"
 
 [project.optional-dependencies]
 vis = ["numpy>=2.0, <3.0", "matplotlib>=3.9.0", "plotly>=6.0.0"]
-pytest = ["pytest>=8.0.0"]
+test = ["pytest>=8.0.0"]
 docs = ["sphinx>=8.3.0"]
 
 [tool.setuptools]
@@ -44,3 +44,10 @@ packages = ["geomdl", "geomdl.visualization"]
 
 [tool.setuptools_scm]
 version_file = "VERSION.txt"
+
+[tool.cibuildwheel]
+archs = ["auto"]
+build = ["cp311-*"]
+skip = "*-musllinux*"
+test-requires = ["pytest>=8.0.0"]
+test-command = "pytest"

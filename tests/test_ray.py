@@ -1,4 +1,7 @@
-import pytest
+"""Tests for the NURBS-Python package.
+
+Tests geomdl.ray module. Requires "pytest" to run.
+"""
 
 from geomdl import ray
 from geomdl.ray import Ray, RayIntersection

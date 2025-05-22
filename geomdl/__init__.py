@@ -1,6 +1,6 @@
 """Object-oriented B-Spline and NURBS evaluation library in pure Python
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

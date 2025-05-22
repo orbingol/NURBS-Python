@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Helper functions for tessellation operations
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

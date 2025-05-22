@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Helper functions for exchange module
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

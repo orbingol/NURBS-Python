@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides geometric operations for spline geometry classes
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

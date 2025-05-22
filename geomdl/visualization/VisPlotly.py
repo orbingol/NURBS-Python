@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Plotly visualization component for NURBS-Python
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

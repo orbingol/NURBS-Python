@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides abstract base classes for representing the geometries
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

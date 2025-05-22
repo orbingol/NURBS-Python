@@ -1,7 +1,4 @@
-"""
-Tests for the NURBS-Python package
-Released under The MIT License. See LICENSE file for details.
-Copyright (c) 2018 Onur Rauf Bingol
+"""Tests for the NURBS-Python package.
 
 Tests geomdl.GPGen module. Requires "pytest" to run.
 """
@@ -203,7 +200,7 @@ def test_grid_weight6(gridw):
         ],
     ]
 
-    gen_cache_var = gridw.grid
+    gridw.grid
 
     # this should pull up the grid from the cache
     assert gridw.grid == result

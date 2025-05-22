@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides shortcut functions for creating new instances of the geomdl classes
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

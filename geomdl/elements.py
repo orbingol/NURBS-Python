@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides classes representing geometry and topology entities
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

@@ -1,7 +1,4 @@
-"""
-Tests for the NURBS-Python package
-Released under The MIT License. See LICENSE file for details.
-Copyright (c) 2018 Onur Rauf Bingol
+"""Tests for the NURBS-Python package.
 
 Tests geomdl.utilities module. Requires "pytest" to run.
 """
@@ -10,7 +7,6 @@ import pytest
 from geomdl import utilities
 from geomdl import knotvector
 from geomdl import control_points
-from geomdl import utilities
 from geomdl.exceptions import GeomdlException
 
 GEOMDL_DELTA = 10e-6
@@ -158,7 +154,7 @@ def test_cpman_curve3():
     p = 12
     sz = 5
     cpman = control_points.CurveManager(sz)
-    assert cpman.get_ctrlpt(p) == None
+    assert cpman.get_ctrlpt(p) is None
 
 
 def test_cpman_curve4():
@@ -182,7 +178,7 @@ def test_cpman_curve5():
     cpman = control_points.CurveManager(sz, testdata=4)
     cpman.set_ptdata(dict(testdata=d), p)
     retv = cpman.get_ptdata("testdata2", p)
-    assert retv == None
+    assert retv is None
 
 
 def test_cpman_curve6():

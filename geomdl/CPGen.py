@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: A simple control points grid generator for parametric surfaces
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 

@@ -3,7 +3,7 @@
     :platform: Unix, Windows
     :synopsis: Provides exchange capabilities for VTK file formats
 
-.. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
+.. moduleauthor:: Onur R. Bingol <contact@onurbingol.net>
 
 """
 
