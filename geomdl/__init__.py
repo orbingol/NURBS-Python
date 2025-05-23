@@ -4,8 +4,18 @@
 
 """
 
+import pathlib
+
+
+def geomdl_version():
+    version_file = pathlib.Path(__file__).parent / "VERSION.txt"
+    if version_file.exists():
+        return version_file.read_text()
+    return "0.0.0-dev"
+
+
 # Library version
-__version__ = "5.3.1"
+__version__ = geomdl_version()
 
 # Support for "from geomdl import *"
 # @see: https://stackoverflow.com/a/41895257
@@ -31,8 +41,3 @@ __all__ = [
     "utilities",
     "voxelize",
 ]
-
-
-def geomdl_version():
-    """Returns geomdl full version as a tuple"""
-    return tuple(__version__.split("."))
