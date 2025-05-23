@@ -43,7 +43,7 @@ docs = ["sphinx>=8.3.0"]
 packages = ["geomdl", "geomdl.visualization"]
 
 [tool.setuptools_scm]
-version_file = "VERSION.txt"
+version_file = "geomdl/VERSION.txt"
 
 [tool.cibuildwheel]
 archs = ["auto"]
