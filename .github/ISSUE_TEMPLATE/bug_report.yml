@@ -1,0 +1,59 @@
+name: Bug Report
+description: File a bug report for the repository
+title: "[BUG]: "
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is
+      placeholder: |
+        Details of the bug and (optional) screenshots
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen
+      placeholder: |
+        Details about the expected behavior vs. actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction Steps
+      description: Steps to reproduce the bug
+      placeholder: |
+        A numbered list explaining the steps to reproduce the bug and/or code snippets with comments
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-details
+    attributes:
+      label: System Details
+      description: Provide details about your runtime environment
+      placeholder: |
+        * Operating System
+        * Python version
+        * Geomdl version
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Provide any other context or information here
+      placeholder: Links, references or related examples
