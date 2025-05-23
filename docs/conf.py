@@ -44,7 +44,6 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.inheritance_diagram",
     "matplotlib.sphinxext.plot_directive",
-    "sphinx_rtd_theme",
 ]
 
 # Inheritance diagram configuration
