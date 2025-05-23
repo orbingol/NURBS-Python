@@ -58,8 +58,6 @@ This documentation is organized into a couple sections:
 
     modules
     modules_visualization
-    modules_cli
-    modules_shapes
     modules_rhino
     modules_acis
 

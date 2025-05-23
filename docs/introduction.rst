@@ -21,10 +21,7 @@ Some significant features of NURBS-Python (geomdl):
 * Pure Python, no external C/C++ or FORTRAN library dependencies
 * Python compatibility: 2.7.x, 3.4.x and later
 * For higher performance, optional *Compile with Cython* options are also available
-* Easy to install via `pip <https://pypi.org/project/geomdl/>`_ or `conda <https://anaconda.org/orbingol/geomdl>`_
-* `Docker images <https://hub.docker.com/r/idealabisu/nurbs-python>`_ are available
-* ``geomdl-shapes`` module for generating common spline and analytic geometries
-* ``geomdl-cli`` module for using the library from the command line
+* Easy to install via `pip <https://pypi.org/project/geomdl/>`_
 
 NURBS-Python (geomdl) contains the following fundamental geometric algorithms:
 

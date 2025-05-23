@@ -123,24 +123,7 @@ following command along with the pure Python version.
 
 .. code-block:: console
 
-    $ pip install --user . --install-option="--use-cython"
-
-This command will generate .c files (i.e. cythonization) and compile the .c files into binary Python modules.
-
-The following command can be used to directly compile and install from the existing .c files, skipping the cythonization
-step:
-
-.. code-block:: console
-
-    $ pip install --user . --install-option="--use-source"
-
-To update the compiled module with the latest changes, you need to re-cythonize the code.
-
-To enable Cython-compiled module in development mode;
-
-.. code-block:: console
-
-    $ python setup.py build_ext --use-cython --inplace
+    $ SETUPTOOLS_USE_CYTHON=1 pip install --user .
 
 After the successful execution of the command, the you can import and use the compiled library as follows:
 
@@ -166,33 +149,4 @@ After the successful execution of the command, the you can import and use the co
     crv.vis = vis.VisCurve3D()
     crv.render()
 
-Before Cython compilation, please make sure that you have `Cython <https://cython.org/>`_ module and a valid compiler
-installed for your operating system.
-
-Docker Containers
-=================
-
-A collection of Docker containers is provided on `Docker Hub <https://hub.docker.com/r/idealabisu/nurbs-python/>`_
-containing NURBS-Python, Cython-compiled core and the `command-line application <https://geomdl-cli.readthedocs.io>`_.
-To get started, first install `Docker <https://www.docker.com/>`_ and then run the following on the Docker command
-prompt to pull the image prepared with Python v3.5:
-
-.. code-block:: console
-
-    $ docker pull idealabisu/nurbs-python:py35
-
-On the `Docker Repository <https://hub.docker.com/r/idealabisu/nurbs-python/>`_ page, you can find containers tagged for
-Python versions and `Debian <https://www.debian.org/>`_ (no suffix) and `Alpine Linux <https://alpinelinux.org/>`_
-(``-alpine`` suffix) operating systems. Please change the tag of the pull command above for downloading your preferred
-image.
-
-After pulling your preferred image, run the following command:
-
-.. code-block:: console
-
-    $ docker run --rm -it --name geomdl -p 8000:8000 idealabisu/nurbs-python:py35
-
-In all images, Matplotlib is set to use ``webagg`` backend by default. Please follow the instructions on the command
-line to view your figures.
-
-Please refer to the `Docker documentation <https://docs.docker.com/>`_ for details on using Docker.
+Before the Cython compilation, please make sure that you have a valid compiler installed for your operating system.
