@@ -1,7 +1,7 @@
 NURBS-Python (geomdl)
 ^^^^^^^^^^^^^^^^^^^^^
 
-|RTD|_ |PYPI|_ |PYPIDL|_
+|GHACTIONS|_ |PYPI|_ |PYPIDL|_ |RTD|_
 
 Introduction
 ============
@@ -72,3 +72,6 @@ NURBS-Python (geomdl) is licensed under the terms of `MIT License <LICENSE>`_ an
 
 .. |PYPIDL| image:: https://img.shields.io/pypi/dm/geomdl.svg
 .. _PYPIDL: https://pypi.org/project/geomdl/
+
+.. |GHACTIONS| image:: https://img.shields.io/github/actions/workflow/status/orbingol/NURBS-Python/build.yml
+.. _GHACTIONS: https://github.com/orbingol/NURBS-Python/actions/workflows/build.yml

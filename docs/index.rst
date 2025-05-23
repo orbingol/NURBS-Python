@@ -1,9 +1,7 @@
 NURBS-Python v5.x Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-|DOI|_ |PYPI|_ |ANACONDA|_
-
-|TRAVISCI|_ |APPVEYOR|_ |CIRCLECI|_
+|GHACTIONS|_ |PYPI|_ |PYPIDL|_
 
 Welcome to the **NURBS-Python (geomdl) v5.x** documentation!
 
@@ -61,21 +59,11 @@ This documentation is organized into a couple sections:
     modules_rhino
     modules_acis
 
-
-.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.815010.svg
-.. _DOI: https://doi.org/10.5281/zenodo.815010
-
 .. |PYPI| image:: https://img.shields.io/pypi/v/geomdl.svg
 .. _PYPI: https://pypi.org/project/geomdl/
 
-.. |ANACONDA| image:: https://anaconda.org/orbingol/geomdl/badges/version.svg
-.. _ANACONDA: https://anaconda.org/orbingol/geomdl
+.. |PYPIDL| image:: https://img.shields.io/pypi/dm/geomdl.svg
+.. _PYPIDL: https://pypi.org/project/geomdl/
 
-.. |TRAVISCI| image:: https://travis-ci.org/orbingol/NURBS-Python.svg?branch=5.x
-.. _TRAVISCI: https://travis-ci.org/orbingol/NURBS-Python
-
-.. |APPVEYOR| image:: https://ci.appveyor.com/api/projects/status/github/orbingol/nurbs-python?branch=5.x&svg=true
-.. _APPVEYOR: https://ci.appveyor.com/project/orbingol/nurbs-python
-
-.. |CIRCLECI| image:: https://circleci.com/gh/orbingol/NURBS-Python/tree/5.x.svg?style=shield
-.. _CIRCLECI: https://circleci.com/gh/orbingol/NURBS-Python/tree/5.x
+.. |GHACTIONS| image:: https://img.shields.io/github/actions/workflow/status/orbingol/NURBS-Python/build.yml
+.. _GHACTIONS: https://github.com/orbingol/NURBS-Python/actions/workflows/build.yml
