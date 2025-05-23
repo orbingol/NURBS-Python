@@ -59,8 +59,7 @@ The `following article <https://doi.org/10.1016/j.softx.2018.12.005>`_ outlines 
 License
 =======
 
-NURBS-Python (geomdl) is licensed under the terms of the `MIT License <LICENSE>`_.
-It also contains the following modules:
+NURBS-Python (geomdl) is licensed under the terms of the MIT License. It also contains the following modules:
 
 * ``six`` is licensed under the terms of the MIT License.
 * ``backports.functools_lru_cache`` is licensed under the terms of the MIT License.
