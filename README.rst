@@ -1,7 +1,7 @@
 NURBS-Python (geomdl)
 ^^^^^^^^^^^^^^^^^^^^^
 
-|GHACTIONS|_ |PYPI|_ |PYPIDL|_ |RTD|_
+|GHACTIONS|_ |RTD|_ |PYPI|_ |PYPIDL|_
 
 Introduction
 ============

@@ -1,7 +1,7 @@
 NURBS-Python v5.x Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-|GHACTIONS|_ |PYPI|_ |PYPIDL|_
+|PYPI|_ |PYPIDL|_
 
 Welcome to the **NURBS-Python (geomdl) v5.x** documentation!
 
@@ -64,6 +64,3 @@ This documentation is organized into a couple sections:
 
 .. |PYPIDL| image:: https://img.shields.io/pypi/dm/geomdl.svg
 .. _PYPIDL: https://pypi.org/project/geomdl/
-
-.. |GHACTIONS| image:: https://img.shields.io/github/actions/workflow/status/orbingol/NURBS-Python/build.yml
-.. _GHACTIONS: https://github.com/orbingol/NURBS-Python/actions/workflows/build.yml
