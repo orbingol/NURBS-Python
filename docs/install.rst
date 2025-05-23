@@ -1,7 +1,7 @@
 Installation and Testing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Installation via pip or conda is the recommended method for all users.**
+**Installation via pip is the recommended method for all users.**
 Manual method is only recommended for advanced users. Please note that if you have used any of these methods to install
 NURBS-Python, please use the same method to upgrade to the latest version.
 
@@ -33,27 +33,6 @@ Installing a specific version:
 .. code-block:: console
 
     $ pip install --user geomdl==5.0.0
-
-Install via Conda
-=================
-
-NURBS-Python can also be installed/upgraded via `conda <https://conda.io/>`_ package manager from the
-`Anaconda Cloud <https://anaconda.org/orbingol/geomdl>`_ repository.
-
-Installing:
-
-.. code-block:: console
-
-    $ conda install -c orbingol geomdl
-
-Upgrading to the latest version:
-
-.. code-block:: console
-
-    $ conda upgrade -c orbingol geomdl
-
-If you are experiencing problems with this method, you can try to upgrade ``conda`` package itself before
-installing the NURBS-Python library.
 
 Manual Install
 ==============
