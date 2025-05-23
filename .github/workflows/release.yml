@@ -44,6 +44,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install python build
+        run: python -m pip install build
       - name: Build wheels
         run: python -m build -w -o wheelhouse
       - name: Upload artifacts
