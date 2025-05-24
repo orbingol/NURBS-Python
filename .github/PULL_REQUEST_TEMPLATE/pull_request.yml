@@ -1,0 +1,58 @@
+name: Pull Request
+description: Use this template for pull requests
+title: "[PR]: <short description>"
+labels:
+  - needs-review
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this pull request!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please include a clear and concise description of the changes included in this pull request
+        If applicable, link the related issue using "Fixes #issue_number"
+      placeholder: Summary of changes, linked issues, context...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: type-of-change
+    attributes:
+      label: Type of Change
+      description: Select the types of changes included in this PR
+      options:
+        - label: Bug fix (non-breaking change that fixes an issue)
+        - label: New feature (non-breaking change that adds functionality)
+        - label: Breaking change (fix or feature that would cause existing functionality to not work as expected)
+        - label: Documentation update
+        - label: Refactor
+        - label: Test improvement
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Ensure your changes meet the following criteria
+      options:
+        - label: My code follows the style guidelines of this project
+        - label: I have performed a self-review of my own code
+        - label: I have commented my code where necessary
+        - label: I have made corresponding changes to the documentation
+        - label: My changes generate no new warnings
+        - label: I have added tests that prove my fix or feature works
+        - label: All new and existing tests pass locally with my changes
+
+  - type: textarea
+    id: additional-comments
+    attributes:
+      label: Additional Comments
+      description: Add any other context, screenshots, or notes relevant to the pull request.
+      placeholder: Anything else reviewers should know?
+    validations:
+      required: false
