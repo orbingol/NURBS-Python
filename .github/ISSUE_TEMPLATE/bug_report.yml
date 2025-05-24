@@ -36,7 +36,8 @@ body:
       label: Reproduction Steps
       description: Steps to reproduce the bug
       placeholder: |
-        A numbered list explaining the steps to reproduce the bug and/or code snippets with comments
+        A list of steps explaining how to reproduce the bug
+        You can also consider sharing a code snippet with comments
     validations:
       required: true
 
