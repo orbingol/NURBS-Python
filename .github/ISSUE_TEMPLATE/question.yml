@@ -1,0 +1,28 @@
+name: Question
+description: Use this template for questions
+title: "[QUESTION]: <short description>"
+labels:
+  - question
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to ask us a question!
+        Please do not hesitate to contact the author via email or contact form for a faster response.
+
+  - type: textarea
+    id: text_of_question
+    attributes:
+      label: Question
+      description: Ask your question
+      placeholder: Please ask your question here in a clear and concise way
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Provide any related code, issues, or projects
+      placeholder: Links to issues, code, papers, book chapters or any other related content...
