@@ -1,0 +1,35 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: "[FEATURE]: "
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+         Thanks for taking the time to fill out this feature request!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the proposed feature
+      placeholder: |
+        Description of the feature and details of the problem being addressed
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_ideas
+    attributes:
+      label: Implementation Ideas
+      description: Please share the implementation ideas for the proposed feature
+      placeholder: |
+        Please share your ideas or examples of alternative implementations
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context or Recommendations
+      description: Provide any other context or recommendations here
+      placeholder: References, papers, book chapters, web pages or anything related to the proposed feature
