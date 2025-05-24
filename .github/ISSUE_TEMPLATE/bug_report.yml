@@ -1,7 +1,8 @@
 name: Bug Report
-description: File a bug report for the repository
-title: "[BUG]: "
-labels: ["bug"]
+description: Use this template for filing a bug report for the repository
+title: "[BUG]: <short description>"
+labels:
+  - bug
 
 body:
   - type: markdown
