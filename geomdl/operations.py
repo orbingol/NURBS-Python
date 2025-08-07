@@ -1751,3 +1751,118 @@ def flip(surf, **kwargs):
         g.set_ctrlpts(new_cpts, size_u, size_v)
 
     return geom
+
+
+@export
+def extract_curve_u(obj, param, **kwargs):
+    """ Extracts the curve at the input parametric coordinate on the u-direction.
+
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
+    :param obj: surface
+    :type obj: abstract.Surface
+    :param param: parameter for the u-direction
+    :type param: float
+    :return: a curve
+    :rtype: curve
+    """
+    # Validate input
+    if not isinstance(obj, abstract.Surface):
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
+
+    # Keyword arguments
+    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
+
+    # Find multiplicity of the knot
+    ks = span_func(obj.degree_u, obj.knotvector_u, obj.ctrlpts_size_u, param) - obj.degree_u + 1
+    s = helpers.find_multiplicity(param, obj.knotvector_u)
+    r = obj.degree_u - s
+
+    # Create backups of the original surface
+    temp_obj = copy.deepcopy(obj)
+
+    # Split the original surface
+    insert_knot_func(temp_obj, [param, None], num=[r, 0], check_num=False)
+
+    # Control points
+    if (param == 0):
+        curve_ctrlpts = obj.ctrlpts2d[0]    
+    elif (param == 1):
+        curve_ctrlpts = obj.ctrlpts2d[-1]    
+    else:
+        curve_ctrlpts = temp_obj.ctrlpts2d[ks + r - 1]
+
+    # Create a new curve
+    from geomdl import NURBS
+    curve = NURBS.Curve()
+    curve.degree = obj.degree_v
+    curve.ctrlpts = curve_ctrlpts
+    curve.knotvector = obj.knotvector_v
+
+    # Return the new curve
+    return curve
+
+
+@export
+def extract_curve_v(obj, param, **kwargs):
+    """ Extracts the curve at the input parametric coordinate on the v-direction.
+
+    Keyword Arguments:
+        * ``find_span_func``: FindSpan implementation. *Default:* :func:`.helpers.find_span_linear`
+        * ``insert_knot_func``: knot insertion algorithm implementation. *Default:* :func:`.operations.insert_knot`
+
+    :param obj: surface
+    :type obj: abstract.Surface
+    :param param: parameter for the v-direction
+    :type param: float
+    :return: a curve
+    :rtype: curve
+    """
+    # Validate input
+    if not isinstance(obj, abstract.Surface):
+        raise GeomdlException("Input shape must be an instance of abstract.Surface class")
+
+    # Keyword arguments
+    span_func = kwargs.get('find_span_func', helpers.find_span_linear)  # FindSpan implementation
+    insert_knot_func = kwargs.get('insert_knot_func', insert_knot)  # Knot insertion algorithm
+
+    # Find multiplicity of the knot
+    ks = span_func(obj.degree_v, obj.knotvector_v, obj.ctrlpts_size_v, param) - obj.degree_v + 1
+    s = helpers.find_multiplicity(param, obj.knotvector_v)
+    r = obj.degree_v - s
+
+    # Create backups of the original surface
+    temp_obj = copy.deepcopy(obj)
+
+    # Split the original surface
+    insert_knot_func(temp_obj, [None, param], num=[0, r], check_num=False)
+
+    # Control points
+    curve_ctrlpts = []
+    idx = 0
+    o = temp_obj
+    if (param == 0):
+        idx = 0
+        o = obj
+    elif (param == 1):
+        idx = -1
+        o = obj
+    else:
+        idx = ks + r - 1
+    for v_row in o.ctrlpts2d:
+        temp = v_row[idx]
+        curve_ctrlpts.append(temp)
+
+    # Create a new curve
+    from geomdl import NURBS
+    curve = NURBS.Curve()
+    curve.degree = obj.degree_u
+    curve.ctrlpts = curve_ctrlpts
+    curve.knotvector = obj.knotvector_u
+
+    # Return the new curve
+    return curve
+
