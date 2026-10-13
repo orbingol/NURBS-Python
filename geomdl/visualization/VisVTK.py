@@ -228,7 +228,7 @@ class VisSurface(vis.VisAbstract):
                 )
                 vtk_actors.append(actor1)
                 # Quad mesh
-                lines = np.array(faces, dtype=np.int)
+                lines = np.array(faces, dtype=int)
                 actor2 = vtkh.create_actor_mesh(
                     pts=vtkpts,
                     lines=lines,
@@ -245,7 +245,7 @@ class VisSurface(vis.VisAbstract):
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot["name"])
                 faces = [t.data for t in plot["ptsarr"][1]]
-                tris = np.array(faces, dtype=np.int)
+                tris = np.array(faces, dtype=int)
                 actor1 = vtkh.create_actor_tri(
                     pts=vtkpts, tris=tris, color=vtkh.create_color(plot["color"]), name=plot["name"], index=plot["idx"]
                 )
