@@ -6,7 +6,6 @@ NURBS-Python v5.x Documentation
 Welcome to the **NURBS-Python (geomdl) v5.x** documentation!
 
 NURBS-Python (geomdl) is a cross-platform (pure Python), object-oriented B-Spline and NURBS library.
-It is compatible with Python versions 2.7.x, 3.4.x and later.
 It supports rational and non-rational curves, surfaces and volumes.
 
 NURBS-Python (geomdl) provides easy-to-use data structures for storing geometry descriptions
