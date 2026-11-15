@@ -5,13 +5,12 @@ on:
     types: [opened, reopened, converted_to_draft, ready_for_review]
 
 permissions:
-  issues: write
   pull-requests: write
 
 env:
   # Comma-separated GitHub usernames. Each person must be a collaborator.
-  # Example: 'ASSIGNEES: orbingol,octocat'
-  ASSIGNEES: orbingol
+  # Example: REVIEWERS: orbingol,octocat
+  REVIEWERS: orbingol
 
 jobs:
   pr-assign:
@@ -21,8 +20,9 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request
-            const assignees = process.env.ASSIGNEES.split(",").map((name) => name.trim()).filter(Boolean)
-            const reviewers = assignees.filter((name) => name !== pr.user.login)
+            const reviewers = process.env.REVIEWERS.split(",")
+              .map((name) => name.trim())
+              .filter((name) => name && name !== pr.user.login)
             const repo = { owner: context.repo.owner, repo: context.repo.repo, pull_number: pr.number }
 
             if (context.payload.action === "converted_to_draft") {
@@ -34,14 +34,6 @@ jobs:
               return
             }
 
-            if (pr.draft) return
+            if (pr.draft || reviewers.length === 0) return
 
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              assignees,
-            })
-            if (reviewers.length > 0) {
-              await github.rest.pulls.requestReviewers({ ...repo, reviewers })
-            }
+            await github.rest.pulls.requestReviewers({ ...repo, reviewers })
