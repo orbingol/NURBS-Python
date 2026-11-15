@@ -73,6 +73,12 @@ jobs:
   publish-pypi:
     runs-on: ubuntu-26.04
     needs: [ build-wheels ]
+    environment:
+      name: pypi
+      url: https://pypi.org/p/geomdl
+    permissions:
+      actions: read
+      id-token: write
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
@@ -84,4 +90,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3
         with:
           packages-dir: ./wheelhouse/
-          password: ${{ secrets.PYPI_PASSWORD_GEOMDL }}
