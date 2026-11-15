@@ -1,20 +1,21 @@
 # See https://pre-commit.com for more information
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+    rev: v6.0.0
     hooks:
     -  id: trailing-whitespace
     -  id: end-of-file-fixer
     -  id: check-yaml
 -   repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
+    rev: v1.5.6
     hooks:
       - id: forbid-crlf
       - id: remove-crlf
       - id: forbid-tabs
       - id: remove-tabs
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.8
+    rev: v0.17.5
     hooks:
+      # - id: ruff-check
+      #   args: [--fix, --no-unsafe-fixes]
       - id: ruff-format
-        args: [--line-length=120]

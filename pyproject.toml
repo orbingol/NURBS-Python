@@ -15,7 +15,7 @@ maintainers = [
 ]
 keywords = ["NURBS", "B-Spline", "curve", "surface", "volume", "CAD", "modeling", "geometry"]
 readme = { file = "README.rst", content-type = "text/x-rst" }
-requires-python = ">= 3.10"
+requires-python = ">= 3.11"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
@@ -34,7 +34,7 @@ Repository = "https://github.com/orbingol/NURBS-Python.git"
 Issues = "https://github.com/orbingol/NURBS-Python/issues"
 
 [project.optional-dependencies]
-vis = ["numpy>=2.0, <3.0", "matplotlib>=3.9.0", "plotly>=6.0.0"]
+vis = ["numpy>=2.0, <3.0", "matplotlib>=3.9.0", "plotly>=6.0.0", "vtk>=9.7.0"]
 test = ["pytest>=8.0.0"]
 docs = ["sphinx>=8.3.0", "sphinx-rtd-theme>=3.0.0"]
 

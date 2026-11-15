@@ -7,10 +7,8 @@ NURBS-Python, please use the same method to upgrade to the latest version.
 
 .. note::
 
-    On some Linux and MacOS systems, you may encounter 2 different versions of Python installed. In that case Python 2.x
-    package would use ``python2`` and ``pip2``, whereas Python 3.x package would use ``python3`` and ``pip3``. The
-    default ``python`` and ``pip`` commands could be linked to one of those. Please check your installed Python version
-    via ``python -V`` to make sure that you are using the correct Python package.
+    On systems with more than one Python installed, ``python`` and ``pip`` may
+    point at an older interpreter. Check the version with ``python -V`` before installing.
 
 Install via Pip
 ===============
@@ -32,7 +30,7 @@ Installing a specific version:
 
 .. code-block:: console
 
-    $ pip install --user geomdl==5.0.0
+    $ pip install --user geomdl==5.4.1
 
 Manual Install
 ==============
@@ -74,7 +72,7 @@ variable after import. The following example illustrates installation check on a
     Copyright (C) Microsoft Corporation. All rights reserved.
 
     PS C:\> python
-    Python 3.6.2 (v3.6.2:5fd33b5, Jul  8 2017, 04:57:36) [MSC v.1900 64 bit (AMD64)] on win32
+    Python 3.11.13 on win32
     Type "help", "copyright", "credits" or "license" for more information.
     >>> import geomdl
     >>> geomdl.__version__
