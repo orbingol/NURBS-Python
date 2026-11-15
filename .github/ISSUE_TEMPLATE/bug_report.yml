@@ -1,61 +1,65 @@
 name: Bug Report
-description: Use this template for filing a bug report
+description: Report something that does not work as expected
 title: "[BUG]: <short description>"
 labels:
   - bug
+assignees:
+  - orbingol
 
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to report a bug.
 
   - type: textarea
     id: description
     attributes:
       label: Description
-      description: A clear and concise description of what the bug is
-      placeholder: |
-        Details of the bug and (optional) screenshots
+      description: What went wrong?
+      placeholder: What happened, and what did you expect instead?
     validations:
       required: true
 
   - type: textarea
-    id: expected-behavior
+    id: reproduction
     attributes:
-      label: Expected Behavior
-      description: A clear and concise description of what you expected to happen
-      placeholder: |
-        Details about the expected behavior vs. actual behavior
+      label: Reproduction
+      description: A short program or the steps that show the bug
+      render: python
     validations:
       required: true
 
-  - type: textarea
-    id: reproduction-steps
+  - type: dropdown
+    id: os
     attributes:
-      label: Reproduction Steps
-      description: Steps to reproduce the bug
-      placeholder: |
-        A list of steps explaining how to reproduce the bug
-        You can also consider sharing a code snippet with comments
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
     validations:
       required: true
 
-  - type: textarea
-    id: system-details
+  - type: input
+    id: python-version
     attributes:
-      label: System Details
-      description: Provide details about your runtime environment
-      placeholder: |
-        * Operating System
-        * Python version
-        * Geomdl version
+      label: Python version
+      placeholder: "3.12"
+    validations:
+      required: true
+
+  - type: input
+    id: geomdl-version
+    attributes:
+      label: geomdl version
+      placeholder: "5.4.1"
     validations:
       required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
-      description: Provide any other context or information here
-      placeholder: Links, references or related examples
+      label: Additional context
+      description: Logs, screenshots, or related links
