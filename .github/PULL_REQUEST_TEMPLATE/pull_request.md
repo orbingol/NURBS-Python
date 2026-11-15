@@ -1,26 +1,9 @@
-## Description
+## What changed
 
-<!-- Please include a clear and concise description of the changes and the related issue: Fixes # (issue) -->
+<!-- A short description of the change. -->
 
-## Type of Change
+## Why
 
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-- [ ] Refactor
-- [ ] Test improvement
+<!-- The problem this PR solves. -->
 
-## Checklist
-
-- [ ] Code follows style guidelines
-- [ ] Self-reviewed
-- [ ] Commented code
-- [ ] Docs updated
-- [ ] No new warnings
-- [ ] Tests added
-- [ ] All tests pass
-
-## Additional Context
-
-<!-- Add any other context or screenshots here. -->
+Fixes #
