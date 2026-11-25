@@ -356,7 +356,7 @@ class SplineGeometry(Geometry):
                     return False
                 chk = []
                 for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < self._precision else False
+                    tmp = True if abs(s - o) < 10e-7 else False
                     chk.append(tmp)
                 chk_kv.append(all(chk))
             if not all(chk_kv):
@@ -367,10 +367,10 @@ class SplineGeometry(Geometry):
                     return False
                 chk = []
                 for s, o in zip(sk, ok):
-                    tmp = True if abs(s - o) < self._precision else False
+                    tmp = True if abs(s - o) < 10e-7 else False
                     chk.append(tmp)
                 chk_ctrlpts.append(all(chk))
-            if not all(chk_kv):
+            if not all(chk_ctrlpts):
                 return False
         except Exception:
             return False
