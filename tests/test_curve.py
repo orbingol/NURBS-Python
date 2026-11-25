@@ -3,6 +3,8 @@
 Requires "pytest" to run.
 """
 
+from copy import deepcopy
+
 from pytest import fixture, mark
 from geomdl import BSpline
 from geomdl import evaluators
@@ -214,6 +216,22 @@ def nurbs_curve(spline_curve):
 
 def test_nurbs_curve2d_weights(nurbs_curve):
     assert nurbs_curve.weights == [0.5, 1.0, 0.75, 1.0, 0.25, 1.0]
+
+
+def test_nurbs_curve2d_equality(nurbs_curve):
+    assert nurbs_curve == deepcopy(nurbs_curve)
+
+    different_ctrlpts = deepcopy(nurbs_curve)
+    ctrlpts = [list(cpt) for cpt in different_ctrlpts.ctrlpts]
+    ctrlpts[0][0] += 0.5
+    different_ctrlpts.ctrlpts = ctrlpts
+    assert nurbs_curve != different_ctrlpts
+
+    different_knotvector = deepcopy(nurbs_curve)
+    knotvector = list(different_knotvector.knotvector)
+    knotvector[4] += 0.01
+    different_knotvector.knotvector = knotvector
+    assert nurbs_curve != different_knotvector
 
 
 @mark.parametrize(
