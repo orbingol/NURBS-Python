@@ -403,12 +403,12 @@ def compute_knot_vector2(degree, num_dpts, num_cpts, params):
     kv = [0.0 for _ in range(degree + 1)]
 
     # Compute "d" value - Eqn 9.68
-    d = float(num_dpts) / float(num_cpts - degree)
+    d = float(num_dpts - 1) / float(num_cpts - degree)
     # Find internal knots
     for j in range(1, num_cpts - degree):
         i = int(j * d)
         alpha = (j * d) - i
-        temp_kv = ((1.0 - alpha) * params[i - 1]) + (alpha * params[i])
+        temp_kv = ((1.0 - alpha) * params[i]) + (alpha * params[i + 1])
         kv.append(temp_kv)
 
     # End knot vector
